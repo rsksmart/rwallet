@@ -1,0 +1,27 @@
+Preliminary steps:
+
+1. npm install -g typescript
+2. npm install -g browserify
+3. cd lib/Application
+4. npm install
+5. cd ../postprocessor
+6. npm install
+
+
+Build:
+
+This builds the code in /lib. It must be done after cloning the repository in
+order to be able to run the code, or after changes are made to the Typescript
+code, if it's desirable to test them (if the script is not run but the code was
+built before the wallet will still run, but you'll be testing the last build).
+Both scripts are run from the root.
+
+On Windows:
+
+build
+
+On UNIX:
+
+./build.sh
+(If the file mode is wrong, please do chmod +x build.sh first and commit the
+change.)
