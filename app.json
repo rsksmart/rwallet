@@ -1,0 +1,33 @@
+{
+    "expo": {
+        "name": "mellowallet",
+        "description": "Crypto Wallet",
+        "android": {
+            "package": "com.mellowallet",
+            "permissions": ["CAMERA", "CAMERA_ROLL"]
+        },
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.mellowallet"
+        },
+        "slug": "mellowallet",
+        "privacy": "public",
+        "sdkVersion": "31.0.0",
+        "platforms": ["ios", "android"],
+        "version": "1.0.13",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["**/*"],
+        "androidStatusBar": {
+            "barStyle": "light-content"
+        }
+    }
+}
