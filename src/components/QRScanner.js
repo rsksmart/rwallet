@@ -48,7 +48,7 @@ const QRScanner = props => (
       style={styles.backButtonForQRView}
       onPress={props.handleCancelCodeScan}
     >
-      <Icon name="ios-arrow-back" style={styles.iconBack} />
+      <Icon name="arrow-back" style={styles.iconBack} />
     </Button>
     <View style={styles.pointer} />
   </View>
