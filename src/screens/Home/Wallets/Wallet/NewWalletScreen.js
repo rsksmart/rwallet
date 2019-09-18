@@ -214,7 +214,7 @@ class NewWallet extends Component {
             transparent
             onPress={this.onSavePress}
           >
-            <Icon name="check" />
+            <Icon name="check" type="FontAwesome" />
           </Button>
         </ActionHeader>
 

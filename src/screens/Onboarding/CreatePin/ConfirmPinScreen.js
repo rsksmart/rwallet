@@ -1,5 +1,5 @@
 import React from 'react';
-import { SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store'
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import {

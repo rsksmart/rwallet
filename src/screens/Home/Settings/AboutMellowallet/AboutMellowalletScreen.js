@@ -12,7 +12,7 @@ import {
   Image,
 } from 'react-native';
 import { t } from 'mellowallet/src/i18n';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import PrivacyPolice from '../../../../components/PrivacyPolice';
 
 const logo = require('mellowallet/assets/logo.png');

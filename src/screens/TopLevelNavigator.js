@@ -1,4 +1,5 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
 
 import React from 'react';
 import NavigationService from 'mellowallet/src/services/NavigationService';
@@ -37,12 +38,14 @@ const TopLevelNavigator = createStackNavigator(
   },
 );
 
+const AppContainer = createAppContainer(TopLevelNavigator);
+
 class Navigator extends React.Component {
   static router = TopLevelNavigator.router;
 
   render() {
     return (
-      <TopLevelNavigator
+      <AppContainer
         navigation={this.props.navigation}
         ref={(navigatorRef) => {
           NavigationService.setTopLevelNavigator(navigatorRef);

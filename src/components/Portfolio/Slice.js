@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated } from 'react-native';
-import { Svg } from 'expo';
+import * as Svg from 'react-native-svg';
 import * as shape from 'd3-shape';
 import { PropTypes } from 'prop-types';
 

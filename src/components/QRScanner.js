@@ -5,7 +5,7 @@ import {
   Icon,
   View,
 } from 'native-base';
-import { BarCodeScanner } from 'expo';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import platform from 'mellowallet/native-base-theme/variables/platform';
 import { PropTypes } from 'prop-types';
 
@@ -48,7 +48,7 @@ const QRScanner = props => (
       style={styles.backButtonForQRView}
       onPress={props.handleCancelCodeScan}
     >
-      <Icon name="arrow-back" style={styles.iconBack} />
+      <Icon name="ios-arrow-back" style={styles.iconBack} />
     </Button>
     <View style={styles.pointer} />
   </View>

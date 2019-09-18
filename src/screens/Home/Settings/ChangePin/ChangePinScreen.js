@@ -11,7 +11,7 @@ import ActionHeader from 'mellowallet/src/components/ActionHeader';
 import { t } from 'mellowallet/src/i18n';
 import InputPin from 'mellowallet/src/components/InputPin';
 import RemovableView from 'mellowallet/src/components/RemovableView';
-import { SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store'
 import AsyncStorageEnum from 'mellowallet/src/utils/asyncStorageEnum';
 import { printError } from 'mellowallet/src/utils';
 

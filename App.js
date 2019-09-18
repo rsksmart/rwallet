@@ -4,7 +4,8 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native';
-import { AppLoading, Font } from 'expo';
+import { AppLoading } from 'expo';
+import * as Font from 'expo-font';
 import { Root, StyleProvider, View } from 'native-base';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
@@ -18,8 +19,8 @@ import i18n from './src/i18n';
 import Navigator from './src/screens';
 import store from './src/store';
 
-const robotoFont = require('native-base/Fonts/Roboto.ttf');
-const robotoMediumFont = require('native-base/Fonts/Roboto_medium.ttf');
+const robotoFont = require('./assets/Fonts/Roboto.ttf');
+const robotoMediumFont = require('./assets/Fonts/Roboto_medium.ttf');
 
 const styles = StyleSheet.create({
   container: {
@@ -35,11 +36,11 @@ export default class App extends React.Component {
       isLoadingComplete: false,
     };
   }
-
-  loadResourcesAsync = async () => Promise.all([
+  
+  loadResourcesAsync = async () => await Promise.all([
     Font.loadAsync({
-      Roboto: robotoFont,
-      Roboto_medium: robotoMediumFont,
+      "Roboto": robotoFont,
+      "Roboto_medium": robotoMediumFont,
     }),
     i18n.init(),
     LibraryApplication(async () => {
@@ -70,7 +71,6 @@ export default class App extends React.Component {
         />
       );
     }
-
     return (
       <Root>
         <StyleProvider style={getTheme(material)}>

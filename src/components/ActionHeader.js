@@ -45,7 +45,7 @@ class ActionHeader extends React.PureComponent {
             transparent
             onPress={backAction}
           >
-            <Icon name="arrow-back" />
+            <Icon name="ios-arrow-back" />
           </Button>
         </Left>
       )

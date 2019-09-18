@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import SelectAssetScreen from './SelectAssetScreen';
 
 export default createStackNavigator(
