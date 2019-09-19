@@ -29,11 +29,12 @@ In order to test:
 To install the dependencies and build the backend run the `build_first.sh` script in
 the root directory the script does the following:
 
--   run `npm install` in the root directory, in the lib/Application and lib/postprocessor directories.
+-   run `npm install`(recommend to use `yarn`) in the root directory, in the lib/Application and lib/postprocessor directories.
 -   run the `build.sh` script that build the backend. This script executes the typescript compiler
     and browserify to compile and bundle the backend. The backend is bundled in the `lib/lib.js` file
     which later is included by UI project.
     After the installation run: `expo start` in the root directory of the project.
+  - In addition,you can run `expo start -c` to empty your javascript transform cache to ensure that it will not be contaminated by old code, rebuilding (this may take a minute).It will not be contaminated by old code.
 
 **Running in android emulator:**
 We recommend you to use the Android Virtual Device (AVD Manager) from Android Studio.
