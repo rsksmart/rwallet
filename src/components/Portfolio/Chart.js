@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
-import { Svg } from 'expo';
+import {Svg} from 'react-native-svg';
 import AnimateNumber from 'react-native-animate-number';
 import Slice from 'mellowallet/src/components/Portfolio/Slice';
 import { PropTypes } from 'prop-types';

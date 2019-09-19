@@ -135,7 +135,7 @@ class WalletQRModal extends React.PureComponent {
                 style={styles.buttonQRSlider}
                 onPress={this.previousAddress}
               >
-                <Icon name="ios-arrow-back" type="Ionicons" />
+                <Icon name="arrow-back" type="Ionicons" />
               </Button>
               <View style={styles.qrView}>
                 <QRCode

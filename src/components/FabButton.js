@@ -5,7 +5,7 @@ import {
   Share,
   StyleSheet,
 } from 'react-native';
-import { BlurView } from 'expo';
+import { BlurView } from 'expo-blur';
 import {
   Icon,
 } from 'native-base';

@@ -4,7 +4,9 @@ import {
   Linking,
 } from 'react-native';
 import { Toast } from 'native-base';
+import * as Localization from 'expo-localization';
 import AsyncStorageEnum from 'mellowallet/src/utils/asyncStorageEnum';
+
 import { conf } from './constants';
 
 
@@ -84,7 +86,7 @@ export function printError(e) {
 export async function getLanguage() {
   let language = await AsyncStorage.getItem(AsyncStorageEnum.LANGUAGE);
   if (!language) {
-    language = Expo.Localization.locale;
+    language = Localization.locale;
   }
   return language.split('_')[0];
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 import { connect } from 'react-redux';
 import { reduxForm, change } from 'redux-form';

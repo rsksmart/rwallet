@@ -1,4 +1,6 @@
-import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
+import { createSwitchNavigator } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+
 
 import ImportWalletScreen from 'mellowallet/src/screens/ImportWallet/ImportWalletScreen';
 

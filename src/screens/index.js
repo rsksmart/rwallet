@@ -1,9 +1,9 @@
-import { createSwitchNavigator } from 'react-navigation';
+import { createSwitchNavigator,createAppContainer } from 'react-navigation';
 import OnboardingNavigator from 'mellowallet/src/screens/Onboarding';
 import AuthLoadingScreen from './Auth/AuthLoadingScreen';
 import TopLevelNavigator from './TopLevelNavigator';
 
-export default createSwitchNavigator(
+export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     App: TopLevelNavigator,
@@ -12,4 +12,4 @@ export default createSwitchNavigator(
   {
     initialRouteName: 'AuthLoading',
   },
-);
+));

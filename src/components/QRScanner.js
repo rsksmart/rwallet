@@ -5,7 +5,7 @@ import {
   Icon,
   View,
 } from 'native-base';
-import { BarCodeScanner } from 'expo';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import platform from 'mellowallet/native-base-theme/variables/platform';
 import { PropTypes } from 'prop-types';
 

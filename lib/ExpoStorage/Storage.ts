@@ -1,4 +1,4 @@
-import { SecureStore } from 'expo';
+import  SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { IStorage } from '../Application/IStorage';
 
