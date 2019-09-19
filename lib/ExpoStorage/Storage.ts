@@ -1,4 +1,6 @@
-import * as SecureStore from 'expo-secure-store'
+///<reference path="expoSecureStore.d.ts"/>
+
+import  SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { IStorage } from '../Application/IStorage';
 
