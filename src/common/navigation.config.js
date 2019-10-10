@@ -1,13 +1,17 @@
 import {Text} from "react-native";
 import React from "react";
 
+import common from './common'
 import BackBtn from '../components/common/back.btn.stateless'
 
-import Test from '../pages/test'
+import Test1 from '../pages/test/test1'
+import Test2 from '../pages/test/test2'
+import Test3 from '../pages/test/test3'
+import Test4 from '../pages/test/test4'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
-        // common.currentNavigation = navigation;
+        common.currentNavigation = navigation;
         return {
             headerTitle: "",
             headerRight: <Text/>,
@@ -26,25 +30,11 @@ const defaultNavigationOptions = () => {
 
 const routeConfigMap = {
     home: {
-        Home: {
-            screen: Test,
-            navigationOptions: ({navigation}: any) => ({
-                headerTitle: "Home Testing (dev)",
-                headerRight: <Text/>,
-                headerLeft: <Text/>,
-                headerTitleStyle: {
-                    alignSelf: "center",
-                    textAlign: "center",
-                    flex: 1
-                }
-            })
-        }
-    },
-    mine: {
-        Mine: {
-            screen: Test,
-            navigationOptions: ({navigation}: any) => ({
-                headerTitle: "My Testing (dev)",
+        Test1: {
+            screen: Test1,
+            path: "Test1",
+            navigationOptions: () => ({
+                headerTitle: "Testing 1 (dev)",
                 headerRight: <Text/>,
                 headerLeft: <Text/>,
                 headerTitleStyle: {
@@ -54,10 +44,52 @@ const routeConfigMap = {
                 }
             })
         },
+        Test2: {
+            screen: Test2,
+            path: "Test2",
+            navigationOptions: () => ({
+                headerTitle: "Testing 2 (dev)",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        }
+    },
+    mine: {
+        Test3: {
+            screen: Test3,
+            path: "Test3",
+            navigationOptions: () => ({
+                headerTitle: "Testing 3 (dev)",
+                headerRight: <Text/>,
+                headerLeft: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        Test4: {
+            screen: Test4,
+            path: "Test4",
+            navigationOptions: () => ({
+                headerTitle: "Testing 4 (dev)",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        }
     }
 };
 
-function _hasEqualKey(obj1: any, obj2: any): string | boolean {
+function _hasEqualKey(obj1, obj2): string | boolean {
     for (let o1 in obj1) {
         for (let o2 in obj2) {
             if (o1 === o2) {

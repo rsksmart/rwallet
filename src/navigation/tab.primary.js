@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {Text, View, Image, BackHandler} from 'react-native';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import HomeStackNavigator from "./stack.home";
 import MineStackNavigator from "./stack.mine";
+import topNavigator from './top.navigator';
+import flex from '../assets/styles/layout.flex'
 
 import homeLight from "../assets/images/root/tab/home.png"
 import homeGray from "../assets/images/root/tab/home.unselected.png"
@@ -14,11 +16,11 @@ const PrimaryTabNavigator = createBottomTabNavigator(
     {
         'Home': {
             screen : HomeStackNavigator,
-            path : "primary",
+            path : "home",
         },
         'Mine': {
             screen : MineStackNavigator,
-            path : "Mine",
+            path : "mine",
         }
     },
     {
@@ -65,4 +67,33 @@ const PrimaryTabNavigator = createBottomTabNavigator(
     }
 );
 
-export default PrimaryTabNavigator;
+let PrimaryTabNavigatorContainer =  createAppContainer(PrimaryTabNavigator);
+
+export default class PrimaryTabNavigatorComp extends Component {
+    constructor(props: any){
+        super(props);
+    }
+
+    static router = null;
+
+    componentDidMount() {
+        console.log(JSON.stringify(this.props))
+    }
+
+    componentWillUnmount():void {
+    }
+
+    render() {
+        return (
+            <View style={[flex.flex1]}>
+                <PrimaryTabNavigatorContainer
+                    ref={(navigatorRef) => {
+                        topNavigator.setTopLevelNavigator(navigatorRef);
+                    }}
+                />
+            </View>
+        )
+    }
+}
+
+PrimaryTabNavigatorComp.router = PrimaryTabNavigatorContainer.router;

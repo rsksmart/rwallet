@@ -6,16 +6,16 @@ import {defaultNavigationOptions, routeConfigMaps} from "../common/navigation.co
 const StackNavigator = createStackNavigator(
     {...routeConfigMaps},
     {
-        initialRouteName: "Mine",
+        initialRouteName: "Test3",
         defaultNavigationOptions: defaultNavigationOptions()
     }
 );
 
 const Container = createAppContainer(StackNavigator);
 
-Container.navigationOptions = ({ navigation }) => {
+Container.navigationOptions = (props) => {
     let tabBarVisible = true;
-    if (navigation.state.index > 0) {
+    if (props.navigation.state.index > 0) {
         tabBarVisible = false;
     }
     return {
