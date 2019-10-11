@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.10",
+    "@react-native-community/async-storage": "^1.5.0",
+    "axios": "^0.19.0",
     "lodash": "^4.17.15",
     "native-base": "^2.13.0",
     "react": "16.8.3",

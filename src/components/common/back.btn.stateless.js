@@ -10,10 +10,10 @@ import space from "../../assets/styles/space";
 const BackBtn = props => {
     return (
         <TouchableOpacity style={[space.paddingHorizontal_18, space.paddingVertical_30]} onPress={(e) => {
-            if(this.props.onPress) {
-                this.props.onPress(e);
+            if(props.onPress) {
+                props.onPress(e);
             } else {
-                this.props.navigation.pop();
+                props.navigation.pop();
             }
         }} >
             <Image source={(this.props && this.props.backSource) || back} style={[space.width_height_21]}/>
