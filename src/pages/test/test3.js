@@ -17,8 +17,8 @@ class Test3 extends Component {
                 <Text>This is the test page 3</Text>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => this.props.navigation.navigate('Test4')}>
-                    <Text style={styles.text}>Go to Test 4 Tab</Text>
+                    onPress={() => this.props.navigation.navigate('Setting')}>
+                    <Text style={styles.text}>Go to Setting</Text>
                 </TouchableOpacity>
             </View>
         );

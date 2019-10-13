@@ -4,8 +4,8 @@ import {
   TouchableOpacity
 } from "react-native";
 
-import back from "../../assets/images/arrow/back.gray.png"
-import space from "../../assets/styles/space";
+import back from "../../../assets/images/arrow/back.gray.png"
+import space from "../../../assets/styles/space";
 
 const BackBtn = props => {
     return (
