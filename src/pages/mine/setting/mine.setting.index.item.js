@@ -18,12 +18,12 @@ const MineSettingIndexItem = (props) => {
             </Body>
             <Right>
                 {(()=>{
-                    if(typeof right === "string"){    //文字
+                    if(typeof right === "string"){
                         return <View style={[flex.row,flex.alignCenter]}>
                             <Text style={[font.color.normal,font.size["15"],space.marginRight_10]}>{right}</Text>
                             <IconBtnStateless img={MoreBig} size={8}/>
                         </View>
-                    }else if(typeof right === "undefined"){   //默认右箭头
+                    }else if(typeof right === "undefined"){
                         return <View>
                             <IconBtnStateless img={MoreBig} size={8}/>
                         </View>
