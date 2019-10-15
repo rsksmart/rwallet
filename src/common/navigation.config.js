@@ -7,6 +7,7 @@ import BackBtn from '../components/common/buttons/back.btn.stateless'
 import Setting from '../pages/mine/setting/mine.setting'
 import Version from '../pages/mine/version/mine.version'
 
+
 import Test1 from '../pages/test/test1'
 import Test2 from '../pages/test/test2'
 import Test3 from '../pages/test/test3'

@@ -1,4 +1,4 @@
-// import {deviceInfo as DeviceInfo} from "./info";
+// import {DeviceInfo} from "./info";
 
 const common = {
     currentNavigation : null,
