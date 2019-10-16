@@ -1,0 +1,10 @@
+{
+  "root": {
+    "home": "Accueil",
+    "mine": "Mien"
+  },
+  "test3": {
+    "text": "Ceci est la page de test 3",
+    "button": "Aller au réglage"
+  }
+}
