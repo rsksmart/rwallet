@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, FlatList, Text, TouchableHighlight} from 'react-native';
 
+import rifIcon from '../../../assets/images/icon/RIF.png';
+import moreBlackIcon from '../../../assets/images/arrow/more.black.png';
+
 function Item({title, onPress}) {
   // alert(onPress);
   return (
     <TouchableHighlight onPress={onPress}>
     <View style={styles.item}>
-      <Image source={require('../../../assets/images/icon/RIF.png')} />
+      <Image source={rifIcon} />
       <View style={[styles.right]}>
         <Text style={[styles.title]}>{title}</Text>
-        <Image style={styles.arrow} source={require('../../../assets/images/arrow/more.black.png')} />
+        <Image style={styles.arrow} source={moreBlackIcon} />
       </View>
     </View>
     </TouchableHighlight>
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flex: 1,
   },
-  arrow: { 
+  arrow: {
     aspectRatio: 1.05,
   }
 });

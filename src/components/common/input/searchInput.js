@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TextInput, Image} from 'react-native';
 
-export default class SearchInput extends Component {
+import searchIcon from '../../../assets/images/icon/search.png';
 
+export default class SearchInput extends Component {
   constructor(props){
     super(props)
   }
@@ -11,7 +12,7 @@ export default class SearchInput extends Component {
     return (
       <View style={styles.textInput}>
         <View style={{flexDirection: 'row'}}>
-          <Image style={{marginTop:7}} source={require('../../assets/images/icon/search.png')} />
+          <Image style={{marginTop:7}} source={searchIcon} />
           <TextInput style={{flex:1}} placeholder={this.props.placeholder} />
         </View>
       </View>
