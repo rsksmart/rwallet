@@ -8,7 +8,10 @@ import flex from '../../assets/styles/layout.flex'
 import { strings } from '../../common/i18n';
 
 class Test3 extends Component {
-    static navigationOptions = {
+    static navigationOptions = ({ navigation }) => {
+        return{
+            header: null,
+        }
     };
     constructor(props){
         super(props);

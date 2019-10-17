@@ -74,7 +74,10 @@ const listData = [
 const tagDatas = ["uncle", "cave", "donkey", "solar", "sweet", "canyon", "bonus", "busy", "nose", "tool", "position", "joy"];
 
 class Test1 extends Component {
-    static navigationOptions = {
+    static navigationOptions = ({ navigation }) => {
+        return{
+            header: null,
+        }
     };
     constructor(props){
         super(props);
