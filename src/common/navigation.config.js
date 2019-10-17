@@ -2,12 +2,15 @@ import {Text} from "react-native";
 import React from "react";
 
 import common from './common'
-import BackBtn from '../components/common/back.btn.stateless'
+import BackBtn from '../components/common/buttons/back.btn.stateless'
+
+import Setting from '../pages/mine/setting/mine.setting'
+import Version from '../pages/mine/version/mine.version'
+
 
 import Test1 from '../pages/test/test1'
 import Test2 from '../pages/test/test2'
 import Test3 from '../pages/test/test3'
-import Test4 from '../pages/test/test4'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -73,18 +76,11 @@ const routeConfigMap = {
                 }
             })
         },
-        Test4: {
-            screen: Test4,
-            path: "Test4",
-            navigationOptions: () => ({
-                headerTitle: "Testing 4 (dev)",
-                headerRight: <Text/>,
-                headerTitleStyle: {
-                    alignSelf: "center",
-                    textAlign: "center",
-                    flex: 1
-                }
-            })
+        Setting: {
+            screen: Setting
+        },
+        Version: {
+            screen: Version
         }
     }
 };

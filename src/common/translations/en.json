@@ -1,0 +1,10 @@
+{
+  "root": {
+    "home": "Home",
+    "mine": "Mine"
+  },
+  "test3": {
+    "text": "This is the test page 3",
+    "button": "Go to Setting"
+  }
+}
