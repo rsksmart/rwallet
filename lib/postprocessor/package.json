@@ -1,7 +1,0 @@
-{
-    "dependencies": {
-        "@types/node": "^10.12.2",
-        "fs": "0.0.1-security",
-        "node": "^11.0.0"
-    }
-}
