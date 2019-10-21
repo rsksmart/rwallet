@@ -1,31 +1,41 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Switch, Text} from 'react-native';
+import {
+  StyleSheet, View, Switch, Text,
+} from 'react-native';
 
-export default class SwitchListItem extends Component {
-  constructor(props){
-    super(props)
-  }
-  render() {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.title}>{this.props.title}</Text>
-        <Switch value={this.props.value}/>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   item: {
     padding: 5,
-    borderBottomColor: '#bbb',
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    height: 40,
     // backgroundColor: 'red',
   },
   title: {
     flex: 1,
-  }
+  },
 });
+
+export default class SwitchListItem extends Component {
+  constructor(props) {
+    super(props);
+    const { value } = this.props;
+    this.state = { value };
+  }
+
+  render() {
+    const { value } = this.state;
+    const { title } = this.props;
+    return (
+      <View style={styles.item}>
+        <Text style={styles.title}>{title}</Text>
+        <Switch
+          value={value}
+          onValueChange={(v) => {
+            this.setState({ value: v });
+          }}
+        />
+      </View>
+    );
+  }
+}

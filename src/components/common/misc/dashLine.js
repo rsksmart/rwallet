@@ -1,40 +1,32 @@
-import React,{Component} from 'react';
+import React from 'react';
 import {
-    Text,
-    View,
-    StyleSheet,
-    Dimensions,
+  Text, View, StyleSheet,
 } from 'react-native';
-// const screenWidth = Dimensions.get('window').width;
-export default class DashLine extends Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        var len = Math.ceil(this.props.width/4);
-        var arr = [];
-        for(let i=0; i<len; i++){
-            arr.push(i);
-        }
-        return (
-            <View>
-                <View style={styles.dashLine}>{
-                    arr.map((item, index)=>{
-                        return <Text style={styles.dashItem} key={'dash'+index}> </Text>
-                    })
-                }</View>
-            </View>
-        )
-    }
-}
+import color from '../../../assets/styles/color';
+
 const styles = StyleSheet.create({
-    dashLine: {
-        flexDirection: 'row',
-    },
-    dashItem: {
-        height: 1,
-        width: 2,
-        marginRight: 2,
-        backgroundColor: '#979797',
-    }
+  dashLine: {
+    flexDirection: 'row',
+  },
+  dashItem: {
+    height: 1,
+    width: 2,
+    marginRight: 2,
+    backgroundColor: color.component.dashLine.backgroundColor,
+  },
 });
+
+export default function DashLine({ width }) {
+  const len = Math.ceil(width / 4);
+  const arr = [];
+  for (let i = 0; i < len; i += 1) {
+    arr.push(i);
+  }
+  return (
+    <View>
+      <View style={styles.dashLine}>
+        {arr.map(() => <Text style={styles.dashItem} key={Math.random()}> </Text>)}
+      </View>
+    </View>
+  );
+}

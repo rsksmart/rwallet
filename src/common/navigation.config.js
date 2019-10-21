@@ -11,6 +11,10 @@ import Version from '../pages/mine/version/mine.version'
 import Test1 from '../pages/test/test1'
 import Test2 from '../pages/test/test2'
 import Test3 from '../pages/test/test3'
+import WalletAddIndex from '../pages/wallet/add.index'
+import WalletSelectCurrency from '../pages/wallet/select.currency'
+import WalletCreate from '../pages/wallet/create'
+
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -59,7 +63,46 @@ const routeConfigMap = {
                     flex: 1
                 }
             })
-        }
+        },
+        WalletAddIndex: {
+            screen: WalletAddIndex,
+            path: "WalletAddIndex",
+            navigationOptions: () => ({
+                headerTitle: "Add Wallet",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletSelectCurrency: {
+            screen: WalletSelectCurrency,
+            path: "WalletSelectCurrency",
+            navigationOptions: () => ({
+                headerTitle: "Select Wallet Currency",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletCreate: {
+            screen: WalletCreate,
+            path: "WalletCreate",
+            navigationOptions: () => ({
+                headerTitle: "BTC Wallet",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
     },
     mine: {
         Test3: {

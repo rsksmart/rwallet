@@ -1,30 +1,13 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Image} from 'react-native';
-
-import searchIcon from '../../../assets/images/icon/search.png';
-
-export default class SearchInput extends Component {
-  constructor(props){
-    super(props)
-  }
-
-  render() {
-    return (
-      <View style={styles.textInput}>
-        <View style={{flexDirection: 'row'}}>
-          <Image style={{marginTop:7}} source={searchIcon} />
-          <TextInput style={{flex:1}} placeholder={this.props.placeholder} />
-        </View>
-      </View>
-    );
-  }
-
-}
+import React from 'react';
+import {
+  StyleSheet, View, TextInput, Image,
+} from 'react-native';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
-  textInput:{
-    borderColor:'rgba(144,144,144,0.2)',
-    backgroundColor:'#F3F3F3',
+  textInput: {
+    borderColor: color.component.input.borderColor,
+    backgroundColor: color.component.input.backgroundColor,
     borderRadius: 4,
     borderWidth: 1,
     borderStyle: 'solid',
@@ -32,5 +15,16 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 10,
     paddingHorizontal: 10,
-  }
+  },
 });
+
+export default function SearchInput({placeholder}) {
+  return (
+    <View style={styles.textInput}>
+      <View style={{ flexDirection: 'row' }}>
+        <Image style={{ marginTop: 7 }} source={require('../../../assets/images/icon/search.png')} />
+        <TextInput style={{ flex: 1 }} placeholder={placeholder} />
+      </View>
+    </View>
+  );
+}

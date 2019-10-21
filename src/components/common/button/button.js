@@ -1,37 +1,32 @@
-import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, Alert, Text, View } from 'react-native';
-
-export default class Button extends Component {
-
-  constructor(props){
-    super(props)
-  }
-
-  render() {
-    return (
-      <TouchableHighlight onPress={this.props.onPress} underlayColor="white">
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>{this.props.text}</Text>
-        </View>
-      </TouchableHighlight>
-    );
-  }
-
-}
+import React from 'react';
+import {
+  StyleSheet, TouchableOpacity, Text, View,
+} from 'react-native';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   button: {
     width: 260,
     alignItems: 'center',
-    backgroundColor: '#00b520',
+    backgroundColor: color.component.button.backgroundColor,
     borderRadius: 27,
   },
   buttonText: {
     textAlign: 'center',
     padding: 20,
-    color: 'white',
+    color: color.component.button.color,
     fontSize: 16,
     fontFamily: 'Avenir Black',
-    fontWeight: "900"
-  }
+    fontWeight: '900',
+  },
 });
+
+export default function Button({ text, onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button}>
+        <Text style={styles.buttonText}>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+}

@@ -1,27 +1,8 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Text} from 'react-native';
-
-export default class Tags extends Component {
-
-  constructor(props){
-    super(props)
-  }
-
-  render() {
-    let length: any = this.props.data.length;
-    let res = [];
-    for(var i = 0; i < length; i++) {
-      res.push(<Text style={styles.item}>{i+1}) {this.props.data[i]}</Text>)
-    }
-
-    return (
-      <View style={styles.tags}>
-        {res}
-      </View>
-    );
-  }
-
-}
+import React from 'react';
+import {
+  StyleSheet, View, Text,
+} from 'react-native';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   tags: {
@@ -29,11 +10,31 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   item: {
-    backgroundColor: '#0AB627',
+    backgroundColor: color.component.tags.backgroundColor,
     marginLeft: 10,
     padding: 5,
-    color: '#FFF',
+    color: color.component.tags.color,
     borderRadius: 2,
     marginBottom: 10,
-  }
+  },
 });
+
+export default function Tags({ data }) {
+  const { length } = data;
+  const res = [];
+  for (let i = 0; i < length; i += 1) {
+    res.push(
+      <Text style={styles.item} key={i}>
+        {i + 1}
+)
+        {' '}
+        {data[i]}
+      </Text>,
+    );
+  }
+  return (
+    <View style={styles.tags}>
+      {res}
+    </View>
+  );
+}
