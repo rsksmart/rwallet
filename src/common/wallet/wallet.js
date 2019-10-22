@@ -1,7 +1,22 @@
 const lightwallet = require('eth-lightwallet');
+
+import {
+    address,
+    ECPair,
+    networks,
+    payments,
+    TransactionBuilder,
+    Transaction,
+    Network
+} from 'bitcoinjs-lib';
+
 // const web3 = require('web3');
 export default wallet = {
 	global_keystore: null,
+	generateRecoverPhrase(extraEntropy){
+		let randomSeed = lightwallet.keystore.generateRandomSeed(extraEntropy);
+		return randomSeed;
+	},
 	newWallet() {
 	    let extraEntropy = 'xcvxd';
 	    let randomSeed = lightwallet.keystore.generateRandomSeed(extraEntropy);

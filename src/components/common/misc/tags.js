@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     padding: 5,
     color: color.component.tags.color,
     borderRadius: 2,
-    marginBottom: 10,
+    marginTop: 10,
   },
 });
 

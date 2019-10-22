@@ -156,6 +156,15 @@ class Test1 extends Component {
                 >
                   <Text style={styles.text}>Create Wallet</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    const { navigation } = this.props;
+                    navigation.navigate('RecoveryPhrase');
+                  }}
+                >
+                  <Text style={styles.text}>Recovery Phrase</Text>
+                </TouchableOpacity>
               </View>
 >>>>>>> d59ca6d... Create wallet address
             </View>
