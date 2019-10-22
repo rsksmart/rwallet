@@ -15,6 +15,7 @@ import WalletAddIndex from '../pages/wallet/add.index'
 import WalletSelectCurrency from '../pages/wallet/select.currency'
 import WalletCreate from '../pages/wallet/create'
 import RecoveryPhrase from '../pages/wallet/recovery.phrase'
+import WalletTest from '../pages/wallet/test'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -108,6 +109,19 @@ const routeConfigMap = {
             path: "RecoveryPhrase",
             navigationOptions: () => ({
                 headerTitle: "Recovery Phrase",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletTest: {
+            screen: WalletTest,
+            path: "WalletTest",
+            navigationOptions: () => ({
+                headerTitle: "Wallet Test",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",

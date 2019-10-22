@@ -111,6 +111,7 @@ class Test1 extends Component {
         );
     }
     render() {
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
           <ScrollView style={{ marginBottom: 5 }}>
@@ -132,7 +133,14 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
+                    navigation.navigate('WalletTest');
+                  }}
+                >
+                  <Text style={styles.text}>Test Wallet</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
                     navigation.navigate('WalletAddIndex');
                   }}
                 >
@@ -141,7 +149,6 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
                     navigation.navigate('WalletSelectCurrency');
                   }}
                 >
@@ -150,7 +157,6 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
                     navigation.navigate('WalletCreate');
                   }}
                 >
@@ -159,7 +165,6 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
                     navigation.navigate('RecoveryPhrase');
                   }}
                 >
@@ -180,7 +185,6 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
                     navigation.navigate('Test2');
                   }}
                 >
@@ -189,7 +193,6 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    const { navigation } = this.props;
                     navigation.navigate('Test3');
                   }}
                 >
