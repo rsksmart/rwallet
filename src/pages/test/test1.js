@@ -179,7 +179,6 @@ class Test1 extends Component {
                   <Text style={styles.text}>Recovery Phrase</Text>
                 </TouchableOpacity>
               </View>
->>>>>>> d59ca6d... Create wallet address
             </View>
 
             <View style={styles.sectionContainer}>

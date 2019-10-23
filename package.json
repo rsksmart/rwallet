@@ -42,7 +42,6 @@
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-storage": "^1.0.1",
     "react-native-shapes": "^0.1.0",
-    "react-native-storage": "^1.0.1",
     "react-native-swipe-list-view": "^2.0.3",
     "react-native-tcp": "^3.3.2",
     "react-native-udp": "^2.6.1",
