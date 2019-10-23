@@ -141,6 +141,14 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
+                    navigation.navigate('WalletTest2');
+                  }}
+                >
+                  <Text style={styles.text}>Test Wallet 2</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
                     navigation.navigate('WalletAddIndex');
                   }}
                 >

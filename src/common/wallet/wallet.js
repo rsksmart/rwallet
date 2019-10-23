@@ -1,6 +1,7 @@
 const Mnemonic = require('bitcore-mnemonic');
 import {BIP32, fromPrivateKey, fromPublicKey, fromSeed, fromBase58} from 'bip32';
 import {mnemonicToSeed, generateMnemonic, wordlists} from 'bip39';
+import storage from '../storage'
 
 import {
     address,
@@ -25,6 +26,20 @@ export default wallet = {
 	get_network() {
         return networks.bitcoin;
     },
+    async getMnemonic(extraEntropy){
+        var t = '';
+        let mnemonic = await storage.load<t>('mnemonic');
+        if(!mnemonic){
+            mnemonic = this.generateMnemonic();
+            let seed = mnemonic.toSeed();
+            let phrase = mnemonic.phrase;
+            mnemonic = {seed, phrase}
+            await storage.save('mnemonic', JSON.stringify(mnemonic));
+        } else {
+            mnemonic = JSON.parse(mnemonic);
+        }
+        return mnemonic;
+    },
 	generateMnemonic(extraEntropy){
 		let mnemonic = new Mnemonic(Mnemonic.Words.ENGLISH);
 		return mnemonic;
@@ -42,17 +57,17 @@ export default wallet = {
             .toBase58();
         return new PathKeyPair(path, pk);
     },
-    derive_child_from_node(node, index) {
-        let t = fromBase58(node, this.get_network()).derive(index);
-        return t.toBase58();
-    },
     generate_local_root_node(rootNode, index){
-    	let path = rootNode.path + '/' + index;
+        let path = rootNode.path + '/' + index;
         let public_key = this.derive_child_from_node(
             rootNode.public_key,
             index
         );
         return new PathKeyPair(path, public_key);
+    },
+    derive_child_from_node(node, index) {
+        let t = fromBase58(node, this.get_network()).derive(index);
+        return t.toBase58();
     },
     generate_child_public_key(local_root_node, index){
         let pk = local_root_node;

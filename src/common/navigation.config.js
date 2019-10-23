@@ -16,6 +16,7 @@ import WalletSelectCurrency from '../pages/wallet/select.currency'
 import WalletCreate from '../pages/wallet/create'
 import RecoveryPhrase from '../pages/wallet/recovery.phrase'
 import WalletTest from '../pages/wallet/test'
+import WalletTest2 from '../pages/wallet/test2'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -122,6 +123,19 @@ const routeConfigMap = {
             path: "WalletTest",
             navigationOptions: () => ({
                 headerTitle: "Wallet Test",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletTest2: {
+            screen: WalletTest2,
+            path: "WalletTest2",
+            navigationOptions: () => ({
+                headerTitle: "Wallet Test2",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",
