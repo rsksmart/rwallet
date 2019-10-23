@@ -1,4 +1,4 @@
-import Storage, {LoadParams} from 'react-native-storage';
+import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const _storage = new Storage({
@@ -14,8 +14,8 @@ const storage = {
         return await _storage.save({key,id,data, expires});
     },
 
-    async load<T=any>(param:LoadParams):Promise<T>{
-        return await _storage.load<T>(param);
+    async load(param){
+        return await _storage.load(param);
     },
 
     async getLocaItem<T=any>(key:string,id?:string):Promise<T>{

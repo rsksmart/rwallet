@@ -11,6 +11,7 @@ import IconList from '../../components/common/list/iconList'
 import SwitchListItem from '../../components/common/list/switchListItem'
 import Tags from '../../components/common/misc/tags'
 import WordField from '../../components/common/misc/wordField'
+import storage from '../../common/storage'
 
 const listData = [
   {
@@ -82,6 +83,15 @@ class Test1 extends Component {
     constructor(props){
         super(props);
     }
+
+    async save(k:string, v:any, id:string) {
+        await storage.save(
+            k,
+            v,
+            id
+        );
+    }
+
     render() {
         return (
             <View style={[flex.flex1]}>
@@ -90,7 +100,11 @@ class Test1 extends Component {
                         <Text>This is the test page 1</Text>
                         <TouchableOpacity
                             style={styles.button}
-                            onPress={() => this.props.navigation.navigate('Test2')}>
+                            onPress={async () => {
+                                const random = Math.random();
+                                await this.save('TEST2NUM', random);
+                                this.props.navigation.navigate('Test2')
+                            }}>
                             <Text style={styles.text}>Go to Test 2 Tab</Text>
                         </TouchableOpacity>
                     </View>
