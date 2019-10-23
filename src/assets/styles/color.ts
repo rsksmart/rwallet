@@ -54,6 +54,107 @@ const color = {
         fontVIP : "#904829",
         inputBg : "#f2f2f2"
     },
+    component: {
+        input: {
+            backgroundColor: '#F3F3F3',
+            borderColor: 'rgba(144,144,144,0.2)',
+        },
+        button: {
+            backgroundColor: '#00b520',
+            color: '#FFF',
+        },
+        passcodeModal: {
+            backgroundColor: '#080808',
+            title: {
+                color: '#FFF',
+            },
+            dot: {
+                borderColor: '#00B520'
+            },
+            dot2 : {
+                backgroundColor: '#00B520',
+            },
+            button: {
+                borderColor: '#9F9F9F',
+            },
+            cancel: {
+                color: '#FFF',
+            },
+            char: {
+                color: '#F3F3F3',
+            },
+            number: {
+                color: '#F3F3F3',
+            }
+        },
+        tags: {
+            backgroundColor: '#0AB627',
+            color: '#FFF',
+        },
+        iconList: {
+            borderBottomColor: '#D5D5D5',
+            title: {
+                color: '#0B0B0B',
+            },
+            chevron: {
+                color: '#D5D5D5',
+            }
+        },
+        iconTwoTextList: {
+            borderBottomColor: '#bbb',
+            title: {
+                color: '#0B0B0B',
+            },
+            text: {
+                color: '#4A4A4A',
+            }
+        },
+        selectionList: {
+            color: '#2D2D2D',
+        },
+        dashLine: {
+            backgroundColor: '#979797',
+        },
+        touchSensorModal: {
+            color: '#000',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            panel: {
+                backgroundColor: '#FFF',
+            }
+        },
+        swipableButtonList: {
+            backText: {
+                color: '#FFF',
+            },
+            rowFront: {
+                backgroundColor: '#FFF',
+            },
+            backLeftBtnLeft: {
+                backgroundColor: '#545455',
+            },
+            backRightBtnLeft: {
+                backgroundColor: '#5866AF',
+            },
+            backRightBtnRight: {
+                backgroundColor: '#60BA52',
+            },
+            right: {
+                borderBottomColor: '#EDEDED',
+            },
+            title: {
+                color: '#042C5C',
+            },
+            text: {
+                color: '#77869E',
+            },
+            worth: {
+                color: '#000',
+            },
+            amount: {
+                color: '#77869E',
+            }
+        }
+    },
     ...styleScript(),
 };
 
