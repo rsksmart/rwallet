@@ -33,10 +33,16 @@ const styles = StyleSheet.create({
   },
 });
 
-function Item({address}) {
+function Item({networkName, address}) {
+  let text = null;
+  if(networkName==='RBTC'){
+    text = <Text style={{color: 'red'}}>{networkName}: {address}</Text>
+  } else {
+    text = <Text>{networkName}: {address}</Text>
+  }
   return (
     <View>
-      <Text>{address}</Text>
+      {text}
     </View>
   );
 }
@@ -46,11 +52,13 @@ class Test4 extends Component {
   constructor(props) {
 		super(props);
     this.state = {
-      data: [{address: '111'}],
-      seed: '',
-      seedPhrase: '',
+      data: [],
+      master: '',
+      phrase: ''
     }
     this.onCreateBTCWalletButtonPressed = this.onCreateBTCWalletButtonPressed.bind(this);
+    this.btcCount = 0;
+    this.rbtcCount = 0;
 	}
 
   // onGreateSeedButtonPressed(){
@@ -61,26 +69,52 @@ class Test4 extends Component {
   // }
 
   async componentDidMount(){
-    let mnemonic = await wallet.getMnemonic();
-    this.setState({seed: mnemonic.seed, seedPhrase: mnemonic.phrase})
+    let {master, phrase} = await wallet.getMaster();
+    this.setState({master, phrase});
   }
   async onCreateBTCWalletButtonPressed(){
-    
+    let master = this.state.master;
+    let networkName = 'BTC'
+    let networkId = 0;
+    let rootNode = wallet.generate_root_node_from_master(master, networkId);
+    console.log(`rootNode: ${JSON.stringify(rootNode)}`);
+    let localRootNode = wallet.generate_local_root_node(rootNode, this.btcCount);
+    let childPublicKey = wallet.generate_child_public_key(localRootNode, 0);
+    let address = wallet.get_receive_address(childPublicKey);
+    this.setState({data: [...this.state.data, {networkName, address}]});
+    this.btcCount++;
+  }
+  async onCreateRBTCWalletButtonPressed(){
+    let master = this.state.master;
+    let networkName = 'RBTC'
+    let networkId = 137;
+    wallet.setNetworkId(networkId);
+    let rootNode = wallet.generate_root_node_from_master(master, networkId);
+    let localRootNode = wallet.generate_local_root_node(rootNode, this.rbtcCount);
+    let childPublicKey = wallet.generate_child_public_key(localRootNode, 0);
+    let address = wallet.get_receive_address(childPublicKey);
+    this.setState({data: [...this.state.data, {networkName, address}]});
+    this.rbtcCount++;
   }
   render() {
     return (
       <ScrollView>
         <View>
-            <Text>seed: {this.state.seed}</Text>
-            <Text style={styles.red}>seedPhrase: {this.state.seedPhrase}</Text>
-          </View>
+          <Text>seedPhrase: {this.state.phrase}</Text>
+          <Text>master: {this.state.master}</Text>
+        </View>
+        <Text style={{marginTop: 10, fontWeight: '900', fontSize: 20}}>Wallet List</Text>
         <FlatList data={this.state.data}
-          renderItem={({item})=><Item address={item.address} />}
+          renderItem={({item})=><Item address={item.address} networkName={item.networkName} />}
           keyExtractor={(item) => Math.random()+''}
         />
         <TouchableOpacity style={styles.button} 
           onPress={()=>{this.onCreateBTCWalletButtonPressed();}}>
           <Text style={styles.text}>Greate BTC Wallet</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} 
+          onPress={()=>{this.onCreateRBTCWalletButtonPressed();}}>
+          <Text style={styles.text}>Greate RBTC Wallet</Text>
         </TouchableOpacity>
       </ScrollView>
     );
