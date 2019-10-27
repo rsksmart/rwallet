@@ -18,7 +18,7 @@ class WalletAddIndex extends Component {
         icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
           const { navigation } = this.props;
-          navigation.navigate('WalletSelectCurrency');
+          navigation.navigate('WalletCreate');
         },
       },
       {
@@ -26,20 +26,14 @@ class WalletAddIndex extends Component {
         title: 'Create Share Wallet (Multi-sig)',
         text: 'Requires multiple devices',
         icon: (<MaterialIcons name="computer" size={25} style={{ color: '#515151' }} />),
-        onPress: () => {
-          const { navigation } = this.props;
-          navigation.navigate('WalletSelectCurrency');
-        },
+        onPress: () => {},
       },
       {
         id: '3',
         title: 'Join Share Wallet',
         text: 'Recommended for first-time user',
         icon: (<Feather name="users" size={25} style={{ color: '#515151' }} />),
-        onPress: () => {
-          const { navigation } = this.props;
-          navigation.navigate('WalletSelectCurrency');
-        },
+        onPress: () => {},
       },
       {
         id: '4',
@@ -48,7 +42,7 @@ class WalletAddIndex extends Component {
         icon: (<AntDesign name="download" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
           const { navigation } = this.props;
-          navigation.navigate('WalletSelectCurrency');
+          navigation.navigate('WalletRecovery');
         },
       },
     ];

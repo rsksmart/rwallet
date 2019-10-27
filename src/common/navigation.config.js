@@ -14,9 +14,11 @@ import Test3 from '../pages/test/test3'
 import WalletAddIndex from '../pages/wallet/add.index'
 import WalletSelectCurrency from '../pages/wallet/select.currency'
 import WalletCreate from '../pages/wallet/create'
+import WalletRecovery from '../pages/wallet/recovery'
 import RecoveryPhrase from '../pages/wallet/recovery.phrase'
 import WalletTest from '../pages/wallet/test'
 import WalletTest2 from '../pages/wallet/test2'
+import WalletList from '../pages/wallet/list'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -96,7 +98,20 @@ const routeConfigMap = {
             screen: WalletCreate,
             path: "WalletCreate",
             navigationOptions: () => ({
-                headerTitle: "BTC Wallet",
+                headerTitle: "Create Wallet",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletRecovery: {
+            screen: WalletRecovery,
+            path: "WalletRecovery",
+            navigationOptions: () => ({
+                headerTitle: "Recovery Wallet",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",
@@ -136,6 +151,19 @@ const routeConfigMap = {
             path: "WalletTest2",
             navigationOptions: () => ({
                 headerTitle: "Wallet Test2",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletList: {
+            screen: WalletList,
+            path: "WalletList",
+            navigationOptions: () => ({
+                headerTitle: "Wallet List",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",

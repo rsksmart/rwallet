@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, DeviceEventEmitter
 } from 'react-native';
 
 import flex from '../../assets/styles/layout.flex';
 import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
+import walletManager from '../../common/wallet/walletManager';
 
 const styles = StyleSheet.create({
   input: {
@@ -41,13 +42,18 @@ const styles = StyleSheet.create({
 
 export default class WalletCreate extends Component {
     static navigationOptions = {};
-
+    constructor(props) {
+      super(props);
+      this.state = {
+        walletName: '',
+      };
+    }
     render() {
       return (
         <View style={[flex.flex1]}>
           <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
             <Text style={[styles.sectionTitle, styles.walletName]}>Wallet Name</Text>
-            <Input style={styles.input} />
+            <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})}/>
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
@@ -58,7 +64,12 @@ export default class WalletCreate extends Component {
             <Text>https://bws.bitpay.com/bws/api</Text>
           </View>
           <View style={styles.buttonView}>
-            <Button text="CREATE" onPress={() => {}} />
+            <Button text="CREATE" onPress={async () => {
+              const { navigation } = this.props;
+              let wallet = await walletManager.createWallet(this.state.walletName);
+              DeviceEventEmitter.emit('UPDATE_USER_DATA');
+              navigation.navigate('WalletList');
+            }} />
           </View>
         </View>
       );
