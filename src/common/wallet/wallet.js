@@ -47,7 +47,7 @@ class PathKeyPair {
         this.public_key = pk;
     }
 }
-//BTC TBTC RSK TRSK
+//BTC TBTC RSK TRSK RIF TRIF
 let coinType = {
     BTC: {
         networkId: 0,
@@ -63,6 +63,7 @@ let coinType = {
     RIF: {
         networkId: 137,
         icon: rif,
+        queryKey: 'RIF',
     },
     BTCTestNet: {
         networkId: 1,
@@ -78,6 +79,7 @@ let coinType = {
     RIFTestNet: {
         networkId: 37310,
         icon: rif,
+        queryKey: 'TRIF',
     }
 }
 
@@ -156,6 +158,8 @@ class RBTCCoin {
         this.type = network;
         this.networkId = coinType[network].networkId;
         this.network = coinType[network].network;
+        this.icon = coinType[network].icon;
+        this.queryKey = coinType[network].queryKey;
         this.amount = 0;
         this.value = 0;
         this.address = '';
@@ -248,8 +252,11 @@ export default class Wallet {
         this.name = name,
         this.coins = [
             new Coin('BTC'),
-            new Coin('BTCTestNet'),
-            // new RBTCCoin('RBTC'),
+            // new Coin('BTCTestNet'),
+            new RBTCCoin('RBTC'),
+            // new RBTCCoin('RBTCTestNet'),
+            new RBTCCoin('RIF'),
+            // new RBTCCoin('RIFTestNet'),
         ];
     }
     static async create(name, phrase=null){

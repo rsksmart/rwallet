@@ -12,13 +12,13 @@ import Parse from 'parse/react-native'
 
 const styles = StyleSheet.create({
   sectionTitle: {
-    fontSize: 14,
+    marginTop: 5,
+    fontSize: 20,
     fontWeight: '600',
     color: '#000',
-    marginBottom: 10,
+    paddingHorizontal: 10,
   },
   sectionContainer: {
-    marginTop: 10,
     paddingHorizontal: 10,
   },
   addAsset: {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   addCircle: {
     marginLeft: 10,
     marginRight: 10,
-  }
+  },
 });
 
 class WalletList extends Component {
@@ -61,8 +61,8 @@ class WalletList extends Component {
       let getBalance = (coin, item)=>{
         let queryKey = coin.queryKey;
         let address = coin.address;
-        if(queryKey==='TRSK' || queryKey==='RSK'){
-          address = toLowerCase(address);
+        if(queryKey==='TRSK' || queryKey==='RSK' || queryKey==='RIF' || queryKey==='TRIF'){
+          address = address.toLowerCase();
         }
         Parse.Cloud.run('getBalance', {
           name: queryKey,
@@ -100,6 +100,7 @@ class WalletList extends Component {
             worth: '',
             amount: '',
             price: null,
+            icon: coin.icon,
           };
           getBalance(coin, item);
           getPrice(coin, item);
@@ -121,7 +122,7 @@ class WalletList extends Component {
       for (var i = 0; i < this.state.listData.length; i++) {
         let item = this.state.listData[i];
         let section = (<View key={Math.random()+''}>
-          <Text style={styles.sectionTitle}>{item.name}</Text>
+          <Text style={[styles.sectionTitle]}>{item.name}</Text>
           <SwipableButtonList data={item.coins} />
         </View>);
         accounts.push(section);

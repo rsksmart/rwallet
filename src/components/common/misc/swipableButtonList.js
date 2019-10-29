@@ -115,7 +115,7 @@ export default class SwipableButtonList extends Component {
         data={data}
         renderItem={(data1) => (
           <View style={styles.rowFront}>
-            <Image style={styles.icon} source={require('../../../assets/images/icon/RIF.png')} />
+            <Image style={styles.icon} source={data1.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
                 <Text style={styles.title}>{data1.item.title}</Text>
