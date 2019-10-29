@@ -6,7 +6,9 @@ import {
 import flex from '../../assets/styles/layout.flex';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Header from '../../components/common/misc/header';
 import wm from '../../common/wallet/walletManager';
+import Parse from 'parse/react-native'
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -32,7 +34,11 @@ const styles = StyleSheet.create({
 });
 
 class WalletList extends Component {
-    static navigationOptions = {};
+    static navigationOptions = ({ navigation }) => {
+      return{
+        header: null,
+      }
+    };
     constructor(props) {
       super(props);
       this.refreshData = this.refreshData.bind(this);
@@ -47,23 +53,44 @@ class WalletList extends Component {
     refreshData(){
       this.wallets = wm.wallets;
       let listData = [];
+
+      let updateBalance = (i, j, balance)=>{
+          this.state.listData[i].coins[j].amount = balance;
+          this.setState({
+            listData: this.state.listData
+          })
+      }
       this.wallets.forEach((wallet, i)=>{
         let wal = {name: wallet.name, coins: [] };
-        wallet.coins.forEach((coin)=>{
+        wallet.coins.forEach((coin, j)=>{
           let item = {
             key: Math.random()+'',
             title: coin.type,
             text: coin.type + ' Wallet',
-            worth: '$0',
-            amount: coin.amount + ''
+            worth: '',
+            amount: ''
           };
+          let queryKey = coin.queryKey;
+          let address = coin.address;
+          if(queryKey==='TRSK' || queryKey==='RSK'){
+            address = toLowerCase(address);
+          }
+          Parse.Cloud.run('getBalance', {
+            name: queryKey,
+            addr: address,
+          }).then((result)=>{
+            console.log(result);
+            updateBalance(i, j, result);
+          }).catch((reason)=>{
+            console.log(reason);
+          });
           wal.coins.push(item);
         });
         listData.push(wal);
       });
       this.setState({
         listData: listData
-      })
+      });
     }
     componentWillUnmount() {
       this.subscription.remove();
@@ -82,6 +109,7 @@ class WalletList extends Component {
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
+          <Header title="Wallet List" goBack={this.props.navigation.goBack}/>
           <View style={styles.sectionContainer}>
             {accounts}
           </View>

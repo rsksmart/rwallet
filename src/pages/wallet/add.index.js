@@ -7,6 +7,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
+import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 
 class WalletAddIndex extends Component {
@@ -47,11 +48,16 @@ class WalletAddIndex extends Component {
       },
     ];
 
-    static navigationOptions = {};
+    static navigationOptions = ({ navigation }) => {
+      return{
+        header: null,
+      }
+    };
 
     render() {
       return (
         <View style={[flex.flex1]}>
+        <Header title="Add Wallet" goBack={this.props.navigation.goBack}/>
           <WalletTypeList data={this.listData} />
         </View>
       );

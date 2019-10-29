@@ -18,7 +18,6 @@ export default walletManager = {
     wallets: [],
     async createWallet(name, phrase=null){
         let wallet = await Wallet.create(name, phrase);
-        this.wallets.push(wallet);
         return wallet;
     },
     loadWallets(){

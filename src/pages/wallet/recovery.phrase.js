@@ -1,36 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Image
+  View, Text, TouchableOpacity, StyleSheet, DeviceEventEmitter
 } from 'react-native';
 import flex from '../../assets/styles/layout.flex';
 import wallet from '../../common/wallet/wallet';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Tags from '../../components/common/misc/tags';
 import Button from '../../components/common/button/button';
-
-const header = require('../../assets/images/misc/header.png')
+import Header from '../../components/common/misc/header';
+import walletManager from '../../common/wallet/walletManager';
 
 const styles = StyleSheet.create({
     text: {},
-    backButton: {
-      position: 'absolute',
-      left: 10,
-      top: 70,
-    },
-    headerView: {
-      position: 'absolute',
-    },
-    headerTitle: {
-      fontSize: 30,
-      fontWeight: '900',
-      position: 'absolute',
-      top: 132,
-      left: 24,
-      color: '#FFF',
-    },
-    chevron: {
-      color: '#FFF',
-    },
     note: {
       textAlign: 'center',
       fontSize: 15,
@@ -57,7 +37,7 @@ const styles = StyleSheet.create({
     }
 });
 
-class RecoveryPhrase extends Component {
+export default class RecoveryPhrase extends Component {
     static navigationOptions = ({ navigation }) => {
       return{
         header: null,
@@ -65,34 +45,16 @@ class RecoveryPhrase extends Component {
     };
     constructor(props){
       super(props);
+      this.wallet = this.props.navigation.state.params.wallet;
+      let phrases = this.wallet.phrase.split(' ');
       this.state = {
-        recoverPhrase: '',
-        phrases: [],
+        phrases: phrases,
       };
-    }
-    componentDidMount(){
-      let recoverPhrase = wallet.generateRecoverPhrase();
-      let phrases = recoverPhrase.split(' ');
-      this.setState({recoverPhrase, phrases});
     }
     render() {
       return (
         <View style={[flex.flex1]}>
-          <View>
-            <Image source={header} />
-            <View style={styles.headerView}>
-              <Text style={styles.headerTitle}>Recovery Phrase</Text>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  const { navigation } = this.props;
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Header title="Recovery Phrase" goBack={this.props.navigation.goBack}/>
           <Text style={[styles.note, {marginTop: 20}]}>Write down or copy these words in</Text>
           <Text style={styles.note}>the right order and save them</Text>
           <Text style={styles.note}>somewhere safe</Text>
@@ -103,10 +65,14 @@ class RecoveryPhrase extends Component {
             <Text style={styles.copy}>Copy</Text>
           </TouchableOpacity>
           <View style={styles.buttonView}>
-            <Button text="NEXT" onPress={() => {}} />
+            <Button text="NEXT" onPress={() => {
+              const { navigation } = this.props;
+              walletManager.wallets.push(this.wallet);
+              DeviceEventEmitter.emit('UPDATE_USER_DATA');
+              navigation.navigate('WalletList');
+            }} />
           </View>
         </View>
       );
     }
 }
-export default RecoveryPhrase;

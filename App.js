@@ -5,6 +5,7 @@ import {Provider} from "react-redux";
 
 import store from './src/redux/store';
 import RootSwitchNavigator from './src/navigation/container';
+import Parse from 'parse/react-native'
 
 export default class App extends Component<> {
   render() {
@@ -34,3 +35,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const parseConfig = {
+  appId: 'rwallet',
+  javascriptKey: '',
+  masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
+  serverURL: 'http://10.10.1.172:1338/parse',
+}
+Parse.initialize(parseConfig.appId, parseConfig.javascriptKey, parseConfig.masterKey);
+Parse.serverURL = parseConfig.serverURL;
+Parse.masterKey = parseConfig.masterKey;
+const AsyncStorage = require('react-native').AsyncStorage;
+Parse.setAsyncStorage(AsyncStorage);

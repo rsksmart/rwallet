@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, DeviceEventEmitter
+  View, Text, StyleSheet, DeviceEventEmitter, ScrollView
 } from 'react-native';
 
 import flex from '../../assets/styles/layout.flex';
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class WalletCreate extends Component {
+export default class WalletRecovery extends Component {
     static navigationOptions = ({ navigation }) => {
       return{
         header: null,
@@ -51,15 +51,20 @@ export default class WalletCreate extends Component {
       super(props);
       this.state = {
         walletName: '',
+        phrase: 'camp lazy topic stomach oyster behind know music melt raccoon during spirit',
       };
     }
     render() {
       return (
-        <View style={[flex.flex1]}>
-          <Header title="Create Wallet" goBack={this.props.navigation.goBack}/>
+        <ScrollView style={[flex.flex1]}>
+          <Header title="Recovery Phrase" goBack={this.props.navigation.goBack}/>
           <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
             <Text style={[styles.sectionTitle, styles.walletName]}>Wallet Name</Text>
             <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})}/>
+          </View>
+          <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
+            <Text style={[styles.sectionTitle, styles.walletName]}>Phrase</Text>
+            <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})} value={this.state.phrase}/>
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
@@ -72,11 +77,13 @@ export default class WalletCreate extends Component {
           <View style={styles.buttonView}>
             <Button text="CREATE" onPress={async () => {
               const { navigation } = this.props;
-              let wallet = await walletManager.createWallet(this.state.walletName);
-              navigation.navigate('RecoveryPhrase', {wallet});
+              let wallet = await walletManager.createWallet(this.state.walletName, this.state.phrase);
+              walletManager.wallets.push(wallet);
+              DeviceEventEmitter.emit('UPDATE_USER_DATA');
+              navigation.navigate('WalletList');
             }} />
           </View>
-        </View>
+        </ScrollView>
       );
     }
 }

@@ -18,6 +18,7 @@ import SwipableButtonList from '../../components/common/misc/swipableButtonList'
 import Picker from '../../components/common/input/picker';
 import wallet from '../../common/wallet/wallet';
 import storage from '../../common/storage'
+import Parse from 'parse/react-native'
 
 const styles = StyleSheet.create({
   button: {
@@ -133,10 +134,24 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    navigation.navigate('WalletList');
+                    navigation.navigate('WalletAddIndex');
                   }}
                 >
                   <Text style={styles.text}>Wallet List</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    try{
+                      let params = { name: 'TBTC', addr: 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T'}
+                      let t = await Parse.Cloud.run('getBalance', params);
+                      console.log(t);
+                    }catch(e){
+                      console.log(e);
+                    }
+                  }}
+                >
+                  <Text style={styles.text}>Test Parse</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
