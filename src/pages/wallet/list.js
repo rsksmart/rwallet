@@ -41,9 +41,10 @@ class WalletList extends Component {
     };
     constructor(props) {
       super(props);
+      this.listData = [];
       this.refreshData = this.refreshData.bind(this);
       this.state = {
-        listData: [],
+        listData: this.listData,
       }
     }
     componentDidMount(){
@@ -52,14 +53,43 @@ class WalletList extends Component {
     }
     refreshData(){
       this.wallets = wm.wallets;
-      let listData = [];
+      let updateValue = (item) => {
+        if(item.price!=null && item.amount!==''){
+          item.worth = '$' + item.price * item.amount;
+        }
+      };
+      let getBalance = (coin, item)=>{
+        let queryKey = coin.queryKey;
+        let address = coin.address;
+        if(queryKey==='TRSK' || queryKey==='RSK'){
+          address = toLowerCase(address);
+        }
+        Parse.Cloud.run('getBalance', {
+          name: queryKey,
+          addr: address,
+        }).then((result)=>{
+          console.log(result);
+          item.amount = result;
+          updateValue(item);
+          this.setState({listData: this.listData});
+        }).catch((reason)=>{
+          console.log(reason);
+        });
+      };
+      let getPrice = (coin, item)=>{
+        let queryKey = coin.queryKey;
+        Parse.Cloud.run('getTokenPrice', {
+          coinTicker: queryKey,
+        }).then((result)=>{
+          console.log(result);
+          item.price = result.price;
+          updateValue(item);
+          this.setState({listData: this.listData});
+        }).catch((reason)=>{
+          console.log(reason);
+        });
+      };
 
-      let updateBalance = (i, j, balance)=>{
-          this.state.listData[i].coins[j].amount = balance;
-          this.setState({
-            listData: this.state.listData
-          })
-      }
       this.wallets.forEach((wallet, i)=>{
         let wal = {name: wallet.name, coins: [] };
         wallet.coins.forEach((coin, j)=>{
@@ -68,28 +98,18 @@ class WalletList extends Component {
             title: coin.type,
             text: coin.type + ' Wallet',
             worth: '',
-            amount: ''
+            amount: '',
+            price: null,
           };
-          let queryKey = coin.queryKey;
-          let address = coin.address;
-          if(queryKey==='TRSK' || queryKey==='RSK'){
-            address = toLowerCase(address);
-          }
-          Parse.Cloud.run('getBalance', {
-            name: queryKey,
-            addr: address,
-          }).then((result)=>{
-            console.log(result);
-            updateBalance(i, j, result);
-          }).catch((reason)=>{
-            console.log(reason);
-          });
+          getBalance(coin, item);
+          getPrice(coin, item);
           wal.coins.push(item);
         });
-        listData.push(wal);
+        this.listData.push(wal);
       });
+
       this.setState({
-        listData: listData
+        listData: this.listData
       });
     }
     componentWillUnmount() {
