@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, DeviceEventEmitter, ScrollView
+  View, Text, StyleSheet, ScrollView
 } from 'react-native';
 
 import flex from '../../assets/styles/layout.flex';
@@ -79,7 +79,6 @@ export default class WalletRecovery extends Component {
               const { navigation } = this.props;
               let wallet = await walletManager.createWallet(this.state.walletName, this.state.phrase);
               await walletManager.addWallet(wallet);
-              DeviceEventEmitter.emit('UPDATE_USER_DATA');
               navigation.navigate('WalletList');
             }} />
           </View>
