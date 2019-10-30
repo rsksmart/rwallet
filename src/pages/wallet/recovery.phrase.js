@@ -46,7 +46,7 @@ export default class RecoveryPhrase extends Component {
     constructor(props){
       super(props);
       this.wallet = this.props.navigation.state.params.wallet;
-      let phrases = this.wallet.phrase.split(' ');
+      let phrases = this.wallet.mnemonic.phrase.split(' ');
       this.state = {
         phrases: phrases,
       };

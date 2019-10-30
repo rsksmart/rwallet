@@ -16,13 +16,13 @@ class PathKeyPair {
 
 export default walletManager = {
     wallets: [],
-    async createWallet(name, phrase=null){
-        let wallet = await Wallet.create(name, phrase);
+    createWallet(name, phrase=null){
+        let wallet = Wallet.create(name, phrase);
         return wallet;
     },
     async addWallet(wallet){
        this.wallets.push(wallet);
-       await this.saveWallets();
+       // await this.saveWallets();
     },
     async saveWallets(){
         let wallets = [];
@@ -31,11 +31,11 @@ export default walletManager = {
         }
         await appContext.set('wallets', wallets);
     },
-    async loadWallets(){
+    loadWallets(){
         let wallets = appContext.data.wallets;
         for(let i=0; i<wallets.length; i++){
             let item = wallets[i];
-            let wallet = await Wallet.create('', item.phrase);
+            let wallet = Wallet.create('', item.phrase);
             this.wallets.push(wallet);
         }
     }

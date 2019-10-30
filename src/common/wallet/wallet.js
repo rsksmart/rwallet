@@ -105,8 +105,7 @@ class Coin {
         this.addressNode = null;
         this.master = '';
     }
-    async generate_master_from_recovery_phrase(phrase){
-        let seed = await mnemonicToSeed(phrase);
+    generate_master_from_seed(seed){
         console.log(`generate_master_from_recovery_phrase, seed: ${seed}`);
         this.master = fromSeed(seed, this.network).toBase58();
         return this.master;
@@ -120,8 +119,8 @@ class Coin {
         this.networkNode = new PathKeyPair(path, pk);
         return this.networkNode;
     }
-    async derive(phrase){
-        await this.generate_master_from_recovery_phrase(phrase);
+    derive(seed){
+        this.generate_master_from_seed(seed);
         this.getNetworkNode();
         this.generateAccountNode(0);
         this.generateAddressNode(0);
@@ -198,8 +197,7 @@ class RBTCCoin {
 
         return ret;
     }
-    async generate_master_from_recovery_phrase(phrase){
-        let seed = await mnemonicToSeed(phrase);
+    generate_master_from_seed(seed){
         console.log(`[TRACE]RBTCCoin::generate_master_from_recovery_phrase, seed: ${seed}`);
         let master = this.fromMasterSeed(seed);
         return this.serializePrivate(master);
@@ -211,8 +209,8 @@ class RBTCCoin {
         node = node.derive(path);
         return new PathKeyPair(path, serializePublic(node));
     }
-    async derive(phrase){
-        let master = await this.generate_master_from_recovery_phrase(phrase);
+    derive(seed){
+        let master = this.generate_master_from_seed(seed);
         this.networkNode = this.generate_root_node_from_master(master);
         this.generateAccountNode(0);
         this.generateAddressNode(0);
@@ -267,24 +265,23 @@ export default class Wallet {
             // new RBTCCoin('RIFTestNet'),
         ];
     }
-    static async create(name, phrase=null){
-        if(!phrase){
-            let mnemonic = new Mnemonic(Mnemonic.Words.ENGLISH);
-            phrase = mnemonic.phrase;
-        }
+    static create(name, phrase=null){
+        let mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
         let wallet = new Wallet(name);
-        wallet.phrase = phrase;
-        await wallet.derive();
+        wallet.mnemonic = mnemonic;
+        wallet.derive();
         return wallet;
     }
-    static async load(master){
+    static load(master){
         let wallet = new Wallet();
         return wallet;
     }
-    async derive(){
+    derive(){
         for(let i=0; i<this.coins.length; i++){
             let coin = this.coins[i];
-            await coin.derive(this.phrase);
+            let seed = this.mnemonic.toSeed();
+            // this process cost time.
+            coin.derive(seed);
         }
     }
     // async getMaster(){
