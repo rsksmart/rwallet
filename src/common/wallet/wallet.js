@@ -54,32 +54,38 @@ let coinType = {
         network: networks.bitcoin,
         icon: btc,
         queryKey: 'BTC',
+        defaultName: 'Bitcoin',
     },
     RBTC: {
         networkId: 137,
         icon: rbtc,
         queryKey: 'RSK',
+        defaultName: 'SmartBitcoin',
     },
     RIF: {
         networkId: 137,
         icon: rif,
         queryKey: 'RIF',
+        defaultName: 'RIF',
     },
     BTCTestNet: {
         networkId: 1,
         network: networks.testnet,
         icon: btc,
         queryKey: 'TBTC',
+        defaultName: 'Bitcoin Testnet',
     },
     RBTCTestNet: {
         networkId: 37310,
         icon: rbtc,
         queryKey: 'TRSK',
+        defaultName: 'SmartBitcoin Testnet',
     },
     RIFTestNet: {
         networkId: 37310,
         icon: rif,
         queryKey: 'TRIF',
+        defaultName: 'RIF Testnet',
     }
 }
 
@@ -90,6 +96,7 @@ class Coin {
         this.network = coinType[network].network;
         this.icon = coinType[network].icon;
         this.queryKey = coinType[network].queryKey;
+        this.defaultName = coinType[network].defaultName;
         this.amount = 0;
         this.value = 0;
         this.address = '';
@@ -160,6 +167,7 @@ class RBTCCoin {
         this.network = coinType[network].network;
         this.icon = coinType[network].icon;
         this.queryKey = coinType[network].queryKey;
+        this.defaultName = coinType[network].defaultName;
         this.amount = 0;
         this.value = 0;
         this.address = '';

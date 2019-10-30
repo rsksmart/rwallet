@@ -65,9 +65,9 @@ export default class RecoveryPhrase extends Component {
             <Text style={styles.copy}>Copy</Text>
           </TouchableOpacity>
           <View style={styles.buttonView}>
-            <Button text="NEXT" onPress={() => {
+            <Button text="NEXT" onPress={async () => {
               const { navigation } = this.props;
-              walletManager.wallets.push(this.wallet);
+              await walletManager.addWallet(this.wallet);
               DeviceEventEmitter.emit('UPDATE_USER_DATA');
               navigation.navigate('WalletList');
             }} />

@@ -78,7 +78,7 @@ export default class WalletRecovery extends Component {
             <Button text="CREATE" onPress={async () => {
               const { navigation } = this.props;
               let wallet = await walletManager.createWallet(this.state.walletName, this.state.phrase);
-              walletManager.wallets.push(wallet);
+              await walletManager.addWallet(wallet);
               DeviceEventEmitter.emit('UPDATE_USER_DATA');
               navigation.navigate('WalletList');
             }} />

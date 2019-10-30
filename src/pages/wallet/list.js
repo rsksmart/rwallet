@@ -90,13 +90,14 @@ class WalletList extends Component {
         });
       };
 
+      this.listData = [];
       this.wallets.forEach((wallet, i)=>{
-        let wal = {name: wallet.name, coins: [] };
+        let wal = {name: `Key ${i+1}`, coins: [] };
         wallet.coins.forEach((coin, j)=>{
           let item = {
             key: Math.random()+'',
-            title: coin.type,
-            text: coin.type + ' Wallet',
+            title: coin.defaultName,
+            text: coin.type,
             worth: '',
             amount: '',
             price: null,

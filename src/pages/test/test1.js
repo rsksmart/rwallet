@@ -17,6 +17,7 @@ import Alert from '../../components/common/modal/alert';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Picker from '../../components/common/input/picker';
 import wallet from '../../common/wallet/wallet';
+import walletManager from '../../common/wallet/walletManager';
 import storage from '../../common/storage'
 import Parse from 'parse/react-native'
 
@@ -134,7 +135,11 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    navigation.navigate('WalletAddIndex');
+                    if(walletManager.wallets.length===0){
+                      navigation.navigate('WalletAddIndex');
+                    } else {
+                      navigation.navigate('WalletList');
+                    }
                   }}
                 >
                   <Text style={styles.text}>Wallet List</Text>

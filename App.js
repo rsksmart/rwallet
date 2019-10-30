@@ -1,11 +1,13 @@
 import './shim.js'
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {Provider} from "react-redux";
 
 import store from './src/redux/store';
 import RootSwitchNavigator from './src/navigation/container';
 import Parse from 'parse/react-native'
+import appContext from './src/common/appContext'
 
 export default class App extends Component<> {
   render() {
@@ -45,5 +47,9 @@ const parseConfig = {
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey, parseConfig.masterKey);
 Parse.serverURL = parseConfig.serverURL;
 Parse.masterKey = parseConfig.masterKey;
-const AsyncStorage = require('react-native').AsyncStorage;
 Parse.setAsyncStorage(AsyncStorage);
+
+appContext.init();
+
+
+
