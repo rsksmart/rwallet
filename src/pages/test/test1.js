@@ -136,9 +136,7 @@ class Test1 extends Component {
                   style={styles.button}
                   onPress={() => {
                     if(walletManager.wallets.length===0){
-                      let wallet = walletManager.createWallet('');
-                      // navigation.navigate('RecoveryPhrase',{wallet});
-                      alert('OK!!!!!');
+                      navigation.navigate('WalletAddIndex',{wallet});
                     } else {
                       navigation.navigate('WalletList');
                     }

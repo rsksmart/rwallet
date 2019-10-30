@@ -22,7 +22,7 @@ export default walletManager = {
     },
     async addWallet(wallet){
        this.wallets.push(wallet);
-       // await this.saveWallets();
+       await this.saveWallets();
     },
     async saveWallets(){
         let wallets = [];

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, DeviceEventEmitter, ScrollView
+  View, Text, StyleSheet, TouchableOpacity, ScrollView
 } from 'react-native';
 
 import flex from '../../assets/styles/layout.flex';
@@ -48,7 +48,6 @@ class WalletList extends Component {
       }
     }
     componentDidMount(){
-      this.subscription = DeviceEventEmitter.addListener('UPDATE_USER_DATA', this.refreshData)
       this.refreshData();
     }
     refreshData(){
@@ -114,9 +113,6 @@ class WalletList extends Component {
         listData: this.listData
       });
     }
-    componentWillUnmount() {
-      this.subscription.remove();
-    };
     render() {
       const {navigation} = this.props;
       let accounts = [];

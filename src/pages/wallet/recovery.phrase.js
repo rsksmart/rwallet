@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, DeviceEventEmitter
+  View, Text, TouchableOpacity, StyleSheet
 } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import wallet from '../../common/wallet/wallet';
 import Tags from '../../components/common/misc/tags';
@@ -68,8 +69,14 @@ export default class RecoveryPhrase extends Component {
             <Button text="NEXT" onPress={async () => {
               const { navigation } = this.props;
               await walletManager.addWallet(this.wallet);
-              DeviceEventEmitter.emit('UPDATE_USER_DATA');
-              navigation.navigate('WalletList');
+              const resetAction = StackActions.reset({
+                index: 1,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'Test1' }),
+                  NavigationActions.navigate({ routeName: 'WalletList' })
+                ],
+              });
+              this.props.navigation.dispatch(resetAction);
             }} />
           </View>
         </View>
