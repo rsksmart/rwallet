@@ -135,14 +135,23 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    if(walletManager.wallets.length===0){
-                      navigation.navigate('WalletAddIndex',{wallet});
-                    } else {
-                      navigation.navigate('WalletList');
-                    }
+                    // if(walletManager.wallets.length===0){
+                    //   navigation.navigate('WalletAddIndex',{wallet});
+                    // } else {
+                    //   navigation.navigate('WalletList');
+                    // }
+                    navigation.navigate('WalletList');
                   }}
                 >
                   <Text style={styles.text}>Wallet List</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    navigation.navigate('StartPage');
+                  }}
+                >
+                  <Text style={styles.text}>Normal Flow</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}

@@ -19,6 +19,9 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase'
 import WalletTest from '../pages/wallet/test'
 import WalletTest2 from '../pages/wallet/test2'
 import WalletList from '../pages/wallet/list'
+import StartPage from '../pages/start/start'
+import TermsPage from '../pages/start/terms'
+
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -164,6 +167,32 @@ const routeConfigMap = {
             path: "WalletList",
             navigationOptions: () => ({
                 headerTitle: "Wallet List",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        StartPage: {
+            screen: StartPage,
+            path: "StartPage",
+            navigationOptions: () => ({
+                headerTitle: "StartPage",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        TermsPage: {
+            screen: TermsPage,
+            path: "TermsPage",
+            navigationOptions: () => ({
+                headerTitle: "TermsPage",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",

@@ -18,9 +18,9 @@ class WalletAddIndex extends Component {
         text: 'Recommended for first-time user',
         icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
-          let wallet = walletManager.createWallet('');
+          // let wallet = walletManager.createWallet('');
           const { navigation } = this.props;
-          navigation.navigate('RecoveryPhrase', {wallet});
+          navigation.navigate('WalletSelectCurrency');
         },
       },
       {
