@@ -16,8 +16,8 @@ class PathKeyPair {
 
 export default walletManager = {
     wallets: [],
-    createWallet(name, phrase=null){
-        let wallet = Wallet.create(name, phrase);
+    createWallet(name, phrase=null, coins){
+        let wallet = Wallet.create(name, phrase, coins);
         return wallet;
     },
     async addWallet(wallet){

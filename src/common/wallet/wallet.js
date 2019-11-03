@@ -253,21 +253,23 @@ class RBTCCoin {
 }
 
 export default class Wallet {
-    constructor(name='Account'){
+    constructor(name='Account', coinTypes=['BTC', 'RBTC', 'RIF']){
         this.id = 0,
         this.name = name,
-        this.coins = [
-            new Coin('BTC'),
-            // new Coin('BTCTestNet'),
-            new RBTCCoin('RBTC'),
-            // new RBTCCoin('RBTCTestNet'),
-            new RBTCCoin('RIF'),
-            // new RBTCCoin('RIFTestNet'),
-        ];
+        this.coins = [];
+        coinTypes.forEach((coinType)=>{ 
+            let coin = null;
+            if(coinType==='BTC'){
+                coin = new Coin('BTC');
+            } else {
+                coin = new RBTCCoin(coinType);
+            }
+            this.coins.push(coin);
+        });
     }
-    static create(name, phrase=null){
+    static create(name, phrase=null, coinTypes){
         let mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
-        let wallet = new Wallet(name);
+        let wallet = new Wallet(name, coinTypes);
         wallet.mnemonic = mnemonic;
         wallet.derive();
         return wallet;
