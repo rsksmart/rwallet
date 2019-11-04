@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Input({ style, placeholder, onChangeText, value }) {
+export default function Input({ style, placeholder, onChangeText, onSubmitEditing, value }) {
   return (
     <TextInput
       style={[styles.textInput, style]} onChangeText={onChangeText}
-      placeholder={placeholder} value={value}
+      placeholder={placeholder} onSubmitEditing={onSubmitEditing} value={value}
     />
   );
 }

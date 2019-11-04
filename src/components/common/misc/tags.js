@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, View, Text,
+  StyleSheet, View, Text, TouchableOpacity
 } from 'react-native';
 import color from '../../../assets/styles/color';
 
@@ -19,17 +19,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Tags({ data }) {
+export default function Tags({ data, onPress }) {
   const { length } = data;
   const res = [];
   for (let i = 0; i < length; i += 1) {
     res.push(
-      <Text style={styles.item} key={i}>
-        {i + 1}
-)
-        {' '}
-        {data[i]}
-      </Text>,
+      <TouchableOpacity onPress={()=>{
+        if(onPress){
+          onPress(i);
+        }
+      }} key={i}>
+        <Text style={styles.item}>
+          {i + 1}
+  )
+          {' '}
+          {data[i]}
+        </Text>
+      </TouchableOpacity>
     );
   }
   return (

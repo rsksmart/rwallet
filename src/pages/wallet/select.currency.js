@@ -12,6 +12,7 @@ import CoinTypeList from '../../components/wallet/coin.type.list';
 import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -87,6 +88,7 @@ class WalletSelectCurrency extends Component {
     };
 
     render() {
+      let phrases = this.props.navigation.state.params ? this.props.navigation.state.params.phrases : '';
       return (
         <View style={[flex.flex1]}>
           <Header title="Select Wallet Currency" goBack={this.props.navigation.goBack}/>
@@ -104,8 +106,20 @@ class WalletSelectCurrency extends Component {
                   }
                 }
                 const { navigation } = this.props;
-                let wallet = await walletManager.createWallet('', null, coins);
-                navigation.navigate('RecoveryPhrase', {wallet});
+                let wallet = await walletManager.createWallet(phrases, null, coins);
+                if(phrases){
+                  await walletManager.addWallet(wallet);
+                  const resetAction = StackActions.reset({
+                    index: 1,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'Test1' }),
+                      NavigationActions.navigate({ routeName: 'WalletList' })
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                } else {
+                  navigation.navigate('RecoveryPhrase', {wallet});
+                }
               }} />
             </View>
           </View>

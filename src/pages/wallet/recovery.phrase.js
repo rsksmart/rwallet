@@ -9,6 +9,7 @@ import Tags from '../../components/common/misc/tags';
 import Button from '../../components/common/button/button';
 import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
+import Alert from '../../components/common/modal/alert';
 
 const styles = StyleSheet.create({
     text: {},
@@ -52,6 +53,9 @@ export default class RecoveryPhrase extends Component {
         phrases: phrases,
       };
     }
+    componentDidMount(){
+      this.alert.setModalVisible(true);
+    }
     render() {
       return (
         <View style={[flex.flex1]}>
@@ -79,6 +83,7 @@ export default class RecoveryPhrase extends Component {
               this.props.navigation.dispatch(resetAction);
             }} />
           </View>
+          <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear." />
         </View>
       );
     }

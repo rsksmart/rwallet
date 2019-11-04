@@ -9,6 +9,7 @@ import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
+import Tags from '../../components/common/misc/tags';
 
 const styles = StyleSheet.create({
   input: {
@@ -39,6 +40,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  phrasesBorder: {
+    borderBottomColor: '#bbb',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
 });
 
 export default class WalletRecovery extends Component {
@@ -49,22 +54,39 @@ export default class WalletRecovery extends Component {
     };
     constructor(props) {
       super(props);
+      let phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
       this.state = {
         walletName: '',
-        phrase: 'camp lazy topic stomach oyster behind know music melt raccoon during spirit',
+        phrases: phrases,
+        phrase: '',
       };
+      this.inputWord = this.inputWord.bind(this);
+      this.deleteWord = this.deleteWord.bind(this);
+      
+    }
+    inputWord(){
+      this.state.phrases.push(this.state.phrase);
+      this.setState({phrases: this.state.phrases});
+      this.setState({phrase: ''});
+    }
+    deleteWord(i){
+      this.state.phrases.splice(i, 1);
+      this.setState({phrases: this.state.phrases});
     }
     render() {
       return (
         <ScrollView style={[flex.flex1]}>
           <Header title="Recovery Phrase" goBack={this.props.navigation.goBack}/>
-          <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
-            <Text style={[styles.sectionTitle, styles.walletName]}>Wallet Name</Text>
-            <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})}/>
+          <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
+            <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
+            <Input style={styles.input} onChangeText={(text)=>this.setState({phrase: text})} onSubmitEditing={()=>{
+              this.inputWord();
+            }} value={this.state.phrase}/>
           </View>
-          <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
-            <Text style={[styles.sectionTitle, styles.walletName]}>Phrase</Text>
-            <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})} value={this.state.phrase}/>
+          <View style={[styles.sectionContainer, styles.phrasesBorder]}>
+              <Tags data={this.state.phrases} onPress={(i)=>{
+                this.deleteWord(i);
+              }} />
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
@@ -77,9 +99,14 @@ export default class WalletRecovery extends Component {
           <View style={styles.buttonView}>
             <Button text="CREATE" onPress={async () => {
               const { navigation } = this.props;
-              let wallet = await walletManager.createWallet(this.state.walletName, this.state.phrase);
-              await walletManager.addWallet(wallet);
-              navigation.navigate('WalletList');
+              let phrases = '';
+              for (let i = 0; i < this.state.phrases.length; i++) {
+                if(i!==0){
+                  phrases += ' ';
+                }
+                phrases += this.state.phrases[i];
+              }
+              navigation.navigate('WalletSelectCurrency', {phrases});
             }} />
           </View>
         </ScrollView>
