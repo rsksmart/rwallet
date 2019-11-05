@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {
 	View, Text, ScrollView, StyleSheet
 } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Tags from '../../components/common/misc/tags'
 import Header from '../../components/common/misc/header'
 import WordField from '../../components/common/misc/wordField'
+import Alert from '../../components/common/modal/alert';
 
 const styles = StyleSheet.create({
 	wordFieldView: {
@@ -35,7 +37,8 @@ export default class VerifyPhrase extends Component {
 	}
 	constructor(props){
 		super(props);
-		this.correctPhrases = "device figure absorb other sister noise mention over curious shallow auto rude".split(' ');
+		this.wallet = this.props.navigation.state.params.wallet;
+		this.correctPhrases = this.wallet.mnemonic.phrase.split(' ');
 		let shuffle = (org)=>{
 			let input = [];
 			Object.assign(input, org);
@@ -48,17 +51,54 @@ export default class VerifyPhrase extends Component {
 		    return input;
 		}
 		this.randomPhrases = shuffle(this.correctPhrases);
+		this.randomPhrases2 = [];
+		Object.assign(this.randomPhrases2, this.randomPhrases);
+
 		this.state = {
 			tags: this.randomPhrases,
 			phrases : [],
-		}
+		};
 		this.renderAllItem = this.renderAllItem.bind(this);
 		this.tap = this.tap.bind(this);
+		this.reset = this.reset.bind(this);
 	}
-	tap(i){
+	reset(){
+		Object.assign(this.randomPhrases, this.randomPhrases2);
+		this.setState({
+			tags: this.randomPhrases,
+			phrases : [],
+		});
+	}
+	async tap(i){
 		let s = this.state.tags.splice(i, 1);
 		this.setState({tags: this.state.tags});
 		this.state.phrases.push(s[0]);
+		this.setState({phrases: this.state.phrases});
+		if(this.state.phrases.length===12){
+			let same = true;
+			for(let i=0; i<this.state.phrases.length; i++){
+				let phrase = this.state.phrases[i];
+				let c = this.correctPhrases[i];
+				if(c!==phrase){
+					same = false;
+					break;
+				}
+			}
+			if(same){
+				await walletManager.addWallet(this.wallet);
+				const resetAction = StackActions.reset({
+					index: 1,
+					actions: [
+						NavigationActions.navigate({ routeName: 'Test1' }),
+						NavigationActions.navigate({ routeName: 'WalletList' })
+					],
+				});
+				this.props.navigation.dispatch(resetAction);
+			} else {
+				this.alert.setModalVisible(true); 
+			}
+			
+		}
 	}
 	renderAllItem(){
 		let startX = -82;
@@ -81,15 +121,28 @@ export default class VerifyPhrase extends Component {
 		return words;
 	}
 	render(){
+		let alertTitle = "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.";
+		let alertPress = ()=>{
+			this.reset();
+		}
 		return (
 			<View>
-				<Header title="Verify Your Phrase" goBack={this.props.navigation.goBack} />
+				<Header title="Verify Your Phrase" goBack={()=>{
+					if(this.state.phrases.length===0){
+		            	this.props.navigation.goBack();
+		            } else {
+		            	this.reset();
+		            }
+				}} />
 				<View style={styles.wordFieldView}>
 	                {this.renderAllItem()}
 	            </View>
 				<Text style={styles.tip}>Tap each word in the correct order</Text>
 				<Tags data={this.state.tags} style={[styles.tags]} showNumber={false} onPress={(i)=>{
 					this.tap(i);
+				}}/>
+				<Alert ref={(ref)=>{this.alert = ref;}} title={alertTitle} onPress={()=>{
+					this.reset();
 				}}/>
 			</View>
 		);

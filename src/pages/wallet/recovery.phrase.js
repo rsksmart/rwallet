@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import wallet from '../../common/wallet/wallet';
 import Tags from '../../components/common/misc/tags';
@@ -72,15 +71,7 @@ export default class RecoveryPhrase extends Component {
           <View style={styles.buttonView}>
             <Button text="NEXT" onPress={async () => {
               const { navigation } = this.props;
-              await walletManager.addWallet(this.wallet);
-              const resetAction = StackActions.reset({
-                index: 1,
-                actions: [
-                  NavigationActions.navigate({ routeName: 'Test1' }),
-                  NavigationActions.navigate({ routeName: 'WalletList' })
-                ],
-              });
-              this.props.navigation.dispatch(resetAction);
+              navigation.navigate('VerifyPhrase', {wallet: this.wallet});
             }} />
           </View>
           <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear." />
