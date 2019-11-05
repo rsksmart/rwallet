@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   tags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    alignSelf: 'center',
   },
   item: {
     backgroundColor: color.component.tags.backgroundColor,
@@ -19,27 +20,28 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Tags({ data, onPress }) {
+export default function Tags({ data, onPress, style, showNumber=true }) {
   const { length } = data;
   const res = [];
   for (let i = 0; i < length; i += 1) {
+    let text = '';
+    if(showNumber){
+      text = `${i+1}) ${data[i]}`;
+    } else {
+      text = `${data[i]}`;
+    }
     res.push(
       <TouchableOpacity onPress={()=>{
         if(onPress){
           onPress(i);
         }
       }} key={i}>
-        <Text style={styles.item}>
-          {i + 1}
-  )
-          {' '}
-          {data[i]}
-        </Text>
+        <Text style={styles.item}>{text}</Text>
       </TouchableOpacity>
     );
   }
   return (
-    <View style={styles.tags}>
+    <View style={[styles.tags, style]}>
       {res}
     </View>
   );

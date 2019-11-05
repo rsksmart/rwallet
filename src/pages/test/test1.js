@@ -156,6 +156,22 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={async () => {
+                    navigation.navigate('VerifyPhrase');
+                  }}
+                >
+                  <Text style={styles.text}>Verify Phrase</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    navigation.navigate('WalletReceive');
+                  }}
+                >
+                  <Text style={styles.text}>Wallet Receive</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
                     try{
                       let params = { name: 'TBTC', addr: 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T'}
                       let t = await Parse.Cloud.run('getBalance', params);

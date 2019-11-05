@@ -52,6 +52,8 @@
 		3E69677E01BB40208757CAD0 /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 695867629428482FA3A90241 /* libRNI18n-tvOS.a */; };
 		8CD98C5EEB3C4C1BBBFFAAEF /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F87CF6952094460B444C856 /* libRNRandomBytes.a */; };
 		C3A7723833E34D3BBD8B0864 /* libRNRandomBytes-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5266C6A7ECF444A0B9CC6A9A /* libRNRandomBytes-tvOS.a */; };
+		D9457D06FAD947DBA7A28BF2 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AFC2866D1F743AE8BB185D9 /* libRNSVG.a */; };
+		8C28408E198646CFAF56B3FA /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF89DC8BF9AE4B249C1BA042 /* libRNSVG-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -378,6 +380,9 @@
 		3B62A736DAC540DDAD5400A6 /* RNRandomBytes.xcodeproj */ = {isa = PBXFileReference; name = "RNRandomBytes.xcodeproj"; path = "../node_modules/react-native-randombytes/RNRandomBytes.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		1F87CF6952094460B444C856 /* libRNRandomBytes.a */ = {isa = PBXFileReference; name = "libRNRandomBytes.a"; path = "libRNRandomBytes.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		5266C6A7ECF444A0B9CC6A9A /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; name = "libRNRandomBytes-tvOS.a"; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		AAEFACF583C4488A957B4C9E /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0AFC2866D1F743AE8BB185D9 /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		FF89DC8BF9AE4B249C1BA042 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -412,6 +417,7 @@
 				D5D2EFF9A4CA44DF87093E3D /* libRNCAsyncStorage.a in Frameworks */,
 				F666281F6CC54E9BB290E27D /* libRNI18n.a in Frameworks */,
 				8CD98C5EEB3C4C1BBBFFAAEF /* libRNRandomBytes.a in Frameworks */,
+				D9457D06FAD947DBA7A28BF2 /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,6 +443,7 @@
 				A057506B1EE241E0B6ED35B8 /* libRNDeviceInfo-tvOS.a in Frameworks */,
 				3E69677E01BB40208757CAD0 /* libRNI18n-tvOS.a in Frameworks */,
 				C3A7723833E34D3BBD8B0864 /* libRNRandomBytes-tvOS.a in Frameworks */,
+				8C28408E198646CFAF56B3FA /* libRNSVG-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +623,7 @@
 				6418D789363A4B63B12B74B3 /* RNCAsyncStorage.xcodeproj */,
 				38172F46090E45C5A0072C97 /* RNI18n.xcodeproj */,
 				3B62A736DAC540DDAD5400A6 /* RNRandomBytes.xcodeproj */,
+				AAEFACF583C4488A957B4C9E /* RNSVG.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1263,6 +1271,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1272,6 +1282,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1300,6 +1311,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1309,6 +1322,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1337,6 +1351,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1364,6 +1379,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1400,6 +1416,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1409,6 +1427,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1445,6 +1464,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1454,6 +1475,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1489,6 +1511,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1498,6 +1522,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1533,6 +1558,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1542,6 +1569,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;

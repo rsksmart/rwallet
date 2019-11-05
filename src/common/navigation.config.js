@@ -19,9 +19,10 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase'
 import WalletTest from '../pages/wallet/test'
 import WalletTest2 from '../pages/wallet/test2'
 import WalletList from '../pages/wallet/list'
+import VerifyPhrase from '../pages/wallet/verify.phrase'
+import WalletReceive from '../pages/wallet/receive'
 import StartPage from '../pages/start/start'
 import TermsPage from '../pages/start/terms'
-
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -201,6 +202,32 @@ const routeConfigMap = {
                 }
             })
         },
+        VerifyPhrase: {
+            screen: VerifyPhrase,
+            path: "VerifyPhrase",
+            navigationOptions: () => ({
+                headerTitle: "VerifyPhrase",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletReceive: {
+            screen: WalletReceive,
+            path: "WalletReceive",
+            navigationOptions: () => ({
+                headerTitle: "WalletReceive",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        }
     },
     mine: {
         Test3: {
