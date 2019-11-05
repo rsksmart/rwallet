@@ -201,6 +201,10 @@ class WalletList extends Component {
             amount: '',
             price: null,
             icon: coin.icon,
+            r2Press: ()=>{
+              // alert('r2Press');
+              this.props.navigation.navigate('WalletReceive', {address: coin.address, icon: coin.icon});
+            },
           };
           getBalance(coin, item);
           getPrice(coin, item);

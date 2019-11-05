@@ -156,10 +156,16 @@ class Test1 extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={async () => {
-                    navigation.navigate('VerifyPhrase');
+                    try{
+                      let params = {addr: '0x626042b6e0435e23706376d61be5e8fc21d5c7db', type: 'Testnet', symbol: 'RBTC'}
+                      let t = await Parse.Cloud.run('getTransactionsByAddress', params);
+                      console.log(t);
+                    }catch(e){
+                      console.log(e);
+                    }
                   }}
                 >
-                  <Text style={styles.text}>Verify Phrase</Text>
+                  <Text style={styles.text}>Get Transactions</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}

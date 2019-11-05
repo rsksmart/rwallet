@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
 });
 
 const header = require('../../assets/images/misc/header.png');
-const logo = require('../../assets/images/icon/r1/BTC.png');
 
 export default class WalletReceive extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -98,13 +97,11 @@ export default class WalletReceive extends Component {
     };
     constructor(props){
       super(props);
-      this.state = {
-        phrase: 'jhkouo23u4oi23u4234jlh34kj3h4k2'
-      }
     }
     componentDidMount(){}
     render() {
-      let address = `0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB`;
+      let address = this.props.navigation.state.params.address;
+      let logo = this.props.navigation.state.params.icon;
       let qrSize = 200;
       let qrLogoSize = qrSize*0.3;
       return (
@@ -116,7 +113,7 @@ export default class WalletReceive extends Component {
               <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => {
-                  goBack();
+                  this.props.navigation.goBack();
                 }}
               >
                 <Entypo name="chevron-small-left" size={50} style={styles.chevron} />

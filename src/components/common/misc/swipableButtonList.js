@@ -112,6 +112,7 @@ export default class SwipableButtonList extends Component {
     const { data } = this.props;
     return (
       <SwipeListView
+        ref={(ref)=>{this.listView = ref;}}
         data={data}
         renderItem={(data1) => (
           <View style={styles.rowFront}>
@@ -157,7 +158,12 @@ export default class SwipableButtonList extends Component {
                 styles.backRightBtn,
                 styles.backRightBtnRight,
               ]}
-              onPress={() => this.closeRow(rowMap, data1.item.key)}
+              onPress={()=>{
+                this.listView.safeCloseOpenRow();
+                if(data1.item.r2Press){
+                  data1.item.r2Press();
+                }
+              }}
             >
               <Text style={styles.backText}>
                             Receive
