@@ -112,10 +112,16 @@ export default class SwipableButtonList extends Component {
     const { data } = this.props;
     return (
       <SwipeListView
+        ref={(ref)=>{this.listView = ref;}}
         data={data}
         renderItem={(data1) => (
-          <View style={styles.rowFront}>
-            <Image style={styles.icon} source={require('../../../assets/images/icon/RIF.png')} />
+          <TouchableOpacity style={styles.rowFront} activeOpacity={1.0} onPress={()=>{
+            this.listView.safeCloseOpenRow();
+            if(data1.item.onPress){
+              data1.item.onPress();
+            }
+          }}>
+            <Image style={styles.icon} source={data1.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
                 <Text style={styles.title}>{data1.item.title}</Text>
@@ -126,7 +132,7 @@ export default class SwipableButtonList extends Component {
                 <Text style={styles.amount}>{data1.item.amount}</Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         renderHiddenItem={(data1, rowMap) => (
           <View style={styles.rowBack}>
@@ -157,7 +163,12 @@ export default class SwipableButtonList extends Component {
                 styles.backRightBtn,
                 styles.backRightBtnRight,
               ]}
-              onPress={() => this.closeRow(rowMap, data1.item.key)}
+              onPress={()=>{
+                this.listView.safeCloseOpenRow();
+                if(data1.item.r2Press){
+                  data1.item.r2Press();
+                }
+              }}
             >
               <Text style={styles.backText}>
                             Receive

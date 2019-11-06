@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    // backgroundColor: 'red',
   },
   title: {
     flex: 1,

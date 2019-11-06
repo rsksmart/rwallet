@@ -11,10 +11,19 @@ import Version from '../pages/mine/version/mine.version'
 import Test1 from '../pages/test/test1'
 import Test2 from '../pages/test/test2'
 import Test3 from '../pages/test/test3'
-
 import WalletAddIndex from '../pages/wallet/add.index'
 import WalletSelectCurrency from '../pages/wallet/select.currency'
 import WalletCreate from '../pages/wallet/create'
+import WalletRecovery from '../pages/wallet/recovery'
+import RecoveryPhrase from '../pages/wallet/recovery.phrase'
+import WalletTest from '../pages/wallet/test'
+import WalletTest2 from '../pages/wallet/test2'
+import WalletList from '../pages/wallet/list'
+import VerifyPhrase from '../pages/wallet/verify.phrase'
+import WalletReceive from '../pages/wallet/receive'
+import WalletHistory from '../pages/wallet/history'
+import StartPage from '../pages/start/start'
+import TermsPage from '../pages/start/terms'
 
 const defaultNavigationOptions = () => {
     return ({navigation}: any) => {
@@ -94,7 +103,7 @@ const routeConfigMap = {
             screen: WalletCreate,
             path: "WalletCreate",
             navigationOptions: () => ({
-                headerTitle: "BTC Wallet",
+                headerTitle: "Create Wallet",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",
@@ -103,6 +112,136 @@ const routeConfigMap = {
                 }
             })
         },
+        WalletRecovery: {
+            screen: WalletRecovery,
+            path: "WalletRecovery",
+            navigationOptions: () => ({
+                headerTitle: "Recovery Wallet",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        RecoveryPhrase: {
+            screen: RecoveryPhrase,
+            path: "RecoveryPhrase",
+            navigationOptions: () => ({
+                headerTitle: "Recovery Phrase",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletTest: {
+            screen: WalletTest,
+            path: "WalletTest",
+            navigationOptions: () => ({
+                headerTitle: "Wallet Test",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletTest2: {
+            screen: WalletTest2,
+            path: "WalletTest2",
+            navigationOptions: () => ({
+                headerTitle: "Wallet Test2",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletList: {
+            screen: WalletList,
+            path: "WalletList",
+            navigationOptions: () => ({
+                headerTitle: "Wallet List",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        StartPage: {
+            screen: StartPage,
+            path: "StartPage",
+            navigationOptions: () => ({
+                headerTitle: "StartPage",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        TermsPage: {
+            screen: TermsPage,
+            path: "TermsPage",
+            navigationOptions: () => ({
+                headerTitle: "TermsPage",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        VerifyPhrase: {
+            screen: VerifyPhrase,
+            path: "VerifyPhrase",
+            navigationOptions: () => ({
+                headerTitle: "VerifyPhrase",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletReceive: {
+            screen: WalletReceive,
+            path: "WalletReceive",
+            navigationOptions: () => ({
+                headerTitle: "WalletReceive",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletHistory: {
+            screen: WalletHistory,
+            path: "WalletHistory",
+            navigationOptions: () => ({
+                headerTitle: "WalletHistory",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        }
     },
     mine: {
         Test3: {
