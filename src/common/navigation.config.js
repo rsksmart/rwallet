@@ -21,6 +21,7 @@ import WalletTest2 from '../pages/wallet/test2'
 import WalletList from '../pages/wallet/list'
 import VerifyPhrase from '../pages/wallet/verify.phrase'
 import WalletReceive from '../pages/wallet/receive'
+import WalletHistory from '../pages/wallet/history'
 import StartPage from '../pages/start/start'
 import TermsPage from '../pages/start/terms'
 
@@ -220,6 +221,19 @@ const routeConfigMap = {
             path: "WalletReceive",
             navigationOptions: () => ({
                 headerTitle: "WalletReceive",
+                headerRight: <Text/>,
+                headerTitleStyle: {
+                    alignSelf: "center",
+                    textAlign: "center",
+                    flex: 1
+                }
+            })
+        },
+        WalletHistory: {
+            screen: WalletHistory,
+            path: "WalletHistory",
+            navigationOptions: () => ({
+                headerTitle: "WalletHistory",
                 headerRight: <Text/>,
                 headerTitleStyle: {
                     alignSelf: "center",

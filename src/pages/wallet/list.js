@@ -205,6 +205,9 @@ class WalletList extends Component {
               // alert('r2Press');
               this.props.navigation.navigate('WalletReceive', {address: coin.address, icon: coin.icon});
             },
+            onPress: ()=>{
+              this.props.navigation.navigate('WalletHistory', {address: coin.address});
+            }
           };
           getBalance(coin, item);
           getPrice(coin, item);

@@ -115,7 +115,12 @@ export default class SwipableButtonList extends Component {
         ref={(ref)=>{this.listView = ref;}}
         data={data}
         renderItem={(data1) => (
-          <View style={styles.rowFront}>
+          <TouchableOpacity style={styles.rowFront} activeOpacity={1.0} onPress={()=>{
+            this.listView.safeCloseOpenRow();
+            if(data1.item.onPress){
+              data1.item.onPress();
+            }
+          }}>
             <Image style={styles.icon} source={data1.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
@@ -127,7 +132,7 @@ export default class SwipableButtonList extends Component {
                 <Text style={styles.amount}>{data1.item.amount}</Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         renderHiddenItem={(data1, rowMap) => (
           <View style={styles.rowBack}>
