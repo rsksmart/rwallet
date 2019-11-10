@@ -6,6 +6,7 @@ import HomeStackNavigator from "./stack.home";
 import MineStackNavigator from "./stack.mine";
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex'
+import { strings } from '../common/i18n';
 
 import homeLight from "../assets/images/root/tab/home.png"
 import homeGray from "../assets/images/root/tab/home.unselected.png"
@@ -17,10 +18,16 @@ const PrimaryTabNavigator = createBottomTabNavigator(
         'Home': {
             screen : HomeStackNavigator,
             path : "home",
+            navigationOptions:{
+                title: strings('root.home')
+            }
         },
         'Mine': {
             screen : MineStackNavigator,
             path : "mine",
+            navigationOptions:{
+                title: strings('root.mine')
+            }
         }
     },
     {

@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
 
 export default class PasscodeModal extends Component {
   constructor(props) {
-    super(props);
+    super(props); // 这一句不能省略，照抄即可
     this.state = {
-      animationType: 'fade',
-      modalVisible: false,
-      transparent: true,
+      animationType: 'fade', // none slide fade
+      modalVisible: false, // 模态场景是否可见
+      transparent: true, // 是否透明显示
       passcode: '',
     };
     this.onPressButton = this.onPressButton.bind(this);

@@ -3,6 +3,8 @@ package com.rwallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -28,6 +30,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SvgPackage(),
+            new RandomBytesPackage(),
             new RNI18nPackage(),
             new AsyncStoragePackage(),
             new RNDeviceInfo(),
