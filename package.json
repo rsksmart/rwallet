@@ -51,6 +51,7 @@
     "react-native-swipe-list-view": "^2.0.3",
     "react-native-tcp": "^3.3.2",
     "react-native-udp": "^2.6.1",
+    "react-native-screens": "^1.0.0-alpha.23",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.11.0",
     "react-redux": "^7.1.0",
@@ -145,5 +146,16 @@
     "tty": "tty-browserify",
     "vm": "vm-browserify",
     "tls": false
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
