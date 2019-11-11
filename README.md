@@ -48,7 +48,7 @@ These instructions will get you a copy of the project up and running on your loc
 
     Loading dependency graph, done.
     ```
-1. Open another terminal, run `npm run android` to start the App in Android virtual device.
+1. Open another terminal, run `npm run android` to start the App in Android virtual device, or run `npm run ios` to start the App in iOS virtual device.
     For Mac user, if you encounter an error like below then you need to create a **local.properties** file under ./android and add one line `sdk.dir = /Users/<username>/Library/Android/sdk` in it.
     ```
     SDK location not found. Define location with an ANDROID_SDK_ROOT environment variable or by setting the sdk.dir path in your project's local properties file at '/Users/<usernmae>/Documents/repos/rwallet/android/local.properties'.
