@@ -38,10 +38,27 @@ const listData = [
     onPress: () => {},
   },
 ];
-const styles = StyleSheet.create({});
-class Test3 extends Component {
-    static navigationOptions = {};
 
+const styles = StyleSheet.create({
+	text: {},
+    button: {
+        alignItems: 'center',
+        backgroundColor: 'orange',
+        padding: 12,
+        width: 280,
+        marginTop: 12,
+    }
+});
+
+class Test3 extends Component {
+    static navigationOptions = ({ navigation }) => {
+        return{
+            header: null,
+        }
+    };
+    constructor(props){
+        super(props);
+    }
     render() {
       return (
         <View style={[flex.flex1]}>

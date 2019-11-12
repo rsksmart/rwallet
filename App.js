@@ -1,11 +1,13 @@
+import './shim.js'
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import {Provider} from "react-redux";
 
 import store from './src/redux/store';
 import RootSwitchNavigator from './src/navigation/container';
+import appContext from './src/common/appContext'
 
-export default class App extends Component<> {
+export default class App extends Component{
   render() {
     return (
         <Provider store={store}>
@@ -33,3 +35,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+appContext.init();
+
+
+

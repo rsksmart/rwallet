@@ -1,62 +1,69 @@
 # RWallet
 
+## Introduction
 This is a multi-cryptocurrency wallet application. Supports both english and spanish.
 
-This wallet is composed by two modules: the UI and the backend.
+## Prerequisite
 
--   The UI is implemented using react-native, redux and expo.
--   The backend is written in typescript and must be compiled and bundled first.
+### To run on Android
+1. In order to run this App in Android Simulator, **Android Studio** needs to be installed. Please refer to [https://developer.android.com/studio](https://developer.android.com/studio)
+1. Open Android Studio, create a device via `Tools > AVD Manager > Create Virtual Device`. After downloading required dependencies, start the device by clicking on Play icon.
+1. Now we are testing if you can invoke `adb` in terminial. This is for running rWallet Android App on Android virtual device.
+    1. Since we already have Android Studio installed we can add `platform-tools` to path
+        ```
+        echo 'export ANDROID_HOME=/Users/$USER/Library/Android/sdk' >> ~/.bash_profile
+        echo 'export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools' >> ~/.bash_profile
+        ```
+    1. Then, refresh bash profile by `source ~/.bash_profile`
+    1. Start using adb with `adb devices`
+    1. If you have a virtual device running, it should show
+        ```
+        List of devices attached
+        emulator-5554	device
+        ```
+### To run on iOS Devices
+1. XCode needs to be installed. iOS simulator will be install along with XCode.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine
-for development and testing purposes. See deployment for notes on how
-to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+The first three steps are needed for both Android and iOS devices.
 
-The front end is composed by two modules, both use `node` and `npm` to manage dependencies.
+1. `npm install` to install dependencies
+1. `./node_modules/.bin/rn-nodeify --hack --install`
+1. `npm start` to start the App. You should see console output like below.
+    ```
+    > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
+    > node node_modules/react-native/local-cli/cli.js start
 
-The UI uses Expo (https://expo.io/) check the instructions in their site to install `expo-cli`.
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                                                                              │
+    │  Running Metro Bundler on port 8081.                                         │
+    │                                                                              │
+    │  Keep Metro running while developing on any JS projects. Feel free to        │
+    │  close this tab and run your own Metro instance if you prefer.               │
+    │                                                                              │
+    │  https://github.com/facebook/react-native                                    │
+    │                                                                              │
+    └──────────────────────────────────────────────────────────────────────────────┘
 
-In order to test:
+    Looking for JS files in
+      /Users/mikasa/Documents/repos/rwallet 
 
--   **Android**: You can both deploy in a USB device or in a virtual android device(**Android Studio**).
--   **iOS**: Run throught LAN connection with **expo iOS app** (find it in the apple store). Xcode is needed for native deployment and it only can be run on a MacOS.
+    Loading dependency graph, done.
+    ```
+1. Open another terminal,
+    * For Android, run `npm run android` to start the App in Android virtual device.
+    For MacOS developer, if you encounter an error like below then you need to create a **local.properties** file under ./android and add one line `sdk.dir = /Users/<username>/Library/Android/sdk` in it.
+        ```
+        SDK location not found. Define location with an ANDROID_SDK_ROOT environment variable or by setting the sdk.dir path in your project's local properties file at '/Users/<usernmae>/Documents/repos/rwallet/android/local.properties'.
+        ```
+    * For iOS, run `npm run ios` to start the App in iOS virtual device.
+1. For development, press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
 
-### Installing
-
-To install the dependencies and build the backend run the `build_first.sh` script in
-the root directory the script does the following:
-
--   run `npm install`(recommend to use `yarn`) in the root directory, in the lib/Application and lib/postprocessor directories.
--   run the `build.sh` script that build the backend. This script executes the typescript compiler
-    and browserify to compile and bundle the backend. The backend is bundled in the `lib/lib.js` file
-    which later is included by UI project.
-    After the installation run: `expo start` in the root directory of the project.
-  - In addition,you can run `expo start -c` to empty your javascript transform cache to ensure that it will not be contaminated by old code, rebuilding (this may take a minute).It will not be contaminated by old code.
-
-**Running in android emulator:**
-We recommend you to use the Android Virtual Device (AVD Manager) from Android Studio.
-_Notice_ that some important updates might not be in the stable updates channel, but instead in `canary channel`.
-Once your virtual android device is up and running:
-
-```
-./build_first.sh
-expo start
-```
-
-You will be prompted with expo's interactive menu. **Press 'a' to deploy on android device.**
 
 ## Deployment
+TODO: Add details for deployment
 
-During development the application uses Math.random to generate random numbers, this is **insecure!!!**.
-Expo doesn't support the cryptographic secure random available in the devices. It is possible to
-use `expo publish` to show the app, but to do a production build a process called "eject"
-must be done; see: https://docs.expo.io/versions/latest/expokit/eject/ for details.
 
-After eject you get two "native" projects: one for Android and one for IOS. We use the
-`react-native-securerandom` library that must be linked to the project using `react-native link`
-and then the projects must be build using Android Studio and XCode respectively.
-
-## License

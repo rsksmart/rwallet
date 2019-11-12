@@ -78,6 +78,9 @@ export default class Alert extends Component {
             <View style={styles.line} />
             <TouchableHighlight onPress={() => {
               this.setModalVisible(false);
+              if(this.props.onPress){
+                this.props.onPress();
+              }
             }}
             >
               <Text style={styles.button}>GOT IT</Text>
