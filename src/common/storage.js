@@ -6,8 +6,7 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 
-// eslint-disable-next-line no-underscore-dangle
-const _storage = new Storage({
+const rnStorage = new Storage({
   size: 9000,
   storageBackend: AsyncStorage,
   defaultExpires: 1000 * 60 * 60 * 24 * 365,
@@ -17,7 +16,7 @@ const _storage = new Storage({
 const storage = {
   async save(key: string, data: any, id?: any, expires?: number | null): Promise<void> {
     // eslint-disable-next-line no-return-await
-    return await _storage.save({
+    return await rnStorage.save({
       key,
       id,
       data,
@@ -27,7 +26,7 @@ const storage = {
 
   async load(param) {
     // eslint-disable-next-line no-return-await
-    return await _storage.load(param);
+    return await rnStorage.load(param);
   },
 
   async getLocaItem<T = any>(key: string, id?: string): Promise<T> {
@@ -61,14 +60,14 @@ const storage = {
 
   async remove(key: string, id?: string): Promise<void> {
     if (id) {
-      return await _storage.remove({
+      return await rnStorage.remove({
         key,
         id,
       });
     }
     const ids = await this.getIdsForKey(key);
     for (id of ids) {
-      await _storage.remove({
+      await rnStorage.remove({
         key,
         id,
       });
@@ -76,10 +75,10 @@ const storage = {
   },
 
   async clearMaps(): Promise<void> {
-    return await _storage.clearMap();
+    return await rnStorage.clearMap();
   },
   async getIdsForKey(key: string): Promise<string[]> {
-    return await _storage.getIdsForKey(key);
+    return await rnStorage.getIdsForKey(key);
   },
 };
 

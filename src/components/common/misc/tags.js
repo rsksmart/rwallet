@@ -54,10 +54,8 @@ export default function Tags({
 }
 
 Tags.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  data: PropTypes.array.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  style: PropTypes.array,
+  data: PropTypes.arrayOf(PropTypes.string).isRequired,
+  style: PropTypes.arrayOf(PropTypes.element),
   onPress: PropTypes.func,
   showNumber: PropTypes.bool,
 };
