@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Image
+  View, Text, TouchableOpacity, StyleSheet, Image,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
-import flex from '../../assets/styles/layout.flex';
-import wallet from '../../common/wallet/wallet';
-import Tags from '../../components/common/misc/tags';
-import Button from '../../components/common/button/button';
-import Header from '../../components/common/misc/header';
-import walletManager from '../../common/wallet/walletManager';
-import Alert from '../../components/common/modal/alert';
+import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Input from '../../components/common/input/input';
-import color from '../../assets/styles/color';
+import flex from '../../assets/styles/layout.flex';
+import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -30,11 +23,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    top: 70,
   },
   headerView: {
     position: 'absolute',
@@ -90,30 +78,28 @@ const styles = StyleSheet.create({
 const header = require('../../assets/images/misc/header.png');
 
 export default class WalletReceive extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
-    constructor(props){
-      super(props);
-    }
-    componentDidMount(){}
+    static navigationOptions = () => ({
+      header: null,
+    });
+
+    componentDidMount() {}
+
     render() {
-      let address = this.props.navigation.state.params.address;
-      let logo = this.props.navigation.state.params.icon;
-      let qrSize = 200;
-      let qrLogoSize = qrSize*0.3;
+      const { navigation } = this.props;
+      const { address } = navigation.state.params;
+      const logo = navigation.state.params.icon;
+      const qrSize = 200;
+      const qrLogoSize = qrSize * 0.3;
       return (
         <View style={[flex.flex1]}>
-          <View style={[{height: 100}]}>
+          <View style={[{ height: 100 }]}>
             <Image source={header} style={styles.headImage} />
             <View style={styles.headerView}>
               <Text style={styles.headerTitle}>Receive BTC</Text>
               <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => {
-                  this.props.navigation.goBack();
+                  navigation.goBack();
                 }}
               >
                 <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
@@ -126,10 +112,25 @@ export default class WalletReceive extends Component {
               <View style={styles.address}><Text>{address}</Text></View>
             </View>
             <View style={[styles.sectionContainer, styles.qrView]}>
-              <QRCode value={address} logo={logo} logoMargin={5} size={qrSize} logoSize={qrLogoSize} />
+              <QRCode
+                value={address}
+                logo={logo}
+                logoMargin={5}
+                size={qrSize}
+                logoSize={qrLogoSize}
+              />
             </View>
           </View>
         </View>
       );
     }
 }
+
+WalletReceive.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

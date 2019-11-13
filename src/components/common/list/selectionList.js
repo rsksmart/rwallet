@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-
 import {
-  StyleSheet, View, Image, FlatList, Text, TouchableHighlight,
+  StyleSheet, View, FlatList, Text, TouchableOpacity,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   item: {
@@ -18,27 +19,39 @@ const styles = StyleSheet.create({
     flex: 1,
     color: color.component.selectionList.color,
   },
-  arrow: {
-    aspectRatio: 1.05,
+  check: {
+    marginRight: 10,
+    color: '#00B520',
   },
 });
 
 function Item({ title, selected, onPress }) {
   let arrow = null;
   if (selected) {
-    arrow = <Image style={styles.arrow} source={require('../../../assets/images/arrow/more.black.png')} />;
+    arrow = <AntDesign style={styles.check} name="check" size={20} />;
   }
   return (
-    <TouchableHighlight onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.row}>
         <View style={styles.item}>
           <Text style={[styles.title]}>{title}</Text>
           {arrow}
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
+
+Item.propTypes = {
+  title: PropTypes.string.isRequired,
+  selected: PropTypes.bool,
+  onPress: PropTypes.func,
+};
+
+Item.defaultProps = {
+  selected: false,
+  onPress: null,
+};
 
 export default class SelectionList extends Component {
   constructor(props) {
@@ -75,8 +88,12 @@ export default class SelectionList extends Component {
             />
           );
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={() => `${Math.random()}`}
       />
     );
   }
 }
+
+SelectionList.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape(Item.propTypes)).isRequired,
+};

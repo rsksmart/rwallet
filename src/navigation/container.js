@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-import RootComponent from './component'
+import RootComponent from './component';
 
 const RootSwitchNavigator = connect()(RootComponent);
 
-export default RootSwitchNavigator
+export default RootSwitchNavigator;

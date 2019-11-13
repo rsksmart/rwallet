@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   Modal, View, Text, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const finger = require('../../../assets/images/misc/finger.png');
+
 export default class TouchSensorModal extends Component {
   constructor(props) {
     super(props); // 这一句不能省略，照抄即可
@@ -54,6 +57,7 @@ export default class TouchSensorModal extends Component {
     }
 
     render() {
+      const { onPress } = this.props;
       const { animationType, transparent, modalVisible } = this.state;
       return (
         <Modal
@@ -68,15 +72,26 @@ export default class TouchSensorModal extends Component {
           <TouchableOpacity
             onPress={() => {
               this.setModalVisible(false);
+              if (onPress) {
+                onPress();
+              }
             }}
             style={styles.container}
           >
             <View style={styles.panel}>
               <Text style={styles.title}>Touch Sensor</Text>
-              <Image style={styles.finger} source={require('../../../assets/images/misc/finger.png')} />
+              <Image style={styles.finger} source={finger} />
             </View>
           </TouchableOpacity>
         </Modal>
       );
     }
 }
+
+TouchSensorModal.propTypes = {
+  onPress: PropTypes.func,
+};
+
+TouchSensorModal.defaultProps = {
+  onPress: null,
+};

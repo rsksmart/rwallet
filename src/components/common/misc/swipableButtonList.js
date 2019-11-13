@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, Dimensions, Image, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import color from '../../../assets/styles/color';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   backText: {
@@ -112,15 +113,19 @@ export default class SwipableButtonList extends Component {
     const { data } = this.props;
     return (
       <SwipeListView
-        ref={(ref)=>{this.listView = ref;}}
+        ref={(ref) => { this.listView = ref; }}
         data={data}
         renderItem={(data1) => (
-          <TouchableOpacity style={styles.rowFront} activeOpacity={1.0} onPress={()=>{
-            this.listView.safeCloseOpenRow();
-            if(data1.item.onPress){
-              data1.item.onPress();
-            }
-          }}>
+          <TouchableOpacity
+            style={styles.rowFront}
+            activeOpacity={1.0}
+            onPress={() => {
+              this.listView.safeCloseOpenRow();
+              if (data1.item.onPress) {
+                data1.item.onPress();
+              }
+            }}
+          >
             <Image style={styles.icon} source={data1.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
@@ -163,9 +168,9 @@ export default class SwipableButtonList extends Component {
                 styles.backRightBtn,
                 styles.backRightBtnRight,
               ]}
-              onPress={()=>{
+              onPress={() => {
                 this.listView.safeCloseOpenRow();
-                if(data1.item.r2Press){
+                if (data1.item.r2Press) {
                   data1.item.r2Press();
                 }
               }}
@@ -184,3 +189,13 @@ export default class SwipableButtonList extends Component {
     );
   }
 }
+
+SwipableButtonList.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    item: PropTypes.shape({
+      icon: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }),
+  })).isRequired,
+};

@@ -26,8 +26,10 @@ function* getServerInfoRequest(action) {
     const message = yield call(ParseHelper.handlError, err);
 
     console.error(message);
-    // On error, also sets state in reducer so UI could reflect those errors
-    // Note that error value here is to be consumed by UI, so it should be an object contains at least a message field
+    // On error, also sets state in reducer
+    // so UI could reflect those errors
+    // Note that error value here is to be consumed by UI,
+    // so it should be an object contains at least a message field
     yield put({
       type: actions.SET_ERROR,
       value: { message },
@@ -37,6 +39,7 @@ function* getServerInfoRequest(action) {
 
 export default function* () {
   yield all([
-    takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest), // When app loading action is fired, try to fetch server info
+    // When app loading action is fired, try to fetch server info
+    takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
   ]);
 }

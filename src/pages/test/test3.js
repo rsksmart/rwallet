@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import { strings } from '../../common/i18n';
 import SelectionList from '../../components/common/list/selectionList';
@@ -40,33 +41,29 @@ const listData = [
 ];
 
 const styles = StyleSheet.create({
-	text: {},
-    button: {
-        alignItems: 'center',
-        backgroundColor: 'orange',
-        padding: 12,
-        width: 280,
-        marginTop: 12,
-    }
+  text: {},
+  button: {
+    alignItems: 'center',
+    backgroundColor: 'orange',
+    padding: 12,
+    width: 280,
+    marginTop: 12,
+  },
 });
 
 class Test3 extends Component {
-    static navigationOptions = ({ navigation }) => {
-        return{
-            header: null,
-        }
-    };
-    constructor(props){
-        super(props);
-    }
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     render() {
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
           <Text>{strings('test3.text')}</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              const { navigation } = this.props;
               navigation.navigate('Setting');
             }}
           >
@@ -80,3 +77,12 @@ class Test3 extends Component {
     }
 }
 export default Test3;
+
+Test3.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

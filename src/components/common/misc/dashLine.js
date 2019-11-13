@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Text, View, StyleSheet,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   dashLine: {
@@ -30,3 +31,8 @@ export default function DashLine({ width }) {
     </View>
   );
 }
+
+DashLine.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  width: PropTypes.number.isRequired,
+};

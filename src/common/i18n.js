@@ -11,9 +11,9 @@ I18n.fallbacks = true;
 
 // Define the supported translations
 I18n.translations = {
-    en,
-    he,
-    fr
+  en,
+  he,
+  fr,
 };
 
 const currentLocale = I18n.currentLocale();
@@ -26,7 +26,7 @@ ReactNative.I18nManager.allowRTL(isRTL);
 
 // The method we'll use instead of a regular string
 export function strings(name, params = {}) {
-    return I18n.t(name, params);
-};
+  return I18n.t(name, params);
+}
 
 export default I18n;
