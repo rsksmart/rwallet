@@ -11,8 +11,6 @@ Parse.serverURL = parseConfig.serverURL;
 Parse.masterKey = parseConfig.masterKey;
 Parse.setAsyncStorage(AsyncStorage);
 
-const ParseTransaction = Parse.Object.extend('Transaction');
-
 /**
  * ParseHelper should be used as a static class
  */

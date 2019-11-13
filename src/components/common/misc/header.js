@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  StyleSheet, View, Text, TouchableOpacity, Image
+  StyleSheet, View, Text, TouchableOpacity, Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-const header = require('../../../assets/images/misc/header.png')
+
+const header = require('../../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   backButton: {
@@ -27,21 +29,36 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Header({title, goBack}) {
+export default function Header({ title, goBack }) {
+  let backButton = null;
+  if (goBack) {
+    backButton = (
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          goBack();
+        }}
+      >
+        <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+      </TouchableOpacity>
+    );
+  }
   return (
     <View>
       <Image source={header} />
       <View style={styles.headerView}>
         <Text style={styles.headerTitle}>{title}</Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => {
-            goBack();
-          }}
-        >
-          <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-        </TouchableOpacity>
+        {backButton}
       </View>
     </View>
   );
 }
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+  goBack: PropTypes.func,
+};
+
+Header.defaultProps = {
+  goBack: null,
+};

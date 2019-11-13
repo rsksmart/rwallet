@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -11,6 +12,10 @@ import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 
 class WalletAddIndex extends Component {
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     listData = [
       {
         id: '1',
@@ -49,16 +54,11 @@ class WalletAddIndex extends Component {
       },
     ];
 
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
-
     render() {
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-        <Header title="Add Wallet" goBack={this.props.navigation.goBack}/>
+          <Header title="Add Wallet" goBack={navigation.goBack} />
           <WalletTypeList data={this.listData} />
         </View>
       );
@@ -66,3 +66,12 @@ class WalletAddIndex extends Component {
 }
 
 export default WalletAddIndex;
+
+WalletAddIndex.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,
 } from 'react-native';
-import { Card, CardItem, Body} from 'native-base';
-import flex from '../../assets/styles/layout.flex';
-import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import PropTypes from 'prop-types';
+import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Header from '../../components/common/misc/header';
+import Parse from 'parse/react-native';
 import wm from '../../common/wallet/walletManager';
-import Parse from 'parse/react-native'
+import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import flex from '../../assets/styles/layout.flex';
 
-const header = require('../../assets/images/misc/header.png')
-const send = require('../../assets/images/icon/send.png')
-
-
+const header = require('../../assets/images/misc/header.png');
 
 
 const styles = StyleSheet.create({
@@ -78,7 +75,7 @@ const styles = StyleSheet.create({
     left: 5,
     fontWeight: 'bold',
     fontSize: 15,
-    color: '#000000'
+    color: '#000000',
   },
   myAssets: {
     fontSize: 35,
@@ -130,84 +127,85 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     letterSpacing: 0.25,
-  }
+  },
 });
 
 class WalletList extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     constructor(props) {
       super(props);
       this.listData = [];
       this.refreshData = this.refreshData.bind(this);
       this.state = {
         listData: this.listData,
-      }
+      };
     }
-    componentDidMount(){
+
+    componentDidMount() {
       this.refreshData();
     }
-    refreshData(){
+
+    refreshData() {
+      const { navigation } = this.props;
       this.wallets = wm.wallets;
-      let updateValue = (item) => {
-        if(item.price!=null && item.amount!==''){
-          item.worth = '$' + item.price * item.amount;
+      const updateValue = (item) => {
+        if (item.price != null && item.amount !== '') {
+          item.worth = `$${item.price * item.amount}`; // eslint-disable-line no-param-reassign
         }
       };
-      let getBalance = (coin, item)=>{
-        let queryKey = coin.queryKey;
-        let address = coin.address;
-        if(queryKey==='TRSK' || queryKey==='RSK' || queryKey==='RIF' || queryKey==='TRIF'){
+      const getBalance = (coin, item) => {
+        const { queryKey } = coin;
+        let { address } = coin;
+        if (queryKey === 'TRSK' || queryKey === 'RSK' || queryKey === 'RIF' || queryKey === 'TRIF') {
           address = address.toLowerCase();
         }
         Parse.Cloud.run('getBalance', {
           name: queryKey,
           addr: address,
-        }).then((result)=>{
+        }).then((result) => {
           console.log(result);
-          item.amount = result;
+          item.amount = result; // eslint-disable-line no-param-reassign
           updateValue(item);
-          this.setState({listData: this.listData});
-        }).catch((reason)=>{
+          this.setState({ listData: this.listData });
+        }).catch((reason) => {
           console.log(reason);
         });
       };
-      let getPrice = (coin, item)=>{
-        let queryKey = coin.queryKey;
+      const getPrice = (coin, item) => {
+        const { queryKey } = coin;
         Parse.Cloud.run('getTokenPrice', {
           coinTicker: queryKey,
-        }).then((result)=>{
+        }).then((result) => {
           console.log(result);
-          item.price = result.price;
+          item.price = result.price; // eslint-disable-line no-param-reassign
           updateValue(item);
-          this.setState({listData: this.listData});
-        }).catch((reason)=>{
+          this.setState({ listData: this.listData });
+        }).catch((reason) => {
           console.log(reason);
         });
       };
 
       this.listData = [];
-      this.wallets.forEach((wallet, i)=>{
-        let wal = {name: `Key ${i+1}`, coins: [] };
-        wallet.coins.forEach((coin, j)=>{
-          let item = {
-            key: Math.random()+'',
+      this.wallets.forEach((wallet, i) => {
+        const wal = { name: `Key ${i + 1}`, coins: [] };
+        wallet.coins.forEach((coin) => {
+          const item = {
+            key: `${Math.random()}`,
             title: coin.defaultName,
             text: coin.type,
             worth: '',
             amount: '',
             price: null,
             icon: coin.icon,
-            r2Press: ()=>{
-              // alert('r2Press');
-              this.props.navigation.navigate('WalletReceive', {address: coin.address, icon: coin.icon});
+            r2Press: () => {
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
             },
-            onPress: ()=>{
-              this.props.navigation.navigate('WalletHistory', {address: coin.address});
-            }
+            onPress: () => {
+              navigation.navigate('WalletHistory', { address: coin.address });
+            },
           };
           getBalance(coin, item);
           getPrice(coin, item);
@@ -217,48 +215,58 @@ class WalletList extends Component {
       });
 
       this.setState({
-        listData: this.listData
+        listData: this.listData,
       });
     }
+
     render() {
-      const {navigation} = this.props;
-      let accounts = [];
-      for (var i = 0; i < this.state.listData.length; i++) {
-        let item = this.state.listData[i];
-        let section = (<View key={Math.random()+''}>
-          <Text style={[styles.sectionTitle]}>{item.name}</Text>
-          <SwipableButtonList data={item.coins} />
-        </View>);
+      const { navigation } = this.props;
+      const accounts = [];
+      const { listData } = this.state;
+      for (let i = 0; i < listData.length; i += 1) {
+        const item = listData[i];
+        const section = (
+          <View key={`${Math.random()}`}>
+            <Text style={[styles.sectionTitle]}>{item.name}</Text>
+            <SwipableButtonList data={item.coins} />
+          </View>
+        );
         accounts.push(section);
       }
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
-            <View style={[{height: 300}]}>
+            <View style={[{ height: 300 }]}>
               <Image source={header} />
               <View style={styles.headerView}>
                 <Text style={styles.headerTitle}>Your Wallet</Text>
                 <View style={styles.headerBoardView}>
-                  <Card style={styles.headerBoard} >
+                  <Card style={styles.headerBoard}>
                     <CardItem>
                       <Body>
                         <Text style={styles.myAssetsTitle}>My Assets ($)</Text>
                         <Text style={styles.myAssets}>173,586.3</Text>
                         <View style={styles.myAssetsButtonsView}>
-                          <TouchableOpacity style={styles.ButtonView} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <Entypo name="swap" size={20} style={styles.sendIcon} /><Text style={styles.sendText}>Send</Text>
+                          <TouchableOpacity
+                            style={styles.ButtonView}
+                            onPress={() => {}}
+                          >
+                            <Entypo name="swap" size={20} style={styles.sendIcon} />
+                            <Text style={styles.sendText}>Send</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity style={styles.ButtonView} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} /><Text style={styles.receiveText}>Receive</Text>
+                          <TouchableOpacity
+                            style={styles.ButtonView}
+                            onPress={() => {}}
+                          >
+                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                            <Text style={styles.receiveText}>Receive</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity style={[styles.ButtonView, {borderRightWidth: 0}]} onPress={()=>{
-                            alert('swap');
-                          }}>
-                            <AntDesign name="switcher" size={20} style={styles.swapIcon} /><Text style={styles.swapText}>Swap</Text>
+                          <TouchableOpacity
+                            style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                            onPress={() => {}}
+                          >
+                            <AntDesign name="switcher" size={20} style={styles.swapIcon} />
+                            <Text style={styles.swapText}>Swap</Text>
                           </TouchableOpacity>
                         </View>
                       </Body>
@@ -267,18 +275,27 @@ class WalletList extends Component {
                 </View>
               </View>
             </View>
-             <View style={styles.sectionContainer}>
-              <Text style={{color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10}}>All Assets</Text>
+            <View style={styles.sectionContainer}>
+              <Text style={{
+                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+              }}
+              >
+All Assets
+              </Text>
             </View>
             <View style={styles.sectionContainer}>
               {accounts}
             </View>
             <View style={styles.sectionContainer}>
               <TouchableOpacity
-                onPress={()=>{
+                onPress={() => {
                   navigation.navigate('WalletAddIndex');
-                }}>
-                <View style={styles.addAsset}><Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} /><Text>Add Asset</Text></View>
+                }}
+              >
+                <View style={styles.addAsset}>
+                  <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                  <Text>Add Asset</Text>
+                </View>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -288,3 +305,12 @@ class WalletList extends Component {
 }
 
 export default WalletList;
+
+WalletList.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

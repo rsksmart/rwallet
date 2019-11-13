@@ -2,7 +2,8 @@ import React from 'react';
 import {
   StyleSheet, View, Text,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 import DashLine from './dashLine';
 
 const styles = StyleSheet.create({
@@ -51,3 +52,7 @@ export default function WordField({ text }) {
     </View>
   );
 }
+
+WordField.propTypes = {
+  text: PropTypes.string.isRequired,
+};

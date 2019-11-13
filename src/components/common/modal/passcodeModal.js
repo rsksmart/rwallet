@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   Modal, View, Text, StyleSheet, TouchableHighlight, TouchableOpacity,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -134,6 +135,7 @@ export default class PasscodeModal extends Component {
       dots.push(t);
     }
 
+    const { onPress } = this.props;
     return (
       <Modal
         animationType={animationType}
@@ -159,6 +161,9 @@ export default class PasscodeModal extends Component {
                 style={styles.cancelButton}
                 onPress={() => {
                   this.setModalVisible(false);
+                  if (onPress) {
+                    onPress();
+                  }
                 }}
               >
                 <Text style={styles.cancel}>Cancel</Text>
@@ -170,3 +175,11 @@ export default class PasscodeModal extends Component {
     );
   }
 }
+
+PasscodeModal.propTypes = {
+  onPress: PropTypes.func,
+};
+
+PasscodeModal.defaultProps = {
+  onPress: null,
+};

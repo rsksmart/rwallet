@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Modal, View, Text, StyleSheet, TouchableHighlight,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   scanView: {
@@ -61,7 +62,7 @@ export default class Alert extends Component {
 
   render() {
     const { animationType, transparent, modalVisible } = this.state;
-    const { title, text } = this.props;
+    const { title, text, onPress } = this.props;
     return (
       <Modal
         animationType={animationType}
@@ -78,8 +79,8 @@ export default class Alert extends Component {
             <View style={styles.line} />
             <TouchableHighlight onPress={() => {
               this.setModalVisible(false);
-              if(this.props.onPress){
-                this.props.onPress();
+              if (onPress) {
+                onPress();
               }
             }}
             >
@@ -91,3 +92,14 @@ export default class Alert extends Component {
     );
   }
 }
+
+Alert.propTypes = {
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string,
+  onPress: PropTypes.func,
+};
+
+Alert.defaultProps = {
+  text: null,
+  onPress: null,
+};

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, DeviceEventEmitter
+  View, Text, StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import flex from '../../assets/styles/layout.flex';
 import Input from '../../components/common/input/input';
@@ -42,24 +43,29 @@ const styles = StyleSheet.create({
 });
 
 export default class WalletCreate extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     constructor(props) {
       super(props);
       this.state = {
         walletName: '',
       };
     }
+
     render() {
+      const { walletName } = this.state;
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Create Wallet" goBack={this.props.navigation.goBack}/>
+          <Header title="Create Wallet" goBack={navigation.goBack} />
           <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
             <Text style={[styles.sectionTitle, styles.walletName]}>Wallet Name</Text>
-            <Input style={styles.input} onChangeText={(text)=>this.setState({walletName: text})}/>
+            <Input
+              style={styles.input}
+              onChangeText={(text) => this.setState({ walletName: text })}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
@@ -70,13 +76,24 @@ export default class WalletCreate extends Component {
             <Text>https://bws.bitpay.com/bws/api</Text>
           </View>
           <View style={styles.buttonView}>
-            <Button text="CREATE" onPress={async () => {
-              const { navigation } = this.props;
-              let wallet = await walletManager.createWallet(this.state.walletName);
-              navigation.navigate('RecoveryPhrase', {wallet});
-            }} />
+            <Button
+              text="CREATE"
+              onPress={async () => {
+                const wallet = await walletManager.createWallet(walletName);
+                navigation.navigate('RecoveryPhrase', { wallet });
+              }}
+            />
           </View>
         </View>
       );
     }
 }
+
+WalletCreate.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

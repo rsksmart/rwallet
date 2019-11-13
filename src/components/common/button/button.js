@@ -2,7 +2,8 @@ import React from 'react';
 import {
   StyleSheet, TouchableOpacity, Text, View,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   button: {
@@ -30,3 +31,8 @@ export default function Button({ text, onPress }) {
     </TouchableOpacity>
   );
 }
+
+Button.propTypes = {
+  text: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};

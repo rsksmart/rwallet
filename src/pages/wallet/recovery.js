@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView
+  View, Text, StyleSheet, ScrollView,
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Header from '../../components/common/misc/header';
-import walletManager from '../../common/wallet/walletManager';
 import Tags from '../../components/common/misc/tags';
 
 const styles = StyleSheet.create({
@@ -47,46 +46,58 @@ const styles = StyleSheet.create({
 });
 
 export default class WalletRecovery extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     constructor(props) {
       super(props);
-      let phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
+      const phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
       this.state = {
-        walletName: '',
-        phrases: phrases,
+        phrases,
         phrase: '',
       };
       this.inputWord = this.inputWord.bind(this);
       this.deleteWord = this.deleteWord.bind(this);
-      
     }
-    inputWord(){
-      this.state.phrases.push(this.state.phrase);
-      this.setState({phrases: this.state.phrases});
-      this.setState({phrase: ''});
+
+    inputWord() {
+      const { phrase, phrases } = this.state;
+      phrases.push(phrase);
+      this.setState({ phrases });
+      this.setState({ phrase: '' });
     }
-    deleteWord(i){
-      this.state.phrases.splice(i, 1);
-      this.setState({phrases: this.state.phrases});
+
+    deleteWord(i) {
+      const { phrases } = this.state;
+      phrases.splice(i, 1);
+      this.setState({ phrases });
     }
+
     render() {
+      const { phrase, phrases } = this.state;
+      const { navigation } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={this.props.navigation.goBack}/>
+          <Header title="Recovery Phrase" goBack={navigation.goBack} />
           <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
             <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
-            <Input style={styles.input} onChangeText={(text)=>this.setState({phrase: text})} onSubmitEditing={()=>{
-              this.inputWord();
-            }} value={this.state.phrase}/>
+            <Input
+              style={styles.input}
+              onChangeText={(text) => this.setState({ phrase: text })}
+              onSubmitEditing={() => {
+                this.inputWord();
+              }}
+              value={phrase}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.phrasesBorder]}>
-              <Tags data={this.state.phrases} onPress={(i)=>{
+            <Tags
+              data={phrases}
+              onPress={(i) => {
                 this.deleteWord(i);
-              }} />
+              }}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
@@ -97,19 +108,30 @@ export default class WalletRecovery extends Component {
             <Text>https://bws.bitpay.com/bws/api</Text>
           </View>
           <View style={styles.buttonView}>
-            <Button text="CREATE" onPress={async () => {
-              const { navigation } = this.props;
-              let phrases = '';
-              for (let i = 0; i < this.state.phrases.length; i++) {
-                if(i!==0){
-                  phrases += ' ';
+            <Button
+              text="CREATE"
+              onPress={async () => {
+                let phrases2 = '';
+                for (let i = 0; i < phrases.length; i += 1) {
+                  if (i !== 0) {
+                    phrases2 += ' ';
+                  }
+                  phrases2 += phrases[i];
                 }
-                phrases += this.state.phrases[i];
-              }
-              navigation.navigate('WalletSelectCurrency', {phrases});
-            }} />
+                navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
+              }}
+            />
           </View>
         </ScrollView>
       );
     }
 }
+
+WalletRecovery.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

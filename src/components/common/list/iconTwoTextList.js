@@ -2,7 +2,8 @@ import React from 'react';
 import {
   StyleSheet, View, Image, FlatList, Text, TouchableHighlight,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   item: {
@@ -42,22 +43,31 @@ const styles = StyleSheet.create({
   },
 });
 
+const RIF = require('../../../assets/images/icon/RIF.png');
+const moreBlack = require('../../../assets/images/arrow/more.black.png');
+
 function Item({ title, onPress }) {
   return (
     <TouchableHighlight onPress={onPress}>
       <View style={styles.item}>
-        <Image source={require('../../../assets/images/icon/RIF.png')} />
+        <Image source={RIF} />
         <View style={[styles.right]}>
           <View style={styles.textView}>
             <Text style={[styles.title]}>{title}</Text>
             <Text style={[styles.text]}>{title}</Text>
           </View>
-          <Image style={styles.arrow} source={require('../../../assets/images/arrow/more.black.png')} />
+          <Image style={styles.arrow} source={moreBlack} />
         </View>
       </View>
     </TouchableHighlight>
   );
 }
+
+Item.propTypes = {
+  title: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
+
 
 export default function IconTwoTextList({ data }) {
   return (
@@ -68,3 +78,7 @@ export default function IconTwoTextList({ data }) {
     />
   );
 }
+
+IconTwoTextList.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape(Item.propTypes)).isRequired,
+};

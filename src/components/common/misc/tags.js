@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  StyleSheet, View, Text, TouchableOpacity
+  StyleSheet, View, Text, TouchableOpacity,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   tags: {
@@ -20,24 +21,29 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Tags({ data, onPress, style, showNumber=true }) {
+export default function Tags({
+  data, onPress, style, showNumber = true,
+}) {
   const { length } = data;
   const res = [];
   for (let i = 0; i < length; i += 1) {
     let text = '';
-    if(showNumber){
-      text = `${i+1}) ${data[i]}`;
+    if (showNumber) {
+      text = `${i + 1}) ${data[i]}`;
     } else {
       text = `${data[i]}`;
     }
     res.push(
-      <TouchableOpacity onPress={()=>{
-        if(onPress){
-          onPress(i);
-        }
-      }} key={i}>
+      <TouchableOpacity
+        onPress={() => {
+          if (onPress) {
+            onPress(i);
+          }
+        }}
+        key={i}
+      >
         <Text style={styles.item}>{text}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>,
     );
   }
   return (
@@ -46,3 +52,16 @@ export default function Tags({ data, onPress, style, showNumber=true }) {
     </View>
   );
 }
+
+Tags.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.string).isRequired,
+  style: PropTypes.arrayOf(PropTypes.element),
+  onPress: PropTypes.func,
+  showNumber: PropTypes.bool,
+};
+
+Tags.defaultProps = {
+  showNumber: true,
+  onPress: null,
+  style: null,
+};

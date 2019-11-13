@@ -1,23 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, FlatList
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, FlatList,
 } from 'react-native';
-import { Card, CardItem, Body} from 'native-base';
-import flex from '../../assets/styles/layout.flex';
-import SwipableButtonList from '../../components/common/misc/swipableButtonList';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types';
+import { Card, CardItem, Body } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Header from '../../components/common/misc/header';
-import wm from '../../common/wallet/walletManager';
-import Parse from 'parse/react-native'
+import flex from '../../assets/styles/layout.flex';
 
-const header = require('../../assets/images/misc/header.png')
-const send = require('../../assets/images/icon/send.png')
-
-
+const header = require('../../assets/images/misc/header.png');
 
 
 const styles = StyleSheet.create({
@@ -79,7 +71,7 @@ const styles = StyleSheet.create({
     left: 5,
     fontWeight: 'bold',
     fontSize: 15,
-    color: '#000000'
+    color: '#000000',
   },
   myAssets: {
     fontSize: 35,
@@ -181,10 +173,12 @@ const styles = StyleSheet.create({
   datetime: {
     color: '#939393',
     fontSize: 12,
-  }
+  },
 });
 
-function Item({ title, icon, amount, datetime}) {
+function Item({
+  title, icon, amount, datetime,
+}) {
   return (
     <View style={[styles.row]}>
       {icon}
@@ -201,75 +195,77 @@ function Item({ title, icon, amount, datetime}) {
   );
 }
 
-class History extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
+Item.propTypes = {
+  title: PropTypes.string.isRequired,
+  icon: PropTypes.element.isRequired,
+  amount: PropTypes.string.isRequired,
+  datetime: PropTypes.string.isRequired,
+};
+
+export default class History extends Component {
+    static navigationOptions = () => ({
+      header: null,
+    });
+
     listData = [
       {
         type: 'Sending',
-        icon: <SimpleLineIcons name="refresh" size={30} style={{color:'#000000'}}/>,
+        icon: <SimpleLineIcons name="refresh" size={30} style={{ color: '#000000' }} />,
         amount: '0.005BTC',
         datetime: 'a few seconds ago',
       },
       {
         type: 'Received',
-        icon: <SimpleLineIcons name="arrow-down-circle" size={30} style={{color:'#6FC062'}} />,
+        icon: <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />,
         amount: '1.61BTC',
         datetime: 'Sep 6. 2019',
       },
       {
         type: 'Sent',
-        icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{color:'#6875B7'}} />,
+        icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
         amount: '0.3BTC',
         datetime: 'Aug 12. 2019',
       },
     ];
-    constructor(props) {
-      super(props);
-      this.refreshData = this.refreshData.bind(this);
-      this.state = {}
-    }
-    componentDidMount(){
-      this.refreshData();
-    }
-    refreshData(){}
+
     render() {
-      const {navigation} = this.props;
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
-            <View style={[{height: 300}]}>
+            <View style={[{ height: 300 }]}>
               <Image source={header} />
               <View style={styles.headerView}>
                 <Text style={styles.headerTitle}>My Default Wallet</Text>
                 <TouchableOpacity
                   style={styles.backButton}
                   onPress={() => {
-                    this.props.navigation.goBack();
+                    navigation.goBack();
                   }}
                 >
                   <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
                 </TouchableOpacity>
                 <View style={styles.headerBoardView}>
-                  <Card style={styles.headerBoard} >
+                  <Card style={styles.headerBoard}>
                     <CardItem>
                       <Body>
                         <Text style={styles.myAssets}>1.305 BTC</Text>
                         <Text style={styles.assetsValue}>13,198.6 USD</Text>
                         <Text style={styles.sending}>0.0005 BTC (50.56USD)</Text>
                         <View style={styles.myAssetsButtonsView}>
-                          <TouchableOpacity style={styles.ButtonView} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <Entypo name="swap" size={20} style={styles.sendIcon} /><Text style={styles.sendText}>Send</Text>
+                          <TouchableOpacity
+                            style={styles.ButtonView}
+                            onPress={() => {}}
+                          >
+                            <Entypo name="swap" size={20} style={styles.sendIcon} />
+                            <Text style={styles.sendText}>Send</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity style={[styles.ButtonView, {borderRightWidth: 0}]} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} /><Text style={styles.receiveText}>Receive</Text>
+                          <TouchableOpacity
+                            style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                            onPress={() => {}}
+                          >
+                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                            <Text style={styles.receiveText}>Receive</Text>
                           </TouchableOpacity>
                         </View>
                       </Body>
@@ -278,14 +274,27 @@ class History extends Component {
                 </View>
               </View>
             </View>
-             <View style={styles.sectionContainer}>
-              <Text style={{color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10}}>Recent</Text>
+            <View style={styles.sectionContainer}>
+              <Text style={{
+                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
+              }}
+              >
+Recent
+              </Text>
             </View>
             <View style={styles.sectionContainer}>
               <FlatList
                 data={this.listData}
-                renderItem={({ item }) => <Item title={item.type} icon={item.icon} amount={item.amount} datetime={item.datetime}  onPress={item.onPress} />}
-                keyExtractor={(item) => Math.random()+''}
+                renderItem={({ item }) => (
+                  <Item
+                    title={item.type}
+                    icon={item.icon}
+                    amount={item.amount}
+                    datetime={item.datetime}
+                    onPress={item.onPress}
+                  />
+                )}
+                keyExtractor={() => `${Math.random()}`}
               />
             </View>
           </ScrollView>
@@ -294,4 +303,11 @@ class History extends Component {
     }
 }
 
-export default History;
+History.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};

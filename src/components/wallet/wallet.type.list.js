@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet, View, FlatList, Text, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -63,6 +64,21 @@ function Item({
   );
 }
 
+Item.propTypes = {
+  icon: PropTypes.element,
+  title: PropTypes.string,
+  text: PropTypes.string,
+  onPress: PropTypes.func,
+};
+
+Item.defaultProps = {
+  icon: null,
+  title: null,
+  text: null,
+  onPress: null,
+};
+
+
 export default function WalletTypeList({ data }) {
   return (
     <FlatList
@@ -79,3 +95,5 @@ export default function WalletTypeList({ data }) {
     />
   );
 }
+
+WalletTypeList.propTypes = Item.propTypes;

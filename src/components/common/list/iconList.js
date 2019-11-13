@@ -2,8 +2,9 @@ import React from 'react';
 import {
   StyleSheet, View, Image, FlatList, Text, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import color from '../../../assets/styles/color';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   item: {
@@ -45,6 +46,13 @@ function Item({ title, icon, onPress }) {
   );
 }
 
+Item.propTypes = {
+  icon: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
+
+
 export default function IconList({ data }) {
   return (
     <FlatList
@@ -54,3 +62,7 @@ export default function IconList({ data }) {
     />
   );
 }
+
+IconList.propTypes = {
+  data: PropTypes.shape(Item.propTypes).isRequired,
+};
