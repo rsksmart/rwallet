@@ -167,6 +167,21 @@ class Test1 extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Pages</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  const symbol = 'RBTC';
+                  const type = 'Testnet';
+                  const address = '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB';
+                  Parse.Cloud.run('getTransactionsByAddress', { symbol, type, address }).then((result) => {
+                    console.log(result);
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>getTransactionsByAddress</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={async () => {}}>
                 <Text style={styles.text}>RSK</Text>
               </TouchableOpacity>
