@@ -141,13 +141,22 @@ class Test1 extends Component {
     getServerInfo();
   }
 
+  onGetTransactionsPress() {
+    const { getTransactions } = this.props;
+    console.log('this.props,', this.props);
+
+    console.log('button pressed. getServerInfo:', getTransactions);
+    const [symbol, type, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
+    getTransactions(symbol, type, address);
+  }
+
   async save(k, v, id) {
     this.a = 1;
     await storage.save(k, v, id);
   }
 
   render() {
-    const { navigation, serverVersion } = this.props;
+    const { navigation, serverVersion, transactions } = this.props;
     return (
       <View style={[flex.flex1]}>
         <ScrollView style={{ marginBottom: 5 }}>
@@ -167,6 +176,15 @@ class Test1 extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Pages</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <Text>{`transactions: ${transactions.length}`}</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  this.onGetTransactionsPress();
+                }}
+              >
+                <Text style={styles.text}>saga getTransactionsByAddress</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
                 onPress={async () => {
@@ -184,6 +202,14 @@ class Test1 extends Component {
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={async () => {}}>
                 <Text style={styles.text}>RSK</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  navigation.navigate('ReduxTest');
+                }}
+              >
+                <Text style={styles.text}>Redux Test</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
@@ -451,10 +477,14 @@ class Test1 extends Component {
 
 const mapStateToProps = (state) => ({
   serverVersion: state.App.get('serverVersion'),
+  transactions: state.App.get('transactions'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getServerInfo: () => dispatch(appActions.getServerInfo()),
+  getTransactions: (symbol, type, address) => dispatch(
+    appActions.getTransactions(symbol, type, address),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Test1);
@@ -467,10 +497,15 @@ Test1.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   serverVersion: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  transactions: PropTypes.array,
   getServerInfo: PropTypes.func,
+  getTransactions: PropTypes.func,
 };
 
 Test1.defaultProps = {
   serverVersion: undefined,
   getServerInfo: undefined,
+  getTransactions: undefined,
+  transactions: [],
 };

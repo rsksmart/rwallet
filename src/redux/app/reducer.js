@@ -18,6 +18,12 @@ export default function appReducer(state = initState, action) {
       console.log('reducer, serverVersion', serverVersion);
       return state.set('serverVersion', serverVersion);
     }
+    case actions.GET_TRANSACTIONS_RESULT:
+    {
+      const transactions = action.value;
+      console.log('reducer, transtions', transactions);
+      return state.set('transactions', transactions);
+    }
     case actions.SET_ERROR:
       return state.set('error', action.value);
     default:

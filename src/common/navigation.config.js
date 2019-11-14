@@ -24,6 +24,7 @@ import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
+import ReduxTest from '../pages/wallet/redux.test';
 import Address from '../pages/wallet/address';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
@@ -271,6 +272,19 @@ const routeConfigMap = {
       path: 'Address',
       navigationOptions: () => ({
         headerTitle: 'Address',
+        headerRight: <Text />,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+        },
+      }),
+    },
+    ReduxTest: {
+      screen: ReduxTest,
+      path: 'ReduxTest',
+      navigationOptions: () => ({
+        headerTitle: 'ReduxTest',
         headerRight: <Text />,
         headerTitleStyle: {
           alignSelf: 'center',

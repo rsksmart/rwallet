@@ -34,6 +34,17 @@ class ParseHelper {
     });
   }
 
+  static getTransactionsByAddress({ symbol, type, address }) {
+    console.log('ParseHelper.getTransactionsByAddress is called.');
+    return Parse.Cloud.run('getTransactionsByAddress', { symbol, type, address }).then((res) => {
+      console.log(res);
+      return Promise.resolve(res);
+    }, (err) => {
+      console.log(err);
+      return Promise.resolve(err);
+    });
+  }
+
   /**
    * Transform Parse errors to errors defined by this app
    * @param {object}     err        Parse error from response
