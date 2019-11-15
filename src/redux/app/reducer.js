@@ -5,6 +5,7 @@ const initState = new Map({
   isLoading: false,
   serverVersion: undefined,
   error: undefined,
+  transactions: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -18,11 +19,17 @@ export default function appReducer(state = initState, action) {
       console.log('reducer, serverVersion', serverVersion);
       return state.set('serverVersion', serverVersion);
     }
+    case actions.GET_TRANSACTIONS:
+    {
+      return state.set('isLoading', true);
+    }
     case actions.GET_TRANSACTIONS_RESULT:
     {
       const transactions = action.value;
       console.log('reducer, transtions', transactions);
-      return state.set('transactions', transactions);
+      let newstate = state.set('isLoading', false);
+      newstate = newstate.set('transactions', transactions);
+      return newstate;
     }
     case actions.SET_ERROR:
       return state.set('error', action.value);

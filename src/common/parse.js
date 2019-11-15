@@ -30,18 +30,18 @@ class ParseHelper {
       return Promise.resolve(res);
     }, (err) => {
       console.log(err);
-      return Promise.resolve(err);
+      return Promise.reject(err);
     });
   }
 
   static getTransactionsByAddress({ symbol, type, address }) {
-    console.log('ParseHelper.getTransactionsByAddress is called.');
+    console.log(`ParseHelper::getTransactionsByAddress is called, symbol: ${symbol}, type: ${type}, address: ${address}`);
     return Parse.Cloud.run('getTransactionsByAddress', { symbol, type, address }).then((res) => {
-      console.log(res);
+      console.log(`ParseHelper::getTransactionsByAddress received, res: ${JSON.stringify(res)}`);
       return Promise.resolve(res);
     }, (err) => {
       console.log(err);
-      return Promise.resolve(err);
+      return Promise.reject(err);
     });
   }
 

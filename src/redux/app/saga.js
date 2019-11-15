@@ -53,9 +53,10 @@ function* getTransactions(action) {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    console.log(err);
+    const message = yield call(ParseHelper.handleError, err);
 
-    console.error(message);
+    // console.error(message);
     // On error, also sets state in reducer
     // so UI could reflect those errors
     // Note that error value here is to be consumed by UI,
