@@ -3,8 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import RootSwitchNavigator from './src/navigation/container';
-import appContext from './src/common/appContext';
-import walletManager from './src/common/wallet/walletManager';
+import Application from './src/common/application';
 
 export default function App() {
   return (
@@ -14,4 +13,4 @@ export default function App() {
   );
 }
 
-appContext.init(walletManager);
+Application.init();

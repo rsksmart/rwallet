@@ -6,9 +6,9 @@ const actions = {
   switchActivation: () => ({
     type: actions.ACTIVATE_LANG_MODAL,
   }),
-  changeLanguage: () => ({
+  changeLanguage: (language) => ({
     type: actions.CHANGE_LANGUAGE,
-    // language: getCurrentLanguage(language),
+    language,
   }),
 };
 

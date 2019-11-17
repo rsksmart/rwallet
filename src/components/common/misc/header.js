@@ -1,9 +1,10 @@
 import React from 'react';
 import {
-  StyleSheet, View, Text, TouchableOpacity, Image,
+  StyleSheet, View, TouchableOpacity, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Loc from './loc';
 
 const header = require('../../../assets/images/misc/header.png');
 
@@ -47,7 +48,7 @@ export default function Header({ title, goBack }) {
     <View>
       <Image source={header} />
       <View style={styles.headerView}>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Loc style={[styles.headerTitle]} text={title} key={`${Math.random()}`} />
         {backButton}
       </View>
     </View>

@@ -6,5 +6,6 @@
   "test3": {
     "text": "This is the test page 3",
     "button": "Go to Setting"
-  }
+  },
+  "Language": "Language"
 }
