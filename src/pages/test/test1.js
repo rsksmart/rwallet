@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
+import Rsk3 from 'rsk3';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
 import Input from '../../components/common/input/input';
@@ -176,6 +177,53 @@ class Test1 extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Pages</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  const symbol = 'RBTC';
+                  const type = 'Testnet';
+                  const sender = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
+                  const receiver = '0x7986b3df570230288501eea3d890bd66948c9b79';
+                  const value = 5;
+                  const data = '';
+                  Parse.Cloud.run('createRawTransaction', {
+                    symbol, type, sender, receiver, value, data,
+                  }).then(async (result) => {
+                    console.log(`createRawTransaction, result: ${JSON.stringify(result)}`);
+                    const privateKey = 'c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4';
+                    const rsk3 = new Rsk3('http://localhost:4444');
+                    const rawTransaction = {
+                      from: sender,
+                      to: receiver,
+                      value: Rsk3.utils.toHex(Number(result.value)),
+                      nonce: Rsk3.utils.toHex(result.nonce),
+                      gasPrice: result.gasPrice,
+                      data: '',
+                    };
+                    rawTransaction.chainId = result.chainId;
+                    rawTransaction.gas = result.gas;
+                    // 3. Sign the rawTransaction with a specific private key
+                    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+                    const signedTransaction = await accountInfo.signTransaction(
+                      rawTransaction, privateKey,
+                    );
+                    console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
+                    const name = 'Rootstock';
+                    const hash = signedTransaction.transactionHash;
+                    Parse.Cloud.run('sendSignedTransaction', {
+                      name, hash, type,
+                    }).then((result1) => {
+                      console.log(`sendSignedTransaction: ${JSON.stringify(result1)}`);
+                    }).catch((reason) => {
+                      console.log(reason);
+                    });
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>createRawTransaction</Text>
+              </TouchableOpacity>
               <Text>{`transactions: ${transactions.length}`}</Text>
               <TouchableOpacity
                 style={styles.button}
