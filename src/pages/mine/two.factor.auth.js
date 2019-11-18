@@ -59,7 +59,7 @@ export default class TwoFactorAuth extends Component {
       let resetFingerprint = null;
       const { fingerprint } = this.state;
       const { navigation } = this.props;
-      if (fingerprint) {
+      if (false && fingerprint) {
         resetFingerprint = (
           <TouchableOpacity
             style={styles.row}

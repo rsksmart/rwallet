@@ -97,10 +97,10 @@ export default class PasscodeModal extends Component {
     this.setState({ passcode });
     if (passcode.length >= 4) {
       const { onFill } = this.props;
+      this.setModalVisible(false);
       if (onFill) {
         onFill(passcode);
       }
-      this.setModalVisible(false);
     }
   }
 
@@ -138,7 +138,7 @@ export default class PasscodeModal extends Component {
       dots.push(t);
     }
 
-    const { onPress } = this.props;
+    const { onPress, title } = this.props;
     return (
       <Modal
         animationType={animationType}
@@ -152,7 +152,7 @@ export default class PasscodeModal extends Component {
         <View style={styles.background} />
         <TouchableHighlight style={styles.container}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={styles.title}>Enter Passcode</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.dotRow}>
               {dots}
             </View>
@@ -182,9 +182,11 @@ export default class PasscodeModal extends Component {
 PasscodeModal.propTypes = {
   onPress: PropTypes.func,
   onFill: PropTypes.func,
+  title: PropTypes.string,
 };
 
 PasscodeModal.defaultProps = {
   onPress: null,
   onFill: null,
+  title: 'Enter Passcode',
 };
