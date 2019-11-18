@@ -139,6 +139,7 @@ android {
 }
 
 dependencies {
+    implementation project(':rn-secure-storage')
     implementation project(':react-native-svg')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-i18n')

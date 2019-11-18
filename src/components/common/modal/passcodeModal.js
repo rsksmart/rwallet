@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
+import appContext from '../../../common/appContext';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -94,6 +95,7 @@ export default class PasscodeModal extends Component {
   onPressButton(i) {
     const { passcode } = this.state;
     if (passcode.length > 4) {
+      appContext.secureSet('rwallet-pin', passcode);
       return;
     }
     this.setState({ passcode: passcode + i });

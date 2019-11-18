@@ -7,5 +7,7 @@
     "text": "Ceci est la page de test 3",
     "button": "Aller au réglage"
   },
-  "Language": "la langue"
+  "Language": "la langue",
+  "2FA": "Authentification",
+  "Reset Passcode": "Réinitialiser le code"
 }

@@ -1,4 +1,5 @@
 import I18n from 'react-native-i18n';
+import RNSecureStorage from 'rn-secure-storage';
 import storage from './storage';
 
 const appContext = {
@@ -13,6 +14,16 @@ const appContext = {
   async set(key, value) {
     this.data[key] = value;
     await storage.save('data', this.data);
+  },
+  secureSet(key, value, callback = null) {
+    RNSecureStorage.set(key, value, {}).then((res) => {
+      console.log(`RNSecureStorage.set, res: ${res}`);
+      if (callback) {
+        callback();
+      }
+    }, (err) => {
+      console.log(err);
+    });
   },
 };
 

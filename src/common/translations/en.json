@@ -7,5 +7,7 @@
     "text": "This is the test page 3",
     "button": "Go to Setting"
   },
-  "Language": "Language"
+  "Language": "Language",
+  "2FA": "2FA",
+  "Reset Passcode": "Reset Passcode"
 }

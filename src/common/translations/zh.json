@@ -7,5 +7,7 @@
       "text": "这是测试3页面",
       "button": "跳转到设置"
     },
-    "Language": "语言"
+    "Language": "语言",
+    "2FA": "双因素认证",
+    "Reset Passcode": "重置密码"
   }
