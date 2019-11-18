@@ -7,4 +7,6 @@ target 'rwallet' do
 
   # Pods for rwallet
   
+  pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
+
 end
