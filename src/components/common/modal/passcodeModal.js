@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
-import appContext from '../../../common/appContext';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -84,30 +83,32 @@ export default class PasscodeModal extends Component {
   constructor(props) {
     super(props); // 这一句不能省略，照抄即可
     this.state = {
-      animationType: 'fade', // none slide fade
-      modalVisible: false, // 模态场景是否可见
-      transparent: true, // 是否透明显示
+      animationType: 'fade',
+      modalVisible: false,
+      transparent: true,
       passcode: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
   }
 
   onPressButton(i) {
-    const { passcode } = this.state;
-    if (passcode.length > 4) {
-      appContext.secureSet('rwallet-pin', passcode);
-      return;
+    let { passcode } = this.state;
+    passcode += i;
+    this.setState({ passcode });
+    if (passcode.length >= 4) {
+      const { onFill } = this.props;
+      if (onFill) {
+        onFill(passcode);
+      }
+      this.setModalVisible(false);
     }
-    this.setState({ passcode: passcode + i });
   }
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible, passcode: '' });
   }
 
-  startShow = () => {
-    //   alert('开始显示了');
-  }
+  startShow = () => {}
 
   render() {
     const {
@@ -180,8 +181,10 @@ export default class PasscodeModal extends Component {
 
 PasscodeModal.propTypes = {
   onPress: PropTypes.func,
+  onFill: PropTypes.func,
 };
 
 PasscodeModal.defaultProps = {
   onPress: null,
+  onFill: null,
 };

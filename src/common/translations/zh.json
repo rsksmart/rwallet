@@ -9,5 +9,6 @@
     },
     "Language": "语言",
     "2FA": "双因素认证",
-    "Reset Passcode": "重置密码"
+    "Reset Passcode": "重置密码",
+    "Reset Passcode Success": "重置密码成功"
   }

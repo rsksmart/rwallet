@@ -9,5 +9,6 @@
   },
   "Language": "שפה",
   "2FA": "אימות דו-גורמי",
-  "Reset Passcode": "אפס את קוד הסיסמה"
+  "Reset Passcode": "אפס את קוד הסיסמה",
+  "Reset Passcode Success": "אפס את הצלחת קוד הגישה"
 }

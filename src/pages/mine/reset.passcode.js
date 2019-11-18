@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import PasscodeModal from '../../components/common/modal/passcodeModal';
+import appContext from '../../common/appContext';
 
 export default class ResetPasscode extends Component {
     static navigationOptions = () => ({
@@ -24,6 +25,10 @@ export default class ResetPasscode extends Component {
           <PasscodeModal
             ref={(ref) => { this.passcodeModal = ref; }}
             onPress={() => {
+              navigation.goBack();
+            }}
+            onFill={(passcode) => {
+              appContext.secureSet('pin', passcode);
               navigation.navigate('ResetPasscodeSuccess');
             }}
           />

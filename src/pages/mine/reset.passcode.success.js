@@ -58,7 +58,7 @@ export default class ResetPasscodeSuccess extends Component {
     render() {
       return (
         <View style={[flex.flex1]}>
-          <Header title="Verify Your Phrase" />
+          <Header title="Reset Passcode Success" />
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
             <Text style={styles.title}>Reset completed!</Text>
@@ -69,9 +69,10 @@ export default class ResetPasscodeSuccess extends Component {
               onPress={async () => {
                 const { navigation } = this.props;
                 const resetAction = StackActions.reset({
-                  index: 0,
+                  index: 1,
                   actions: [
                     NavigationActions.navigate({ routeName: 'MineIndex' }),
+                    NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
                   ],
                 });
                 navigation.dispatch(resetAction);

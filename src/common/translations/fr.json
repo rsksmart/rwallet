@@ -9,5 +9,6 @@
   },
   "Language": "la langue",
   "2FA": "Authentification",
-  "Reset Passcode": "Réinitialiser le code"
+  "Reset Passcode": "Réinitialiser le code",
+  "Reset Passcode Success": "Réinitialiser le code réussi"
 }
