@@ -182,26 +182,27 @@ class Test1 extends Component {
                 onPress={() => {
                   const symbol = 'RBTC';
                   const type = 'Testnet';
-                  const sender = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
-                  const receiver = '0x7986b3df570230288501eea3d890bd66948c9b79';
-                  const value = 5;
+                  const sender = '0x2cf0028790Eed9374fcE149F0dE3449128738cF4';
+                  const receiver = '0xf08f6c2eac2183dfc0a5910c58c186496f32498d';
+                  const value = '0x9184e72a000';
                   const data = '';
                   Parse.Cloud.run('createRawTransaction', {
                     symbol, type, sender, receiver, value, data,
                   }).then(async (result) => {
                     console.log(`createRawTransaction, result: ${JSON.stringify(result)}`);
-                    const privateKey = 'c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4';
-                    const rsk3 = new Rsk3('http://localhost:4444');
-                    const rawTransaction = {
-                      from: sender,
-                      to: receiver,
-                      value: Rsk3.utils.toHex(Number(result.value)),
-                      nonce: Rsk3.utils.toHex(result.nonce),
-                      gasPrice: result.gasPrice,
-                      data: '',
-                    };
-                    rawTransaction.chainId = result.chainId;
-                    rawTransaction.gas = result.gas;
+                    const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+                    const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
+                    const rawTransaction = result;
+                    // {
+                    //   from: sender,
+                    //   to: receiver,
+                    //   value: Rsk3.utils.toHex(Number(result.value)),
+                    //   nonce: Rsk3.utils.toHex(result.nonce),
+                    //   gasPrice: result.gasPrice,
+                    //   data: '',
+                    // };
+                    // rawTransaction.chainId = result.chainId;
+                    // rawTransaction.gas = result.gas;
                     // 3. Sign the rawTransaction with a specific private key
                     const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
                     const signedTransaction = await accountInfo.signTransaction(
@@ -209,11 +210,13 @@ class Test1 extends Component {
                     );
                     console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
                     const name = 'Rootstock';
-                    const hash = signedTransaction.transactionHash;
+                    let hash = signedTransaction.rawTransaction;
+                    console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
+                    hash = '0xf8692d840387ee4082520894f08f6c2eac2183dfc0a5910c58c186496f32498d8609184e72a0008062a0617beaa492b4ba37f1c1b2ed78a71153f0d49f1f6e432d51bbb235fc51b3ec06a0534866ac60f89073987a84e5fb007a56f33861407c529046d65ff0b49c4fd4f8';
                     Parse.Cloud.run('sendSignedTransaction', {
                       name, hash, type,
                     }).then((result1) => {
-                      console.log(`sendSignedTransaction: ${JSON.stringify(result1)}`);
+                      console.log(`sendSignedTransaction, result: ${JSON.stringify(result1)}`);
                     }).catch((reason) => {
                       console.log(reason);
                     });
@@ -223,6 +226,18 @@ class Test1 extends Component {
                 }}
               >
                 <Text style={styles.text}>createRawTransaction</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  Parse.Cloud.run('getServerInfo', {}).then((result) => {
+                    console.log(result);
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>getServerInfo</Text>
               </TouchableOpacity>
               <Text>{`transactions: ${transactions.length}`}</Text>
               <TouchableOpacity
