@@ -22,6 +22,13 @@ export default class ResetPasscode extends Component {
     }
 
     componentDidMount() {
+      appContext.secureGet('passcode', (value) => {
+        if (!value) {
+          this.setState({ flow: 'newPasscode' });
+        } else {
+          this.setState({ flow: 'oldPasscode' });
+        }
+      });
       this.passcodeModal.setModalVisible(true);
     }
 
@@ -45,7 +52,7 @@ export default class ResetPasscode extends Component {
             }}
             onFill={(passcode) => {
               if (flow === 'oldPasscode') {
-                appContext.secureGet('pin', (value) => {
+                appContext.secureGet('passcode', (value) => {
                   if (passcode === value) {
                     this.setState({ flow: 'newPasscode' });
                   }
@@ -56,8 +63,8 @@ export default class ResetPasscode extends Component {
                 this.setState({ flow: 'confirmPasscode', newPasscode: passcode });
               } else if (flow === 'confirmPasscode') {
                 if (passcode === newPasscode) {
-                  appContext.secureSet('pin', newPasscode);
-                  navigation.navigate('ResetPasscodeSuccess');
+                  appContext.secureSet('passcode', newPasscode);
+                  navigation.navigate('ResetPasscodeSuccess', navigation.state.params);
                 } else {
                   this.passcodeModal.setModalVisible(true);
                 }

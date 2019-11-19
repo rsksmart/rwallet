@@ -1,14 +1,19 @@
 {
-    "root": {
-      "home": "首页",
-      "mine": "我的"
-    },
-    "test3": {
-      "text": "这是测试3页面",
-      "button": "跳转到设置"
-    },
-    "Language": "语言",
-    "2FA": "双因素认证",
-    "Reset Passcode": "重置密码",
-    "Reset Passcode Success": "重置密码成功"
-  }
+  "root": {
+    "home": "首页",
+    "mine": "我的"
+  },
+  "test3": {
+    "text": "这是测试3页面",
+    "button": "跳转到设置"
+  },
+  "Language": "语言",
+  "2FA": "双因素认证",
+  "Reset Passcode": "重置密码",
+  "Reset Passcode Success": "重置密码成功",
+  "Add Wallet": "创建钱包",
+  "Select Wallet Currency": "选择钱包类型",
+  "Recovery Phrase": "恢复密语",
+  "Verify Your Phrase": "验证你的密语",
+  "Verify Phrase Success": "验证密语成功"
+}

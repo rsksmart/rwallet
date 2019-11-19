@@ -26,10 +26,18 @@ const appContext = {
     });
   },
   secureGet(key, callback) {
-    RNSecureStorage.get(key).then((value) => {
-      console.log(`RNSecureStorage.get, key: ${key}`);
-      if (callback) {
-        callback(value);
+    RNSecureStorage.exists(key).then((res) => {
+      if (!res) {
+        callback(null);
+      } else {
+        RNSecureStorage.get(key).then((value) => {
+          console.log(`RNSecureStorage.get, key: ${key}`);
+          if (callback) {
+            callback(value);
+          }
+        }, (err) => {
+          console.log(err);
+        });
       }
     }, (err) => {
       console.log(err);

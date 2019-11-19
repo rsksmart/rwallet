@@ -68,14 +68,25 @@ export default class ResetPasscodeSuccess extends Component {
               text="BACK TO SETTING"
               onPress={async () => {
                 const { navigation } = this.props;
-                const resetAction = StackActions.reset({
-                  index: 1,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'MineIndex' }),
-                    NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
+                if (navigation.state.params.page === 'WalletRecovery' || navigation.state.params.page === 'WalletSelectCurrency') {
+                  const resetAction = StackActions.reset({
+                    index: 1,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'WalletList' }),
+                      NavigationActions.navigate({ routeName: navigation.state.params.page }),
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                } else {
+                  const resetAction = StackActions.reset({
+                    index: 1,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'MineIndex' }),
+                      NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                }
               }}
             />
           </View>

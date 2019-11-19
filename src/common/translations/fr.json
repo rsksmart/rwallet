@@ -10,5 +10,9 @@
   "Language": "la langue",
   "2FA": "Authentification",
   "Reset Passcode": "Réinitialiser le code",
-  "Reset Passcode Success": "Réinitialiser le code réussi"
+  "Reset Passcode Success": "Réinitialiser le code réussi",
+  "Add Wallet": "Add Wallet",
+  "Select Wallet Currency": "Select Wallet Currency",
+  "Recovery Phrase": "Recovery Phrase",
+  "Verify Phrase Success": "Verify Phrase Success"
 }

@@ -10,6 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
+import appContext from '../../common/appContext';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -23,9 +24,7 @@ class WalletAddIndex extends Component {
         text: 'Recommended for first-time user',
         icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
-          // let wallet = walletManager.createWallet('');
-          const { navigation } = this.props;
-          navigation.navigate('WalletSelectCurrency');
+          this.createWalletFlow('WalletSelectCurrency');
         },
       },
       {
@@ -48,11 +47,26 @@ class WalletAddIndex extends Component {
         text: 'Recover your wallet using your passphrase',
         icon: (<AntDesign name="download" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
-          const { navigation } = this.props;
-          navigation.navigate('WalletRecovery');
+          this.createWalletFlow('WalletRecovery');
         },
       },
     ];
+
+    constructor(props) {
+      super(props);
+      this.createWalletFlow = this.createWalletFlow.bind(this);
+    }
+
+    createWalletFlow(page) {
+      const { navigation } = this.props;
+      appContext.secureGet('passcode', (value) => {
+        if (value === null) {
+          navigation.navigate('ResetPasscode', { page });
+        } else {
+          navigation.navigate(page);
+        }
+      });
+    }
 
     render() {
       const { navigation } = this.props;
