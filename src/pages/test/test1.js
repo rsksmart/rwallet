@@ -210,9 +210,8 @@ class Test1 extends Component {
                     );
                     console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
                     const name = 'Rootstock';
-                    let hash = signedTransaction.rawTransaction;
+                    const hash = signedTransaction.rawTransaction;
                     console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
-                    hash = '0xf8692d840387ee4082520894f08f6c2eac2183dfc0a5910c58c186496f32498d8609184e72a0008062a0617beaa492b4ba37f1c1b2ed78a71153f0d49f1f6e432d51bbb235fc51b3ec06a0534866ac60f89073987a84e5fb007a56f33861407c529046d65ff0b49c4fd4f8';
                     Parse.Cloud.run('sendSignedTransaction', {
                       name, hash, type,
                     }).then((result1) => {
