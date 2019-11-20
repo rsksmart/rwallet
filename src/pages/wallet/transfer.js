@@ -300,6 +300,7 @@ export default class Transfer extends Component {
                 navigation.navigate('VerifyFingerprint', {
                   verified: async () => {
                     await this.sendTransaction();
+                    navigation.navigate('TransferCompleted');
                   },
                 });
               }}
