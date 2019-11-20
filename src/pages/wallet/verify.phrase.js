@@ -7,6 +7,7 @@ import Header from '../../components/common/misc/header';
 import WordField from '../../components/common/misc/wordField';
 import Alert from '../../components/common/modal/alert';
 import walletManager from '../../common/wallet/walletManager';
+import Loader from '../../components/common/misc/loader';
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -57,6 +58,7 @@ export default class VerifyPhrase extends Component {
     this.state = {
       tags: this.randomPhrases,
       phrases: [],
+      loading: false,
     };
     this.renderAllItem = this.renderAllItem.bind(this);
     this.tap = this.tap.bind(this);
@@ -89,7 +91,9 @@ export default class VerifyPhrase extends Component {
         }
       }
       if (same) {
+        this.setState({ loading: true });
         await walletManager.addWallet(this.wallet);
+        this.setState({ loading: false });
         const resetAction = StackActions.reset({
           index: 1,
           actions: [
@@ -134,7 +138,7 @@ export default class VerifyPhrase extends Component {
   render() {
     const alertTitle = "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.";
     const { navigation } = this.props;
-    const { phrases, tags } = this.state;
+    const { phrases, tags, loading } = this.state;
     return (
       <View>
         <Header
@@ -147,6 +151,7 @@ export default class VerifyPhrase extends Component {
             }
           }}
         />
+        <Loader loading={loading} />
         <View style={styles.wordFieldView}>{this.renderAllItem()}</View>
         <Text style={styles.tip}>Tap each word in the correct order</Text>
         <Tags

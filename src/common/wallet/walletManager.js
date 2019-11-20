@@ -14,9 +14,15 @@ const walletManager = {
   async saveWallets() {
     const wallets = [];
     for (let i = 0; i < this.wallets.length; i += 1) {
-      wallets.push({ phrase: this.wallets[i].phrase });
+      const wallet = this.wallets[i];
+      const coins = [];
+      wallet.coins.forEach((coin) => {
+        coins.push({ type: coin.type, address: coin.address });
+      });
+      wallets.push({ phrase: this.wallets[i].mnemonic.phrase, coins });
     }
-    await appContext.set('wallets', wallets);
+    // await appContext.set('wallets', wallets);
+    await appContext.saveWallets(wallets);
   },
   loadWallets() {
     const { wallets } = appContext.data;

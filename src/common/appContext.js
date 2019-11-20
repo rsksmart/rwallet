@@ -51,7 +51,17 @@ const appContext = {
   },
   async saveSettings(settings) {
     Object.assign(this.data.settings, settings);
+    await this.save('settings', this.data.settings);
     await ParseHelper.uploadSettings(this.user, this.data.settings);
+  },
+  async saveWallets(wallets) {
+    await this.set('wallets', wallets);
+    const uploadWallets = [];
+    wallets.forEach((wallet) => {
+      const item = { coins: wallet.coins };
+      uploadWallets.push(item);
+    });
+    await ParseHelper.uploadWallets(this.user, uploadWallets);
   },
 };
 
