@@ -8,6 +8,7 @@ export default class Wallet {
     this.id = 0;
     this.name = name;
     this.coins = [];
+    this.createdAt = new Date();
     coinTypes.forEach((coinType) => {
       let coin = null;
       if (coinType === 'BTC') {
@@ -39,5 +40,23 @@ export default class Wallet {
       // this process cost time.
       coin.derive(seed);
     }
+  }
+
+  /**
+   * Returns a JSON to save required data to backend server; empty array if there's no coins
+   */
+  toJson() {
+    const result = {
+      id: this.id,
+      name: this.name,
+      createdAt: this.createdAt,
+      coins: [],
+    };
+
+    this.coins.forEach((coin) => {
+      result.coins.push(coin.toJson());
+    });
+
+    return result;
   }
 }

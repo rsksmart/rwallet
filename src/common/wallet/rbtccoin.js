@@ -128,4 +128,15 @@ export default class RBTCCoin {
     this.a = 1;
     return ethereumjsUtil.toChecksumAddress(s);
   }
+
+  /**
+   * Returns a JSON of Coin to save required data to backend
+   */
+  toJson() {
+    return {
+      network: this.network,
+      type: this.type,
+      address: this.address,
+    };
+  }
 }

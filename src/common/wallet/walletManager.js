@@ -26,6 +26,20 @@ const walletManager = {
       this.wallets.push(wallet);
     }
   },
+
+  /**
+   * Returns a JSON containing an array of wallet to save required data to backend server.
+   * Returns empty array if there's no wallet
+   */
+  toJson() {
+    const results = [];
+
+    this.wallets.forEach((wallet) => {
+      results.push(wallet.toJson());
+    });
+
+    return results;
+  },
 };
 
 export default walletManager;

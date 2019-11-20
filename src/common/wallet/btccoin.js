@@ -4,7 +4,6 @@ import { payments } from 'bitcoinjs-lib';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
-
 export default class Coin {
   constructor(network) {
     this.type = network;
@@ -80,5 +79,16 @@ export default class Coin {
   deriveChildFromNode(node, index) {
     const t = fromBase58(node, this.network).derive(index);
     return t.toBase58();
+  }
+
+  /**
+   * Returns a JSON of Coin to save required data to backend
+   */
+  toJson() {
+    return {
+      network: this.network,
+      type: this.type,
+      address: this.address,
+    };
   }
 }
