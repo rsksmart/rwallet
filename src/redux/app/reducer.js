@@ -31,6 +31,13 @@ export default function appReducer(state = initState, action) {
       newstate = newstate.set('transactions', transactions);
       return newstate;
     }
+    case actions.CREATE_RAW_TRANSATION_RESULT:
+    {
+      const result = action.value;
+      console.log('CREATE_RAW_TRANSATION_RESULT, result', result);
+      const newstate = state.set('rawTransaction', result);
+      return newstate;
+    }
     case actions.SET_ERROR:
       return state.set('error', action.value);
     default:

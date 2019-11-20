@@ -45,6 +45,21 @@ class ParseHelper {
     });
   }
 
+  static createRawTransaction({
+    symbol, type, sender, receiver, value, data,
+  }) {
+    console.log(`ParseHelper::createRawTransaction is called, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, data: ${data}`);
+    return Parse.Cloud.run('createRawTransaction', {
+      symbol, type, sender, receiver, value, data,
+    }).then((res) => {
+      console.log(`ParseHelper::createRawTransaction received, res: ${JSON.stringify(res)}`);
+      return Promise.resolve(res);
+    }, (err) => {
+      console.log(err);
+      return Promise.reject(err);
+    });
+  }
+
   /**
    * Transform Parse errors to errors defined by this app
    * @param {object}     err        Parse error from response

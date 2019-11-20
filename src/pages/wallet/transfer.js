@@ -3,11 +3,14 @@ import {
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Parse from 'parse/react-native';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Button from '../../components/common/button/button';
+import Loader from '../../components/common/misc/loader';
 
 const styles = StyleSheet.create({
   headerView: {
@@ -191,11 +194,52 @@ export default class Transfer extends Component {
     super(props);
     this.state = {
       custom: false,
+      loading: false,
     };
+    this.sendTransaction = this.sendTransaction.bind(this);
+  }
+
+  async sendTransaction() {
+    console.log('transfer::sendTransaction');
+    this.setState({ loading: true });
+    this.a = 1;
+    const createRawTransaction = async () => {
+      console.log('transfer::sendTransaction, createRawTransaction');
+      const [symbol, type, sender, receiver, value, data] = ['RBTC', 'Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
+      const result = await Parse.Cloud.run('createRawTransaction', {
+        symbol, type, sender, receiver, value, data,
+      });
+      return result;
+    };
+    const sendSignedTransaction = async (rawTransaction) => {
+      console.log('transfer::sendTransaction, sendSignedTransaction');
+      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+      const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
+      const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+      const signedTransaction = await accountInfo.signTransaction(
+        rawTransaction, privateKey,
+      );
+      console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
+      const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];
+      console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
+      const result = await Parse.Cloud.run('sendSignedTransaction', {
+        name, hash, type,
+      });
+      return result;
+    };
+    try {
+      const rawTransaction = await createRawTransaction();
+      const result = await sendSignedTransaction(rawTransaction);
+      console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+    } catch (error) {
+      console.log(`sendTransaction, error: ${error.message}`);
+      this.setState({ loading: false });
+    }
+    this.setState({ loading: false });
   }
 
   render() {
-    const { custom } = this.state;
+    const { custom, loading } = this.state;
     const { navigation } = this.props;
     return (
       <ScrollView style={[flex.flex1]}>
@@ -214,6 +258,7 @@ export default class Transfer extends Component {
           </View>
         </View>
         <View style={styles.body}>
+          <Loader loading={loading} />
           <View style={styles.sectionContainer}>
             <Text style={styles.title1}>Sending</Text>
             <View style={styles.textInputView}>
@@ -253,11 +298,8 @@ export default class Transfer extends Component {
               text="COMFIRM"
               onPress={() => {
                 navigation.navigate('VerifyFingerprint', {
-                  verified: () => {
-                    // navigation.navigate('TransferCompleted');
-                    process.nextTick(() => {
-                      navigation.navigate('TransferCompleted');
-                    });
+                  verified: async () => {
+                    await this.sendTransaction();
                   },
                 });
               }}

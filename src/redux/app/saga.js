@@ -68,10 +68,31 @@ function* getTransactions(action) {
   }
 }
 
+function* createRawTransaction(action) {
+  const { payload } = action;
+  console.log('saga::createRawTransaction is triggered, payload: ', payload); // This is undefined
+  try {
+    const response = yield call(ParseHelper.getTransactionsByAddress, payload);
+    console.log('saga::createRawTransaction got response, response: ', response);
+    yield put({
+      type: actions.CREATE_RAW_TRANSATION_RESULT,
+      value: response,
+    });
+  } catch (err) {
+    console.log(err);
+    const message = yield call(ParseHelper.handleError, err);
+    yield put({
+      type: actions.SET_ERROR,
+      value: { message },
+    });
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
     takeEvery(actions.GET_TRANSACTIONS, getTransactions),
+    takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
   ]);
 }
