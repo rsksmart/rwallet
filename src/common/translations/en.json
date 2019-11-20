@@ -15,5 +15,7 @@
   "Select Wallet Currency": "Select Wallet Currency",
   "Recovery Phrase": "Recovery Phrase",
   "Verify Your Phrase": "Verify Your Phrase",
-  "Verify Phrase Success": "Verify Phrase Success"
+  "Verify Phrase Success": "Verify Phrase Success",
+  "Verify Fingerprint": "Verify Fingerprint",
+  "Verify Passcode": "Verify Passcode"
 }

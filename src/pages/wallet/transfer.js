@@ -252,7 +252,7 @@ export default class Transfer extends Component {
             <Button
               text="COMFIRM"
               onPress={() => {
-                navigation.navigate('VerifyPasscode', {
+                navigation.navigate('VerifyFingerprint', {
                   verified: () => {
                     // navigation.navigate('TransferCompleted');
                     process.nextTick(() => {

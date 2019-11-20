@@ -19,10 +19,10 @@ export default class VerifyPasscode extends Component {
 
     render() {
       const { navigation } = this.props;
-      const title = 'Enter New Passcode';
+      const title = 'Enter Passcode';
       return (
         <View style={[flex.flex1]}>
-          <Header title="Enter Passcode" goBack={navigation.goBack} />
+          <Header title="Verify Passcode" goBack={navigation.goBack} />
           <PasscodeModal
             title={title}
             ref={(ref) => { this.passcodeModal = ref; }}

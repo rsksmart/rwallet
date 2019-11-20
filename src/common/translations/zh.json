@@ -15,5 +15,7 @@
   "Select Wallet Currency": "选择钱包类型",
   "Recovery Phrase": "恢复密语",
   "Verify Your Phrase": "验证你的密语",
-  "Verify Phrase Success": "验证密语成功"
+  "Verify Phrase Success": "验证密语成功",
+  "Verify Fingerprint": "验证指纹",
+  "Verify Passcode": "验证密码"
 }

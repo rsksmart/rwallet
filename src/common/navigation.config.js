@@ -21,6 +21,7 @@ import WalletList from '../pages/wallet/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
 import VerifyPasscode from '../pages/wallet/verify.passcode';
+import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
@@ -299,6 +300,19 @@ const routeConfigMap = {
       path: 'VerifyPasscode',
       navigationOptions: () => ({
         headerTitle: 'VerifyPasscode',
+        headerRight: <Text />,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+        },
+      }),
+    },
+    VerifyFingerprint: {
+      screen: VerifyFingerprint,
+      path: 'VerifyFingerprint',
+      navigationOptions: () => ({
+        headerTitle: 'VerifyFingerprint',
         headerRight: <Text />,
         headerTitleStyle: {
           alignSelf: 'center',
