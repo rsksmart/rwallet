@@ -47,6 +47,7 @@ export default class StartPage extends Component {
       const { username } = appContext.data.user;
       const user = await ParseHelper.signInOrSignUp(username);
       await appContext.set('user', user);
+      appContext.user = user;
       this.setState({ loading: false });
       const { navigation } = this.props;
       navigation.navigate('PrimaryTabNavigator');
@@ -63,6 +64,7 @@ export default class StartPage extends Component {
     const username = await getUsername();
     const user = await ParseHelper.signInOrSignUp(username);
     await appContext.set('user', user);
+    appContext.user = user;
     this.setState({ loading: false });
     console.log(`signInOrSignUp, user: ${JSON.stringify(user)}`);
   }

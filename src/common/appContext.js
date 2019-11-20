@@ -1,6 +1,7 @@
 import I18n from 'react-native-i18n';
 import RNSecureStorage from 'rn-secure-storage';
 import storage from './storage';
+import ParseHelper from './parse';
 
 const appContext = {
   loadData() {
@@ -11,7 +12,11 @@ const appContext = {
     wallets: [],
     language: I18n.currentLocale(),
     user: null,
+    settings: {
+      fingerprint: false,
+    },
   },
+  user: null,
   async set(key, value) {
     this.data[key] = value;
     await storage.save('data', this.data);
@@ -44,7 +49,10 @@ const appContext = {
       console.log(err);
     });
   },
+  async saveSettings(settings) {
+    Object.assign(this.data.settings, settings);
+    await ParseHelper.uploadSettings(this.user, this.data.settings);
+  },
 };
-
 
 export default appContext;

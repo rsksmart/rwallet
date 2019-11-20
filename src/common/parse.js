@@ -69,7 +69,6 @@ class ParseHelper {
   static async uploadWallets(user, wallets) {
     if (user && user instanceof ParseUser) {
       user.set('wallets', wallets);
-
       await user.save();
     }
   }
@@ -83,7 +82,7 @@ class ParseHelper {
    */
   static async uploadSettings(user, settings) {
     if (user && user instanceof ParseUser) {
-      user.set('wallets', settings);
+      user.set('settings', [settings]);
       await user.save();
     }
   }
