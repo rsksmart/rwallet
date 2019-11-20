@@ -10,6 +10,7 @@ const appContext = {
     walletKeyId: 0,
     wallets: [],
     language: I18n.currentLocale(),
+    user: null,
   },
   async set(key, value) {
     this.data[key] = value;

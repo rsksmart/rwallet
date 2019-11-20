@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Button from '../../components/common/button/button';
 import TermRow from './term.row';
 
@@ -76,7 +77,14 @@ export default class TermsPage extends Component {
           <TouchableOpacity style={styles.completeTerms}>
             <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
           </TouchableOpacity>
-          <Button style={styles.button} text="COMFIRM & FINISH" onPress={() => {}} />
+          <Button
+            style={styles.button}
+            text="COMFIRM & FINISH"
+            onPress={() => {
+              const { navigation } = this.props;
+              navigation.navigate('PrimaryTabNavigator');
+            }}
+          />
         </View>
         <View style={styles.termsView}>
           <View style={styles.termsView2}>
@@ -95,3 +103,12 @@ export default class TermsPage extends Component {
     );
   }
 }
+
+TermsPage.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+};
