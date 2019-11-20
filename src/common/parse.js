@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
 
 const parseConfig = config && config.parse;
@@ -42,6 +43,7 @@ class ParseHelper {
         // No real password is needed because we only want to get access to Parse.User here to access related data
         user.set('username', appId);
         user.set('password', appId);
+        user.set('deviceId', DeviceInfo.getUniqueID());
 
         // TODO: other information needed to be set here.
 

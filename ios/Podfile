@@ -9,4 +9,6 @@ target 'rwallet' do
   
   pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
 
+  pod 'react-native-uuid-generator', :path => '../node_modules/react-native-uuid-generator'
+
 end
