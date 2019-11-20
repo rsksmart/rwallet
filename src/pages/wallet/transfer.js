@@ -7,7 +7,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
-
+import Button from '../../components/common/button/button';
 
 const styles = StyleSheet.create({
   headerView: {
@@ -182,7 +182,7 @@ const header = require('../../assets/images/misc/header.png');
 const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
 const address = require('../../assets/images/icon/address.png');
 
-export default class TransferCompleted extends Component {
+export default class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -248,13 +248,28 @@ export default class TransferCompleted extends Component {
               }}
             />
           </View>
+          <View style={styles.sectionContainer}>
+            <Button
+              text="COMFIRM"
+              onPress={() => {
+                navigation.navigate('VerifyPasscode', {
+                  verified: () => {
+                    // navigation.navigate('TransferCompleted');
+                    process.nextTick(() => {
+                      navigation.navigate('TransferCompleted');
+                    });
+                  },
+                });
+              }}
+            />
+          </View>
         </View>
       </ScrollView>
     );
   }
 }
 
-TransferCompleted.propTypes = {
+Transfer.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,

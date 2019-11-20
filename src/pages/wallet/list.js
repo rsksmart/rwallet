@@ -200,6 +200,9 @@ class WalletList extends Component {
             amount: '',
             price: null,
             icon: coin.icon,
+            r1Press: () => {
+              navigation.navigate('Transfer');
+            },
             r2Press: () => {
               navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
             },
