@@ -11,4 +11,6 @@ target 'rwallet' do
 
   pod 'react-native-uuid-generator', :path => '../node_modules/react-native-uuid-generator'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
 end

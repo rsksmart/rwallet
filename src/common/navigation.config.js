@@ -28,6 +28,7 @@ import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import ReduxTest from '../pages/wallet/redux.test';
 import Address from '../pages/wallet/address';
+import Scan from '../pages/wallet/scan';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -313,6 +314,19 @@ const routeConfigMap = {
       path: 'VerifyFingerprint',
       navigationOptions: () => ({
         headerTitle: 'VerifyFingerprint',
+        headerRight: <Text />,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+        },
+      }),
+    },
+    Scan: {
+      screen: Scan,
+      path: 'Scan',
+      navigationOptions: () => ({
+        headerTitle: 'Scan',
         headerRight: <Text />,
         headerTitleStyle: {
           alignSelf: 'center',

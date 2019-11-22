@@ -51,7 +51,7 @@ const appContext = {
   },
   async saveSettings(settings) {
     Object.assign(this.data.settings, settings);
-    await this.save('settings', this.data.settings);
+    await this.set('settings', this.data.settings);
     await ParseHelper.uploadSettings(this.user, this.data.settings);
   },
   async saveWallets(wallets) {

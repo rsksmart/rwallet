@@ -45,7 +45,7 @@ export default function Header({ title, goBack }) {
     );
   }
   return (
-    <View>
+    <View style={{ height: 335 }}>
       <Image source={header} />
       <View style={styles.headerView}>
         <Loc style={[styles.headerTitle]} text={title} key={`${Math.random()}`} />

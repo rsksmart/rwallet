@@ -195,6 +195,7 @@ export default class Transfer extends Component {
     this.state = {
       custom: false,
       loading: false,
+      to: null,
     };
     this.sendTransaction = this.sendTransaction.bind(this);
   }
@@ -239,7 +240,7 @@ export default class Transfer extends Component {
   }
 
   render() {
-    const { custom, loading } = this.state;
+    const { custom, loading, to } = this.state;
     const { navigation } = this.props;
     return (
       <ScrollView style={[flex.flex1]}>
@@ -269,8 +270,19 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.title2}>To</Text>
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput]} value="eh32jdsbahjiuGhu2bJ32E2eds " />
-              <Image source={address} style={styles.textInputIcon} />
+              <TextInput style={[styles.textInput]} value={to} />
+              <TouchableOpacity
+                style={styles.textInputIcon}
+                onPress={() => {
+                  navigation.navigate('Scan', {
+                    onQrcodeDetected: (data) => {
+                      this.setState({ to: data });
+                    },
+                  });
+                }}
+              >
+                <Image source={address} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.sectionContainer}>

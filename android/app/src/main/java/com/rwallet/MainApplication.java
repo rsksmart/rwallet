@@ -3,6 +3,8 @@ package com.rwallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.lewin.qrcode.QRScanReaderPackage;
+import org.reactnative.camera.RNCameraPackage;
 import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
 import com.taluttasgiran.rnsecurestorage.RNSecureStoragePackage;
@@ -33,6 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new QRScanReaderPackage(),
+            new RNCameraPackage(),
             new RNUUIDGeneratorPackage(),
             new ReactNativeFingerprintScannerPackage(),
             new RNSecureStoragePackage(),

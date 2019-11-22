@@ -108,6 +108,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
         abi {
@@ -139,6 +140,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-qr-scanner')
+    implementation project(':react-native-camera')
     implementation project(':react-native-uuid-generator')
     implementation project(':react-native-fingerprint-scanner')
     implementation project(':rn-secure-storage')
