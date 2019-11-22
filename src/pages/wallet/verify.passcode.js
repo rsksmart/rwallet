@@ -29,13 +29,12 @@ export default class VerifyPasscode extends Component {
             onPress={() => {
               navigation.goBack();
             }}
-            onFill={(passcode) => {
-              appContext.secureGet('passcode', (value) => {
-                if (passcode === value) {
-                  navigation.state.params.verified();
-                  navigation.goBack();
-                }
-              });
+            onFill={async (passcode) => {
+              const value = appContext.secureGet('passcode');
+              if (passcode === value) {
+                navigation.state.params.verified();
+                navigation.goBack();
+              }
             }}
           />
         </View>

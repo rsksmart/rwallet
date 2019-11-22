@@ -57,15 +57,14 @@ class WalletAddIndex extends Component {
       this.createWalletFlow = this.createWalletFlow.bind(this);
     }
 
-    createWalletFlow(page) {
+    async createWalletFlow(page) {
       const { navigation } = this.props;
-      appContext.secureGet('passcode', (value) => {
-        if (value === null) {
-          navigation.navigate('ResetPasscode', { page });
-        } else {
-          navigation.navigate(page);
-        }
-      });
+      const value = await appContext.secureGet('passcode');
+      if (value === null) {
+        navigation.navigate('ResetPasscode', { page });
+      } else {
+        navigation.navigate(page);
+      }
     }
 
     render() {

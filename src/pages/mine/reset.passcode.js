@@ -21,15 +21,14 @@ export default class ResetPasscode extends Component {
       };
     }
 
-    componentDidMount() {
-      appContext.secureGet('passcode', (value) => {
-        if (!value) {
-          this.setState({ flow: 'newPasscode' });
-        } else {
-          this.setState({ flow: 'oldPasscode' });
-        }
-      });
+    async componentDidMount() {
       this.passcodeModal.setModalVisible(true);
+      const value = await appContext.secureGet('passcode');
+      if (!value) {
+        this.setState({ flow: 'newPasscode' });
+      } else {
+        this.setState({ flow: 'oldPasscode' });
+      }
     }
 
     render() {
@@ -50,20 +49,19 @@ export default class ResetPasscode extends Component {
             onPress={() => {
               navigation.goBack();
             }}
-            onFill={(passcode) => {
+            onFill={async (passcode) => {
               if (flow === 'oldPasscode') {
-                appContext.secureGet('passcode', (value) => {
-                  if (passcode === value) {
-                    this.setState({ flow: 'newPasscode' });
-                  }
-                  this.passcodeModal.setModalVisible(true);
-                });
+                this.passcodeModal.setModalVisible(true);
+                const value = await appContext.secureGet('passcode');
+                if (value === passcode) {
+                  this.setState({ flow: 'newPasscode' });
+                }
               } else if (flow === 'newPasscode') {
                 this.passcodeModal.setModalVisible(true);
                 this.setState({ flow: 'confirmPasscode', newPasscode: passcode });
               } else if (flow === 'confirmPasscode') {
                 if (passcode === newPasscode) {
-                  appContext.secureSet('passcode', newPasscode);
+                  await appContext.secureSet('passcode', newPasscode);
                   navigation.navigate('ResetPasscodeSuccess', navigation.state.params);
                 } else {
                   this.passcodeModal.setModalVisible(true);

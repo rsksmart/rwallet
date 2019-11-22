@@ -5,10 +5,10 @@ import ParseHelper from './parse';
 
 const appContext = {
   loadData() {
-    this.walletKeyId = 0;
+    this.walletId = 0;
   },
   data: {
-    walletKeyId: 0,
+    walletId: 0,
     wallets: [],
     language: I18n.currentLocale(),
     user: null,
@@ -21,47 +21,52 @@ const appContext = {
     this.data[key] = value;
     await storage.save('data', this.data);
   },
-  secureSet(key, value, callback = null) {
-    RNSecureStorage.set(key, value, {}).then((res) => {
-      console.log(`RNSecureStorage.set, res: ${res}`);
-      if (callback) {
-        callback();
-      }
-    }, (err) => {
-      console.log(err);
-    });
+  async secureSet(key, value) {
+    await RNSecureStorage.set(key, value, {});
   },
-  secureGet(key, callback) {
-    RNSecureStorage.exists(key).then((res) => {
-      if (!res) {
-        callback(null);
-      } else {
-        RNSecureStorage.get(key).then((value) => {
-          console.log(`RNSecureStorage.get, key: ${key}`);
-          if (callback) {
-            callback(value);
-          }
-        }, (err) => {
-          console.log(err);
-        });
-      }
-    }, (err) => {
-      console.log(err);
-    });
+  async secureGet(key) {
+    const exists = await RNSecureStorage.exists(key);
+    if (!exists) {
+      return null;
+    }
+    const value = RNSecureStorage.get(key);
+    return value;
   },
   async saveSettings(settings) {
     Object.assign(this.data.settings, settings);
     await this.set('settings', this.data.settings);
+    // upload settings
     await ParseHelper.uploadSettings(this.user, this.data.settings);
   },
-  async saveWallets(wallets) {
-    await this.set('wallets', wallets);
+  async addWallet(wallet) {
+    const newWallet = wallet;
+    newWallet.id = this.data.walletId;
+    await this.setPhrase(newWallet.id, newWallet.phrase);
+    delete newWallet.phrase;
+    this.data.wallets.push(newWallet);
+    await this.set('wallets', this.data.wallets);
+    this.data.walletId += 1;
+    await this.set('walletId', this.data.walletId);
+    // TODO: if upload failed?
+    await this.uploadWallets();
+  },
+  async uploadWallets() {
     const uploadWallets = [];
-    wallets.forEach((wallet) => {
-      const item = { coins: wallet.coins };
+    this.data.wallets.forEach((wallet1) => {
+      const item = { id: wallet1.id, coins: wallet1.coins };
       uploadWallets.push(item);
     });
     await ParseHelper.uploadWallets(this.user, uploadWallets);
+    return this.data.walletId;
+  },
+  async setPhrase(walletId, phrase) {
+    const key = `rwallet_${walletId}`;
+    await this.secureSet(key, phrase);
+  },
+  async getPhrase(walletId) {
+    const key = `rwallet_${walletId}`;
+    const phrase = await this.secureGet(key);
+    return phrase;
   },
 };
 

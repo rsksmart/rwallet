@@ -24,7 +24,7 @@ const Application = {
     store.dispatch(
       actions.changeLanguage(data.language),
     );
-    walletManager.loadWallets();
+    await walletManager.loadWallets();
   },
   initLanguage() {
     const currentLocale = I18n.currentLocale();

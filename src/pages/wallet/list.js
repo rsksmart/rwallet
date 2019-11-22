@@ -189,8 +189,8 @@ class WalletList extends Component {
       };
 
       this.listData = [];
-      this.wallets.forEach((wallet, i) => {
-        const wal = { name: `Key ${i + 1}`, coins: [] };
+      this.wallets.forEach((wallet) => {
+        const wal = { name: `Key ${wallet.id}`, coins: [] };
         wallet.coins.forEach((coin) => {
           const item = {
             key: `${Math.random()}`,

@@ -245,13 +245,6 @@ export default class MineIndex extends Component {
     },
   ];
 
-  others = [
-    {
-      title: 'Log out',
-      icon: <Ionicons name="ios-log-out" size={30} style={{ color: '#4A4A4A' }} />,
-    },
-  ];
-
   render() {
     return (
       <ScrollView style={[flex.flex1, styles.scrollView]}>
@@ -276,13 +269,6 @@ export default class MineIndex extends Component {
             <Text style={styles.sectionTitle}>Join Community</Text>
             <FlatList
               data={this.joins}
-              renderItem={({ item }) => <Item data={item} />}
-              keyExtractor={() => `${Math.random()}`}
-            />
-          </View>
-          <View style={[styles.sectionContainer, { marginTop: 10, marginBottom: 70 }]}>
-            <FlatList
-              data={this.others}
               renderItem={({ item }) => <Item data={item} />}
               keyExtractor={() => `${Math.random()}`}
             />
