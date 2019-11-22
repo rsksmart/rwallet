@@ -197,15 +197,16 @@ export default class Transfer extends Component {
       loading: false,
       to: null,
     };
-    this.sendTransaction = this.sendTransaction.bind(this);
+    this.sendRskTransaction = this.sendRskTransaction.bind(this);
+    this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
   }
 
-  async sendTransaction() {
-    console.log('transfer::sendTransaction');
+  async sendRskTransaction() {
+    console.log('transfer::sendRskTransaction');
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
-      console.log('transfer::sendTransaction, createRawTransaction');
+      console.log('transfer::sendRskTransaction, createRawTransaction');
       const [symbol, type, sender, receiver, value, data] = ['RBTC', 'Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
       const result = await Parse.Cloud.run('createRawTransaction', {
         symbol, type, sender, receiver, value, data,
@@ -213,7 +214,47 @@ export default class Transfer extends Component {
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
-      console.log('transfer::sendTransaction, sendSignedTransaction');
+      console.log('transfer::sendRskTransaction, sendSignedTransaction');
+      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+      const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
+      const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+      const signedTransaction = await accountInfo.signTransaction(
+        rawTransaction, privateKey,
+      );
+      console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
+      const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];
+      console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
+      const result = await Parse.Cloud.run('sendSignedTransaction', {
+        name, hash, type,
+      });
+      return result;
+    };
+    try {
+      const rawTransaction = await createRawTransaction();
+      console.log(`sendRskTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
+      const result = await sendSignedTransaction(rawTransaction);
+      console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+    } catch (error) {
+      console.log(`sendTransaction, error: ${error.message}`);
+      this.setState({ loading: false });
+    }
+    this.setState({ loading: false });
+  }
+
+  async sendBtcTransaction() {
+    console.log('transfer::sendBtcTransaction');
+    this.setState({ loading: true });
+    this.a = 1;
+    const createRawTransaction = async () => {
+      console.log('transfer::sendBtcTransaction, createRawTransaction');
+      const [symbol, type, sender, receiver, value, data] = ['BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '0x918', ''];
+      const result = await Parse.Cloud.run('createRawTransaction', {
+        symbol, type, sender, receiver, value, data,
+      });
+      return result;
+    };
+    const sendSignedTransaction = async (rawTransaction) => {
+      console.log('transfer::sendBtcTransaction, sendSignedTransaction');
       const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
@@ -311,7 +352,7 @@ export default class Transfer extends Component {
               onPress={() => {
                 navigation.navigate('VerifyFingerprint', {
                   verified: async () => {
-                    await this.sendTransaction();
+                    await this.sendBtcTransaction();
                     navigation.navigate('TransferCompleted');
                   },
                 });
