@@ -6,11 +6,16 @@ import PropTypes from 'prop-types';
 import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
+
+
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
+
+const buffer = require('buffer');
+const bitcoin = require('bitcoinjs-lib');
 
 const styles = StyleSheet.create({
   headerView: {
@@ -247,23 +252,34 @@ export default class Transfer extends Component {
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
-      const [symbol, type, sender, receiver, value, data] = ['BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '0x918', ''];
+      const [symbol, type, sender, receiver, value, data] = [
+        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '0x918', '',
+      ];
       const result = await Parse.Cloud.run('createRawTransaction', {
         symbol, type, sender, receiver, value, data,
       });
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
+      const tx = rawTransaction;
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
-      const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
-      const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
-      const signedTransaction = await accountInfo.signTransaction(
-        rawTransaction, privateKey,
-      );
-      console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
-      const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];
-      console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
+      // 2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263
+      // 3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139
+      const privateKey = '2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263';
+      const buf = Buffer.from(privateKey, 'hex');
+      const keys = bitcoin.ECPair.fromPrivateKey(buf);
+      tx.pubkeys = [];
+      tx.signatures = tx.tosign.map((tosign) => {
+        tx.pubkeys.push(keys.publicKey.toString('hex'));
+        const signature = keys.sign(new buffer.Buffer(tosign, 'hex'));
+        const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
+        const hexStr = encodedSignature.toString('hex');
+        return hexStr;
+      });
+      console.log(`signedTransaction: ${JSON.stringify(tx)}`);
+      const [name, hash, type] = ['Bitcoin', tx, 'Testnet'];
+      console.log(`sendSignedTransaction, name: ${name}, type: ${type}`);
+      console.log(`sendSignedTransaction, hash: ${JSON.stringify(hash)}`);
       const result = await Parse.Cloud.run('sendSignedTransaction', {
         name, hash, type,
       });
