@@ -10,12 +10,9 @@ import {
   ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import flex from '../../assets/styles/layout.flex';
 
@@ -157,26 +154,6 @@ export default class MineIndex extends Component {
 
   settings = [
     {
-      title: 'Address Book',
-      icon: <Entypo name="location" size={iconSize} style={{ color: '#4A4A4A' }} />,
-      onPress: () => {
-        const { navigation } = this.props;
-        navigation.navigate('AddressBook');
-      },
-    },
-    {
-      title: 'Share rWallet',
-      icon: <Entypo name="share" size={iconSize} style={{ color: '#4A4A4A' }} />,
-    },
-    {
-      title: 'Notifications',
-      icon: <Ionicons name="ios-notifications" size={iconSize} style={{ color: '#4A4A4A' }} />,
-      onPress: () => {
-        const { navigation } = this.props;
-        navigation.navigate('Notifications');
-      },
-    },
-    {
       title: 'Language',
       icon: <MaterialIcons name="language" size={iconSize} style={{ color: '#4A4A4A' }} />,
       onPress: () => {
@@ -208,77 +185,36 @@ export default class MineIndex extends Component {
         navigation.navigate('TwoFactorAuth');
       },
     },
-    {
-      title: 'Lock',
-      icon: <MaterialIcons name="lock" size={iconSize} style={{ color: '#4A4A4A' }} />,
-    },
-    {
-      title: 'Help & Support',
-      icon: <Entypo name="help-with-circle" size={iconSize} style={{ color: '#4A4A4A' }} />,
-    },
-  ];
-
-  joins = [
-    {
-      title: 'Twitter',
-      icon: <FontAwesome name="twitter" size={30} style={{ color: '#039BE5' }} />,
-    },
-    {
-      title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={{ color: '#6FC062' }} />,
-    },
-    {
-      title: 'Facebook',
-      icon: <Entypo name="facebook-with-circle" size={30} style={{ color: '#3F51B5' }} />,
-    },
-    {
-      title: 'Discord',
-      icon: <FontAwesome5 name="discord" size={30} style={{ color: '#8C9EFF' }} />,
-    },
-    {
-      title: 'Reddit',
-      icon: <FontAwesome name="reddit" size={30} style={{ color: '#FF4500' }} />,
-    },
-    {
-      title: 'YouTube',
-      icon: <Entypo name="youtube-with-circle" size={30} style={{ color: '#D2142B' }} />,
-    },
   ];
 
   render() {
     return (
-      <ScrollView style={[flex.flex1, styles.scrollView]}>
-        <ImageBackground source={header} style={[{ height: 160, backgroundColor: 'red' }]} />
-        <Image source={avatar} style={styles.avatar} />
-        <View style={styles.nameView}>
-          <Text style={styles.name}>Jean Payene</Text>
-          <TouchableOpacity style={styles.nameEditView}>
-            <FontAwesome name="edit" size={25} style={styles.nameEdit} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.body}>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Settings</Text>
-            <FlatList
-              data={this.settings}
-              renderItem={({ item }) => <Item data={item} />}
-              keyExtractor={() => `${Math.random()}`}
-            />
+      <View style={flex.flex1}>
+        <ScrollView style={[flex.flex1, styles.scrollView]}>
+          <ImageBackground source={header} style={[{ height: 160, backgroundColor: 'red' }]} />
+          <Image source={avatar} style={styles.avatar} />
+          <View style={styles.nameView}>
+            <Text style={styles.name}>Jean Payene</Text>
+            <TouchableOpacity style={styles.nameEditView}>
+              <FontAwesome name="edit" size={25} style={styles.nameEdit} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Join Community</Text>
-            <FlatList
-              data={this.joins}
-              renderItem={({ item }) => <Item data={item} />}
-              keyExtractor={() => `${Math.random()}`}
-            />
+          <View style={[styles.body]}>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Settings</Text>
+              <FlatList
+                data={this.settings}
+                renderItem={({ item }) => <Item data={item} />}
+                keyExtractor={() => `${Math.random()}`}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
         <View style={styles.logoView}>
           <Text style={styles.powerby}>Powered by</Text>
           <Image source={rsk} />
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }
