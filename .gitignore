@@ -59,4 +59,4 @@ buck-out/
 
 coverage/
 
-__snapshots__/*.snap
+*.snap
