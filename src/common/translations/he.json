@@ -6,5 +6,16 @@
   "test3": {
     "text": "זהו עמוד הבדיקה 3",
     "button": "עבור אל ההגדרה"
-  }
+  },
+  "Language": "שפה",
+  "2FA": "אימות דו-גורמי",
+  "Reset Passcode": "אפס את קוד הסיסמה",
+  "Reset Passcode Success": "אפס את הצלחת קוד הגישה",
+  "Add Wallet": "Add Wallet",
+  "Select Wallet Currency": "Select Wallet Currency",
+  "Recovery Phrase": "Recovery Phrase",
+  "Verify Phrase Success": "Verify Phrase Success",
+  "Verify Fingerprint": "Verify Fingerprint",
+  "Verify Passcode": "Verify Passcode",
+  "Scan": "Scan"
 }

@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
+import appContext from '../../common/appContext';
+import Loader from '../../components/common/misc/loader';
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -50,32 +52,29 @@ export default class TwoFactorAuth extends Component {
 
     constructor(props) {
       super(props);
+      const { fingerprint } = appContext.data.settings;
       this.state = {
-        fingerprint: false,
+        fingerprint,
+        loading: false,
       };
     }
 
     render() {
-      let resetFingerprint = null;
-      const { fingerprint } = this.state;
+      const { fingerprint, loading } = this.state;
       const { navigation } = this.props;
-      if (fingerprint) {
-        resetFingerprint = (
-          <TouchableOpacity
-            style={styles.row}
-            onPress={() => {
-              navigation.navigate('ResetFingerprint');
-            }}
-          >
-            <Text style={styles.title}>Reset Fingerprint</Text>
-            <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
-          </TouchableOpacity>
-        );
-      }
       return (
         <View style={[flex.flex1]}>
-          <Header title="2FA" goBack={navigation.goBack} />
+          <Header
+            title="2FA"
+            goBack={async () => {
+              this.setState({ loading: true });
+              await appContext.saveSettings({ fingerprint });
+              this.setState({ loading: false });
+              navigation.goBack();
+            }}
+          />
           <View style={styles.body}>
+            <Loader loading={loading} />
             <TouchableOpacity
               style={styles.row}
               onPress={() => {
@@ -94,7 +93,6 @@ export default class TwoFactorAuth extends Component {
                 }}
               />
             </View>
-            {resetFingerprint}
           </View>
         </View>
       );

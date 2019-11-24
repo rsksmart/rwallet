@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
+import Rsk3 from 'rsk3';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
 import Input from '../../components/common/input/input';
@@ -141,13 +142,22 @@ class Test1 extends Component {
     getServerInfo();
   }
 
+  onGetTransactionsPress() {
+    const { getTransactions } = this.props;
+    console.log('this.props,', this.props);
+
+    console.log('button pressed. getServerInfo:', getTransactions);
+    const [symbol, type, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
+    getTransactions(symbol, type, address);
+  }
+
   async save(k, v, id) {
     this.a = 1;
     await storage.save(k, v, id);
   }
 
   render() {
-    const { navigation, serverVersion } = this.props;
+    const { navigation, serverVersion, transactions } = this.props;
     return (
       <View style={[flex.flex1]}>
         <ScrollView style={{ marginBottom: 5 }}>
@@ -167,8 +177,101 @@ class Test1 extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Pages</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  const symbol = 'RBTC';
+                  const type = 'Testnet';
+                  const sender = '0x2cf0028790Eed9374fcE149F0dE3449128738cF4';
+                  const receiver = '0xf08f6c2eac2183dfc0a5910c58c186496f32498d';
+                  const value = '0x9184e72a000';
+                  const data = '';
+                  Parse.Cloud.run('createRawTransaction', {
+                    symbol, type, sender, receiver, value, data,
+                  }).then(async (result) => {
+                    console.log(`createRawTransaction, result: ${JSON.stringify(result)}`);
+                    const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+                    const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
+                    const rawTransaction = result;
+                    // {
+                    //   from: sender,
+                    //   to: receiver,
+                    //   value: Rsk3.utils.toHex(Number(result.value)),
+                    //   nonce: Rsk3.utils.toHex(result.nonce),
+                    //   gasPrice: result.gasPrice,
+                    //   data: '',
+                    // };
+                    // rawTransaction.chainId = result.chainId;
+                    // rawTransaction.gas = result.gas;
+                    // 3. Sign the rawTransaction with a specific private key
+                    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+                    const signedTransaction = await accountInfo.signTransaction(
+                      rawTransaction, privateKey,
+                    );
+                    console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
+                    const name = 'Rootstock';
+                    const hash = signedTransaction.rawTransaction;
+                    console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
+                    Parse.Cloud.run('sendSignedTransaction', {
+                      name, hash, type,
+                    }).then((result1) => {
+                      console.log(`sendSignedTransaction, result: ${JSON.stringify(result1)}`);
+                    }).catch((reason) => {
+                      console.log(reason);
+                    });
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>createRawTransaction</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  Parse.Cloud.run('getServerInfo', {}).then((result) => {
+                    console.log(result);
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>getServerInfo</Text>
+              </TouchableOpacity>
+              <Text>{`transactions: ${transactions.length}`}</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  this.onGetTransactionsPress();
+                }}
+              >
+                <Text style={styles.text}>saga getTransactionsByAddress</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  const symbol = 'RBTC';
+                  const type = 'Testnet';
+                  const address = '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB';
+                  Parse.Cloud.run('getTransactionsByAddress', { symbol, type, address }).then((result) => {
+                    console.log(result);
+                  }).catch((reason) => {
+                    console.log(reason);
+                  });
+                }}
+              >
+                <Text style={styles.text}>getTransactionsByAddress</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={async () => {}}>
                 <Text style={styles.text}>RSK</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  navigation.navigate('ReduxTest');
+                }}
+              >
+                <Text style={styles.text}>Redux Test</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
@@ -436,10 +539,14 @@ class Test1 extends Component {
 
 const mapStateToProps = (state) => ({
   serverVersion: state.App.get('serverVersion'),
+  transactions: state.App.get('transactions'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getServerInfo: () => dispatch(appActions.getServerInfo()),
+  getTransactions: (symbol, type, address) => dispatch(
+    appActions.getTransactions(symbol, type, address),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Test1);
@@ -452,10 +559,15 @@ Test1.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   serverVersion: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  transactions: PropTypes.array,
   getServerInfo: PropTypes.func,
+  getTransactions: PropTypes.func,
 };
 
 Test1.defaultProps = {
   serverVersion: undefined,
   getServerInfo: undefined,
+  getTransactions: undefined,
+  transactions: [],
 };

@@ -83,29 +83,32 @@ export default class PasscodeModal extends Component {
   constructor(props) {
     super(props); // 这一句不能省略，照抄即可
     this.state = {
-      animationType: 'fade', // none slide fade
-      modalVisible: false, // 模态场景是否可见
-      transparent: true, // 是否透明显示
+      animationType: 'fade',
+      modalVisible: false,
+      transparent: true,
       passcode: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
   }
 
   onPressButton(i) {
-    const { passcode } = this.state;
-    if (passcode.length > 4) {
-      return;
+    let { passcode } = this.state;
+    passcode += i;
+    this.setState({ passcode });
+    if (passcode.length >= 4) {
+      const { onFill } = this.props;
+      this.setModalVisible(false);
+      if (onFill) {
+        onFill(passcode);
+      }
     }
-    this.setState({ passcode: passcode + i });
   }
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible, passcode: '' });
   }
 
-  startShow = () => {
-    //   alert('开始显示了');
-  }
+  startShow = () => {}
 
   render() {
     const {
@@ -135,7 +138,7 @@ export default class PasscodeModal extends Component {
       dots.push(t);
     }
 
-    const { onPress } = this.props;
+    const { onPress, title } = this.props;
     return (
       <Modal
         animationType={animationType}
@@ -149,7 +152,7 @@ export default class PasscodeModal extends Component {
         <View style={styles.background} />
         <TouchableHighlight style={styles.container}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={styles.title}>Enter Passcode</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.dotRow}>
               {dots}
             </View>
@@ -178,8 +181,12 @@ export default class PasscodeModal extends Component {
 
 PasscodeModal.propTypes = {
   onPress: PropTypes.func,
+  onFill: PropTypes.func,
+  title: PropTypes.string,
 };
 
 PasscodeModal.defaultProps = {
   onPress: null,
+  onFill: null,
+  title: 'Enter Passcode',
 };

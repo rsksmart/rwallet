@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
+import appContext from '../../common/appContext';
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -62,13 +63,29 @@ export default class Currency extends Component {
       },
     ];
 
+    constructor(props) {
+      super(props);
+      const { currency } = appContext.data.settings;
+      this.state = { currency };
+    }
+
+    onChange(index) {
+      this.a = 1;
+      const currencys = ['ARS', 'USD', 'RMB', 'KRW', 'JRY', 'GBP'];
+      appContext.saveSettings({ currency: currencys[index] });
+    }
+
     render() {
+      const { currency } = this.state;
+      const selected = {
+        ARS: 0, USD: 1, RMB: 2, KRW: 3, JRY: 4, GBP: 5,
+      }[currency];
       const { navigation } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header title="Language" goBack={navigation.goBack} />
           <View style={styles.listView}>
-            <SelectionList data={this.listData} />
+            <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
           </View>
         </ScrollView>
       );

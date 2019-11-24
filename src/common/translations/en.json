@@ -6,5 +6,17 @@
   "test3": {
     "text": "This is the test page 3",
     "button": "Go to Setting"
-  }
+  },
+  "Language": "Language",
+  "2FA": "2FA",
+  "Reset Passcode": "Reset Passcode",
+  "Reset Passcode Success": "Reset Passcode Success",
+  "Add Wallet": "Add Wallet",
+  "Select Wallet Currency": "Select Wallet Currency",
+  "Recovery Phrase": "Recovery Phrase",
+  "Verify Your Phrase": "Verify Your Phrase",
+  "Verify Phrase Success": "Verify Phrase Success",
+  "Verify Fingerprint": "Verify Fingerprint",
+  "Verify Passcode": "Verify Passcode",
+  "Scan": "Scan"
 }

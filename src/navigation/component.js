@@ -5,7 +5,9 @@ import { Provider } from '@ant-design/react-native';
 import { Root } from 'native-base';
 
 import UpdateModal from '../components/update/update.modal';
-import Start from '../pages/root/start';
+// import Start from '../pages/root/start';
+import Start from '../pages/start/start';
+import TermsPage from '../pages/start/terms';
 import PrimaryTabNavigatorComp from './tab.primary';
 import flex from '../assets/styles/layout.flex';
 
@@ -15,13 +17,17 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
       screen: Start,
       path: 'start',
     },
+    TermsPage: {
+      screen: TermsPage,
+      path: 'terms',
+    },
     PrimaryTabNavigator: {
       screen: PrimaryTabNavigatorComp,
       path: 'tab',
     },
   },
   {
-    initialRouteName: 'PrimaryTabNavigator',
+    initialRouteName: 'Start',
   },
 ));
 

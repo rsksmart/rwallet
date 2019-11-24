@@ -58,7 +58,7 @@ export default class VerifyPhraseSuccess extends Component {
     render() {
       return (
         <View style={[flex.flex1]}>
-          <Header title="Verify Your Phrase" />
+          <Header title="Verify Phrase Success" />
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
             <Text style={styles.title}>Your recovery phrase is verified</Text>

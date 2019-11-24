@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, FlatList,
+  View, Text, StyleSheet, TouchableOpacity,
+  ScrollView, Image, FlatList, RefreshControl, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import moment from 'moment';
 import { Card, CardItem, Body } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import flex from '../../assets/styles/layout.flex';
+import appActions from '../../redux/app/actions';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -202,7 +206,7 @@ Item.propTypes = {
   datetime: PropTypes.string.isRequired,
 };
 
-export default class History extends Component {
+class History extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -228,11 +232,69 @@ export default class History extends Component {
       },
     ];
 
+    constructor(props) {
+      super(props);
+      this.onRefresh = this.onRefresh.bind(this);
+    }
+
+    componentDidMount() {
+      this.onRefresh();
+    }
+
+    onRefresh() {
+      this.a = 1;
+      const { getTransactions } = this.props;
+      const [symbol, type, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
+      getTransactions(symbol, type, address);
+    }
+
+
     render() {
-      const { navigation } = this.props;
+      const { navigation, transactions, isLoading } = this.props;
+      this.listData = [];
+      if (transactions) {
+        transactions.forEach((transaction) => {
+          const item = {
+            type: 'Sent',
+            icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
+            amount: '0.3BTC',
+            datetime: moment(transaction.timestamp).format('MMM D. YYYY'),
+          };
+          this.listData.push(item);
+        });
+      }
+
+      let listView = <ActivityIndicator size="small" color="#00ff00" />;
+      if (transactions) {
+        listView = (
+          <FlatList
+            data={this.listData}
+            renderItem={({ item }) => (
+              <Item
+                title={item.type}
+                icon={item.icon}
+                amount={item.amount}
+                datetime={item.datetime}
+                onPress={item.onPress}
+              />
+            )}
+            keyExtractor={() => `${Math.random()}`}
+          />
+        );
+      }
+
       return (
         <View style={[flex.flex1]}>
-          <ScrollView>
+          <ScrollView refreshControl={(
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={() => {
+                this.onRefresh();
+              }}
+              title="Loading..."
+            />
+          )}
+          >
             <View style={[{ height: 300 }]}>
               <Image source={header} />
               <View style={styles.headerView}>
@@ -279,23 +341,11 @@ export default class History extends Component {
                 color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
               }}
               >
-Recent
+                Recent
               </Text>
             </View>
             <View style={styles.sectionContainer}>
-              <FlatList
-                data={this.listData}
-                renderItem={({ item }) => (
-                  <Item
-                    title={item.type}
-                    icon={item.icon}
-                    amount={item.amount}
-                    datetime={item.datetime}
-                    onPress={item.onPress}
-                  />
-                )}
-                keyExtractor={() => `${Math.random()}`}
-              />
+              {listView}
             </View>
           </ScrollView>
         </View>
@@ -310,4 +360,25 @@ History.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  transactions: PropTypes.arrayOf(PropTypes.shape({})),
+  getTransactions: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
 };
+
+History.defaultProps = {
+  transactions: null,
+  isLoading: false,
+};
+
+const mapStateToProps = (state) => ({
+  transactions: state.App.get('transactions'),
+  isLoading: state.App.get('isLoading'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getTransactions: (symbol, type, address) => dispatch(
+    appActions.getTransactions(symbol, type, address),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(History);

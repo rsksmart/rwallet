@@ -157,11 +157,14 @@ export default class SwipableButtonList extends Component {
                 styles.backRightBtn,
                 styles.backRightBtnLeft,
               ]}
-              onPress={() => this.closeRow(rowMap, data1.item.key)}
+              onPress={() => {
+                this.listView.safeCloseOpenRow();
+                if (data1.item.r1Press) {
+                  data1.item.r1Press();
+                }
+              }}
             >
-              <Text style={styles.backText}>
-                            Send
-              </Text>
+              <Text style={styles.backText}>Send</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -175,9 +178,7 @@ export default class SwipableButtonList extends Component {
                 }
               }}
             >
-              <Text style={styles.backText}>
-                            Receive
-              </Text>
+              <Text style={styles.backText}>Receive</Text>
             </TouchableOpacity>
           </View>
         )}

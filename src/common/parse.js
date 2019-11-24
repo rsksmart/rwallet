@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
 
 const parseConfig = config && config.parse;
@@ -42,6 +43,7 @@ class ParseHelper {
         // No real password is needed because we only want to get access to Parse.User here to access related data
         user.set('username', appId);
         user.set('password', appId);
+        user.set('deviceId', DeviceInfo.getUniqueID());
 
         // TODO: other information needed to be set here.
 
@@ -67,7 +69,6 @@ class ParseHelper {
   static async uploadWallets(user, wallets) {
     if (user && user instanceof ParseUser) {
       user.set('wallets', wallets);
-
       await user.save();
     }
   }
@@ -81,10 +82,20 @@ class ParseHelper {
    */
   static async uploadSettings(user, settings) {
     if (user && user instanceof ParseUser) {
-      user.set('wallets', settings);
-
+      user.set('settings', [settings]);
       await user.save();
     }
+  }
+
+  static getTransactionsByAddress({ symbol, type, address }) {
+    console.log(`ParseHelper::getTransactionsByAddress is called, symbol: ${symbol}, type: ${type}, address: ${address}`);
+    return Parse.Cloud.run('getTransactionsByAddress', { symbol, type, address }).then((res) => {
+      console.log(`ParseHelper::getTransactionsByAddress received, res: ${JSON.stringify(res)}`);
+      return Promise.resolve(res);
+    }, (err) => {
+      console.log(err);
+      return Promise.reject(err);
+    });
   }
 
   /**
@@ -100,8 +111,15 @@ class ParseHelper {
   static createRawTransaction({
     symbol, type, sender, receiver, value, data,
   }) {
+    console.log(`ParseHelper::createRawTransaction is called, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, data: ${data}`);
     return Parse.Cloud.run('createRawTransaction', {
       symbol, type, sender, receiver, value, data,
+    }).then((res) => {
+      console.log(`ParseHelper::createRawTransaction received, res: ${JSON.stringify(res)}`);
+      return Promise.resolve(res);
+    }, (err) => {
+      console.log(err);
+      return Promise.reject(err);
     });
   }
 

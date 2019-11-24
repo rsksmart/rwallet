@@ -11,6 +11,7 @@ import CoinTypeList from '../../components/wallet/coin.type.list';
 import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
+import Loader from '../../components/common/misc/loader';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -60,7 +61,15 @@ export default class WalletSelectCurrency extends Component {
       },
     ];
 
+    constructor(props) {
+      super(props);
+      this.state = {
+        loading: false,
+      };
+    }
+
     render() {
+      const { loading } = this.state;
       const { navigation } = this.props;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       return (
@@ -71,6 +80,7 @@ export default class WalletSelectCurrency extends Component {
             <CoinTypeList data={this.mainnet} />
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>
+            <Loader loading={loading} />
             <View style={styles.buttonView}>
               <Button
                 text="CREATE"
@@ -83,7 +93,9 @@ export default class WalletSelectCurrency extends Component {
                   }
                   const wallet = walletManager.createWallet(phrases, null, coins);
                   if (phrases) {
+                    this.setState({ loading: true });
                     await walletManager.addWallet(wallet);
+                    this.setState({ loading: false });
                     const resetAction = StackActions.reset({
                       index: 1,
                       actions: [

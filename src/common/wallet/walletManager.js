@@ -8,21 +8,25 @@ const walletManager = {
     return wallet;
   },
   async addWallet(wallet) {
-    this.wallets.push(wallet);
-    await this.saveWallets();
+    const newWallet = wallet;
+    this.wallets.push(newWallet);
+    const coins = [];
+    newWallet.coins.forEach((coin) => {
+      coins.push({ type: coin.type, address: coin.address });
+    });
+    const item = { phrase: newWallet.mnemonic.phrase, coins };
+    const walletId = await appContext.addWallet(item);
+    newWallet.walletId = walletId;
+    return walletId;
   },
-  async saveWallets() {
-    const wallets = [];
-    for (let i = 0; i < this.wallets.length; i += 1) {
-      wallets.push({ phrase: this.wallets[i].phrase });
-    }
-    await appContext.set('wallets', wallets);
-  },
-  loadWallets() {
+  async loadWallets() {
     const { wallets } = appContext.data;
     for (let i = 0; i < wallets.length; i += 1) {
       const item = wallets[i];
-      const wallet = Wallet.create('', item.phrase);
+      // eslint-disable-next-line no-await-in-loop
+      const phrase = await appContext.getPhrase(item.id);
+      const wallet = Wallet.create('', phrase);
+      wallet.id = item.id;
       this.wallets.push(wallet);
     }
   },

@@ -57,7 +57,7 @@ export default class TouchSensorModal extends Component {
     }
 
     render() {
-      const { onPress } = this.props;
+      const { onPress, onUsePasscodePress } = this.props;
       const { animationType, transparent, modalVisible } = this.state;
       return (
         <Modal
@@ -81,6 +81,15 @@ export default class TouchSensorModal extends Component {
             <View style={styles.panel}>
               <Text style={styles.title}>Touch Sensor</Text>
               <Image style={styles.finger} source={finger} />
+              <TouchableOpacity onPress={() => {
+                if (onUsePasscodePress) {
+                  this.setModalVisible(false);
+                  onUsePasscodePress();
+                }
+              }}
+              >
+                <Text style={styles.title}>Use passcode</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </Modal>
@@ -90,8 +99,10 @@ export default class TouchSensorModal extends Component {
 
 TouchSensorModal.propTypes = {
   onPress: PropTypes.func,
+  onUsePasscodePress: PropTypes.func,
 };
 
 TouchSensorModal.defaultProps = {
   onPress: null,
+  onUsePasscodePress: null,
 };

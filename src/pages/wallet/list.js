@@ -189,8 +189,8 @@ class WalletList extends Component {
       };
 
       this.listData = [];
-      this.wallets.forEach((wallet, i) => {
-        const wal = { name: `Key ${i + 1}`, coins: [] };
+      this.wallets.forEach((wallet) => {
+        const wal = { name: `Key ${wallet.id}`, coins: [] };
         wallet.coins.forEach((coin) => {
           const item = {
             key: `${Math.random()}`,
@@ -200,6 +200,9 @@ class WalletList extends Component {
             amount: '',
             price: null,
             icon: coin.icon,
+            r1Press: () => {
+              navigation.navigate('Transfer');
+            },
             r2Press: () => {
               navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
             },

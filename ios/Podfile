@@ -1,0 +1,16 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'rwallet' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for rwallet
+  
+  pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
+
+  pod 'react-native-uuid-generator', :path => '../node_modules/react-native-uuid-generator'
+
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+end

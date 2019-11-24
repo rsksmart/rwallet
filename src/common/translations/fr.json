@@ -6,5 +6,16 @@
   "test3": {
     "text": "Ceci est la page de test 3",
     "button": "Aller au réglage"
-  }
+  },
+  "Language": "la langue",
+  "2FA": "Authentification",
+  "Reset Passcode": "Réinitialiser le code",
+  "Reset Passcode Success": "Réinitialiser le code réussi",
+  "Add Wallet": "Add Wallet",
+  "Select Wallet Currency": "Select Wallet Currency",
+  "Recovery Phrase": "Recovery Phrase",
+  "Verify Phrase Success": "Verify Phrase Success",
+  "Verify Fingerprint": "Verify Fingerprint",
+  "Verify Passcode": "Verify Passcode",
+  "Scan": "Scan"
 }

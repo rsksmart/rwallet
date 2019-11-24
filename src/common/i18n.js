@@ -5,15 +5,14 @@ import I18n from 'react-native-i18n';
 import en from './translations/en.json';
 import he from './translations/he.json';
 import fr from './translations/fr.json';
+import zh from './translations/zh.json';
 
 // Should the app fallback to English if user locale doesn't exists
 I18n.fallbacks = true;
 
 // Define the supported translations
 I18n.translations = {
-  en,
-  he,
-  fr,
+  en, he, fr, zh,
 };
 
 const currentLocale = I18n.currentLocale();

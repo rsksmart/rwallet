@@ -56,14 +56,19 @@ Item.defaultProps = {
 export default class SelectionList extends Component {
   constructor(props) {
     super(props);
+    const { selected } = this.props;
     this.state = {
-      selectedIndex: null,
+      selectedIndex: selected,
     };
     this.onPress = this.onPress.bind(this);
   }
 
   onPress(index) {
+    const { onChange } = this.props;
     this.setState({ selectedIndex: index });
+    if (onChange) {
+      onChange(index);
+    }
   }
 
   render() {
@@ -96,4 +101,11 @@ export default class SelectionList extends Component {
 
 SelectionList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape(Item.propTypes)).isRequired,
+  onChange: PropTypes.func,
+  selected: PropTypes.number,
+};
+
+SelectionList.defaultProps = {
+  onChange: null,
+  selected: 0,
 };

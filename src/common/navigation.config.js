@@ -6,12 +6,6 @@ import React from 'react';
 import common from './common';
 import BackBtn from '../components/common/buttons/back.btn.stateless';
 
-import Setting from '../pages/mine/setting/mine.setting';
-import Version from '../pages/mine/version/mine.version';
-
-import Test1 from '../pages/test/test1';
-import Test2 from '../pages/test/test2';
-import Test3 from '../pages/test/test3';
 import WalletAddIndex from '../pages/wallet/add.index';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
 import WalletCreate from '../pages/wallet/create';
@@ -20,23 +14,21 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase';
 import WalletList from '../pages/wallet/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
+import VerifyPasscode from '../pages/wallet/verify.passcode';
+import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
-import Address from '../pages/wallet/address';
+import Scan from '../pages/wallet/scan';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
-import AddressBook from '../pages/mine/address.book';
-import Notifications from '../pages/mine/notifications';
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import ResetPasscode from '../pages/mine/reset.passcode';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
-import ResetFingerprint from '../pages/mine/reset.fingerprint';
-import ResetFingerprintSuccess from '../pages/mine/reset.fingerprint.success';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -57,33 +49,6 @@ const defaultNavigationOptions = () => ({ navigation }) => {
 
 const routeConfigMap = {
   home: {
-    Test1: {
-      screen: Test1,
-      path: 'Test1',
-      navigationOptions: () => ({
-        headerTitle: 'Testing 1 (dev)',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    Test2: {
-      screen: Test2,
-      path: 'Test2',
-      navigationOptions: () => ({
-        headerTitle: 'Testing 2 (dev)',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
     WalletAddIndex: {
       screen: WalletAddIndex,
       path: 'WalletAddIndex',
@@ -266,11 +231,37 @@ const routeConfigMap = {
         },
       }),
     },
-    Address: {
-      screen: Address,
-      path: 'Address',
+    VerifyPasscode: {
+      screen: VerifyPasscode,
+      path: 'VerifyPasscode',
       navigationOptions: () => ({
-        headerTitle: 'Address',
+        headerTitle: 'VerifyPasscode',
+        headerRight: <Text />,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+        },
+      }),
+    },
+    VerifyFingerprint: {
+      screen: VerifyFingerprint,
+      path: 'VerifyFingerprint',
+      navigationOptions: () => ({
+        headerTitle: 'VerifyFingerprint',
+        headerRight: <Text />,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+        },
+      }),
+    },
+    Scan: {
+      screen: Scan,
+      path: 'Scan',
+      navigationOptions: () => ({
+        headerTitle: 'Scan',
         headerRight: <Text />,
         headerTitleStyle: {
           alignSelf: 'center',
@@ -281,45 +272,11 @@ const routeConfigMap = {
     },
   },
   mine: {
-    Test3: {
-      screen: Test3,
-      path: 'Test3',
-      navigationOptions: () => ({
-        headerTitle: 'Testing 3 (dev)',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    Setting: {
-      screen: Setting,
-    },
-    Version: {
-      screen: Version,
-    },
     MineIndex: {
       screen: MineIndex,
       path: 'MineIndex',
       navigationOptions: () => ({
         headerTitle: 'Mine',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    Notifications: {
-      screen: Notifications,
-      path: 'Notifications',
-      navigationOptions: () => ({
-        headerTitle: 'Notifications',
         headerRight: <Text />,
         headerLeft: <Text />,
         headerTitleStyle: {
@@ -390,48 +347,6 @@ const routeConfigMap = {
       path: 'ResetPasscodeSuccess',
       navigationOptions: () => ({
         headerTitle: 'ResetPasscode',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    ResetFingerprint: {
-      screen: ResetFingerprint,
-      path: 'ResetFingerprint',
-      navigationOptions: () => ({
-        headerTitle: 'ResetFingerprint',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    ResetFingerprintSuccess: {
-      screen: ResetFingerprintSuccess,
-      path: 'ResetFingerprintSuccess',
-      navigationOptions: () => ({
-        headerTitle: 'ResetFingerprintSuccess',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
-      }),
-    },
-    AddressBook: {
-      screen: AddressBook,
-      path: 'AddressBook',
-      navigationOptions: () => ({
-        headerTitle: 'Address Book',
         headerRight: <Text />,
         headerLeft: <Text />,
         headerTitleStyle: {

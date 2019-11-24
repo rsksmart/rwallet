@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 
 export default class Start extends Component {
   async componentDidMount() {
-    await this.toPrimatyTab();
+    // await this.toPrimatyTab();
   }
 
   toPrimatyTab = async () => {
