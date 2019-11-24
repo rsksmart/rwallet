@@ -58,3 +58,5 @@ buck-out/
 *.jsbundle
 
 coverage/
+
+__snapshots__/*.snap
