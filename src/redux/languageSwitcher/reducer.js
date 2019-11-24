@@ -14,7 +14,7 @@ export default function (state = initState, action) {
     case actions.ACTIVATE_LANG_MODAL:
       return state;
     case actions.CHANGE_LANGUAGE:
-      appContext.set('language', action.language);
+      appContext.saveSettings({ language: action.language });
       I18n.locale = action.language;
       return state.set('language', action.language);
     default:
