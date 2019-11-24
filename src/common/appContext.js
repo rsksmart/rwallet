@@ -13,7 +13,9 @@ const appContext = {
     language: I18n.currentLocale(),
     user: null,
     settings: {
+      currency: 'USD',
       fingerprint: false,
+      language: 'en',
     },
   },
   user: null,
