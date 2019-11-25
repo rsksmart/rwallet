@@ -214,9 +214,15 @@ class WalletList extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, currency } = this.props;
       const accounts = [];
       const { listData } = this.state;
+
+      const currencySymbols = {
+        USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',
+      };
+      const currencySymbol = currencySymbols[currency];
+
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
         const section = (
@@ -238,7 +244,11 @@ class WalletList extends Component {
                   <Card style={styles.headerBoard}>
                     <CardItem>
                       <Body>
-                        <Text style={styles.myAssetsTitle}>My Assets ($)</Text>
+                        <Text style={styles.myAssetsTitle}>
+                        My Assets (
+                          {currencySymbol}
+                        )
+                        </Text>
                         <Text style={styles.myAssets}>173,586.3</Text>
                       </Body>
                     </CardItem>
@@ -283,10 +293,12 @@ WalletList.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   getPrice: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   prices: state.App.get('prices'),
+  currency: state.App.get('currency'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

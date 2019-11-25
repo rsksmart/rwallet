@@ -3,10 +3,11 @@ import {
   View, StyleSheet, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
-import appContext from '../../common/appContext';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Currency extends Component {
+class Currency extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -65,18 +66,17 @@ export default class Currency extends Component {
 
     constructor(props) {
       super(props);
-      const { currency } = appContext.data.settings;
-      this.state = { currency };
+      this.onChange = this.onChange.bind(this);
     }
 
     onChange(index) {
-      this.a = 1;
+      const { changeCurrency } = this.props;
       const currencys = ['ARS', 'USD', 'RMB', 'KRW', 'JRY', 'GBP'];
-      appContext.saveSettings({ currency: currencys[index] });
+      changeCurrency(currencys[index]);
     }
 
     render() {
-      const { currency } = this.state;
+      const { currency } = this.props;
       const selected = {
         ARS: 0, USD: 1, RMB: 2, KRW: 3, JRY: 4, GBP: 5,
       }[currency];
@@ -99,4 +99,18 @@ Currency.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  changeCurrency: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  currency: state.App.get('currency'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  changeCurrency: (currency) => dispatch(
+    appActions.changeCurrency(currency),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Currency);

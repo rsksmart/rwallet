@@ -2,6 +2,7 @@ import I18n from './i18n';
 import walletManager from './wallet/walletManager';
 import storage from './storage';
 import actions from '../redux/languageSwitcher/actions';
+import appActions from '../redux/app/actions';
 import store from '../redux/store';
 import appContext from './appContext';
 
@@ -22,7 +23,10 @@ const Application = {
     data = await storage.load({ key: 'data' });
     appContext.data = data;
     store.dispatch(
-      actions.changeLanguage(data.language),
+      actions.changeLanguage(data.settings.language),
+    );
+    store.dispatch(
+      appActions.changeCurrency(data.settings.currency),
     );
     await walletManager.loadWallets();
   },

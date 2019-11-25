@@ -12,6 +12,7 @@ const actions = {
   GET_PRICE: 'GET_PRICE',
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
   SET_ERROR: 'SET_ERROR',
+  CHANGE_CURRENCY: 'CHANGE_CURRENCY',
 
   // Functions definition
   loading: (isLoading) => ({
@@ -47,6 +48,10 @@ const actions = {
       payload: { symbols },
     };
   },
+  changeCurrency: (currency) => ({
+    type: actions.CHANGE_CURRENCY,
+    payload: { currency },
+  }),
 };
 
 export default actions;
