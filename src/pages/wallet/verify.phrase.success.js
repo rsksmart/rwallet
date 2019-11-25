@@ -72,9 +72,8 @@ export default class VerifyPhraseSuccess extends Component {
               onPress={async () => {
                 const { navigation } = this.props;
                 const resetAction = StackActions.reset({
-                  index: 1,
+                  index: 0,
                   actions: [
-                    NavigationActions.navigate({ routeName: 'Test1' }),
                     NavigationActions.navigate({ routeName: 'WalletList' }),
                   ],
                 });

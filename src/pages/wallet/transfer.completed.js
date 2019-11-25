@@ -114,9 +114,8 @@ export default class TransferCompleted extends Component {
             <Text style={styles.text}>Your transaction is on its way.</Text>
             <TouchableOpacity onPress={() => {
               const resetAction = StackActions.reset({
-                index: 1,
+                index: 0,
                 actions: [
-                  NavigationActions.navigate({ routeName: 'Test1' }),
                   NavigationActions.navigate({ routeName: 'WalletList' }),
                 ],
               });

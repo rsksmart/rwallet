@@ -97,9 +97,8 @@ export default class WalletSelectCurrency extends Component {
                     await walletManager.addWallet(wallet);
                     this.setState({ loading: false });
                     const resetAction = StackActions.reset({
-                      index: 1,
+                      index: 0,
                       actions: [
-                        NavigationActions.navigate({ routeName: 'Test1' }),
                         NavigationActions.navigate({ routeName: 'WalletList' }),
                       ],
                     });

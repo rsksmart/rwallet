@@ -58,7 +58,6 @@
 		F037E5E01C259B8CACE81BE6 /* Pods_rwallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F273E21A8DEE0D578E9D50AB /* Pods_rwallet.framework */; };
 		F666281F6CC54E9BB290E27D /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D191498153C4033BE279003 /* libRNI18n.a */; };
 		F6C97E6D26A040A4B1528430 /* libRNScreens.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38FF2A9515D47FCB3EB54E1 /* libRNScreens.a */; };
-		F8D5F44B238B90DC006CFB8D /* libRNUUIDGenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D5F449238B909C006CFB8D /* libRNUUIDGenerator.a */; };
 		F8D5F45D238B92E2006CFB8D /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44D238B92E2006CFB8D /* Fontisto.ttf */; };
 		F8D5F45E238B92E2006CFB8D /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44E238B92E2006CFB8D /* Octicons.ttf */; };
 		F8D5F45F238B92E2006CFB8D /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44F238B92E2006CFB8D /* Feather.ttf */; };
@@ -75,6 +74,7 @@
 		F8D5F46A238B92E2006CFB8D /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F45A238B92E2006CFB8D /* EvilIcons.ttf */; };
 		F8D5F46B238B92E2006CFB8D /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F45B238B92E2006CFB8D /* SimpleLineIcons.ttf */; };
 		F8D5F46C238B92E2006CFB8D /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F45C238B92E2006CFB8D /* MaterialIcons.ttf */; };
+		F8DFE1F4238BB0B200FF3B7F /* libRNUUIDGenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D5F449238B909C006CFB8D /* libRNUUIDGenerator.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -580,7 +580,7 @@
 				F037E5E01C259B8CACE81BE6 /* Pods_rwallet.framework in Frameworks */,
 				548211A1EFD64C07A2FCBCE8 /* libRNSecureStorage.a in Frameworks */,
 				35FC883137314B0EAD8D6467 /* libReactNativeFingerprintScanner.a in Frameworks */,
-				F8D5F44B238B90DC006CFB8D /* libRNUUIDGenerator.a in Frameworks */,
+				F8DFE1F4238BB0B200FF3B7F /* libRNUUIDGenerator.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
