@@ -156,6 +156,19 @@ class ParseHelper {
 
     return { message };
   }
+
+    /**
+     * get balance of given addrArray which is array of addresses
+     * @param {array} addrArray
+     * @returns {array} collection of each given address information include balance,etc...
+     */
+  static async getBalanceByAddress(addrArray){
+    const Address = Parse.Object.extend('Address'); // 建立Address这个表的query
+    const query = new Parse.Query(Address);
+    query.containedIn("address", addrArray);
+    // 实际运行query
+    return await query.find();
+  }
 }
 
 export default ParseHelper;
