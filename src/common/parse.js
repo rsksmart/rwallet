@@ -137,6 +137,10 @@ class ParseHelper {
     return Parse.Cloud.run('getServerInfo');
   }
 
+  static getPrice(symbols) {
+    return Parse.Cloud.run('getPrice', { symbols });
+  }
+
   /**
    * Transform Parse errors to errors defined by this app
    * @param {object}     err        Parse error from response

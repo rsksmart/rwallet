@@ -6,6 +6,7 @@ const initState = new Map({
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
+  prices: {},
 });
 
 export default function appReducer(state = initState, action) {
@@ -36,6 +37,15 @@ export default function appReducer(state = initState, action) {
       const result = action.value;
       console.log('CREATE_RAW_TRANSATION_RESULT, result', result);
       const newstate = state.set('rawTransaction', result);
+      return newstate;
+    }
+    case actions.GET_PRICE_RESULT:
+    {
+      const result = action.value;
+      console.log('GET_PRICE_RESULT, result', result);
+      let prices = state.get('prices');
+      prices = Object.assign(prices, result);
+      const newstate = state.set('prices', prices);
       return newstate;
     }
     case actions.SET_ERROR:
