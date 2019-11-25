@@ -140,7 +140,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-qr-scanner')
     implementation project(':react-native-camera')
     implementation project(':react-native-uuid-generator')
     implementation project(':react-native-fingerprint-scanner')
