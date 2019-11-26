@@ -7,12 +7,12 @@ import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
 
-
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
+import common from '../../common/common';
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
@@ -201,18 +201,22 @@ export default class Transfer extends Component {
       custom: false,
       loading: false,
       to: null,
+      amount: '0.00000001',
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
   }
 
-  async sendRskTransaction() {
+  // symbol: RBTC, RIF
+  async sendRskTransaction(symbol) {
     console.log('transfer::sendRskTransaction');
     this.setState({ loading: true });
+    const { amount } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
-      const [symbol, type, sender, receiver, value, data] = ['RBTC', 'Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
+      const value = common.rbtcToWeiHex(amount);
+      const [type, sender, receiver, data] = ['Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
       const result = await Parse.Cloud.run('createRawTransaction', {
         symbol, type, sender, receiver, value, data,
       });
@@ -248,12 +252,14 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
+    const { amount } = this.state;
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
-      const [symbol, type, sender, receiver, value, data] = [
-        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '0x918', '',
+      const value = common.btcToSatoshiHex(amount);
+      const [symbol, type, sender, receiver, data] = [
+        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       const result = await Parse.Cloud.run('createRawTransaction', {
         symbol, type, sender, receiver, value, data,
@@ -296,7 +302,9 @@ export default class Transfer extends Component {
   }
 
   render() {
-    const { custom, loading, to } = this.state;
+    const {
+      custom, loading, to, amount,
+    } = this.state;
     const { navigation } = this.props;
     return (
       <ScrollView style={[flex.flex1]}>
@@ -319,7 +327,13 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.title1}>Sending</Text>
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput]} value="0.15 BTC (1500 USD)" />
+              <TextInput
+                style={[styles.textInput]}
+                value={amount}
+                onChangeText={(text) => {
+                  this.setState({ amount: text });
+                }}
+              />
               <Image source={currencyExchange} style={styles.textInputIcon} />
             </View>
           </View>
