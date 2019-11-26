@@ -5,8 +5,10 @@ import {
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
 
+const TABCOUNT = 2; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+
 const windowWidth = Dimensions.get('window').width;
-const tabWidth = windowWidth / 2;
+const tabWidth = windowWidth / TABCOUNT;
 
 const SpotLight = posed.View({
   route0: { x: tabWidth * 0.35 },
