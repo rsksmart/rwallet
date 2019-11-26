@@ -33,7 +33,7 @@ export default function Input({
 
 Input.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  style: PropTypes.object,
+  style: PropTypes.arrayOf(PropTypes.shape({})),
   placeholder: PropTypes.string,
   value: PropTypes.string,
   onSubmitEditing: PropTypes.func,
