@@ -263,9 +263,7 @@ export default class Transfer extends Component {
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      // 2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263
-      // 3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139
-      const privateKey = '2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263';
+      const privateKey = '3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139';
       const buf = Buffer.from(privateKey, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
@@ -273,7 +271,8 @@ export default class Transfer extends Component {
         tx.pubkeys.push(keys.publicKey.toString('hex'));
         const signature = keys.sign(new buffer.Buffer(tosign, 'hex'));
         const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
-        const hexStr = encodedSignature.toString('hex');
+        let hexStr = encodedSignature.toString('hex');
+        hexStr = hexStr.substr(0, hexStr.length - 2);
         return hexStr;
       });
       console.log(`signedTransaction: ${JSON.stringify(tx)}`);
@@ -333,7 +332,13 @@ export default class Transfer extends Component {
                 onPress={() => {
                   navigation.navigate('Scan', {
                     onQrcodeDetected: (data) => {
-                      this.setState({ to: data });
+                      const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                      const url = data;
+                      const result = parseUrl.exec(url);
+                      const host = result[3];
+                      const [address2, coin] = host.split('.');
+                      this.setState({ to: address2 });
+                      console.log(`coin: ${coin}`);
                     },
                   });
                 }}
@@ -365,13 +370,15 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Button
               text="COMFIRM"
-              onPress={() => {
-                navigation.navigate('VerifyFingerprint', {
-                  verified: async () => {
-                    await this.sendBtcTransaction();
-                    navigation.navigate('TransferCompleted');
-                  },
-                });
+              onPress={async () => {
+                // navigation.navigate('VerifyFingerprint', {
+                //   verified: async () => {
+                //     await this.sendBtcTransaction();
+                //     navigation.navigate('TransferCompleted');
+                //   },
+                // });
+                await this.sendBtcTransaction();
+                navigation.navigate('TransferCompleted');
               }}
             />
           </View>
