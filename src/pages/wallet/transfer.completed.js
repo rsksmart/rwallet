@@ -130,9 +130,8 @@ export default class TransferCompleted extends Component {
               text="BACK TO WALLET"
               onPress={() => {
                 const resetAction = StackActions.reset({
-                  index: 1,
+                  index: 0,
                   actions: [
-                    NavigationActions.navigate({ routeName: 'Test1' }),
                     NavigationActions.navigate({ routeName: 'WalletList' }),
                   ],
                 });

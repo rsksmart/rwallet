@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Entypo from 'react-native-vector-icons/Entypo';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
+import Input from '../../components/common/input/input';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 16,
-    height: 40,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
 
@@ -86,10 +87,11 @@ export default class WalletReceive extends Component {
 
     render() {
       const { navigation } = this.props;
-      const { address } = navigation.state.params;
+      const { address, coin } = navigation.state.params;
       const logo = navigation.state.params.icon;
-      const qrSize = 200;
-      const qrLogoSize = qrSize * 0.3;
+      const qrSize = 270;
+      const qrLogoSize = qrSize * 0.2;
+      const qrText = `rWalletAddress://${address}.${coin}`;
       return (
         <View style={[flex.flex1]}>
           <View style={[{ height: 100 }]}>
@@ -109,11 +111,11 @@ export default class WalletReceive extends Component {
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Text style={[styles.sectionTitle]}>Address</Text>
-              <View style={styles.address}><Text>{address}</Text></View>
+              <Input value={address} style={[{ height: 60 }]} />
             </View>
             <View style={[styles.sectionContainer, styles.qrView]}>
               <QRCode
-                value={address}
+                value={qrText}
                 logo={logo}
                 logoMargin={5}
                 size={qrSize}

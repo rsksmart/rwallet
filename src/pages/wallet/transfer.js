@@ -273,7 +273,8 @@ export default class Transfer extends Component {
         tx.pubkeys.push(keys.publicKey.toString('hex'));
         const signature = keys.sign(new buffer.Buffer(tosign, 'hex'));
         const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
-        const hexStr = encodedSignature.toString('hex');
+        let hexStr = encodedSignature.toString('hex');
+        hexStr = hexStr.substr(0, hexStr.length - 2);
         return hexStr;
       });
       console.log(`signedTransaction: ${JSON.stringify(tx)}`);
@@ -365,13 +366,15 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Button
               text="COMFIRM"
-              onPress={() => {
-                navigation.navigate('VerifyFingerprint', {
-                  verified: async () => {
-                    await this.sendBtcTransaction();
-                    navigation.navigate('TransferCompleted');
-                  },
-                });
+              onPress={async () => {
+                // navigation.navigate('VerifyFingerprint', {
+                //   verified: async () => {
+                //     await this.sendBtcTransaction();
+                //     navigation.navigate('TransferCompleted');
+                //   },
+                // });
+                await this.sendBtcTransaction();
+                navigation.navigate('TransferCompleted');
               }}
             />
           </View>

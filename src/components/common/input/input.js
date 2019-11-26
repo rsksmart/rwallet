@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Input({
-  style, placeholder, onChangeText, onSubmitEditing, value,
+  style, placeholder, onChangeText, onSubmitEditing, value, editable,
 }) {
   return (
     <TextInput
@@ -26,6 +26,7 @@ export default function Input({
       placeholder={placeholder}
       onSubmitEditing={onSubmitEditing}
       value={value}
+      editable={editable}
     />
   );
 }
@@ -37,6 +38,7 @@ Input.propTypes = {
   value: PropTypes.string,
   onSubmitEditing: PropTypes.func,
   onChangeText: PropTypes.func,
+  editable: PropTypes.bool,
 };
 
 Input.defaultProps = {
@@ -45,4 +47,5 @@ Input.defaultProps = {
   value: null,
   onSubmitEditing: null,
   onChangeText: null,
+  editable: true,
 };
