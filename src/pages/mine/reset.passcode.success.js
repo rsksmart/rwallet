@@ -7,6 +7,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
+import appContext from '../../common/appContext';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -68,15 +69,13 @@ export default class ResetPasscodeSuccess extends Component {
               text="BACK TO SETTING"
               onPress={async () => {
                 const { navigation } = this.props;
-                if (navigation.state.params.page === 'WalletRecovery' || navigation.state.params.page === 'WalletSelectCurrency') {
-                  const resetAction = StackActions.reset({
-                    index: 1,
-                    actions: [
-                      NavigationActions.navigate({ routeName: 'WalletList' }),
-                      NavigationActions.navigate({ routeName: navigation.state.params.page }),
-                    ],
-                  });
-                  navigation.dispatch(resetAction);
+                let page = null;
+                if (navigation.state.params) {
+                  page = navigation.state.params.page;
+                }
+                if (page && page === 'Transfer') {
+                  appContext.eventEmitter.emit('onFirstPasscode');
+                  navigation.navigate('Transfer');
                 } else {
                   const resetAction = StackActions.reset({
                     index: 1,

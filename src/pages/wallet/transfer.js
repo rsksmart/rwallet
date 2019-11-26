@@ -6,13 +6,15 @@ import PropTypes from 'prop-types';
 import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
-
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
 import common from '../../common/common';
+import appContext from '../../common/appContext';
+
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
@@ -202,9 +204,23 @@ export default class Transfer extends Component {
       loading: false,
       to: null,
       amount: '0.00000001',
+      memo: null,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
+    this.comfirm = this.comfirm.bind(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    appContext.eventEmitter.on('onFirstPasscode', async () => {
+      await this.sendBtcTransaction();
+      navigation.navigate('TransferCompleted');
+    });
+  }
+
+  componentWillUnmount() {
+    appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
   // symbol: RBTC, RIF
@@ -301,9 +317,46 @@ export default class Transfer extends Component {
     this.setState({ loading: false });
   }
 
+  async comfirm() {
+    this.a = 1;
+    const { navigation } = this.props;
+    // If user has not set passcode, then let he set passcode first.
+    const passcode = await appContext.secureGet('passcode');
+    if (!passcode) {
+      navigation.navigate('ResetPasscode', { page: 'Transfer' });
+      return;
+    }
+
+    let checkType = 'passcode';
+    if (appContext.data.settings.fingerprint) {
+      try {
+        await FingerprintScanner.isSensorAvailable();
+        checkType = 'fingerprint';
+      } catch (e) {
+        console.log(`Can't use FingerprintScanner, error message: ${e.message}`);
+      }
+    }
+
+    if (checkType === 'fingerprint') {
+      navigation.navigate('VerifyFingerprint', {
+        verified: async () => {
+          await this.sendBtcTransaction();
+          navigation.navigate('TransferCompleted');
+        },
+      });
+    } else {
+      navigation.navigate('VerifyPasscode', {
+        verified: async () => {
+          await this.sendBtcTransaction();
+          navigation.navigate('TransferCompleted');
+        },
+      });
+    }
+  }
+
   render() {
     const {
-      custom, loading, to, amount,
+      custom, loading, to, amount, memo,
     } = this.state;
     const { navigation } = this.props;
     return (
@@ -364,7 +417,7 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Text style={styles.title3}>Memo</Text>
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} />
+              <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} value={memo} />
             </View>
           </View>
           <View style={[styles.sectionContainer]}>
@@ -384,15 +437,8 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Button
               text="COMFIRM"
-              onPress={async () => {
-                // navigation.navigate('VerifyFingerprint', {
-                //   verified: async () => {
-                //     await this.sendBtcTransaction();
-                //     navigation.navigate('TransferCompleted');
-                //   },
-                // });
-                await this.sendBtcTransaction();
-                navigation.navigate('TransferCompleted');
+              onPress={() => {
+                this.comfirm();
               }}
             />
           </View>

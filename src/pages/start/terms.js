@@ -72,20 +72,6 @@ export default class TermsPage extends Component {
     return (
       <View style={styles.page}>
         <Image style={styles.logo} source={logo} />
-
-        <View style={styles.buttonView}>
-          <TouchableOpacity style={styles.completeTerms}>
-            <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
-          </TouchableOpacity>
-          <Button
-            style={styles.button}
-            text="COMFIRM & FINISH"
-            onPress={() => {
-              const { navigation } = this.props;
-              navigation.navigate('PrimaryTabNavigator');
-            }}
-          />
-        </View>
         <View style={styles.termsView}>
           <View style={styles.termsView2}>
             <TermRow
@@ -98,6 +84,19 @@ export default class TermsPage extends Component {
             />
             <TermRow text="I have, read, understood, and agree to the Terms of use." delay={1} />
           </View>
+        </View>
+        <View style={styles.buttonView}>
+          <TouchableOpacity style={styles.completeTerms}>
+            <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
+          </TouchableOpacity>
+          <Button
+            style={styles.button}
+            text="COMFIRM & FINISH"
+            onPress={() => {
+              const { navigation } = this.props;
+              navigation.navigate('PrimaryTabNavigator');
+            }}
+          />
         </View>
       </View>
     );

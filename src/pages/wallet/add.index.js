@@ -10,7 +10,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
-import appContext from '../../common/appContext';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -59,12 +58,7 @@ class WalletAddIndex extends Component {
 
     async createWalletFlow(page) {
       const { navigation } = this.props;
-      const value = await appContext.secureGet('passcode');
-      if (value === null) {
-        navigation.navigate('ResetPasscode', { page });
-      } else {
-        navigation.navigate(page);
-      }
+      navigation.navigate(page);
     }
 
     render() {

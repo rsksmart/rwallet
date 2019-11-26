@@ -1,5 +1,7 @@
 import I18n from 'react-native-i18n';
 import RNSecureStorage from 'rn-secure-storage';
+// eslint-disable-next-line import/no-unresolved
+import EventEmitter from 'EventEmitter';
 import storage from './storage';
 import ParseHelper from './parse';
 
@@ -18,6 +20,7 @@ const appContext = {
       language: 'en',
     },
   },
+  eventEmitter: new EventEmitter(),
   user: null,
   async set(key, value) {
     this.data[key] = value;
