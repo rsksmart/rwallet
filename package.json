@@ -6,7 +6,8 @@
     "postinstall": "jetifier -r",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
-    "ios": "react-native run-ios --simulator=\"iPhone 11\""
+    "ios": "react-native run-ios --simulator=\"iPhone 11\"",
+    "test": "jest"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.10",
@@ -108,7 +109,13 @@
     "typescript": "^3.6.4"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|react-native-vector-icons|react-native-i18n)/)"
+    ]
   },
   "react-native": {
     "zlib": "browserify-zlib",
