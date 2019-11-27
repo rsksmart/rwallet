@@ -23,6 +23,20 @@ const PrimaryTabNavigator = createBottomTabNavigator(
         title: strings('root.home'),
       },
     },
+    Send: {
+      screen: HomeStackNavigator,
+      path: 'home',
+      navigationOptions: {
+        title: strings('root.home'),
+      },
+    },
+    Receive: {
+      screen: MineStackNavigator,
+      path: 'mine',
+      navigationOptions: {
+        title: strings('root.mine'),
+      },
+    },
     Mine: {
       screen: MineStackNavigator,
       path: 'mine',
@@ -46,6 +60,12 @@ const PrimaryTabNavigator = createBottomTabNavigator(
             case 'Mine':
               img = MineLight;
               break;
+            case 'Send':
+              img = homeLight;
+              break;
+            case 'Receive':
+              img = MineLight;
+              break;
             default:
               console.error(`unexpected tab：${navigation.state.routeName}`);
           }
@@ -56,6 +76,12 @@ const PrimaryTabNavigator = createBottomTabNavigator(
               img = homeGray;
               break;
             case 'Mine':
+              img = MineGray;
+              break;
+            case 'Send':
+              img = homeGray;
+              break;
+            case 'Receive':
               img = MineGray;
               break;
             default:
