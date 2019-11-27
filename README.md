@@ -32,7 +32,7 @@ The first three steps are needed for both Android and iOS devices.
 
 1. `npm install` to install dependencies
 1. `./node_modules/.bin/rn-nodeify --hack --install`
-1. `npm start` to start the App. You should see console output like below.
+1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
     > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
     > node node_modules/react-native/local-cli/cli.js start
@@ -53,17 +53,41 @@ The first three steps are needed for both Android and iOS devices.
 
     Loading dependency graph, done.
     ```
-1. Open another terminal,
-    * For Android, run `npm run android` to start the App in Android virtual device.
-    For MacOS developer, if you encounter an error like below then you need to create a **local.properties** file under ./android and add one line `sdk.dir = /Users/<username>/Library/Android/sdk` in it.
+    * For Android, `npm run android` will start the app in your physical device or Android virtual device. You need to check what device are available by running `adb devices` in terminal. To test the app in a physical Android device, you need to make sure **Developer Options -> Enable Debugging via USB** is turned on for that device.
+        Note: If you encounter an error like below then you need to create a **local.properties** file under ./android and add one line `sdk.dir = /Users/<username>/Library/Android/sdk` in it.
         ```
         SDK location not found. Define location with an ANDROID_SDK_ROOT environment variable or by setting the sdk.dir path in your project's local properties file at '/Users/<usernmae>/Documents/repos/rwallet/android/local.properties'.
         ```
-    * For iOS, run `npm run ios` to start the App in iOS virtual device.
-1. For development, press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
+    * For iOS device, `npm run ios` will start the App in iOS physical or virtual device.
+
+1. Hot reload code change - Press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
+
+## Devleopment
+### Remote Debugging
+#### Remote Debugging on iOS Simulator
+1. Run `npm run ios` to start the app in Simulator.
+1. Wait for the build
+
+
+#### Remote Debugging on Android Devices
+__Step 1: Discover your Android device__
+1. Open the Developer Options screen on your Android. See [Configure On-Device Developer Options](https://developer.android.com/studio/debug/dev-options.html).
+1. Select Enable USB Debugging
+1. On your development machine, open Chrome.
+1. Open DevTools.
+1. In DevTools, click the Main Menu Main Menu then select More tools > Remote devices.
+![Chrome Remote Debug Tools](docs/images/chrome-remote-debug-1.png)
+1. In DevTools, open the Settings tab.
+1. Make sure that the Discover USB devices checkbox is enabled.
+1. Connect your Android device directly to your development machine using a USB cable. The first time you do this, you usually see that DevTools has detected an unknown device. If you see a green dot and the text Connected below the model name of your Android device, then DevTools has successfully established the connection to your device. 
+![First Time Connect Android Device](docs/images/first-time-connect-android.png)
+1. If your device is showing up as Unknown, accept the Allow USB Debugging permission prompt on your Android device.
+
+__Step 2: Debug content on your Android device from your development machine__
+TODO: How to debug android app with Mac OS is to be added
 
 
 ## Deployment
-TODO: Add details for deployment
+
 
 
