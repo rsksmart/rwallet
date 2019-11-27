@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView, ImageBackground, Text,
+  View, StyleSheet, ScrollView, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import appActions from '../../redux/app/actions';
+import Loc from '../../components/common/misc/loc';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -100,7 +101,7 @@ class Currency extends Component {
         <View style={[flex.flex1]}>
           <ScrollView>
             <ImageBackground source={header} style={[styles.headerImage]}>
-              <Text style={styles.headerTitle}>Currency</Text>
+              <Loc style={[styles.headerTitle]} text="Currency" />
             </ImageBackground>
             <View style={styles.listView}>
               <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />

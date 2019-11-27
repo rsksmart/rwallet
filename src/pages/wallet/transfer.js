@@ -383,7 +383,7 @@ export default class Transfer extends Component {
         <View style={styles.body}>
           <Loader loading={loading} />
           <View style={styles.sectionContainer}>
-            <Text style={styles.title1}>Sending</Text>
+            <Loc style={[styles.title1]} text="Sending" />
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
@@ -396,7 +396,7 @@ export default class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title2}>To</Text>
+            <Loc style={[styles.title2]} text="To" />
             <View style={styles.textInputView}>
               <TextInput style={[styles.textInput]} value={to} />
               <TouchableOpacity
@@ -420,18 +420,18 @@ export default class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title3}>Memo</Text>
+            <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
               <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} value={memo} />
             </View>
           </View>
           <View style={[styles.sectionContainer]}>
-            <Text style={styles.title2}>Miner fee</Text>
-            <Text style={styles.question}>How fast you want this done?</Text>
+            <Loc style={[styles.title2]} text="Miner fee" />
+            <Loc style={[styles.question]} text="How fast you want this done?" />
             <RadioGroup />
           </View>
           <View style={[styles.sectionContainer, styles.customRow, { paddingBottom: 20 }]}>
-            <Text style={[styles.title2, { flex: 1 }]}>Custom</Text>
+            <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
             <Switch
               value={custom}
               onValueChange={(v) => {

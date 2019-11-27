@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Switch, TouchableOpacity,
+  View, StyleSheet, Switch, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import appContext from '../../common/appContext';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
+
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginHorizontal: 15,
+    marginTop: 180,
   },
   title: {
     color: '#2D2D2D',
@@ -43,6 +45,20 @@ const styles = StyleSheet.create({
     height: 80,
     borderBottomWidth: 1,
     borderBottomColor: '#EDEDED',
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
   },
 });
 
@@ -60,20 +76,23 @@ export default class TwoFactorAuth extends Component {
       };
     }
 
+    async goBack() {
+      const { fingerprint } = this.state;
+      const { navigation } = this.props;
+      this.setState({ loading: true });
+      await appContext.saveSettings({ fingerprint });
+      this.setState({ loading: false });
+      navigation.goBack();
+    }
+
     render() {
       const { fingerprint, loading } = this.state;
       const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header
-            title="2FA"
-            goBack={async () => {
-              this.setState({ loading: true });
-              await appContext.saveSettings({ fingerprint });
-              this.setState({ loading: false });
-              navigation.goBack();
-            }}
-          />
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="2FA" />
+          </ImageBackground>
           <View style={styles.body}>
             <Loader loading={loading} />
             <TouchableOpacity

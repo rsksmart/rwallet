@@ -203,7 +203,9 @@ class WalletList extends Component {
               navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coin.type });
             },
             onPress: () => {
-              navigation.navigate('WalletHistory', { address: coin.address, coin: coin.type });
+              navigation.navigate('WalletHistory', {
+                address: coin.address, coin: coin.type, name: coin.defaultName, network: 'Testnet',
+              });
             },
           };
           getBalance(coin, item);

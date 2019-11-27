@@ -80,9 +80,10 @@ Item.defaultProps = {
 };
 
 
-export default function WalletTypeList({ data }) {
+export default function WalletTypeList({ data, style }) {
   return (
     <FlatList
+      style={style}
       data={data}
       renderItem={({ item }) => (
         <Item
