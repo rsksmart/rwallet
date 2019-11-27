@@ -14,6 +14,7 @@ import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
 import common from '../../common/common';
 import appContext from '../../common/appContext';
+import Loc from '../../components/common/misc/loc';
 
 
 const buffer = require('buffer');
@@ -359,12 +360,16 @@ export default class Transfer extends Component {
       custom, loading, to, amount, memo,
     } = this.state;
     const { navigation } = this.props;
+    const { coin } = navigation.state.params;
     return (
       <ScrollView style={[flex.flex1]}>
         <View style={[{ height: 100 }]}>
           <Image source={header} style={styles.headImage} />
           <View style={styles.headerView}>
-            <Text style={styles.headerTitle}>Send BTC</Text>
+            <Text style={styles.headerTitle}>
+              <Loc text="Send" />
+              {` ${coin}`}
+            </Text>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => {
@@ -403,9 +408,9 @@ export default class Transfer extends Component {
                       const url = data;
                       const result = parseUrl.exec(url);
                       const host = result[3];
-                      const [address2, coin] = host.split('.');
+                      const [address2, coin2] = host.split('.');
                       this.setState({ to: address2 });
-                      console.log(`coin: ${coin}`);
+                      console.log(`coin: ${coin2}`);
                     },
                   });
                 }}
