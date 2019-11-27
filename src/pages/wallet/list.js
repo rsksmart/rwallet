@@ -1,12 +1,15 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Card, CardItem, Body } from 'native-base';
 import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
 import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
@@ -55,21 +58,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
+    top: 200,
     left: 24,
     color: '#FFF',
   },
   headerBoard: {
     width: '85%',
-    top: 100,
-    height: 130,
+    height: 165,
   },
   headerBoardView: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    marginTop: 115,
   },
   chevron: {
     color: '#FFF',
@@ -132,6 +131,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     letterSpacing: 0.25,
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
   },
 });
 
@@ -276,35 +281,56 @@ class WalletList extends Component {
         );
         accounts.push(section);
       }
+
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
-            <View style={[{ height: 300 }]}>
-              <Image source={header} />
-              <View style={styles.headerView}>
-                <Text style={styles.headerTitle}>Your Wallet</Text>
-                <View style={styles.headerBoardView}>
-                  <Card style={styles.headerBoard}>
-                    <CardItem>
-                      <Body>
-                        <Text style={styles.myAssetsTitle}>
-                        My Assets (
-                          {currencySymbol}
-                        )
-                        </Text>
-                        <Text style={styles.myAssets}>173,586.3</Text>
-                      </Body>
-                    </CardItem>
-                  </Card>
-                </View>
-              </View>
+            <ImageBackground source={header} style={[styles.headerImage]}>
+              <Text style={styles.headerTitle}>Your Wallet</Text>
+            </ImageBackground>
+            <View style={styles.headerBoardView}>
+              <Card style={styles.headerBoard}>
+                <CardItem>
+                  <Body>
+                    <Text style={styles.myAssetsTitle}>
+My Assets (
+                      {currencySymbol}
+)
+                    </Text>
+                    <Text style={styles.myAssets}>173,586.3</Text>
+                    <View style={styles.myAssetsButtonsView}>
+                      <TouchableOpacity
+                        style={styles.ButtonView}
+                        onPress={() => {}}
+                      >
+                        <Entypo name="swap" size={20} style={styles.sendIcon} />
+                        <Text style={styles.sendText}>Send</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.ButtonView}
+                        onPress={() => {}}
+                      >
+                        <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                        <Text style={styles.receiveText}>Receive</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                        onPress={() => {}}
+                      >
+                        <AntDesign name="switcher" size={20} style={styles.swapIcon} />
+                        <Text style={styles.swapText}>Swap</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Body>
+                </CardItem>
+              </Card>
             </View>
             <View style={styles.sectionContainer}>
               <Text style={{
                 color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
               }}
               >
-All Assets
+                All Assets
               </Text>
             </View>
             <View style={styles.sectionContainer}>

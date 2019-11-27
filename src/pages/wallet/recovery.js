@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet, ScrollView, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import flex from '../../assets/styles/layout.flex';
 import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
-import Header from '../../components/common/misc/header';
 import Tags from '../../components/common/misc/tags';
+
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   input: {
@@ -42,6 +42,20 @@ const styles = StyleSheet.create({
   phrasesBorder: {
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
   },
 });
 
@@ -78,51 +92,55 @@ export default class WalletRecovery extends Component {
       const { phrase, phrases } = this.state;
       const { navigation } = this.props;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={navigation.goBack} />
-          <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
-            <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
-            <Input
-              style={styles.input}
-              onChangeText={(text) => this.setState({ phrase: text })}
-              onSubmitEditing={() => {
-                this.inputWord();
-              }}
-              value={phrase}
-            />
-          </View>
-          <View style={[styles.sectionContainer, styles.phrasesBorder]}>
-            <Tags
-              data={phrases}
-              onPress={(i) => {
-                this.deleteWord(i);
-              }}
-            />
-          </View>
-          <View style={[styles.sectionContainer, styles.bottomBorder]}>
-            <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-            <SwitchListItem title="Single address" value={false} />
-          </View>
-          <View style={[styles.sectionContainer]}>
-            <Text style={[styles.sectionTitle]}>Wallet Service URL</Text>
-            <Text>https://bws.bitpay.com/bws/api</Text>
-          </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="CREATE"
-              onPress={async () => {
-                let phrases2 = '';
-                for (let i = 0; i < phrases.length; i += 1) {
-                  if (i !== 0) {
-                    phrases2 += ' ';
+        <View>
+          <ScrollView>
+            <ImageBackground source={header} style={[styles.headerImage]}>
+              <Text style={styles.headerTitle}>Recovery Phrase</Text>
+            </ImageBackground>
+            <View style={[styles.sectionContainer, { paddingBottom: 20, marginTop: 220 }]}>
+              <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
+              <Input
+                style={styles.input}
+                onChangeText={(text) => this.setState({ phrase: text })}
+                onSubmitEditing={() => {
+                  this.inputWord();
+                }}
+                value={phrase}
+              />
+            </View>
+            <View style={[styles.sectionContainer, styles.phrasesBorder]}>
+              <Tags
+                data={phrases}
+                onPress={(i) => {
+                  this.deleteWord(i);
+                }}
+              />
+            </View>
+            <View style={[styles.sectionContainer, styles.bottomBorder]}>
+              <Text style={[styles.sectionTitle]}>Advanced Options</Text>
+              <SwitchListItem title="Single address" value={false} />
+            </View>
+            <View style={[styles.sectionContainer]}>
+              <Text style={[styles.sectionTitle]}>Wallet Service URL</Text>
+              <Text>https://bws.bitpay.com/bws/api</Text>
+            </View>
+            <View style={styles.buttonView}>
+              <Button
+                text="CREATE"
+                onPress={async () => {
+                  let phrases2 = '';
+                  for (let i = 0; i < phrases.length; i += 1) {
+                    if (i !== 0) {
+                      phrases2 += ' ';
+                    }
+                    phrases2 += phrases[i];
                   }
-                  phrases2 += phrases[i];
-                }
-                navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
-              }}
-            />
-          </View>
-        </ScrollView>
+                  navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
+                }}
+              />
+            </View>
+          </ScrollView>
+        </View>
       );
     }
 }

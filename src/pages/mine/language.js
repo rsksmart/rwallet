@@ -17,21 +17,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  title: {
-    color: '#2D2D2D',
-    fontSize: 16,
-    fontWeight: '300',
-    flex: 1,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 10,
-    height: 80,
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-  },
   listView: {
     width: '80%',
     alignSelf: 'center',
@@ -75,9 +60,10 @@ class Language extends Component {
         en: 0, fr: 1, he: 2, zh: 3,
       }[language];
       const { navigation } = this.props;
+      const goBack = navigation && navigation.goBack ? navigation.goBack : () => {};
       return (
         <View style={[flex.flex1]}>
-          <Header title="Language" goBack={navigation.goBack} />
+          <Header title="Language" goBack={goBack} />
           <View style={styles.listView}>
             <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
           </View>
@@ -107,4 +93,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
+export {
+  Language,
+};
 export default connect(mapStateToProps, mapDispatchToProps)(Language);

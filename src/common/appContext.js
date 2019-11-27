@@ -27,12 +27,13 @@ const appContext = {
     await RNSecureStorage.set(key, value, {});
   },
   async secureGet(key) {
-    const exists = await RNSecureStorage.exists(key);
-    if (!exists) {
+    try {
+      const exists = await RNSecureStorage.exists(key);
+      return exists ? await RNSecureStorage.get(key) : null;
+    } catch (err) {
+      console.log(err);
       return null;
     }
-    const value = RNSecureStorage.get(key);
-    return value;
   },
   async saveSettings(settings) {
     Object.assign(this.data.settings, settings);

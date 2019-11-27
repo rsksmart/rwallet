@@ -9,6 +9,9 @@ import Loc from './loc';
 const header = require('../../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
   backButton: {
     position: 'absolute',
     left: 10,
@@ -28,6 +31,10 @@ const styles = StyleSheet.create({
   chevron: {
     color: '#FFF',
   },
+  headerImage: {
+    flex: 1,
+    resizeMode: 'cover', // or 'stretch'
+  },
 });
 
 export default function Header({ title, goBack }) {
@@ -45,8 +52,8 @@ export default function Header({ title, goBack }) {
     );
   }
   return (
-    <View>
-      <Image source={header} />
+    <View style={[styles.container]}>
+      <Image source={header} style={[styles.headerImage]} />
       <View style={styles.headerView}>
         <Loc style={[styles.headerTitle]} text={title} key={`${Math.random()}`} />
         {backButton}
