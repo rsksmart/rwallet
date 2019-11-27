@@ -137,8 +137,8 @@ class ParseHelper {
     return Parse.Cloud.run('getServerInfo');
   }
 
-  static getPrice(symbols) {
-    return Parse.Cloud.run('getPrice', { symbols });
+  static getPrice({ symbols, currencies }) {
+    return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
   /**
@@ -159,6 +159,47 @@ class ParseHelper {
     }
 
     return { message };
+  }
+
+  /**
+  * get balance of given addrArray which is array of addresses
+  * @param {array} addrArray
+  * @returns {array} collection of each given address information include balance,etc...
+  */
+  static getBalanceByAddress(addrArray) {
+    const Address = Parse.Object.extend('Address'); // 建立Address这个表的query
+    const query = new Parse.Query(Address);
+    query.containedIn('address', addrArray);
+    // 实际运行query
+    return query.find();
+  }
+
+  /**
+   * Return an array of wallets with basic information such as wallet balance
+   * @returns {array} Array of wallet object; empty array if nothing found
+   */
+  static async getWallets() {
+    // Get current Parse.User
+    const parseUser = Parse.User.current();
+
+    if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
+      return [];
+    }
+
+    const wallets = parseUser.get('wallets');
+
+    // since User's wallet field is linked value, we need to call fetch to retrieve full information of wallets
+    await wallets.fetch();
+
+    const result = _.map(wallets, (parseWallet) => ({
+      address: parseWallet.get('address'),
+      symbol: parseWallet.get('symbol'),
+      type: parseWallet.get('type'),
+      balance: parseWallet.get('balance'),
+      txCount: parseWallet.get('txCount'),
+    }));
+
+    return result;
   }
 }
 
