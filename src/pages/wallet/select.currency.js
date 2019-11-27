@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -12,6 +12,7 @@ import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -76,7 +77,7 @@ export default class WalletSelectCurrency extends Component {
         <View style={[flex.flex1]}>
           <Header title="Select Wallet Currency" goBack={navigation.goBack} />
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Mainnet</Text>
+            <Loc style={styles.sectionTitle} text="Mainnet" />
             <CoinTypeList data={this.mainnet} />
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>

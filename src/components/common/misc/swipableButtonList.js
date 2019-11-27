@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import color from '../../../assets/styles/color.ts';
+import Loc from './loc';
 
 const styles = StyleSheet.create({
   backText: {
@@ -164,7 +165,7 @@ export default class SwipableButtonList extends Component {
                 }
               }}
             >
-              <Text style={styles.backText}>Send</Text>
+              <Loc style={[styles.backText]} text="Send" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -178,7 +179,7 @@ export default class SwipableButtonList extends Component {
                 }
               }}
             >
-              <Text style={styles.backText}>Receive</Text>
+              <Loc style={[styles.backText]} text="Receive" />
             </TouchableOpacity>
           </View>
         )}

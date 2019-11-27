@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image,
+  View, StyleSheet, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -8,6 +8,8 @@ import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
 import appContext from '../../common/appContext';
+import Loc from '../../components/common/misc/loc';
+
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -62,7 +64,7 @@ export default class ResetPasscodeSuccess extends Component {
           <Header title="Reset Passcode Success" />
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
-            <Text style={styles.title}>Reset completed!</Text>
+            <Loc style={[styles.title]} text="Reset completed!" />
           </View>
           <View style={styles.buttonView}>
             <Button

@@ -203,7 +203,7 @@ Item.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     coin: PropTypes.string.isRequired,
-    selected: PropTypes.string.isRequired,
+    selected: PropTypes.bool.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };

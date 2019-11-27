@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  ImageBackground,
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 
 const styles = StyleSheet.create({
@@ -126,7 +119,7 @@ function Item({ data }) {
     >
       {data.icon}
       <View style={styles.right}>
-        <Text style={[styles.title]}>{data.title}</Text>
+        <Loc style={[styles.title]} text={data.title} />
       </View>
     </TouchableOpacity>
   );
@@ -201,7 +194,7 @@ export default class MineIndex extends Component {
           </View>
           <View style={[styles.body]}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Settings</Text>
+              <Loc style={[styles.sectionTitle]} text="Settings" />
               <FlatList
                 data={this.settings}
                 renderItem={({ item }) => <Item data={item} />}

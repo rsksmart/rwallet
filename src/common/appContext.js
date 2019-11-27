@@ -54,6 +54,7 @@ const appContext = {
     await this.set('walletId', this.data.walletId);
     // TODO: if upload failed?
     await this.uploadWallets();
+    return newWallet.id;
   },
   async uploadWallets() {
     const uploadWallets = [];

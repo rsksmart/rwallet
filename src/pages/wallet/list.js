@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Parse from 'parse/react-native';
 import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
 
@@ -127,6 +128,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.25,
   },
+  assetsTitle: {
+    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+  },
 });
 
 class WalletList extends Component {
@@ -196,7 +200,7 @@ class WalletList extends Component {
               navigation.navigate('Transfer');
             },
             r2Press: () => {
-              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coin.type });
             },
             onPress: () => {
               navigation.navigate('WalletHistory', { address: coin.address });
@@ -239,13 +243,14 @@ class WalletList extends Component {
             <View style={[{ height: 300 }]}>
               <Image source={header} />
               <View style={styles.headerView}>
-                <Text style={styles.headerTitle}>Your Wallet</Text>
+                <Text style={styles.headerTitle}><Loc text="Your Wallet" /></Text>
                 <View style={styles.headerBoardView}>
                   <Card style={styles.headerBoard}>
                     <CardItem>
                       <Body>
                         <Text style={styles.myAssetsTitle}>
-                        My Assets (
+                          <Loc text="All Assets" />
+                        (
                           {currencySymbol}
                         )
                         </Text>
@@ -257,12 +262,7 @@ class WalletList extends Component {
               </View>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={{
-                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
-              }}
-              >
-All Assets
-              </Text>
+              <Loc style={[styles.assetsTitle]} text="All Assets" />
             </View>
             <View style={styles.sectionContainer}>
               {accounts}
@@ -275,7 +275,7 @@ All Assets
               >
                 <View style={styles.addAsset}>
                   <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                  <Text>Add Asset</Text>
+                  <Loc text="Add Asset" />
                 </View>
               </TouchableOpacity>
             </View>

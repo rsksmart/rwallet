@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Switch, TouchableOpacity,
+  View, StyleSheet, Switch, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,6 +8,7 @@ import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import appContext from '../../common/appContext';
 import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -81,11 +82,11 @@ export default class TwoFactorAuth extends Component {
                 navigation.navigate('ResetPasscode');
               }}
             >
-              <Text style={styles.title}>Reset Passcode</Text>
+              <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
             <View style={styles.row}>
-              <Text style={styles.title}>Use Fingerprint</Text>
+              <Loc style={[styles.title]} text="Use Fingerprint" />
               <Switch
                 value={fingerprint}
                 onValueChange={(v) => {
