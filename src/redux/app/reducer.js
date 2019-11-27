@@ -7,7 +7,6 @@ const initState = new Map({
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
-  prices: {},
   currency: undefined,
 });
 
@@ -41,19 +40,10 @@ export default function appReducer(state = initState, action) {
       const newstate = state.set('rawTransaction', result);
       return newstate;
     }
-    case actions.GET_PRICE_RESULT:
-    {
-      const result = action.value;
-      console.log('GET_PRICE_RESULT, result', result);
-      let prices = state.get('prices');
-      prices = Object.assign(prices, result);
-      const newstate = state.set('prices', prices);
-      return newstate;
-    }
     case actions.CHANGE_CURRENCY:
     {
       const { currency } = action.payload;
-      appContext.saveSettings({ currency });
+      appContext.saveSettings({ currency }); // Serialize
       const newstate = state.set('currency', currency);
       return newstate;
     }
