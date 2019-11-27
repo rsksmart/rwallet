@@ -21,7 +21,7 @@
     "bignumber.js": "^9.0.0",
     "bip32": "^2.0.4",
     "bip39": "^3.0.2",
-    "bitcoinjs-lib": "^3.3.2",
+    "bitcoinjs-lib": "^5.1.6",
     "bitcore-mnemonic": "^8.10.0",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.1",
