@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "hack": "./node_modules/.bin/rn-nodeify --hack --install",
     "postinstall": "jetifier -r",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
@@ -56,6 +57,7 @@
     "react-native-level-fs": "^3.0.1",
     "react-native-os": "^1.2.5",
     "react-native-picker-select": "^6.3.3",
+    "react-native-pose": "^0.9.1",
     "react-native-qrcode-svg": "^5.3.1",
     "react-native-randombytes": "^3.5.3",
     "react-native-screens": "^1.0.0-alpha.23",
