@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,
@@ -10,10 +11,15 @@ import Parse from 'parse/react-native';
 import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import flex from '../../assets/styles/layout.flex';
-import appActions from '../../redux/app/actions';
+
+import walletActions from '../../redux/wallet/actions';
+import config from '../../../config';
+
+const { settings: { currency: currencySettings } } = config;
 
 const header = require('../../assets/images/misc/header.png');
 
+const DEFAULT_CURRENCY_SYMBOL = '$';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -139,16 +145,57 @@ class WalletList extends Component {
       this.listData = [];
       this.state = {
         listData: this.listData,
+        currencySymbols: {},
       };
       this.refreshData = this.refreshData.bind(this);
-      // this.getPrice = this.getPrice.bind(this);
-      // this.getPrices = this.getPrices.bind(this);
+    }
+
+    componentWillMount() {
+      // Extract currency symbols from config
+      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+      const currencySymbols = _.reduce(currencySettings, (obj, row) => {
+        const settingsObj = obj;
+        settingsObj[row.name] = row.symbol;
+        return settingsObj;
+      }, {});
+
+      this.setState({
+        currencySymbols,
+      });
     }
 
     componentDidMount() {
       const { getPrice } = this.props;
       getPrice(['BTC', 'RBTC', 'RIF']);
       this.refreshData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { currency, wallets, prices } = nextProps;
+      const { currency: oldCurrency } = this.props;
+      const { getCurrencySymbol } = this;
+
+      // Handle currency changed logic; get symbol string for the new currency
+      if (currency !== oldCurrency) {
+        getCurrencySymbol(currency);
+      }
+
+      console.log('wallets', wallets);
+      console.log('prices', prices);
+    }
+
+    /**
+           * Get currency symbol string for example '$' based on currency
+           * @param {string} currency currency string such as 'USD'
+           */
+    getCurrencySymbol(currency) {
+      const { currencySymbols } = this.state;
+
+      if (currencySymbols[currency]) {
+        return currencySymbols[currency];
+      }
+
+      return DEFAULT_CURRENCY_SYMBOL;
     }
 
     refreshData() {
@@ -214,14 +261,10 @@ class WalletList extends Component {
     }
 
     render() {
-      const { navigation, currency } = this.props;
+      const { navigation } = this.props;
       const accounts = [];
-      const { listData } = this.state;
 
-      const currencySymbols = {
-        USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',
-      };
-      const currencySymbol = currencySymbols[currency];
+      const { listData, currencySymbol } = this.state;
 
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
@@ -294,17 +337,23 @@ WalletList.propTypes = {
   }).isRequired,
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  prices: PropTypes.arrayOf(PropTypes.object),
+};
+
+WalletList.defaultProps = {
+  wallets: [],
+  prices: [],
 };
 
 const mapStateToProps = (state) => ({
   prices: state.App.get('prices'),
-  currency: state.App.get('currency'),
+  currencies: state.App.get('currencies'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getPrice: (symbols) => dispatch(
-    appActions.getPrice(symbols),
-  ),
+  getWallets: () => dispatch(walletActions.getWallets()),
+  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
