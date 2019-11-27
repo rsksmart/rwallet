@@ -247,19 +247,17 @@ class WalletList extends Component {
               <Card style={styles.headerBoard}>
                 <CardItem>
                   <Body>
-                    <Text style={styles.myAssetsTitle}>My Assets ($)</Text>
+                    <Text style={styles.myAssetsTitle}>
+                      <Loc text="My Assets" />
+                      {` (${currencySymbol})`}
+                    </Text>
                     <Text style={styles.myAssets}>173,586.3</Text>
                   </Body>
                 </CardItem>
               </Card>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={styles.assetsTitle}>
-                <Loc text="All Assets" />
-              (
-                {currencySymbol}
-              )
-              </Text>
+              <Loc style={styles.assetsTitle} text="All Assets" />
             </View>
             <View style={styles.sectionContainer}>
               {accounts}
