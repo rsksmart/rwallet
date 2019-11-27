@@ -7,6 +7,7 @@ import MineStackNavigator from './stack.mine';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
 import { strings } from '../common/i18n';
+import TabBar from './components/bottom.tab';
 
 import homeLight from '../assets/images/root/tab/home.png';
 import homeGray from '../assets/images/root/tab/home.unselected.png';
@@ -31,6 +32,7 @@ const PrimaryTabNavigator = createBottomTabNavigator(
     },
   },
   {
+    tabBarComponent: TabBar,
     defaultNavigationOptions: ({ navigation }) => ({
       // eslint-disable-next-line react/prop-types
       tabBarIcon: ({ focused }) => {
