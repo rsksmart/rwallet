@@ -9,6 +9,10 @@ import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/languageSwitcher/actions';
 
+import config from '../../../config';
+
+const { consts: { languages: locales } } = config;
+
 const styles = StyleSheet.create({
   buttonView: {
     position: 'absolute',
@@ -50,7 +54,6 @@ class Language extends Component {
 
     onChange(index) {
       const { changeLanguage } = this.props;
-      const locales = ['en', 'fr', 'he', 'zh'];
       changeLanguage(locales[index]);
     }
 
