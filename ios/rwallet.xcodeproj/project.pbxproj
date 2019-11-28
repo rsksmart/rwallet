@@ -55,9 +55,9 @@
 		DAB2A624F82E41F1BF966C96 /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E96F9433A79422CBCCB6B6B /* antfill.ttf */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
-		F037E5E01C259B8CACE81BE6 /* Pods_rwallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F273E21A8DEE0D578E9D50AB /* Pods_rwallet.framework */; };
 		F666281F6CC54E9BB290E27D /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D191498153C4033BE279003 /* libRNI18n.a */; };
 		F6C97E6D26A040A4B1528430 /* libRNScreens.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38FF2A9515D47FCB3EB54E1 /* libRNScreens.a */; };
+		F8B97ABA238F9EC3000F3BFD /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B97AB9238F9E8D000F3BFD /* libRNCamera.a */; };
 		F8D5F45D238B92E2006CFB8D /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44D238B92E2006CFB8D /* Fontisto.ttf */; };
 		F8D5F45E238B92E2006CFB8D /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44E238B92E2006CFB8D /* Octicons.ttf */; };
 		F8D5F45F238B92E2006CFB8D /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44F238B92E2006CFB8D /* Feather.ttf */; };
@@ -456,6 +456,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = ReactNativeFingerprintScanner;
 		};
+		F8B97AB8238F9E8D000F3BFD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8B97AB4238F9E8D000F3BFD /* RNCamera.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
+			remoteInfo = RNCamera;
+		};
 		F8D5F448238B909C006CFB8D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F8D5F410238B909C006CFB8D /* RNUUIDGenerator.xcodeproj */;
@@ -497,7 +504,6 @@
 		41DA298E0A1F4AD395F9B2E4 /* libRNScreens-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNScreens-tvOS.a"; sourceTree = "<group>"; };
 		4D191498153C4033BE279003 /* libRNI18n.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNI18n.a; sourceTree = "<group>"; };
 		5266C6A7ECF444A0B9CC6A9A /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
-		52BD5B3A4DC24930BF0BD1E2 /* QrCode.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = QrCode.xcodeproj; path = "../node_modules/react-native-qr-scanner/ios/QrCode.xcodeproj"; sourceTree = "<group>"; };
 		5E5E65B599004351BB86186D /* libRNSecureStorage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSecureStorage.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		6418D789363A4B63B12B74B3 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
@@ -510,7 +516,6 @@
 		A26F97B0F2CB4BE09A09F759 /* RNSecureStorage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSecureStorage.xcodeproj; path = "../node_modules/rn-secure-storage/ios/RNSecureStorage.xcodeproj"; sourceTree = "<group>"; };
 		AAEFACF583C4488A957B4C9E /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
-		B5D73B1A1161449B6FE3CA05 /* Pods-rwallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rwallet.debug.xcconfig"; path = "Target Support Files/Pods-rwallet/Pods-rwallet.debug.xcconfig"; sourceTree = "<group>"; };
 		C418721334814F78AD9643E7 /* RNScreens.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNScreens.xcodeproj; path = "../node_modules/react-native-screens/ios/RNScreens.xcodeproj"; sourceTree = "<group>"; };
 		C576CCDCA8FD4275B576D808 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		CE45A9C6F39840D39B61D7BF /* libReactNativeFingerprintScanner.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeFingerprintScanner.a; sourceTree = "<group>"; };
@@ -520,8 +525,7 @@
 		E38FF2A9515D47FCB3EB54E1 /* libRNScreens.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNScreens.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F273E21A8DEE0D578E9D50AB /* Pods_rwallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_rwallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F34C37B88C7DE313671D51E5 /* Pods-rwallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rwallet.release.xcconfig"; path = "Target Support Files/Pods-rwallet/Pods-rwallet.release.xcconfig"; sourceTree = "<group>"; };
+		F8B97AB4238F9E8D000F3BFD /* RNCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		F8D5F410238B909C006CFB8D /* RNUUIDGenerator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNUUIDGenerator.xcodeproj; path = "../node_modules/react-native-uuid-generator/ios/RNUUIDGenerator.xcodeproj"; sourceTree = "<group>"; };
 		F8D5F44D238B92E2006CFB8D /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		F8D5F44E238B92E2006CFB8D /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -577,10 +581,10 @@
 				F666281F6CC54E9BB290E27D /* libRNI18n.a in Frameworks */,
 				8CD98C5EEB3C4C1BBBFFAAEF /* libRNRandomBytes.a in Frameworks */,
 				D9457D06FAD947DBA7A28BF2 /* libRNSVG.a in Frameworks */,
-				F037E5E01C259B8CACE81BE6 /* Pods_rwallet.framework in Frameworks */,
 				548211A1EFD64C07A2FCBCE8 /* libRNSecureStorage.a in Frameworks */,
 				35FC883137314B0EAD8D6467 /* libReactNativeFingerprintScanner.a in Frameworks */,
 				F8DFE1F4238BB0B200FF3B7F /* libRNUUIDGenerator.a in Frameworks */,
+				F8B97ABA238F9EC3000F3BFD /* libRNCamera.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,7 +743,6 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				F273E21A8DEE0D578E9D50AB /* Pods_rwallet.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -765,6 +768,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				F8B97AB4238F9E8D000F3BFD /* RNCamera.xcodeproj */,
 				F8D5F410238B909C006CFB8D /* RNUUIDGenerator.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -787,7 +791,6 @@
 				AAEFACF583C4488A957B4C9E /* RNSVG.xcodeproj */,
 				A26F97B0F2CB4BE09A09F759 /* RNSecureStorage.xcodeproj */,
 				D7498DB6C8714C10B402ED18 /* ReactNativeFingerprintScanner.xcodeproj */,
-				52BD5B3A4DC24930BF0BD1E2 /* QrCode.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -812,7 +815,6 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				99834D424A46469F93AB89B5 /* Resources */,
 				F861FEDD23791F5000A0C056 /* Recovered References */,
-				DA8E4D8296122C78422BC0FD /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -846,15 +848,6 @@
 				2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DA8E4D8296122C78422BC0FD /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B5D73B1A1161449B6FE3CA05 /* Pods-rwallet.debug.xcconfig */,
-				F34C37B88C7DE313671D51E5 /* Pods-rwallet.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		F861FEDD23791F5000A0C056 /* Recovered References */ = {
@@ -958,6 +951,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F8B97AB5238F9E8D000F3BFD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8B97AB9238F9E8D000F3BFD /* libRNCamera.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F8D5F411238B909C006CFB8D /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1015,7 +1016,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "rwallet" */;
 			buildPhases = (
-				68102F887C60D47EE19093B2 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -1160,6 +1160,10 @@
 				{
 					ProductGroup = F89280EA2382AC7D00401A32 /* Products */;
 					ProjectRef = D7498DB6C8714C10B402ED18 /* ReactNativeFingerprintScanner.xcodeproj */;
+				},
+				{
+					ProductGroup = F8B97AB5238F9E8D000F3BFD /* Products */;
+					ProjectRef = F8B97AB4238F9E8D000F3BFD /* RNCamera.xcodeproj */;
 				},
 				{
 					ProductGroup = F861FF1323791F5200A0C056 /* Products */;
@@ -1573,6 +1577,13 @@
 			remoteRef = F89280ED2382AC7D00401A32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F8B97AB9238F9E8D000F3BFD /* libRNCamera.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCamera.a;
+			remoteRef = F8B97AB8238F9E8D000F3BFD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F8D5F449238B909C006CFB8D /* libRNUUIDGenerator.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1662,28 +1673,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		68102F887C60D47EE19093B2 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-rwallet-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1849,7 +1838,6 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5D73B1A1161449B6FE3CA05 /* Pods-rwallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 2;
@@ -1883,7 +1871,6 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F34C37B88C7DE313671D51E5 /* Pods-rwallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 2;
