@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Image, FlatList, RefreshControl, ActivityIndicator,
+  ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -51,21 +51,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
-    left: 64,
+    top: 200,
+    left: 24,
     color: '#FFF',
   },
   headerBoard: {
     width: '85%',
-    top: 100,
-    height: 166,
+    height: 165,
   },
   headerBoardView: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    marginTop: 115,
   },
   chevron: {
     color: '#FFF',
@@ -179,6 +175,12 @@ const styles = StyleSheet.create({
     color: '#939393',
     fontSize: 12,
   },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
 });
 
 function Item({
@@ -259,7 +261,7 @@ class History extends Component {
 
 
     render() {
-      const { navigation, transactions, isLoading } = this.props;
+      const { transactions, isLoading, navigation } = this.props;
       this.listData = [];
       if (transactions) {
         transactions.forEach((transaction) => {
@@ -305,7 +307,9 @@ class History extends Component {
           )}
           >
             <View style={[{ height: 300 }]}>
-              <Image source={header} />
+              <ImageBackground source={header} style={[styles.headerImage]}>
+                <Text style={styles.headerTitle}>Default Wallet</Text>
+              </ImageBackground>
               <View style={styles.headerView}>
                 <View style={styles.headerBoardView}>
                   <Card style={styles.headerBoard}>
