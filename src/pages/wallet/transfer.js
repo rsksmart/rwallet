@@ -206,6 +206,7 @@ export default class Transfer extends Component {
       to: null,
       amount: '0.00000001',
       memo: null,
+      fee: 1,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
@@ -228,14 +229,14 @@ export default class Transfer extends Component {
   async sendRskTransaction(symbol) {
     console.log('transfer::sendRskTransaction');
     this.setState({ loading: true });
-    const { amount } = this.state;
+    const { amount, memo, fee } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
       const value = common.rbtcToWeiHex(amount);
       const [type, sender, receiver, data] = ['Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
+        symbol, type, sender, receiver, value, data, memo, fee,
       });
       return result;
     };
@@ -269,7 +270,7 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { amount } = this.state;
+    const { amount, memo, fee } = this.state;
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
@@ -279,7 +280,7 @@ export default class Transfer extends Component {
         'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
+        symbol, type, sender, receiver, value, data, memo, fee,
       });
       return result;
     };
@@ -357,10 +358,37 @@ export default class Transfer extends Component {
 
   render() {
     const {
-      custom, loading, to, amount, memo,
+      custom, loading, to, amount, memo, fee,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+
+    // Test data
+    const btcFees = [
+      { coin: '0.0046 BTC' },
+      { coin: '0.0048 BTC' },
+      { coin: '0.0052 BTC' },
+    ];
+    const rbtcFees = [
+      { coin: '0.0046 RBTC' },
+      { coin: '0.0048 RBTC' },
+      { coin: '0.0052 RBTC' },
+    ];
+    const rifFees = [
+      { coin: '0.0046 RIF' },
+      { coin: '0.0048 RIF' },
+      { coin: '0.0052 RIF' },
+    ];
+
+    let feeData = null;
+    if (coin === 'BTC') {
+      feeData = btcFees;
+    } else if (coin === 'RBTC') {
+      feeData = rbtcFees;
+    } else if (coin === 'RIF') {
+      feeData = rifFees;
+    }
+
     return (
       <ScrollView style={[flex.flex1]}>
         <View style={[{ height: 100 }]}>
@@ -422,13 +450,29 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} value={memo} />
+              <TextInput
+                style={[styles.textInput, { textAlignVertical: 'top' }]}
+                placeholder="Enter a transaction memo"
+                multiline
+                numberOfLines={4}
+                value={memo}
+                onChangeText={(text) => {
+                  this.setState({ memo: text });
+                }}
+              />
             </View>
           </View>
           <View style={[styles.sectionContainer]}>
             <Loc style={[styles.title2]} text="Miner fee" />
             <Loc style={[styles.question]} text="How fast you want this done?" />
-            <RadioGroup />
+            <RadioGroup
+              data={feeData}
+              selected={fee}
+              onChange={(i) => {
+                this.setState({ fee: i });
+                console.log(`fee: ${i}`);
+              }}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.customRow, { paddingBottom: 20 }]}>
             <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
