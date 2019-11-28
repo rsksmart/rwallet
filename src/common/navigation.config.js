@@ -24,6 +24,7 @@ import Scan from '../pages/wallet/scan';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
+/* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
@@ -54,12 +55,6 @@ const routeConfigMap = {
       path: 'WalletAddIndex',
       navigationOptions: () => ({
         headerTitle: 'Add Wallet',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletSelectCurrency: {
@@ -67,12 +62,6 @@ const routeConfigMap = {
       path: 'WalletSelectCurrency',
       navigationOptions: () => ({
         headerTitle: 'Select Wallet Currency',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletCreate: {
@@ -80,12 +69,6 @@ const routeConfigMap = {
       path: 'WalletCreate',
       navigationOptions: () => ({
         headerTitle: 'Create Wallet',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletRecovery: {
@@ -93,12 +76,6 @@ const routeConfigMap = {
       path: 'WalletRecovery',
       navigationOptions: () => ({
         headerTitle: 'Recovery Wallet',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     RecoveryPhrase: {
@@ -106,12 +83,6 @@ const routeConfigMap = {
       path: 'RecoveryPhrase',
       navigationOptions: () => ({
         headerTitle: 'Recovery Phrase',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletList: {
@@ -119,12 +90,6 @@ const routeConfigMap = {
       path: 'WalletList',
       navigationOptions: () => ({
         headerTitle: 'Wallet List',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     StartPage: {
@@ -132,12 +97,6 @@ const routeConfigMap = {
       path: 'StartPage',
       navigationOptions: () => ({
         headerTitle: 'StartPage',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     TermsPage: {
@@ -145,12 +104,6 @@ const routeConfigMap = {
       path: 'TermsPage',
       navigationOptions: () => ({
         headerTitle: 'TermsPage',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     VerifyPhrase: {
@@ -158,12 +111,6 @@ const routeConfigMap = {
       path: 'VerifyPhrase',
       navigationOptions: () => ({
         headerTitle: 'VerifyPhrase',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     VerifyPhraseSuccess: {
@@ -171,12 +118,6 @@ const routeConfigMap = {
       path: 'VerifyPhraseSuccess',
       navigationOptions: () => ({
         headerTitle: 'VerifyPhraseSuccess',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     Transfer: {
@@ -184,12 +125,6 @@ const routeConfigMap = {
       path: 'Transfer',
       navigationOptions: () => ({
         headerTitle: 'Transfer',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     TransferCompleted: {
@@ -197,12 +132,6 @@ const routeConfigMap = {
       path: 'TransferCompleted',
       navigationOptions: () => ({
         headerTitle: 'TransferCompleted',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletReceive: {
@@ -210,12 +139,6 @@ const routeConfigMap = {
       path: 'WalletReceive',
       navigationOptions: () => ({
         headerTitle: 'WalletReceive',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     WalletHistory: {
@@ -223,12 +146,6 @@ const routeConfigMap = {
       path: 'WalletHistory',
       navigationOptions: () => ({
         headerTitle: 'WalletHistory',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     VerifyPasscode: {
@@ -236,12 +153,6 @@ const routeConfigMap = {
       path: 'VerifyPasscode',
       navigationOptions: () => ({
         headerTitle: 'VerifyPasscode',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     VerifyFingerprint: {
@@ -249,12 +160,6 @@ const routeConfigMap = {
       path: 'VerifyFingerprint',
       navigationOptions: () => ({
         headerTitle: 'VerifyFingerprint',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     Scan: {
@@ -262,12 +167,6 @@ const routeConfigMap = {
       path: 'Scan',
       navigationOptions: () => ({
         headerTitle: 'Scan',
-        headerRight: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
   },
@@ -277,13 +176,6 @@ const routeConfigMap = {
       path: 'MineIndex',
       navigationOptions: () => ({
         headerTitle: 'Mine',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     Language: {
@@ -291,13 +183,6 @@ const routeConfigMap = {
       path: 'Language',
       navigationOptions: () => ({
         headerTitle: 'Language',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     Currency: {
@@ -305,13 +190,6 @@ const routeConfigMap = {
       path: 'Currency',
       navigationOptions: () => ({
         headerTitle: 'Currency',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     TwoFactorAuth: {
@@ -319,13 +197,6 @@ const routeConfigMap = {
       path: 'TwoFactorAuth',
       navigationOptions: () => ({
         headerTitle: 'TwoFactorAuth',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     ResetPasscode: {
@@ -333,13 +204,6 @@ const routeConfigMap = {
       path: 'ResetPasscode',
       navigationOptions: () => ({
         headerTitle: 'ResetPasscode',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
     ResetPasscodeSuccess: {
@@ -347,13 +211,6 @@ const routeConfigMap = {
       path: 'ResetPasscodeSuccess',
       navigationOptions: () => ({
         headerTitle: 'ResetPasscode',
-        headerRight: <Text />,
-        headerLeft: <Text />,
-        headerTitleStyle: {
-          alignSelf: 'center',
-          textAlign: 'center',
-          flex: 1,
-        },
       }),
     },
   },
