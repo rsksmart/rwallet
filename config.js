@@ -13,6 +13,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
+    languages: ['en', 'fr', 'he', 'zh'],
     currencies: [
       { name: 'USD', symbol: '$' },
       { name: 'CNY', symbol: '￥' },
