@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, StyleSheet, ImageBackground,
+} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
-import Header from '../../components/common/misc/header';
 import WordField from '../../components/common/misc/wordField';
 import Alert from '../../components/common/modal/alert';
 import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
+
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -27,6 +31,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.29,
     alignSelf: 'center',
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
   },
 });
 
@@ -95,9 +113,8 @@ export default class VerifyPhrase extends Component {
         await walletManager.addWallet(this.wallet);
         this.setState({ loading: false });
         const resetAction = StackActions.reset({
-          index: 1,
+          index: 0,
           actions: [
-            NavigationActions.navigate({ routeName: 'Test1' }),
             NavigationActions.navigate({ routeName: 'VerifyPhraseSuccess' }),
           ],
         });
@@ -136,24 +153,16 @@ export default class VerifyPhrase extends Component {
   }
 
   render() {
-    const alertTitle = "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.";
-    const { navigation } = this.props;
-    const { phrases, tags, loading } = this.state;
+    const alertTitle = 'verifyPhraseAlertTitle';
+    const { tags, loading } = this.state;
     return (
       <View>
-        <Header
-          title="Verify Your Phrase"
-          goBack={() => {
-            if (phrases.length === 0) {
-              navigation.goBack();
-            } else {
-              this.reset();
-            }
-          }}
-        />
         <Loader loading={loading} />
-        <View style={styles.wordFieldView}>{this.renderAllItem()}</View>
-        <Text style={styles.tip}>Tap each word in the correct order</Text>
+        <ImageBackground source={header} style={[styles.headerImage]}>
+          <Loc style={[styles.headerTitle]} text="Recovery Phrase" />
+        </ImageBackground>
+        <View style={[styles.wordFieldView, { marginTop: 220 }]}>{this.renderAllItem()}</View>
+        <Loc style={[styles.tip]} text="Tap each word in the correct order" />
         <Tags
           data={tags}
           style={[styles.tags]}
@@ -166,7 +175,8 @@ export default class VerifyPhrase extends Component {
           ref={(ref) => {
             this.alert = ref;
           }}
-          title={alertTitle}
+          title="tip"
+          text={alertTitle}
           onPress={() => {
             this.reset();
           }}

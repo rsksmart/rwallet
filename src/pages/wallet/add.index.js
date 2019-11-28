@@ -1,16 +1,35 @@
 import React, { Component } from 'react';
 import {
-  View,
+  View, ImageBackground, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
-import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
-import appContext from '../../common/appContext';
+import Loc from '../../components/common/misc/loc';
+
+const header = require('../../assets/images/misc/header.png');
+
+const styles = StyleSheet.create({
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
+  },
+  body: {
+    marginTop: 180,
+  },
+});
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -29,20 +48,6 @@ class WalletAddIndex extends Component {
       },
       {
         id: '2',
-        title: 'Create Share Wallet (Multi-sig)',
-        text: 'Requires multiple devices',
-        icon: (<MaterialIcons name="computer" size={25} style={{ color: '#515151' }} />),
-        onPress: () => {},
-      },
-      {
-        id: '3',
-        title: 'Join Share Wallet',
-        text: 'Recommended for first-time user',
-        icon: (<Feather name="users" size={25} style={{ color: '#515151' }} />),
-        onPress: () => {},
-      },
-      {
-        id: '4',
         title: 'Import existing Wallet',
         text: 'Recover your wallet using your passphrase',
         icon: (<AntDesign name="download" size={25} style={{ color: '#515151' }} />),
@@ -59,20 +64,16 @@ class WalletAddIndex extends Component {
 
     async createWalletFlow(page) {
       const { navigation } = this.props;
-      const value = await appContext.secureGet('passcode');
-      if (value === null) {
-        navigation.navigate('ResetPasscode', { page });
-      } else {
-        navigation.navigate(page);
-      }
+      navigation.navigate(page);
     }
 
     render() {
-      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Add Wallet" goBack={navigation.goBack} />
-          <WalletTypeList data={this.listData} />
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="Add Wallet" />
+          </ImageBackground>
+          <WalletTypeList style={[styles.body]} data={this.listData} />
         </View>
       );
     }

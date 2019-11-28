@@ -9,7 +9,10 @@ const actions = {
   GET_TRANSACTIONS_RESULT: 'GET_TRANSACTIONS_RESULT',
   CREATE_RAW_TRANSATION: 'CREATE_RAW_TRANSATION',
   CREATE_RAW_TRANSATION_RESULT: 'CREATE_RAW_TRANSATION_RESULT',
+  GET_PRICE: 'GET_PRICE',
+  GET_PRICE_RESULT: 'GET_PRICE_RESULT',
   SET_ERROR: 'SET_ERROR',
+  CHANGE_CURRENCY: 'CHANGE_CURRENCY',
 
   // Functions definition
   loading: (isLoading) => ({
@@ -38,6 +41,17 @@ const actions = {
       },
     };
   },
+  getPrice: (symbols) => {
+    console.log('actions::getPriace is called.');
+    return {
+      type: actions.GET_PRICE,
+      payload: { symbols },
+    };
+  },
+  changeCurrency: (currency) => ({
+    type: actions.CHANGE_CURRENCY,
+    payload: { currency },
+  }),
 };
 
 export default actions;

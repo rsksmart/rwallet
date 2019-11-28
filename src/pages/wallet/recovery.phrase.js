@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, Text, TouchableOpacity, StyleSheet, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Tags from '../../components/common/misc/tags';
 import Button from '../../components/common/button/button';
-import Header from '../../components/common/misc/header';
 import Alert from '../../components/common/modal/alert';
+import Loc from '../../components/common/misc/loc';
+
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   text: {},
@@ -35,6 +37,20 @@ const styles = StyleSheet.create({
     bottom: 10,
     width: '100%',
   },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
+  },
 });
 
 export default class RecoveryPhrase extends Component {
@@ -60,10 +76,12 @@ export default class RecoveryPhrase extends Component {
       const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={navigation.goBack} />
-          <Text style={[styles.note, { marginTop: 20 }]}>Write down or copy these words in</Text>
-          <Text style={styles.note}>the right order and save them</Text>
-          <Text style={styles.note}>somewhere safe</Text>
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="Recovery Phrase" />
+          </ImageBackground>
+          <Loc style={[styles.note, { marginTop: 200 }]} text="Write down or copy these words" />
+          <Loc style={[styles.note]} text="in the right order and save them" />
+          <Loc style={[styles.note]} text="somewhere safe" />
           <View style={styles.tagsView}>
             <Tags data={phrases} />
           </View>
@@ -78,7 +96,7 @@ export default class RecoveryPhrase extends Component {
               }}
             />
           </View>
-          <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear." />
+          <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Safeguard your recovery phrase Text" />
         </View>
       );
     }

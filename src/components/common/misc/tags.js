@@ -55,7 +55,7 @@ export default function Tags({
 
 Tags.propTypes = {
   data: PropTypes.arrayOf(PropTypes.string).isRequired,
-  style: PropTypes.arrayOf(PropTypes.element),
+  style: PropTypes.arrayOf(PropTypes.shape({})),
   onPress: PropTypes.func,
   showNumber: PropTypes.bool,
 };

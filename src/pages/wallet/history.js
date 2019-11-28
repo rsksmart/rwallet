@@ -12,6 +12,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
+import Loc from '../../components/common/misc/loc';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -190,7 +191,7 @@ function Item({
       {icon}
       <View style={styles.rowRight}>
         <View style={[styles.rowRightR1]}>
-          <Text style={[styles.title]}>{title}</Text>
+          <Loc style={[styles.title]} text={title} />
         </View>
         <View style={[styles.rowRightR2]}>
           <Text style={styles.amount}>{amount}</Text>
@@ -237,6 +238,14 @@ class History extends Component {
     constructor(props) {
       super(props);
       this.onRefresh = this.onRefresh.bind(this);
+      const { navigation } = this.props;
+      const {
+        name, address, coin, network,
+      } = navigation.state.params;
+      this.name = name;
+      this.address = address;
+      this.coin = coin;
+      this.network = network;
     }
 
     componentDidMount() {
@@ -244,15 +253,15 @@ class History extends Component {
     }
 
     onRefresh() {
-      this.a = 1;
       const { getTransactions } = this.props;
-      const [symbol, type, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
-      getTransactions(symbol, type, address);
+      const [coin, network, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
+      // const [coin, network, address] = [this.coin, this.network, this.address];
+      getTransactions(coin, network, address);
     }
 
 
     render() {
-      const { transactions, isLoading } = this.props;
+      const { transactions, isLoading, navigation } = this.props;
       this.listData = [];
       if (transactions) {
         transactions.forEach((transaction) => {
@@ -315,19 +324,28 @@ class History extends Component {
                             onPress={() => {}}
                           >
                             <Entypo name="swap" size={20} style={styles.sendIcon} />
-                            <Text style={styles.sendText}>Send</Text>
+                            <Loc style={[styles.sendText]} text="Send" />
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={[styles.ButtonView, { borderRightWidth: 0 }]}
                             onPress={() => {}}
                           >
                             <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                            <Text style={styles.receiveText}>Receive</Text>
+                            <Loc style={[styles.sendText]} text="Receive" />
                           </TouchableOpacity>
                         </View>
                       </Body>
                     </CardItem>
                   </Card>
+                  <Text style={styles.headerTitle}>{this.name}</Text>
+                  <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => {
+                      navigation.goBack();
+                    }}
+                  >
+                    <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

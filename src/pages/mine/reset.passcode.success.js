@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image,
+  View, StyleSheet, Image, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
-import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
+import appContext from '../../common/appContext';
+import Loc from '../../components/common/misc/loc';
+
 
 const completed = require('../../assets/images/icon/completed.png');
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -31,6 +34,7 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
+    marginTop: 200,
   },
   check: {
     margin: 25,
@@ -48,6 +52,20 @@ const styles = StyleSheet.create({
     marginTop: 15,
     textAlign: 'center',
   },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
+  },
 });
 
 export default class ResetPasscodeSuccess extends Component {
@@ -58,25 +76,25 @@ export default class ResetPasscodeSuccess extends Component {
     render() {
       return (
         <View style={[flex.flex1]}>
-          <Header title="Reset Passcode Success" />
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="Reset Passcode Success" />
+          </ImageBackground>
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
-            <Text style={styles.title}>Reset completed!</Text>
+            <Loc style={[styles.title]} text="Reset completed!" />
           </View>
           <View style={styles.buttonView}>
             <Button
               text="BACK TO SETTING"
               onPress={async () => {
                 const { navigation } = this.props;
-                if (navigation.state.params.page === 'WalletRecovery' || navigation.state.params.page === 'WalletSelectCurrency') {
-                  const resetAction = StackActions.reset({
-                    index: 1,
-                    actions: [
-                      NavigationActions.navigate({ routeName: 'WalletList' }),
-                      NavigationActions.navigate({ routeName: navigation.state.params.page }),
-                    ],
-                  });
-                  navigation.dispatch(resetAction);
+                let page = null;
+                if (navigation.state.params) {
+                  page = navigation.state.params.page;
+                }
+                if (page && page === 'Transfer') {
+                  appContext.eventEmitter.emit('onFirstPasscode');
+                  navigation.navigate('Transfer');
                 } else {
                   const resetAction = StackActions.reset({
                     index: 1,

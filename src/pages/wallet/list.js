@@ -5,13 +5,13 @@ import {
 import PropTypes from 'prop-types';
 import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
+import { connect } from 'react-redux';
 import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
+import appActions from '../../redux/app/actions';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   headerBoard: {
     width: '85%',
-    height: 165,
+    height: 110,
   },
   headerBoardView: {
     alignItems: 'center',
@@ -130,6 +130,9 @@ const styles = StyleSheet.create({
     height: 350,
     marginTop: -150,
   },
+  assetsTitle: {
+    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+  },
 });
 
 class WalletList extends Component {
@@ -140,24 +143,28 @@ class WalletList extends Component {
     constructor(props) {
       super(props);
       this.listData = [];
-      this.refreshData = this.refreshData.bind(this);
       this.state = {
         listData: this.listData,
       };
+      this.refreshData = this.refreshData.bind(this);
     }
 
     componentDidMount() {
+      const { getPrice } = this.props;
+      getPrice(['BTC', 'RBTC', 'RIF']);
       this.refreshData();
     }
 
     refreshData() {
       const { navigation } = this.props;
       this.wallets = wm.wallets;
+
       const updateValue = (item) => {
         if (item.price != null && item.amount !== '') {
           item.worth = `$${item.price * item.amount}`; // eslint-disable-line no-param-reassign
         }
       };
+
       const getBalance = (coin, item) => {
         const { queryKey } = coin;
         let { address } = coin;
@@ -170,19 +177,6 @@ class WalletList extends Component {
         }).then((result) => {
           console.log(result);
           item.amount = result; // eslint-disable-line no-param-reassign
-          updateValue(item);
-          this.setState({ listData: this.listData });
-        }).catch((reason) => {
-          console.log(reason);
-        });
-      };
-      const getPrice = (coin, item) => {
-        const { queryKey } = coin;
-        Parse.Cloud.run('getTokenPrice', {
-          coinTicker: queryKey,
-        }).then((result) => {
-          console.log(result);
-          item.price = result.price; // eslint-disable-line no-param-reassign
           updateValue(item);
           this.setState({ listData: this.listData });
         }).catch((reason) => {
@@ -203,17 +197,18 @@ class WalletList extends Component {
             price: null,
             icon: coin.icon,
             r1Press: () => {
-              navigation.navigate('Transfer');
+              navigation.navigate('Transfer', { address: coin.address, coin: coin.type });
             },
             r2Press: () => {
-              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coin.type });
             },
             onPress: () => {
-              navigation.navigate('WalletHistory', { address: coin.address });
+              navigation.navigate('WalletHistory', {
+                address: coin.address, coin: coin.type, name: coin.defaultName, network: 'Testnet',
+              });
             },
           };
           getBalance(coin, item);
-          getPrice(coin, item);
           wal.coins.push(item);
         });
         this.listData.push(wal);
@@ -225,9 +220,13 @@ class WalletList extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, currency } = this.props;
       const accounts = [];
       const { listData } = this.state;
+      const currencySymbols = {
+        USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',
+      };
+      const currencySymbol = currencySymbols[currency];
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
         const section = (
@@ -242,48 +241,23 @@ class WalletList extends Component {
         <View style={[flex.flex1]}>
           <ScrollView>
             <ImageBackground source={header} style={[styles.headerImage]}>
-              <Text style={styles.headerTitle}>Your Wallet</Text>
+              <Loc style={[styles.headerTitle]} text="Your Wallet" />
             </ImageBackground>
             <View style={styles.headerBoardView}>
               <Card style={styles.headerBoard}>
                 <CardItem>
                   <Body>
-                    <Text style={styles.myAssetsTitle}>My Assets ($)</Text>
+                    <Text style={styles.myAssetsTitle}>
+                      <Loc text="My Assets" />
+                      {` (${currencySymbol})`}
+                    </Text>
                     <Text style={styles.myAssets}>173,586.3</Text>
-                    <View style={styles.myAssetsButtonsView}>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <Entypo name="swap" size={20} style={styles.sendIcon} />
-                        <Text style={styles.sendText}>Send</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                        <Text style={styles.receiveText}>Receive</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                        onPress={() => {}}
-                      >
-                        <AntDesign name="switcher" size={20} style={styles.swapIcon} />
-                        <Text style={styles.swapText}>Swap</Text>
-                      </TouchableOpacity>
-                    </View>
                   </Body>
                 </CardItem>
               </Card>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={{
-                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
-              }}
-              >
-                All Assets
-              </Text>
+              <Loc style={styles.assetsTitle} text="All Assets" />
             </View>
             <View style={styles.sectionContainer}>
               {accounts}
@@ -296,7 +270,7 @@ class WalletList extends Component {
               >
                 <View style={styles.addAsset}>
                   <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                  <Text>Add Asset</Text>
+                  <Loc text="Add Asset" />
                 </View>
               </TouchableOpacity>
             </View>
@@ -306,8 +280,6 @@ class WalletList extends Component {
     }
 }
 
-export default WalletList;
-
 WalletList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -315,4 +287,19 @@ WalletList.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  getPrice: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  prices: state.App.get('prices'),
+  currency: state.App.get('currency'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getPrice: (symbols) => dispatch(
+    appActions.getPrice(symbols),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

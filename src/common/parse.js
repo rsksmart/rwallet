@@ -137,6 +137,10 @@ class ParseHelper {
     return Parse.Cloud.run('getServerInfo');
   }
 
+  static getPrice(symbols) {
+    return Parse.Cloud.run('getPrice', { symbols });
+  }
+
   /**
    * Transform Parse errors to errors defined by this app
    * @param {object}     err        Parse error from response
@@ -157,17 +161,18 @@ class ParseHelper {
     return { message };
   }
 
-    /**
+  /**
      * get balance of given addrArray which is array of addresses
      * @param {array} addrArray
      * @returns {array} collection of each given address information include balance,etc...
      */
-  static async getBalanceByAddress(addrArray){
+  static async getBalanceByAddress(addrArray) {
     const Address = Parse.Object.extend('Address'); // 建立Address这个表的query
     const query = new Parse.Query(Address);
-    query.containedIn("address", addrArray);
+    query.containedIn('address', addrArray);
     // 实际运行query
-    return await query.find();
+    const result = await query.find();
+    return result;
   }
 }
 

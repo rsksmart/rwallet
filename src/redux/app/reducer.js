@@ -1,11 +1,14 @@
 import { Map } from 'immutable';
 import actions from './actions';
+import appContext from '../../common/appContext';
 
 const initState = new Map({
   isLoading: false,
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
+  prices: {},
+  currency: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -36,6 +39,22 @@ export default function appReducer(state = initState, action) {
       const result = action.value;
       console.log('CREATE_RAW_TRANSATION_RESULT, result', result);
       const newstate = state.set('rawTransaction', result);
+      return newstate;
+    }
+    case actions.GET_PRICE_RESULT:
+    {
+      const result = action.value;
+      console.log('GET_PRICE_RESULT, result', result);
+      let prices = state.get('prices');
+      prices = Object.assign(prices, result);
+      const newstate = state.set('prices', prices);
+      return newstate;
+    }
+    case actions.CHANGE_CURRENCY:
+    {
+      const { currency } = action.payload;
+      appContext.saveSettings({ currency });
+      const newstate = state.set('currency', currency);
       return newstate;
     }
     case actions.SET_ERROR:

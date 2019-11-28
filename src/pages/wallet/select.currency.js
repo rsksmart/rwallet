@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, StyleSheet, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import CoinTypeList from '../../components/wallet/coin.type.list';
-import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -22,18 +22,33 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sectionContainer: {
-    marginTop: 10,
     paddingHorizontal: 10,
+    marginTop: 180,
   },
   buttonView: {
     position: 'absolute',
     bottom: '10%',
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
   },
 });
 
 const BTC = require('../../assets/images/icon/BTC.png');
 const RBTC = require('../../assets/images/icon/RBTC.png');
 const RIF = require('../../assets/images/icon/RIF.png');
+const header = require('../../assets/images/misc/header.png');
 
 export default class WalletSelectCurrency extends Component {
     static navigationOptions = () => ({
@@ -74,9 +89,11 @@ export default class WalletSelectCurrency extends Component {
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       return (
         <View style={[flex.flex1]}>
-          <Header title="Select Wallet Currency" goBack={navigation.goBack} />
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="Select Wallet Currency" />
+          </ImageBackground>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Mainnet</Text>
+            <Loc style={[styles.sectionTitle]} text="Mainnet" />
             <CoinTypeList data={this.mainnet} />
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>
@@ -97,9 +114,8 @@ export default class WalletSelectCurrency extends Component {
                     await walletManager.addWallet(wallet);
                     this.setState({ loading: false });
                     const resetAction = StackActions.reset({
-                      index: 1,
+                      index: 0,
                       actions: [
-                        NavigationActions.navigate({ routeName: 'Test1' }),
                         NavigationActions.navigate({ routeName: 'WalletList' }),
                       ],
                     });

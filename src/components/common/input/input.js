@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Input({
-  style, placeholder, onChangeText, onSubmitEditing, value,
+  style, placeholder, onChangeText, onSubmitEditing, value, editable,
 }) {
   return (
     <TextInput
@@ -26,17 +26,19 @@ export default function Input({
       placeholder={placeholder}
       onSubmitEditing={onSubmitEditing}
       value={value}
+      editable={editable}
     />
   );
 }
 
 Input.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  style: PropTypes.object,
+  style: PropTypes.arrayOf(PropTypes.shape({})),
   placeholder: PropTypes.string,
   value: PropTypes.string,
   onSubmitEditing: PropTypes.func,
   onChangeText: PropTypes.func,
+  editable: PropTypes.bool,
 };
 
 Input.defaultProps = {
@@ -45,4 +47,5 @@ Input.defaultProps = {
   value: null,
   onSubmitEditing: null,
   onChangeText: null,
+  editable: true,
 };

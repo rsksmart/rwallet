@@ -30,7 +30,7 @@ export default class VerifyPasscode extends Component {
               navigation.goBack();
             }}
             onFill={async (passcode) => {
-              const value = appContext.secureGet('passcode');
+              const value = await appContext.secureGet('passcode');
               if (passcode === value) {
                 navigation.state.params.verified();
                 navigation.goBack();

@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/languageSwitcher/actions';
+import Loc from '../../components/common/misc/loc';
+
+const header = require('../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -20,6 +22,21 @@ const styles = StyleSheet.create({
   listView: {
     width: '80%',
     alignSelf: 'center',
+    marginTop: 180,
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
   },
 });
 
@@ -59,11 +76,11 @@ class Language extends Component {
       const selected = {
         en: 0, fr: 1, he: 2, zh: 3,
       }[language];
-      const { navigation } = this.props;
-      const goBack = navigation && navigation.goBack ? navigation.goBack : () => {};
       return (
         <View style={[flex.flex1]}>
-          <Header title="Language" goBack={goBack} />
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Loc style={[styles.headerTitle]} text="Language" />
+          </ImageBackground>
           <View style={styles.listView}>
             <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
           </View>

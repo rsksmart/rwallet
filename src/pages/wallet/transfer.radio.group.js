@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color.ts';
+import Loc from '../../components/common/misc/loc';
 
 
 const styles = StyleSheet.create({
@@ -184,9 +185,7 @@ function Item({ data, onPress }) {
         {check}
       </View>
       <View>
-        <Text style={styles.radioItemText1}>
-          {data.name}
-        </Text>
+        <Loc style={[styles.radioItemText1]} text={data.name} />
         <Text style={styles.radioItemText2}>
           {data.coin}
         </Text>
@@ -203,7 +202,7 @@ Item.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     coin: PropTypes.string.isRequired,
-    selected: PropTypes.string.isRequired,
+    selected: PropTypes.bool.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };
