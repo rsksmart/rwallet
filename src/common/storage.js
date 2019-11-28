@@ -1,85 +1,106 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-return-await */
-/* eslint-disable consistent-return */
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const rnStorage = new Storage({
-  size: 9000,
-  storageBackend: AsyncStorage,
-  defaultExpires: 1000 * 60 * 60 * 24 * 365,
-  enableCache: true,
-});
-
-const storage = {
-  async save(key: string, data: any, id?: any, expires?: number | null): Promise<void> {
-    // eslint-disable-next-line no-return-await
-    return await rnStorage.save({
-      key,
-      id,
-      data,
-      expires,
+class RNStorage {
+  constructor() {
+    this.instance = new Storage({
+      size: 9000,
+      storageBackend: AsyncStorage,
+      defaultExpires: 1000 * 60 * 60 * 24 * 365,
+      enableCache: true,
     });
-  },
+  }
 
-  async load(param) {
+  /**
+   *
+   * @param {string} key
+   * @param {*} data
+   * @param {*} id
+   * @param {number|null} expires
+   * @returns {Promise}
+   */
+  save(key, data, id, expires) {
+    return this.instance.save({
+      key, id, data, expires,
+    });
+  }
+
+  /**
+   *
+   * @param {*} params
+   */
+  async load(params) {
     // eslint-disable-next-line no-return-await
-    return await rnStorage.load(param);
-  },
+    return this.instance.load(params);
+  }
 
-  async getLocaItem<T = any>(key: string, id?: string): Promise<T> {
-    return (
-      (await this.load)
-      < T
-      > {
-        key,
-        id: id || undefined,
-        autoSync: false,
-        syncInBackground: false,
-      }
-    );
-  },
+  /**
+   *
+   * @param {string} key
+   * @param {*} id
+   * @returns {Promise}
+   */
+  getLocalItem(key, id) {
+    return this.instance.load({
+      key, id: id || undefined, autoSync: false, syncInBackground: false,
+    });
+  }
 
-  async getAsyncItem<T = any>(key: string, syncParams: any, id?: string): Promise<T> {
-    return (
-      (await this.load)
-      < T
-      > {
-        key,
-        id: id || undefined,
-        autoSync: true,
-        syncInBackground: false,
-        syncParams: {
-          ...syncParams,
-        },
-      }
-    );
-  },
 
-  async remove(key: string, id?: string): Promise<void> {
+  /**
+   *
+   * @param {string} key
+   * @param {*} syncParams
+   * @param {*} id
+   * @returns {Promise}
+   */
+  getAsyncItem(key, syncParams, id) {
+    return this.instance.load({
+      key, id: id || undefined, autoSync: true, syncInBackground: false, syncParams: { ...syncParams },
+    });
+  }
+
+  /**
+   *
+   * @param {string} key
+   * @param {*} id
+   * @returns {Promise}
+   */
+  async remove(key, id) {
+    const that = this;
+
     if (id) {
-      return await rnStorage.remove({
+      return this.instance.remove({
         key,
         id,
       });
     }
+
+    // Get storage Ids by key
     const ids = await this.getIdsForKey(key);
-    for (id of ids) {
-      await rnStorage.remove({
-        key,
-        id,
-      });
-    }
-  },
 
-  async clearMaps(): Promise<void> {
-    return await rnStorage.clearMap();
-  },
-  async getIdsForKey(key: string): Promise<string[]> {
-    return await rnStorage.getIdsForKey(key);
-  },
-};
+    // Push all remove promise into an array and handle parallelly
+    const promises = ids.map((storageId) => that.instance.remove({ key, storageId }));
 
-export default storage;
+    return Promise.all(promises);
+  }
+
+  /**
+   * Remove all key values from the Storage instance
+   * @returns {Promise}
+   */
+  clear() {
+    return this.instance.clearMap();
+  }
+
+  /**
+   *
+   * @param {string} key
+   * @returns {Promise} Array of string
+   */
+  getIdsForKey(key) {
+    return this.instance.getIdsForKey(key);
+  }
+}
+
+export default new RNStorage();
