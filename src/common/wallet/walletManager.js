@@ -9,7 +9,6 @@ const walletManager = {
   },
   async addWallet(wallet) {
     const newWallet = wallet;
-    this.wallets.push(newWallet);
     const coins = [];
     newWallet.coins.forEach((coin) => {
       coins.push({ type: coin.type, address: coin.address });
@@ -17,6 +16,7 @@ const walletManager = {
     const item = { phrase: newWallet.mnemonic.phrase, coins };
     const walletId = await appContext.addWallet(item);
     newWallet.walletId = walletId;
+    this.wallets.push(newWallet);
     return walletId;
   },
   async loadWallets() {
