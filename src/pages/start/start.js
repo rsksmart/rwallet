@@ -79,7 +79,6 @@ export default class StartPage extends Component {
       buttonView = (
         <View style={styles.buttonView}>
           <Button
-            style={styles.button}
             text="GET STARTED"
             onPress={async () => {
               this.setState({ showButton: false });

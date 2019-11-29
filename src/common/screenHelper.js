@@ -14,7 +14,6 @@ o.bodyMarginTop = o.headerHeight + o.headerMarginTop;
 o.styles = StyleSheet.create({
   body: {
     marginTop: o.bodyMarginTop,
-    flex: 1,
   },
 });
 

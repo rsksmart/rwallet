@@ -56,7 +56,7 @@ class WalletAddIndex extends Component {
               navigation.goBack();
             }}
           />
-          <View style={screenHelper.styles.body}>
+          <View style={[screenHelper.styles.body]}>
             <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
           </View>
         </View>
