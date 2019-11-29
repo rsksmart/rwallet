@@ -12,6 +12,7 @@ import SwipableButtonList from '../../components/common/misc/swipableButtonList'
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
+import { DEVICE } from '../../common/info';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: 350,
-    marginTop: -150,
+    marginTop: DEVICE.isIphoneX ? -150 + 24 : -150,
   },
   assetsTitle: {
     color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
