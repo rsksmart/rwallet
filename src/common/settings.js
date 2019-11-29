@@ -21,20 +21,25 @@ class Settings {
   }
 
   set(key, value) {
-    this.data.set(key, value);
+    this.data = this.data.set(key, value);
+    return this;
   }
 
   toJson() {
-    return this.data.toJson();
+    return this.data.toJSON();
   }
 
   serialize() {
-    const promises = this.data.map((value, key) => storage.save(key, value));
+    const promises = [...this.data.entries()]
+      .map(([key, value]) => storage.save(key, value));
+
     return Promise.all(promises);
   }
 
   deserialize() {
-    const promises = this.data.map((value, key) => storage.load(key));
+    const promises = [...this.data.keys()]
+      .map((key) => storage.load({ key }));
+
     return Promise.all(promises);
   }
 }
