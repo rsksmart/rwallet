@@ -9,26 +9,26 @@ beforeEach(() => {
 
 describe('settings toJson and serialize test', () => {
   test('verify settings toJson', () => {
-    settings.set('language', 'en')
-      .set('currency', 'USD')
-      .set('fingerprint', false);
+    settings.set('language', 'zh')
+      .set('currency', 'CNY')
+      .set('fingerprint', true);
     const expectedSettings = {
-      language: 'en',
-      currency: 'USD',
-      fingerprint: false,
+      language: 'zh',
+      currency: 'CNY',
+      fingerprint: true,
     };
 
     expect(settings.toJson()).toEqual(expectedSettings);
   });
 
   test('serialize deserialize settings', async () => {
-    settings.set('language', 'en')
-      .set('currency', 'USD')
-      .set('fingerprint', false);
+    settings.set('language', 'zh')
+      .set('currency', 'CNY')
+      .set('fingerprint', true);
     await settings.serialize();
     const settingsData = await settings.deserialize();
 
-    const expectedData = ['en', 'USD', false];
+    const expectedData = ['zh', 'CNY', true];
     expect(settingsData).toEqual(expectedData);
   });
 });
