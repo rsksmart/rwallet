@@ -258,7 +258,7 @@ class WalletList extends Component {
               </Card>
             </View>
             <View style={styles.sectionContainer}>
-              <Loc style={styles.assetsTitle} text="All Assets" />
+              <Loc style={[styles.assetsTitle]} text="All Assets" />
             </View>
             <View style={styles.sectionContainer}>
               {accounts}
