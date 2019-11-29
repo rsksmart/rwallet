@@ -1,57 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView, ImageBackground,
+  View, StyleSheet, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import appActions from '../../redux/app/actions';
-import Loc from '../../components/common/misc/loc';
-
-const header = require('../../assets/images/misc/header.png');
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  title: {
-    color: '#2D2D2D',
-    fontSize: 16,
-    fontWeight: '300',
-    flex: 1,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 10,
-    height: 80,
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-  },
   listView: {
     width: '80%',
     alignSelf: 'center',
-    marginTop: 180,
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: '#FFF',
+    marginTop: 10,
   },
 });
 
@@ -93,21 +56,24 @@ class Currency extends Component {
     }
 
     render() {
-      const { currency } = this.props;
+      const { navigation, currency } = this.props;
       const selected = {
         ARS: 0, USD: 1, RMB: 2, KRW: 3, JRY: 4, GBP: 5,
       }[currency];
       return (
-        <View style={[flex.flex1]}>
-          <ScrollView>
-            <ImageBackground source={header} style={[styles.headerImage]}>
-              <Loc style={[styles.headerTitle]} text="Currency" />
-            </ImageBackground>
+        <ScrollView style={[flex.flex1]}>
+          <Header
+            title="Currency"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={screenHelper.styles.body}>
             <View style={styles.listView}>
               <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       );
     }
 }

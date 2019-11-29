@@ -27,14 +27,14 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: HomeStackNavigator,
       path: 'home',
       navigationOptions: {
-        title: strings('root.home'),
+        title: strings('root.home2'),
       },
     },
     Receive: {
       screen: MineStackNavigator,
       path: 'mine',
       navigationOptions: {
-        title: strings('root.mine'),
+        title: strings('root.mine2'),
       },
     },
     Mine: {

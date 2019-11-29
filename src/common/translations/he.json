@@ -1,7 +1,9 @@
 {
   "root": {
     "home": "Home",
-    "mine": "Mine"
+    "mine": "Mine",
+    "home2": "Home2",
+    "mine2": "Mine2"
   },
   "test3": {
     "text": "This is the test page 3",
