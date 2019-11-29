@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Card, CardItem, Body } from 'native-base';
@@ -13,8 +13,11 @@ import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
 import { DEVICE } from '../../common/info';
+import screenHelper from '../../common/screenHelper';
+
 
 const header = require('../../assets/images/misc/header.png');
+const rsk = require('../../assets/images/mine/rsk.png');
 
 
 const styles = StyleSheet.create({
@@ -26,7 +29,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   sectionContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
   addAsset: {
     color: '#77869E',
@@ -51,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 200,
+    bottom: 120,
     left: 24,
     color: '#FFF',
   },
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: 115,
+    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
   },
   chevron: {
     color: '#FFF',
@@ -128,11 +131,24 @@ const styles = StyleSheet.create({
   headerImage: {
     position: 'absolute',
     width: '100%',
-    height: 350,
-    marginTop: DEVICE.isIphoneX ? -150 + 24 : -150,
+    height: screenHelper.headerHeight,
+    marginTop: screenHelper.headerMarginTop,
   },
   assetsTitle: {
     color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+  },
+  logoView: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  powerby: {
+    color: '#727372',
+    fontSize: 17,
+    fontWeight: '900',
+    marginTop: 5,
   },
 });
 
@@ -240,7 +256,7 @@ class WalletList extends Component {
       }
       return (
         <View style={[flex.flex1]}>
-          <ScrollView>
+          <ScrollView style={{ marginBottom: 45 }}>
             <ImageBackground source={header} style={[styles.headerImage]}>
               <Loc style={[styles.headerTitle]} text="Your Wallet" />
             </ImageBackground>
@@ -257,25 +273,31 @@ class WalletList extends Component {
                 </CardItem>
               </Card>
             </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.assetsTitle]} text="All Assets" />
-            </View>
-            <View style={styles.sectionContainer}>
-              {accounts}
-            </View>
-            <View style={styles.sectionContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('WalletAddIndex');
-                }}
-              >
-                <View style={styles.addAsset}>
-                  <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                  <Loc text="Add Asset" />
-                </View>
-              </TouchableOpacity>
+            <View style={{ width: '85%', alignSelf: 'center' }}>
+              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+                <Loc style={[styles.assetsTitle]} text="All Assets" />
+              </View>
+              <View style={styles.sectionContainer}>
+                {accounts}
+              </View>
+              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('WalletAddIndex');
+                  }}
+                >
+                  <View style={styles.addAsset}>
+                    <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                    <Loc text="Add Asset" />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
+          <View style={styles.logoView}>
+            <Text style={styles.powerby}>Powered by</Text>
+            <Image source={rsk} />
+          </View>
         </View>
       );
     }

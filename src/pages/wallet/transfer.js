@@ -227,22 +227,24 @@ export default class Transfer extends Component {
 
   // symbol: RBTC, RIF
   async sendRskTransaction(symbol) {
-    console.log('transfer::sendRskTransaction');
+    console.log(`transfer::sendRskTransaction, symbol: ${symbol}`);
     this.setState({ loading: true });
     const { amount, memo, feeLevel } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
       const value = common.rbtcToWeiHex(amount);
-      const [type, sender, receiver, data] = ['Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
-      const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data, memo, feeLevel,
-      });
+      const [type, sender, receiver] = ['Testnet', '0x0c50ecd06dff8c22a9afc80356d5d7f39921e882', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'];
+      const params = {
+        symbol, type, sender, receiver, value, memo, feeLevel,
+      };
+      console.log(`transfer::sendRskTransaction, createRawTransaction, params: ${JSON.stringify(params)}`);
+      const result = await Parse.Cloud.run('createRawTransaction', params);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
-      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+      const privateKey = '9E41AA4BA98146F04039E7974A83BF65A8494D2F27D5CAB32F18650A514AFBEF';
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
       const signedTransaction = await accountInfo.signTransaction(
@@ -261,50 +263,6 @@ export default class Transfer extends Component {
       console.log(`sendRskTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
       const result = await sendSignedTransaction(rawTransaction);
       console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
-    } catch (error) {
-      console.log(`sendTransaction, error: ${error.message}`);
-      this.setState({ loading: false });
-    }
-    this.setState({ loading: false });
-  }
-
-
-  async sendRifTransaction(symbol) {
-    console.log('transfer::sendRifTransaction');
-    this.setState({ loading: true });
-    // const { amount, memo, feeLevel } = this.state;
-    this.a = 1;
-    const createRawTransaction = async () => {
-      console.log('transfer::sendRifTransaction, createRawTransaction');
-      // const value = common.rbtcToWeiHex(amount);
-      const value = '0x96f9e3086000';
-      const [type, sender, receiver] = ['Testnet', '0x0c50ecd06dff8c22a9afc80356d5d7f39921e882', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'];
-      const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value,
-      });
-      return result;
-    };
-    // const sendSignedTransaction = async (rawTransaction) => {
-    //   console.log('transfer::sendRskTransaction, sendSignedTransaction');
-    //   const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
-    //   const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
-    //   const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
-    //   const signedTransaction = await accountInfo.signTransaction(
-    //     rawTransaction, privateKey,
-    //   );
-    //   console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
-    //   const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];
-    //   console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
-    //   const result = await Parse.Cloud.run('sendSignedTransaction', {
-    //     name, hash, type,
-    //   });
-    //   return result;
-    // };
-    try {
-      const rawTransaction = await createRawTransaction();
-      console.log(`sendRifTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
-      // const result = await sendSignedTransaction(rawTransaction);
-      // console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
     } catch (error) {
       console.log(`sendTransaction, error: ${error.message}`);
       this.setState({ loading: false });
@@ -389,11 +347,8 @@ export default class Transfer extends Component {
       if (coin === 'BTC') {
         await this.sendBtcTransaction();
         navigation.navigate('TransferCompleted');
-      } else if (coin === 'RBTC') {
-        await this.sendRskTransaction();
-        navigation.navigate('TransferCompleted');
-      } else if (coin === 'RIF') {
-        await this.sendRifTransaction();
+      } else if (coin === 'RBTC' || coin === 'RIF') {
+        await this.sendRskTransaction(coin);
         navigation.navigate('TransferCompleted');
       }
     };
