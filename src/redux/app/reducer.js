@@ -63,11 +63,13 @@ export default function appReducer(state = initState, action) {
       return state.set('error', action.value);
     case actions.ADD_NOTIFICATION:
       notifications = state.get('notifications');
+      /* eslint-disable no-case-declarations */
       const addNotifications = notifications.slice();
       addNotifications.push(action.notification);
       return state.set('notifications', addNotifications);
     case actions.REMOVE_NOTIFICATION:
       notifications = state.get('notifications');
+      /* eslint-disable no-case-declarations */
       const removeNotifications = notifications.slice().filter(
         (notification) => notification.id !== action.id,
       );
