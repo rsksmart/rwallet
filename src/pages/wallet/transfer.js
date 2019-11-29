@@ -206,7 +206,7 @@ export default class Transfer extends Component {
       to: null,
       amount: '0.00000001',
       memo: null,
-      fee: 1,
+      feeLevel: 1,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
@@ -229,14 +229,14 @@ export default class Transfer extends Component {
   async sendRskTransaction(symbol) {
     console.log('transfer::sendRskTransaction');
     this.setState({ loading: true });
-    const { amount, memo, fee } = this.state;
+    const { amount, memo, feeLevel } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
       const value = common.rbtcToWeiHex(amount);
       const [type, sender, receiver, data] = ['Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data, memo, fee,
+        symbol, type, sender, receiver, value, data, memo, feeLevel,
       });
       return result;
     };
@@ -270,7 +270,7 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { amount, memo, fee } = this.state;
+    const { amount, memo, feeLevel } = this.state;
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
@@ -280,7 +280,7 @@ export default class Transfer extends Component {
         'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data, memo, fee,
+        symbol, type, sender, receiver, value, data, memo, feeLevel,
       });
       return result;
     };
@@ -358,7 +358,7 @@ export default class Transfer extends Component {
 
   render() {
     const {
-      custom, loading, to, amount, memo, fee,
+      custom, loading, to, amount, memo, feeLevel,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -467,9 +467,9 @@ export default class Transfer extends Component {
             <Loc style={[styles.question]} text="How fast you want this done?" />
             <RadioGroup
               data={feeData}
-              selected={fee}
+              selected={feeLevel}
               onChange={(i) => {
-                this.setState({ fee: i });
+                this.setState({ feeLevel: i });
                 console.log(`fee: ${i}`);
               }}
             />
