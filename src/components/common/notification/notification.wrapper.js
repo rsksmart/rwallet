@@ -1,3 +1,5 @@
+/* eslint "react/jsx-props-no-spreading": "off" */
+// TODO: we need to update JSX props spreading such as {...props} to enhance code readability and to remove eslint exceptions
 import React from 'react';
 import PropTypes from 'prop-types';
 import SuccessNotification from './notification.success';

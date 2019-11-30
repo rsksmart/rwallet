@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ImageBackground,
+  View, StyleSheet,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
@@ -10,8 +10,8 @@ import Alert from '../../components/common/modal/alert';
 import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
-
-const header = require('../../assets/images/misc/header.png');
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -31,20 +31,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.29,
     alignSelf: 'center',
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: '#FFF',
   },
 });
 
@@ -155,32 +141,38 @@ export default class VerifyPhrase extends Component {
   render() {
     const alertTitle = 'verifyPhraseAlertTitle';
     const { tags, loading } = this.state;
+    const { navigation } = this.props;
     return (
       <View>
         <Loader loading={loading} />
-        <ImageBackground source={header} style={[styles.headerImage]}>
-          <Loc style={[styles.headerTitle]} text="Recovery Phrase" />
-        </ImageBackground>
-        <View style={[styles.wordFieldView, { marginTop: 220 }]}>{this.renderAllItem()}</View>
-        <Loc style={[styles.tip]} text="Tap each word in the correct order" />
-        <Tags
-          data={tags}
-          style={[styles.tags]}
-          showNumber={false}
-          onPress={(i) => {
-            this.tap(i);
+        <Header
+          title="Recovery Phrase"
+          goBack={() => {
+            navigation.goBack();
           }}
         />
-        <Alert
-          ref={(ref) => {
-            this.alert = ref;
-          }}
-          title="tip"
-          text={alertTitle}
-          onPress={() => {
-            this.reset();
-          }}
-        />
+        <View style={[screenHelper.styles.body]}>
+          <View style={[styles.wordFieldView]}>{this.renderAllItem()}</View>
+          <Loc style={[styles.tip]} text="Tap each word in the correct order" />
+          <Tags
+            data={tags}
+            style={[styles.tags]}
+            showNumber={false}
+            onPress={(i) => {
+              this.tap(i);
+            }}
+          />
+          <Alert
+            ref={(ref) => {
+              this.alert = ref;
+            }}
+            title="tip"
+            text={alertTitle}
+            onPress={() => {
+              this.reset();
+            }}
+          />
+        </View>
       </View>
     );
   }

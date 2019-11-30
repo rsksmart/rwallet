@@ -62,6 +62,15 @@ The first three steps are needed for both Android and iOS devices.
     * For iOS, run `npm run ios` to start the App in iOS virtual device.
 1. For development, press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
 
+## Debugging
+1. Mac OS Dev environment
+    * In Android Simulator, press **Command + M** to start remote debugging
+    * In iOS Simulation, press **Command + D** to start remote debugging
+1. Linux Dev environment
+    * In Android Simulator
+
+1. Windows Dev environment
+
 
 ## Deployment
 TODO: Add details for deployment

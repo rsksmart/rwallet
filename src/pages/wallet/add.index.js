@@ -1,35 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, ImageBackground, StyleSheet,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import flex from '../../assets/styles/layout.flex';
-import Loc from '../../components/common/misc/loc';
-
-const header = require('../../assets/images/misc/header.png');
-
-const styles = StyleSheet.create({
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: '#FFF',
-  },
-  body: {
-    marginTop: 180,
-  },
-});
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -68,12 +47,18 @@ class WalletAddIndex extends Component {
     }
 
     render() {
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[styles.headerImage]}>
-            <Loc style={[styles.headerTitle]} text="Add Wallet" />
-          </ImageBackground>
-          <WalletTypeList style={[styles.body]} data={this.listData} />
+          <Header
+            title="Add Wallet"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={[screenHelper.styles.body]}>
+            <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
+          </View>
         </View>
       );
     }

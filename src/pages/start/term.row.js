@@ -6,17 +6,27 @@ import PropTypes from 'prop-types';
 import Feather from 'react-native-vector-icons/Feather';
 
 const styles = StyleSheet.create({
-  page: {
-    alignItems: 'center',
+  termRow: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  termRowLeft: {
+    marginRight: 15,
+    paddingTop: 3,
+  },
+  check: {
+    color: '#00B520',
+  },
+  termRowRight: {
+    width: 0,
+    flexGrow: 1,
     flex: 1,
   },
-  logo: {
-    position: 'absolute',
-    top: '25%',
-  },
-  buttonView: {
-    position: 'absolute',
-    bottom: '10%',
+  termRowRightText: {
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: '300',
+    letterSpacing: 0.32,
   },
 });
 
