@@ -44,7 +44,7 @@ export default function WordField({ text }) {
   return (
     <View style={styles.frame}>
       <View style={styles.dashView}>
-        <DashLine width={100} />
+        <DashLine />
       </View>
       <View style={styles.textView}>
         <Text style={styles.text}>{text}</Text>
