@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ImageBackground,
+  View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -12,6 +12,8 @@ import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -23,32 +25,17 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: 10,
-    marginTop: 180,
   },
   buttonView: {
+    alignSelf: 'center',
     position: 'absolute',
-    bottom: '10%',
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: '#FFF',
+    bottom: '5%',
   },
 });
 
 const BTC = require('../../assets/images/icon/BTC.png');
 const RBTC = require('../../assets/images/icon/RBTC.png');
 const RIF = require('../../assets/images/icon/RIF.png');
-const header = require('../../assets/images/misc/header.png');
 
 export default class WalletSelectCurrency extends Component {
     static navigationOptions = () => ({
@@ -89,43 +76,46 @@ export default class WalletSelectCurrency extends Component {
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       return (
         <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[styles.headerImage]}>
-            <Loc style={[styles.headerTitle]} text="Select Wallet Currency" />
-          </ImageBackground>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Mainnet" />
-            <CoinTypeList data={this.mainnet} />
-          </View>
-          <View style={{ alignItems: 'center', flex: 1 }}>
-            <Loader loading={loading} />
-            <View style={styles.buttonView}>
-              <Button
-                text="CREATE"
-                onPress={async () => {
-                  const coins = [];
-                  for (let i = 0; i < this.mainnet.length; i += 1) {
-                    if (this.mainnet[i].selected) {
-                      coins.push(this.mainnet[i].title);
-                    }
-                  }
-                  const wallet = walletManager.createWallet(phrases, null, coins);
-                  if (phrases) {
-                    this.setState({ loading: true });
-                    await walletManager.addWallet(wallet);
-                    this.setState({ loading: false });
-                    const resetAction = StackActions.reset({
-                      index: 0,
-                      actions: [
-                        NavigationActions.navigate({ routeName: 'WalletList' }),
-                      ],
-                    });
-                    navigation.dispatch(resetAction);
-                  } else {
-                    navigation.navigate('RecoveryPhrase', { wallet });
-                  }
-                }}
-              />
+          <Header
+            title="Select Wallet Currency"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={[screenHelper.styles.body]}>
+            <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+              <Loc style={[styles.sectionTitle]} text="Mainnet" />
+              <CoinTypeList data={this.mainnet} />
             </View>
+            <Loader loading={loading} />
+          </View>
+          <View style={styles.buttonView}>
+            <Button
+              text="CREATE"
+              onPress={async () => {
+                const coins = [];
+                for (let i = 0; i < this.mainnet.length; i += 1) {
+                  if (this.mainnet[i].selected) {
+                    coins.push(this.mainnet[i].title);
+                  }
+                }
+                const wallet = walletManager.createWallet(phrases, null, coins);
+                if (phrases) {
+                  this.setState({ loading: true });
+                  await walletManager.addWallet(wallet);
+                  this.setState({ loading: false });
+                  const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'WalletList' }),
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                } else {
+                  navigation.navigate('RecoveryPhrase', { wallet });
+                }
+              }}
+            />
           </View>
         </View>
       );

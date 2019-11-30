@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Switch, TouchableOpacity, ImageBackground,
+  View, StyleSheet, Switch, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,29 +8,13 @@ import flex from '../../assets/styles/layout.flex';
 import appContext from '../../common/appContext';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
-
-const header = require('../../assets/images/misc/header.png');
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 10,
-    height: 80,
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-  },
   body: {
-    marginHorizontal: 15,
-    marginTop: 180,
+    alignSelf: 'center',
+    width: '85%',
   },
   title: {
     color: '#2D2D2D',
@@ -45,20 +29,6 @@ const styles = StyleSheet.create({
     height: 80,
     borderBottomWidth: 1,
     borderBottomColor: '#EDEDED',
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: '#FFF',
   },
 });
 
@@ -89,11 +59,14 @@ export default class TwoFactorAuth extends Component {
       const { fingerprint, loading } = this.state;
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[styles.headerImage]}>
-            <Loc style={[styles.headerTitle]} text="2FA" />
-          </ImageBackground>
-          <View style={styles.body}>
+        <ScrollView style={[flex.flex1]}>
+          <Header
+            title="Currency"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={[screenHelper.styles.body, styles.body]}>
             <Loader loading={loading} />
             <TouchableOpacity
               style={styles.row}
@@ -114,7 +87,7 @@ export default class TwoFactorAuth extends Component {
               />
             </View>
           </View>
-        </View>
+        </ScrollView>
       );
     }
 }

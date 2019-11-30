@@ -231,14 +231,18 @@ export default class RadioGroup extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      selected: 1,
-    };
+    const { selected } = this.props;
+    this.state = { selected };
+    const { data } = this.props;
+    for (let i = 0; i < data.length; i += 1) {
+      this.listData[i].coin = data[i].coin;
+    }
   }
 
   render() {
     const items = [];
     const { selected } = this.state;
+    const { onChange } = this.props;
     for (let i = 0; i < this.listData.length; i += 1) {
       if (selected === i) {
         this.listData[i].selected = true;
@@ -251,6 +255,7 @@ export default class RadioGroup extends Component {
           key={`${Math.random()}`}
           onPress={() => {
             this.setState({ selected: i });
+            onChange(i);
           }}
         />,
       );
@@ -262,3 +267,16 @@ export default class RadioGroup extends Component {
     );
   }
 }
+
+RadioGroup.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  selected: PropTypes.number,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    coin: PropTypes.string.isRequired,
+  })),
+};
+
+RadioGroup.defaultProps = {
+  selected: 0,
+  data: [],
+};

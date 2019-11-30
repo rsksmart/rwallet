@@ -45,6 +45,7 @@ export default class StartPage extends Component {
     } else {
       this.setState({ showButton: false, loading: true });
       const { username } = appContext.data.user;
+      console.log(`componentDidMount, login, username: ${username}`);
       const user = await ParseHelper.signInOrSignUp(username);
       await appContext.set('user', user);
       appContext.user = user;
@@ -62,6 +63,7 @@ export default class StartPage extends Component {
       });
     });
     const username = await getUsername();
+    console.log(`login, username: ${username}`);
     const user = await ParseHelper.signInOrSignUp(username);
     await appContext.set('user', user);
     appContext.user = user;
@@ -77,7 +79,6 @@ export default class StartPage extends Component {
       buttonView = (
         <View style={styles.buttonView}>
           <Button
-            style={styles.button}
             text="GET STARTED"
             onPress={async () => {
               this.setState({ showButton: false });

@@ -92,8 +92,8 @@ const TabBar = (props) => {
 
 TabBar.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  renderIcon: PropTypes.string.isRequired,
-  getLabelText: PropTypes.string.isRequired,
+  renderIcon: PropTypes.func.isRequired,
+  getLabelText: PropTypes.func.isRequired,
   activeTintColor: PropTypes.string.isRequired,
   inactiveTintColor: PropTypes.string.isRequired,
   onTabPress: PropTypes.func.isRequired,

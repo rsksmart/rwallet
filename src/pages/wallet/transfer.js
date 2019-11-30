@@ -206,6 +206,7 @@ export default class Transfer extends Component {
       to: null,
       amount: '0.00000001',
       memo: null,
+      feeLevel: 1,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
@@ -226,22 +227,24 @@ export default class Transfer extends Component {
 
   // symbol: RBTC, RIF
   async sendRskTransaction(symbol) {
-    console.log('transfer::sendRskTransaction');
+    console.log(`transfer::sendRskTransaction, symbol: ${symbol}`);
     this.setState({ loading: true });
-    const { amount } = this.state;
+    const { amount, memo, feeLevel } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
       const value = common.rbtcToWeiHex(amount);
-      const [type, sender, receiver, data] = ['Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
-      const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
-      });
+      const [type, sender, receiver] = ['Testnet', '0x0c50ecd06dff8c22a9afc80356d5d7f39921e882', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'];
+      const params = {
+        symbol, type, sender, receiver, value, memo, feeLevel,
+      };
+      console.log(`transfer::sendRskTransaction, createRawTransaction, params: ${JSON.stringify(params)}`);
+      const result = await Parse.Cloud.run('createRawTransaction', params);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
-      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+      const privateKey = '9E41AA4BA98146F04039E7974A83BF65A8494D2F27D5CAB32F18650A514AFBEF';
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
       const signedTransaction = await accountInfo.signTransaction(
@@ -269,7 +272,7 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { amount } = this.state;
+    const { amount, memo, feeLevel } = this.state;
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
@@ -279,7 +282,7 @@ export default class Transfer extends Component {
         'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
+        symbol, type, sender, receiver, value, data, memo, feeLevel,
       });
       return result;
     };
@@ -321,6 +324,8 @@ export default class Transfer extends Component {
   async comfirm() {
     this.a = 1;
     const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+
     // If user has not set passcode, then let he set passcode first.
     const passcode = await appContext.secureGet('passcode');
     if (!passcode) {
@@ -338,18 +343,26 @@ export default class Transfer extends Component {
       }
     }
 
+    const sendTrans = async () => {
+      if (coin === 'BTC') {
+        await this.sendBtcTransaction();
+        navigation.navigate('TransferCompleted');
+      } else if (coin === 'RBTC' || coin === 'RIF') {
+        await this.sendRskTransaction(coin);
+        navigation.navigate('TransferCompleted');
+      }
+    };
+
     if (checkType === 'fingerprint') {
       navigation.navigate('VerifyFingerprint', {
         verified: async () => {
-          await this.sendBtcTransaction();
-          navigation.navigate('TransferCompleted');
+          sendTrans();
         },
       });
     } else {
       navigation.navigate('VerifyPasscode', {
         verified: async () => {
-          await this.sendBtcTransaction();
-          navigation.navigate('TransferCompleted');
+          sendTrans();
         },
       });
     }
@@ -357,10 +370,37 @@ export default class Transfer extends Component {
 
   render() {
     const {
-      custom, loading, to, amount, memo,
+      custom, loading, to, amount, memo, feeLevel,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+
+    // Test data
+    const btcFees = [
+      { coin: '0.0046 BTC' },
+      { coin: '0.0048 BTC' },
+      { coin: '0.0052 BTC' },
+    ];
+    const rbtcFees = [
+      { coin: '0.0046 RBTC' },
+      { coin: '0.0048 RBTC' },
+      { coin: '0.0052 RBTC' },
+    ];
+    const rifFees = [
+      { coin: '0.0046 RIF' },
+      { coin: '0.0048 RIF' },
+      { coin: '0.0052 RIF' },
+    ];
+
+    let feeData = null;
+    if (coin === 'BTC') {
+      feeData = btcFees;
+    } else if (coin === 'RBTC') {
+      feeData = rbtcFees;
+    } else if (coin === 'RIF') {
+      feeData = rifFees;
+    }
+
     return (
       <ScrollView style={[flex.flex1]}>
         <View style={[{ height: 100 }]}>
@@ -422,13 +462,29 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} value={memo} />
+              <TextInput
+                style={[styles.textInput, { textAlignVertical: 'top' }]}
+                placeholder="Enter a transaction memo"
+                multiline
+                numberOfLines={4}
+                value={memo}
+                onChangeText={(text) => {
+                  this.setState({ memo: text });
+                }}
+              />
             </View>
           </View>
           <View style={[styles.sectionContainer]}>
             <Loc style={[styles.title2]} text="Miner fee" />
             <Loc style={[styles.question]} text="How fast you want this done?" />
-            <RadioGroup />
+            <RadioGroup
+              data={feeData}
+              selected={feeLevel}
+              onChange={(i) => {
+                this.setState({ feeLevel: i });
+                console.log(`fee: ${i}`);
+              }}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.customRow, { paddingBottom: 20 }]}>
             <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />

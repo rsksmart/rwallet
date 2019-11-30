@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 7,
+    paddingBottom: 13,
     borderBottomColor: '#D5D5D5',
   },
   textView: {
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     color: '#4A4A4A',
     fontSize: 15,
     flex: 1,
+    marginTop: 9,
   },
   chevron: {
     color: '#D5D5D5',
