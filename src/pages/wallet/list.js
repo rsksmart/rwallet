@@ -8,7 +8,6 @@ import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
-import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
@@ -19,7 +18,8 @@ import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 
-const { consts: { currencies: currencySettings } } = config;
+// currencySettings:
+const { consts: { supportedTokens, currencies: currencySettings } } = config;
 
 // import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
 
@@ -166,57 +166,32 @@ class WalletList extends Component {
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.listData = [];
-      this.state = {
-        listData: this.listData,
-        currencySymbols: {},
-      };
-      this.refreshData = this.refreshData.bind(this);
-    }
+    static calculateAssetTotalValue(wallets, currency, prices) {
+      const assetTotalValue = _.reduce(wallets, (accumulator, item) => {
+        const balance = item.balance || 0;
+        const { coinType } = item;
 
-    componentWillMount() {
-      // Extract currency symbols from config
-      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
-      const currencySymbols = _.reduce(currencySettings, (obj, row) => {
-        const settingsObj = obj;
-        settingsObj[row.name] = row.symbol;
-        return settingsObj;
-      }, {});
+        const match = _.find(prices, (price) => price.symbol === coinType);
 
-      this.setState({
-        currencySymbols,
-      });
-    }
+        if (match) { // If found price value
+          const priceValue = match[currency];
+          const itemPrice = balance * priceValue;
+          return accumulator + itemPrice;
+        }
 
-    componentDidMount() {
-      const { getPrice } = this.props;
-      getPrice(['BTC', 'RBTC', 'RIF']);
-      this.refreshData();
-    }
+        return accumulator;
+      }, 0);
 
-    componentWillReceiveProps(nextProps) {
-      const { currency, wallets, prices } = nextProps;
-      const { currency: oldCurrency } = this.props;
-      const { getCurrencySymbol } = this;
+      console.log('assetTotalValue', assetTotalValue);
 
-      // Handle currency changed logic; get symbol string for the new currency
-      if (currency !== oldCurrency) {
-        getCurrencySymbol(currency);
-      }
-
-      console.log('wallets', wallets);
-      console.log('prices', prices);
+      return assetTotalValue;
     }
 
     /**
-           * Get currency symbol string for example '$' based on currency
-           * @param {string} currency currency string such as 'USD'
-           */
-    getCurrencySymbol(currency) {
-      const { currencySymbols } = this.state;
-
+     * Get currency symbol string for example '$' based on currency
+     * @param {string} currency currency string such as 'USD'
+     */
+    static getCurrencySymbol(currency, currencySymbols) {
       if (currencySymbols[currency]) {
         return currencySymbols[currency];
       }
@@ -224,9 +199,67 @@ class WalletList extends Component {
       return DEFAULT_CURRENCY_SYMBOL;
     }
 
+    constructor(props) {
+      super(props);
+      this.listData = [];
+
+      // Extract currency symbols from config
+      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+      this.currencySymbols = _.reduce(currencySettings, (obj, row) => {
+        const settingsObj = obj;
+        settingsObj[row.name] = row.symbol;
+        return settingsObj;
+      }, {});
+
+      this.state = {
+        listData: this.listData,
+        currencySymbol: undefined,
+        assetTotalValue: 0,
+      };
+      this.refreshData = this.refreshData.bind(this);
+    }
+
+    componentWillMount() {
+      const {
+        getPrice, currency, walletManager, prices,
+      } = this.props;
+      const { wallets } = walletManager;
+
+      const currencyStrings = _.map(currencySettings, (item) => item.name);
+
+      getPrice(supportedTokens, currencyStrings);
+
+      const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      const assetTotalValue = WalletList.calculateAssetTotalValue(wallets, currency, prices);
+
+      this.setState({
+        currencySymbol,
+        assetTotalValue,
+      });
+    }
+
+    componentDidMount() {
+      // this.refreshData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { currency, prices, walletManager } = nextProps;
+      // const { walletManager } = this.props;
+      const { wallets } = walletManager;
+
+      const newState = this.state;
+
+      // Handle currency changed logic; get symbol string for the new currency
+      newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      newState.assetTotalValue = WalletList.calculateAssetTotalValue(wallets, currency, prices);
+
+      this.setState(newState);
+    }
+
+
     refreshData() {
       const { navigation } = this.props;
-      this.wallets = wm.wallets;
+      // this.wallets = wm.wallets;
 
       const updateValue = (item) => {
         if (item.price != null && item.amount !== '') {
@@ -292,7 +325,7 @@ class WalletList extends Component {
       const { navigation } = this.props;
       const accounts = [];
 
-      const { listData, currencySymbol } = this.state;
+      const { listData, currencySymbol, assetTotalValue } = this.state;
 
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
@@ -319,7 +352,7 @@ class WalletList extends Component {
                       <Loc text="My Assets" />
                       {` (${currencySymbol})`}
                     </Text>
-                    <Text style={styles.myAssets}>173,586.3</Text>
+                    <Text style={styles.myAssets}>{assetTotalValue}</Text>
                   </Body>
                 </CardItem>
               </Card>
@@ -379,23 +412,25 @@ WalletList.propTypes = {
   }).isRequired,
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
-  wallets: PropTypes.arrayOf(PropTypes.object),
-  prices: PropTypes.arrayOf(PropTypes.object),
+  // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  prices: PropTypes.arrayOf(PropTypes.object).isRequired,
   // addNotification: PropTypes.func.isRequired,
+  walletManager: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 WalletList.defaultProps = {
-  wallets: [],
-  prices: [],
 };
 
 const mapStateToProps = (state) => ({
   prices: state.App.get('prices'),
-  currencies: state.App.get('currencies'),
+  currency: state.App.get('currency'),
+  walletManager: state.App.get('walletManager'),
+  // allCurrencies: state.App.get('allCurrencies'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getWallets: () => dispatch(walletActions.getWallets()),
+  // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),

@@ -12,11 +12,18 @@ const actions = {
   CREATE_RAW_TRANSATION: 'CREATE_RAW_TRANSATION',
   CREATE_RAW_TRANSATION_RESULT: 'CREATE_RAW_TRANSATION_RESULT',
   SET_ERROR: 'SET_ERROR',
+  SET_APPLICATION: 'SET_APPLICATION',
+  SET_SETTINGS: 'SET_SETTINGS',
+  SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
+
   CHANGE_CURRENCY: 'CHANGE_CURRENCY',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
 
   // Functions definition
+  initApp: () => ({
+    type: actions.INIT_APP,
+  }),
   addNotification: (notification) => ({
     type: actions.ADD_NOTIFICATION,
     notification,
@@ -29,15 +36,9 @@ const actions = {
     type: actions.LOADING,
     value: isLoading,
   }),
-  initApp: () => ({
-    type: actions.INIT_APP,
+  getServerInfo: () => ({
+    type: actions.GET_SERVER_INFO,
   }),
-  getServerInfo: () => {
-    console.log('getServerInfo is called.');
-    return {
-      type: actions.GET_SERVER_INFO,
-    };
-  },
   getTransactions: (symbol, type, address) => {
     console.log('actions::getTransactions is called.');
     return {

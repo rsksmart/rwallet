@@ -6,22 +6,40 @@ import {
 import actions from './actions';
 
 import ParseHelper from '../../common/parse';
-import Settings from '../../common/settings';
+import application from '../../common/application';
+import settings from '../../common/settings';
+import walletManager from '../../common/wallet/walletManager';
 
-function* initAppRequest(action) {
-  const { value } = action;
-
-  console.log('initAppRequest is triggered, value: ', value); // This is undefined
-
-  // 1. Deserialize from permenate storage
+function* initAppRequest(/* action */) {
   try {
-    const settings = yield call(Settings.deserialize);
-    console.log('initAppRequest, settings: ', settings);
+    // 1. Deserialize Settings from permenate storage
+    yield call(settings.deserialize);
 
     // Sets state in reducer for success
     yield put({
       type: actions.SET_SETTINGS,
       value: settings,
+    });
+
+    // 2. Deserialize Wallets from permenate storage
+    yield call(walletManager.deserialize);
+    console.log('initAppRequest, walletManager: ', walletManager);
+
+    // Sets state in reducer for success
+    yield put({
+      type: actions.SET_WALLET_MANAGER,
+      value: walletManager,
+    });
+
+    // 3. Deserialize appId from permenate storage
+    console.log('application', application);
+    yield call(application.deserialize);
+
+    console.log('initAppRequest, appId:', application.get('id'));
+
+    yield put({
+      type: actions.SET_APPLICATION,
+      value: application,
     });
   } catch (err) {
     const { message } = err; // TODO: handle app error in a class
@@ -34,8 +52,8 @@ function* initAppRequest(action) {
     });
   }
 
-  // 2. Determine to sign up or sign in to server
   try {
+    // 1. Test server connection and get Server info
     const response = yield call(ParseHelper.getServerInfo);
 
     console.log('initAppRequest got response, response: ', response);
@@ -45,8 +63,22 @@ function* initAppRequest(action) {
       type: actions.GET_SERVER_INFO_RESULT,
       value: response,
     });
+
+    const appId = application.get('id');
+
+    // 2. Sign in or sign up to get Parse.User object
+    // ParseHelper will have direct access to the User object so we don't need to pass it to state here
+    if (appId) {
+      try {
+        yield call(ParseHelper.signIn, appId);
+      } catch (err) {
+        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+          yield call(ParseHelper.signUp, appId);
+        }
+      }
+    }
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    const message = yield call(ParseHelper.handleError, err);
 
     console.error(message);
 

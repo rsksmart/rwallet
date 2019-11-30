@@ -9,6 +9,9 @@ const initState = new Map({
   transactions: undefined,
   currency: undefined,
   notifications: [],
+  application: undefined,
+  settings: undefined, // Settings instance
+  walletManager: undefined, // WalletManager instance
 });
 
 export default function appReducer(state = initState, action) {
@@ -20,7 +23,6 @@ export default function appReducer(state = initState, action) {
     case actions.GET_SERVER_INFO_RESULT:
     {
       const serverVersion = action.value && action.value.version;
-      console.log('reducer, serverVersion', serverVersion);
       return state.set('serverVersion', serverVersion);
     }
     case actions.GET_TRANSACTIONS:
@@ -30,7 +32,6 @@ export default function appReducer(state = initState, action) {
     case actions.GET_TRANSACTIONS_RESULT:
     {
       const transactions = action.value;
-      console.log('reducer, transtions', transactions);
       let newstate = state.set('isLoading', false);
       newstate = newstate.set('transactions', transactions);
       return newstate;
@@ -38,7 +39,6 @@ export default function appReducer(state = initState, action) {
     case actions.CREATE_RAW_TRANSATION_RESULT:
     {
       const result = action.value;
-      console.log('CREATE_RAW_TRANSATION_RESULT, result', result);
       const newstate = state.set('rawTransaction', result);
       return newstate;
     }
@@ -64,6 +64,20 @@ export default function appReducer(state = initState, action) {
         (notification) => notification.id !== action.id,
       );
       return state.set('notifications', removeNotifications);
+
+    case actions.SET_APPLICATION:
+      return state.set('application', action.value);
+
+    case actions.SET_SETTINGS:
+    {
+      const settings = action.value;
+      return state.set('settings', settings)
+        .set('currency', settings && settings.get('currency'))
+        .set('language', settings && settings.get('language'))
+        .set('fingerprint', settings && settings.get('fingerprint'));
+    }
+    case actions.SET_WALLET_MANAGER:
+      return state.set('walletManager', action.value);
     default:
       return state;
   }

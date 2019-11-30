@@ -25,19 +25,31 @@ class RNStorage {
    * @param {number|null} expires
    * @returns {Promise}
    */
-  save(key, data, id, expires) {
+  save(key, data, expires) {
     return this.instance.save({
-      key, id, data, expires,
+      key, data, expires,
     });
   }
 
   /**
-   *
-   * @param {*} params
+   * Load data in Storage by params, for example { key: "settings" }
+   * @param {object} params { key: "" }
    */
   async load(params) {
     // eslint-disable-next-line no-return-await
-    return this.instance.load(params);
+    return this.instance.load(params)
+      .catch((err) => {
+      // any exception including data not found goes to catch()
+        switch (err.name) {
+          case 'NotFoundError':
+            return null;
+          case 'ExpiredError':
+          // TODO: figure out what we actually want to do to this case
+            return null;
+          default:
+            return null;
+        }
+      });
   }
 
   /**

@@ -8,7 +8,7 @@ const config = {
     appId: 'rwallet',
     javascriptKey: '',
     masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
-    serverURL: 'http://130.211.12.3/parse',
+    serverURL: 'http://10.0.2.2:1338/parse',
   },
   defaultSettings: {
     language: 'en',
@@ -16,6 +16,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
+    supportedTokens: ['BTC', 'RBTC', 'RIF'],
     languages: ['en', 'fr', 'he', 'zh'],
     currencies: [
       { name: 'USD', symbol: '$' },

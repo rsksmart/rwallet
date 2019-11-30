@@ -132,7 +132,7 @@ export default class RBTCCoin {
   /**
    * Returns a JSON of Coin to save required data to backend
    */
-  toJson() {
+  toJSON() {
     return {
       network: this.network,
       type: this.type,

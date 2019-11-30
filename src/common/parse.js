@@ -24,40 +24,23 @@ const ParseUser = Parse.User;
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
-  /**
-   * Sign in if username is found in backend database; otherwise, sign up
-   * @param {*} param0
-   * @returns Parse.User object or throw error
-   */
-  static async signInOrSignUp(appId) {
-    try {
-      const query = new Parse.Query(Parse.User);
-      query.equalTo('username', appId);
-      const match = await query.first();
+  static signUp(appId) {
+    const user = new Parse.User();
 
-      let user;
-      if (_.isUndefined(match)) { // Sign up case
-        user = new Parse.User();
+    // Set appId as username and password.
+    // No real password is needed because we only want to get access to Parse.User here to access related data
+    user.set('username', appId);
+    user.set('password', appId);
+    user.set('deviceId', DeviceInfo.getUniqueID());
 
-        // Set appId as username and password.
-        // No real password is needed because we only want to get access to Parse.User here to access related data
-        user.set('username', appId);
-        user.set('password', appId);
-        user.set('deviceId', DeviceInfo.getUniqueID());
+    // TODO: other information needed to be set here.
+    console.log('parse.signup is called.');
+    return user.signUp();
+  }
 
-        // TODO: other information needed to be set here.
-
-        user = await user.signUp();
-      } else { // Sign in case
-        user = await Parse.User.logIn(appId, appId);
-      }
-
-      return user;
-    } catch (ex) {
-      console.error(ex.message);
-    }
-
-    return null;
+  static signIn(appId) {
+    console.log('parse.signin is called.', appId);
+    return Parse.User.logIn(appId, appId);
   }
 
   /**

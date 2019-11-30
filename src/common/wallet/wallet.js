@@ -1,16 +1,16 @@
 import RNSecureStorage from 'rn-secure-storage';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
-// import storage from '../storage';
-import appContext from '../appContext';
 
 const Mnemonic = require('bitcore-mnemonic');
 
 export default class Wallet {
-  constructor(id, name, phrase, coinTypes = ['BTC', 'RBTC', 'RIF']) {
+  constructor({
+    id, name, phrase, coinTypes,
+  }) {
     this.id = id;
     this.name = name;
-    this.createdAt = new Date();
+    // this.createdAt = new Date();
 
     // Create coins based on types
     this.coins = [];
@@ -27,24 +27,22 @@ export default class Wallet {
 
     // Generate mnemonic based on phrase
     this.phrase = phrase;
-    this.mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
-  }
 
-  /**
-   * Create a wallet object based on phrase and generate addresses for each coin type
-   * @param {*} id
-   * @param {*} name
-   * @param {*} phrase
-   * @param {*} coinTypes
-   */
-  static create(id, name, phrase = null, coinTypes) {
-    const wallet = new Wallet(id, name, phrase, coinTypes);
+    console.log('this.phrase', this.phrase);
+    this.mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
+
+    console.log('mnemonic generated', this.mnemonic);
 
     // Generate address of each node based on master key; will take a lot of time
     const seed = this.mnemonic.toSeed();
     this.coins.forEach((coin) => coin.derive(seed));
 
-    return wallet;
+    // We need to save the phrase to secure storage after generation
+    console.log('Before Save', new Date());
+
+    // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
+    this.savePhrase();
+    console.log('After Save', new Date());
   }
 
   // static load() {
@@ -57,9 +55,9 @@ export default class Wallet {
    */
   async savePhrase() {
     const { id, phrase } = this;
-    const key = `wallet_${id}`;
 
     if (phrase) {
+      const key = `wallet_${id}`;
       await RNSecureStorage.set(key, phrase, {});
     }
   }
@@ -89,12 +87,12 @@ export default class Wallet {
   /**
    * Returns a JSON to save required data to backend server; empty array if there's no coins
    */
-  toJson() {
+  toJSON() {
     const result = {
       id: this.id,
       name: this.name,
       createdAt: this.createdAt,
-      coins: this.coins.map((coin) => coin.toJson()),
+      coins: this.coins.map((coin) => coin.toJSON()),
     };
 
     return result;
@@ -105,10 +103,13 @@ export default class Wallet {
    * Returns null if Wallet restoration fails
    * @param {*} json
    */
-  static async fromJson(json) {
-    const phrase = await appContext.getPhrase(json.id);
-    console.log('phrase', phrase);
-    const wallet = Wallet.create(json.id, json.name, json.phrase, json.coinTypes);
+  static async fromJSON(json) {
+    // const phrase = await appContext.getPhrase(json.id);
+    // console.log('phrase', phrase);
+
+    console.log('Wallet.fromJSON.', json);
+    const { id, name, coinTypes } = json;
+    const wallet = Wallet.create({ id, name, coinTypes });
 
     return wallet;
   }

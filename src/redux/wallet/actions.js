@@ -11,7 +11,7 @@ const actions = {
     type: actions.GET_WALLETS,
   }),
   getPrice: (symbols, currencies) => {
-    console.log('actions::getPriace is called.', symbols, currencies);
+    console.log('actions::getPrice is called.', symbols, currencies);
     return {
       type: actions.GET_PRICE,
       payload: {

@@ -99,21 +99,27 @@ export default class WalletSelectCurrency extends Component {
                     coins.push(this.mainnet[i].title);
                   }
                 }
-                const wallet = walletManager.createWallet(phrases, null, coins);
+
+                const wallet = walletManager.createWallet('randomName', phrases, coins);
+
                 if (phrases) {
                   this.setState({ loading: true });
-                  await walletManager.addWallet(wallet);
+                  await walletManager.createWallet('imported', phrases, coins);
                   this.setState({ loading: false });
+
                   const resetAction = StackActions.reset({
                     index: 0,
                     actions: [
                       NavigationActions.navigate({ routeName: 'WalletList' }),
                     ],
                   });
+
                   navigation.dispatch(resetAction);
                 } else {
                   navigation.navigate('RecoveryPhrase', { wallet });
                 }
+
+                // navigation.navigate('RecoveryPhrase', { wallet });
               }}
             />
           </View>

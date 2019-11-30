@@ -1,19 +1,25 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 import storage from './storage';
 import config from '../../config';
 
+/**
+* defaultSettings
+* {
+*   language: 'en',
+*   currency: 'USD',
+*   fingerprint: false,
+* }
+*/
 const { defaultSettings } = config;
 
+/**
+ * Settings instance is initialized by deserialize()
+ */
 class Settings {
   constructor() {
-    /**
-    * {
-    *   language: 'en',
-    *   currency: 'USD',
-    *   fingerprint: false,
-    * }
-    */
-    this.data = new Map(defaultSettings);
+    this.data = Map(defaultSettings);
+    this.deserialize = this.deserialize.bind(this);
   }
 
   get(key) {
@@ -22,25 +28,36 @@ class Settings {
 
   set(key, value) {
     this.data = this.data.set(key, value);
-    return this;
   }
 
-  toJson() {
+  toJSON() {
     return this.data.toJSON();
   }
 
-  serialize() {
-    const promises = [...this.data.entries()]
-      .map(([key, value]) => storage.save(key, value));
-
-    return Promise.all(promises);
+  /**
+   * Save JSON presentation of settings data to permenate storage
+   */
+  async serialize() {
+    const jsonData = this.data.toJSON();
+    await storage.save('settings', jsonData);
   }
 
-  deserialize() {
-    const promises = [...this.data.keys()]
-      .map((key) => storage.load({ key }));
+  /**
+   * Read permenate storage and load settins into this instance;
+   * Load default settings if Settings is empty in storage
+   */
+  async deserialize() {
+    const result = await storage.load({ key: 'settings' });
 
-    return Promise.all(promises);
+    console.log('Deserialized Settings from Storage.', result);
+
+    if (!_.isNull(result) && _.isObject(result)) {
+      this.data = Map(result);
+      return;
+    }
+
+    // If there is no valid settings yet, we save default into storage
+    this.serialize();
   }
 }
 
