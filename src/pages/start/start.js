@@ -7,6 +7,7 @@ import Indicator from '../../components/common/misc/indicator';
 import ParseHelper from '../../common/parse';
 import appContext from '../../common/appContext';
 import Application from '../../common/application';
+import wm from '../../common/wallet/walletManager';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -51,7 +52,11 @@ export default class StartPage extends Component {
       appContext.user = user;
       this.setState({ loading: false });
       const { navigation } = this.props;
-      navigation.navigate('PrimaryTabNavigator');
+      if (wm.wallets.length) {
+        navigation.navigate('WalletAddIndex');
+      } else {
+        navigation.navigate('WalletAddIndex');
+      }
     }
   }
 

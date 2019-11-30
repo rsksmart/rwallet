@@ -36,7 +36,7 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 const styles = StyleSheet.create({
   notificationsContainer: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 10,
     left: 10,
   },
 });

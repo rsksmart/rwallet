@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View, StyleSheet,
 } from 'react-native';
@@ -6,12 +7,15 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-import Alert from '../../components/common/modal/alert';
 import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
+
+const verifyPhraseAlertTitle = 'Please review recovery phrase and try again.';
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -34,7 +38,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class VerifyPhrase extends Component {
+class VerifyPhrase extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -78,7 +82,7 @@ export default class VerifyPhrase extends Component {
   }
 
   async tap(i) {
-    const { navigation } = this.props;
+    const { navigation, dispatch } = this.props;
     const { tags, phrases } = this.state;
     const s = tags.splice(i, 1);
     this.setState({ tags });
@@ -106,7 +110,11 @@ export default class VerifyPhrase extends Component {
         });
         navigation.dispatch(resetAction);
       } else {
-        this.alert.setModalVisible(true);
+        const notification = createErrorNotification(
+          'Error',
+          verifyPhraseAlertTitle,
+        );
+        dispatch(appActions.addNotification(notification));
       }
     }
   }
@@ -139,7 +147,6 @@ export default class VerifyPhrase extends Component {
   }
 
   render() {
-    const alertTitle = 'verifyPhraseAlertTitle';
     const { tags, loading } = this.state;
     const { navigation } = this.props;
     return (
@@ -162,22 +169,13 @@ export default class VerifyPhrase extends Component {
               this.tap(i);
             }}
           />
-          <Alert
-            ref={(ref) => {
-              this.alert = ref;
-            }}
-            title="tip"
-            text={alertTitle}
-            onPress={() => {
-              this.reset();
-            }}
-          />
         </View>
       </View>
     );
   }
 }
 VerifyPhrase.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -185,3 +183,5 @@ VerifyPhrase.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+export default connect()(VerifyPhrase);
