@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 import {
   View, StyleSheet,
 } from 'react-native';
@@ -7,11 +9,15 @@ import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
 import Alert from '../../components/common/modal/alert';
-import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+
+// import walletManager from '../../common/wallet/walletManager';
+// import appActions from '../../redux/app/actions';
+
+const MNEMONIC_PHRASE_LENGTH = 12;
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -34,7 +40,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class VerifyPhrase extends Component {
+class VerifyPhrase extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -62,42 +68,32 @@ export default class VerifyPhrase extends Component {
     this.state = {
       tags: this.randomPhrases,
       phrases: [],
-      loading: false,
     };
     this.renderAllItem = this.renderAllItem.bind(this);
-    this.tap = this.tap.bind(this);
+    this.onTagsPressed = this.onTagsPressed.bind(this);
     this.reset = this.reset.bind(this);
   }
 
-  reset() {
-    Object.assign(this.randomPhrases, this.randomPhrases2);
-    this.setState({
-      tags: this.randomPhrases,
-      phrases: [],
-    });
-  }
-
-  async tap(i) {
-    const { navigation } = this.props;
+  async onTagsPressed(index) {
+    const { navigation /* setPageLoading */ } = this.props;
     const { tags, phrases } = this.state;
-    const s = tags.splice(i, 1);
+
+    const currentWord = tags.splice(index, 1);
     this.setState({ tags });
-    phrases.push(s[0]);
+    phrases.push(currentWord[0]);
     this.setState({ phrases });
-    if (phrases.length === 12) {
-      let same = true;
-      for (let k = 0; k < phrases.length; k += 1) {
-        const phrase = phrases[k];
-        const c = this.correctPhrases[k];
-        if (c !== phrase) {
-          same = false;
-          break;
-        }
-      }
-      if (same) {
-        this.setState({ loading: true });
-        await walletManager.addWallet(this.wallet);
-        this.setState({ loading: false });
+
+    if (phrases.length === MNEMONIC_PHRASE_LENGTH) {
+      const isEqual = _.isEqual(phrases, this.correctPhrases);
+      console.log('phrases', phrases);
+      console.log('this.correctPhrases', this.correctPhrases);
+      console.log('isEqual', isEqual);
+
+      if (isEqual) {
+        // setPageLoading(true);
+        // this.setState({ loading: true });
+        // await walletManager.addWallet(this.wallet);
+        // this.setState({ loading: false });
         const resetAction = StackActions.reset({
           index: 0,
           actions: [
@@ -111,6 +107,14 @@ export default class VerifyPhrase extends Component {
     }
   }
 
+  reset() {
+    Object.assign(this.randomPhrases, this.randomPhrases2);
+    this.setState({
+      tags: this.randomPhrases,
+      phrases: [],
+    });
+  }
+
   renderAllItem() {
     const startX = -82;
     const words = [];
@@ -120,7 +124,7 @@ export default class VerifyPhrase extends Component {
     if (phrases.length > 1) {
       offset = -margin * (phrases.length - 1);
     }
-    for (let i = 0; i < 12; i += 1) {
+    for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
       const marginLeft = startX + i * margin + offset;
       const style = {
         position: 'absolute', left: '50%', top: 10, marginLeft,
@@ -158,9 +162,7 @@ export default class VerifyPhrase extends Component {
             data={tags}
             style={[styles.tags]}
             showNumber={false}
-            onPress={(i) => {
-              this.tap(i);
-            }}
+            onPress={this.onTagsPressed}
           />
           <Alert
             ref={(ref) => {
@@ -177,6 +179,7 @@ export default class VerifyPhrase extends Component {
     );
   }
 }
+
 VerifyPhrase.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -184,4 +187,21 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  // isPageLoading: PropTypes.bool,
+  // setPageLoading: PropTypes.func,
 };
+
+VerifyPhrase.defaultProps = {
+  // isPageLoading: false,
+  // setPageLoading: undefined,
+};
+
+const mapStateToProps = (/* state */) => ({
+  // isPageLoading: state.App.get('isPageLoading'),
+});
+
+const mapDispatchToProps = (/* dispatch */) => ({
+  // setPageLoading: (isLoading) => dispatch(appActions.setPageLoading(isLoading)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

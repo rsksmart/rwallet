@@ -2,7 +2,7 @@
 
 const actions = {
   // Constants definition
-  LOADING: 'LOADING',
+  IS_PAGE_LOADING: 'IS_PAGE_LOADING',
   INIT_APP: 'INIT_APP',
 
   GET_SERVER_INFO: 'GET_SERVER_INFO',
@@ -32,8 +32,8 @@ const actions = {
     type: actions.REMOVE_NOTIFICATION,
     id: notification.id,
   }),
-  loading: (isLoading) => ({
-    type: actions.LOADING,
+  setPageLoading: (isLoading) => ({
+    type: actions.IS_PAGE_LOADING,
     value: isLoading,
   }),
   getServerInfo: () => ({
