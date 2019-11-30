@@ -15,6 +15,7 @@ import appActions from '../../redux/app/actions';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 
+// import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
@@ -238,6 +239,7 @@ class WalletList extends Component {
 
     render() {
       const { navigation, currency } = this.props;
+      // const { addNotification } = this.props;
       const accounts = [];
       const { listData } = this.state;
       const currencySymbols = {
@@ -283,6 +285,22 @@ class WalletList extends Component {
               <View style={[styles.sectionContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   onPress={() => {
+                  // addNotification(createSuccessNotification(
+                  //     "Success",
+                  //     "This message tells that everything goes fine."
+                  // ));
+                  // addNotification(createInfoNotification(
+                  //     "Info",
+                  //     "This message tells that something."
+                  // ));
+                  // addNotification(createWarningNotification(
+                  //     "Warning",
+                  //     "This message tells that alarm rising."
+                  // ));
+                  // addNotification(createErrorNotification(
+                  //     "Error",
+                  //     "This message tells that everything sucks."
+                  // ));
                     navigation.navigate('WalletAddIndex');
                   }}
                 >
@@ -312,6 +330,7 @@ WalletList.propTypes = {
   }).isRequired,
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
+  // addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -323,6 +342,9 @@ const mapDispatchToProps = (dispatch) => ({
   getPrice: (symbols) => dispatch(
     appActions.getPrice(symbols),
   ),
+  // addNotification: (notification) => dispatch(
+  //     appActions.addNotification(notification),
+  // ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
