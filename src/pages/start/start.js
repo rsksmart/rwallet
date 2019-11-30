@@ -53,7 +53,7 @@ export default class StartPage extends Component {
       this.setState({ loading: false });
       const { navigation } = this.props;
       if (wm.wallets.length) {
-        navigation.navigate('WalletAddIndex');
+        navigation.navigate('PrimaryTabNavigator');
       } else {
         navigation.navigate('WalletAddIndex');
       }
