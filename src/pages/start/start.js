@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet } from 'react-native';
@@ -7,6 +8,7 @@ import Indicator from '../../components/common/misc/indicator';
 import ParseHelper from '../../common/parse';
 import appContext from '../../common/appContext';
 import Application from '../../common/application';
+import appActions from '../../redux/app/actions';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class StartPage extends Component {
+class StartPage extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -36,6 +38,10 @@ export default class StartPage extends Component {
       loading: false,
       showButton: false,
     };
+  }
+
+  componentWillMount() {
+
   }
 
   async componentDidMount() {
@@ -108,3 +114,16 @@ StartPage.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+StartPage.defaultProps = {
+
+};
+
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  initApp: () => dispatch(appActions.initApp()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartPage);

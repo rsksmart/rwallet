@@ -1,4 +1,3 @@
-import I18n from 'react-native-i18n';
 import RNSecureStorage from 'rn-secure-storage';
 import storage from './storage';
 import ParseHelper from './parse';
@@ -10,7 +9,6 @@ const appContext = {
   data: {
     walletId: 0,
     wallets: [],
-    language: I18n.currentLocale(),
     user: null,
     settings: {
       currency: 'USD',

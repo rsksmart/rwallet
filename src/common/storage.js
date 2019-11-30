@@ -4,9 +4,15 @@ import AsyncStorage from '@react-native-community/async-storage';
 class RNStorage {
   constructor() {
     this.instance = new Storage({
+      // maximum capacity, default 1000
       size: 9000,
+      // Use AsyncStorage for RN apps, or window.localStorage for web apps.
+      // If storageBackend is not set, data will be lost after reload.
       storageBackend: AsyncStorage,
+      // expire time, default: 1 day (1000 * 3600 * 24 milliseconds).
+      // can be null, which means never expire.
       defaultExpires: 1000 * 60 * 60 * 24 * 365,
+      // cache data in the memory. default is true.
       enableCache: true,
     });
   }
@@ -56,7 +62,18 @@ class RNStorage {
    */
   getAsyncItem(key, syncParams, id) {
     return this.instance.load({
-      key, id: id || undefined, autoSync: true, syncInBackground: false, syncParams: { ...syncParams },
+      key,
+      id: id || undefined,
+      // autoSync (default: true) means if data is not found or has expired,
+      // then invoke the corresponding sync method
+      autoSync: true,
+      // syncInBackground (default: true) means if data expired,
+      // return the outdated data first while invoking the sync method.
+      // If syncInBackground is set to false, and there is expired data,
+      // it will wait for the new data and return only after the sync completed.
+      // (This, of course, is slower)
+      syncInBackground: false,
+      syncParams: { ...syncParams },
     });
   }
 

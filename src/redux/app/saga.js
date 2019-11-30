@@ -6,6 +6,56 @@ import {
 import actions from './actions';
 
 import ParseHelper from '../../common/parse';
+import Settings from '../../common/settings';
+
+function* initAppRequest(action) {
+  const { value } = action;
+
+  console.log('initAppRequest is triggered, value: ', value); // This is undefined
+
+  // 1. Deserialize from permenate storage
+  try {
+    const settings = yield call(Settings.deserialize);
+    console.log('initAppRequest, settings: ', settings);
+
+    // Sets state in reducer for success
+    yield put({
+      type: actions.SET_SETTINGS,
+      value: settings,
+    });
+  } catch (err) {
+    const { message } = err; // TODO: handle app error in a class
+
+    console.error(message);
+
+    yield put({
+      type: actions.SET_ERROR,
+      value: { message },
+    });
+  }
+
+  // 2. Determine to sign up or sign in to server
+  try {
+    const response = yield call(ParseHelper.getServerInfo);
+
+    console.log('initAppRequest got response, response: ', response);
+
+    // Sets state in reducer for success
+    yield put({
+      type: actions.GET_SERVER_INFO_RESULT,
+      value: response,
+    });
+  } catch (err) {
+    const message = yield call(ParseHelper.handlError, err);
+
+    console.error(message);
+
+    yield put({
+      type: actions.SET_ERROR,
+      value: { message },
+    });
+  }
+}
 
 function* getServerInfoRequest(action) {
   const { value } = action;
@@ -91,6 +141,7 @@ function* createRawTransaction(action) {
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
+    takeEvery(actions.INIT_APP, initAppRequest),
     takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
     takeEvery(actions.GET_TRANSACTIONS, getTransactions),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),

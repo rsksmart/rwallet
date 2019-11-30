@@ -3,6 +3,8 @@
 const actions = {
   // Constants definition
   LOADING: 'LOADING',
+  INIT_APP: 'INIT_APP',
+
   GET_SERVER_INFO: 'GET_SERVER_INFO',
   GET_SERVER_INFO_RESULT: 'GET_SERVER_INFO_RESULT',
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
@@ -16,6 +18,9 @@ const actions = {
   loading: (isLoading) => ({
     type: actions.LOADING,
     value: isLoading,
+  }),
+  initApp: () => ({
+    type: actions.INIT_APP,
   }),
   getServerInfo: () => {
     console.log('getServerInfo is called.');

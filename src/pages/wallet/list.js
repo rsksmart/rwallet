@@ -18,7 +18,7 @@ import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 
-const { settings: { currency: currencySettings } } = config;
+const { consts: { currencies: currencySettings } } = config;
 
 const header = require('../../assets/images/misc/header.png');
 
