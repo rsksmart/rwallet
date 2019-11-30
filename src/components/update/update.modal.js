@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { screen } from '../../common/info.ts';
+import { screen } from '../../common/info';
 import flex from '../../assets/styles/layout.flex';
 import space from '../../assets/styles/space';
 
