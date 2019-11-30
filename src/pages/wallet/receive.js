@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Image,
+  View, Text, TouchableOpacity, StyleSheet, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
@@ -9,6 +9,7 @@ import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
+import { DEVICE } from '../../common/info';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -26,22 +27,18 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
   },
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
   headerTitle: {
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
+    bottom: 25,
     left: 55,
     color: '#FFF',
   },
   backButton: {
     position: 'absolute',
     left: 10,
-    top: 37,
+    bottom: 8,
   },
   chevron: {
     color: '#FFF',
@@ -52,6 +49,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: 'white',
+    marginTop: 10,
   },
   address: {
     borderColor: color.component.input.borderColor,
@@ -93,25 +91,28 @@ export default class WalletReceive extends Component {
       const qrSize = 270;
       const qrLogoSize = qrSize * 0.2;
       const qrText = `rWalletAddress://${address}.${coin}`;
+
+      let headerHeight = 100;
+      if (DEVICE.isIphoneX) {
+        headerHeight += 24;
+      }
+
       return (
         <View style={[flex.flex1]}>
-          <View style={[{ height: 100 }]}>
-            <Image source={header} style={styles.headImage} />
-            <View style={styles.headerView}>
-              <Text style={styles.headerTitle}>
-                <Loc text="Receive" />
-                {` ${coin}`}
-              </Text>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <ImageBackground source={header} style={[{ height: headerHeight }]}>
+            <Text style={styles.headerTitle}>
+              <Loc text="Receive" />
+              {` ${coin}`}
+            </Text>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+          </ImageBackground>
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Loc style={[styles.sectionTitle]} text="Address" />
