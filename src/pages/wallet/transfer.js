@@ -6,13 +6,16 @@ import PropTypes from 'prop-types';
 import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
-
-
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
+import common from '../../common/common';
+import appContext from '../../common/appContext';
+import Loc from '../../components/common/misc/loc';
+
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
@@ -201,26 +204,47 @@ export default class Transfer extends Component {
       custom: false,
       loading: false,
       to: null,
+      amount: '0.00000001',
+      memo: null,
+      feeLevel: 1,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
+    this.comfirm = this.comfirm.bind(this);
   }
 
-  async sendRskTransaction() {
-    console.log('transfer::sendRskTransaction');
+  componentDidMount() {
+    const { navigation } = this.props;
+    appContext.eventEmitter.on('onFirstPasscode', async () => {
+      await this.sendBtcTransaction();
+      navigation.navigate('TransferCompleted');
+    });
+  }
+
+  componentWillUnmount() {
+    appContext.eventEmitter.removeAllListeners('onFirstPasscode');
+  }
+
+  // symbol: RBTC, RIF
+  async sendRskTransaction(symbol) {
+    console.log(`transfer::sendRskTransaction, symbol: ${symbol}`);
     this.setState({ loading: true });
+    const { amount, memo, feeLevel } = this.state;
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
-      const [symbol, type, sender, receiver, value, data] = ['RBTC', 'Testnet', '0x2cf0028790Eed9374fcE149F0dE3449128738cF4', '0xf08f6c2eac2183dfc0a5910c58c186496f32498d', '0x9184e72a000', ''];
-      const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
-      });
+      const value = common.rbtcToWeiHex(amount);
+      const [type, sender, receiver] = ['Testnet', '0x0c50ecd06dff8c22a9afc80356d5d7f39921e882', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'];
+      const params = {
+        symbol, type, sender, receiver, value, memo, feeLevel,
+      };
+      console.log(`transfer::sendRskTransaction, createRawTransaction, params: ${JSON.stringify(params)}`);
+      const result = await Parse.Cloud.run('createRawTransaction', params);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
-      const privateKey = 'D2ED1BD155583730762B0BE1072E11A018662DCDF4F7D81BDA778AF2B623C52E';
+      const privateKey = '9E41AA4BA98146F04039E7974A83BF65A8494D2F27D5CAB32F18650A514AFBEF';
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
       const signedTransaction = await accountInfo.signTransaction(
@@ -248,24 +272,24 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
+    const { amount, memo, feeLevel } = this.state;
     this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
-      const [symbol, type, sender, receiver, value, data] = [
-        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '0x918', '',
+      const value = common.btcToSatoshiHex(amount);
+      const [symbol, type, sender, receiver, data] = [
+        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data,
+        symbol, type, sender, receiver, value, data, memo, feeLevel,
       });
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      // 2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263
-      // 3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139
-      const privateKey = '2b38f230bade0b8e39685ac138107a4e89eff8dbb290744ea1d74644c05a0263';
+      const privateKey = '3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139';
       const buf = Buffer.from(privateKey, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
@@ -273,7 +297,8 @@ export default class Transfer extends Component {
         tx.pubkeys.push(keys.publicKey.toString('hex'));
         const signature = keys.sign(new buffer.Buffer(tosign, 'hex'));
         const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
-        const hexStr = encodedSignature.toString('hex');
+        let hexStr = encodedSignature.toString('hex');
+        hexStr = hexStr.substr(0, hexStr.length - 2);
         return hexStr;
       });
       console.log(`signedTransaction: ${JSON.stringify(tx)}`);
@@ -296,15 +321,95 @@ export default class Transfer extends Component {
     this.setState({ loading: false });
   }
 
-  render() {
-    const { custom, loading, to } = this.state;
+  async comfirm() {
+    this.a = 1;
     const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+
+    // If user has not set passcode, then let he set passcode first.
+    const passcode = await appContext.secureGet('passcode');
+    if (!passcode) {
+      navigation.navigate('ResetPasscode', { page: 'Transfer' });
+      return;
+    }
+
+    let checkType = 'passcode';
+    if (appContext.data.settings.fingerprint) {
+      try {
+        await FingerprintScanner.isSensorAvailable();
+        checkType = 'fingerprint';
+      } catch (e) {
+        console.log(`Can't use FingerprintScanner, error message: ${e.message}`);
+      }
+    }
+
+    const sendTrans = async () => {
+      if (coin === 'BTC') {
+        await this.sendBtcTransaction();
+        navigation.navigate('TransferCompleted');
+      } else if (coin === 'RBTC' || coin === 'RIF') {
+        await this.sendRskTransaction(coin);
+        navigation.navigate('TransferCompleted');
+      }
+    };
+
+    if (checkType === 'fingerprint') {
+      navigation.navigate('VerifyFingerprint', {
+        verified: async () => {
+          sendTrans();
+        },
+      });
+    } else {
+      navigation.navigate('VerifyPasscode', {
+        verified: async () => {
+          sendTrans();
+        },
+      });
+    }
+  }
+
+  render() {
+    const {
+      custom, loading, to, amount, memo, feeLevel,
+    } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+
+    // Test data
+    const btcFees = [
+      { coin: '0.0046 BTC' },
+      { coin: '0.0048 BTC' },
+      { coin: '0.0052 BTC' },
+    ];
+    const rbtcFees = [
+      { coin: '0.0046 RBTC' },
+      { coin: '0.0048 RBTC' },
+      { coin: '0.0052 RBTC' },
+    ];
+    const rifFees = [
+      { coin: '0.0046 RIF' },
+      { coin: '0.0048 RIF' },
+      { coin: '0.0052 RIF' },
+    ];
+
+    let feeData = null;
+    if (coin === 'BTC') {
+      feeData = btcFees;
+    } else if (coin === 'RBTC') {
+      feeData = rbtcFees;
+    } else if (coin === 'RIF') {
+      feeData = rifFees;
+    }
+
     return (
       <ScrollView style={[flex.flex1]}>
         <View style={[{ height: 100 }]}>
           <Image source={header} style={styles.headImage} />
           <View style={styles.headerView}>
-            <Text style={styles.headerTitle}>Send BTC</Text>
+            <Text style={styles.headerTitle}>
+              <Loc text="Send" />
+              {` ${coin}`}
+            </Text>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => {
@@ -318,14 +423,20 @@ export default class Transfer extends Component {
         <View style={styles.body}>
           <Loader loading={loading} />
           <View style={styles.sectionContainer}>
-            <Text style={styles.title1}>Sending</Text>
+            <Loc style={[styles.title1]} text="Sending" />
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput]} value="0.15 BTC (1500 USD)" />
+              <TextInput
+                style={[styles.textInput]}
+                value={amount}
+                onChangeText={(text) => {
+                  this.setState({ amount: text });
+                }}
+              />
               <Image source={currencyExchange} style={styles.textInputIcon} />
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title2}>To</Text>
+            <Loc style={[styles.title2]} text="To" />
             <View style={styles.textInputView}>
               <TextInput style={[styles.textInput]} value={to} />
               <TouchableOpacity
@@ -333,7 +444,13 @@ export default class Transfer extends Component {
                 onPress={() => {
                   navigation.navigate('Scan', {
                     onQrcodeDetected: (data) => {
-                      this.setState({ to: data });
+                      const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                      const url = data;
+                      const result = parseUrl.exec(url);
+                      const host = result[3];
+                      const [address2, coin2] = host.split('.');
+                      this.setState({ to: address2 });
+                      console.log(`coin: ${coin2}`);
                     },
                   });
                 }}
@@ -343,18 +460,34 @@ export default class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title3}>Memo</Text>
+            <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput, { textAlignVertical: 'top' }]} placeholder="Enter a transaction memo" multiline numberOfLines={4} />
+              <TextInput
+                style={[styles.textInput, { textAlignVertical: 'top' }]}
+                placeholder="Enter a transaction memo"
+                multiline
+                numberOfLines={4}
+                value={memo}
+                onChangeText={(text) => {
+                  this.setState({ memo: text });
+                }}
+              />
             </View>
           </View>
           <View style={[styles.sectionContainer]}>
-            <Text style={styles.title2}>Miner fee</Text>
-            <Text style={styles.question}>How fast you want this done?</Text>
-            <RadioGroup />
+            <Loc style={[styles.title2]} text="Miner fee" />
+            <Loc style={[styles.question]} text="How fast you want this done?" />
+            <RadioGroup
+              data={feeData}
+              selected={feeLevel}
+              onChange={(i) => {
+                this.setState({ feeLevel: i });
+                console.log(`fee: ${i}`);
+              }}
+            />
           </View>
           <View style={[styles.sectionContainer, styles.customRow, { paddingBottom: 20 }]}>
-            <Text style={[styles.title2, { flex: 1 }]}>Custom</Text>
+            <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
             <Switch
               value={custom}
               onValueChange={(v) => {
@@ -366,12 +499,7 @@ export default class Transfer extends Component {
             <Button
               text="COMFIRM"
               onPress={() => {
-                navigation.navigate('VerifyFingerprint', {
-                  verified: async () => {
-                    await this.sendBtcTransaction();
-                    navigation.navigate('TransferCompleted');
-                  },
-                });
+                this.comfirm();
               }}
             />
           </View>

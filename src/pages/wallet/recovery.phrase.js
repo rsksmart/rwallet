@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Tags from '../../components/common/misc/tags';
 import Button from '../../components/common/button/button';
-import Header from '../../components/common/misc/header';
 import Alert from '../../components/common/modal/alert';
+import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   text: {},
@@ -60,25 +62,32 @@ export default class RecoveryPhrase extends Component {
       const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={navigation.goBack} />
-          <Text style={[styles.note, { marginTop: 20 }]}>Write down or copy these words in</Text>
-          <Text style={styles.note}>the right order and save them</Text>
-          <Text style={styles.note}>somewhere safe</Text>
-          <View style={styles.tagsView}>
-            <Tags data={phrases} />
+          <Header
+            title="Recovery Phrase"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={[screenHelper.styles.body, flex.flex1]}>
+            <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
+            <Loc style={[styles.note]} text="in the right order and save them" />
+            <Loc style={[styles.note]} text="somewhere safe" />
+            <View style={styles.tagsView}>
+              <Tags data={phrases} />
+            </View>
+            <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {}}>
+              <Text style={styles.copy}>Copy</Text>
+            </TouchableOpacity>
+            <View style={styles.buttonView}>
+              <Button
+                text="NEXT"
+                onPress={async () => {
+                  navigation.navigate('VerifyPhrase', { wallet: this.wallet });
+                }}
+              />
+            </View>
+            <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Safeguard your recovery phrase Text" />
           </View>
-          <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {}}>
-            <Text style={styles.copy}>Copy</Text>
-          </TouchableOpacity>
-          <View style={styles.buttonView}>
-            <Button
-              text="NEXT"
-              onPress={async () => {
-                navigation.navigate('VerifyPhrase', { wallet: this.wallet });
-              }}
-            />
-          </View>
-          <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear." />
         </View>
       );
     }

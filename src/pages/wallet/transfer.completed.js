@@ -3,10 +3,10 @@ import {
   View, Text, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
+import Loc from '../../components/common/misc/loc';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -95,23 +95,12 @@ export default class TransferCompleted extends Component {
 
         <View style={[{ height: 100 }]}>
           <Image source={header} style={styles.headImage} />
-          <View style={styles.headerView}>
-            <Text style={styles.headerTitle}>Send</Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </View>
         </View>
         <View style={styles.body}>
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
-            <Text style={styles.title}>Transfer Completed! </Text>
-            <Text style={styles.text}>Your transaction is on its way.</Text>
+            <Loc style={[styles.title]} text="Transfer Completed!" />
+            <Loc style={[styles.text]} text="TransferText" />
             <TouchableOpacity onPress={() => {
               const resetAction = StackActions.reset({
                 index: 0,
@@ -130,9 +119,8 @@ export default class TransferCompleted extends Component {
               text="BACK TO WALLET"
               onPress={() => {
                 const resetAction = StackActions.reset({
-                  index: 1,
+                  index: 0,
                   actions: [
-                    NavigationActions.navigate({ routeName: 'Test1' }),
                     NavigationActions.navigate({ routeName: 'WalletList' }),
                   ],
                 });

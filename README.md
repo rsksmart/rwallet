@@ -86,6 +86,15 @@ __Step 1: Discover your Android device__
 __Step 2: Debug content on your Android device from your development machine__
 TODO: How to debug android app with Mac OS is to be added
 
+## Debugging
+1. Mac OS Dev environment
+    * In Android Simulator, press **Command + M** to start remote debugging
+    * In iOS Simulation, press **Command + D** to start remote debugging
+1. Linux Dev environment
+    * In Android Simulator
+
+1. Windows Dev environment
+
 
 ## Deployment
 

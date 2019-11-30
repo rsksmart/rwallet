@@ -1,26 +1,31 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Card, CardItem, Body } from 'native-base';
-import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
+import { connect } from 'react-redux';
 import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 
+// import appActions from '../../redux/app/actions';
+import { DEVICE } from '../../common/info';
+import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 
 const { consts: { currencies: currencySettings } } = config;
 
+// import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
+
+
 const header = require('../../assets/images/misc/header.png');
+const rsk = require('../../assets/images/mine/rsk.png');
 
 const DEFAULT_CURRENCY_SYMBOL = '$';
 
@@ -33,7 +38,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   sectionContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
   addAsset: {
     color: '#77869E',
@@ -58,17 +63,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 200,
+    bottom: 120,
     left: 24,
     color: '#FFF',
   },
   headerBoard: {
     width: '85%',
-    height: 165,
+    height: 110,
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: 115,
+    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
   },
   chevron: {
     color: '#FFF',
@@ -135,8 +140,24 @@ const styles = StyleSheet.create({
   headerImage: {
     position: 'absolute',
     width: '100%',
-    height: 350,
-    marginTop: -150,
+    height: screenHelper.headerHeight,
+    marginTop: screenHelper.headerMarginTop,
+  },
+  assetsTitle: {
+    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+  },
+  logoView: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  powerby: {
+    color: '#727372',
+    fontSize: 17,
+    fontWeight: '900',
+    marginTop: 5,
   },
 });
 
@@ -245,13 +266,15 @@ class WalletList extends Component {
             price: null,
             icon: coin.icon,
             r1Press: () => {
-              navigation.navigate('Transfer');
+              navigation.navigate('Transfer', { address: coin.address, coin: coin.type });
             },
             r2Press: () => {
-              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon });
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coin.type });
             },
             onPress: () => {
-              navigation.navigate('WalletHistory', { address: coin.address });
+              navigation.navigate('WalletHistory', {
+                address: coin.address, coin: coin.type, name: coin.defaultName, network: 'Testnet',
+              });
             },
           };
           getBalance(coin, item);
@@ -284,71 +307,64 @@ class WalletList extends Component {
 
       return (
         <View style={[flex.flex1]}>
-          <ScrollView>
+          <ScrollView style={{ marginBottom: 45 }}>
             <ImageBackground source={header} style={[styles.headerImage]}>
-              <Text style={styles.headerTitle}>Your Wallet</Text>
+              <Loc style={[styles.headerTitle]} text="Your Wallet" />
             </ImageBackground>
             <View style={styles.headerBoardView}>
               <Card style={styles.headerBoard}>
                 <CardItem>
                   <Body>
                     <Text style={styles.myAssetsTitle}>
-My Assets (
-                      {currencySymbol}
-)
+                      <Loc text="My Assets" />
+                      {` (${currencySymbol})`}
                     </Text>
                     <Text style={styles.myAssets}>173,586.3</Text>
-                    <View style={styles.myAssetsButtonsView}>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <Entypo name="swap" size={20} style={styles.sendIcon} />
-                        <Text style={styles.sendText}>Send</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                        <Text style={styles.receiveText}>Receive</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                        onPress={() => {}}
-                      >
-                        <AntDesign name="switcher" size={20} style={styles.swapIcon} />
-                        <Text style={styles.swapText}>Swap</Text>
-                      </TouchableOpacity>
-                    </View>
                   </Body>
                 </CardItem>
               </Card>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={{
-                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
-              }}
-              >
-                All Assets
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              {accounts}
-            </View>
-            <View style={styles.sectionContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('WalletAddIndex');
-                }}
-              >
-                <View style={styles.addAsset}>
-                  <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                  <Text>Add Asset</Text>
-                </View>
-              </TouchableOpacity>
+            <View style={{ width: '85%', alignSelf: 'center' }}>
+              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+                <Loc style={[styles.assetsTitle]} text="All Assets" />
+              </View>
+              <View style={styles.sectionContainer}>
+                {accounts}
+              </View>
+              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+                <TouchableOpacity
+                  onPress={() => {
+                  // addNotification(createSuccessNotification(
+                  //     "Success",
+                  //     "This message tells that everything goes fine."
+                  // ));
+                  // addNotification(createInfoNotification(
+                  //     "Info",
+                  //     "This message tells that something."
+                  // ));
+                  // addNotification(createWarningNotification(
+                  //     "Warning",
+                  //     "This message tells that alarm rising."
+                  // ));
+                  // addNotification(createErrorNotification(
+                  //     "Error",
+                  //     "This message tells that everything sucks."
+                  // ));
+                    navigation.navigate('WalletAddIndex');
+                  }}
+                >
+                  <View style={styles.addAsset}>
+                    <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                    <Loc text="Add Asset" />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
+          <View style={styles.logoView}>
+            <Text style={styles.powerby}>Powered by</Text>
+            <Image source={rsk} />
+          </View>
         </View>
       );
     }
@@ -365,6 +381,7 @@ WalletList.propTypes = {
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
   prices: PropTypes.arrayOf(PropTypes.object),
+  // addNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -380,6 +397,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
+  // addNotification: (notification) => dispatch(
+  //     appActions.addNotification(notification),
+  // ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

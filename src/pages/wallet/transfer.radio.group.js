@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color.ts';
+import Loc from '../../components/common/misc/loc';
 
 
 const styles = StyleSheet.create({
@@ -184,9 +185,7 @@ function Item({ data, onPress }) {
         {check}
       </View>
       <View>
-        <Text style={styles.radioItemText1}>
-          {data.name}
-        </Text>
+        <Loc style={[styles.radioItemText1]} text={data.name} />
         <Text style={styles.radioItemText2}>
           {data.coin}
         </Text>
@@ -203,7 +202,7 @@ Item.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     coin: PropTypes.string.isRequired,
-    selected: PropTypes.string.isRequired,
+    selected: PropTypes.bool.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };
@@ -232,14 +231,18 @@ export default class RadioGroup extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      selected: 1,
-    };
+    const { selected } = this.props;
+    this.state = { selected };
+    const { data } = this.props;
+    for (let i = 0; i < data.length; i += 1) {
+      this.listData[i].coin = data[i].coin;
+    }
   }
 
   render() {
     const items = [];
     const { selected } = this.state;
+    const { onChange } = this.props;
     for (let i = 0; i < this.listData.length; i += 1) {
       if (selected === i) {
         this.listData[i].selected = true;
@@ -252,6 +255,7 @@ export default class RadioGroup extends Component {
           key={`${Math.random()}`}
           onPress={() => {
             this.setState({ selected: i });
+            onChange(i);
           }}
         />,
       );
@@ -263,3 +267,16 @@ export default class RadioGroup extends Component {
     );
   }
 }
+
+RadioGroup.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  selected: PropTypes.number,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    coin: PropTypes.string.isRequired,
+  })),
+};
+
+RadioGroup.defaultProps = {
+  selected: 0,
+  data: [],
+};

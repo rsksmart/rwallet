@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image,
+  View, StyleSheet, Image,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
+import Loc from '../../components/common/misc/loc';
+import screenHelper from '../../common/screenHelper';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -31,6 +33,7 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
+    marginTop: 20,
   },
   check: {
     margin: 25,
@@ -56,21 +59,26 @@ export default class VerifyPhraseSuccess extends Component {
     });
 
     render() {
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Verify Phrase Success" />
-          <View style={styles.content}>
-            <Image style={styles.check} source={completed} />
-            <Text style={styles.title}>Your recovery phrase is verified</Text>
-            <Text style={styles.text}>
-              Be sure to store your recovery phrase in a safe and secure place
-            </Text>
+          <Header
+            title="Verify Phrase Success"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={[screenHelper.styles.body]}>
+            <View style={styles.content}>
+              <Image style={styles.check} source={completed} />
+              <Loc style={[styles.title]} text="Your recovery phrase is verified" />
+              <Loc style={[styles.text]} text="Be sure to store your recovery phrase in a safe and secure place" />
+            </View>
           </View>
           <View style={styles.buttonView}>
             <Button
               text="GO TO WALLET"
               onPress={async () => {
-                const { navigation } = this.props;
                 const resetAction = StackActions.reset({
                   index: 0,
                   actions: [
@@ -90,5 +98,6 @@ VerifyPhraseSuccess.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
   }).isRequired,
 };

@@ -1,39 +1,36 @@
 import React from 'react';
 import {
-  StyleSheet, View, TouchableOpacity, Image,
+  StyleSheet, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from './loc';
+import screenHelper from '../../../common/screenHelper';
 
 const header = require('../../../assets/images/misc/header.png');
 
 const styles = StyleSheet.create({
-  container: {
+  headerImage: {
+    position: 'absolute',
     width: '100%',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    top: 70,
-  },
-  headerView: {
-    position: 'absolute',
+    height: screenHelper.headerHeight,
+    marginTop: screenHelper.headerMarginTop,
   },
   headerTitle: {
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: '900',
     position: 'absolute',
-    top: 132,
+    bottom: 50,
     left: 24,
     color: '#FFF',
   },
+  backButton: {
+    position: 'absolute',
+    left: 9,
+    bottom: 97,
+  },
   chevron: {
     color: '#FFF',
-  },
-  headerImage: {
-    flex: 1,
-    resizeMode: 'cover', // or 'stretch'
   },
 });
 
@@ -52,13 +49,10 @@ export default function Header({ title, goBack }) {
     );
   }
   return (
-    <View style={[styles.container]}>
-      <Image source={header} style={[styles.headerImage]} />
-      <View style={styles.headerView}>
-        <Loc style={[styles.headerTitle]} text={title} key={`${Math.random()}`} />
-        {backButton}
-      </View>
-    </View>
+    <ImageBackground source={header} style={[styles.headerImage]}>
+      <Loc style={[styles.headerTitle]} text={title} />
+      { backButton }
+    </ImageBackground>
   );
 }
 

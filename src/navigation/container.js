@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
-
 import RootComponent from './component';
 
-const RootSwitchNavigator = connect()(RootComponent);
+const mapStateToProps = (state) => ({
+  notifications: state.App.get('notifications'),
+});
 
-export default RootSwitchNavigator;
+export default connect(mapStateToProps)(RootComponent);

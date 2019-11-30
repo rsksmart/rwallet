@@ -4,26 +4,22 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Header from '../../components/common/misc/header';
+import { ScrollView } from 'react-native-gesture-handler';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/languageSwitcher/actions';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 import config from '../../../config';
 
 const { consts: { languages: locales } } = config;
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
   listView: {
     width: '80%',
     alignSelf: 'center',
+    marginTop: 10,
   },
 });
 
@@ -58,19 +54,24 @@ class Language extends Component {
     }
 
     render() {
-      const { language } = this.props;
+      const { navigation, language } = this.props;
       const selected = {
         en: 0, fr: 1, he: 2, zh: 3,
       }[language];
-      const { navigation } = this.props;
-      const goBack = navigation && navigation.goBack ? navigation.goBack : () => {};
       return (
-        <View style={[flex.flex1]}>
-          <Header title="Language" goBack={goBack} />
-          <View style={styles.listView}>
-            <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
+        <ScrollView style={[flex.flex1]}>
+          <Header
+            title="Language"
+            goBack={() => {
+              navigation.goBack();
+            }}
+          />
+          <View style={screenHelper.styles.body}>
+            <View style={styles.listView}>
+              <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
+            </View>
           </View>
-        </View>
+        </ScrollView>
       );
     }
 }

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { screen } from '../../common/info.ts';
+import { screen } from '../../common/info';
 
 // eslint-disable-next-line no-unused-vars
 function fWidthPer(iPerValue) {

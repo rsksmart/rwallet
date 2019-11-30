@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, Text, StyleSheet, TouchableHighlight,
+  Modal, View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
   scanView: {
@@ -73,19 +74,19 @@ export default class Alert extends Component {
         <View style={{ justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
             <View style={{ paddingHorizontal: 20 }}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.text}>{text}</Text>
+              <Loc style={[styles.title]} text={title} />
+              <Loc style={[styles.text]} text={text} />
             </View>
             <View style={styles.line} />
-            <TouchableHighlight onPress={() => {
+            <TouchableOpacity onPress={() => {
               this.setModalVisible(false);
               if (onPress) {
                 onPress();
               }
             }}
             >
-              <Text style={styles.button}>GOT IT</Text>
-            </TouchableHighlight>
+              <Loc style={[styles.button]} text="GOT IT" />
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

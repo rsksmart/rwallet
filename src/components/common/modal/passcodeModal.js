@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
+import Loc from '../misc/loc';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -152,7 +153,7 @@ export default class PasscodeModal extends Component {
         <View style={styles.background} />
         <TouchableHighlight style={styles.container}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={styles.title}>{title}</Text>
+            <Loc style={[styles.title]} text={title} />
             <View style={styles.dotRow}>
               {dots}
             </View>
@@ -169,7 +170,7 @@ export default class PasscodeModal extends Component {
                   }
                 }}
               >
-                <Text style={styles.cancel}>Cancel</Text>
+                <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -1,33 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Switch, TouchableOpacity,
+  View, StyleSheet, Switch, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import appContext from '../../common/appContext';
 import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 10,
-    height: 80,
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-  },
   body: {
-    marginHorizontal: 15,
+    alignSelf: 'center',
+    width: '85%',
   },
   title: {
     color: '#2D2D2D',
@@ -59,21 +46,27 @@ export default class TwoFactorAuth extends Component {
       };
     }
 
+    async goBack() {
+      const { fingerprint } = this.state;
+      const { navigation } = this.props;
+      this.setState({ loading: true });
+      await appContext.saveSettings({ fingerprint });
+      this.setState({ loading: false });
+      navigation.goBack();
+    }
+
     render() {
       const { fingerprint, loading } = this.state;
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
+        <ScrollView style={[flex.flex1]}>
           <Header
-            title="2FA"
-            goBack={async () => {
-              this.setState({ loading: true });
-              await appContext.saveSettings({ fingerprint });
-              this.setState({ loading: false });
+            title="Currency"
+            goBack={() => {
               navigation.goBack();
             }}
           />
-          <View style={styles.body}>
+          <View style={[screenHelper.styles.body, styles.body]}>
             <Loader loading={loading} />
             <TouchableOpacity
               style={styles.row}
@@ -81,11 +74,11 @@ export default class TwoFactorAuth extends Component {
                 navigation.navigate('ResetPasscode');
               }}
             >
-              <Text style={styles.title}>Reset Passcode</Text>
+              <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
             <View style={styles.row}>
-              <Text style={styles.title}>Use Fingerprint</Text>
+              <Loc style={[styles.title]} text="Use Fingerprint" />
               <Switch
                 value={fingerprint}
                 onValueChange={(v) => {
@@ -94,7 +87,7 @@ export default class TwoFactorAuth extends Component {
               />
             </View>
           </View>
-        </View>
+        </ScrollView>
       );
     }
 }

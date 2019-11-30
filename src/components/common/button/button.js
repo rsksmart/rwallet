@@ -1,9 +1,10 @@
 import React from 'react';
 import {
-  StyleSheet, TouchableOpacity, Text, View,
+  StyleSheet, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
+import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
   button: {
@@ -26,7 +27,7 @@ export default function Button({ text, onPress }) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.button}>
-        <Text style={styles.buttonText}>{text}</Text>
+        <Loc style={[styles.buttonText]} text={text} />
       </View>
     </TouchableOpacity>
   );

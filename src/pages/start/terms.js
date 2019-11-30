@@ -40,28 +40,6 @@ const styles = StyleSheet.create({
   termsView2: {
     width: '75%',
   },
-  termRow: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  termRowLeft: {
-    marginRight: 15,
-    paddingTop: 3,
-  },
-  check: {
-    color: '#00B520',
-  },
-  termRowRight: {
-    width: 0,
-    flexGrow: 1,
-    flex: 1,
-  },
-  termRowRightText: {
-    fontSize: 15,
-    lineHeight: 20,
-    fontWeight: '300',
-    letterSpacing: 0.32,
-  },
 });
 export default class TermsPage extends Component {
   static navigationOptions = () => ({
@@ -72,20 +50,6 @@ export default class TermsPage extends Component {
     return (
       <View style={styles.page}>
         <Image style={styles.logo} source={logo} />
-
-        <View style={styles.buttonView}>
-          <TouchableOpacity style={styles.completeTerms}>
-            <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
-          </TouchableOpacity>
-          <Button
-            style={styles.button}
-            text="COMFIRM & FINISH"
-            onPress={() => {
-              const { navigation } = this.props;
-              navigation.navigate('PrimaryTabNavigator');
-            }}
-          />
-        </View>
         <View style={styles.termsView}>
           <View style={styles.termsView2}>
             <TermRow
@@ -98,6 +62,19 @@ export default class TermsPage extends Component {
             />
             <TermRow text="I have, read, understood, and agree to the Terms of use." delay={1} />
           </View>
+        </View>
+        <View style={styles.buttonView}>
+          <TouchableOpacity style={styles.completeTerms}>
+            <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
+          </TouchableOpacity>
+          <Button
+            style={styles.button}
+            text="COMFIRM & FINISH"
+            onPress={() => {
+              const { navigation } = this.props;
+              navigation.navigate('PrimaryTabNavigator');
+            }}
+          />
         </View>
       </View>
     );

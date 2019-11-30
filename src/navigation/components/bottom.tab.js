@@ -5,7 +5,7 @@ import {
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
 
-const TABCOUNT = 2; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
 const windowWidth = Dimensions.get('window').width;
 const tabWidth = windowWidth / TABCOUNT;
@@ -13,6 +13,8 @@ const tabWidth = windowWidth / TABCOUNT;
 const SpotLight = posed.View({
   route0: { x: tabWidth * 0.35 },
   route1: { x: tabWidth * 1.35 },
+  route2: { x: tabWidth * 2.35 },
+  route3: { x: tabWidth * 3.35 },
 });
 
 const Scaler = posed.View({
@@ -90,8 +92,8 @@ const TabBar = (props) => {
 
 TabBar.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  renderIcon: PropTypes.string.isRequired,
-  getLabelText: PropTypes.string.isRequired,
+  renderIcon: PropTypes.func.isRequired,
+  getLabelText: PropTypes.func.isRequired,
   activeTintColor: PropTypes.string.isRequired,
   inactiveTintColor: PropTypes.string.isRequired,
   onTabPress: PropTypes.func.isRequired,
