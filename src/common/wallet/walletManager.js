@@ -12,9 +12,9 @@ class WalletManager {
     this.currentKeyId = currentKeyId;
   }
 
-  async createWallet(name, phrase = null, coins) {
+  async createWallet(name, phrase, coins) {
     // 1. Create a Wallet instance and save into wallets
-    const wallet = Wallet.create({
+    const wallet = await Wallet.create({
       id: this.currentKeyId, name, phrase, coinTypes: coins,
     });
 
@@ -24,7 +24,9 @@ class WalletManager {
     this.currentKeyId += 1;
 
     // Save to storage
-    this.serialize();
+    await this.serialize();
+
+    return wallet;
   }
 
   async restoreFromStorage() {
@@ -63,7 +65,11 @@ class WalletManager {
    * Save JSON presentation of Wallets data to permenate storage
    */
   async serialize() {
-    const jsonData = this.data.toJSON();
+    const jsonData = {
+      currentKeyId: this.currentKeyId,
+      wallets: _.map(this.wallets, (wallet) => wallet.toJSON()),
+    };
+
     await storage.save(STORAGE_KEY, jsonData);
   }
 
@@ -76,53 +82,19 @@ class WalletManager {
     console.log('Deserialized Wallets from Storage.', result);
 
     if (!_.isNull(result) && _.isObject(result)) {
+      // Retrieve currentKeyId from storage result
       if (_.isNumber(result.currentKeyId)) {
         this.currentKeyId = result.currentKeyId;
       }
 
-      const { wallets } = this;
+      // Re-create Wallet objects based on result.wallets JSON
+      const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
+      const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
 
-      _.each(result.wallets, (walletJSON) => {
-        wallets.push(Wallet.fromJSON(walletJSON));
-      });
+      console.log('deserialize.wallets', wallets);
+      this.wallets = wallets;
     }
   }
 }
 
 export default new WalletManager();
-
-
-// const walletManager = {
-//   wallets: [],
-
-//   createWallet(name, phrase = null, coins) {
-//     const wallet = Wallet.create(name, phrase, coins);
-//     return wallet;
-//   },
-//   async addWallet(wallet) {
-//     const newWallet = wallet;
-//     this.wallets.push(newWallet);
-//     const coins = [];
-//     newWallet.coins.forEach((coin) => {
-//       coins.push({ type: coin.type, address: coin.address });
-//     });
-//     const item = { phrase: newWallet.mnemonic.phrase, coins };
-//     const keyId = await appContext.addWallet(item);
-//     newWallet.keyId = keyId;
-//     return keyId;
-//   },
-//   async loadWallets() {
-//     const { wallets } = appContext.data;
-//     for (let i = 0; i < wallets.length; i += 1) {
-//       const item = wallets[i];
-//       // eslint-disable-next-line no-await-in-loop
-//       const phrase = await appContext.getPhrase(item.id);
-//       const wallet = Wallet.create('', phrase);
-//       wallet.id = item.id;
-//       this.wallets.push(wallet);
-//     }
-//   },
-
-// };
-
-// export default walletManager;

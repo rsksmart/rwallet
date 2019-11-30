@@ -36,13 +36,9 @@ function* getWalletsRequest() {
 }
 
 function* getPriceRequest(action) {
-  console.log('saga.getPriceRequest is called');
-
   const { payload } = action;
   try {
     const response = yield call(ParseHelper.getPrice, payload);
-
-    console.log('getPriceRequest got response, response: ', response);
 
     // Sets state in reducer for success
     yield put({

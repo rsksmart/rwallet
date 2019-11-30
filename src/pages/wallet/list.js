@@ -413,13 +413,15 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
-  prices: PropTypes.arrayOf(PropTypes.object).isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  prices: PropTypes.arrayOf(PropTypes.object),
   // addNotification: PropTypes.func.isRequired,
   walletManager: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 WalletList.defaultProps = {
+  wallets: [],
+  prices: [],
 };
 
 const mapStateToProps = (state) => ({

@@ -100,7 +100,7 @@ export default class WalletSelectCurrency extends Component {
                   }
                 }
 
-                const wallet = walletManager.createWallet('randomName', phrases, coins);
+                const wallet = await walletManager.createWallet('randomName', phrases, coins);
 
                 if (phrases) {
                   this.setState({ loading: true });
