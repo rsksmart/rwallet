@@ -85,7 +85,7 @@ export default class Wallet {
   static async savePhrase(id, phrase) {
     try {
       const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
-      const result = await RNSecureStorage.set(key, phrase);
+      const result = await RNSecureStorage.set(key, phrase, {});
       console.log('savePhrase, result:', result);
     } catch (ex) {
       console.log('savePhrase, error', ex);
