@@ -13,8 +13,18 @@ const actions = {
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
   SET_ERROR: 'SET_ERROR',
   CHANGE_CURRENCY: 'CHANGE_CURRENCY',
+  ADD_NOTIFICATION: 'ADD_NOTIFICATION',
+  REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
 
   // Functions definition
+  addNotification: (notification) => ({
+    type: actions.ADD_NOTIFICATION,
+    notification,
+  }),
+  removeNotification: (notification) => ({
+    type: actions.REMOVE_NOTIFICATION,
+    id: notification.id,
+  }),
   loading: (isLoading) => ({
     type: actions.LOADING,
     value: isLoading,
