@@ -33,7 +33,7 @@ export default class Wallet {
 
     // We need to save the phrase to secure storage after generation
     // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
-    Wallet.savePhrase();
+    Wallet.savePhrase(this.id, this.mnemonic.toString());
   }
 
   static create({
@@ -85,10 +85,13 @@ export default class Wallet {
   static async savePhrase(id, phrase) {
     try {
       const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
+      console.log(`savePhrase, key: ${key}, phrase: ${phrase}`);
       const result = await RNSecureStorage.set(key, phrase, {});
       console.log('savePhrase, result:', result);
+      const phrase2 = await RNSecureStorage.get(key);
+      console.log('savePhrase, phrase2:', phrase2);
     } catch (ex) {
-      console.log('savePhrase, error', ex);
+      console.log('savePhrase, error', ex.message);
     }
   }
 
