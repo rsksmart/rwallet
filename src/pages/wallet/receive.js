@@ -10,6 +10,7 @@ import color from '../../assets/styles/color.ts';
 import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
+import ScreenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -94,7 +95,7 @@ export default class WalletReceive extends Component {
 
       let headerHeight = 100;
       if (DEVICE.isIphoneX) {
-        headerHeight += 24;
+        headerHeight += ScreenHelper.iphoneXExtendedHeight;
       }
 
       return (

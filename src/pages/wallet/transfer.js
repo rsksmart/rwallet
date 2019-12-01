@@ -16,6 +16,7 @@ import common from '../../common/common';
 import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
+import ScreenHelper from '../../common/screenHelper';
 
 
 const buffer = require('buffer');
@@ -375,7 +376,7 @@ export default class Transfer extends Component {
 
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
-      headerHeight += 24;
+      headerHeight += ScreenHelper.iphoneXExtendedHeight;
     }
 
     // Test data
