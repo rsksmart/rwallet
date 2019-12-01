@@ -2,34 +2,47 @@ import RNSecureStorage from 'rn-secure-storage';
 import _ from 'lodash';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
+// import storage from '../storage';
 
 const Mnemonic = require('bitcore-mnemonic');
 
 const PHRASE_KEY_STORAGE_PREFIX = 'wallet_';
 export default class Wallet {
   constructor({
-    id, name, mnemonic, coinTypes,
+    id, name, mnemonic, coins,
   }) {
     this.id = id;
     this.name = name;
     this.mnemonic = mnemonic;
     // this.createdAt = new Date();
 
+    console.log('Wallet.create.coins', coins);
+
     // Create coins based on types
     this.coins = [];
-    coinTypes.forEach((coinType) => {
-      let coin = null;
-      if (coinType === 'BTC') {
-        coin = new Coin('BTC');
-      } else {
-        coin = new RBTCCoin(coinType);
-      }
+    const seed = this.mnemonic.toSeed();
 
-      this.coins.push(coin);
-    });
+    if (!_.isEmpty(coins)) {
+      coins.forEach((item) => {
+        const { id: coinId, amount, address } = item;
 
-    // Generate address of each node based on master key; will take a lot of time
-    this.derive();
+        let coin;
+        if (id === 'BTC') {
+          coin = new Coin(coinId, amount, address);
+        } else {
+          coin = new RBTCCoin(coinId, amount, address);
+        }
+
+        if (_.isUndefined(coin.address)) {
+          coin.derive(seed);
+        }
+
+        this.coins.push(coin);
+      });
+
+      // Generate address of each node based on master key; will take a lot of time
+      // this.derive();
+    }
 
     // We need to save the phrase to secure storage after generation
     // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
@@ -50,34 +63,10 @@ export default class Wallet {
     return wallet;
   }
 
-  derive() {
-    for (let i = 0; i < this.coins.length; i += 1) {
-      const coin = this.coins[i];
-      const seed = this.mnemonic.toSeed();
-      // this process cost time.
-      coin.derive(seed);
-    }
-  }
-
   // static load() {
   //   const wallet = new Wallet();
   //   return wallet;
   // }
-
-
-  /**
-   * Returns a JSON to save required data to backend server; empty array if there's no coins
-   */
-  toJSON() {
-    const result = {
-      id: this.id,
-      name: this.name,
-      // createdAt: this.createdAt,
-      coins: this.coins.map((coin) => coin.toJSON()),
-    };
-
-    return result;
-  }
 
   /**
    * Save phrase with walletId into secure storage if exits
@@ -88,8 +77,6 @@ export default class Wallet {
       console.log(`savePhrase, key: ${key}, phrase: ${phrase}`);
       const result = await RNSecureStorage.set(key, phrase, {});
       console.log('savePhrase, result:', result);
-      const phrase2 = await RNSecureStorage.get(key);
-      console.log('savePhrase, phrase2:', phrase2);
     } catch (ex) {
       console.log('savePhrase, error', ex.message);
     }
@@ -103,12 +90,30 @@ export default class Wallet {
 
     try {
       const phrase = await RNSecureStorage.get(key);
+      console.log('restorePhrase, phrase:', phrase);
       return phrase;
     } catch (err) {
       console.log(err);
+      console.log(err.message);
     }
 
     return null;
+  }
+
+
+  /**
+   * Returns a JSON to save required data to backend server; empty array if there's no coins
+   */
+  toJSON() {
+    const result = {
+      id: this.id,
+      name: this.name,
+      // createdAt: this.createdAt,
+      phrase: this.mnemonic.toString(), // TODO: use secure storage to save mnemonic
+      coins: this.coins.map((coin) => coin.toJSON()),
+    };
+
+    return result;
   }
 
   /**
@@ -117,25 +122,23 @@ export default class Wallet {
    * @param {*} json
    */
   static async fromJSON(json) {
-    // const phrase = await appContext.getPhrase(json.id);
-    // console.log('phrase', phrase);
-
     console.log('Wallet.fromJSON.', json);
-    const { id, name, coins } = json;
+    const {
+      id, name, coins,
+    } = json;
 
+    // TODO: use secure storage to restore phrase
     const phrase = await Wallet.restorePhrase(id);
 
-    if (_.isNull(phrase)) { // We are be able to restore phrase; do not continue.
-      console.log(`Wallet.fromJSON: cannot restore phrase for Id=${id}; returning null.`);
+    if (!_.isString(phrase)) { // We are be able to restore phrase; do not continue.
+      console.log(`Wallet.fromJSON: phrase restored is not a string, Id=${id}; returning null.`);
       return null;
     }
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
-    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
-
     const wallet = await Wallet.create({
-      id, name, mnemonic, coinTypes: coins,
+      id, name, phrase, coinTypes: coins,
     });
 
     return wallet;

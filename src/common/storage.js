@@ -15,6 +15,8 @@ class RNStorage {
       // cache data in the memory. default is true.
       enableCache: true,
     });
+
+    this.remove = this.remove.bind(this);
   }
 
   /**
@@ -95,8 +97,8 @@ class RNStorage {
    * @param {*} id
    * @returns {Promise}
    */
-  async remove(key, id) {
-    const that = this;
+  removeId(key, id) {
+    // const that = this;
 
     if (id) {
       return this.instance.remove({
@@ -105,21 +107,22 @@ class RNStorage {
       });
     }
 
-    // Get storage Ids by key
-    const ids = await this.getIdsForKey(key);
+    // // Get storage Ids by key
+    // const ids = await this.getIdsForKey(key);
 
-    // Push all remove promise into an array and handle parallelly
-    const promises = ids.map((storageId) => that.instance.remove({ key, storageId }));
+    // // Push all remove promise into an array and handle parallelly
+    // const promises = ids.map((storageId) => that.instance.remove({ key, storageId }));
 
-    return Promise.all(promises);
+    // return Promise.all(promises);
+    return null;
   }
 
   /**
    * Remove all key values from the Storage instance
    * @returns {Promise}
    */
-  clear() {
-    return this.instance.clearMap();
+  remove(key) {
+    return this.instance.remove({ key });
   }
 
   /**

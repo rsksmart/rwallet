@@ -3,7 +3,7 @@ import actions from './actions';
 import appContext from '../../common/appContext';
 
 const initState = new Map({
-  isLoading: false,
+  isPageLoading: false,
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
@@ -17,8 +17,8 @@ const initState = new Map({
 export default function appReducer(state = initState, action) {
   let notifications = [];
   switch (action.type) {
-    case actions.LOADING:
-      return state.set('isLoading', action.value);
+    case actions.IS_PAGE_LOADING:
+      return state.set('isPageLoading', action.value);
 
     case actions.GET_SERVER_INFO_RESULT:
     {
@@ -27,12 +27,13 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_TRANSACTIONS:
     {
-      return state.set('isLoading', true);
+      console.log('GET_TRANSACTIONS', action);
+      return state;
     }
     case actions.GET_TRANSACTIONS_RESULT:
     {
       const transactions = action.value;
-      let newstate = state.set('isLoading', false);
+      let newstate = state.set('isPageLoading', false);
       newstate = newstate.set('transactions', transactions);
       return newstate;
     }

@@ -5,79 +5,65 @@ import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
 export default class Coin {
-  constructor(network) {
-    this.type = network;
-    this.networkId = coinType[network].networkId;
-    this.network = coinType[network].network;
-    this.icon = coinType[network].icon;
-    this.queryKey = coinType[network].queryKey;
-    this.defaultName = coinType[network].defaultName;
-    this.amount = 0;
-    this.value = 0;
-    this.address = '';
-    this.networkNode = null;
-    this.accountNode = null;
-    this.addressNode = null;
-    this.master = '';
-  }
-
-  generateMasterFromSeed(seed) {
-    console.log(`generate_master_from_recovery_phrase, seed: ${seed}`);
-    this.master = fromSeed(seed, this.network).toBase58();
-    return this.master;
-  }
-
-  getNetworkNode() {
-    const path = `m/44'/${this.networkId}'/0'`;
-    const pk = fromBase58(this.master, this.network)
-      .derivePath(path)
-      .neutered()
-      .toBase58();
-    this.networkNode = new PathKeyPair(path, pk);
-    return this.networkNode;
+  constructor(id, amount, address) {
+    this.id = id;
+    // metadata:{network, networkId, icon, queryKey, defaultName}
+    this.metadata = coinType[id];
+    this.amount = amount;
+    this.address = address;
   }
 
   derive(seed) {
-    this.generateMasterFromSeed(seed);
-    this.getNetworkNode();
-    this.generateAccountNode(0);
-    this.generateAddressNode(0);
-    this.generateAddress();
+    const network = this.metadata && this.metadata.network;
+    const networkId = this.metadata && this.metadata.networkId;
+
+    const master = fromSeed(seed, network).toBase58();
+    console.log('master', master);
+
+    const networkNode = Coin.getNetworkNode(master, network, networkId);
+    const accountNode = Coin.generateAccountNode(networkNode, network, 0);
+    const addressNode = Coin.generateAddressNode(accountNode, network, 0);
+    this.address = Coin.generateAddress(addressNode, network);
+    console.log('BTTCOIN.address', this.address);
   }
 
-  generateAccountNode(index) {
-    const path = `${this.networkNode.path}/${index}`;
-    const publickey = this.deriveChildFromNode(this.networkNode.public_key, index);
-    this.accountNode = new PathKeyPair(path, publickey);
-    return this.accountNode;
+  static getNetworkNode(master, network, networkId) {
+    const path = `m/44'/${networkId}'/0'`;
+    const pk = fromBase58(master, network)
+      .derivePath(path)
+      .neutered()
+      .toBase58();
+    return new PathKeyPair(path, pk);
   }
 
-  generateAddressNode(index) {
-    const pk = this.accountNode;
+  static generateAccountNode(networkNode, network, index) {
+    const path = `${networkNode.path}/${index}`;
+    const publickey = this.deriveChildFromNode(networkNode.public_key, network, index);
+    return new PathKeyPair(path, publickey);
+  }
+
+  static generateAddressNode(accountNode, network, index) {
+    const pk = accountNode;
     const path = `${pk.path}/${index}`;
     console.log(
       `[TRACE]generateAddressNode, index: ${index}, pk: ${JSON.stringify(pk)}, path: ${path}`,
     );
-    const result = this.deriveChildFromNode(pk.public_key, index);
+    const result = this.deriveChildFromNode(pk.public_key, network, index);
     console.log(`[TRACE]generateAddressNode, publicKey: ${result}`);
-    this.addressNode = new PathKeyPair(path, result);
-    return this.addressNode;
+    return new PathKeyPair(path, result);
   }
 
-  generateAddress() {
+  static generateAddress(addressNode, network) {
     const options = {
-      pubkey: fromBase58(this.addressNode.public_key, this.network).publicKey,
-      network: this.network,
+      pubkey: fromBase58(addressNode.public_key, network).publicKey,
+      network,
     };
-    console.log(
-      `[TRACE]BaseBtcCryptoNetwork::get_address, pubkey: ${options.pubkey}, network: ${options.network}`,
-    );
-    this.address = payments.p2pkh(options).address;
-    return this.address;
+
+    return payments.p2pkh(options).address;
   }
 
-  deriveChildFromNode(node, index) {
-    const t = fromBase58(node, this.network).derive(index);
+  static deriveChildFromNode(node, network, index) {
+    const t = fromBase58(node, network).derive(index);
     return t.toBase58();
   }
 
@@ -86,9 +72,28 @@ export default class Coin {
    */
   toJSON() {
     return {
-      network: this.network,
-      type: this.type,
+      id: this.id,
+      metadata: this.metadata,
+      amount: this.amount,
       address: this.address,
     };
+  }
+
+  static fromJSON(json) {
+    const { id, amount, address } = json;
+    const instance = new Coin(id, amount, address);
+    return instance;
+  }
+
+  get icon() {
+    return this.metadata.icon;
+  }
+
+  get queryKey() {
+    return this.metadata.queryKey;
+  }
+
+  get defaultName() {
+    return this.metadata.defaultName;
   }
 }
