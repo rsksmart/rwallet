@@ -82,7 +82,7 @@ class VerifyPhrase extends Component {
   }
 
   async tap(i) {
-    const { navigation, dispatch } = this.props;
+    const { navigation, addNotification } = this.props;
     const { tags, phrases } = this.state;
     const s = tags.splice(i, 1);
     this.setState({ tags });
@@ -114,7 +114,7 @@ class VerifyPhrase extends Component {
           'Error',
           verifyPhraseAlertTitle,
         );
-        dispatch(appActions.addNotification(notification));
+        addNotification(notification);
       }
     }
   }
@@ -175,13 +175,21 @@ class VerifyPhrase extends Component {
   }
 }
 VerifyPhrase.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
-export default connect()(VerifyPhrase);
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);
