@@ -269,10 +269,8 @@ class WalletList extends Component {
 
       const getBalance = (coin, item) => {
         const { queryKey } = coin;
-        let { address } = coin;
-        if (queryKey === 'TRSK' || queryKey === 'RSK' || queryKey === 'RIF' || queryKey === 'TRIF') {
-          address = address.toLowerCase();
-        }
+        const { address } = coin;
+
         Parse.Cloud.run('getBalance', {
           name: queryKey,
           addr: address,

@@ -9,9 +9,12 @@ import ParseHelper from '../../common/parse';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
+import storage from '../../common/storage';
 
 function* initAppRequest(/* action */) {
   try {
+    yield call(storage.remove, 'wallets');
+
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 

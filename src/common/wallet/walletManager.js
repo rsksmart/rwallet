@@ -70,6 +70,7 @@ class WalletManager {
       wallets: _.map(this.wallets, (wallet) => wallet.toJSON()),
     };
 
+    console.log('walletManager.serialize: jsonData', jsonData);
     await storage.save(STORAGE_KEY, jsonData);
   }
 

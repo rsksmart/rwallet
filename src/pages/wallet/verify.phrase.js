@@ -49,26 +49,13 @@ class VerifyPhrase extends Component {
     super(props);
     const { navigation } = this.props;
     this.wallet = navigation.state.params.wallet;
-    this.correctPhrases = this.wallet.mnemonic.phrase.split(' ');
-    const shuffle = (org) => {
-      const input = [];
-      Object.assign(input, org);
-      for (let i = input.length - 1; i >= 0; i -= 1) {
-        const randomIndex = Math.floor(Math.random() * (i + 1));
-        const itemAtIndex = input[randomIndex];
-        input[randomIndex] = input[i];
-        input[i] = itemAtIndex;
-      }
-      return input;
-    };
-    this.randomPhrases = shuffle(this.correctPhrases);
-    this.randomPhrases2 = [];
-    Object.assign(this.randomPhrases2, this.randomPhrases);
+    this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
 
     this.state = {
-      tags: this.randomPhrases,
+      tags: _.shuffle(this.correctPhrases),
       phrases: [],
     };
+
     this.renderAllItem = this.renderAllItem.bind(this);
     this.onTagsPressed = this.onTagsPressed.bind(this);
     this.reset = this.reset.bind(this);
@@ -108,9 +95,8 @@ class VerifyPhrase extends Component {
   }
 
   reset() {
-    Object.assign(this.randomPhrases, this.randomPhrases2);
     this.setState({
-      tags: this.randomPhrases,
+      tags: _.shuffle(this.correctPhrases),
       phrases: [],
     });
   }

@@ -27,6 +27,9 @@ const config = {
       { name: 'GBP', symbol: '£' },
     ],
   },
+  development: {
+    reduxLoggerEnabled: false,
+  },
 };
 
 export default config;

@@ -1,4 +1,4 @@
-// BTC TBTC RSK TRSK RIF TRIF
+// BTC TBTC RBTC TRBTC RIF TRIF
 import { networks } from 'bitcoinjs-lib';
 
 const btc = require('../../assets/images/icon/BTC.png');
@@ -16,7 +16,7 @@ const coinType = {
   RBTC: {
     networkId: 137,
     icon: rbtc,
-    queryKey: 'RSK',
+    queryKey: 'RBTC',
     defaultName: 'SmartBitcoin',
   },
   RIF: {
@@ -35,7 +35,7 @@ const coinType = {
   RBTCTestNet: {
     networkId: 37310,
     icon: rbtc,
-    queryKey: 'TRSK',
+    queryKey: 'TRBTC',
     defaultName: 'SmartBitcoin Testnet',
   },
   RIFTestNet: {
