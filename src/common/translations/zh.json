@@ -77,5 +77,8 @@
   "View Complete Terms Of Use": "查看完成协议",
   "TermsLine1": "我理解我的资产安全地保存在本地设备，并非在公司",
   "TermsLine2": "我理解当我卸载或移动App到另外的设备时，我的比特币只能通过密语去恢复。",
-  "TermsLine3": "我已经阅读并理解使用协议。"
+  "TermsLine3": "我已经阅读并理解使用协议。",
+  "Use passcode": "使用密码验证",
+  "Touch Sensor": "指纹验证",
+  "No match": "指纹不匹配"
 }

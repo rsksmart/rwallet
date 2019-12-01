@@ -42,7 +42,7 @@ const appContext = {
     Object.assign(this.data.settings, settings);
     await this.set('settings', this.data.settings);
     // upload settings
-    await ParseHelper.uploadSettings(this.user, this.data.settings);
+    // await ParseHelper.uploadSettings(this.user, this.data.settings);
   },
   async addWallet(wallet) {
     const newWallet = wallet;

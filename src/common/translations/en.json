@@ -77,5 +77,8 @@
   "View Complete Terms Of Use": "View Complete Terms Of Use",
   "TermsLine1": "I understand that my funds are held securely on this device, not by a company.",
   "TermsLine2": "I understand that this app is moved to another device or deleted, my bitcoin can only be recoverd with the recovery phrase.",
-  "TermsLine3": "I have, read, understood, and agree to the Terms of use."
+  "TermsLine3": "I have, read, understood, and agree to the Terms of use.",
+  "Use passcode": "Use passcode",
+  "Touch Sensor": "Touch Sensor",
+  "No match": "No match"
 }

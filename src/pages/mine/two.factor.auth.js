@@ -61,7 +61,7 @@ export default class TwoFactorAuth extends Component {
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
-            title="Currency"
+            title="Two-Factor Authentication"
             goBack={() => {
               navigation.goBack();
             }}
@@ -81,8 +81,9 @@ export default class TwoFactorAuth extends Component {
               <Loc style={[styles.title]} text="Use Fingerprint" />
               <Switch
                 value={fingerprint}
-                onValueChange={(v) => {
+                onValueChange={async (v) => {
                   this.setState({ fingerprint: v });
+                  await appContext.saveSettings({ fingerprint: v });
                 }}
               />
             </View>
