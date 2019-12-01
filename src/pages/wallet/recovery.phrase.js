@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, Text, TouchableOpacity, StyleSheet, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -65,6 +65,7 @@ class RecoveryPhrase extends Component {
     }
 
     render() {
+      const { phrase } = this.wallet.mnemonic;
       const { phrases } = this.state;
       const { navigation } = this.props;
       return (
@@ -82,7 +83,12 @@ class RecoveryPhrase extends Component {
             <View style={styles.tagsView}>
               <Tags data={phrases} />
             </View>
-            <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {}}>
+            <TouchableOpacity
+              style={{ marginTop: 10 }}
+              onPress={() => {
+                Clipboard.setString(phrase);
+              }}
+            >
               <Text style={styles.copy}>Copy</Text>
             </TouchableOpacity>
             <View style={styles.buttonView}>

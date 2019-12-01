@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     marginTop: screenHelper.headerMarginTop,
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 25,
     fontWeight: '900',
     position: 'absolute',
     bottom: 50,

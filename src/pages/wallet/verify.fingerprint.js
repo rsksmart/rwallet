@@ -14,11 +14,26 @@ export default class VerifyFingerprint extends Component {
       header: null,
     });
 
+    constructor(props) {
+      super(props);
+      this.state = {
+        errorMessage: '',
+      };
+    }
+
     componentDidMount() {
       const { navigation } = this.props;
       this.touchSensor.setModalVisible(true);
+      const onAttempt = (error) => {
+        console.log(`onAttempt: ${error}`);
+        this.setState({ errorMessage: 'No match' });
+      };
+      const params = {
+        onAttempt,
+        description: 'Scan your fingerprint on the device scanner to continue',
+      };
       FingerprintScanner
-        .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
+        .authenticate(params)
         .then(() => {
           this.touchSensor.setModalVisible(false);
           navigation.state.params.verified();
@@ -30,8 +45,13 @@ export default class VerifyFingerprint extends Component {
         });
     }
 
+    componentWillUnmount() {
+      FingerprintScanner.release();
+    }
+
     render() {
       const { navigation } = this.props;
+      const { errorMessage } = this.state;
       return (
         <View style={[flex.flex1]}>
           <Header title="Verify Fingerprint" goBack={navigation.goBack} />
@@ -41,6 +61,10 @@ export default class VerifyFingerprint extends Component {
               navigation.goBack();
               navigation.navigate('VerifyPasscode', { verified: navigation.state.params.verified });
             }}
+            onUserCancel={() => {
+              navigation.goBack();
+            }}
+            errorMessage={errorMessage}
           />
         </View>
       );

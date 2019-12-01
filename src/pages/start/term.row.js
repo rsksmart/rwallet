@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Animated,
+  View, StyleSheet, Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Feather from 'react-native-vector-icons/Feather';
+import Loc from '../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   termRow: {
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '300',
     letterSpacing: 0.32,
+    color: '#000000',
   },
 });
 
@@ -56,7 +58,7 @@ export default class TermRow extends Component {
           <Feather name="check" size={20} style={styles.check} />
         </View>
         <View style={styles.termRowRight}>
-          <Text style={styles.termRowRightText}>{text}</Text>
+          <Loc style={[styles.termRowRightText]} text={text} />
         </View>
       </Animated.View>
     );

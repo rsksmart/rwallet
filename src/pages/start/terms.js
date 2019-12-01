@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, StyleSheet, TouchableOpacity,
+  View, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from '../../components/common/button/button';
+import Loc from '../../components/common/misc/loc';
 import TermRow from './term.row';
 
 const logo = require('../../assets/images/icon/logo.png');
@@ -53,19 +54,19 @@ export default class TermsPage extends Component {
         <View style={styles.termsView}>
           <View style={styles.termsView2}>
             <TermRow
-              text="I understand that my funds are held securely on this device, not by a company."
+              text="TermsLine1"
               delay={0}
             />
             <TermRow
-              text="I understand that this app is moved to another device or deleted, my bitcoin can only be recoverd with the recovery phrase."
+              text="TermsLine2"
               delay={0.5}
             />
-            <TermRow text="I have, read, understood, and agree to the Terms of use." delay={1} />
+            <TermRow text="TermsLine3" delay={1} />
           </View>
         </View>
         <View style={styles.buttonView}>
           <TouchableOpacity style={styles.completeTerms}>
-            <Text style={styles.completeTermsText}>View complete Terms of Use</Text>
+            <Loc style={[styles.completeTermsText]} text="View Complete Terms Of Use" />
           </TouchableOpacity>
           <Button
             style={styles.button}

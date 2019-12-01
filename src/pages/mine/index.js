@@ -13,6 +13,7 @@ import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
+import ScreenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -214,7 +215,7 @@ class MineIndex extends Component {
   render() {
     let headerHeight = 160;
     if (DEVICE.isIphoneX) {
-      headerHeight += 24;
+      headerHeight += ScreenHelper.iphoneXExtendedHeight;
     }
     const { language } = this.props;
     return (
