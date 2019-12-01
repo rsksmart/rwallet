@@ -7,6 +7,7 @@ import common from './common';
 import BackBtn from '../components/common/buttons/back.btn.stateless';
 
 import WalletAddIndex from '../pages/wallet/add.index';
+import Dashboard from '../pages/wallet/dashboard';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
 import WalletCreate from '../pages/wallet/create';
 import WalletRecovery from '../pages/wallet/recovery';
@@ -55,6 +56,13 @@ const routeConfigMap = {
       path: 'WalletAddIndex',
       navigationOptions: () => ({
         headerTitle: 'Add Wallet',
+      }),
+    },
+    Dashboard: {
+      screen: Dashboard,
+      path: 'Dashboard',
+      navigationOptions: () => ({
+        headerTitle: 'Dashboard',
       }),
     },
     WalletSelectCurrency: {

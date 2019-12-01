@@ -17,13 +17,13 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
       screen: Start,
       path: 'start',
     },
-    TermsPage: {
-      screen: TermsPage,
-      path: 'terms',
-    },
     PrimaryTabNavigator: {
       screen: PrimaryTabNavigatorComp,
       path: 'tab',
+    },
+    TermsPage: {
+      screen: TermsPage,
+      path: 'terms',
     },
   },
   {

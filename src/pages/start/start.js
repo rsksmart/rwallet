@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet } from 'react-native';
 import UUIDGenerator from 'react-native-uuid-generator';
+import { NavigationActions } from 'react-navigation';
+
 import Button from '../../components/common/button/button';
 import Indicator from '../../components/common/misc/indicator';
 import ParseHelper from '../../common/parse';
 import appContext from '../../common/appContext';
 import Application from '../../common/application';
-import wm from '../../common/wallet/walletManager';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -52,11 +53,10 @@ export default class StartPage extends Component {
       appContext.user = user;
       this.setState({ loading: false });
       const { navigation } = this.props;
-      if (wm.wallets.length) {
-        navigation.navigate('PrimaryTabNavigator');
-      } else {
-        navigation.navigate('WalletAddIndex');
-      }
+      const navigateAction = NavigationActions.navigate({
+        routeName: 'PrimaryTabNavigator',
+      });
+      navigation.navigate(navigateAction);
     }
   }
 
