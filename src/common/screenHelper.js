@@ -5,33 +5,34 @@ import {
 import PropTypes from 'prop-types';
 import { DEVICE } from './info';
 
-const o = {
+const screenHelper = {
+  iphoneXExtendedHeight: 24,
   headerHeight: 350,
-  headerMarginTop: DEVICE.isIphoneX ? -150 + 24 : -150,
 };
 
-o.bodyMarginTop = o.headerHeight + o.headerMarginTop;
-o.styles = StyleSheet.create({
+screenHelper.headerMarginTop = DEVICE.isIphoneX ? -150 + screenHelper.iphoneXExtendedHeight : -150;
+screenHelper.bodyMarginTop = screenHelper.headerHeight + screenHelper.headerMarginTop;
+screenHelper.styles = StyleSheet.create({
   body: {
-    marginTop: o.bodyMarginTop,
+    marginTop: screenHelper.bodyMarginTop,
   },
 });
 
-o.Body = (props) => {
+screenHelper.Body = (props) => {
   const { children } = props;
   return (
-    <View style={o.styles.body}>
+    <View style={screenHelper.styles.body}>
       {children}
     </View>
   );
 };
 
-o.Body.propTypes = {
+screenHelper.Body.propTypes = {
   children: PropTypes.element,
 };
 
-o.Body.defaultProps = {
+screenHelper.Body.defaultProps = {
   children: null,
 };
 
-export default o;
+export default screenHelper;

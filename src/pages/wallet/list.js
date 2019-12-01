@@ -6,6 +6,9 @@ import {
 import PropTypes from 'prop-types';
 import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
@@ -69,7 +72,7 @@ const styles = StyleSheet.create({
   },
   headerBoard: {
     width: '85%',
-    height: 110,
+    height: 166,
   },
   headerBoardView: {
     alignItems: 'center',
@@ -351,6 +354,29 @@ class WalletList extends Component {
                       {` (${currencySymbol})`}
                     </Text>
                     <Text style={styles.myAssets}>{assetTotalValue}</Text>
+                    <View style={styles.myAssetsButtonsView}>
+                      <TouchableOpacity
+                        style={styles.ButtonView}
+                        onPress={() => {}}
+                      >
+                        <Entypo name="swap" size={20} style={styles.sendIcon} />
+                        <Text style={styles.sendText}>Send</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.ButtonView}
+                        onPress={() => {}}
+                      >
+                        <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                        <Text style={styles.receiveText}>Receive</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                        onPress={() => {}}
+                      >
+                        <AntDesign name="switcher" size={20} style={styles.swapIcon} />
+                        <Text style={styles.swapText}>Swap</Text>
+                      </TouchableOpacity>
+                    </View>
                   </Body>
                 </CardItem>
               </Card>

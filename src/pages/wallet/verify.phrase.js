@@ -8,13 +8,16 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-import Alert from '../../components/common/modal/alert';
+// import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
 
-// import walletManager from '../../common/wallet/walletManager';
+const verifyPhraseAlertTitle = 'Please review recovery phrase and try again.';
+
 // import appActions from '../../redux/app/actions';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
@@ -62,7 +65,7 @@ class VerifyPhrase extends Component {
   }
 
   async onTagsPressed(index) {
-    const { navigation /* setPageLoading */ } = this.props;
+    const { navigation, addNotification } = this.props;
     const { tags, phrases } = this.state;
 
     const currentWord = tags.splice(index, 1);
@@ -89,12 +92,18 @@ class VerifyPhrase extends Component {
         });
         navigation.dispatch(resetAction);
       } else {
-        this.alert.setModalVisible(true);
+        const notification = createErrorNotification(
+          'Error',
+          verifyPhraseAlertTitle,
+        );
+        addNotification(notification);
       }
     }
   }
 
   reset() {
+    // Shuffle the 12-word here so user need to choose from a different order than the last time
+    // We want to make sure they really write down the phrase
     this.setState({
       tags: _.shuffle(this.correctPhrases),
       phrases: [],
@@ -129,7 +138,6 @@ class VerifyPhrase extends Component {
   }
 
   render() {
-    const alertTitle = 'verifyPhraseAlertTitle';
     const { tags, loading } = this.state;
     const { navigation } = this.props;
     return (
@@ -150,16 +158,6 @@ class VerifyPhrase extends Component {
             showNumber={false}
             onPress={this.onTagsPressed}
           />
-          <Alert
-            ref={(ref) => {
-              this.alert = ref;
-            }}
-            title="tip"
-            text={alertTitle}
-            onPress={() => {
-              this.reset();
-            }}
-          />
         </View>
       </View>
     );
@@ -173,21 +171,15 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  // isPageLoading: PropTypes.bool,
-  // setPageLoading: PropTypes.func,
+  addNotification: PropTypes.func.isRequired,
 };
 
-VerifyPhrase.defaultProps = {
-  // isPageLoading: false,
-  // setPageLoading: undefined,
-};
+const mapStateToProps = () => ({});
 
-const mapStateToProps = (/* state */) => ({
-  // isPageLoading: state.App.get('isPageLoading'),
-});
-
-const mapDispatchToProps = (/* dispatch */) => ({
-  // setPageLoading: (isLoading) => dispatch(appActions.setPageLoading(isLoading)),
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

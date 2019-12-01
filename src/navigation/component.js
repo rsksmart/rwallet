@@ -17,13 +17,13 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
       screen: Start,
       path: 'start',
     },
-    TermsPage: {
-      screen: TermsPage,
-      path: 'terms',
-    },
     PrimaryTabNavigator: {
       screen: PrimaryTabNavigatorComp,
       path: 'tab',
+    },
+    TermsPage: {
+      screen: TermsPage,
+      path: 'terms',
     },
   },
   {
@@ -36,7 +36,7 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 const styles = StyleSheet.create({
   notificationsContainer: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 10,
     left: 10,
   },
 });

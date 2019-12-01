@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, Text, TouchableOpacity, StyleSheet, Clipboard,
 } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Tags from '../../components/common/misc/tags';
 import Button from '../../components/common/button/button';
-import Alert from '../../components/common/modal/alert';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   text: {},
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class RecoveryPhrase extends Component {
+class RecoveryPhrase extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -54,10 +56,16 @@ export default class RecoveryPhrase extends Component {
     }
 
     componentDidMount() {
-      this.alert.setModalVisible(true);
+      const { addNotification } = this.props;
+      const notification = createInfoNotification(
+        'Info',
+        'Safeguard your recovery phrase Text',
+      );
+      addNotification(notification);
     }
 
     render() {
+      const { phrase } = this.wallet.mnemonic;
       const { phrases } = this.state;
       const { navigation } = this.props;
       return (
@@ -75,7 +83,12 @@ export default class RecoveryPhrase extends Component {
             <View style={styles.tagsView}>
               <Tags data={phrases} />
             </View>
-            <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {}}>
+            <TouchableOpacity
+              style={{ marginTop: 10 }}
+              onPress={() => {
+                Clipboard.setString(phrase);
+              }}
+            >
               <Text style={styles.copy}>Copy</Text>
             </TouchableOpacity>
             <View style={styles.buttonView}>
@@ -86,7 +99,6 @@ export default class RecoveryPhrase extends Component {
                 }}
               />
             </View>
-            <Alert ref={(ref) => { this.alert = ref; }} title="Safeguard your recovery phrase" text="Safeguard your recovery phrase Text" />
           </View>
         </View>
       );
@@ -100,4 +112,15 @@ RecoveryPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecoveryPhrase);

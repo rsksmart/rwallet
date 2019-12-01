@@ -99,7 +99,6 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       activeTintColor: '#df394d', // 激活颜色
       inactiveTintColor: 'gray', // 未激活颜色
     },
-    initialRouteName: 'Home',
   },
 );
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ScrollView,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ScrollView, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from 'rsk3';
@@ -15,28 +15,26 @@ import Loader from '../../components/common/misc/loader';
 import common from '../../common/common';
 import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
+import { DEVICE } from '../../common/info';
+import ScreenHelper from '../../common/screenHelper';
 
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
 
 const styles = StyleSheet.create({
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
   headerTitle: {
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
+    bottom: 25,
     left: 55,
     color: '#FFF',
   },
   backButton: {
     position: 'absolute',
     left: 10,
-    top: 37,
+    bottom: 8,
   },
   chevron: {
     color: '#FFF',
@@ -375,6 +373,12 @@ export default class Transfer extends Component {
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
 
+
+    let headerHeight = 100;
+    if (DEVICE.isIphoneX) {
+      headerHeight += ScreenHelper.iphoneXExtendedHeight;
+    }
+
     // Test data
     const btcFees = [
       { coin: '0.0046 BTC' },
@@ -403,23 +407,20 @@ export default class Transfer extends Component {
 
     return (
       <ScrollView style={[flex.flex1]}>
-        <View style={[{ height: 100 }]}>
-          <Image source={header} style={styles.headImage} />
-          <View style={styles.headerView}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Send" />
-              {` ${coin}`}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <ImageBackground source={header} style={[{ height: headerHeight }]}>
+          <Text style={styles.headerTitle}>
+            <Loc text="Send" />
+            {` ${coin}`}
+          </Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+          </TouchableOpacity>
+        </ImageBackground>
         <View style={styles.body}>
           <Loader loading={loading} />
           <View style={styles.sectionContainer}>
