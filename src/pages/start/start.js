@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet } from 'react-native';
 import UUIDGenerator from 'react-native-uuid-generator';
+import { NavigationActions } from 'react-navigation';
+
 import Button from '../../components/common/button/button';
 import Indicator from '../../components/common/misc/indicator';
 import ParseHelper from '../../common/parse';
@@ -51,7 +53,10 @@ export default class StartPage extends Component {
       appContext.user = user;
       this.setState({ loading: false });
       const { navigation } = this.props;
-      navigation.navigate('PrimaryTabNavigator');
+      const navigateAction = NavigationActions.navigate({
+        routeName: 'PrimaryTabNavigator',
+      });
+      navigation.navigate(navigateAction);
     }
   }
 
