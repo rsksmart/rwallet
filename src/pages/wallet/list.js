@@ -258,13 +258,13 @@ class WalletList extends Component {
       };
     }
 
-    async componentWillMount() {
+    componentWillMount() {
       const {
         getPrice, currency, wallets, navigation,
       } = this.props;
 
       const currencyStrings = _.map(currencySettings, (item) => item.name);
-      await getPrice(supportedTokens, currencyStrings, currency);
+      getPrice(supportedTokens, currencyStrings, currency);
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, navigation);
