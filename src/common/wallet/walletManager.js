@@ -10,6 +10,7 @@ class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
+    this.deserialize = this.deserialize.bind(this);
   }
 
   /**
@@ -114,7 +115,7 @@ class WalletManager {
 
       console.log('deserialize.wallets', wallets);
       this.wallets = wallets;
-      console.log('deserialize.this.wallets', this.wallets);
+      console.log('deserialize.this.wallets', this.wallets, this.wallets.length);
     }
   }
 
