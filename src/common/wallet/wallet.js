@@ -18,7 +18,7 @@ export default class Wallet {
 
     console.log('Wallet.create.coins', coins);
 
-    // Create coins based on types
+    // Create coins based on ids
     this.coins = [];
     const seed = this.mnemonic.toSeed();
 
@@ -39,14 +39,7 @@ export default class Wallet {
 
         this.coins.push(coin);
       });
-
-      // Generate address of each node based on master key; will take a lot of time
-      // this.derive();
     }
-
-    // We need to save the phrase to secure storage after generation
-    // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
-    Wallet.savePhrase(this.id, this.mnemonic.toString());
   }
 
   /**
@@ -69,6 +62,10 @@ export default class Wallet {
       id, name, mnemonic, coins,
     });
 
+    // We need to save the phrase to secure storage after generation
+    // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
+    Wallet.savePhrase(wallet.id, wallet.mnemonic.toString());
+
     return wallet;
   }
 
@@ -84,8 +81,7 @@ export default class Wallet {
     try {
       const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
       console.log(`savePhrase, key: ${key}, phrase: ${phrase}`);
-      const result = await RNSecureStorage.set(key, phrase, {});
-      console.log('savePhrase, result:', result);
+      await RNSecureStorage.set(key, phrase, {});
     } catch (ex) {
       console.log('savePhrase, error', ex.message);
     }
@@ -99,7 +95,6 @@ export default class Wallet {
 
     try {
       const phrase = await RNSecureStorage.get(key);
-      console.log('restorePhrase, phrase:', phrase);
       return phrase;
     } catch (err) {
       console.log(err);

@@ -13,6 +13,7 @@ class Dashboard extends Component {
 
     render() {
       const { navigation, wallets } = this.props;
+      console.log('Dashboard.wallets', wallets);
       return isEmpty(wallets) ? <AddIndex navigation={navigation} /> : <List navigation={navigation} />;
     }
 }
