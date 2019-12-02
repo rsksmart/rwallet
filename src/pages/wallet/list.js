@@ -3,10 +3,9 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Card, CardItem, Body } from 'native-base';
+// import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
@@ -22,6 +21,8 @@ import screenHelper from '../../common/screenHelper';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
+const swap = require('../../assets/images/icon/swap.png');
+const scan = require('../../assets/images/icon/scan.png');
 
 
 const styles = StyleSheet.create({
@@ -62,9 +63,28 @@ const styles = StyleSheet.create({
     left: 24,
     color: '#FFF',
   },
+  scanView: {
+    position: 'absolute',
+    bottom: 120,
+    right: 40,
+  },
+  scan: {
+    width: 30,
+    height: 30,
+  },
   headerBoard: {
     width: '85%',
     height: 166,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: '#FFF',
   },
   headerBoardView: {
     alignItems: 'center',
@@ -75,8 +95,8 @@ const styles = StyleSheet.create({
   },
   myAssetsTitle: {
     position: 'absolute',
-    top: 5,
-    left: 5,
+    top: 25,
+    left: 30,
     fontWeight: 'bold',
     fontSize: 15,
     color: '#000000',
@@ -85,12 +105,12 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
     color: '#000000',
-    top: 40,
-    left: 5,
+    top: 63,
+    left: 30,
   },
   myAssetsButtonsView: {
     position: 'absolute',
-    top: 110,
+    bottom: 20,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -264,45 +284,47 @@ class WalletList extends Component {
           <ScrollView style={{ marginBottom: 45 }}>
             <ImageBackground source={header} style={[styles.headerImage]}>
               <Loc style={[styles.headerTitle]} text="Your Wallet" />
+              <TouchableOpacity
+                style={styles.scanView}
+                onPress={() => {}}
+              >
+                <Image style={[styles.scan]} source={scan} />
+              </TouchableOpacity>
             </ImageBackground>
             <View style={styles.headerBoardView}>
-              <Card style={styles.headerBoard}>
-                <CardItem>
-                  <Body>
-                    <Text style={styles.myAssetsTitle}>
-                      <Loc text="My Assets" />
-                      {` (${currencySymbol})`}
-                    </Text>
-                    <Text style={styles.myAssets}>173,586.3</Text>
-                    <View style={styles.myAssetsButtonsView}>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <Entypo name="swap" size={20} style={styles.sendIcon} />
-                        <Text style={styles.sendText}>Send</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.ButtonView}
-                        onPress={() => {}}
-                      >
-                        <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                        <Text style={styles.receiveText}>Receive</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                        onPress={() => {}}
-                      >
-                        <AntDesign name="switcher" size={20} style={styles.swapIcon} />
-                        <Text style={styles.swapText}>Swap</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </Body>
-                </CardItem>
-              </Card>
+              <View style={styles.headerBoard}>
+                <Text style={styles.myAssetsTitle}>
+                  <Loc text="My Assets" />
+                  {` (${currencySymbol})`}
+                </Text>
+                <Text style={styles.myAssets}>173,586.3</Text>
+                <View style={styles.myAssetsButtonsView}>
+                  <TouchableOpacity
+                    style={styles.ButtonView}
+                    onPress={() => {}}
+                  >
+                    <Entypo name="swap" size={20} style={styles.sendIcon} />
+                    <Text style={styles.sendText}>Send</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.ButtonView}
+                    onPress={() => {}}
+                  >
+                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                    <Text style={styles.receiveText}>Receive</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                    onPress={() => {}}
+                  >
+                    <Image source={swap} style={{ width: 17, height: 17 }} />
+                    <Text style={styles.swapText}>Swap</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
             <View style={{ width: '85%', alignSelf: 'center' }}>
-              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+              <View style={[styles.sectionContainer, { marginTop: 30 }]}>
                 <Loc style={[styles.assetsTitle]} text="All Assets" />
               </View>
               <View style={styles.sectionContainer}>
