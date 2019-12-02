@@ -120,9 +120,9 @@ export default class WalletSelectCurrency extends Component {
                   }
                 }
 
-                for (let i = 0; i < this.mainnet.length; i += 1) {
-                  if (this.mainnet[i].selected) {
-                    const item = { coin: this.mainnet[i].title, net: 'testnet' };
+                for (let i = 0; i < this.testnet.length; i += 1) {
+                  if (this.testnet[i].selected) {
+                    const item = { coin: this.testnet[i].title, net: 'testnet' };
                     coins.push(item);
                   }
                 }
