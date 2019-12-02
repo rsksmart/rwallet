@@ -385,7 +385,7 @@ History.defaultProps = {
 
 const mapStateToProps = (state) => ({
   transactions: state.App.get('transactions'),
-  isLoading: state.App.get('isLoading'),
+  isLoading: state.App.get('isPageLoading'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

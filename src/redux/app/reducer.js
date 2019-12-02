@@ -3,59 +3,49 @@ import actions from './actions';
 import appContext from '../../common/appContext';
 
 const initState = new Map({
-  isLoading: false,
+  isPageLoading: false,
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
-  prices: {},
   currency: undefined,
   notifications: [],
+  application: undefined,
+  settings: undefined, // Settings instance
 });
 
 export default function appReducer(state = initState, action) {
   let notifications = [];
   switch (action.type) {
-    case actions.LOADING:
-      return state.set('isLoading', action.value);
+    case actions.IS_PAGE_LOADING:
+      return state.set('isPageLoading', action.value);
 
     case actions.GET_SERVER_INFO_RESULT:
     {
       const serverVersion = action.value && action.value.version;
-      console.log('reducer, serverVersion', serverVersion);
       return state.set('serverVersion', serverVersion);
     }
     case actions.GET_TRANSACTIONS:
     {
-      return state.set('isLoading', true);
+      console.log('GET_TRANSACTIONS', action);
+      return state;
     }
     case actions.GET_TRANSACTIONS_RESULT:
     {
       const transactions = action.value;
-      console.log('reducer, transtions', transactions);
-      let newstate = state.set('isLoading', false);
+      let newstate = state.set('isPageLoading', false);
       newstate = newstate.set('transactions', transactions);
       return newstate;
     }
     case actions.CREATE_RAW_TRANSATION_RESULT:
     {
       const result = action.value;
-      console.log('CREATE_RAW_TRANSATION_RESULT, result', result);
       const newstate = state.set('rawTransaction', result);
-      return newstate;
-    }
-    case actions.GET_PRICE_RESULT:
-    {
-      const result = action.value;
-      console.log('GET_PRICE_RESULT, result', result);
-      let prices = state.get('prices');
-      prices = Object.assign(prices, result);
-      const newstate = state.set('prices', prices);
       return newstate;
     }
     case actions.CHANGE_CURRENCY:
     {
       const { currency } = action.payload;
-      appContext.saveSettings({ currency });
+      appContext.saveSettings({ currency }); // Serialize
       const newstate = state.set('currency', currency);
       return newstate;
     }
@@ -74,6 +64,18 @@ export default function appReducer(state = initState, action) {
         (notification) => notification.id !== action.id,
       );
       return state.set('notifications', removeNotifications);
+
+    case actions.SET_APPLICATION:
+      return state.set('application', action.value);
+
+    case actions.SET_SETTINGS:
+    {
+      const settings = action.value;
+      return state.set('settings', settings)
+        .set('currency', settings && settings.get('currency'))
+        .set('language', settings && settings.get('language'))
+        .set('fingerprint', settings && settings.get('fingerprint'));
+    }
     default:
       return state;
   }

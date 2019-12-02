@@ -8,8 +8,8 @@ const ethereumjsUtil = require('ethereumjs-util');
 
 const MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8');
 
-function deserializePrivate(s) {
-  const master = JSON.parse(s);
+function deserializePrivate(privateKey) {
+  const master = JSON.parse(privateKey);
   const ret = new HDNode();
   ret.chainCode = Buffer.from(master.cc, 'hex');
   ret.privateKey = Buffer.from(master.prk, 'hex');
@@ -34,33 +34,35 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(network) {
-    this.type = network;
-    this.networkId = coinType[network].networkId;
-    this.network = coinType[network].network;
-    this.icon = coinType[network].icon;
-    this.queryKey = coinType[network].queryKey;
-    this.defaultName = coinType[network].defaultName;
-    this.amount = 0;
-    this.value = 0;
-    this.address = '';
-    this.networkNode = null;
-    this.accountNode = null;
-    this.addressNode = null;
-    this.master = '';
+  constructor(id, amount, address) {
+    this.id = id;
+
+    // metadata:{network, networkId, icon, queryKey, defaultName}
+    this.metadata = coinType[id];
+    this.amount = amount;
+    this.address = address;
   }
 
-  serializePrivate(node) {
-    this.a = 1;
-    const ret = {
-      prk: node.privateKey.toString('hex'),
-      cc: node.chainCode.toString('hex'),
-    };
-    return JSON.stringify(ret);
+  derive(seed) {
+    const networkId = this.metadata && this.metadata.networkId;
+
+    try {
+      const master = RBTCCoin.generateMasterFromSeed(seed);
+
+      console.log(`${this.metadata.defaultName}.master`, master);
+
+      const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
+      const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
+      const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
+      this.address = RBTCCoin.getAddress(addressNode);
+    } catch (ex) {
+      console.error(ex);
+    }
+
+    console.log(`${this.metadata.defaultName}.address`, this.address);
   }
 
-  fromMasterSeed(seedBuffer) {
-    this.a = 1;
+  static fromMasterSeed(seedBuffer) {
     const I = crypto
       .createHmac('sha512', MASTER_SECRET)
       .update(seedBuffer)
@@ -75,68 +77,72 @@ export default class RBTCCoin {
     return ret;
   }
 
-  generateMasterFromSeed(seed) {
-    console.log(`[TRACE]RBTCCoin::generate_master_from_recovery_phrase, seed: ${seed}`);
-    const master = this.fromMasterSeed(seed);
-    return this.serializePrivate(master);
+  static generateMasterFromSeed(seed) {
+    const master = RBTCCoin.fromMasterSeed(seed);
+    return JSON.stringify({
+      prk: master.privateKey.toString('hex'),
+      cc: master.chainCode.toString('hex'),
+    });
   }
 
-  generateRootNodeFromMaster(s) {
-    console.log(`[TRACE]RBTCCoin::generate_root_node_from_master, s: ${s}`);
-    let node = deserializePrivate(s);
-    const path = `m/44'/${this.networkId}'/0'`;
+  static generateRootNodeFromMaster(master, networkId) {
+    let node = deserializePrivate(master);
+    const path = `m/44'/${networkId}'/0'`;
     node = node.derive(path);
     return new PathKeyPair(path, serializePublic(node));
   }
 
-  derive(seed) {
-    const master = this.generateMasterFromSeed(seed);
-    this.networkNode = this.generateRootNodeFromMaster(master);
-    this.generateAccountNode(0);
-    this.generateAddressNode(0);
-    this.address = this.getAddress(this.addressNode.public_key);
+  static generateAccountNode(networkNode, index) {
+    const path = `${networkNode.path}/${index}`;
+    const publicKey = this.deriveChildFromNode(networkNode.public_key, index);
+    return new PathKeyPair(path, publicKey);
   }
 
-  generateAccountNode(index) {
-    const path = `${this.networkNode.path}/${index}`;
-    const publicKey = this.deriveChildFromNode(this.networkNode.public_key, index);
-    this.accountNode = new PathKeyPair(path, publicKey);
-    return this.accountNode;
+  static generateAddressNode(accountNode, index) {
+    const path = `${accountNode.path}/${index}`;
+    const publicKey = this.deriveChildFromNode(accountNode.public_key, index);
+    return new PathKeyPair(path, publicKey);
   }
 
-  generateAddressNode(index) {
-    const path = `${this.accountNode.path}/${index}`;
-    const publicKey = this.deriveChildFromNode(this.accountNode.public_key, index);
-    this.addressNode = new PathKeyPair(path, publicKey);
-    return this.addressNode;
-  }
-
-  deriveChildFromNode(s, index) {
-    this.a = 1;
-    const deserialized = deserializePublic(s) || deserializePrivate(s);
+  static deriveChildFromNode(publicKey, index) {
+    const deserialized = deserializePublic(publicKey) || deserializePrivate(publicKey);
     return serializePublic(deserialized.deriveChild(index));
   }
 
-  getAddress(s) {
-    const publicKey = JSON.parse(s).puk;
+  static getAddress(addressNode) {
+    const publicKey = JSON.parse(addressNode.public_key).puk;
     const addressBin = ethereumjsUtil.pubToAddress(Buffer.from(publicKey, 'hex'), true);
     const address = Buffer.from(addressBin).toString('hex');
-    return this.toChecksumAddress(address);
-  }
-
-  toChecksumAddress(s) {
-    this.a = 1;
-    return ethereumjsUtil.toChecksumAddress(s);
+    return ethereumjsUtil.toChecksumAddress(address);
   }
 
   /**
    * Returns a JSON of Coin to save required data to backend
    */
-  toJson() {
+  toJSON() {
     return {
-      network: this.network,
-      type: this.type,
+      id: this.id,
+      metadata: this.metadata,
+      amount: this.amount,
       address: this.address,
     };
+  }
+
+  static fromJSON(json) {
+    const { id, amount, address } = json;
+    const instance = new RBTCCoin(id, amount, address);
+    return instance;
+  }
+
+  get icon() {
+    return this.metadata.icon;
+  }
+
+  get queryKey() {
+    return this.metadata.queryKey;
+  }
+
+  get defaultName() {
+    return this.metadata.defaultName;
   }
 }

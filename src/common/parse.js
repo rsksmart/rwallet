@@ -24,40 +24,23 @@ const ParseUser = Parse.User;
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
-  /**
-   * Sign in if username is found in backend database; otherwise, sign up
-   * @param {*} param0
-   * @returns Parse.User object or throw error
-   */
-  static async signInOrSignUp(appId) {
-    try {
-      const query = new Parse.Query(Parse.User);
-      query.equalTo('username', appId);
-      const match = await query.first();
+  static signUp(appId) {
+    const user = new Parse.User();
 
-      let user;
-      if (_.isUndefined(match)) { // Sign up case
-        user = new Parse.User();
+    // Set appId as username and password.
+    // No real password is needed because we only want to get access to Parse.User here to access related data
+    user.set('username', appId);
+    user.set('password', appId);
+    user.set('deviceId', DeviceInfo.getUniqueID());
 
-        // Set appId as username and password.
-        // No real password is needed because we only want to get access to Parse.User here to access related data
-        user.set('username', appId);
-        user.set('password', appId);
-        user.set('deviceId', DeviceInfo.getUniqueID());
+    // TODO: other information needed to be set here.
+    console.log('parse.signup is called.');
+    return user.signUp();
+  }
 
-        // TODO: other information needed to be set here.
-
-        user = await user.signUp();
-      } else { // Sign in case
-        user = await Parse.User.logIn(appId, appId);
-      }
-
-      return user;
-    } catch (ex) {
-      console.error(ex.message);
-    }
-
-    return null;
+  static signIn(appId) {
+    console.log('parse.signin is called.', appId);
+    return Parse.User.logIn(appId, appId);
   }
 
   /**
@@ -137,8 +120,8 @@ class ParseHelper {
     return Parse.Cloud.run('getServerInfo');
   }
 
-  static getPrice(symbols) {
-    return Parse.Cloud.run('getPrice', { symbols });
+  static getPrice({ symbols, currencies }) {
+    return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
   /**
@@ -162,16 +145,43 @@ class ParseHelper {
   }
 
   /**
-     * get balance of given addrArray which is array of addresses
-     * @param {array} addrArray
-     * @returns {array} collection of each given address information include balance,etc...
-     */
+   * get balance of given addrArray which is array of addresses
+   * @param {array} addrArray
+   * @returns {array} collection of each given address information include balance,etc...
+   */
   static async getBalanceByAddress(addrArray) {
     const Address = Parse.Object.extend('Address'); // 建立Address这个表的query
     const query = new Parse.Query(Address);
     query.containedIn('address', addrArray);
     // 实际运行query
-    const result = await query.find();
+    return query.find();
+  }
+
+  /**
+   * Return an array of wallets with basic information such as wallet balance
+   * @returns {array} Array of wallet object; empty array if nothing found
+   */
+  static async getWallets() {
+    // Get current Parse.User
+    const parseUser = Parse.User.current();
+
+    if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
+      return [];
+    }
+
+    const wallets = parseUser.get('wallets');
+
+    // since User's wallet field is linked value, we need to call fetch to retrieve full information of wallets
+    await wallets.fetch();
+
+    const result = _.map(wallets, (parseWallet) => ({
+      address: parseWallet.get('address'),
+      symbol: parseWallet.get('symbol'),
+      type: parseWallet.get('type'),
+      balance: parseWallet.get('balance'),
+      txCount: parseWallet.get('txCount'),
+    }));
+
     return result;
   }
 }
