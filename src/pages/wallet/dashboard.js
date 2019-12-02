@@ -1,32 +1,19 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 
 import PropTypes from 'prop-types';
 import List from './list';
 import AddIndex from './add.index';
-import wm from '../../common/wallet/walletManager';
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        hasWallet: true,
-      };
-    }
-
-    async componentDidMount(): void {
-      await wm.loadWallets();
-      const hasWallet = !!wm.wallets.length;
-      this.setState({ hasWallet });
-    }
-
     render() {
-      const { hasWallet } = this.state;
-      const { navigation } = this.props;
-      return hasWallet ? <List navigation={navigation} /> : <AddIndex navigation={navigation} />;
+      const { navigation, wallets } = this.props;
+      return isEmpty(wallets) ? <AddIndex navigation={navigation} /> : <List navigation={navigation} />;
     }
 }
 
@@ -38,4 +25,15 @@ Dashboard.propTypes = {
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
 };
+
+Dashboard.defaultProps = {
+  wallets: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+});
+
+export default connect(mapStateToProps, null)(Dashboard);

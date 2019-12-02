@@ -27,7 +27,7 @@ export default class Wallet {
         const { id: coinId, amount, address } = item;
 
         let coin;
-        if (id === 'BTC') {
+        if (coinId === 'BTC') {
           coin = new Coin(coinId, amount, address);
         } else {
           coin = new RBTCCoin(coinId, amount, address);
@@ -49,15 +49,24 @@ export default class Wallet {
     Wallet.savePhrase(this.id, this.mnemonic.toString());
   }
 
+  /**
+   *
+   * @param {object} param0
+   * @param {string} param0.id id of this wallet instance
+   * @param {string} param0.name Name of wallet
+   * @param {string} param0.phrase 12-word mnemonic phrase
+   * @param {array} param0.coins Array of coin JSON
+   *
+   */
   static create({
-    id, name, phrase, coinTypes,
+    id, name, phrase, coins,
   }) {
     // If phrase is defined we will create mnemonic with phrase
     // Otherwise this line will generate a random mnemonic
     const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
 
     const wallet = new Wallet({
-      id, name, mnemonic, coinTypes,
+      id, name, mnemonic, coins,
     });
 
     return wallet;
@@ -109,7 +118,6 @@ export default class Wallet {
       id: this.id,
       name: this.name,
       // createdAt: this.createdAt,
-      phrase: this.mnemonic.toString(), // TODO: use secure storage to save mnemonic
       coins: this.coins.map((coin) => coin.toJSON()),
     };
 
@@ -138,7 +146,7 @@ export default class Wallet {
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
     const wallet = await Wallet.create({
-      id, name, phrase, coinTypes: coins,
+      id, name, phrase, coins,
     });
 
     return wallet;

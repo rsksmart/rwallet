@@ -11,7 +11,6 @@ const initState = new Map({
   notifications: [],
   application: undefined,
   settings: undefined, // Settings instance
-  walletManager: undefined, // WalletManager instance
 });
 
 export default function appReducer(state = initState, action) {
@@ -77,8 +76,6 @@ export default function appReducer(state = initState, action) {
         .set('language', settings && settings.get('language'))
         .set('fingerprint', settings && settings.get('fingerprint'));
     }
-    case actions.SET_WALLET_MANAGER:
-      return state.set('walletManager', action.value);
     default:
       return state;
   }

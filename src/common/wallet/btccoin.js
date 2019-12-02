@@ -17,13 +17,17 @@ export default class Coin {
     const network = this.metadata && this.metadata.network;
     const networkId = this.metadata && this.metadata.networkId;
 
-    const master = fromSeed(seed, network).toBase58();
-    console.log('master', master);
+    try {
+      const master = fromSeed(seed, network).toBase58();
+      console.log('master', master);
 
-    const networkNode = Coin.getNetworkNode(master, network, networkId);
-    const accountNode = Coin.generateAccountNode(networkNode, network, 0);
-    const addressNode = Coin.generateAddressNode(accountNode, network, 0);
-    this.address = Coin.generateAddress(addressNode, network);
+      const networkNode = Coin.getNetworkNode(master, network, networkId);
+      const accountNode = Coin.generateAccountNode(networkNode, network, 0);
+      const addressNode = Coin.generateAddressNode(accountNode, network, 0);
+      this.address = Coin.generateAddress(addressNode, network);
+    } catch (ex) {
+      console.error(ex);
+    }
     console.log('BTTCOIN.address', this.address);
   }
 

@@ -12,10 +12,30 @@ class WalletManager {
     this.currentKeyId = currentKeyId;
   }
 
-  async createWallet(name, phrase, coins) {
-    // 1. Create a Wallet instance and save into wallets
+  /**
+   * Returns true if this.wallets is not an array, or is empty.
+   */
+  isEmpty() {
+    return !_.isArray(this.wallets) || _.isEmpty(this.wallets);
+  }
+
+  /**
+   * Create a wallet instance
+   * @param {string} name Wallet name
+   * @param {string} phrase 12-word mnemonic phrase
+   * @param {array} coinIds ["BTC", "RBTC", "RIF"]
+   */
+  async createWallet(name, phrase, coinIds) {
+    // 1. Convert coinIds to coins array
+    const coins = _.map(coinIds, (id) => ({
+      id,
+    }));
+
+    console.log('walletManager.createWallet:coins', coins);
+
+    // 2. Create a Wallet instance and save into wallets
     const wallet = await Wallet.create({
-      id: this.currentKeyId, name, phrase, coinTypes: coins,
+      id: this.currentKeyId, name, phrase, coins,
     });
 
     this.wallets.push(wallet);
@@ -95,6 +115,35 @@ class WalletManager {
       console.log('deserialize.wallets', wallets);
       this.wallets = wallets;
     }
+  }
+
+  /**
+   * Update asset value, and save them into each wallet
+   * Fail silently if there is any exception
+   * @param {*} prices
+   */
+  updateAssetValue(prices) {
+    const { wallets } = this;
+    try {
+      console.log('updateAssetValue.wallets', wallets);
+      console.log('updateAssetValue.prices', prices);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
+  /**
+   * Return total asset value for all wallets in this walletManager
+   * @returns {number} Total Asset Value in currency
+   */
+  getTotalAssetValue(currency) {
+    const { wallets } = this;
+
+    console.log('getTotalAssetValue.wallets', wallets);
+    console.log('getTotalAssetValue.currency', currency);
+
+    const result = 0;
+    return result;
   }
 }
 

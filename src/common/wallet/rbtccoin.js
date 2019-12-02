@@ -39,13 +39,6 @@ export default class RBTCCoin {
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
     this.metadata = coinType[id];
-
-    // this.networkId = coinType[network].networkId;
-    // this.network = coinType[network].network;
-    // this.icon = coinType[network].icon;
-    // this.queryKey = coinType[network].queryKey;
-    // this.defaultName = coinType[network].defaultName;
-
     this.amount = amount;
     this.address = address;
   }
@@ -53,15 +46,20 @@ export default class RBTCCoin {
   derive(seed) {
     const networkId = this.metadata && this.metadata.networkId;
 
-    const master = RBTCCoin.generateMasterFromSeed(seed);
+    try {
+      const master = RBTCCoin.generateMasterFromSeed(seed);
 
-    console.log('RBTC.master', master);
+      console.log(`${this.metadata.defaultName}.master`, master);
 
-    const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
-    const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
-    const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
-    this.address = RBTCCoin.getAddress(addressNode);
-    console.log('RBTC.address', this.address);
+      const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
+      const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
+      const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
+      this.address = RBTCCoin.getAddress(addressNode);
+    } catch (ex) {
+      console.error(ex);
+    }
+
+    console.log(`${this.metadata.defaultName}.address`, this.address);
   }
 
   static fromMasterSeed(seedBuffer) {

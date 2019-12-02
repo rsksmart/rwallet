@@ -55,8 +55,8 @@ class VerifyPhrase extends Component {
     this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
 
     this.state = {
-      tags: _.shuffle(this.correctPhrases),
-      phrases: [],
+      unselectedWords: _.shuffle(this.correctPhrases), // Array type
+      selectedWords: [],
     };
 
     this.renderAllItem = this.renderAllItem.bind(this);
@@ -66,16 +66,19 @@ class VerifyPhrase extends Component {
 
   async onTagsPressed(index) {
     const { navigation, addNotification } = this.props;
-    const { tags, phrases } = this.state;
+    const { unselectedWords, selectedWords } = this.state;
 
-    const currentWord = tags.splice(index, 1);
-    this.setState({ tags });
-    phrases.push(currentWord[0]);
-    this.setState({ phrases });
+    const currentWord = unselectedWords.splice(index, 1);
+    selectedWords.push(currentWord[0]);
 
-    if (phrases.length === MNEMONIC_PHRASE_LENGTH) {
-      const isEqual = _.isEqual(phrases, this.correctPhrases);
-      console.log('phrases', phrases);
+    this.setState({
+      unselectedWords,
+      selectedWords,
+    });
+
+    if (selectedWords.length === MNEMONIC_PHRASE_LENGTH) {
+      const isEqual = _.isEqual(selectedWords, this.correctPhrases);
+      console.log('selectedWords', selectedWords);
       console.log('this.correctPhrases', this.correctPhrases);
       console.log('isEqual', isEqual);
 
@@ -105,8 +108,8 @@ class VerifyPhrase extends Component {
     // Shuffle the 12-word here so user need to choose from a different order than the last time
     // We want to make sure they really write down the phrase
     this.setState({
-      tags: _.shuffle(this.correctPhrases),
-      phrases: [],
+      unselectedWords: _.shuffle(this.correctPhrases),
+      selectedWords: [],
     });
   }
 
@@ -115,9 +118,9 @@ class VerifyPhrase extends Component {
     const words = [];
     const margin = 200;
     let offset = 0;
-    const { phrases } = this.state;
-    if (phrases.length > 1) {
-      offset = -margin * (phrases.length - 1);
+    const { selectedWords } = this.state;
+    if (selectedWords.length > 1) {
+      offset = -margin * (selectedWords.length - 1);
     }
     for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
       const marginLeft = startX + i * margin + offset;
@@ -125,8 +128,8 @@ class VerifyPhrase extends Component {
         position: 'absolute', left: '50%', top: 10, marginLeft,
       };
       let text = '';
-      if (i < phrases.length) {
-        text = phrases[i];
+      if (i < selectedWords.length) {
+        text = selectedWords[i];
       }
       words.push(
         <View style={style} key={`${Math.random()}`}>
@@ -138,8 +141,8 @@ class VerifyPhrase extends Component {
   }
 
   render() {
-    const { tags, loading } = this.state;
-    const { navigation } = this.props;
+    const { unselectedWords } = this.state;
+    const { navigation, loading } = this.props;
     return (
       <View>
         <Loader loading={loading} />
@@ -153,7 +156,7 @@ class VerifyPhrase extends Component {
           <View style={[styles.wordFieldView]}>{this.renderAllItem()}</View>
           <Loc style={[styles.tip]} text="Tap each word in the correct order" />
           <Tags
-            data={tags}
+            data={unselectedWords}
             style={[styles.tags]}
             showNumber={false}
             onPress={this.onTagsPressed}
@@ -171,10 +174,13 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  loading: state.App.get('isPageLoading'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
