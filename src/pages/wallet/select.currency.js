@@ -44,19 +44,34 @@ export default class WalletSelectCurrency extends Component {
 
     mainnet = [
       {
-        id: '1',
         title: 'BTC',
         icon: BTC,
         selected: true,
       },
       {
-        id: '2',
         title: 'RBTC',
         icon: RBTC,
         selected: true,
       },
       {
-        id: '3',
+        title: 'RIF',
+        icon: RIF,
+        selected: true,
+      },
+    ];
+
+    testnet = [
+      {
+        title: 'BTC',
+        icon: BTC,
+        selected: true,
+      },
+      {
+        title: 'RBTC',
+        icon: RBTC,
+        selected: true,
+      },
+      {
         title: 'RIF',
         icon: RIF,
         selected: true,
@@ -87,6 +102,10 @@ export default class WalletSelectCurrency extends Component {
               <Loc style={[styles.sectionTitle]} text="Mainnet" />
               <CoinTypeList data={this.mainnet} />
             </View>
+            <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+              <Loc style={[styles.sectionTitle]} text="Testnet" />
+              <CoinTypeList data={this.testnet} />
+            </View>
             <Loader loading={loading} />
           </View>
           <View style={styles.buttonView}>
@@ -96,9 +115,18 @@ export default class WalletSelectCurrency extends Component {
                 const coins = [];
                 for (let i = 0; i < this.mainnet.length; i += 1) {
                   if (this.mainnet[i].selected) {
-                    coins.push(this.mainnet[i].title);
+                    const item = { coin: this.mainnet[i].title, net: 'mainnet' };
+                    coins.push(item);
                   }
                 }
+
+                for (let i = 0; i < this.mainnet.length; i += 1) {
+                  if (this.mainnet[i].selected) {
+                    const item = { coin: this.mainnet[i].title, net: 'testnet' };
+                    coins.push(item);
+                  }
+                }
+
                 const wallet = walletManager.createWallet(phrases, null, coins);
                 if (phrases) {
                   this.setState({ loading: true });
