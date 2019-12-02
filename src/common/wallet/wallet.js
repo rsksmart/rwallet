@@ -27,7 +27,7 @@ export default class Wallet {
         const { id: coinId, amount, address } = item;
 
         let coin;
-        if (coinId === 'BTC') {
+        if (coinId === 'BTC' || coinId === 'BTCTestnet') {
           coin = new Coin(coinId, amount, address);
         } else {
           coin = new RBTCCoin(coinId, amount, address);

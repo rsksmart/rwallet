@@ -115,14 +115,13 @@ export default class WalletSelectCurrency extends Component {
                 const coins = [];
                 for (let i = 0; i < this.mainnet.length; i += 1) {
                   if (this.mainnet[i].selected) {
-                    const item = { coin: this.mainnet[i].title, net: 'mainnet' };
-                    coins.push(item);
+                    coins.push(this.mainnet[i].title);
                   }
                 }
                 for (let i = 0; i < this.testnet.length; i += 1) {
                   if (this.testnet[i].selected) {
-                    const item = { coin: this.testnet[i].title, net: 'testnet' };
-                    coins.push(item);
+                    const coinId = `${this.mainnet[i].title}TestNet`;
+                    coins.push(coinId);
                   }
                 }
                 const wallet = await walletManager.createWallet('randomName', phrases, coins);
