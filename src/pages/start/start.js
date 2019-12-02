@@ -1,14 +1,13 @@
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet } from 'react-native';
-import UUIDGenerator from 'react-native-uuid-generator';
 import { NavigationActions } from 'react-navigation';
 
 import Button from '../../components/common/button/button';
 import Indicator from '../../components/common/misc/indicator';
-import ParseHelper from '../../common/parse';
 import appContext from '../../common/appContext';
-import Application from '../../common/application';
+import appActions from '../../redux/app/actions';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class StartPage extends Component {
+class StartPage extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -40,17 +39,25 @@ export default class StartPage extends Component {
     };
   }
 
+  componentWillMount() {
+    const { initApp } = this.props;
+
+    // Load Settings and Wallets from permenate storage
+    initApp();
+  }
+
   async componentDidMount() {
-    await Application.init();
+    // await Application.init();
     if (!appContext.data.user) {
       this.setState({ showButton: true });
     } else {
       this.setState({ showButton: false, loading: true });
-      const { username } = appContext.data.user;
-      console.log(`componentDidMount, login, username: ${username}`);
-      const user = await ParseHelper.signInOrSignUp(username);
-      await appContext.set('user', user);
-      appContext.user = user;
+
+      // const { username } = appContext.data.user;
+      // console.log(`componentDidMount, login, username: ${username}`);
+      // const user = await ParseHelper.signInOrSignUp(username);
+      // await appContext.set('user', user);
+      // appContext.user = user;
       this.setState({ loading: false });
       const { navigation } = this.props;
       const navigateAction = NavigationActions.navigate({
@@ -62,18 +69,6 @@ export default class StartPage extends Component {
 
   async login() {
     this.setState({ loading: true });
-    const getUsername = () => new Promise((resolve) => {
-      UUIDGenerator.getRandomUUID((uuid) => {
-        resolve(uuid);
-      });
-    });
-    const username = await getUsername();
-    console.log(`login, username: ${username}`);
-    const user = await ParseHelper.signInOrSignUp(username);
-    await appContext.set('user', user);
-    appContext.user = user;
-    this.setState({ loading: false });
-    console.log(`signInOrSignUp, user: ${JSON.stringify(user)}`);
   }
 
   render() {
@@ -87,7 +82,7 @@ export default class StartPage extends Component {
             text="GET STARTED"
             onPress={async () => {
               this.setState({ showButton: false });
-              await this.login();
+              // await this.login();
               navigation.navigate('TermsPage');
             }}
           />
@@ -113,4 +108,17 @@ StartPage.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  initApp: PropTypes.func.isRequired,
 };
+
+StartPage.defaultProps = {
+};
+
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  initApp: () => dispatch(appActions.initApp()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartPage);

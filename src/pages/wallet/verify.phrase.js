@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   View, StyleSheet,
@@ -7,7 +8,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-import walletManager from '../../common/wallet/walletManager';
+// import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
@@ -16,6 +17,10 @@ import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 
 const verifyPhraseAlertTitle = 'Please review recovery phrase and try again.';
+
+// import appActions from '../../redux/app/actions';
+
+const MNEMONIC_PHRASE_LENGTH = 12;
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -47,61 +52,41 @@ class VerifyPhrase extends Component {
     super(props);
     const { navigation } = this.props;
     this.wallet = navigation.state.params.wallet;
-    this.correctPhrases = this.wallet.mnemonic.phrase.split(' ');
-    const shuffle = (org) => {
-      const input = [];
-      Object.assign(input, org);
-      for (let i = input.length - 1; i >= 0; i -= 1) {
-        const randomIndex = Math.floor(Math.random() * (i + 1));
-        const itemAtIndex = input[randomIndex];
-        input[randomIndex] = input[i];
-        input[i] = itemAtIndex;
-      }
-      return input;
-    };
-    this.randomPhrases = shuffle(this.correctPhrases);
-    this.randomPhrases2 = [];
-    Object.assign(this.randomPhrases2, this.randomPhrases);
+    this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
 
     this.state = {
-      tags: this.randomPhrases,
-      phrases: [],
-      loading: false,
+      unselectedWords: _.shuffle(this.correctPhrases), // Array type
+      selectedWords: [],
     };
+
     this.renderAllItem = this.renderAllItem.bind(this);
-    this.tap = this.tap.bind(this);
+    this.onTagsPressed = this.onTagsPressed.bind(this);
     this.reset = this.reset.bind(this);
   }
 
-  reset() {
-    Object.assign(this.randomPhrases, this.randomPhrases2);
-    this.setState({
-      tags: this.randomPhrases,
-      phrases: [],
-    });
-  }
-
-  async tap(i) {
+  async onTagsPressed(index) {
     const { navigation, addNotification } = this.props;
-    const { tags, phrases } = this.state;
-    const s = tags.splice(i, 1);
-    this.setState({ tags });
-    phrases.push(s[0]);
-    this.setState({ phrases });
-    if (phrases.length === 12) {
-      let same = true;
-      for (let k = 0; k < phrases.length; k += 1) {
-        const phrase = phrases[k];
-        const c = this.correctPhrases[k];
-        if (c !== phrase) {
-          same = false;
-          break;
-        }
-      }
-      if (same) {
-        this.setState({ loading: true });
-        await walletManager.addWallet(this.wallet);
-        this.setState({ loading: false });
+    const { unselectedWords, selectedWords } = this.state;
+
+    const currentWord = unselectedWords.splice(index, 1);
+    selectedWords.push(currentWord[0]);
+
+    this.setState({
+      unselectedWords,
+      selectedWords,
+    });
+
+    if (selectedWords.length === MNEMONIC_PHRASE_LENGTH) {
+      const isEqual = _.isEqual(selectedWords, this.correctPhrases);
+      console.log('selectedWords', selectedWords);
+      console.log('this.correctPhrases', this.correctPhrases);
+      console.log('isEqual', isEqual);
+
+      if (isEqual) {
+        // setPageLoading(true);
+        // this.setState({ loading: true });
+        // await walletManager.addWallet(this.wallet);
+        // this.setState({ loading: false });
         const resetAction = StackActions.reset({
           index: 0,
           actions: [
@@ -119,23 +104,32 @@ class VerifyPhrase extends Component {
     }
   }
 
+  reset() {
+    // Shuffle the 12-word here so user need to choose from a different order than the last time
+    // We want to make sure they really write down the phrase
+    this.setState({
+      unselectedWords: _.shuffle(this.correctPhrases),
+      selectedWords: [],
+    });
+  }
+
   renderAllItem() {
     const startX = -82;
     const words = [];
     const margin = 200;
     let offset = 0;
-    const { phrases } = this.state;
-    if (phrases.length > 1) {
-      offset = -margin * (phrases.length - 1);
+    const { selectedWords } = this.state;
+    if (selectedWords.length > 1) {
+      offset = -margin * (selectedWords.length - 1);
     }
-    for (let i = 0; i < 12; i += 1) {
+    for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
       const marginLeft = startX + i * margin + offset;
       const style = {
         position: 'absolute', left: '50%', top: 10, marginLeft,
       };
       let text = '';
-      if (i < phrases.length) {
-        text = phrases[i];
+      if (i < selectedWords.length) {
+        text = selectedWords[i];
       }
       words.push(
         <View style={style} key={`${Math.random()}`}>
@@ -147,8 +141,8 @@ class VerifyPhrase extends Component {
   }
 
   render() {
-    const { tags, loading } = this.state;
-    const { navigation } = this.props;
+    const { unselectedWords } = this.state;
+    const { navigation, loading } = this.props;
     return (
       <View>
         <Loader loading={loading} />
@@ -162,18 +156,17 @@ class VerifyPhrase extends Component {
           <View style={[styles.wordFieldView]}>{this.renderAllItem()}</View>
           <Loc style={[styles.tip]} text="Tap each word in the correct order" />
           <Tags
-            data={tags}
+            data={unselectedWords}
             style={[styles.tags]}
             showNumber={false}
-            onPress={(i) => {
-              this.tap(i);
-            }}
+            onPress={this.onTagsPressed}
           />
         </View>
       </View>
     );
   }
 }
+
 VerifyPhrase.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -181,10 +174,13 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  loading: state.App.get('isPageLoading'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(

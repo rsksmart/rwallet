@@ -106,7 +106,6 @@ const PrimaryTabNavigatorContainer = createAppContainer(PrimaryTabNavigator);
 
 export default class PrimaryTabNavigatorComp extends Component {
   componentDidMount() {
-    console.log(JSON.stringify(this.props));
   }
 
   static router = null;

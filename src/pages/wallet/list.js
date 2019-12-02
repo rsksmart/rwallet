@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
@@ -7,15 +8,19 @@ import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
-import wm from '../../common/wallet/walletManager';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
-import appActions from '../../redux/app/actions';
+
+// import appActions from '../../redux/app/actions';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
+import walletActions from '../../redux/wallet/actions';
+import config from '../../../config';
+
+// currencySettings:
+const { consts: { supportedTokens, currencies: currencySettings } } = config;
 
 // import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
 
@@ -24,6 +29,7 @@ const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
+const DEFAULT_CURRENCY_SYMBOL = '$';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -176,99 +182,141 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Formatting number with thousand separator.
+ * @param  {number} num e.g. 1000000.65
+ * @return {string}   "1,000,000.65"
+ */
+export function formatNumberThousands(num) {
+  if (_.isUndefined(num)) {
+    return num;
+  }
+
+  const numStr = num.toString();
+  const parts = numStr.split('.');
+
+  const decimalStr = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const period = _.isUndefined(parts[1]) ? '' : '.';
+  const floatStr = _.isUndefined(parts[1]) ? '' : parts[1];
+
+  return `${decimalStr}${period}${floatStr}`;
+}
+
 class WalletList extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.listData = [];
-      this.state = {
-        listData: this.listData,
-      };
-      this.refreshData = this.refreshData.bind(this);
+    /**
+     * Get currency symbol string for example '$' based on currency
+     * @param {string} currency currency string such as 'USD'
+     */
+    static getCurrencySymbol(currency, currencySymbols) {
+      if (currencySymbols[currency]) {
+        return currencySymbols[currency];
+      }
+
+      return DEFAULT_CURRENCY_SYMBOL;
     }
 
-    componentDidMount() {
-      const { getPrice } = this.props;
-      getPrice(['BTC', 'RBTC', 'RIF']);
-      this.refreshData();
-    }
+    /**
+     * Transform from wallets to ListData for rendering
+     */
+    static createListData(wallets, navigation) {
+      if (!_.isArray(wallets)) {
+        return [];
+      }
 
-    refreshData() {
-      const { navigation } = this.props;
-      this.wallets = wm.wallets;
-
-      const updateValue = (item) => {
-        if (item.price != null && item.amount !== '') {
-          item.worth = `$${item.price * item.amount}`; // eslint-disable-line no-param-reassign
-        }
-      };
-
-      const getBalance = (coin, item) => {
-        const { queryKey } = coin;
-        let { address } = coin;
-        if (queryKey === 'TRSK' || queryKey === 'RSK' || queryKey === 'RIF' || queryKey === 'TRIF') {
-          address = address.toLowerCase();
-        }
-        Parse.Cloud.run('getBalance', {
-          name: queryKey,
-          addr: address,
-        }).then((result) => {
-          console.log(result);
-          item.amount = result; // eslint-disable-line no-param-reassign
-          updateValue(item);
-          this.setState({ listData: this.listData });
-        }).catch((reason) => {
-          console.log(reason);
-        });
-      };
-
-      this.listData = [];
-      this.wallets.forEach((wallet) => {
+      const listData = [];
+      wallets.forEach((wallet) => {
         const wal = { name: `Key ${wallet.id}`, coins: [] };
         wallet.coins.forEach((coin) => {
+          const coinType = coin.id;
+
           const item = {
             key: `${Math.random()}`,
             title: coin.defaultName,
-            text: coin.type,
+            text: coinType,
             worth: '',
             amount: '',
             price: null,
             icon: coin.icon,
             r1Press: () => {
-              navigation.navigate('Transfer', { address: coin.address, coin: coin.type });
+              navigation.navigate('Transfer', { address: coin.address, coin: coinType });
             },
             r2Press: () => {
-              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coin.type });
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
             },
             onPress: () => {
               navigation.navigate('WalletHistory', {
-                address: coin.address, coin: coin.type, name: coin.defaultName, network: 'Testnet',
+                address: coin.address, coin: coinType, name: coin.defaultName, network: 'Testnet',
               });
             },
           };
-          getBalance(coin, item);
           wal.coins.push(item);
         });
-        this.listData.push(wal);
+        listData.push(wal);
       });
 
+      return listData;
+    }
+
+    constructor(props) {
+      super(props);
+
+      // Extract currency symbols from config
+      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+      this.currencySymbols = _.reduce(currencySettings, (obj, row) => {
+        const settingsObj = obj;
+        settingsObj[row.name] = row.symbol;
+        return settingsObj;
+      }, {});
+
+      this.state = {
+        listData: [],
+        currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+      };
+    }
+
+    componentWillMount() {
+      const {
+        getPrice, currency, wallets, navigation,
+      } = this.props;
+
+      const currencyStrings = _.map(currencySettings, (item) => item.name);
+      getPrice(supportedTokens, currencyStrings);
+
+      const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      const listData = WalletList.createListData(wallets, navigation);
+
       this.setState({
-        listData: this.listData,
+        currencySymbol,
+        listData,
       });
     }
 
+    componentWillReceiveProps(nextProps) {
+      const {
+        currency, wallets, prices, navigation,
+      } = nextProps;
+
+      const newState = this.state;
+
+      console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
+      console.log('WalletList.componentWillReceiveProps: prices,', prices);
+
+      // Handle currency changed logic; get symbol string for the new currency
+      newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      newState.listData = WalletList.createListData(wallets, navigation);
+
+      this.setState(newState);
+    }
+
     render() {
-      const { navigation, currency } = this.props;
-      // const { addNotification } = this.props;
+      const { navigation, totalAssetValue } = this.props;
+      const { listData, currencySymbol } = this.state;
       const accounts = [];
-      const { listData } = this.state;
-      const currencySymbols = {
-        USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',
-      };
-      const currencySymbol = currencySymbols[currency];
+
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
         const section = (
@@ -279,6 +327,7 @@ class WalletList extends Component {
         );
         accounts.push(section);
       }
+
       return (
         <View style={[flex.flex1]}>
           <ScrollView style={{ marginBottom: 45 }}>
@@ -297,7 +346,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <Text style={styles.myAssets}>173,586.3</Text>
+                <Text style={styles.myAssets}>{totalAssetValue}</Text>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
@@ -333,22 +382,6 @@ class WalletList extends Component {
               <View style={[styles.sectionContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   onPress={() => {
-                  // addNotification(createSuccessNotification(
-                  //     "Success",
-                  //     "This message tells that everything goes fine."
-                  // ));
-                  // addNotification(createInfoNotification(
-                  //     "Info",
-                  //     "This message tells that something."
-                  // ));
-                  // addNotification(createWarningNotification(
-                  //     "Warning",
-                  //     "This message tells that alarm rising."
-                  // ));
-                  // addNotification(createErrorNotification(
-                  //     "Error",
-                  //     "This message tells that everything sucks."
-                  // ));
                     navigation.navigate('WalletAddIndex');
                   }}
                 >
@@ -378,18 +411,30 @@ WalletList.propTypes = {
   }).isRequired,
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  totalAssetValue: PropTypes.number,
+  prices: PropTypes.arrayOf(PropTypes.object),
   // addNotification: PropTypes.func.isRequired,
+  // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+WalletList.defaultProps = {
+  wallets: undefined,
+  prices: [],
+  totalAssetValue: 0,
 };
 
 const mapStateToProps = (state) => ({
   prices: state.App.get('prices'),
   currency: state.App.get('currency'),
+  wallets: state.App.get('walletManager') && state.App.get('walletManager').wallets,
+  totalAssetValue: state.App.get('walletManager') && state.App.get('walletManager').totalAssetValue,
+  // allCurrencies: state.App.get('allCurrencies'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getPrice: (symbols) => dispatch(
-    appActions.getPrice(symbols),
-  ),
+  // getWallets: () => dispatch(walletActions.getWallets()),
+  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),

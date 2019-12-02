@@ -1,49 +1,65 @@
-import I18n from './i18n';
-import walletManager from './wallet/walletManager';
+import _ from 'lodash';
+import { Map } from 'immutable';
+import UUIDGenerator from 'react-native-uuid-generator';
 import storage from './storage';
-import actions from '../redux/languageSwitcher/actions';
-import appActions from '../redux/app/actions';
-import store from '../redux/store';
-import appContext from './appContext';
 
-const Application = {
-  async init() {
-    let data = null;
-    try {
-      data = await storage.load({ key: 'data' });
-    } catch (e) {
-      console.log(e);
-    }
-    const currentLocale = I18n.currentLocale();
-    console.log(`Application::init, currentLocale: ${currentLocale}`);
-    if (!data) {
-      appContext.data.language = this.initLanguage();
-      await storage.save('data', appContext.data);
-    }
-    data = await storage.load({ key: 'data' });
-    appContext.data = data;
-    store.dispatch(
-      actions.changeLanguage(data.settings.language),
-    );
-    store.dispatch(
-      appActions.changeCurrency(data.settings.currency),
-    );
-    await walletManager.loadWallets();
-  },
-  initLanguage() {
-    const currentLocale = I18n.currentLocale();
-    console.log(`Application::initLanguage, currentLocale: ${currentLocale}`);
-    if (currentLocale.indexOf('fr') === 0) {
-      return 'fr';
-    }
-    if (currentLocale.indexOf('he') === 0) {
-      return 'he';
-    }
-    if (currentLocale.indexOf('zh') === 0) {
-      return 'zh';
-    }
-    return 'en';
-  },
-};
+class Application {
+  constructor() {
+    this.data = Map({
+      id: undefined,
+    });
 
-export default Application;
+    this.deserialize = this.deserialize.bind(this);
+  }
+
+  get(key) {
+    return this.data.get(key);
+  }
+
+  set(key, value) {
+    this.data = this.data.set(key, value);
+  }
+
+  toJSON() {
+    return this.data.toJSON();
+  }
+
+  /**
+   * Save JSON presentation of settings data to permenate storage
+   */
+  async serialize() {
+    const jsonData = this.data.toJSON();
+    await storage.save('app', jsonData);
+  }
+
+  /**
+   * Read permenate storage and load settins into this instance;
+   * Load default settings if Settings is empty in storage
+   */
+  async deserialize() {
+    const result = await storage.load({ key: 'app' });
+
+    console.log('Deserialized Application from Storage.', result);
+
+    if (!_.isNull(result)) {
+      this.data = Map(result);
+      return;
+    }
+
+    // If result is null; meaning there's no Application in storage
+    // therefore we create a new one here
+    const newId = await Application.createId();
+    this.set('id', newId);
+
+    // If there is no valid settings yet, we save default into storage
+    this.serialize();
+  }
+
+  static createId() {
+    return new Promise((resolve) => {
+      UUIDGenerator.getRandomUUID((uuid) => resolve(uuid));
+    });
+  }
+}
+
+export default new Application();

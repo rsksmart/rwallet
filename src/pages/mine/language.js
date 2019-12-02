@@ -11,6 +11,10 @@ import actions from '../../redux/languageSwitcher/actions';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 
+import config from '../../../config';
+
+const { consts: { languages: locales } } = config;
+
 const styles = StyleSheet.create({
   listView: {
     width: '80%',
@@ -46,7 +50,6 @@ class Language extends Component {
 
     onChange(index) {
       const { changeLanguage } = this.props;
-      const locales = ['en', 'fr', 'he', 'zh'];
       changeLanguage(locales[index]);
     }
 

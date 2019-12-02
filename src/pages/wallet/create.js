@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View, Text, StyleSheet,
 } from 'react-native';
@@ -10,6 +11,7 @@ import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Header from '../../components/common/misc/header';
 import walletManager from '../../common/wallet/walletManager';
+import walletActions from '../../redux/wallet/actions';
 
 const styles = StyleSheet.create({
   input: {
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class WalletCreate extends Component {
+class WalletCreate extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -97,3 +99,15 @@ WalletCreate.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+WalletCreate.defaultProps = {
+};
+
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  createWallet: () => dispatch(walletActions.createWallet()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletCreate);
