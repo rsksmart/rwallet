@@ -81,5 +81,6 @@
   "TermsLine3": "我已经阅读并理解使用协议。",
   "Use passcode": "使用密码验证",
   "Touch Sensor": "指纹验证",
-  "No match": "指纹不匹配"
+  "No match": "指纹不匹配",
+  "Phrase is copied to clipboard": "密语已复制到剪切板"
 }
