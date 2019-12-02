@@ -321,14 +321,18 @@ class History extends Component {
                         <View style={styles.myAssetsButtonsView}>
                           <TouchableOpacity
                             style={styles.ButtonView}
-                            onPress={() => {}}
+                            onPress={() => {
+                              navigation.navigate('Transfer', navigation.state.params);
+                            }}
                           >
                             <Entypo name="swap" size={20} style={styles.sendIcon} />
                             <Loc style={[styles.sendText]} text="Send" />
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                            onPress={() => {}}
+                            onPress={() => {
+                              navigation.navigate('WalletReceive', navigation.state.params);
+                            }}
                           >
                             <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
                             <Loc style={[styles.sendText]} text="Receive" />

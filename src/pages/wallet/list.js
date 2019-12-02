@@ -335,7 +335,22 @@ class WalletList extends Component {
               <Loc style={[styles.headerTitle]} text="Your Wallet" />
               <TouchableOpacity
                 style={styles.scanView}
-                onPress={() => {}}
+                onPress={() => {
+                  // TODO: transfer from first wallet
+                  // navigation.navigate('Transfer', { address: coin.address, coin: coinType });
+                  navigation.navigate('Scan', {
+                    onQrcodeDetected: (data) => {
+                      const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                      const url = data;
+                      const result = parseUrl.exec(url);
+                      const host = result[3];
+                      const [address2, coin2] = host.split('.');
+                      console.log(`address2: ${address2}, coin: ${coin2},`);
+                      // TODO: transfer from first wallet
+                      // navigation.navigate('Transfer', { address: coin.address, coin: coinType });
+                    },
+                  });
+                }}
               >
                 <Image style={[styles.scan]} source={scan} />
               </TouchableOpacity>
