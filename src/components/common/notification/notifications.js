@@ -5,32 +5,26 @@ import Notification from './notification.wrapper';
 import actions from '../../../redux/app/actions';
 
 const Notifications = (props) => {
-  const { notifications } = props;
+  const { showNotification, notification, dispatch } = props;
   return (
-    <>
-      {notifications && notifications.map((notification, index) => (
-        <View
-          key={notification.id}
-          style={{
-            marginTop: index !== 0 ? 15 : 0,
-          }}
-        >
-          <Notification
-            type={notification.type}
-            title={notification.title}
-            message={notification.message}
-            onClosePress={() => {
-              actions.removeNotification(notification);
-            }}
-          />
-        </View>
-      ))}
-    </>
+    <View>
+      {showNotification && (
+      <Notification
+        type={notification.type}
+        title={notification.title}
+        message={notification.message}
+        onClosePress={() => dispatch(actions.removeNotification())}
+      />
+      )}
+    </View>
   );
 };
 
 Notifications.propTypes = {
-  notifications: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  showNotification: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  notification: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default Notifications;

@@ -58,7 +58,7 @@ class RecoveryPhrase extends Component {
     componentDidMount() {
       const { addNotification } = this.props;
       const notification = createInfoNotification(
-        'Info',
+        'Recovery Phrase',
         'Safeguard your recovery phrase Text',
       );
       addNotification(notification);
