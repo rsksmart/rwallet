@@ -8,7 +8,7 @@ export default function CoinTypeList({ data }) {
     <FlatList
       data={data}
       renderItem={({ item }) => <Item data={item} />}
-      keyExtractor={() => `${Math.random()}`}
+      keyExtractor={(item) => item.title}
     />
   );
 }
