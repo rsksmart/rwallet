@@ -8,13 +8,13 @@ const initState = new Map({
   error: undefined,
   transactions: undefined,
   currency: undefined,
-  notifications: [],
+  showNotification: false,
+  notification: null,
   application: undefined,
   settings: undefined, // Settings instance
 });
 
 export default function appReducer(state = initState, action) {
-  let notifications = [];
   switch (action.type) {
     case actions.IS_PAGE_LOADING:
       return state.set('isPageLoading', action.value);
@@ -52,22 +52,16 @@ export default function appReducer(state = initState, action) {
     case actions.SET_ERROR:
       return state.set('error', action.value);
     case actions.ADD_NOTIFICATION:
-      notifications = state.get('notifications');
-      /* eslint-disable no-case-declarations */
-      const addNotifications = notifications.slice();
-      addNotifications.push(action.notification);
-      return state.set('notifications', addNotifications);
+      return state
+        .set('showNotification', true)
+        .set('notification', action.notification);
     case actions.REMOVE_NOTIFICATION:
-      notifications = state.get('notifications');
-      /* eslint-disable no-case-declarations */
-      const removeNotifications = notifications.slice().filter(
-        (notification) => notification.id !== action.id,
-      );
-      return state.set('notifications', removeNotifications);
-
+      console.log('REMOVE_NOTIFICATION');
+      return state
+        .set('showNotification', false)
+        .set('notification', null);
     case actions.SET_APPLICATION:
       return state.set('application', action.value);
-
     case actions.SET_SETTINGS:
     {
       const settings = action.value;
