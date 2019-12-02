@@ -114,6 +114,7 @@ class WalletManager {
 
       console.log('deserialize.wallets', wallets);
       this.wallets = wallets;
+      console.log('deserialize.this.wallets', this.wallets);
     }
   }
 

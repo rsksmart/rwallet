@@ -12,7 +12,6 @@ import ParseHelper from '../../common/parse';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
-// import storage from '../../common/storage';
 
 function* initAppRequest(/* action */) {
   try {
