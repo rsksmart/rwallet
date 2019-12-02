@@ -27,9 +27,8 @@ const actions = {
     type: actions.ADD_NOTIFICATION,
     notification,
   }),
-  removeNotification: (notification) => ({
+  removeNotification: () => ({
     type: actions.REMOVE_NOTIFICATION,
-    id: notification.id,
   }),
   setPageLoading: (isLoading) => ({
     type: actions.IS_PAGE_LOADING,

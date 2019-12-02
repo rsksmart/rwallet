@@ -48,43 +48,31 @@ export default class Alert extends Component {
     super(props);
     this.state = {
       animationType: 'fade',
-      modalVisible: false,
       transparent: true,
     };
   }
 
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible });
-  }
-
   startShow = () => {
-    //   alert('开始显示了');
-  }
+  };
 
   render() {
-    const { animationType, transparent, modalVisible } = this.state;
-    const { title, text, onPress } = this.props;
+    const { animationType, transparent } = this.state;
+    const { title, message, onClosePress } = this.props;
     return (
       <Modal
         animationType={animationType}
         transparent={transparent}
-        visible={modalVisible}
+        visible
         onShow={this.startShow}
       >
         <View style={{ justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
             <View style={{ paddingHorizontal: 20 }}>
               <Loc style={[styles.title]} text={title} />
-              <Loc style={[styles.text]} text={text} />
+              <Loc style={[styles.text]} text={message} />
             </View>
             <View style={styles.line} />
-            <TouchableOpacity onPress={() => {
-              this.setModalVisible(false);
-              if (onPress) {
-                onPress();
-              }
-            }}
-            >
+            <TouchableOpacity onPress={onClosePress}>
               <Loc style={[styles.button]} text="GOT IT" />
             </TouchableOpacity>
           </View>
@@ -96,11 +84,10 @@ export default class Alert extends Component {
 
 Alert.propTypes = {
   title: PropTypes.string.isRequired,
-  text: PropTypes.string,
-  onPress: PropTypes.func,
+  onClosePress: PropTypes.func,
+  message: PropTypes.string.isRequired,
 };
 
 Alert.defaultProps = {
-  text: null,
-  onPress: null,
+  onClosePress: null,
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, StyleSheet } from 'react-native';
+import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
 
@@ -33,31 +33,24 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
 
-const styles = StyleSheet.create({
-  notificationsContainer: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-  },
-});
-
 const RootComponent = (props) => {
-  const { notifications } = props;
+  const { showNotification, notification, dispatch } = props;
   return (
     <View style={[flex.flex1]}>
       <Root>
         <SwitchNavi uriPrefix={uriPrefix} />
         {false && <UpdateModal showUpdate mandatory={false} />}
-        <View style={styles.notificationsContainer}>
-          <Notifications notifications={notifications} />
-        </View>
+        <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
       </Root>
     </View>
   );
 };
 
 RootComponent.propTypes = {
-  notifications: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  showNotification: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  notification: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default RootComponent;

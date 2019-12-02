@@ -16,8 +16,6 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 
-const verifyPhraseAlertTitle = 'Please review recovery phrase and try again.';
-
 // import appActions from '../../redux/app/actions';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
@@ -96,8 +94,8 @@ class VerifyPhrase extends Component {
         navigation.dispatch(resetAction);
       } else {
         const notification = createErrorNotification(
-          'Error',
-          verifyPhraseAlertTitle,
+          'Verify Your Phrase',
+          'verifyPhraseAlertTitle',
         );
         addNotification(notification);
       }
