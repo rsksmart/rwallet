@@ -250,7 +250,7 @@ class WalletList extends Component {
             },
             onPress: () => {
               navigation.navigate('WalletHistory', {
-                address: coin.address, coin: coinType, name: coin.defaultName, network: 'Testnet',
+                address: coin.address, coin: coinType, name: coin.defaultName,
               });
             },
           };

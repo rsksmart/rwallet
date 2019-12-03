@@ -25,20 +25,20 @@ const coinType = {
     queryKey: 'RIF',
     defaultName: 'RIF',
   },
-  BTCTestNet: {
+  BTCTestnet: {
     networkId: 1,
     network: networks.testnet,
     icon: btc,
     queryKey: 'TBTC',
     defaultName: 'Bitcoin Testnet',
   },
-  RBTCTestNet: {
+  RBTCTestnet: {
     networkId: 37310,
     icon: rbtc,
     queryKey: 'TRBTC',
     defaultName: 'SmartBitcoin Testnet',
   },
-  RIFTestNet: {
+  RIFTestnet: {
     networkId: 37310,
     icon: rif,
     queryKey: 'TRIF',
