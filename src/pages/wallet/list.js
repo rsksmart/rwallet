@@ -443,10 +443,10 @@ WalletList.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.App.get('prices'),
+  prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
-  wallets: state.App.get('walletManager') && state.App.get('walletManager').wallets,
-  totalAssetValue: state.App.get('walletManager') && state.App.get('walletManager').totalAssetValue,
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
   // allCurrencies: state.App.get('allCurrencies'),
 });
 
