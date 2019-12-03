@@ -223,6 +223,7 @@ class WalletList extends Component {
      * Transform from wallets to ListData for rendering
      */
     static createListData(wallets, navigation) {
+      console.log('list::createListData, wallets:', wallets);
       if (!_.isArray(wallets)) {
         return [];
       }
@@ -282,6 +283,8 @@ class WalletList extends Component {
       const {
         getPrice, currency, wallets, navigation,
       } = this.props;
+
+      console.log('list::componentWillMount, wallets:', wallets);
 
       const currencyStrings = _.map(currencySettings, (item) => item.name);
       getPrice(supportedTokens, currencyStrings);
