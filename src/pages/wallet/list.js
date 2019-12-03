@@ -404,7 +404,7 @@ WalletList.defaultProps = {
 
 const mapStateToProps = (state) => ({
   prices: state.Wallet.get('prices'),
-  currency: state.Wallet.get('currency'),
+  currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
   // allCurrencies: state.App.get('allCurrencies'),
