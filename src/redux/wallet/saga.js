@@ -36,14 +36,14 @@ function* getWalletsRequest() {
 }
 
 function* getPriceRequest(action) {
-  const { payload } = action;
+  const { payload, currency } = action;
   try {
     const response = yield call(ParseHelper.getPrice, payload);
 
     // Sets state in reducer for success
     yield put({
       type: actions.GET_PRICE_RESULT,
-      value: response,
+      value: Object.assign(response, { currency }),
     });
   } catch (err) {
     const message = yield call(ParseHelper.handlError, err);

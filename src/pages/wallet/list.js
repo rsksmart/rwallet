@@ -264,7 +264,7 @@ class WalletList extends Component {
       } = this.props;
 
       const currencyStrings = _.map(currencySettings, (item) => item.name);
-      getPrice(supportedTokens, currencyStrings);
+      getPrice(supportedTokens, currencyStrings, currency);
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, navigation);
@@ -412,7 +412,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   // getWallets: () => dispatch(walletActions.getWallets()),
-  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
+  getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),
