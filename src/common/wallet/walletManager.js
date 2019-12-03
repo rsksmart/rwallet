@@ -10,6 +10,7 @@ class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
+    this.assetValue = 0;
     this.deserialize = this.deserialize.bind(this);
   }
 
@@ -129,6 +130,14 @@ class WalletManager {
     try {
       console.log('updateAssetValue.wallets', wallets);
       console.log('updateAssetValue.prices', prices);
+      this.assetValue = prices.reduce((acc, cur) => {
+        const amountArray = wallets.map((wallet) => {
+          const coinObj = wallet.coins.find((coin) => coin.id === cur.symbol);
+          return coinObj ? coinObj.amount || 0 : 0;
+        });
+        const amount = amountArray.reduce((a, b) => a + b, 0);
+        return acc + cur.price * amount;
+      }, 0);
     } catch (ex) {
       console.log(ex);
     }
@@ -140,12 +149,9 @@ class WalletManager {
    */
   getTotalAssetValue(currency) {
     const { wallets } = this;
-
     console.log('getTotalAssetValue.wallets', wallets);
     console.log('getTotalAssetValue.currency', currency);
-
-    const result = 0;
-    return result;
+    return this.assetValue;
   }
 }
 

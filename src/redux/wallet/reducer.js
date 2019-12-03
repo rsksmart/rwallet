@@ -1,7 +1,6 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 import actions from './actions';
-import appReducer from '../app/reducer';
 
 const initState = new Map({
   wallets: [],
@@ -22,12 +21,11 @@ export default function walletReducer(state = initState, action) {
       if (prices && !_.isEqual(state.get('prices') && prices)) {
         // Update asset value in wallet manger
         const walletManager = state.get('walletManager');
-        const currency = appReducer().get('currency'); // currency is in appReducer so we need to reference from there
+        const { currency } = action.value; // currency is in appReducer so we need to reference from there
         if (walletManager) {
           walletManager.updateAssetValue(prices);
           walletManager.getTotalAssetValue(currency);
         }
-
         newState = newState.set('prices', action.value && action.value.value);
       }
 
