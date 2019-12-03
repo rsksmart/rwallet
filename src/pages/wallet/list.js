@@ -264,7 +264,7 @@ class WalletList extends Component {
       } = this.props;
 
       const currencyStrings = _.map(currencySettings, (item) => item.name);
-      getPrice(supportedTokens, currencyStrings);
+      getPrice(supportedTokens, currencyStrings, currency);
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, navigation);
@@ -403,16 +403,16 @@ WalletList.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.App.get('prices'),
+  prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
-  wallets: state.App.get('walletManager') && state.App.get('walletManager').wallets,
-  totalAssetValue: state.App.get('walletManager') && state.App.get('walletManager').totalAssetValue,
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
   // allCurrencies: state.App.get('allCurrencies'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   // getWallets: () => dispatch(walletActions.getWallets()),
-  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
+  getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),
