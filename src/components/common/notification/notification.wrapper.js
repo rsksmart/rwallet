@@ -11,7 +11,6 @@ NotificationWrapper.propTypes = {
   type: PropTypes.oneOf(['success', 'info', 'warning', 'error']).isRequired,
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default NotificationWrapper;

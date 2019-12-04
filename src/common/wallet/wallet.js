@@ -140,8 +140,10 @@ export default class Wallet {
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
-    const wallet = await Wallet.create({
-      id, name, phrase, coins,
+    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
+
+    const wallet = new Wallet({
+      id, name, mnemonic, coins,
     });
 
     return wallet;
