@@ -46,7 +46,7 @@ export default class ResetPasscodeSuccess extends Component {
       return (
         <View style={[flex.flex1]}>
           <Header
-            title="Currency"
+            title="Reset Passcode"
             goBack={() => {
               navigation.goBack();
             }}
@@ -56,30 +56,30 @@ export default class ResetPasscodeSuccess extends Component {
               <Image style={styles.check} source={completed} />
               <Loc style={[styles.title]} text="Reset completed!" />
             </View>
-            <View style={styles.buttonView}>
-              <Button
-                text="BACK TO SETTING"
-                onPress={async () => {
-                  let page = null;
-                  if (navigation.state.params) {
-                    page = navigation.state.params.page;
-                  }
-                  if (page && page === 'Transfer') {
-                    appContext.eventEmitter.emit('onFirstPasscode');
-                    navigation.navigate('Transfer');
-                  } else {
-                    const resetAction = StackActions.reset({
-                      index: 1,
-                      actions: [
-                        NavigationActions.navigate({ routeName: 'MineIndex' }),
-                        NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
-                      ],
-                    });
-                    navigation.dispatch(resetAction);
-                  }
-                }}
-              />
-            </View>
+          </View>
+          <View style={styles.buttonView}>
+            <Button
+              text="BACK TO SETTING"
+              onPress={async () => {
+                let page = null;
+                if (navigation.state.params) {
+                  page = navigation.state.params.page;
+                }
+                if (page && page === 'Transfer') {
+                  appContext.eventEmitter.emit('onFirstPasscode');
+                  navigation.navigate('Transfer');
+                } else {
+                  const resetAction = StackActions.reset({
+                    index: 1,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'MineIndex' }),
+                      NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                }
+              }}
+            />
           </View>
         </View>
       );
