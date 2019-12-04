@@ -278,7 +278,7 @@ Loc.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  language: state.LanguageSwitcher.get('language'),
+  language: state.App.get('language'),
 });
 
 export default connect(mapStateToProps)(MineIndex);
