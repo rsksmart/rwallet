@@ -1,11 +1,7 @@
 import RNSecureStorage from 'rn-secure-storage';
-// eslint-disable-next-line import/no-unresolved
-import EventEmitter from 'EventEmitter';
 import storage from './storage';
-// eslint-disable-next-line import/no-unresolved
 
 const appContext = {
-  eventEmitter: new EventEmitter(),
   loadData() {
     this.walletId = 0;
   },
