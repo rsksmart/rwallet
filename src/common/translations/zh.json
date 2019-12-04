@@ -93,5 +93,10 @@
   "Password confirmation": "密码确认",
   "Password confirmation doesn't match Password": "密码确认错误",
   "Old Password": "旧密码",
-  "Old Password is wrong": "旧密码不正确"
+  "Old Password is wrong": "旧密码不正确",
+  "Spend": "消费",
+  "Buy Gift Cards": "购买礼物卡",
+  "This feature is coming soon": "这个功能即将到来。",
+  "Earn": "收入",
+  "ShapeShift": "ShapeShift"
 }

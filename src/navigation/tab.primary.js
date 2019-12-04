@@ -4,6 +4,8 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
+import SpendStackNavigator from './stack.spend';
+import EarnStackNavigator from './stack.earn';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
 import { strings } from '../common/i18n';
@@ -24,15 +26,15 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       },
     },
     Send: {
-      screen: HomeStackNavigator,
-      path: 'home',
+      screen: SpendStackNavigator,
+      path: 'spend',
       navigationOptions: {
         title: strings('root.Spend'),
       },
     },
     Receive: {
-      screen: MineStackNavigator,
-      path: 'mine',
+      screen: EarnStackNavigator,
+      path: 'earn',
       navigationOptions: {
         title: strings('root.Earn'),
       },
