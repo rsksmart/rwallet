@@ -25,7 +25,7 @@ const Scaler = posed.View({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 60,
+    height: 70,
     elevation: 2,
     backgroundColor: 'black',
     borderTopRightRadius: 26,
@@ -65,7 +65,7 @@ const TabBar = (props) => {
       {routes.map((route, routeIndex) => {
         const isRouteActive = routeIndex === activeRouteIndex;
         const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
-
+        const opacity = isRouteActive ? 1 : 0.6;
         return (
           <TouchableOpacity
             key={getLabelText({ route }).replace(' ', '_')}
@@ -82,7 +82,7 @@ const TabBar = (props) => {
               {renderIcon({ route, focused: isRouteActive, tintColor })}
             </Scaler>
 
-            <Text style={[styles.tabButtonText]}>{getLabelText({ route })}</Text>
+            <Text style={[styles.tabButtonText, { opacity }]}>{getLabelText({ route })}</Text>
           </TouchableOpacity>
         );
       })}
