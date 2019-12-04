@@ -14,7 +14,7 @@ const actions = {
   SET_ERROR: 'SET_ERROR',
   SET_APPLICATION: 'SET_APPLICATION',
   SET_SETTINGS: 'SET_SETTINGS',
-
+  SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   CHANGE_CURRENCY: 'CHANGE_CURRENCY',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
@@ -56,6 +56,11 @@ const actions = {
   changeCurrency: (currency) => ({
     type: actions.CHANGE_CURRENCY,
     payload: { currency },
+  }),
+  setSingleSettings: (key, value) => ({
+    type: actions.SET_SINGLE_SETTINGS,
+    key,
+    value,
   }),
 };
 
