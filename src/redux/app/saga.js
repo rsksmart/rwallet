@@ -175,6 +175,31 @@ function* createRawTransaction(action) {
   }
 }
 
+function* setSingleSettingsRequest(action) {
+  const { key, value } = action;
+  console.log('saga::setSingleSettingsRequest is triggered, key: ', key, ', value:', value);
+  try {
+    // 1. Set settings by key
+    settings.set(key, value);
+    console.log('settings', settings);
+
+    // 2. Serialize settings
+    yield call(settings.serialize);
+
+    yield put({
+      type: actions.SET_SETTINGS,
+      value: settings,
+    });
+  } catch (err) {
+    console.log(err);
+
+    yield put({
+      type: actions.SET_ERROR,
+      value: { message: err.message },
+    });
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -182,5 +207,6 @@ export default function* () {
     takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
     takeEvery(actions.GET_TRANSACTIONS, getTransactions),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
+    takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
   ]);
 }
