@@ -12,6 +12,7 @@ import Header from '../../components/common/misc/header';
 import Loc from '../../components/common/misc/loc';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
+import { strings } from '../../common/i18n';
 import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
@@ -126,7 +127,7 @@ class WalletRecovery extends Component {
               </View>
               <View style={[styles.sectionContainer, styles.bottomBorder]}>
                 <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-                <SwitchListItem title="Specify derivation path" value={false} />
+                <SwitchListItem title={strings('Specify derivation path')} value={false} />
               </View>
             </View>
           </ScrollView>
@@ -168,7 +169,9 @@ WalletRecovery.propTypes = {
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  language: state.LanguageSwitcher.get('language'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(

@@ -88,5 +88,6 @@
   "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
   "IMPORT": "IMPORT",
   "The recovery phrase is usually 12 words" : "The recovery phrase is usually 12 words",
-  "Advanced Options": "Advanced Options"
+  "Advanced Options": "Advanced Options",
+  "Specify derivation path": "Specify derivation path"
 }
