@@ -6,13 +6,14 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, CardItem, Body } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
 import Loc from '../../components/common/misc/loc';
+import { DEVICE } from '../../common/info';
+import screenHelper from '../../common/screenHelper';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 10,
-    top: 38,
+    bottom: 101,
   },
   headerView: {
     position: 'absolute',
@@ -51,53 +52,56 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 200,
-    left: 24,
+    bottom: 120,
+    left: 54,
     color: '#FFF',
   },
   headerBoard: {
     width: '85%',
-    height: 165,
+    height: 166,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: '#FFF',
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: 115,
+    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
   },
   chevron: {
     color: '#FFF',
-  },
-  myAssetsTitle: {
-    position: 'absolute',
-    top: 5,
-    left: 5,
-    fontWeight: 'bold',
-    fontSize: 15,
-    color: '#000000',
   },
   myAssets: {
     fontSize: 35,
     fontWeight: '900',
     letterSpacing: 2.92,
     color: '#000000',
-    top: 10,
-    left: 5,
+    marginTop: 17,
+    marginLeft: 25,
   },
   assetsValue: {
     marginTop: 10,
-    marginLeft: 10,
+    marginLeft: 25,
     color: '#000000',
     fontSize: 15,
     letterSpacing: 0.94,
   },
   sending: {
-    marginTop: 5,
-    marginLeft: 10,
+    marginTop: 7,
+    marginLeft: 25,
     color: '#000000',
     fontSize: 15,
     letterSpacing: 0.94,
   },
   myAssetsButtonsView: {
-    marginTop: 20,
+    marginTop: 13,
+    marginLeft: 15,
     width: '100%',
     flexDirection: 'row',
   },
@@ -178,8 +182,8 @@ const styles = StyleSheet.create({
   headerImage: {
     position: 'absolute',
     width: '100%',
-    height: 350,
-    marginTop: -150,
+    height: screenHelper.headerHeight,
+    marginTop: screenHelper.headerMarginTop,
   },
 });
 
@@ -240,12 +244,18 @@ class History extends Component {
       this.onRefresh = this.onRefresh.bind(this);
       const { navigation } = this.props;
       const {
-        name, address, coin, network,
+        name, address, coin,
       } = navigation.state.params;
       this.name = name;
       this.address = address;
       this.coin = coin;
-      this.network = network;
+      if (this.coin === 'BTCTestnet') {
+        this.coin = 'BTC';
+      } else if (this.coin === 'RBTCTestnet') {
+        this.coin = 'RBTC';
+      } else if (this.coin === 'RIFTestnet') {
+        this.coin = 'RIF';
+      }
     }
 
     componentDidMount() {
@@ -306,50 +316,45 @@ class History extends Component {
             />
           )}
           >
-            <View style={[{ height: 300 }]}>
-              <ImageBackground source={header} style={[styles.headerImage]}>
-                <Text style={styles.headerTitle}>Default Wallet</Text>
-              </ImageBackground>
-              <View style={styles.headerView}>
-                <View style={styles.headerBoardView}>
-                  <Card style={styles.headerBoard}>
-                    <CardItem>
-                      <Body>
-                        <Text style={styles.myAssets}>1.305 BTC</Text>
-                        <Text style={styles.assetsValue}>13,198.6 USD</Text>
-                        <Text style={styles.sending}>0.0005 BTC (50.56USD)</Text>
-                        <View style={styles.myAssetsButtonsView}>
-                          <TouchableOpacity
-                            style={styles.ButtonView}
-                            onPress={() => {}}
-                          >
-                            <Entypo name="swap" size={20} style={styles.sendIcon} />
-                            <Loc style={[styles.sendText]} text="Send" />
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                            onPress={() => {}}
-                          >
-                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                            <Loc style={[styles.sendText]} text="Receive" />
-                          </TouchableOpacity>
-                        </View>
-                      </Body>
-                    </CardItem>
-                  </Card>
-                  <Text style={styles.headerTitle}>{this.name}</Text>
+            <ImageBackground source={header} style={[styles.headerImage]}>
+              <Text style={[styles.headerTitle]}>{this.name}</Text>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              >
+                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+              </TouchableOpacity>
+            </ImageBackground>
+            <View style={styles.headerBoardView}>
+              <View style={styles.headerBoard}>
+                <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
+                <Text style={styles.assetsValue}>13,198.6 USD</Text>
+                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+                <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
-                    style={styles.backButton}
+                    style={styles.ButtonView}
                     onPress={() => {
-                      navigation.goBack();
+                      navigation.navigate('Transfer', navigation.state.params);
                     }}
                   >
-                    <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+                    <Entypo name="swap" size={20} style={styles.sendIcon} />
+                    <Loc style={[styles.sendText]} text="Send" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                    onPress={() => {
+                      navigation.navigate('WalletReceive', navigation.state.params);
+                    }}
+                  >
+                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                    <Loc style={[styles.sendText]} text="Receive" />
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-            <View style={styles.sectionContainer}>
+            <View style={[styles.sectionContainer, { marginTop: 30 }]}>
               <Text style={{
                 color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
               }}

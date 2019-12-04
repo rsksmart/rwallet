@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
@@ -9,6 +9,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import color from '../../assets/styles/color.ts';
 import flex from '../../assets/styles/layout.flex';
 import Loc from '../../components/common/misc/loc';
+import { DEVICE } from '../../common/info';
+import ScreenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,14 +38,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
+    bottom: 25,
     left: 55,
     color: '#FFF',
   },
   backButton: {
     position: 'absolute',
     left: 10,
-    top: 37,
+    bottom: 8,
   },
   chevron: {
     color: '#FFF',
@@ -206,6 +208,10 @@ export default class Scan extends Component {
     render() {
       const { navigation } = this.props;
       const barcodeMask = (<BarcodeMask width={240} height={240} edgeBorderWidth={1} showAnimatedLine={false} />);
+      let headerHeight = 100;
+      if (DEVICE.isIphoneX) {
+        headerHeight += ScreenHelper.iphoneXExtendedHeight;
+      }
       const scanner = (
         <RNCamera
           ref={(ref) => {
@@ -243,20 +249,17 @@ export default class Scan extends Component {
 
       return (
         <View style={[flex.flex1]}>
-          <View style={[{ height: 100 }]}>
-            <Image source={header} style={styles.headImage} />
-            <View style={styles.headerView}>
-              <Loc style={[styles.headerTitle]} text="Scan" key={`${Math.random()}`} />
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <ImageBackground source={header} style={[{ height: headerHeight }]}>
+            <Loc style={[styles.headerTitle]} text="Scan" />
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+          </ImageBackground>
           <View style={styles.body}>
             {scanner}
           </View>

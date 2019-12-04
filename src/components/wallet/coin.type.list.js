@@ -8,7 +8,7 @@ export default function CoinTypeList({ data }) {
     <FlatList
       data={data}
       renderItem={({ item }) => <Item data={item} />}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.title}
     />
   );
 }

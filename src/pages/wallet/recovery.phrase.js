@@ -67,7 +67,7 @@ class RecoveryPhrase extends Component {
     render() {
       const { phrase } = this.wallet.mnemonic;
       const { phrases } = this.state;
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       return (
         <View style={[flex.flex1]}>
           <Header
@@ -87,6 +87,11 @@ class RecoveryPhrase extends Component {
               style={{ marginTop: 10 }}
               onPress={() => {
                 Clipboard.setString(phrase);
+                const notification = createInfoNotification(
+                  'tip',
+                  'Phrase is copied to clipboard',
+                );
+                addNotification(notification);
               }}
             >
               <Text style={styles.copy}>Copy</Text>

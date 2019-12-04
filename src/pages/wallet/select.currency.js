@@ -44,19 +44,34 @@ export default class WalletSelectCurrency extends Component {
 
     mainnet = [
       {
-        id: '1',
         title: 'BTC',
         icon: BTC,
         selected: true,
       },
       {
-        id: '2',
         title: 'RBTC',
         icon: RBTC,
         selected: true,
       },
       {
-        id: '3',
+        title: 'RIF',
+        icon: RIF,
+        selected: true,
+      },
+    ];
+
+    testnet = [
+      {
+        title: 'BTC',
+        icon: BTC,
+        selected: true,
+      },
+      {
+        title: 'RBTC',
+        icon: RBTC,
+        selected: true,
+      },
+      {
         title: 'RIF',
         icon: RIF,
         selected: true,
@@ -87,6 +102,10 @@ export default class WalletSelectCurrency extends Component {
               <Loc style={[styles.sectionTitle]} text="Mainnet" />
               <CoinTypeList data={this.mainnet} />
             </View>
+            <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+              <Loc style={[styles.sectionTitle]} text="Testnet" />
+              <CoinTypeList data={this.testnet} />
+            </View>
             <Loader loading={loading} />
           </View>
           <View style={styles.buttonView}>
@@ -99,9 +118,13 @@ export default class WalletSelectCurrency extends Component {
                     coins.push(this.mainnet[i].title);
                   }
                 }
-
+                for (let i = 0; i < this.testnet.length; i += 1) {
+                  if (this.testnet[i].selected) {
+                    const coinId = `${this.mainnet[i].title}Testnet`;
+                    coins.push(coinId);
+                  }
+                }
                 const wallet = await walletManager.createWallet('randomName', phrases, coins);
-
                 if (phrases) {
                   this.setState({ loading: true });
                   await walletManager.createWallet('imported', phrases, coins);
