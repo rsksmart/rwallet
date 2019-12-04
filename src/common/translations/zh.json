@@ -89,5 +89,9 @@
   "IMPORT": "导入",
   "The recovery phrase is usually 12 words" : "恢复密语通常是12个单词",
   "Advanced Options": "高级选项",
-  "Specify derivation path": "指定派生路径"
+  "Specify derivation path": "指定派生路径",
+  "Password confirmation": "密码确认",
+  "Password confirmation doesn't match Password": "密码确认错误",
+  "Old Password": "旧密码",
+  "Old Password is wrong": "旧密码不正确"
 }
