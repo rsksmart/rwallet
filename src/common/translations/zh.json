@@ -82,5 +82,6 @@
   "Use passcode": "使用密码验证",
   "Touch Sensor": "指纹验证",
   "No match": "指纹不匹配",
-  "Phrase is copied to clipboard": "密语已复制到剪切板"
+  "Copied": "已复制",
+  "The recovery phrase has been copied to clipboard": "密语已复制到剪切板"
 }

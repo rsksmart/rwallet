@@ -82,5 +82,6 @@
   "Use passcode": "Use passcode",
   "Touch Sensor": "Touch Sensor",
   "No match": "No match",
-  "Phrase is copied to clipboard": "Phrase is copied to clipboard"
+  "Copied": "Copied",
+  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard."
 }
