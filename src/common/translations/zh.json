@@ -83,5 +83,6 @@
   "Touch Sensor": "指纹验证",
   "No match": "指纹不匹配",
   "Copied": "已复制",
-  "The recovery phrase has been copied to clipboard": "密语已复制到剪切板"
+  "The recovery phrase has been copied to clipboard": "密语已复制",
+  "The address has been copied to clipboard": "地址已复制"
 }

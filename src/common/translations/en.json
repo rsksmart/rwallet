@@ -83,5 +83,6 @@
   "Touch Sensor": "Touch Sensor",
   "No match": "No match",
   "Copied": "Copied",
-  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard."
+  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
+  "The address has been copied to clipboard": "The address has been copied to clipboard."
 }
