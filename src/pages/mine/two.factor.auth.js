@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View, StyleSheet, Switch, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import flex from '../../assets/styles/layout.flex';
-import appContext from '../../common/appContext';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   body: {
@@ -32,39 +33,36 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class TwoFactorAuth extends Component {
+class TwoFactorAuth extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
     constructor(props) {
       super(props);
-      const { fingerprint } = appContext.data.settings;
-      this.state = {
-        fingerprint,
-        loading: false,
-      };
+
+      this.goBack = this.goBack.bind(this);
+      this.setSingleSettings = this.setSingleSettings.bind(this);
     }
 
-    async goBack() {
-      const { fingerprint } = this.state;
+    setSingleSettings(value) {
+      const { setSingleSettings } = this.props;
+
+      setSingleSettings('fingerprint', value);
+    }
+
+    goBack() {
       const { navigation } = this.props;
-      this.setState({ loading: true });
-      await appContext.saveSettings({ fingerprint });
-      this.setState({ loading: false });
       navigation.goBack();
     }
 
     render() {
-      const { fingerprint, loading } = this.state;
-      const { navigation } = this.props;
+      const { navigation, fingerprint, loading } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
             title="Two-Factor Authentication"
-            goBack={() => {
-              navigation.goBack();
-            }}
+            goBack={this.goBack}
           />
           <View style={[screenHelper.styles.body, styles.body]}>
             <Loader loading={loading} />
@@ -81,10 +79,7 @@ export default class TwoFactorAuth extends Component {
               <Loc style={[styles.title]} text="Use Fingerprint" />
               <Switch
                 value={fingerprint}
-                onValueChange={async (v) => {
-                  this.setState({ fingerprint: v });
-                  await appContext.saveSettings({ fingerprint: v });
-                }}
+                onValueChange={this.setSingleSettings}
               />
             </View>
           </View>
@@ -100,4 +95,25 @@ TwoFactorAuth.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  setSingleSettings: PropTypes.func,
+  fingerprint: PropTypes.bool,
+  loading: PropTypes.bool,
 };
+
+
+TwoFactorAuth.defaultProps = {
+  setSingleSettings: undefined,
+  fingerprint: undefined,
+  loading: false,
+};
+
+const mapStateToProps = (state) => ({
+  loading: state.App.get('isPageLoading'),
+  fingerprint: state.App.get('settings') && state.App.get('settings').get('fingerprint'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TwoFactorAuth);

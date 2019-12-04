@@ -19,6 +19,7 @@ const { defaultSettings } = config;
 class Settings {
   constructor() {
     this.data = Map(defaultSettings);
+    this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
   }
 
@@ -37,9 +38,12 @@ class Settings {
   /**
    * Save JSON presentation of settings data to permenate storage
    */
-  async serialize() {
+  serialize() {
     const jsonData = this.data.toJSON();
-    await storage.save('settings', jsonData);
+
+    console.log('Serializing Settings to Storage.', jsonData);
+
+    return storage.save('settings', jsonData);
   }
 
   /**
