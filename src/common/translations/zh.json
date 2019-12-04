@@ -84,5 +84,9 @@
   "No match": "指纹不匹配",
   "Copied": "已复制",
   "The recovery phrase has been copied to clipboard": "密语已复制",
-  "The address has been copied to clipboard": "地址已复制"
+  "The address has been copied to clipboard": "地址已复制",
+  "Type the recovery phrase(usually 12 words)": "输入恢复密语（通常是12个单词）",
+  "IMPORT": "导入",
+  "The recovery phrase is usually 12 words" : "恢复密语通常是12个单词",
+  "Advanced Options": "高级选项"
 }

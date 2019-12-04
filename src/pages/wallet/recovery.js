@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
 } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Tags from '../../components/common/misc/tags';
 import Header from '../../components/common/misc/header';
+import Loc from '../../components/common/misc/loc';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   input: {
@@ -25,7 +29,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginTop: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 30,
     paddingBottom: 10,
   },
   buttonView: {
@@ -59,16 +63,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class WalletRecovery extends Component {
+class WalletRecovery extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
     constructor(props) {
       super(props);
-      const phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
+      // const phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
       this.state = {
-        phrases,
+        phrases: [],
         phrase: '',
       };
       this.inputWord = this.inputWord.bind(this);
@@ -90,9 +94,9 @@ export default class WalletRecovery extends Component {
 
     render() {
       const { phrase, phrases } = this.state;
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       return (
-        <View>
+        <View style={{ flex: 1 }}>
           <ScrollView>
             <Header
               title="Recovery Phrase"
@@ -101,8 +105,8 @@ export default class WalletRecovery extends Component {
               }}
             />
             <View style={[screenHelper.styles.body]}>
-              <View style={[styles.sectionContainer, { paddingBottom: 20, marginTop: 20 }]}>
-                <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
+              <View style={[styles.sectionContainer, { paddingBottom: 10, marginTop: 20 }]}>
+                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
                 <Input
                   style={[styles.input]}
                   onChangeText={(text) => this.setState({ phrase: text })}
@@ -122,29 +126,33 @@ export default class WalletRecovery extends Component {
               </View>
               <View style={[styles.sectionContainer, styles.bottomBorder]}>
                 <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-                <SwitchListItem title="Single address" value={false} />
-              </View>
-              <View style={[styles.sectionContainer]}>
-                <Text style={[styles.sectionTitle]}>Wallet Service URL</Text>
-                <Text>https://bws.bitpay.com/bws/api</Text>
-              </View>
-              <View style={styles.buttonView}>
-                <Button
-                  text="CREATE"
-                  onPress={async () => {
-                    let phrases2 = '';
-                    for (let i = 0; i < phrases.length; i += 1) {
-                      if (i !== 0) {
-                        phrases2 += ' ';
-                      }
-                      phrases2 += phrases[i];
-                    }
-                    navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
-                  }}
-                />
+                <SwitchListItem title="Specify derivation path" value={false} />
               </View>
             </View>
           </ScrollView>
+          <View style={styles.buttonView}>
+            <Button
+              text="IMPORT"
+              onPress={async () => {
+                if (phrases.length !== 12) {
+                  const notification = createInfoNotification(
+                    'Recovery Phrase',
+                    'The recovery phrase is usually 12 words',
+                  );
+                  addNotification(notification);
+                  return;
+                }
+                let phrases2 = '';
+                for (let i = 0; i < phrases.length; i += 1) {
+                  if (i !== 0) {
+                    phrases2 += ' ';
+                  }
+                  phrases2 += phrases[i];
+                }
+                navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
+              }}
+            />
+          </View>
         </View>
       );
     }
@@ -157,4 +165,15 @@ WalletRecovery.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletRecovery);

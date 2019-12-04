@@ -84,5 +84,9 @@
   "No match": "No match",
   "Copied": "Copied",
   "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
-  "The address has been copied to clipboard": "The address has been copied to clipboard."
+  "The address has been copied to clipboard": "The address has been copied to clipboard.",
+  "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
+  "IMPORT": "IMPORT",
+  "The recovery phrase is usually 12 words" : "The recovery phrase is usually 12 words",
+  "Advanced Options": "Advanced Options"
 }
