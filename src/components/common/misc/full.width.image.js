@@ -19,7 +19,7 @@ const FullWidthImage = ({ source }) => {
 };
 
 FullWidthImage.propTypes = {
-  source: PropTypes.string.isRequired,
+  source: PropTypes.number.isRequired,
 };
 
 export default FullWidthImage;
