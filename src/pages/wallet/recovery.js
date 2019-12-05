@@ -143,14 +143,14 @@ class WalletRecovery extends Component {
                   addNotification(notification);
                   return;
                 }
-                let phrases2 = '';
+                let inputPhrases = '';
                 for (let i = 0; i < phrases.length; i += 1) {
                   if (i !== 0) {
-                    phrases2 += ' ';
+                    inputPhrases += ' ';
                   }
-                  phrases2 += phrases[i];
+                  inputPhrases += phrases[i];
                 }
-                navigation.navigate('WalletSelectCurrency', { phrases: phrases2 });
+                navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
               }}
             />
           </View>

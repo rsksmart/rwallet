@@ -10,6 +10,8 @@ import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 
+const giftcard = require('../../assets/images/misc/giftcard.png');
+
 const styles = StyleSheet.create({
   headerBoard: {
     width: '90%',
@@ -44,8 +46,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-
-const giftcard = require('../../assets/images/misc/giftcard.png');
 
 class SpendIndex extends Component {
   static navigationOptions = () => ({
