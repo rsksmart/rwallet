@@ -109,7 +109,7 @@ TwoFactorAuth.defaultProps = {
 
 const mapStateToProps = (state) => ({
   loading: state.App.get('isPageLoading'),
-  fingerprint: state.App.get('settings') && state.App.get('settings').get('fingerprint'),
+  fingerprint: state.App.get('fingerprint'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

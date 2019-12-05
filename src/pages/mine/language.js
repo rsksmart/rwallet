@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
-import actions from '../../redux/languageSwitcher/actions';
+import actions from '../../redux/app/actions';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 
@@ -88,12 +88,12 @@ Language.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  language: state.LanguageSwitcher.get('language'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  changeLanguage: (language) => dispatch(
-    actions.changeLanguage(language),
+  changeLanguage: (value) => dispatch(
+    actions.setSingleSettings('language', value),
   ),
 });
 
