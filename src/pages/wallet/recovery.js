@@ -14,10 +14,13 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { strings } from '../../common/i18n';
 import { createInfoNotification } from '../../common/notification.controller';
+import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   input: {
-    height: 50,
+    height: 40,
+    borderWidth: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
     fontSize: 14,
@@ -45,8 +48,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
-    borderBottomColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: 170,
   },
   headerImage: {
     position: 'absolute',
@@ -61,6 +63,15 @@ const styles = StyleSheet.create({
     top: 200,
     left: 24,
     color: '#FFF',
+  },
+  phraseView: {
+    flex: 1,
+    borderBottomColor: '#bbb',
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: color.component.input.backgroundColor,
+    borderColor: color.component.input.borderColor,
+    borderRadius: 4,
+    borderStyle: 'solid',
   },
 });
 
@@ -106,24 +117,28 @@ class WalletRecovery extends Component {
               }}
             />
             <View style={[screenHelper.styles.body]}>
-              <View style={[styles.sectionContainer, { paddingBottom: 10, marginTop: 20 }]}>
+              <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
                 <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-                <Input
-                  style={[styles.input]}
-                  onChangeText={(text) => this.setState({ phrase: text })}
-                  onSubmitEditing={() => {
-                    this.inputWord();
-                  }}
-                  value={phrase}
-                />
-              </View>
-              <View style={[styles.sectionContainer, styles.phrasesBorder]}>
-                <Tags
-                  data={phrases}
-                  onPress={(i) => {
-                    this.deleteWord(i);
-                  }}
-                />
+                <View style={styles.phraseView}>
+                  <Input
+                    style={[styles.input]}
+                    onChangeText={(text) => this.setState({ phrase: text })}
+                    onSubmitEditing={() => {
+                      this.inputWord();
+                      this.setState({ phrase: '' });
+                    }}
+                    value={phrase}
+                  />
+                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                    <Tags
+                      style={{ flex: 1 }}
+                      data={phrases}
+                      onPress={(i) => {
+                        this.deleteWord(i);
+                      }}
+                    />
+                  </View>
+                </View>
               </View>
               <View style={[styles.sectionContainer, styles.bottomBorder]}>
                 <Text style={[styles.sectionTitle]}>Advanced Options</Text>

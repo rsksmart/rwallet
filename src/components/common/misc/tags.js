@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
   tags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignSelf: 'center',
   },
   item: {
     backgroundColor: color.component.tags.backgroundColor,
