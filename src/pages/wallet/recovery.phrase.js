@@ -88,8 +88,8 @@ class RecoveryPhrase extends Component {
               onPress={() => {
                 Clipboard.setString(phrase);
                 const notification = createInfoNotification(
-                  'tip',
-                  'Phrase is copied to clipboard',
+                  'Copied',
+                  'The recovery phrase has been copied to clipboard',
                 );
                 addNotification(notification);
               }}

@@ -250,7 +250,7 @@ class WalletList extends Component {
             },
             onPress: () => {
               navigation.navigate('WalletHistory', {
-                address: coin.address, coin: coinType, name: coin.defaultName,
+                address: coin.address, coin: coinType, name: coin.defaultName, icon: coin.icon,
               });
             },
           };
@@ -333,7 +333,7 @@ class WalletList extends Component {
 
       return (
         <View style={[flex.flex1]}>
-          <ScrollView style={{ marginBottom: 45 }}>
+          <ScrollView>
             <ImageBackground source={header} style={[styles.headerImage]}>
               <Loc style={[styles.headerTitle]} text="Your Wallet" />
               <TouchableOpacity

@@ -82,5 +82,21 @@
   "Use passcode": "Use passcode",
   "Touch Sensor": "Touch Sensor",
   "No match": "No match",
-  "Phrase is copied to clipboard": "Phrase is copied to clipboard"
+  "Copied": "Copied",
+  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
+  "The address has been copied to clipboard": "The address has been copied to clipboard.",
+  "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
+  "IMPORT": "IMPORT",
+  "The recovery phrase is usually 12 words" : "The recovery phrase is usually 12 words",
+  "Advanced Options": "Advanced Options",
+  "Specify derivation path": "Specify derivation path",
+  "Password confirmation": "Password confirmation",
+  "Password confirmation doesn't match Password": "Password confirmation doesn't match Password",
+  "Old Password": "Old Password",
+  "Old Password is wrong": "Old Password is wrong",
+  "Spend": "Spend",
+  "Buy Gift Cards": "Buy Gift Cards",
+  "This feature is coming soon": "This feature is coming soon.",
+  "Earn": "Earn",
+  "ShapeShift": "ShapeShift"
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, Text, StyleSheet, TouchableHighlight, TouchableOpacity,
+  View, Text, StyleSheet, TouchableHighlight, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
@@ -141,16 +141,12 @@ export default class PasscodeModal extends Component {
 
     const { onPress, title } = this.props;
     return (
-      <Modal
+      <View
         animationType={animationType}
         transparent={transparent}
         visible={modalVisible}
-        onRequestClose={() => {
-          this.setModalVisible(false);
-        }}
-        onShow={this.startShow}
+        style={[styles.background, { position: 'absolute', flex: 1 }]}
       >
-        <View style={styles.background} />
         <TouchableHighlight style={styles.container}>
           <View style={{ alignItems: 'center' }}>
             <Loc style={[styles.title]} text={title} />
@@ -175,7 +171,7 @@ export default class PasscodeModal extends Component {
             </View>
           </View>
         </TouchableHighlight>
-      </Modal>
+      </View>
     );
   }
 }

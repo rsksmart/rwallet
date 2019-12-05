@@ -25,6 +25,8 @@ import Scan from '../pages/wallet/scan';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
+import SpendIndex from '../pages/spend/index';
+import EarnIndex from '../pages/earn/index';
 /* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
@@ -175,6 +177,24 @@ const routeConfigMap = {
       path: 'Scan',
       navigationOptions: () => ({
         headerTitle: 'Scan',
+      }),
+    },
+  },
+  spend: {
+    SpendIndex: {
+      screen: SpendIndex,
+      path: 'SpendIndex',
+      navigationOptions: () => ({
+        headerTitle: 'Spend',
+      }),
+    },
+  },
+  earn: {
+    EarnIndex: {
+      screen: EarnIndex,
+      path: 'EarnIndex',
+      navigationOptions: () => ({
+        headerTitle: 'Earn',
       }),
     },
   },
