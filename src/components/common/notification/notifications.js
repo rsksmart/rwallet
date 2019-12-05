@@ -13,6 +13,7 @@ const Notifications = (props) => {
         type={notification.type}
         title={notification.title}
         message={notification.message}
+        buttonText={notification.buttonText}
         onClosePress={() => dispatch(actions.removeNotification())}
       />
       )}

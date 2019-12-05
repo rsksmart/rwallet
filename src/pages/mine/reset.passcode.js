@@ -75,8 +75,9 @@ class ResetPasscode extends Component {
                 } else {
                   this.passcodeModal.setModalVisible(true);
                   const notification = createInfoNotification(
-                    'Password confirmation',
-                    "Password confirmation doesn't match Password",
+                    'Passcode Mismatch',
+                    'Passcode Mismatch Body',
+                    'RETRY',
                   );
                   addNotification(notification);
                 }
