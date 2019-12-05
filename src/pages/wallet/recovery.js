@@ -170,7 +170,7 @@ WalletRecovery.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  language: state.LanguageSwitcher.get('language'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

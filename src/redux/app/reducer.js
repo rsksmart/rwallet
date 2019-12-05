@@ -1,17 +1,21 @@
 import { Map } from 'immutable';
 import actions from './actions';
-import appContext from '../../common/appContext';
+import config from '../../../config';
+
+const { defaultSettings } = config;
 
 const initState = new Map({
   isPageLoading: false,
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
-  currency: undefined,
   showNotification: false,
   notification: null,
   application: undefined,
   settings: undefined, // Settings instance
+  currency: defaultSettings.currency,
+  language: defaultSettings.language,
+  fingerprint: defaultSettings.fingerprint,
 });
 
 export default function appReducer(state = initState, action) {
@@ -40,13 +44,6 @@ export default function appReducer(state = initState, action) {
     {
       const result = action.value;
       const newstate = state.set('rawTransaction', result);
-      return newstate;
-    }
-    case actions.CHANGE_CURRENCY:
-    {
-      const { currency } = action.payload;
-      appContext.saveSettings({ currency }); // Serialize
-      const newstate = state.set('currency', currency);
       return newstate;
     }
     case actions.SET_ERROR:

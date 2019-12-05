@@ -19,12 +19,12 @@ const config = {
     supportedTokens: ['BTC', 'RBTC', 'RIF'],
     languages: ['en', 'fr', 'he', 'zh'],
     currencies: [
-      { name: 'USD', symbol: '$' },
-      { name: 'CNY', symbol: '￥' },
-      { name: 'ARS', symbol: 'ARS$' },
-      { name: 'KRW', symbol: '₩' },
-      { name: 'JPY', symbol: '￥' },
-      { name: 'GBP', symbol: '£' },
+      { name: 'USD', fullName: 'US Dollar', symbol: '$' },
+      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
+      { name: 'ARS', fullName: 'Argentine Peso', symbol: 'ARS$' },
+      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
+      { name: 'JPY', fullName: 'Japanese Yen', symbol: '￥' },
+      { name: 'GBP', fullName: 'Pound sterling', symbol: '£' },
     ],
   },
   development: {
