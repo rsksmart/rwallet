@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity, Text,
+  View, StyleSheet, TouchableOpacity, Text, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AutoHeightImage from 'react-native-auto-height-image';
 import Header from '../../components/common/misc/header';
+import FullWidthImage from '../../components/common/misc/full.width.image';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 
 const giftcard = require('../../assets/images/misc/giftcard.png');
+const shapeshift = require('../../assets/images/misc/shapeshift.png');
 
 const styles = StyleSheet.create({
-  headerBoard: {
-    width: '90%',
+  body: {
+    flex: 1,
+    marginHorizontal: 30,
+    marginBottom: 20,
+  },
+  board: {
+    width: '100%',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -30,12 +39,10 @@ const styles = StyleSheet.create({
   },
   giftcardView: {
     width: '100%',
-    borderColor: '#ddd',
+    borderColor: color.component.iconList.borderBottomColor,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: color.component.iconList.borderBottomColor,
-  },
-  giftcard: {
-    width: '100%',
+    paddingVertical: 20,
   },
   buttonText: {
     color: '#6FC062',
@@ -44,6 +51,34 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     paddingVertical: 15,
     alignSelf: 'center',
+  },
+  shapeshiftView: {
+    width: '100%',
+    borderRadius: 12,
+    backgroundColor: '#0f192f',
+    alignSelf: 'center',
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 15,
+  },
+  shapeshift: {
+    flex: 1,
+    marginLeft: 15,
+    justifyContent: 'center',
+    height: 80,
+  },
+  shapeshiftIcon: {
+    marginLeft: 5,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#000',
+    marginTop: 20,
+  },
+  chevron: {
+    color: '#FFF',
   },
 });
 
@@ -55,14 +90,16 @@ class SpendIndex extends Component {
   render() {
     const { addNotification } = this.props;
     return (
-      <View>
+      <ScrollView>
         <Header
           title="Spend"
         />
-        <View style={screenHelper.styles.body}>
-          <View style={[styles.headerBoard]}>
+        <View style={[screenHelper.styles.body, styles.body]}>
+          <View style={[styles.board, { marginTop: 30, flexDirection: 'row' }]}>
             <TouchableOpacity
-              style={[{ alignSelf: 'center', width: '95%', marginTop: 10 }]}
+              style={[{
+                alignSelf: 'center', flex: 1, marginHorizontal: 20,
+              }]}
               onPress={() => {
                 const notification = createInfoNotification(
                   'Buy Gift Cards',
@@ -72,13 +109,29 @@ class SpendIndex extends Component {
               }}
             >
               <View style={styles.giftcardView}>
-                <Image style={styles.giftcard} source={giftcard} />
+                <FullWidthImage source={giftcard} />
               </View>
               <Text style={[styles.buttonText]}>Buy Gift Cards</Text>
             </TouchableOpacity>
           </View>
+          <Text style={styles.sectionTitle}>Service</Text>
+          <TouchableOpacity
+            style={[styles.shapeshiftView]}
+            onPress={() => {
+              const notification = createInfoNotification(
+                'ShapeShift',
+                'This feature is coming soon',
+              );
+              addNotification(notification);
+            }}
+          >
+            <View style={styles.shapeshift}>
+              <AutoHeightImage width={150} style={styles.shapeshiftIcon} source={shapeshift} />
+            </View>
+            <Entypo name="chevron-small-right" size={40} style={styles.chevron} />
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -102,3 +155,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpendIndex);
+
+// <Image source={giftcard} style={styles.giftcard} resizeMode="contain" />
