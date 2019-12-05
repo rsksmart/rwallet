@@ -53,17 +53,23 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       // eslint-disable-next-line react/prop-types
       tabBarIcon: ({ focused }) => {
         let img = null;
+        let width = 18;
+        let height = 18;
         switch (navigation.state.routeName) {
           case 'Home':
             img = homeLight;
             break;
           case 'Mine':
+            width = 22;
+            height = 22;
             img = MineLight;
             break;
           case 'Send':
             img = spendLight;
             break;
           case 'Receive':
+            width = 21;
+            height = 21;
             img = earnLight;
             break;
           default:
@@ -73,12 +79,13 @@ const PrimaryTabNavigator = createBottomTabNavigator(
         if (!focused) {
           opacity = 0.6;
         }
+
         return (
           <View>
             <Image
               source={img}
               style={{
-                width: 18, height: 18, opacity, marginBottom: 7,
+                width, height, opacity, marginBottom: 7,
               }}
             />
           </View>
