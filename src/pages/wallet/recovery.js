@@ -74,113 +74,120 @@ const styles = StyleSheet.create({
 });
 
 class WalletRecovery extends Component {
-    static navigationOptions = () => ({
-      header: null,
-    });
+  static navigationOptions = () => ({
+    header: null,
+  });
 
-    constructor(props) {
-      super(props);
-      // const phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
-      this.state = {
-        phrases: [],
-        phrase: '',
-        submit: false,
-      };
-      this.inputWord = this.inputWord.bind(this);
-      this.deleteWord = this.deleteWord.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      phrases: [],
+      phrase: '',
+      isCanSubmit: false,
+    };
+    this.inputWord = this.inputWord.bind(this);
+    this.deleteWord = this.deleteWord.bind(this);
+    this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.onTagsPress = this.onTagsPress.bind(this);
+    this.onImportPress = this.onImportPress.bind(this);
+  }
 
-    inputWord() {
-      const { phrase, phrases } = this.state;
-      phrases.push(phrase);
-      this.setState({ phrases });
+  onSubmitEditing() {
+    const { phrase, phrases } = this.state;
+    const { addNotification } = this.props;
+    const inputText = phrase.trim();
+    if (inputText === '') {
       this.setState({ phrase: '' });
+      return;
     }
-
-    deleteWord(i) {
-      const { phrases } = this.state;
-      phrases.splice(i, 1);
-      this.setState({ phrases });
+    if (phrases.length === 12) {
+      const notification = createInfoNotification(
+        'Too Many Words',
+        'The recovery phrase has to be 12 words',
+      );
+      addNotification(notification);
+      return;
     }
+    if (phrases.length === 11) {
+      this.setState({ isCanSubmit: true });
+    }
+    this.inputWord();
+    this.setState({ phrase: '' });
+  }
 
-    render() {
-      const { phrase, phrases, submit } = this.state;
-      const { navigation, addNotification } = this.props;
-      return (
-        <View style={{ flex: 1 }}>
-          <ScrollView>
-            <Header
-              title="Recovery Phrase"
-              goBack={() => {
-                navigation.goBack();
-              }}
-            />
-            <View style={[screenHelper.styles.body]}>
-              <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
-                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-                <View style={styles.phraseView}>
-                  <Input
-                    style={[styles.input]}
-                    onChangeText={(text) => this.setState({ phrase: text })}
-                    onSubmitEditing={() => {
-                      const inputText = phrase.trim();
-                      if (inputText === '') {
-                        this.setState({ phrase: '' });
-                        return;
-                      }
-                      if (phrases.length === 12) {
-                        const notification = createInfoNotification(
-                          'Too Many Words',
-                          'The recovery phrase has to be 12 words',
-                        );
-                        addNotification(notification);
-                        return;
-                      }
-                      if (phrases.length === 11) {
-                        this.setState({ submit: true });
-                      }
-                      this.inputWord();
-                      this.setState({ phrase: '' });
-                    }}
-                    value={phrase}
+  onTagsPress(i) {
+    this.deleteWord(i);
+    this.setState({ isCanSubmit: false });
+  }
+
+  onImportPress() {
+    const { navigation } = this.props;
+    const { phrases } = this.state;
+    let inputPhrases = '';
+    for (let i = 0; i < phrases.length; i += 1) {
+      if (i !== 0) {
+        inputPhrases += ' ';
+      }
+      inputPhrases += phrases[i];
+    }
+    navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
+  }
+
+  inputWord() {
+    const { phrase, phrases } = this.state;
+    phrases.push(phrase);
+    this.setState({ phrases });
+    this.setState({ phrase: '' });
+  }
+
+  deleteWord(i) {
+    const { phrases } = this.state;
+    phrases.splice(i, 1);
+    this.setState({ phrases });
+  }
+
+  render() {
+    const { phrase, phrases, isCanSubmit } = this.state;
+    const { navigation } = this.props;
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView>
+          <Header title="Recovery Phrase" goBack={navigation.goBack} />
+          <View style={[screenHelper.styles.body]}>
+            <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
+              <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+              <View style={styles.phraseView}>
+                <Input
+                  style={[styles.input]}
+                  onChangeText={(text) => this.setState({ phrase: text })}
+                  onSubmitEditing={this.onSubmitEditing}
+                  value={phrase}
+                />
+                <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                  <Tags
+                    style={[{ flex: 1 }]}
+                    data={phrases}
+                    onPress={(i) => this.onTagsPress(i)}
                   />
-                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                    <Tags
-                      style={[{ flex: 1 }]}
-                      data={phrases}
-                      onPress={(i) => {
-                        this.deleteWord(i);
-                        this.setState({ submit: false });
-                      }}
-                    />
-                  </View>
                 </View>
               </View>
-              <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-                <SwitchListItem title={strings('Specify derivation path')} value={false} />
-              </View>
             </View>
-          </ScrollView>
-          <View style={styles.buttonView}>
-            <Button
-              text="IMPORT"
-              onPress={async () => {
-                let inputPhrases = '';
-                for (let i = 0; i < phrases.length; i += 1) {
-                  if (i !== 0) {
-                    inputPhrases += ' ';
-                  }
-                  inputPhrases += phrases[i];
-                }
-                navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
-              }}
-              disabled={!submit}
-            />
+            <View style={[styles.sectionContainer, styles.bottomBorder]}>
+              <Text style={[styles.sectionTitle]}>Advanced Options</Text>
+              <SwitchListItem title={strings('Specify derivation path')} value={false} />
+            </View>
           </View>
+        </ScrollView>
+        <View style={styles.buttonView}>
+          <Button
+            text="IMPORT"
+            onPress={this.onImportPress}
+            disabled={!isCanSubmit}
+          />
         </View>
-      );
-    }
+      </View>
+    );
+  }
 }
 
 WalletRecovery.propTypes = {

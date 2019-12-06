@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StyleSheet, TouchableOpacity, View,
 } from 'react-native';
@@ -23,37 +23,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Button extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      disabled: false,
+export default function Button({ text, onPress, disabled }) {
+  let disabledStyle = null;
+  if (disabled) {
+    disabledStyle = {
+      opacity: 0.3,
     };
   }
-
-  componentWillReceiveProps() {
-    const { disabled } = this.state;
-    if (disabled) {
-      this.setState({ disabled });
-    }
-  }
-
-  render() {
-    const { text, onPress, disabled } = this.props;
-    let disabledStyle = null;
-    if (disabled) {
-      disabledStyle = {
-        opacity: 0.3,
-      };
-    }
-    return (
-      <TouchableOpacity onPress={onPress} disabled={disabled}>
-        <View style={[styles.button, disabledStyle]}>
-          <Loc style={[styles.buttonText]} text={text} />
-        </View>
-      </TouchableOpacity>
-    );
-  }
+  return (
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <View style={[styles.button, disabledStyle]}>
+        <Loc style={[styles.buttonText]} text={text} />
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 Button.propTypes = {
