@@ -124,6 +124,14 @@ class WalletRecovery extends Component {
                     style={[styles.input]}
                     onChangeText={(text) => this.setState({ phrase: text })}
                     onSubmitEditing={() => {
+                      if (phrases.length >= 12) {
+                        const notification = createInfoNotification(
+                          'Recovery Phrase',
+                          'The recovery phrase is usually 12 words',
+                        );
+                        addNotification(notification);
+                        return;
+                      }
                       this.inputWord();
                       this.setState({ phrase: '' });
                     }}
@@ -131,7 +139,7 @@ class WalletRecovery extends Component {
                   />
                   <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
                     <Tags
-                      style={{ flex: 1 }}
+                      style={[{ flex: 1 }]}
                       data={phrases}
                       onPress={(i) => {
                         this.deleteWord(i);
