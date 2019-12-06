@@ -243,15 +243,13 @@ class WalletList extends Component {
             price: null,
             icon: coin.icon,
             r1Press: () => {
-              navigation.navigate('Transfer', { address: coin.address, coin: coinType });
+              navigation.navigate('Transfer', { wallet, coin });
             },
             r2Press: () => {
               navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
             },
             onPress: () => {
-              navigation.navigate('WalletHistory', {
-                address: coin.address, coin: coinType, name: coin.defaultName,
-              });
+              navigation.navigate('WalletHistory', { wallet, coin });
             },
           };
           wal.coins.push(item);

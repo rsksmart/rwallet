@@ -244,8 +244,9 @@ class History extends Component {
       this.onRefresh = this.onRefresh.bind(this);
       const { navigation } = this.props;
       const {
-        name, address, coin,
+        coin,
       } = navigation.state.params;
+      const { address, defaultName: name } = coin;
       this.name = name;
       this.address = address;
       this.coin = coin;
@@ -329,13 +330,14 @@ class History extends Component {
             </ImageBackground>
             <View style={styles.headerBoardView}>
               <View style={styles.headerBoard}>
-                <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
+                <Text style={styles.myAssets}>{`1.305 ${this.coin.id}`}</Text>
                 <Text style={styles.assetsValue}>13,198.6 USD</Text>
-                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+                <Text style={styles.sending}>{`0.0005 ${this.coin.id} (50.56USD)`}</Text>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {
+                      console.log(navigation.state.params);
                       navigation.navigate('Transfer', navigation.state.params);
                     }}
                   >

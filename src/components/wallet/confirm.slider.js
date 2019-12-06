@@ -170,20 +170,15 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
 ConfirmSlider.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   buttonColor: PropTypes.string.isRequired,
-  buttonSize: PropTypes.string.isRequired,
+  buttonSize: PropTypes.number.isRequired,
   borderColor: PropTypes.string.isRequired,
   backgroundColor: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  borderRadius: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  icon: PropTypes.object.isRequired,
+  borderRadius: PropTypes.number.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   children: PropTypes.object.isRequired,
   onVerified: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
-  }).isRequired,
   okButton: PropTypes.shape({
     duration: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,

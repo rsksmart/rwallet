@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ScrollView, ImageBackground,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
+import { connect } from 'react-redux';
+import * as bip39 from 'bip39';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
-import Button from '../../components/common/button/button';
+import { screen, DEVICE } from '../../common/info';
 import Loader from '../../components/common/misc/loader';
 import common from '../../common/common';
 import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
-import ScreenHelper from '../../common/screenHelper';
 
+import ScreenHelper from '../../common/screenHelper';
+import ConfirmSlider from '../../components/wallet/confirm.slider';
+import circleCheckIcon from '../../assets/images/misc/circle.check.png';
+import circleIcon from '../../assets/images/misc/circle.png';
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
@@ -50,8 +53,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sectionContainer: {
-    marginTop: 10,
     paddingHorizontal: 20,
+    marginTop: 10,
   },
   buttonView: {
     position: 'absolute',
@@ -191,7 +194,7 @@ const header = require('../../assets/images/misc/header.png');
 const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
 const address = require('../../assets/images/icon/address.png');
 
-export default class Transfer extends Component {
+class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -199,16 +202,18 @@ export default class Transfer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      custom: false,
       loading: false,
       to: null,
       amount: '0.00000001',
       memo: null,
       feeLevel: 1,
+      preference: 'medium',
+      isConfirm: false,
     };
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
-    this.comfirm = this.comfirm.bind(this);
+    this.confirm = this.confirm.bind(this);
+    this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
   }
 
   componentDidMount() {
@@ -223,11 +228,12 @@ export default class Transfer extends Component {
     appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
+
   // symbol: RBTC, RIF
   async sendRskTransaction(symbol) {
     console.log(`transfer::sendRskTransaction, symbol: ${symbol}`);
-    this.setState({ loading: true });
     const { amount, memo, feeLevel } = this.state;
+    this.setState({ loading: true });
     this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
@@ -270,24 +276,43 @@ export default class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { amount, memo, feeLevel } = this.state;
+    const { navigation: { state } } = this.props;
+    const { params } = state;
+    const { coin, wallet } = params;
+    // console.table(wallet)
+    const {
+      amount, preference, to, level,
+    } = this.state;
     this.setState({ loading: true });
     this.a = 1;
+    const retrieveBTCPrivateKey = async (btcWallet) => {
+      const seedBuffer = await bip39.mnemonicToSeed(btcWallet.mnemonic.phrase);
+      const bitcoinNetwork = bitcoin.networks.testnet;
+      const hdMaster = bitcoin.bip32.fromSeed(seedBuffer, bitcoinNetwork);
+      const keyPair = await hdMaster.derivePath('m/0');
+      const privateKeyBuffer = Buffer.from(keyPair.privateKey);
+      const privateKey = privateKeyBuffer.toString('hex');
+      console.log('privateKey → ', privateKey);
+      return privateKey;
+    };
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
       const value = common.btcToSatoshiHex(amount);
       const [symbol, type, sender, receiver, data] = [
-        'BTC', 'Testnet', 'mt8HhEFmdjbeuoUht8NDf8VHiamCWTG45T', 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
+        'BTC', 'Testnet', coin.address, to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
+      console.log('before sendSignedTransaction result');
       const result = await Parse.Cloud.run('createRawTransaction', {
-        symbol, type, sender, receiver, value, data, memo, feeLevel,
+        symbol, type, sender, receiver, value, data, preference,
       });
+      console.log('createRawTransaction result: ', result);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
+      console.log(`raw signedTransaction: ${JSON.stringify(tx)}`);
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      const privateKey = '3b5aec0ad01107b6b9818834097645a057c7655d917300f68042cae073b14139';
+      const privateKey = await retrieveBTCPrivateKey(wallet);
       const buf = Buffer.from(privateKey, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
@@ -304,8 +329,9 @@ export default class Transfer extends Component {
       console.log(`sendSignedTransaction, name: ${name}, type: ${type}`);
       console.log(`sendSignedTransaction, hash: ${JSON.stringify(hash)}`);
       const result = await Parse.Cloud.run('sendSignedTransaction', {
-        name, hash, type,
+        name, hash, type, preference: level, memo: '',
       });
+      console.log('sendSignedTransaction result: ', result);
       return result;
     };
     try {
@@ -319,56 +345,24 @@ export default class Transfer extends Component {
     this.setState({ loading: false });
   }
 
-  async comfirm() {
+  async confirm() {
     this.a = 1;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+    const { amount, to } = this.state;
 
-    // If user has not set passcode, then let he set passcode first.
-    const passcode = await appContext.secureGet('passcode');
-    if (!passcode) {
-      navigation.navigate('ResetPasscode', { page: 'Transfer' });
-      return;
-    }
-
-    let checkType = 'passcode';
-    if (appContext.data.settings.fingerprint) {
-      try {
-        await FingerprintScanner.isSensorAvailable();
-        checkType = 'fingerprint';
-      } catch (e) {
-        console.log(`Can't use FingerprintScanner, error message: ${e.message}`);
-      }
-    }
-
-    const sendTrans = async () => {
-      if (coin === 'BTC') {
-        await this.sendBtcTransaction();
-        navigation.navigate('TransferCompleted');
-      } else if (coin === 'RBTC' || coin === 'RIF') {
-        await this.sendRskTransaction(coin);
-        navigation.navigate('TransferCompleted');
-      }
-    };
-
-    if (checkType === 'fingerprint') {
-      navigation.navigate('VerifyFingerprint', {
-        verified: async () => {
-          sendTrans();
-        },
-      });
-    } else {
-      navigation.navigate('VerifyPasscode', {
-        verified: async () => {
-          sendTrans();
-        },
-      });
+    if (coin.id === 'BTC') {
+      await this.sendBtcTransaction(amount, to);
+      navigation.navigate('TransferCompleted');
+    } else if (coin.id === 'RBTC' || coin === 'RIF') {
+      await this.sendRskTransaction(coin);
+      navigation.navigate('TransferCompleted');
     }
   }
 
   render() {
     const {
-      custom, loading, to, amount, memo, feeLevel,
+      loading, to, amount, memo, feeLevel, isConfirm,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -397,11 +391,11 @@ export default class Transfer extends Component {
     ];
 
     let feeData = null;
-    if (coin === 'BTC') {
+    if (coin.id === 'BTC') {
       feeData = btcFees;
-    } else if (coin === 'RBTC') {
+    } else if (coin.id === 'RBTC') {
       feeData = rbtcFees;
-    } else if (coin === 'RIF') {
+    } else if (coin.id === 'RIF') {
       feeData = rifFees;
     }
 
@@ -410,7 +404,7 @@ export default class Transfer extends Component {
         <ImageBackground source={header} style={[{ height: headerHeight }]}>
           <Text style={styles.headerTitle}>
             <Loc text="Send" />
-            {` ${coin}`}
+            {` ${coin.defaultName}`}
           </Text>
           <TouchableOpacity
             style={styles.backButton}
@@ -439,7 +433,13 @@ export default class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.title2]} text="To" />
             <View style={styles.textInputView}>
-              <TextInput style={[styles.textInput]} value={to} />
+              <TextInput
+                style={[styles.textInput]}
+                value={to}
+                onChangeText={(text) => {
+                  this.setState({ to: text });
+                }}
+              />
               <TouchableOpacity
                 style={styles.textInputIcon}
                 onPress={() => {
@@ -475,34 +475,54 @@ export default class Transfer extends Component {
               />
             </View>
           </View>
-          <View style={[styles.sectionContainer]}>
+          <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
             <Loc style={[styles.title2]} text="Miner fee" />
             <Loc style={[styles.question]} text="How fast you want this done?" />
             <RadioGroup
               data={feeData}
               selected={feeLevel}
               onChange={(i) => {
-                this.setState({ feeLevel: i });
-                console.log(`fee: ${i}`);
-              }}
-            />
-          </View>
-          <View style={[styles.sectionContainer, styles.customRow, { paddingBottom: 20 }]}>
-            <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
-            <Switch
-              value={custom}
-              onValueChange={(v) => {
-                this.setState({ custom: v });
+                let preference = '';
+                switch (i) {
+                  case 0:
+                    preference = 'low';
+                    break;
+                  case 2:
+                    preference = 'high';
+                    break;
+                  case 1:
+                  default:
+                    preference = 'medium';
+                    break;
+                }
+                this.setState({ preference });
               }}
             />
           </View>
           <View style={styles.sectionContainer}>
-            <Button
-              text="COMFIRM"
-              onPress={() => {
-                this.comfirm();
+            <ConfirmSlider
+              // ref={(ref) => this.confirmSlider = ref}
+              width={screen.width - 50}
+              buttonSize={30}
+              buttonColor="#2962FF"
+              borderColor="#2962FF"
+              backgroundColor="#fff"
+              textColor="#37474F"
+              borderRadius={15}
+              okButton={{ visible: true, duration: 400 }}
+              onVerified={async () => {
+                await this.confirm();
+                this.setState({ isConfirm: true });
               }}
-            />
+              icon={(
+                <Image
+                  source={isConfirm ? circleCheckIcon : circleIcon}
+                  style={{ width: 20, height: 20 }}
+                />
+              )}
+            >
+              <Text>{isConfirm ? 'CONFIRMED' : 'slide to confirm'}</Text>
+            </ConfirmSlider>
           </View>
         </View>
       </ScrollView>
@@ -518,3 +538,12 @@ Transfer.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+});
+
+const mapDispatchToProps = () => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transfer);
