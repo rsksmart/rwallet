@@ -15,6 +15,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  btnDisabled: {
+    opacity: 0.3,
+  },
   buttonText: {
     color: color.component.button.color,
     fontSize: 16,
@@ -24,15 +27,9 @@ const styles = StyleSheet.create({
 });
 
 export default function Button({ text, onPress, disabled }) {
-  let disabledStyle = null;
-  if (disabled) {
-    disabledStyle = {
-      opacity: 0.3,
-    };
-  }
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
-      <View style={[styles.button, disabledStyle]}>
+      <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
         <Loc style={[styles.buttonText]} text={text} />
       </View>
     </TouchableOpacity>
