@@ -9,15 +9,17 @@ const styles = StyleSheet.create({
   tags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignSelf: 'center',
   },
   item: {
-    backgroundColor: color.component.tags.backgroundColor,
+    color: color.component.tags.color,
+  },
+  itemView: {
     marginLeft: 10,
     padding: 5,
-    color: color.component.tags.color,
-    borderRadius: 2,
+    backgroundColor: color.component.tags.backgroundColor,
+    borderRadius: 5,
     marginTop: 10,
+    height: 30,
   },
 });
 
@@ -35,6 +37,7 @@ export default function Tags({
     }
     res.push(
       <TouchableOpacity
+        style={styles.itemView}
         onPress={() => {
           if (onPress) {
             onPress(i);
