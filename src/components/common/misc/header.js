@@ -32,10 +32,15 @@ const styles = StyleSheet.create({
   chevron: {
     color: '#FFF',
   },
+  noGobackTitleStyle: {
+    fontSize: 20,
+    marginBottom: 63,
+  },
 });
 
 export default function Header({ title, goBack }) {
   let backButton = null;
+  let titleStyle = null;
   if (goBack) {
     backButton = (
       <TouchableOpacity
@@ -47,10 +52,12 @@ export default function Header({ title, goBack }) {
         <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
       </TouchableOpacity>
     );
+  } else {
+    titleStyle = styles.noGobackTitleStyle;
   }
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <Loc style={[styles.headerTitle]} text={title} />
+      <Loc style={[styles.headerTitle, titleStyle]} text={title} />
       { backButton }
     </ImageBackground>
   );
