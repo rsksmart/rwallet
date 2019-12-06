@@ -37,11 +37,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   buttonView: {
-    flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingBottom: 20,
+    marginBottom: 20,
   },
   bottomBorder: {
     borderBottomColor: '#bbb',
@@ -86,6 +84,7 @@ class WalletRecovery extends Component {
       this.state = {
         phrases: [],
         phrase: '',
+        submit: false,
       };
       this.inputWord = this.inputWord.bind(this);
       this.deleteWord = this.deleteWord.bind(this);
@@ -105,7 +104,7 @@ class WalletRecovery extends Component {
     }
 
     render() {
-      const { phrase, phrases } = this.state;
+      const { phrase, phrases, submit } = this.state;
       const { navigation, addNotification } = this.props;
       return (
         <View style={{ flex: 1 }}>
@@ -124,13 +123,21 @@ class WalletRecovery extends Component {
                     style={[styles.input]}
                     onChangeText={(text) => this.setState({ phrase: text })}
                     onSubmitEditing={() => {
-                      if (phrases.length >= 12) {
+                      const inputText = phrase.trim();
+                      if (inputText === '') {
+                        this.setState({ phrase: '' });
+                        return;
+                      }
+                      if (phrases.length === 12) {
                         const notification = createInfoNotification(
-                          'Recovery Phrase',
-                          'The recovery phrase is usually 12 words',
+                          'Too Many Words',
+                          'The recovery phrase has to be 12 words',
                         );
                         addNotification(notification);
                         return;
+                      }
+                      if (phrases.length === 11) {
+                        this.setState({ submit: true });
                       }
                       this.inputWord();
                       this.setState({ phrase: '' });
@@ -143,6 +150,7 @@ class WalletRecovery extends Component {
                       data={phrases}
                       onPress={(i) => {
                         this.deleteWord(i);
+                        this.setState({ submit: false });
                       }}
                     />
                   </View>
@@ -158,14 +166,6 @@ class WalletRecovery extends Component {
             <Button
               text="IMPORT"
               onPress={async () => {
-                if (phrases.length !== 12) {
-                  const notification = createInfoNotification(
-                    'Recovery Phrase',
-                    'The recovery phrase is usually 12 words',
-                  );
-                  addNotification(notification);
-                  return;
-                }
                 let inputPhrases = '';
                 for (let i = 0; i < phrases.length; i += 1) {
                   if (i !== 0) {
@@ -175,6 +175,7 @@ class WalletRecovery extends Component {
                 }
                 navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
               }}
+              disabled={!submit}
             />
           </View>
         </View>
