@@ -91,9 +91,7 @@ class EarnIndex extends Component {
     const { addNotification } = this.props;
     return (
       <ScrollView>
-        <Header
-          title="Spend"
-        />
+        <Header title="Earn" />
         <View style={[screenHelper.styles.body, styles.body]}>
           <View style={[styles.board, { marginTop: 30, flexDirection: 'row' }]}>
             <TouchableOpacity
