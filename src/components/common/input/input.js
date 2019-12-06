@@ -28,6 +28,7 @@ export default function Input({
       value={value}
       editable={editable}
       autoCapitalize="none"
+      autoCorrect={false}
     />
   );
 }
