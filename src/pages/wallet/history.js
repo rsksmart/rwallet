@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
+  Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -16,6 +16,7 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 
 const header = require('../../assets/images/misc/header.png');
+const sending = require('../../assets/images/icon/sending.png');
 
 
 const styles = StyleSheet.create({
@@ -187,9 +188,23 @@ const styles = StyleSheet.create({
   },
 });
 
+
+const getStateIcon = (state) => {
+  let icon = null;
+  if (state === 'Sent') {
+    icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />;
+  } else if (state === 'Received') {
+    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
+  } else if (state === 'Sending') {
+    icon = <Image source={sending} />;
+  }
+  return icon;
+};
+
 function Item({
-  title, icon, amount, datetime,
+  title, amount, datetime,
 }) {
+  const icon = getStateIcon(title);
   return (
     <View style={[styles.row]}>
       {icon}
@@ -208,7 +223,6 @@ function Item({
 
 Item.propTypes = {
   title: PropTypes.string.isRequired,
-  icon: PropTypes.element.isRequired,
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
 };
@@ -218,30 +232,10 @@ class History extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        type: 'Sending',
-        icon: <SimpleLineIcons name="refresh" size={30} style={{ color: '#000000' }} />,
-        amount: '0.005BTC',
-        datetime: 'a few seconds ago',
-      },
-      {
-        type: 'Received',
-        icon: <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />,
-        amount: '1.61BTC',
-        datetime: 'Sep 6. 2019',
-      },
-      {
-        type: 'Sent',
-        icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
-        amount: '0.3BTC',
-        datetime: 'Aug 12. 2019',
-      },
-    ];
+    listData = [];
 
     constructor(props) {
       super(props);
-      this.onRefresh = this.onRefresh.bind(this);
       const { navigation } = this.props;
       const {
         name, address, coin,
@@ -256,6 +250,8 @@ class History extends Component {
       } else if (this.coin === 'RIFTestnet') {
         this.coin = 'RIF';
       }
+      this.onRefresh = this.onRefresh.bind(this);
+      this.generateListView = this.generateListView.bind(this);
     }
 
     componentDidMount() {
@@ -269,21 +265,9 @@ class History extends Component {
       getTransactions(coin, network, address);
     }
 
-
-    render() {
-      const { transactions, isLoading, navigation } = this.props;
-      this.listData = [];
-      if (transactions) {
-        transactions.forEach((transaction) => {
-          const item = {
-            type: 'Sent',
-            icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
-            amount: '0.3BTC',
-            datetime: moment(transaction.timestamp).format('MMM D. YYYY'),
-          };
-          this.listData.push(item);
-        });
-      }
+    generateListView() {
+      const { transactions } = this.props;
+      this.listData = transactions;
 
       let listView = <ActivityIndicator size="small" color="#00ff00" />;
       if (transactions) {
@@ -292,7 +276,7 @@ class History extends Component {
             data={this.listData}
             renderItem={({ item }) => (
               <Item
-                title={item.type}
+                title={item.state}
                 icon={item.icon}
                 amount={item.amount}
                 datetime={item.datetime}
@@ -303,15 +287,18 @@ class History extends Component {
           />
         );
       }
+      return listView;
+    }
 
+    render() {
+      const { isLoading, navigation } = this.props;
+      const listView = this.generateListView();
       return (
         <View style={[flex.flex1]}>
           <ScrollView refreshControl={(
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={() => {
-                this.onRefresh();
-              }}
+              onRefresh={this.onRefresh}
               title="Loading..."
             />
           )}

@@ -1,6 +1,8 @@
 import { Map } from 'immutable';
+import moment from 'moment';
 import actions from './actions';
 import config from '../../../config';
+import common from '../../common/common';
 
 const { defaultSettings } = config;
 
@@ -35,7 +37,26 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_TRANSACTIONS_RESULT:
     {
-      const transactions = action.value;
+      const rawTransactions = action.value;
+      const transactions = [];
+      if (rawTransactions) {
+        rawTransactions.forEach((rawTrans) => {
+          let amount = null;
+          if (rawTrans.symbol === 'BTC') {
+            amount = `${common.satoshiHexToBtc(rawTrans.value)} BTC`;
+          } else if (rawTrans.symbol === 'RBTC') {
+            amount = `${common.weiHexToRBtc(rawTrans.value)} RBTC`;
+          } else if (rawTrans.symbol === 'RIF') {
+            amount = `${common.weiHexToRBtc(rawTrans.value)} RIF`;
+          }
+          const item = {
+            state: rawTrans.state,
+            amount,
+            datetime: moment(rawTrans.datetime).format('MMM D. YYYY'),
+          };
+          transactions.push(item);
+        });
+      }
       let newstate = state.set('isPageLoading', false);
       newstate = newstate.set('transactions', transactions);
       return newstate;

@@ -12,6 +12,7 @@ import ParseHelper from '../../common/parse';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
+import walletMock from '../../mock/wallet';
 
 function* initAppRequest(/* action */) {
   try {
@@ -130,9 +131,10 @@ function* getTransactions(action) {
   console.log('getTransactions is triggered, value: ', payload); // This is undefined
 
   try {
-    const response = yield call(ParseHelper.getTransactionsByAddress, payload);
+    // const response = yield call(ParseHelper.getTransactionsByAddress, payload);
+    const response = yield call(walletMock.getTransactionsByAddress, payload);
 
-    console.log('getServerInfoRequest got response, response: ', response);
+    console.log('getTransactions got response, response: ', response);
 
     // Sets state in reducer for success
     yield put({
