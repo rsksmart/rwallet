@@ -188,6 +188,11 @@ const styles = StyleSheet.create({
   },
 });
 
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y
+    >= contentSize.height - paddingToBottom;
+};
 
 const getStateIcon = (state) => {
   let icon = null;
@@ -228,134 +233,168 @@ Item.propTypes = {
 };
 
 class History extends Component {
-    static navigationOptions = () => ({
-      header: null,
-    });
+  static navigationOptions = () => ({
+    header: null,
+  });
 
-    listData = [];
+  listData = [];
 
-    constructor(props) {
-      super(props);
-      const { navigation } = this.props;
-      const {
-        name, address, coin,
-      } = navigation.state.params;
-      this.name = name;
-      this.address = address;
-      this.coin = coin;
-      if (this.coin === 'BTCTestnet') {
+  constructor(props) {
+    super(props);
+    const { navigation } = this.props;
+    const {
+      name, address, coin,
+    } = navigation.state.params;
+    this.name = name;
+    this.address = address;
+    switch (coin) {
+      case 'BTCTestnet':
         this.coin = 'BTC';
-      } else if (this.coin === 'RBTCTestnet') {
-        this.coin = 'RBTC';
-      } else if (this.coin === 'RIFTestnet') {
-        this.coin = 'RIF';
-      }
-      this.onRefresh = this.onRefresh.bind(this);
-      this.generateListView = this.generateListView.bind(this);
+        this.net = 'Testnet';
+        break;
+      case 'RBTCTestnet':
+        this.coin = 'BTC';
+        this.net = 'Testnet';
+        break;
+      case 'RIFTestnet':
+        this.coin = 'BTC';
+        this.net = 'Testnet';
+        break;
+      default:
+        this.coin = coin;
+        this.net = 'Mainnet';
     }
+    this.page = 1;
+    this.onRefresh = this.onRefresh.bind(this);
+    this.generateListView = this.generateListView.bind(this);
+    this.refreshControl = this.refreshControl.bind(this);
+    this.onEndReached = this.onEndReached.bind(this);
+  }
 
-    componentDidMount() {
-      this.onRefresh();
-    }
+  componentDidMount() {
+    this.onRefresh();
+  }
 
-    onRefresh() {
-      const { getTransactions } = this.props;
-      const [coin, network, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
-      // const [coin, network, address] = [this.coin, this.network, this.address];
-      getTransactions(coin, network, address);
-    }
+  componentWillReceiveProps(nextProps) {
+    this.generateListView(nextProps);
+  }
 
-    generateListView() {
-      const { transactions } = this.props;
-      this.listData = transactions;
+  onRefresh() {
+    const { getTransactions } = this.props;
+    getTransactions(this.coin, this.net, this.address, this.page);
+  }
 
-      let listView = <ActivityIndicator size="small" color="#00ff00" />;
-      if (transactions) {
-        listView = (
-          <FlatList
-            data={this.listData}
-            renderItem={({ item }) => (
-              <Item
-                title={item.state}
-                icon={item.icon}
-                amount={item.amount}
-                datetime={item.datetime}
-                onPress={item.onPress}
-              />
-            )}
-            keyExtractor={() => `${Math.random()}`}
-          />
-        );
-      }
-      return listView;
-    }
+  onEndReached() {
+    console.log('history::onEndReached');
+    const { getTransactions } = this.props;
+    this.page += 1;
+    getTransactions(this.coin, this.net, this.address, this.page);
+  }
 
-    render() {
-      const { isLoading, navigation } = this.props;
-      const listView = this.generateListView();
-      return (
-        <View style={[flex.flex1]}>
-          <ScrollView refreshControl={(
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={this.onRefresh}
-              title="Loading..."
+  generateListView(props) {
+    const { transactions } = props;
+    this.listData = transactions;
+    let listView = <ActivityIndicator size="small" color="#00ff00" />;
+    if (transactions) {
+      listView = (
+        <FlatList
+          data={this.listData}
+          renderItem={({ item }) => (
+            <Item
+              title={item.state}
+              icon={item.icon}
+              amount={item.amount}
+              datetime={item.datetime}
+              onPress={item.onPress}
             />
           )}
-          >
-            <ImageBackground source={header} style={[styles.headerImage]}>
-              <Text style={[styles.headerTitle]}>{this.name}</Text>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </ImageBackground>
-            <View style={styles.headerBoardView}>
-              <View style={styles.headerBoard}>
-                <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
-                <Text style={styles.assetsValue}>13,198.6 USD</Text>
-                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
-                <View style={styles.myAssetsButtonsView}>
-                  <TouchableOpacity
-                    style={styles.ButtonView}
-                    onPress={() => {
-                      navigation.navigate('Transfer', navigation.state.params);
-                    }}
-                  >
-                    <Entypo name="swap" size={20} style={styles.sendIcon} />
-                    <Loc style={[styles.sendText]} text="Send" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                    onPress={() => {
-                      navigation.navigate('WalletReceive', navigation.state.params);
-                    }}
-                  >
-                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                    <Loc style={[styles.sendText]} text="Receive" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-              <Text style={{
-                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
-              }}
-              >
-                Recent
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              {listView}
-            </View>
-          </ScrollView>
-        </View>
+          keyExtractor={(item) => `${item.key}`}
+        />
       );
     }
+    this.listView = listView;
+  }
+
+  refreshControl() {
+    const { isLoading } = this.props;
+    return (
+      <RefreshControl
+        refreshing={isLoading}
+        onRefresh={this.onRefresh}
+        title="Loading..."
+      />
+    );
+  }
+
+  render() {
+    const { navigation } = this.props;
+    return (
+      <View style={[flex.flex1]}>
+        <ScrollView
+          refreshControl={this.refreshControl}
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToBottom(nativeEvent)) {
+              console.log('ScrollView isCloseToBottom');
+            }
+          }}
+          onMomentumScrollEnd={() => {
+            console.log('ScrollView onMomentumScrollEnd');
+          }}
+          scrollEventThrottle={400}
+        >
+          <ImageBackground source={header} style={[styles.headerImage]}>
+            <Text style={[styles.headerTitle]}>{this.name}</Text>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+          </ImageBackground>
+          <View style={styles.headerBoardView}>
+            <View style={styles.headerBoard}>
+              <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
+              <Text style={styles.assetsValue}>13,198.6 USD</Text>
+              <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+              <View style={styles.myAssetsButtonsView}>
+                <TouchableOpacity
+                  style={styles.ButtonView}
+                  onPress={() => {
+                    navigation.navigate('Transfer', navigation.state.params);
+                  }}
+                >
+                  <Entypo name="swap" size={20} style={styles.sendIcon} />
+                  <Loc style={[styles.sendText]} text="Send" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                  onPress={() => {
+                    navigation.navigate('WalletReceive', navigation.state.params);
+                  }}
+                >
+                  <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                  <Loc style={[styles.sendText]} text="Receive" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+            <Text style={{
+              color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
+            }}
+            >
+              Recent
+            </Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            {this.listView}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 History.propTypes = {
@@ -365,13 +404,11 @@ History.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  transactions: PropTypes.arrayOf(PropTypes.shape({})),
   getTransactions: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
 };
 
 History.defaultProps = {
-  transactions: null,
   isLoading: false,
 };
 
@@ -381,8 +418,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (symbol, type, address) => dispatch(
-    appActions.getTransactions(symbol, type, address),
+  getTransactions: (symbol, type, address, page) => dispatch(
+    appActions.getTransactions(symbol, type, address, page),
   ),
 });
 

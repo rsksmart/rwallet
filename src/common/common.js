@@ -25,7 +25,7 @@ const common = {
     const value = Rsk3.utils.toHex(c);
     return value;
   },
-  weiHexToRBtc(weiHex) {
+  weiHexToRbtc(weiHex) {
     const wei = new BigNumber(weiHex);
     const result = wei.dividedBy(10e18);
     return result;
@@ -35,7 +35,7 @@ const common = {
     const value = Rsk3.utils.toHex(c);
     return value;
   },
-  weiHexToRIF(weiHex) {
+  weiHexToRif(weiHex) {
     const wei = new BigNumber(weiHex);
     const result = wei.dividedBy(10e18);
     return result;

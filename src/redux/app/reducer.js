@@ -40,16 +40,23 @@ export default function appReducer(state = initState, action) {
       const rawTransactions = action.value;
       const transactions = [];
       if (rawTransactions) {
-        rawTransactions.forEach((rawTrans) => {
+        rawTransactions.forEach((rawTrans, index) => {
           let amount = null;
-          if (rawTrans.symbol === 'BTC') {
-            amount = `${common.satoshiHexToBtc(rawTrans.value)} BTC`;
-          } else if (rawTrans.symbol === 'RBTC') {
-            amount = `${common.weiHexToRBtc(rawTrans.value)} RBTC`;
-          } else if (rawTrans.symbol === 'RIF') {
-            amount = `${common.weiHexToRBtc(rawTrans.value)} RIF`;
+          switch (rawTrans.symbol) {
+            case 'BTC':
+              amount = `${common.satoshiHexToBtc(rawTrans.value)} BTC`;
+              break;
+            case 'RBTC':
+              amount = `${common.weiHexToRbtc(rawTrans.value)} RBTC`;
+              break;
+            case 'RIF':
+              amount = `${common.weiHexToRif(rawTrans.value)} RIF`;
+              break;
+            default:
+              amount = '';
           }
           const item = {
+            key: index,
             state: rawTrans.state,
             amount,
             datetime: moment(rawTrans.datetime).format('MMM D. YYYY'),
