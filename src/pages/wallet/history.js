@@ -94,8 +94,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.94,
   },
   sending: {
-    marginTop: 7,
-    marginLeft: 25,
+    marginLeft: 5,
     color: '#000000',
     fontSize: 15,
     letterSpacing: 0.94,
@@ -179,12 +178,30 @@ const styles = StyleSheet.create({
   datetime: {
     color: '#939393',
     fontSize: 12,
+    alignSelf: 'flex-end',
   },
   headerImage: {
     position: 'absolute',
     width: '100%',
     height: screenHelper.headerHeight,
     marginTop: screenHelper.headerMarginTop,
+  },
+  recent: {
+    color: '#000000',
+    fontSize: 13,
+    letterSpacing: 0.25,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  sendingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 25,
+    marginTop: 7,
+  },
+  sendingIcon: {
+    width: 15,
+    height: 15,
   },
 });
 
@@ -269,6 +286,8 @@ class History extends Component {
     this.generateListView = this.generateListView.bind(this);
     this.refreshControl = this.refreshControl.bind(this);
     this.onEndReached = this.onEndReached.bind(this);
+    this.onSendButtonClick = this.onSendButtonClick.bind(this);
+    this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -289,6 +308,26 @@ class History extends Component {
     const { getTransactions } = this.props;
     this.page += 1;
     getTransactions(this.coin, this.net, this.address, this.page);
+  }
+
+  onSendButtonClick() {
+    const { navigation } = this.props;
+    navigation.navigate('Transfer', navigation.state.params);
+  }
+
+  onReceiveButtonClick() {
+    const { navigation } = this.props;
+    navigation.navigate('WalletReceive', navigation.state.params);
+  }
+
+  static onScroll({ nativeEvent }) {
+    if (isCloseToBottom(nativeEvent)) {
+      console.log('ScrollView isCloseToBottom');
+    }
+  }
+
+  static onMomentumScrollEnd() {
+    console.log('ScrollView onMomentumScrollEnd');
   }
 
   generateListView(props) {
@@ -331,24 +370,16 @@ class History extends Component {
     return (
       <View style={[flex.flex1]}>
         <ScrollView
-          refreshControl={this.refreshControl}
-          onScroll={({ nativeEvent }) => {
-            if (isCloseToBottom(nativeEvent)) {
-              console.log('ScrollView isCloseToBottom');
-            }
-          }}
-          onMomentumScrollEnd={() => {
-            console.log('ScrollView onMomentumScrollEnd');
-          }}
+          refreshControl={this.refreshControl()}
+          onScroll={History.onScroll}
+          onMomentumScrollEnd={History.onMomentumScrollEnd}
           scrollEventThrottle={400}
         >
           <ImageBackground source={header} style={[styles.headerImage]}>
             <Text style={[styles.headerTitle]}>{this.name}</Text>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={navigation.goBack}
             >
               <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
             </TouchableOpacity>
@@ -357,22 +388,21 @@ class History extends Component {
             <View style={styles.headerBoard}>
               <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
               <Text style={styles.assetsValue}>13,198.6 USD</Text>
-              <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+              <View style={styles.sendingView}>
+                <Image style={styles.sendingIcon} source={sending} />
+                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+              </View>
               <View style={styles.myAssetsButtonsView}>
                 <TouchableOpacity
                   style={styles.ButtonView}
-                  onPress={() => {
-                    navigation.navigate('Transfer', navigation.state.params);
-                  }}
+                  onPress={this.onSendButtonClick}
                 >
                   <Entypo name="swap" size={20} style={styles.sendIcon} />
                   <Loc style={[styles.sendText]} text="Send" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                  onPress={() => {
-                    navigation.navigate('WalletReceive', navigation.state.params);
-                  }}
+                  onPress={this.onReceiveButtonClick}
                 >
                   <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
                   <Loc style={[styles.sendText]} text="Receive" />
@@ -381,12 +411,7 @@ class History extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-            <Text style={{
-              color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
-            }}
-            >
-              Recent
-            </Text>
+            <Text style={styles.recent}>Recent</Text>
           </View>
           <View style={styles.sectionContainer}>
             {this.listView}

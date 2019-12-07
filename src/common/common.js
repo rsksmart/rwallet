@@ -1,6 +1,5 @@
 import Rsk3 from 'rsk3';
 import BigNumber from 'bignumber.js';
-// import {DeviceInfo} from "./info";
 import { Toast } from '@ant-design/react-native';
 
 const common = {
