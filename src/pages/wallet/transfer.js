@@ -296,17 +296,19 @@ class Transfer extends Component {
         symbol, type, sender, receiver, value, data, gasPrice, gas,
       };
       console.log(`transfer::sendRskTransaction, createRawTransaction, rawTransactionParams: ${JSON.stringify(rawTransactionParams)}`);
-      console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.addressPrivateKey)}`);
+      console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.addressPrivateKeyHex)}`);
       const result = await Parse.Cloud.run('createRawTransaction', rawTransactionParams);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
       // const privateKey = '9E41AA4BA98146F04039E7974A83BF65A8494D2F27D5CAB32F18650A514AFBEF';
+      const privateKey = coin.addressPrivateKeyHex;
+      console.log(`transfer::sendRskTransaction, sendSignedTransaction, privateKey: ${privateKey}`);
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
-      const accountInfo = await rsk3.accounts.privateKeyToAccount(coin.addressPrivateKey);
+      const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
       const signedTransaction = await accountInfo.signTransaction(
-        rawTransaction, coin.addressPrivateKey,
+        rawTransaction, privateKey,
       );
       console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
       const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];

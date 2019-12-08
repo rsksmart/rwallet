@@ -8,7 +8,7 @@ const ethereumjsUtil = require('ethereumjs-util');
 
 const MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8');
 
-function deserializePrivate(privateKey) {
+export function deserializePrivate(privateKey) {
   const master = JSON.parse(privateKey);
   const ret = new HDNode();
   ret.chainCode = Buffer.from(master.cc, 'hex');
@@ -63,7 +63,8 @@ export default class RBTCCoin {
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
-      this.addressPrivateKey = RBTCCoin.getAddressPrivateKey(master, addressNode);
+      this.addressPrivateKeyHex = RBTCCoin.getAddressPrivateKeyHex(master, addressNode);
+      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.addressPrivateKeyHex}`);
     } catch (ex) {
       console.error(ex);
     }
@@ -71,6 +72,12 @@ export default class RBTCCoin {
     console.log(`${this.metadata.defaultName}.address`, this.address);
   }
 
+  static getAddressPrivateKeyHex(master, addressNode) {
+    let privateKey = RBTCCoin.getAddressPrivateKey(master, addressNode);
+    privateKey = deserializePrivate(privateKey).privateKey;
+    privateKey = Buffer.from(privateKey).toString('hex');
+    return privateKey;
+  }
 
   static getAddressPrivateKey(master, addressNode) {
     const privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
@@ -140,7 +147,7 @@ export default class RBTCCoin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
-      addressPrivateKey: this.addressPrivateKey,
+      addressPrivateKeyHex: this.addressPrivateKeyHex,
     };
   }
 
