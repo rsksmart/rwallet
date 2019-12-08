@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import {
   View, PanResponder, Animated, NativeModules,
@@ -6,12 +7,13 @@ import PropTypes from 'prop-types';
 
 const { UIManager } = NativeModules;
 
-// eslint-disable-next-line no-unused-expressions
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+UIManager.setLayoutAnimationEnabledExperimental
+&& UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class ConfirmSlider extends Component { // eslint-disable-line no-unused-expressions
   constructor(props) {
     super(props);
+
     this.reset = this.reset.bind(this);
 
     this.state = {
@@ -22,21 +24,21 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
       dimensions: { width: 0, height: 0 },
     };
 
-    const { drag } = this.state;
     this.panResponder = PanResponder.create({
-
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         // eslint-disable-next-line no-underscore-dangle
-        const positionXY = drag.__getValue();
-        drag.setOffset(positionXY);
-        drag.setValue({ x: 0, y: 0 });
+        const positionXY = this.state.drag.__getValue();
+        this.state.drag.setOffset(positionXY);
+        this.state.drag.setValue({ x: 0, y: 0 });
       },
-      onPanResponderMove: Animated.event([null, { dx: drag.x }], {
+      onPanResponderMove: Animated.event([null, { dx: this.state.drag.x }], {
         // limit sliding out of box
         listener: (event, gestureState) => {
           const { buttonSize } = this.props;
+
           const {
+            drag,
             confirm,
             dimensions: { width },
           } = this.state;
@@ -57,18 +59,16 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
         },
       }),
       onPanResponderRelease: () => {
-        const { onVerified, okButton } = this.props;
-        const { confirm, percent } = this.state;
-        if (confirm) return;
-        if (percent >= 100) {
+        if (this.state.confirm) return;
+        if (this.state.percent >= 100) {
           this.setState({ confirm: true });
-          onVerified(); // communicate that the verification was successful
+          this.props.onConfirmed(); // communicate that the verification was successful
 
-          const { visible, duration } = okButton;
+          const { visible, duration } = this.props.okButton;
           if (!visible) {
             this.toggleShowAnimation(false, duration);
           }
-        } else if (!confirm) {
+        } else if (!this.state.confirm) {
           this.reset();
         }
       },
@@ -78,26 +78,24 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
   }
 
   reset() {
-    const { drag } = this.state;
-    const { okButton } = this.props;
-    drag.setOffset({ x: 0, y: 0 });
-    Animated.timing(drag, {
+    this.state.drag.setOffset({ x: 0, y: 0 });
+    Animated.timing(this.state.drag, {
       toValue: { x: 0, y: 0 },
       duration: 800,
     }).start();
-    this.toggleShowAnimation(true, okButton.duration);
-    this.toggleShowAnimation(true, okButton.duration);
+    this.toggleShowAnimation(true, this.props.okButton.duration);
+    this.toggleShowAnimation(true, this.props.okButton.duration);
     this.setState({ confirm: false, percent: 0 });
   }
 
   toggleShowAnimation(visible, duration) {
-    const { buttonOpacity } = this.state;
     Animated.timing(
-      buttonOpacity, // The animated value to drive
-      {
-        toValue: visible ? 1 : 0, // Animate to opacity: 1 (opaque)
-        duration, // Make it take a while
-      },
+        // Animate over time
+        this.state.buttonOpacity, // The animated value to drive
+        {
+          toValue: visible ? 1 : 0, // Animate to opacity: 1 (opaque)
+          duration, // Make it take a while
+        },
     ).start();
   }
 
@@ -111,103 +109,69 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
       borderRadius,
       children,
     } = this.props;
-    const { buttonOpacity, drag } = this.state;
+    const { buttonOpacity } = this.state;
 
-    const position = { transform: drag.getTranslateTransform() };
+    const position = { transform: this.state.drag.getTranslateTransform() };
 
     return (
-      <View style={{
-        borderColor,
-        borderWidth: 2,
-        borderRadius: borderRadius + 4,
-        padding: 2,
-        flex: 1,
-        height: buttonSize + 8,
-      }}
-      >
-        <View
-          onLayout={(event) => {
-            const { width, height } = event.nativeEvent.layout;
-            this.setState({
-              dimensions: { width, height },
-            });
-          }}
-          style={{
-            backgroundColor,
-            height: buttonSize,
-            borderRadius,
-            justifyContent: 'center',
-          }}
+        <View style={{
+          borderColor,
+          borderWidth: 2,
+          borderRadius: borderRadius + 5,
+          padding: 2,
+          flex: 1,
+          height: buttonSize + 10,
+        }}
         >
-          {children && (
-          <View style={[{ position: 'absolute', alignSelf: 'center' }]}>
-            {children}
-          </View>
-          )}
-
-          <Animated.View
-                        // eslint-disable-next-line react/jsx-props-no-spreading
-            {...this.panResponder.panHandlers}
-            style={[position, {
-              width: buttonSize,
-              height: buttonSize,
-              borderRadius,
-              backgroundColor: buttonColor,
-              justifyContent: 'center',
-              alignItems: 'center',
-              opacity: buttonOpacity,
-            },
-            ]}
+          <View
+              onLayout={(event) => {
+                const { width, height } = event.nativeEvent.layout;
+                this.setState({
+                  dimensions: { width, height },
+                });
+              }}
+              style={{
+                backgroundColor,
+                height: buttonSize,
+                borderRadius,
+                justifyContent: 'center',
+              }}
           >
-            {icon}
-          </Animated.View>
+            {children && (
+                <View style={[{ position: 'absolute', alignSelf: 'center' }]}>
+                  {children}
+                </View>
+            )}
+
+            // eslint-disable-next-line jsx-props-no-spreading
+            <Animated.View
+                {...this.panResponder.panHandlers}
+                style={[position, {
+                  width: buttonSize,
+                  height: buttonSize,
+                  borderRadius,
+                  backgroundColor: buttonColor,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  opacity: buttonOpacity,
+                }]}
+            >
+              {icon}
+            </Animated.View>
+          </View>
         </View>
-      </View>
     );
   }
 }
 
 ConfirmSlider.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  buttonColor: PropTypes.string.isRequired,
-  buttonSize: PropTypes.number.isRequired,
-  borderColor: PropTypes.string.isRequired,
-  backgroundColor: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  icon: PropTypes.object.isRequired,
-  borderRadius: PropTypes.number.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
-  onVerified: PropTypes.func.isRequired,
-  okButton: PropTypes.shape({
-    duration: PropTypes.number.isRequired,
-    visible: PropTypes.bool.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 export default ConfirmSlider;
-
-// e.g
-//
-// <ConfirmSlider
-//     ref={(ref) => this.confirmSlider = ref}
-//     width={screen.width - 50}
-//     buttonSize={30}
-//     buttonColor="#2962FF"
-//     borderColor="#2962FF"
-//     backgroundColor="#fff"
-//     textColor="#37474F"
-//     borderRadius={15}
-//     okButton={{ visible: true, duration: 400 }}
-//     onVerified={() => {
-//         this.setState({ isConfirm: true });
-//     }}
-//     icon={(
-//         <Image
-//             source={isConfirm ? circleCheckIcon : circleIcon}
-//             style={{ width: 20, height: 20 }}
-//         />
-//     )}
-// >
-//     <Text>{isConfirm ? 'CONFIRMED' : 'slide to confirm'}</Text>
-// </ConfirmSlider>
