@@ -37,10 +37,10 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_TRANSACTIONS_RESULT:
     {
-      const rawTransactions = action.value;
+      const { value: rawTransactions } = action;
       const transactions = [];
       if (rawTransactions) {
-        rawTransactions.forEach((rawTrans, index) => {
+        rawTransactions.forEach((rawTrans) => {
           let amount = null;
           switch (rawTrans.symbol) {
             case 'BTC':
@@ -55,7 +55,6 @@ export default function appReducer(state = initState, action) {
             default:
           }
           const item = {
-            key: index,
             state: rawTrans.state,
             amount,
             value: rawTrans.value,

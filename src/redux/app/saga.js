@@ -139,6 +139,7 @@ function* getTransactions(action) {
     // Sets state in reducer for success
     yield put({
       type: actions.GET_TRANSACTIONS_RESULT,
+      page: payload.page,
       value: response,
     });
   } catch (err) {

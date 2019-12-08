@@ -10,7 +10,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
-import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
@@ -204,6 +203,12 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
   },
+  refreshControl: {
+    zIndex: 10000,
+  },
+  footerIndicator: {
+    marginVertical: 20,
+  },
 });
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -269,6 +274,8 @@ class History extends Component {
       totalCoinValue: '0',
       sendingCoin: '0',
       sendingCoinValue: '0',
+      isRefreshing: false,
+      isLoadMore: false,
     };
 
     this.name = name;
@@ -290,6 +297,8 @@ class History extends Component {
         this.coin = coin;
         this.net = 'Mainnet';
     }
+    this.allTransactions = [];
+    this.listView = <ActivityIndicator size="small" color="#00ff00" />;
     this.page = 1;
     this.onRefresh = this.onRefresh.bind(this);
     this.generateListView = this.generateListView.bind(this);
@@ -297,36 +306,59 @@ class History extends Component {
     this.onEndReached = this.onEndReached.bind(this);
     this.onSendButtonClick = this.onSendButtonClick.bind(this);
     this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
+    this.onbackClick = this.onbackClick.bind(this);
+    this.getTransactions = this.getTransactions.bind(this);
+    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
-  componentDidMount() {
-    this.onRefresh();
+  componentWillMount() {
+    this.getTransactions();
+    const totalCoin = 0; // TODO: getBalancet
+    this.setState({ totalCoin: `${totalCoin}` });
+    this.calcTotalCoinValue(totalCoin);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       transactions, prices,
     } = nextProps;
+    const { transactions: oldTransactions } = this.props;
+    const { isLoadMore } = this.state;
     console.log('WalletList.componentWillReceiveProps: prices,', prices);
     const price = this.getTargetPrice(prices);
-    this.generateListView(transactions);
-    this.calcSendingCoin(transactions, price);
-    const totalCoin = 0; // TODO: getBalancet
-    this.setState({ totalCoin: `${totalCoin}` });
-    this.calcTotalCoinValue(totalCoin);
+    if (transactions !== oldTransactions) {
+      this.setState({ isRefreshing: false });
+      if (transactions) {
+        if (isLoadMore) {
+          this.setState({ isLoadMore: false });
+          if (transactions.length !== 0) {
+            this.page += 1;
+            this.allTransactions = this.allTransactions.concat(transactions);
+          }
+        } else {
+          this.allTransactions = transactions;
+        }
+        this.generateListView(this.allTransactions);
+        this.calcSendingCoin(transactions, price);
+      }
+    }
   }
 
-
   onRefresh() {
-    const { getTransactions } = this.props;
-    getTransactions(this.coin, this.net, this.address, this.page);
+    this.page = 0;
+    this.setState({ isRefreshing: true });
+    this.getTransactions();
   }
 
   onEndReached() {
     console.log('history::onEndReached');
+    const { isLoadMore } = this.state;
+    if (isLoadMore) {
+      return;
+    }
     const { getTransactions } = this.props;
-    this.page += 1;
-    getTransactions(this.coin, this.net, this.address, this.page);
+    this.setState({ isLoadMore: true });
+    getTransactions(this.coin, this.net, this.address, this.page + 1);
   }
 
   onSendButtonClick() {
@@ -341,12 +373,28 @@ class History extends Component {
 
   static onScroll({ nativeEvent }) {
     if (isCloseToBottom(nativeEvent)) {
-      console.log('ScrollView isCloseToBottom');
+      // console.log('ScrollView isCloseToBottom');
     }
   }
 
-  static onMomentumScrollEnd() {
-    console.log('ScrollView onMomentumScrollEnd');
+  onMomentumScrollEnd(e) {
+    // console.log('ScrollView onMomentumScrollEnd');
+    const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
+    const contentSizeHeight = e.nativeEvent.contentSize.height; // scrollView contentSize height
+    const oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; // scrollView height
+    if (offsetY + oriageScrollHeight >= contentSizeHeight) {
+      console.log('case 1');
+      this.onEndReached();
+    } else if (offsetY + oriageScrollHeight <= 1) {
+      console.log('case 2');
+    } else if (offsetY === 0) {
+      console.log('case 3');
+    }
+  }
+
+  onbackClick() {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   getTargetPrice(prices) {
@@ -365,7 +413,15 @@ class History extends Component {
     return price;
   }
 
+  getTransactions() {
+    const { getTransactions } = this.props;
+    getTransactions(this.coin, this.net, this.address, this.page);
+  }
+
   calcSendingCoin(transactions, price) {
+    if (!transactions) {
+      return;
+    }
     let sendingCoin = new BigNumber(0);
     transactions.forEach((transaction) => {
       if (transaction.state === 'Sending') {
@@ -392,95 +448,102 @@ class History extends Component {
   }
 
   generateListView(transactions) {
-    this.listData = transactions;
-    let listView = <ActivityIndicator size="small" color="#00ff00" />;
-    if (transactions) {
-      listView = (
-        <FlatList
-          data={this.listData}
-          renderItem={({ item }) => (
-            <Item
-              title={item.state}
-              icon={item.icon}
-              amount={`${item.amount}${this.coin}`}
-              datetime={item.datetime}
-              onPress={item.onPress}
-            />
-          )}
-          keyExtractor={(item) => `${item.key}`}
-        />
-      );
+    if (!transactions) {
+      return;
     }
-    this.listView = listView;
+    this.listView = (
+      <FlatList
+        data={transactions}
+        renderItem={({ item }) => (
+          <Item
+            title={item.state}
+            icon={item.icon}
+            amount={`${item.amount}${this.coin}`}
+            datetime={item.datetime}
+            onPress={item.onPress}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    );
   }
 
   refreshControl() {
-    const { isLoading } = this.props;
+    const { isRefreshing } = this.state;
     return (
       <RefreshControl
-        refreshing={isLoading}
+        style={styles.refreshControl}
+        refreshing={isRefreshing}
         onRefresh={this.onRefresh}
         title="Loading..."
       />
     );
   }
 
+  renderfooter() {
+    const { isLoadMore } = this.state;
+    let footer = null;
+    if (isLoadMore) {
+      footer = <ActivityIndicator style={styles.footerIndicator} size="small" color="#00ff00" />;
+    }
+    return footer;
+  }
+
   render() {
-    const { navigation, currency } = this.props;
+    const { currency } = this.props;
     const {
       sendingCoin, sendingCoinValue, totalCoin, totalCoinValue,
     } = this.state;
     return (
-      <View style={[flex.flex1]}>
-        <ScrollView
-          refreshControl={this.refreshControl()}
-          onScroll={History.onScroll}
-          onMomentumScrollEnd={History.onMomentumScrollEnd}
-          scrollEventThrottle={400}
-        >
-          <ImageBackground source={header} style={[styles.headerImage]}>
-            <Text style={[styles.headerTitle]}>{this.name}</Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={navigation.goBack}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </ImageBackground>
-          <View style={styles.headerBoardView}>
-            <View style={styles.headerBoard}>
-              <Text style={styles.myAssets}>{`${totalCoin} ${this.coin}`}</Text>
-              <Text style={styles.assetsValue}>{`${totalCoinValue} ${currency}`}</Text>
-              <View style={styles.sendingView}>
-                <Image style={styles.sendingIcon} source={sending} />
-                <Text style={styles.sending}>{`${sendingCoin}${this.coin} (${sendingCoinValue}${currency})`}</Text>
-              </View>
-              <View style={styles.myAssetsButtonsView}>
-                <TouchableOpacity
-                  style={styles.ButtonView}
-                  onPress={this.onSendButtonClick}
-                >
-                  <Entypo name="swap" size={20} style={styles.sendIcon} />
-                  <Loc style={[styles.sendText]} text="Send" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                  onPress={this.onReceiveButtonClick}
-                >
-                  <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                  <Loc style={[styles.sendText]} text="Receive" />
-                </TouchableOpacity>
-              </View>
+      <ScrollView
+        refreshControl={this.refreshControl()}
+        onScroll={History.onScroll}
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
+        scrollEventThrottle={400}
+      >
+        <ImageBackground source={header} style={[styles.headerImage]}>
+          <Text style={[styles.headerTitle]}>{this.name}</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={this.onbackClick}
+          >
+            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+          </TouchableOpacity>
+        </ImageBackground>
+        <View style={styles.headerBoardView}>
+          <View style={styles.headerBoard}>
+            <Text style={styles.myAssets}>{`${totalCoin} ${this.coin}`}</Text>
+            <Text style={styles.assetsValue}>{`${totalCoinValue} ${currency}`}</Text>
+            <View style={styles.sendingView}>
+              <Image style={styles.sendingIcon} source={sending} />
+              <Text style={styles.sending}>{`${sendingCoin}${this.coin} (${sendingCoinValue}${currency})`}</Text>
+            </View>
+            <View style={styles.myAssetsButtonsView}>
+              <TouchableOpacity
+                style={styles.ButtonView}
+                onPress={this.onSendButtonClick}
+              >
+                <Entypo name="swap" size={20} style={styles.sendIcon} />
+                <Loc style={[styles.sendText]} text="Send" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                onPress={this.onReceiveButtonClick}
+              >
+                <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                <Loc style={[styles.sendText]} text="Receive" />
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-            <Text style={styles.recent}>Recent</Text>
-          </View>
-          <View style={styles.sectionContainer}>
-            {this.listView}
-          </View>
-        </ScrollView>
-      </View>
+        </View>
+        <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+          <Text style={styles.recent}>Recent</Text>
+        </View>
+        <View style={styles.sectionContainer}>
+          {this.listView}
+        </View>
+        {this.renderfooter()}
+      </ScrollView>
     );
   }
 }
@@ -493,21 +556,18 @@ History.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   getTransactions: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})),
   transactions: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 History.defaultProps = {
-  isLoading: false,
   transactions: null,
   prices: null,
 };
 
 const mapStateToProps = (state) => ({
   transactions: state.App.get('transactions'),
-  isLoading: state.App.get('isPageLoading'),
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
 });
