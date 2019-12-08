@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   },
   headImage: {
     position: 'absolute',
+    width: '100%',
   },
   sectionTitle: {
     fontSize: 14,
