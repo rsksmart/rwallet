@@ -539,7 +539,7 @@ class Transfer extends Component {
               textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
               borderRadius={15}
               okButton={{ visible: true, duration: 400 }}
-              onConfirmed={async () => {
+              onVerified={async () => {
                 await this.confirm();
                 this.setState({ isConfirm: true });
               }}
