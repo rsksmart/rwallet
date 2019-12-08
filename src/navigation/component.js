@@ -49,8 +49,12 @@ const RootComponent = (props) => {
 RootComponent.propTypes = {
   showNotification: PropTypes.bool.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  notification: PropTypes.object.isRequired,
+  notification: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
+};
+
+RootComponent.defaultProps = {
+  notification: null,
 };
 
 export default RootComponent;
