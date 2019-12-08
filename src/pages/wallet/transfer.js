@@ -290,7 +290,7 @@ class Transfer extends Component {
       const value = common.rbtcToWeiHex(amount);
       const [type, sender, receiver, data, gasPrice, gas] = [
         this.netType, coin.address, to || '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-        '', '1095', 36825,
+        '', '600000000', 21000,
       ];
       const rawTransactionParams = {
         symbol, type, sender, receiver, value, data, gasPrice, gas,
