@@ -322,11 +322,11 @@ class History extends Component {
     const {
       transactions, prices,
     } = nextProps;
-    const { transactions: oldTransactions } = this.props;
+    const { transactions: curTransactions, prices: curPrices } = this.props;
     const { isLoadMore } = this.state;
     console.log('WalletList.componentWillReceiveProps: prices,', prices);
     const price = this.getTargetPrice(prices);
-    if (transactions !== oldTransactions) {
+    if (transactions !== curTransactions) {
       this.setState({ isRefreshing: false });
       if (transactions) {
         if (isLoadMore) {
@@ -335,12 +335,15 @@ class History extends Component {
             this.page += 1;
             this.allTransactions = this.allTransactions.concat(transactions);
           }
-        } else {
+        } else if (transactions.length > 0) {
           this.allTransactions = transactions;
         }
         this.generateListView(this.allTransactions);
-        this.calcSendingCoin(transactions, price);
+        this.calcSendingCoin(this.allTransactions, price);
       }
+    }
+    if (prices !== curPrices) {
+      this.calcSendingCoin(this.allTransactions, price);
     }
   }
 
