@@ -33,9 +33,9 @@ export default class Wallet {
           coin = new RBTCCoin(coinId, amount, address);
         }
 
-        if (_.isUndefined(coin.address)) {
-          coin.derive(seed);
-        }
+        // TODO: right now we always derive privateKey hex string from seed
+        // In future we could save those keys into storage to cut derive time
+        coin.derive(seed);
 
         this.coins.push(coin);
       });
