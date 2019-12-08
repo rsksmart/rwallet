@@ -16,6 +16,14 @@ function deserializePrivate(privateKey) {
   return ret;
 }
 
+function serializePrivate(node) {
+  const ret = {
+    prk: node.privateKey.toString('hex'),
+    cc: node.chainCode.toString('hex'),
+  };
+  return JSON.stringify(ret);
+}
+
 function deserializePublic(s) {
   const master = JSON.parse(s);
   if (master.prk) return null;
@@ -55,11 +63,18 @@ export default class RBTCCoin {
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
+      this.addressPrivateKey = RBTCCoin.getAddressPrivateKey(master, addressNode);
     } catch (ex) {
       console.error(ex);
     }
 
     console.log(`${this.metadata.defaultName}.address`, this.address);
+  }
+
+
+  static getAddressPrivateKey(master, addressNode) {
+    const privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
+    return privateKey;
   }
 
   static fromMasterSeed(seedBuffer) {
@@ -125,6 +140,7 @@ export default class RBTCCoin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
+      addressPrivateKey: this.addressPrivateKey,
     };
   }
 
@@ -144,5 +160,21 @@ export default class RBTCCoin {
 
   get defaultName() {
     return this.metadata.defaultName;
+  }
+
+  static derivePathFromNode(s, path) {
+    console.log('derivePathFromNode, s, path');
+    console.log(s);
+    console.log(path);
+    let deserialized = deserializePublic(s);
+    let pub = true;
+    if (!deserialized) {
+      pub = false;
+      deserialized = deserializePrivate(s);
+    }
+    const derived = deserialized.derive(path);
+    let serialized = '';
+    if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
+    return serialized;
   }
 }
