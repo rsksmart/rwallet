@@ -281,7 +281,7 @@ class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { navigation: { state }, addNotification } = this.props;
+    const { navigation: { state } } = this.props;
     const { params } = state;
     const { coin } = params;
     // console.table(wallet)
@@ -329,10 +329,23 @@ class Transfer extends Component {
       console.log('sendSignedTransaction result: ', result);
       return result;
     };
+    const rawTransaction = await createRawTransaction();
+    const result = await sendSignedTransaction(rawTransaction);
+    console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+  }
+
+  async confirm() {
+    this.a = 1;
+    const { navigation, addNotification } = this.props;
+    const { coin } = navigation.state.params;
+    const { amount, to } = this.state;
+
     try {
-      const rawTransaction = await createRawTransaction();
-      const result = await sendSignedTransaction(rawTransaction);
-      console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+      this.setState({ loading: false });
+      if (coin.id === 'BTCTestnet') {
+        await this.sendBtcTransaction(amount, to);
+        navigation.navigate('TransferCompleted');
+      }
     } catch (error) {
       this.setState({ loading: false });
       console.log(`sendTransaction, error: ${error.message}`);
@@ -371,19 +384,6 @@ class Transfer extends Component {
         }
       }
     }
-    this.setState({ loading: false });
-  }
-
-  async confirm() {
-    this.a = 1;
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
-    const { amount, to } = this.state;
-
-    if (coin.id === 'BTCTestnet') {
-      await this.sendBtcTransaction(amount, to);
-      navigation.navigate('TransferCompleted');
-    }
   }
 
   validateConfirmControl() {
@@ -397,7 +397,6 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-
 
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
