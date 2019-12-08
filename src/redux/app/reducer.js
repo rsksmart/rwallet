@@ -44,21 +44,21 @@ export default function appReducer(state = initState, action) {
           let amount = null;
           switch (rawTrans.symbol) {
             case 'BTC':
-              amount = `${common.satoshiHexToBtc(rawTrans.value)} BTC`;
+              amount = common.satoshiHexToBtc(rawTrans.value);
               break;
             case 'RBTC':
-              amount = `${common.weiHexToRbtc(rawTrans.value)} RBTC`;
+              amount = common.weiHexToRbtc(rawTrans.value);
               break;
             case 'RIF':
-              amount = `${common.weiHexToRif(rawTrans.value)} RIF`;
+              amount = common.weiHexToRif(rawTrans.value);
               break;
             default:
-              amount = '';
           }
           const item = {
             key: index,
             state: rawTrans.state,
             amount,
+            value: rawTrans.value,
             datetime: moment(rawTrans.datetime).format('MMM D. YYYY'),
           };
           transactions.push(item);

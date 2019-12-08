@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import BigNumber from 'bignumber.js';
 import flex from '../../assets/styles/layout.flex';
 import appActions from '../../redux/app/actions';
 import Loc from '../../components/common/misc/loc';
@@ -262,6 +263,14 @@ class History extends Component {
     const {
       name, address, coin,
     } = navigation.state.params;
+
+    this.state = {
+      totalCoin: '0',
+      totalCoinValue: '0',
+      sendingCoin: '0',
+      sendingCoinValue: '0',
+    };
+
     this.name = name;
     this.address = address;
     switch (coin) {
@@ -295,8 +304,18 @@ class History extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.generateListView(nextProps);
+    const {
+      transactions, prices,
+    } = nextProps;
+    console.log('WalletList.componentWillReceiveProps: prices,', prices);
+    const price = this.getTargetPrice(prices);
+    this.generateListView(transactions);
+    this.calcSendingCoin(transactions, price);
+    const totalCoin = 0; // TODO: getBalancet
+    this.setState({ totalCoin: `${totalCoin}` });
+    this.calcTotalCoinValue(totalCoin);
   }
+
 
   onRefresh() {
     const { getTransactions } = this.props;
@@ -330,8 +349,49 @@ class History extends Component {
     console.log('ScrollView onMomentumScrollEnd');
   }
 
-  generateListView(props) {
-    const { transactions } = props;
+  getTargetPrice(prices) {
+    if (!prices) {
+      return null;
+    }
+    let price = 0;
+    const { currency } = this.props;
+    for (let i = 0; i < prices.length; i += 1) {
+      const item = prices[i];
+      if (item.symbol === this.coin) {
+        price = item.price[currency];
+        break;
+      }
+    }
+    return price;
+  }
+
+  calcSendingCoin(transactions, price) {
+    let sendingCoin = new BigNumber(0);
+    transactions.forEach((transaction) => {
+      if (transaction.state === 'Sending') {
+        sendingCoin = sendingCoin.plus(transaction.amount);
+      }
+    });
+    const sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    this.setState({ sendingCoinValue });
+    const state = { sendingCoin: sendingCoin.toString() };
+    if (price) {
+      state.sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    }
+    this.setState(state);
+  }
+
+  calcTotalCoinValue(totalCoin, price) {
+    if (!price) {
+      this.setState({ totalCoinValue: '0' });
+      return;
+    }
+    const totalCoinBigNumber = new BigNumber(totalCoin);
+    const totalCoinValue = totalCoinBigNumber.times(price);
+    this.setState({ totalCoinValue: totalCoinValue.toString() });
+  }
+
+  generateListView(transactions) {
     this.listData = transactions;
     let listView = <ActivityIndicator size="small" color="#00ff00" />;
     if (transactions) {
@@ -342,7 +402,7 @@ class History extends Component {
             <Item
               title={item.state}
               icon={item.icon}
-              amount={item.amount}
+              amount={`${item.amount}${this.coin}`}
               datetime={item.datetime}
               onPress={item.onPress}
             />
@@ -366,7 +426,10 @@ class History extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, currency } = this.props;
+    const {
+      sendingCoin, sendingCoinValue, totalCoin, totalCoinValue,
+    } = this.state;
     return (
       <View style={[flex.flex1]}>
         <ScrollView
@@ -386,11 +449,11 @@ class History extends Component {
           </ImageBackground>
           <View style={styles.headerBoardView}>
             <View style={styles.headerBoard}>
-              <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
-              <Text style={styles.assetsValue}>13,198.6 USD</Text>
+              <Text style={styles.myAssets}>{`${totalCoin} ${this.coin}`}</Text>
+              <Text style={styles.assetsValue}>{`${totalCoinValue} ${currency}`}</Text>
               <View style={styles.sendingView}>
                 <Image style={styles.sendingIcon} source={sending} />
-                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+                <Text style={styles.sending}>{`${sendingCoin}${this.coin} (${sendingCoinValue}${currency})`}</Text>
               </View>
               <View style={styles.myAssetsButtonsView}>
                 <TouchableOpacity
@@ -431,15 +494,22 @@ History.propTypes = {
   }).isRequired,
   getTransactions: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
+  currency: PropTypes.string.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})),
+  transactions: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 History.defaultProps = {
   isLoading: false,
+  transactions: null,
+  prices: null,
 };
 
 const mapStateToProps = (state) => ({
   transactions: state.App.get('transactions'),
   isLoading: state.App.get('isPageLoading'),
+  currency: state.App.get('currency'),
+  prices: state.Wallet.get('prices'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
