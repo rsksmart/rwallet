@@ -23,6 +23,9 @@ import circleIcon from '../../assets/images/misc/circle.png';
 import { createInfoNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 
+import ParseHelper from '../../common/parse';
+
+
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
 
@@ -291,22 +294,19 @@ class Transfer extends Component {
       const [symbol, type, sender, receiver, data] = [
         'BTC', 'Testnet', coin.address, to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
-      console.log('before sendSignedTransaction result');
-      const rawTranscationParams = {
+      const result = await ParseHelper.createRawTransaction({
         symbol, type, sender, receiver, value, data, preference,
-      };
-      console.log(`rawTranscationParams: ${JSON.stringify(rawTranscationParams)}`);
-      console.log(`addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
-      const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
+      });
+
+      // const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
       console.log('createRawTransaction result: ', JSON.stringify(result));
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
       console.log(`raw signedTransaction: ${JSON.stringify(tx)}`);
-      console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      console.log(`transfer::sendBtcTransaction, addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
-      const buf = Buffer.from(coin.addressPrivateKeyHex, 'hex');
+      console.log(`transfer::sendBtcTransaction, coin.privateKey: ${coin.privateKey}`);
+      const buf = Buffer.from(coin.privateKey, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
       tx.signatures = tx.tosign.map((tosign) => {
