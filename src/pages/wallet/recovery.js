@@ -66,7 +66,7 @@ export default class WalletRecovery extends Component {
 
     constructor(props) {
       super(props);
-      const phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
+      const phrases = 'multiply merit imitate embrace grass mountain badge stadium pluck rough hospital label'.split(' ');
       this.state = {
         phrases,
         phrase: '',

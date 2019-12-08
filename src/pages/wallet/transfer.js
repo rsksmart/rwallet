@@ -292,9 +292,12 @@ class Transfer extends Component {
         'BTC', 'Testnet', coin.address, to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
       console.log('before sendSignedTransaction result');
-      const result = await Parse.Cloud.run('createRawTransaction', {
+      const rawTranscationParams = {
         symbol, type, sender, receiver, value, data, preference,
-      });
+      };
+      console.log(`rawTranscationParams: ${JSON.stringify(rawTranscationParams)}`);
+      console.log(`addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
+      const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
       console.log('createRawTransaction result: ', JSON.stringify(result));
       return result;
     };
@@ -302,7 +305,8 @@ class Transfer extends Component {
       const tx = rawTransaction;
       console.log(`raw signedTransaction: ${JSON.stringify(tx)}`);
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      const buf = coin.addressPrivateKey;
+      console.log(`transfer::sendBtcTransaction, addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
+      const buf = Buffer.from(coin.addressPrivateKeyHex, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
       tx.signatures = tx.tosign.map((tosign) => {

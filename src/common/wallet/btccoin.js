@@ -30,7 +30,9 @@ export default class Coin {
       this.addressPublicKey = addressNode.public_key;
       console.log('this.addressPublicKey = addressNode.public_key;');
       this.addressPrivateKey = Coin.getAddressPrivateKey(master, addressNode, network);
+      console.log(`[PK]this.addressPrivateKey: ${this.addressPrivateKey}`);
       this.addressPrivateKeyHex = Coin.getAddressPrivateKeyHex(master, addressNode, network);
+      console.log(`[PK]this.addressPrivateKeyHex: ${this.addressPrivateKeyHex}`);
     } catch (ex) {
       console.error(ex);
     }
@@ -104,7 +106,7 @@ export default class Coin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
-      addressPrivateKey: this.addressPrivateKey,
+      addressPrivateKeyHex: this.addressPrivateKeyHex,
     };
   }
 
