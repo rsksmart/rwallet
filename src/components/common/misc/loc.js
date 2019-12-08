@@ -2,9 +2,12 @@ import React from 'react';
 import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { strings } from '../../../common/i18n';
+import { strings, isContainTranslation } from '../../../common/i18n';
 
-const Loc = ({ text, style }) => <Text style={style}>{strings(text)}</Text>;
+const Loc = ({ text, style }) => {
+  const translation = isContainTranslation(text) ? strings(text) : text;
+  return <Text style={style}>{translation}</Text>;
+};
 
 Loc.propTypes = {
   text: PropTypes.string.isRequired,

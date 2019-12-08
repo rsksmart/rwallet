@@ -7,7 +7,6 @@ import Rsk3 from 'rsk3';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Parse from 'parse/react-native';
 import { connect } from 'react-redux';
-import * as bip39 from 'bip39';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
@@ -21,6 +20,8 @@ import ScreenHelper from '../../common/screenHelper';
 import ConfirmSlider from '../../components/wallet/confirm.slider';
 import circleCheckIcon from '../../assets/images/misc/circle.check.png';
 import circleIcon from '../../assets/images/misc/circle.png';
+import { createInfoNotification } from '../../common/notification.controller';
+import appActions from '../../redux/app/actions';
 
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
@@ -213,7 +214,6 @@ class Transfer extends Component {
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
     this.confirm = this.confirm.bind(this);
-    this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
   }
 
   componentDidMount() {
@@ -276,25 +276,15 @@ class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { navigation: { state } } = this.props;
+    const { navigation: { state }, addNotification } = this.props;
     const { params } = state;
-    const { coin, wallet } = params;
+    const { coin } = params;
     // console.table(wallet)
     const {
-      amount, preference, to, level,
+      amount, preference, to,
     } = this.state;
     this.setState({ loading: true });
     this.a = 1;
-    const retrieveBTCPrivateKey = async (btcWallet) => {
-      const seedBuffer = await bip39.mnemonicToSeed(btcWallet.mnemonic.phrase);
-      const bitcoinNetwork = bitcoin.networks.testnet;
-      const hdMaster = bitcoin.bip32.fromSeed(seedBuffer, bitcoinNetwork);
-      const keyPair = await hdMaster.derivePath('m/0');
-      const privateKeyBuffer = Buffer.from(keyPair.privateKey);
-      const privateKey = privateKeyBuffer.toString('hex');
-      console.log('privateKey → ', privateKey);
-      return privateKey;
-    };
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
       const value = common.btcToSatoshiHex(amount);
@@ -305,15 +295,14 @@ class Transfer extends Component {
       const result = await Parse.Cloud.run('createRawTransaction', {
         symbol, type, sender, receiver, value, data, preference,
       });
-      console.log('createRawTransaction result: ', result);
+      console.log('createRawTransaction result: ', JSON.stringify(result));
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
       console.log(`raw signedTransaction: ${JSON.stringify(tx)}`);
       console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      const privateKey = await retrieveBTCPrivateKey(wallet);
-      const buf = Buffer.from(privateKey, 'hex');
+      const buf = coin.addressPrivateKey;
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
       tx.signatures = tx.tosign.map((tosign) => {
@@ -329,7 +318,7 @@ class Transfer extends Component {
       console.log(`sendSignedTransaction, name: ${name}, type: ${type}`);
       console.log(`sendSignedTransaction, hash: ${JSON.stringify(hash)}`);
       const result = await Parse.Cloud.run('sendSignedTransaction', {
-        name, hash, type, preference: level, memo: '',
+        name, hash, type, preference, memo: '',
       });
       console.log('sendSignedTransaction result: ', result);
       return result;
@@ -339,8 +328,42 @@ class Transfer extends Component {
       const result = await sendSignedTransaction(rawTransaction);
       console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
     } catch (error) {
-      console.log(`sendTransaction, error: ${error.message}`);
       this.setState({ loading: false });
+      console.log(`sendTransaction, error: ${error.message}`);
+      if (error.code === 141) {
+        let notification;
+        const message = error.message.split('|');
+        switch (message[0]) {
+          case 'err.notenoughbalance':
+            notification = createInfoNotification(
+              'Transfer is failed',
+              'You need more balance to complete the transfer',
+            );
+            addNotification(notification);
+            break;
+          case 'err.timeout':
+            notification = createInfoNotification(
+              'Transfer is failed',
+              'Sorry server timeout',
+            );
+            addNotification(notification);
+            break;
+          case 'err.customized':
+            notification = createInfoNotification(
+              'Transfer is failed',
+              message[1],
+            );
+            addNotification(notification);
+            break;
+          default:
+            notification = createInfoNotification(
+              'Transfer is failed',
+              'Please contact our customer service',
+            );
+            addNotification(notification);
+            break;
+        }
+      }
     }
     this.setState({ loading: false });
   }
@@ -351,11 +374,8 @@ class Transfer extends Component {
     const { coin } = navigation.state.params;
     const { amount, to } = this.state;
 
-    if (coin.id === 'BTC') {
+    if (coin.id === 'BTCTestnet') {
       await this.sendBtcTransaction(amount, to);
-      navigation.navigate('TransferCompleted');
-    } else if (coin.id === 'RBTC' || coin === 'RIF') {
-      await this.sendRskTransaction(coin);
       navigation.navigate('TransferCompleted');
     }
   }
@@ -379,24 +399,20 @@ class Transfer extends Component {
       { coin: '0.0048 BTC' },
       { coin: '0.0052 BTC' },
     ];
-    const rbtcFees = [
-      { coin: '0.0046 RBTC' },
-      { coin: '0.0048 RBTC' },
-      { coin: '0.0052 RBTC' },
-    ];
-    const rifFees = [
-      { coin: '0.0046 RIF' },
-      { coin: '0.0048 RIF' },
-      { coin: '0.0052 RIF' },
-    ];
+    // const rbtcFees = [
+    //   { coin: '0.0046 RBTC' },
+    //   { coin: '0.0048 RBTC' },
+    //   { coin: '0.0052 RBTC' },
+    // ];
+    // const rifFees = [
+    //   { coin: '0.0046 RIF' },
+    //   { coin: '0.0048 RIF' },
+    //   { coin: '0.0052 RIF' },
+    // ];
 
     let feeData = null;
-    if (coin.id === 'BTC') {
+    if (coin.id === 'BTCTestnet') {
       feeData = btcFees;
-    } else if (coin.id === 'RBTC') {
-      feeData = rbtcFees;
-    } else if (coin.id === 'RIF') {
-      feeData = rifFees;
     }
 
     return (
@@ -537,13 +553,17 @@ Transfer.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transfer);

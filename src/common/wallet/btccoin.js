@@ -11,6 +11,7 @@ export default class Coin {
     this.metadata = coinType[id];
     this.amount = amount;
     this.address = address;
+    this.addressPrivateKey = null;
   }
 
   derive(seed) {
@@ -24,11 +25,28 @@ export default class Coin {
       const networkNode = Coin.getNetworkNode(master, network, networkId);
       const accountNode = Coin.generateAccountNode(networkNode, network, 0);
       const addressNode = Coin.generateAddressNode(accountNode, network, 0);
+      this.addressPath = addressNode.path;
       this.address = Coin.generateAddress(addressNode, network);
+      this.addressPublicKey = addressNode.public_key;
+      console.log('this.addressPublicKey = addressNode.public_key;');
+      this.addressPrivateKey = Coin.getAddressPrivateKey(master, addressNode, network);
+      this.addressPrivateKeyHex = Coin.getAddressPrivateKeyHex(master, addressNode, network);
     } catch (ex) {
       console.error(ex);
     }
     console.log('BTTCOIN.address', this.address);
+  }
+
+  static getAddressPrivateKey(master, addressNode, network) {
+    let privateKey = Coin.derivePathFromNode(master, addressNode.path, network);
+    privateKey = fromBase58(privateKey, network).privateKey;
+    return privateKey;
+  }
+
+  static getAddressPrivateKeyHex(master, addressNode, network) {
+    let privateKey = Coin.getAddressPrivateKey(master, addressNode, network);
+    privateKey = Buffer.from(privateKey).toString('hex');
+    return privateKey;
   }
 
   static getNetworkNode(master, network, networkId) {
@@ -71,6 +89,12 @@ export default class Coin {
     return t.toBase58();
   }
 
+  static derivePathFromNode(node, path, network) {
+    return fromBase58(node, network)
+      .derivePath(path)
+      .toBase58();
+  }
+
   /**
    * Returns a JSON of Coin to save required data to backend
    */
@@ -80,6 +104,7 @@ export default class Coin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
+      addressPrivateKey: this.addressPrivateKey,
     };
   }
 
