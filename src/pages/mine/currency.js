@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
   View, StyleSheet, ScrollView,
 } from 'react-native';
@@ -9,6 +10,7 @@ import SelectionList from '../../components/common/list/selectionList';
 import appActions from '../../redux/app/actions';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import config from '../../../config';
 
 const styles = StyleSheet.create({
   listView: {
@@ -23,43 +25,75 @@ class Currency extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        title: 'ARS - Argentine Peso',
-      },
-      {
-        title: 'USD - US Dollar',
-      },
-      {
-        title: 'RMB - Chinese Yuan',
-      },
-      {
-        title: 'KRW - South Korea won',
-      },
-      {
-        title: 'JPY - Japanese Yen',
-      },
-      {
-        title: 'GBP - Pound sterling',
-      },
-    ];
+    static getCurrencyIndex(currency, currencyArray) {
+      if (!_.isString(currency)) {
+        return 0;
+      }
+
+      const index = currencyArray.indexOf(currency);
+
+      return index >= 0 ? index : 0;
+    }
 
     constructor(props) {
       super(props);
+
+      // ['ARS', 'USD', 'CNY', 'KRW', 'JRY', 'GBP']
+      const currencies = _.map(config.consts.currencies, (item) => item.name);
+
+      this.state = {
+        currencyIndex: Currency.getCurrencyIndex(props.currency, currencies),
+      };
+
+      // [
+      //   {
+      //     title: 'ARS - Argentine Peso',
+      //   },
+      //   {
+      //     title: 'USD - US Dollar',
+      //   },
+      //   {
+      //     title: 'CNY - Chinese Yuan',
+      //   },
+      //   {
+      //     title: 'KRW - South Korea won',
+      //   },
+      //   {
+      //     title: 'JPY - Japanese Yen',
+      //   },
+      //   {
+      //     title: 'GBP - Pound sterling',
+      //   },
+      // ];
+      this.currencies = currencies;
+      this.listData = _.map(config.consts.currencies, (item) => ({ title: `${item.name} - ${item.fullName}` }));
+
       this.onChange = this.onChange.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { currency } = nextProps;
+      const { currency: oldCurrency } = this.props;
+
+      const newState = this.state;
+
+      // Update currency index if there's a new currency value from nextProps
+      if (currency !== oldCurrency) {
+        newState.currencyIndex = Currency.getCurrencyIndex(currency, this.currencies);
+      }
+
+      this.setState(newState);
     }
 
     onChange(index) {
       const { changeCurrency } = this.props;
-      const currencys = ['ARS', 'USD', 'RMB', 'KRW', 'JRY', 'GBP'];
-      changeCurrency(currencys[index]);
+      changeCurrency(this.currencies[index]);
     }
 
     render() {
-      const { navigation, currency } = this.props;
-      const selected = {
-        ARS: 0, USD: 1, RMB: 2, KRW: 3, JRY: 4, GBP: 5,
-      }[currency];
+      const { navigation } = this.props;
+      const { currencyIndex } = this.state;
+
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -70,7 +104,7 @@ class Currency extends Component {
           />
           <View style={screenHelper.styles.body}>
             <View style={styles.listView}>
-              <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
+              <SelectionList data={this.listData} onChange={this.onChange} selected={currencyIndex} />
             </View>
           </View>
         </ScrollView>
@@ -94,9 +128,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  changeCurrency: (currency) => dispatch(
-    appActions.changeCurrency(currency),
-  ),
+  changeCurrency: (value) => dispatch(appActions.setSingleSettings('currency', value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Currency);

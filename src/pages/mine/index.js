@@ -29,9 +29,6 @@ const styles = StyleSheet.create({
   body: {
     paddingTop: 65,
   },
-  scrollView: {
-    marginBottom: 45,
-  },
   avatar: {
     position: 'absolute',
     left: 20,
@@ -220,7 +217,7 @@ class MineIndex extends Component {
     const { language } = this.props;
     return (
       <View style={flex.flex1}>
-        <ScrollView style={[flex.flex1, styles.scrollView]}>
+        <ScrollView style={[flex.flex1]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Image source={avatar} style={styles.avatar} />
             <View style={styles.nameView}>
@@ -278,7 +275,7 @@ Loc.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  language: state.LanguageSwitcher.get('language'),
+  language: state.App.get('language'),
 });
 
 export default connect(mapStateToProps)(MineIndex);

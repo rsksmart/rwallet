@@ -4,15 +4,17 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
+import SpendStackNavigator from './stack.spend';
+import EarnStackNavigator from './stack.earn';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
 import { strings } from '../common/i18n';
 import TabBar from './components/bottom.tab';
 
-import homeLight from '../assets/images/root/tab/home.png';
-import homeGray from '../assets/images/root/tab/home.unselected.png';
-import MineLight from '../assets/images/root/tab/mine.png';
-import MineGray from '../assets/images/root/tab/mine.unselected.png';
+import homeLight from '../assets/images/root/tab/wallet.l.png';
+import MineLight from '../assets/images/root/tab/mine.l.png';
+import spendLight from '../assets/images/root/tab/spend.l.png';
+import earnLight from '../assets/images/root/tab/earn.l.png';
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -24,15 +26,15 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       },
     },
     Send: {
-      screen: HomeStackNavigator,
-      path: 'home',
+      screen: SpendStackNavigator,
+      path: 'spend',
       navigationOptions: {
         title: strings('root.Spend'),
       },
     },
     Receive: {
-      screen: MineStackNavigator,
-      path: 'mine',
+      screen: EarnStackNavigator,
+      path: 'earn',
       navigationOptions: {
         title: strings('root.Earn'),
       },
@@ -51,46 +53,41 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       // eslint-disable-next-line react/prop-types
       tabBarIcon: ({ focused }) => {
         let img = null;
-        if (focused) {
-          // 激活图标
-          switch (navigation.state.routeName) {
-            case 'Home':
-              img = homeLight;
-              break;
-            case 'Mine':
-              img = MineLight;
-              break;
-            case 'Send':
-              img = homeLight;
-              break;
-            case 'Receive':
-              img = MineLight;
-              break;
-            default:
-              console.error(`unexpected tab：${navigation.state.routeName}`);
-          }
-        } else {
-          // 未激活图标
-          switch (navigation.state.routeName) {
-            case 'Home':
-              img = homeGray;
-              break;
-            case 'Mine':
-              img = MineGray;
-              break;
-            case 'Send':
-              img = homeGray;
-              break;
-            case 'Receive':
-              img = MineGray;
-              break;
-            default:
-              console.error(`unexpected tab：${navigation.state.routeName}`);
-          }
+        let width = 18;
+        let height = 18;
+        switch (navigation.state.routeName) {
+          case 'Home':
+            img = homeLight;
+            break;
+          case 'Mine':
+            width = 22;
+            height = 22;
+            img = MineLight;
+            break;
+          case 'Send':
+            img = spendLight;
+            break;
+          case 'Receive':
+            width = 21;
+            height = 21;
+            img = earnLight;
+            break;
+          default:
+            console.error(`unexpected tab：${navigation.state.routeName}`);
         }
+        let opacity = 1;
+        if (!focused) {
+          opacity = 0.6;
+        }
+
         return (
           <View>
-            <Image source={img} style={{ width: 21, height: 21 }} />
+            <Image
+              source={img}
+              style={{
+                width, height, opacity, marginBottom: 7,
+              }}
+            />
           </View>
         );
       },

@@ -81,15 +81,15 @@ class RecoveryPhrase extends Component {
             <Loc style={[styles.note]} text="in the right order and save them" />
             <Loc style={[styles.note]} text="somewhere safe" />
             <View style={styles.tagsView}>
-              <Tags data={phrases} />
+              <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
             </View>
             <TouchableOpacity
               style={{ marginTop: 10 }}
               onPress={() => {
                 Clipboard.setString(phrase);
                 const notification = createInfoNotification(
-                  'tip',
-                  'Phrase is copied to clipboard',
+                  'Copied',
+                  'The recovery phrase has been copied to clipboard',
                 );
                 addNotification(notification);
               }}

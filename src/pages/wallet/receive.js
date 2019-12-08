@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ImageBackground,
+  View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, Clipboard,
 } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
 import Entypo from 'react-native-vector-icons/Entypo';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
-import Input from '../../components/common/input/input';
+// import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import ScreenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -59,10 +62,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 16,
-    paddingVertical: 10,
     paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 60,
   },
-
+  addressText: {
+    flex: 1,
+    marginLeft: 15,
+    marginRight: 10,
+  },
+  copyIcon: {
+    width: 20,
+    height: 20,
+  },
+  refreshIcon: {
+    width: 20,
+    height: 20,
+  },
   qrView: {
     borderColor: color.component.input.borderColor,
     backgroundColor: color.component.input.backgroundColor,
@@ -77,8 +94,10 @@ const styles = StyleSheet.create({
 });
 
 const header = require('../../assets/images/misc/header.png');
+const copyIcon = require('../../assets/images/icon/copy.png');
+const refreshIcon = require('../../assets/images/icon/refresh.png');
 
-export default class WalletReceive extends Component {
+class WalletReceive extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -86,7 +105,7 @@ export default class WalletReceive extends Component {
     componentDidMount() {}
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       const { address, coin } = navigation.state.params;
       const logo = navigation.state.params.icon;
       const qrSize = 270;
@@ -117,7 +136,23 @@ export default class WalletReceive extends Component {
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Loc style={[styles.sectionTitle]} text="Address" />
-              <Input value={address} style={[{ height: 60 }]} />
+              <View style={styles.address}>
+                <TouchableOpacity onPress={() => {
+                  Clipboard.setString(address);
+                  const notification = createInfoNotification(
+                    'Copied',
+                    'The address has been copied to clipboard',
+                  );
+                  addNotification(notification);
+                }}
+                >
+                  <Image style={styles.copyIcon} source={copyIcon} />
+                </TouchableOpacity>
+                <Text style={styles.addressText} ellipsizeMode="tail" numberOfLines={1}>{address}</Text>
+                <TouchableOpacity>
+                  <Image style={styles.refreshIcon} source={refreshIcon} />
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={[styles.sectionContainer, styles.qrView]}>
               <QRCode
@@ -141,4 +176,15 @@ WalletReceive.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletReceive);

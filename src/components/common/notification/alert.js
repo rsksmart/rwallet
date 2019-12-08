@@ -57,7 +57,9 @@ export default class Alert extends Component {
 
   render() {
     const { animationType, transparent } = this.state;
-    const { title, message, onClosePress } = this.props;
+    const {
+      title, message, buttonText, onClosePress,
+    } = this.props;
     return (
       <Modal
         animationType={animationType}
@@ -73,7 +75,7 @@ export default class Alert extends Component {
             </View>
             <View style={styles.line} />
             <TouchableOpacity onPress={onClosePress}>
-              <Loc style={[styles.button]} text="GOT IT" />
+              <Loc style={[styles.button]} text={buttonText} />
             </TouchableOpacity>
           </View>
         </View>
@@ -86,8 +88,10 @@ Alert.propTypes = {
   title: PropTypes.string.isRequired,
   onClosePress: PropTypes.func,
   message: PropTypes.string.isRequired,
+  buttonText: PropTypes.string,
 };
 
 Alert.defaultProps = {
   onClosePress: null,
+  buttonText: 'GOT IT',
 };

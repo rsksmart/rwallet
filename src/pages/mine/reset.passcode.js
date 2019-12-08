@@ -3,12 +3,15 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import PasscodeModal from '../../components/common/modal/passcodeModal';
 import appContext from '../../common/appContext';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
-export default class ResetPasscode extends Component {
+class ResetPasscode extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -32,7 +35,7 @@ export default class ResetPasscode extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       const { flow, newPasscode } = this.state;
       let title = 'Enter Old Passcode';
       if (flow === 'newPasscode') {
@@ -55,6 +58,12 @@ export default class ResetPasscode extends Component {
                 const value = await appContext.secureGet('passcode');
                 if (value === passcode) {
                   this.setState({ flow: 'newPasscode' });
+                } else {
+                  const notification = createInfoNotification(
+                    'Old Password',
+                    'Old Password is wrong',
+                  );
+                  addNotification(notification);
                 }
               } else if (flow === 'newPasscode') {
                 this.passcodeModal.setModalVisible(true);
@@ -65,6 +74,12 @@ export default class ResetPasscode extends Component {
                   navigation.navigate('ResetPasscodeSuccess', navigation.state.params);
                 } else {
                   this.passcodeModal.setModalVisible(true);
+                  const notification = createInfoNotification(
+                    'Passcode Mismatch',
+                    'Passcode Mismatch Body',
+                    'RETRY',
+                  );
+                  addNotification(notification);
                 }
               }
             }}
@@ -81,4 +96,15 @@ ResetPasscode.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPasscode);

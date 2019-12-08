@@ -5,11 +5,12 @@ export const createSuccessNotification = (title, message) => ({
   message,
 });
 
-export const createInfoNotification = (title, message) => ({
+export const createInfoNotification = (title, message, buttonText) => ({
   id: Date.now(),
   type: 'info',
   title,
   message,
+  buttonText,
 });
 
 export const createWarningNotification = (title, message) => ({

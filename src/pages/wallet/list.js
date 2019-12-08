@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: 20,
   },
   addCircle: {
     marginLeft: 10,
@@ -331,7 +332,7 @@ class WalletList extends Component {
 
       return (
         <View style={[flex.flex1]}>
-          <ScrollView style={{ marginBottom: 45 }}>
+          <ScrollView>
             <ImageBackground source={header} style={[styles.headerImage]}>
               <Loc style={[styles.headerTitle]} text="Your Wallet" />
               <TouchableOpacity
