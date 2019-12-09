@@ -23,6 +23,9 @@ import circleIcon from '../../assets/images/misc/circle.png';
 import { createInfoNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 
+import ParseHelper from '../../common/parse';
+
+
 const buffer = require('buffer');
 const bitcoin = require('bitcoinjs-lib');
 
@@ -210,11 +213,13 @@ class Transfer extends Component {
       feeLevel: 1,
       preference: 'medium',
       isConfirm: false,
+      enableConfirm: false,
     };
     this.initContext();
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
     this.confirm = this.confirm.bind(this);
+    this.validateConfirmControl = this.validateConfirmControl.bind(this);
   }
 
   componentDidMount() {
@@ -332,7 +337,7 @@ class Transfer extends Component {
 
   async sendBtcTransaction() {
     console.log('transfer::sendBtcTransaction');
-    const { navigation: { state }, addNotification } = this.props;
+    const { navigation: { state } } = this.props;
     const { params } = state;
     const { coin } = params;
     // console.table(wallet)
@@ -347,22 +352,19 @@ class Transfer extends Component {
       const [symbol, type, sender, receiver, data] = [
         'BTC', 'Testnet', coin.address, to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
       ];
-      console.log('before sendSignedTransaction result');
-      const rawTranscationParams = {
+      const result = await ParseHelper.createRawTransaction({
         symbol, type, sender, receiver, value, data, preference,
-      };
-      console.log(`rawTranscationParams: ${JSON.stringify(rawTranscationParams)}`);
-      console.log(`addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
-      const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
+      });
+
+      // const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
       console.log('createRawTransaction result: ', JSON.stringify(result));
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       const tx = rawTransaction;
       console.log(`raw signedTransaction: ${JSON.stringify(tx)}`);
-      console.log('transfer::sendBtcTransaction, sendSignedTransaction');
-      console.log(`transfer::sendBtcTransaction, addressPrivateKeyHex: ${coin.addressPrivateKeyHex}`);
-      const buf = Buffer.from(coin.addressPrivateKeyHex, 'hex');
+      console.log(`transfer::sendBtcTransaction, coin.privateKey: ${coin.privateKey}`);
+      const buf = Buffer.from(coin.privateKey, 'hex');
       const keys = bitcoin.ECPair.fromPrivateKey(buf);
       tx.pubkeys = [];
       tx.signatures = tx.tosign.map((tosign) => {
@@ -383,10 +385,23 @@ class Transfer extends Component {
       console.log('sendSignedTransaction result: ', result);
       return result;
     };
+    const rawTransaction = await createRawTransaction();
+    const result = await sendSignedTransaction(rawTransaction);
+    console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+  }
+
+  async confirm() {
+    this.a = 1;
+    const { navigation, addNotification } = this.props;
+    const { coin } = navigation.state.params;
+    const { amount, to } = this.state;
+
     try {
-      const rawTransaction = await createRawTransaction();
-      const result = await sendSignedTransaction(rawTransaction);
-      console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
+      this.setState({ loading: false });
+      if (coin.id === 'BTCTestnet') {
+        await this.sendBtcTransaction(amount, to);
+        navigation.navigate('TransferCompleted');
+      }
     } catch (error) {
       this.setState({ loading: false });
       console.log(`sendTransaction, error: ${error.message}`);
@@ -425,44 +440,19 @@ class Transfer extends Component {
         }
       }
     }
-    this.setState({ loading: false });
   }
 
-  async confirm() {
-    this.a = 1;
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
-    const { amount, to } = this.state;
-
-    if (coin.id === 'BTC' || coin.id === 'BTCTestnet') {
-      await this.sendBtcTransaction(amount, to);
-      navigation.navigate('TransferCompleted');
-    }
-
-    switch (coin.id) {
-      case 'BTC':
-      case 'BTCTestnet':
-        await this.sendBtcTransaction(amount, to);
-        break;
-      case 'RBTC':
-      case 'RBTCTestnet':
-        await this.sendRskTransaction('RBTC');
-        break;
-      case 'RIF':
-      case 'RIFTestnet':
-        await this.sendRskTransaction('RIF');
-        break;
-      default:
-    }
+  validateConfirmControl() {
+    const { to, amount } = this.state;
+    this.setState({ enableConfirm: to && amount });
   }
 
   render() {
     const {
-      loading, to, amount, memo, feeLevel, isConfirm,
+      loading, to, amount, memo, feeLevel, isConfirm, enableConfirm,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-
 
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
@@ -494,7 +484,8 @@ class Transfer extends Component {
                 style={[styles.textInput]}
                 value={amount}
                 onChangeText={(text) => {
-                  this.setState({ amount: text });
+                  this.setState({ amount: parseFloat(text) > 0 ? text : '' });
+                  this.validateConfirmControl();
                 }}
               />
               <Image source={currencyExchange} style={styles.textInputIcon} />
@@ -508,6 +499,7 @@ class Transfer extends Component {
                 value={to}
                 onChangeText={(text) => {
                   this.setState({ to: text });
+                  this.validateConfirmControl();
                 }}
               />
               <TouchableOpacity
@@ -569,15 +561,15 @@ class Transfer extends Component {
               }}
             />
           </View>
-          <View style={styles.sectionContainer}>
-            <ConfirmSlider
-              // ref={(ref) => this.confirmSlider = ref}
+          <View style={[styles.sectionContainer, { opacity: enableConfirm ? 1 : 0.6 }]} pointerEvents={enableConfirm ? 'auto' : 'none'}>
+            <ConfirmSlider // All parameter should be adjusted for the real case
+                // ref={(ref) => this.confirmSlider = ref}
               width={screen.width - 50}
               buttonSize={30}
-              buttonColor="#2962FF"
-              borderColor="#2962FF"
-              backgroundColor="#fff"
-              textColor="#37474F"
+              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
               borderRadius={15}
               okButton={{ visible: true, duration: 400 }}
               onVerified={async () => {
@@ -587,11 +579,11 @@ class Transfer extends Component {
               icon={(
                 <Image
                   source={isConfirm ? circleCheckIcon : circleIcon}
-                  style={{ width: 20, height: 20 }}
+                  style={{ width: 32, height: 32 }}
                 />
-              )}
+                )}
             >
-              <Text>{isConfirm ? 'CONFIRMED' : 'slide to confirm'}</Text>
+              <Text style={[{ fontWeight: 'bold', color: 'black' }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
             </ConfirmSlider>
           </View>
         </View>
