@@ -208,7 +208,7 @@ class Transfer extends Component {
     this.state = {
       loading: false,
       to: null,
-      amount: '0.00000001',
+      amount: '',
       memo: null,
       feeLevel: 1,
       preference: 'medium',
@@ -282,7 +282,7 @@ class Transfer extends Component {
         symbol: this.symbol,
         type: this.netType,
         sender: coin.address,
-        receiver: to,
+        receiver: to || '0xf08f6c2eac2183dfc0a5910c58c186496f32498d',
         value,
         data: '',
         gasPrice: '600000000',
@@ -312,16 +312,10 @@ class Transfer extends Component {
       const result = await Parse.Cloud.run('sendSignedTransaction', transactionParams);
       return result;
     };
-    try {
-      const rawTransaction = await createRawTransaction();
-      console.log(`sendRskTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
-      const result = await sendSignedTransaction(rawTransaction);
-      console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
-    } catch (error) {
-      console.log(`sendTransaction, error: ${error.message}`);
-      this.setState({ loading: false });
-    }
-    this.setState({ loading: false });
+    const rawTransaction = await createRawTransaction();
+    console.log(`sendRskTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
+    const result = await sendSignedTransaction(rawTransaction);
+    console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
   }
 
   async sendBtcTransaction() {
@@ -341,7 +335,7 @@ class Transfer extends Component {
         symbol: this.symbol,
         type: this.netType,
         sender: coin.address,
-        receiver: to,
+        receiver: to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW',
         value,
         data: '',
         preference,
@@ -377,6 +371,7 @@ class Transfer extends Component {
       return result;
     };
     const rawTransaction = await createRawTransaction();
+    console.log(`sendTransaction, rawTransaction: ${JSON.stringify(rawTransaction)}`);
     const result = await sendSignedTransaction(rawTransaction);
     console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
   }
@@ -479,10 +474,10 @@ class Transfer extends Component {
                 value={amount}
                 keyboardType="numeric"
                 onChangeText={(text) => {
-                  const newText = text.replace(/[^\d.]/g, '');
-                  this.setState({ amount: newText });
-                  if (parseFloat(newText) >= 0) {
-                    this.validateConfirmControl();
+                  const self = this;
+                  self.setState({ amount: text });
+                  if (parseFloat(text) >= 0) {
+                    self.setState({ amount: text }, self.validateConfirmControl.bind(self));
                   }
                 }}
               />
@@ -496,8 +491,9 @@ class Transfer extends Component {
                 style={[styles.textInput]}
                 value={to}
                 onChangeText={(text) => {
-                  this.setState({ to: text });
-                  this.validateConfirmControl();
+                  const self = this;
+                  console.log('paste to: ', text);
+                  self.setState({ to: text }, this.validateConfirmControl.bind(self));
                 }}
               />
               <TouchableOpacity
@@ -529,7 +525,7 @@ class Transfer extends Component {
                 multiline
                 numberOfLines={4}
                 value={memo}
-                onChangeText={(text) => {
+                onChange={(text) => {
                   this.setState({ memo: text });
                 }}
               />
@@ -559,7 +555,7 @@ class Transfer extends Component {
               }}
             />
           </View>
-          <View style={[styles.sectionContainer, { opacity: enableConfirm ? 1 : 0.6 }]} pointerEvents={enableConfirm ? 'auto' : 'none'}>
+          <View style={[styles.sectionContainer, { opacity: enableConfirm ? 1 : 0.5 }]} pointerEvents={enableConfirm ? 'auto' : 'none'}>
             <ConfirmSlider // All parameter should be adjusted for the real case
                 // ref={(ref) => this.confirmSlider = ref}
               width={screen.width - 50}
