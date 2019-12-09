@@ -24,20 +24,13 @@ export default class Wallet {
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
-        const {
-          id: coinId, amount, address, objectId,
-        } = item;
+        const { id: coinId, amount, address } = item;
 
         let coin;
         if (coinId === 'BTC' || coinId === 'BTCTestnet') {
           coin = new Coin(coinId, amount, address);
         } else {
           coin = new RBTCCoin(coinId, amount, address);
-        }
-
-        // Add objectId to coin if there is one
-        if (objectId) {
-          coin.objectId = objectId;
         }
 
         // TODO: right now we always derive privateKey hex string from seed
@@ -154,23 +147,5 @@ export default class Wallet {
     });
 
     return wallet;
-  }
-
-  /**
-   * Set Coin's objectId to values in parseWallets, and return true if there's any change
-   * @param {array} addresses Array of JSON objects
-   * @returns True if any Coin is updated
-   */
-  updateCoinObjectIds(addresses) {
-    const { coins } = this;
-
-    let isDirty = false;
-    _.each(coins, (coin) => {
-      if (coin.updateCoinObjectIds(addresses)) {
-        isDirty = true;
-      }
-    });
-
-    return isDirty;
   }
 }
