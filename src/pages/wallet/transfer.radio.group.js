@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
   View, Text, TouchableOpacity, StyleSheet,
 } from 'react-native';
@@ -234,8 +235,10 @@ export default class RadioGroup extends Component {
     const { selected } = this.props;
     this.state = { selected };
     const { data } = this.props;
-    for (let i = 0; i < data.length; i += 1) {
-      this.listData[i].coin = data[i].coin;
+    if (!_.isEmpty(data)) {
+      for (let i = 0; i < data.length; i += 1) {
+        this.listData[i].coin = data[i].coin;
+      }
     }
   }
 
@@ -243,23 +246,27 @@ export default class RadioGroup extends Component {
     const items = [];
     const { selected } = this.state;
     const { onChange } = this.props;
-    for (let i = 0; i < this.listData.length; i += 1) {
-      if (selected === i) {
-        this.listData[i].selected = true;
-      } else {
-        this.listData[i].selected = false;
+
+    if (!_.isEmpty(this.listData)) {
+      for (let i = 0; i < this.listData.length; i += 1) {
+        if (selected === i) {
+          this.listData[i].selected = true;
+        } else {
+          this.listData[i].selected = false;
+        }
+        items.push(
+          <Item
+            data={this.listData[i]}
+            key={`${Math.random()}`}
+            onPress={() => {
+              this.setState({ selected: i });
+              onChange(i);
+            }}
+          />,
+        );
       }
-      items.push(
-        <Item
-          data={this.listData[i]}
-          key={`${Math.random()}`}
-          onPress={() => {
-            this.setState({ selected: i });
-            onChange(i);
-          }}
-        />,
-      );
     }
+
     return (
       <View style={styles.RadioGroup}>
         {items}

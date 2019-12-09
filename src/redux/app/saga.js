@@ -74,14 +74,20 @@ function* initAppRequest(/* action */) {
 
     // 2. Sign in or sign up to get Parse.User object
     // ParseHelper will have direct access to the User object so we don't need to pass it to state here
-    if (appId) {
-      try {
-        yield call(ParseHelper.signIn, appId);
-      } catch (err) {
-        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-          yield call(ParseHelper.signUp, appId);
-        }
+    try {
+      yield call(ParseHelper.signIn, appId);
+    } catch (err) {
+      if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+        yield call(ParseHelper.signUp, appId);
       }
+    }
+
+    // 3. Upload wallets and settings to server
+    try {
+      const updateUserResp = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
+      console.log('parse.updateUser, response:', updateUserResp);
+    } catch (err) {
+      console.log(err);
     }
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);

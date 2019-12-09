@@ -27,6 +27,8 @@ export default function Input({
       onSubmitEditing={onSubmitEditing}
       value={value}
       editable={editable}
+      autoCapitalize="none"
+      autoCorrect={false}
     />
   );
 }

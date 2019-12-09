@@ -1,7 +1,6 @@
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
-
 const HDNode = require('hdkey');
 const crypto = require('crypto');
 const ethereumjsUtil = require('ethereumjs-util');
@@ -48,9 +47,6 @@ export default class RBTCCoin {
 
     try {
       const master = RBTCCoin.generateMasterFromSeed(seed);
-
-      console.log(`${this.metadata.defaultName}.master`, master);
-
       const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
@@ -59,7 +55,7 @@ export default class RBTCCoin {
       console.error(ex);
     }
 
-    console.log(`${this.metadata.defaultName}.address`, this.address);
+    console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
   static fromMasterSeed(seedBuffer) {
