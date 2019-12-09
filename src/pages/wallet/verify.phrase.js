@@ -62,6 +62,19 @@ class VerifyPhrase extends Component {
     this.reset = this.reset.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { notification } = nextProps;
+    const { notification: curNotification } = this.props;
+    if (notification !== curNotification && notification === null) {
+      this.onNotificationRemoved();
+    }
+  }
+
+  onNotificationRemoved() {
+    console.log('onNotificationRemoved');
+    this.reset();
+  }
+
   async onTagsPressed(index) {
     const { navigation, addNotification } = this.props;
     const { unselectedWords, selectedWords } = this.state;
@@ -140,7 +153,6 @@ class VerifyPhrase extends Component {
     return words;
   }
 
-
   render() {
     const { unselectedWords } = this.state;
     const { isLoading } = this.props;
@@ -175,9 +187,15 @@ VerifyPhrase.propTypes = {
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
+  notification: PropTypes.shape({}),
+};
+
+VerifyPhrase.defaultProps = {
+  notification: null,
 };
 
 const mapStateToProps = (state) => ({
+  notification: state.App.get('notification'),
   isLoading: state.App.get('isPageLoading'),
 });
 
