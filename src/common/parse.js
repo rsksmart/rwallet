@@ -63,15 +63,11 @@ class ParseHelper {
    */
   static async updateUser({ wallets, settings }) {
     const parseUser = Parse.User.current();
+    await parseUser.fetch();
+    parseUser.set('settings', settings);
 
-    // Ignore settings if its data is not validated; in updating only wallets case, settings value is undefined
-    if (_.isObject(settings)) {
-      parseUser.set('settings', settings);
-    }
-
-    // Check whether each coin has Parse objectId, and save them into database if there is none
     const addAddrPObjs = [];
-    const saveAddrPromises = [];
+    const saveAddrTasks = [];
 
     const handleSaveAddr = async (coin) => {
       const { address } = coin;
@@ -95,16 +91,16 @@ class ParseHelper {
     wallets.forEach(({ coins }) => {
       coins.forEach((coin) => {
         if (!coin.objectId) {
-          saveAddrPromises.push(handleSaveAddr(coin));
+          saveAddrTasks.push(handleSaveAddr(coin));
         }
       });
     });
-    await Promise.all(saveAddrPromises);
+    await Promise.all(saveAddrTasks);
 
     const walletInfo = parseUser.get('wallets') || [];
     walletInfo.push(...addAddrPObjs);
     parseUser.set('wallets', walletInfo);
-    return parseUser.save();
+    await parseUser.save();
   }
 
   /**
@@ -194,15 +190,12 @@ class ParseHelper {
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
         return Parse.User.logOut();
-      case Parse.Error.CONNECTION_FAILED:
-        // This message is for debugging purpose and currently should not reflected on UI
-        return 'error.parse.connectionFailed';
-        // Other Parse API errors that you want to explicitly handle
+      // Other Parse API errors that you want to explicitly handle
       default:
         break;
     }
 
-    return message;
+    return { message };
   }
 
   /**
