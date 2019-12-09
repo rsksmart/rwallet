@@ -81,10 +81,6 @@ class VerifyPhrase extends Component {
       console.log('isEqual', isEqual);
 
       if (isEqual) {
-        // setPageLoading(true);
-        // this.setState({ loading: true });
-        // await walletManager.addWallet(this.wallet);
-        // this.setState({ loading: false });
         const resetAction = StackActions.reset({
           index: 0,
           actions: [
@@ -94,12 +90,18 @@ class VerifyPhrase extends Component {
         navigation.dispatch(resetAction);
       } else {
         const notification = createErrorNotification(
-          'Verify Your Phrase',
+          'Incorrect backup phrase',
           'verifyPhraseAlertTitle',
+          'START OVER',
         );
         addNotification(notification);
       }
     }
+  }
+
+  onGobackPress() {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   reset() {
@@ -138,17 +140,16 @@ class VerifyPhrase extends Component {
     return words;
   }
 
+
   render() {
     const { unselectedWords } = this.state;
-    const { navigation, loading } = this.props;
+    const { isLoading } = this.props;
     return (
       <View>
-        <Loader loading={loading} />
+        <Loader loading={isLoading} />
         <Header
-          title="Recovery Phrase"
-          goBack={() => {
-            navigation.goBack();
-          }}
+          title="Backup Phrase"
+          goBack={this.onGobackPress}
         />
         <View style={[screenHelper.styles.body]}>
           <View style={[styles.wordFieldView]}>{this.renderAllItem()}</View>
@@ -172,12 +173,12 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  loading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.App.get('isPageLoading'),
+  isLoading: state.App.get('isPageLoading'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
