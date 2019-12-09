@@ -153,6 +153,14 @@ class WalletManager {
     console.log('getTotalAssetValue.currency', currency);
     return this.assetValue;
   }
+
+  /**
+   * Return all instances of Coin class within this WalletManager
+   */
+  getAddresses() {
+    const { wallets } = this;
+    return _.reduce(wallets, (accumulator, wallet) => accumulator.concat(wallet.coins), []);
+  }
 }
 
 export default new WalletManager();
