@@ -8,7 +8,7 @@ const Notifications = (props) => {
   const { showNotification, notification, dispatch } = props;
   return (
     <View>
-      {showNotification && (
+      {showNotification && notification && (
       <Notification
         type={notification.type}
         title={notification.title}
@@ -24,8 +24,13 @@ const Notifications = (props) => {
 Notifications.propTypes = {
   showNotification: PropTypes.bool.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  notification: PropTypes.object.isRequired,
+  notification: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
+};
+
+Notifications.defaultProps = {
+  // eslint-disable-next-line react/forbid-prop-types
+  notification: null,
 };
 
 export default Notifications;
