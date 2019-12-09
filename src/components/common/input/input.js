@@ -17,10 +17,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Input({
-  style, placeholder, onChangeText, onSubmitEditing, value, editable,
+  style, placeholder, onChangeText, onSubmitEditing, value, editable, reference, autoFocus,
 }) {
   return (
     <TextInput
+      ref={reference}
       style={[styles.textInput, style]}
       onChangeText={onChangeText}
       placeholder={placeholder}
@@ -29,25 +30,29 @@ export default function Input({
       editable={editable}
       autoCapitalize="none"
       autoCorrect={false}
+      autoFocus={autoFocus}
     />
   );
 }
 
 Input.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   style: PropTypes.arrayOf(PropTypes.shape({})),
   placeholder: PropTypes.string,
   value: PropTypes.string,
   onSubmitEditing: PropTypes.func,
   onChangeText: PropTypes.func,
   editable: PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  reference: PropTypes.func,
 };
 
 Input.defaultProps = {
   style: null,
   placeholder: null,
+  reference: null,
   value: null,
   onSubmitEditing: null,
   onChangeText: null,
   editable: true,
+  autoFocus: false,
 };

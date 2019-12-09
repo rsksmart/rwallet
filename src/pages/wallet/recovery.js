@@ -88,31 +88,25 @@ class WalletRecovery extends Component {
     this.inputWord = this.inputWord.bind(this);
     this.deleteWord = this.deleteWord.bind(this);
     this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
     this.onTagsPress = this.onTagsPress.bind(this);
     this.onImportPress = this.onImportPress.bind(this);
   }
 
   onSubmitEditing() {
-    const { phrase, phrases } = this.state;
-    const { addNotification } = this.props;
-    const inputText = phrase.trim();
-    if (inputText === '') {
-      this.setState({ phrase: '' });
+    const { phrase } = this.state;
+    const trimText = phrase.trim();
+    this.inputText(trimText);
+  }
+
+  onChangeText(text) {
+    const char = text[text.length - 1];
+    if (char !== ' ') {
+      this.setState({ phrase: text });
       return;
     }
-    if (phrases.length === 12) {
-      const notification = createInfoNotification(
-        'Too Many Words',
-        'The recovery phrase has to be 12 words',
-      );
-      addNotification(notification);
-      return;
-    }
-    if (phrases.length === 11) {
-      this.setState({ isCanSubmit: true });
-    }
-    this.inputWord();
-    this.setState({ phrase: '' });
+    const trimText = text.trim();
+    this.inputText(trimText);
   }
 
   onTagsPress(i) {
@@ -133,11 +127,38 @@ class WalletRecovery extends Component {
     navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
   }
 
-  inputWord() {
-    const { phrase, phrases } = this.state;
-    phrases.push(phrase);
+  inputText(text) {
+    const words = text.split(' ');
+    words.forEach((word) => {
+      const trimWord = word.trim();
+      this.inputWord(trimWord);
+    });
+  }
+
+  inputWord(word) {
+    const { addNotification } = this.props;
+    const { phrases } = this.state;
+    if (word === '') {
+      this.setState({ phrase: '' });
+      return;
+    }
+    if (phrases.length === 12) {
+      const notification = createInfoNotification(
+        'Too Many Words',
+        'The recovery phrase has to be 12 words',
+      );
+      addNotification(notification);
+      return;
+    }
+    if (phrases.length === 11) {
+      this.setState({ isCanSubmit: true });
+    }
+    phrases.push(word);
     this.setState({ phrases });
     this.setState({ phrase: '' });
+    process.nextTick(() => {
+      this.phraseInput.focus();
+    });
   }
 
   deleteWord(i) {
@@ -158,8 +179,10 @@ class WalletRecovery extends Component {
               <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
               <View style={styles.phraseView}>
                 <Input
+                  autoFocus
+                  reference={(ref) => { this.phraseInput = ref; }}
                   style={[styles.input]}
-                  onChangeText={(text) => this.setState({ phrase: text })}
+                  onChangeText={this.onChangeText}
                   onSubmitEditing={this.onSubmitEditing}
                   value={phrase}
                 />
@@ -167,7 +190,7 @@ class WalletRecovery extends Component {
                   <Tags
                     style={[{ flex: 1 }]}
                     data={phrases}
-                    onPress={(i) => this.onTagsPress(i)}
+                    onPress={this.onTagsPress}
                   />
                 </View>
               </View>
