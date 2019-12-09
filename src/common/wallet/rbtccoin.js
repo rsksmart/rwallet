@@ -7,12 +7,20 @@ const ethereumjsUtil = require('ethereumjs-util');
 
 const MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8');
 
-function deserializePrivate(privateKey) {
+export function deserializePrivate(privateKey) {
   const master = JSON.parse(privateKey);
   const ret = new HDNode();
   ret.chainCode = Buffer.from(master.cc, 'hex');
   ret.privateKey = Buffer.from(master.prk, 'hex');
   return ret;
+}
+
+function serializePrivate(node) {
+  const ret = {
+    prk: node.privateKey.toString('hex'),
+    cc: node.chainCode.toString('hex'),
+  };
+  return JSON.stringify(ret);
 }
 
 function deserializePublic(s) {
@@ -51,11 +59,25 @@ export default class RBTCCoin {
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
+      this.addressPrivateKeyHex = RBTCCoin.getAddressPrivateKeyHex(master, addressNode);
+      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.addressPrivateKeyHex}`);
     } catch (ex) {
       console.error(ex);
     }
 
     console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
+  }
+
+  static getAddressPrivateKeyHex(master, addressNode) {
+    let privateKey = RBTCCoin.getAddressPrivateKey(master, addressNode);
+    privateKey = deserializePrivate(privateKey).privateKey;
+    privateKey = Buffer.from(privateKey).toString('hex');
+    return privateKey;
+  }
+
+  static getAddressPrivateKey(master, addressNode) {
+    const privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
+    return privateKey;
   }
 
   static fromMasterSeed(seedBuffer) {
@@ -121,6 +143,7 @@ export default class RBTCCoin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
+      addressPrivateKeyHex: this.addressPrivateKeyHex,
     };
   }
 
@@ -140,5 +163,21 @@ export default class RBTCCoin {
 
   get defaultName() {
     return this.metadata.defaultName;
+  }
+
+  static derivePathFromNode(s, path) {
+    console.log('derivePathFromNode, s, path');
+    console.log(s);
+    console.log(path);
+    let deserialized = deserializePublic(s);
+    let pub = true;
+    if (!deserialized) {
+      pub = false;
+      deserialized = deserializePrivate(s);
+    }
+    const derived = deserialized.derive(path);
+    let serialized = '';
+    if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
+    return serialized;
   }
 }

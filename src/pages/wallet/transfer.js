@@ -215,10 +215,12 @@ class Transfer extends Component {
       isConfirm: false,
       enableConfirm: false,
     };
+    this.initContext();
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
+    this.sendTransaction = this.sendTransaction.bind(this);
   }
 
   componentDidMount() {
@@ -233,38 +235,81 @@ class Transfer extends Component {
     appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
+  initContext() {
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+    const btcFees = [
+      { coin: '0.0046 BTC' },
+      { coin: '0.0048 BTC' },
+      { coin: '0.0052 BTC' },
+    ];
+    const rbtcFees = [
+      { coin: '0.0046 RBTC' },
+      { coin: '0.0048 RBTC' },
+      { coin: '0.0052 RBTC' },
+    ];
+    const rifFees = [
+      { coin: '0.0046 RIF' },
+      { coin: '0.0048 RIF' },
+      { coin: '0.0052 RIF' },
+    ];
+    const contexts = {
+      BTC: { symbol: 'BTC', feeData: btcFees, netType: 'Mainnet' },
+      BTCTestnet: { symbol: 'BTC', feeData: btcFees, netType: 'Testnet' },
+      RBTC: { symbol: 'RBTC', feeData: rbtcFees, netType: 'Mainnet' },
+      RBTCTestnet: { symbol: 'RBTC', feeData: rbtcFees, netType: 'Testnet' },
+      RIF: { symbol: 'RIF', feeData: rifFees, netType: 'Mainnet' },
+      RIFTestnet: { symbol: 'RIF', feeData: rifFees, netType: 'Testnet' },
+    };
+    const context = contexts[coin.id];
+    this.symbol = context.symbol;
+    this.feeData = context.feeData;
+    this.netType = context.netType;
+  }
 
   // symbol: RBTC, RIF
-  async sendRskTransaction(symbol) {
-    console.log(`transfer::sendRskTransaction, symbol: ${symbol}`);
-    const { amount, memo, feeLevel } = this.state;
+  async sendRskTransaction() {
+    console.log(`transfer::sendRskTransaction, symbol: ${this.symbol}`);
+    const { amount, to } = this.state;
+    const { navigation: { state } } = this.props;
+    const { params } = state;
+    const { coin } = params;
     this.setState({ loading: true });
-    this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendRskTransaction, createRawTransaction');
       const value = common.rbtcToWeiHex(amount);
-      const [type, sender, receiver] = ['Testnet', '0x0c50ecd06dff8c22a9afc80356d5d7f39921e882', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'];
-      const params = {
-        symbol, type, sender, receiver, value, memo, feeLevel,
+      const rawTransactionParams = {
+        symbol: this.symbol,
+        type: this.netType,
+        sender: coin.address,
+        receiver: to,
+        value,
+        data: '',
+        gasPrice: '600000000',
+        gas: 21000,
       };
-      console.log(`transfer::sendRskTransaction, createRawTransaction, params: ${JSON.stringify(params)}`);
-      const result = await Parse.Cloud.run('createRawTransaction', params);
+      console.log(`transfer::sendRskTransaction, createRawTransaction, rawTransactionParams: ${JSON.stringify(rawTransactionParams)}`);
+      console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.addressPrivateKeyHex)}`);
+      const result = await Parse.Cloud.run('createRawTransaction', rawTransactionParams);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
-      const privateKey = '9E41AA4BA98146F04039E7974A83BF65A8494D2F27D5CAB32F18650A514AFBEF';
+      const privateKey = coin.addressPrivateKeyHex;
+      console.log(`transfer::sendRskTransaction, sendSignedTransaction, privateKey: ${privateKey}`);
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
       const signedTransaction = await accountInfo.signTransaction(
         rawTransaction, privateKey,
       );
       console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);
-      const [name, hash, type] = ['Rootstock', signedTransaction.rawTransaction, 'Testnet'];
-      console.log(`sendSignedTransaction, name: ${name}, hash: ${hash}, type: ${type}`);
-      const result = await Parse.Cloud.run('sendSignedTransaction', {
-        name, hash, type,
-      });
+      const transactionParams = {
+        name: 'Rootstock',
+        hash: signedTransaction.rawTransaction,
+        type: this.netType,
+      };
+      console.log(`sendSignedTransaction, transactionParams: ${JSON.stringify(transactionParams)}`);
+      const result = await Parse.Cloud.run('sendSignedTransaction', transactionParams);
       return result;
     };
     try {
@@ -289,18 +334,20 @@ class Transfer extends Component {
       amount, preference, to,
     } = this.state;
     this.setState({ loading: true });
-    this.a = 1;
     const createRawTransaction = async () => {
       console.log('transfer::sendBtcTransaction, createRawTransaction');
       const value = common.btcToSatoshiHex(amount);
-      const [symbol, type, sender, receiver, data] = [
-        'BTC', 'Testnet', coin.address, to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW', '',
-      ];
-      const result = await ParseHelper.createRawTransaction({
-        symbol, type, sender, receiver, value, data, preference,
-      });
-
-      // const result = await Parse.Cloud.run('createRawTransaction', rawTranscationParams);
+      const rawTransactionParams = {
+        symbol: this.symbol,
+        type: this.netType,
+        sender: coin.address,
+        receiver: to,
+        value,
+        data: '',
+        preference,
+      };
+      console.log(`createRawTransaction, rawTransactionParams: ${JSON.stringify(rawTransactionParams)}`);
+      const result = await ParseHelper.createRawTransaction(rawTransactionParams);
       console.log('createRawTransaction result: ', JSON.stringify(result));
       return result;
     };
@@ -334,18 +381,21 @@ class Transfer extends Component {
     console.log(`sendTransaction, result: ${JSON.stringify(result)}`);
   }
 
+  async sendTransaction() {
+    if (this.symbol === 'BTC') {
+      await this.sendBtcTransaction();
+    } else if (this.symbol === 'RBTC' || this.symbol === 'RIF') {
+      await this.sendRskTransaction();
+    }
+  }
+
   async confirm() {
     this.a = 1;
     const { navigation, addNotification } = this.props;
-    const { coin } = navigation.state.params;
-    const { amount, to } = this.state;
-
     try {
+      await this.sendTransaction();
       this.setState({ loading: false });
-      if (coin.id === 'BTCTestnet') {
-        await this.sendBtcTransaction(amount, to);
-        navigation.navigate('TransferCompleted');
-      }
+      navigation.navigate('TransferCompleted');
     } catch (error) {
       this.setState({ loading: false });
       console.log(`sendTransaction, error: ${error.message}`);
@@ -403,28 +453,6 @@ class Transfer extends Component {
       headerHeight += ScreenHelper.iphoneXExtendedHeight;
     }
 
-    // Test data
-    const btcFees = [
-      { coin: '0.0046 BTC' },
-      { coin: '0.0048 BTC' },
-      { coin: '0.0052 BTC' },
-    ];
-    // const rbtcFees = [
-    //   { coin: '0.0046 RBTC' },
-    //   { coin: '0.0048 RBTC' },
-    //   { coin: '0.0052 RBTC' },
-    // ];
-    // const rifFees = [
-    //   { coin: '0.0046 RIF' },
-    //   { coin: '0.0048 RIF' },
-    //   { coin: '0.0052 RIF' },
-    // ];
-
-    let feeData = null;
-    if (coin.id === 'BTCTestnet') {
-      feeData = btcFees;
-    }
-
     return (
       <ScrollView style={[flex.flex1]}>
         <ImageBackground source={header} style={[{ height: headerHeight }]}>
@@ -449,9 +477,13 @@ class Transfer extends Component {
               <TextInput
                 style={[styles.textInput]}
                 value={amount}
+                keyboardType="numeric"
                 onChangeText={(text) => {
-                  this.setState({ amount: parseFloat(text) > 0 ? text : '' });
-                  this.validateConfirmControl();
+                  const newText = text.replace(/[^\d.]/g, '');
+                  this.setState({ amount: newText });
+                  if (parseFloat(newText) >= 0) {
+                    this.validateConfirmControl();
+                  }
                 }}
               />
               <Image source={currencyExchange} style={styles.textInputIcon} />
@@ -507,7 +539,7 @@ class Transfer extends Component {
             <Loc style={[styles.title2]} text="Miner fee" />
             <Loc style={[styles.question]} text="How fast you want this done?" />
             <RadioGroup
-              data={feeData}
+              data={this.feeData}
               selected={feeLevel}
               onChange={(i) => {
                 let preference = '';
