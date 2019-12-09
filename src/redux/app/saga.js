@@ -2,6 +2,7 @@
 import {
   call, all, takeEvery, put,
 } from 'redux-saga/effects';
+import _ from 'lodash';
 
 /* Actions */
 import actions from './actions';
@@ -13,6 +14,7 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import walletMock from '../../mock/wallet';
+// import storage from '../../common/storage';
 
 function* initAppRequest(/* action */) {
   try {
@@ -84,8 +86,18 @@ function* initAppRequest(/* action */) {
 
     // 3. Upload wallets and settings to server
     try {
-      const updateUserResp = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
-      console.log('parse.updateUser, response:', updateUserResp);
+      const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
+      console.log('Parse User updated:', updatedParseUser);
+
+      // Update coin's objectId and return isDirty true if there's coin updated
+      const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
+      const isDirty = walletManager.updateCoinObjectIds(addressesJSON);
+
+      // If Coins are updated then we need to serialize them
+      if (isDirty) {
+        console.log('walletManager is dirty, serialize ...', walletManager);
+        yield call(walletManager.serialize);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -93,11 +105,6 @@ function* initAppRequest(/* action */) {
     const message = yield call(ParseHelper.handleError, err);
 
     console.error(message);
-
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message },
-    });
   }
 }
 

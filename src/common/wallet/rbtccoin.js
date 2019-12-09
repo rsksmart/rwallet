@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
@@ -40,6 +41,9 @@ export default class RBTCCoin {
     this.metadata = coinType[id];
     this.amount = amount;
     this.address = address;
+    this.chain = this.metadata.chain;
+    this.type = this.metadata.type;
+    this.symbol = this.metadata.symbol;
   }
 
   derive(seed) {
@@ -121,13 +125,56 @@ export default class RBTCCoin {
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
+      objectId: this.objectId,
     };
   }
 
   static fromJSON(json) {
-    const { id, amount, address } = json;
+    const {
+      id, amount, address, objectId,
+    } = json;
     const instance = new RBTCCoin(id, amount, address);
+    instance.objectId = objectId;
+
     return instance;
+  }
+
+  /**
+   * Return ture if all class members have the same value as the input json
+   * @param {object} json Another Coin object
+   */
+  isEqual(json) {
+    const {
+      address, chain, type, symbol,
+    } = this;
+    return address === json.address
+    && chain === json.chain
+    && type === json.type
+    && symbol === json.symbol;
+  }
+
+  /**
+   * Set Coin's objectId to values in parseWallets, and return true if there's any change
+   * @param {array} addresses Array of JSON objects
+   * @returns True if this Coin is updated
+   */
+  updateCoinObjectIds(addresses) {
+    const that = this;
+
+    let isDirty = false;
+
+    _.each(addresses, (address) => {
+      if (that.isEqual(address) && that.objectId !== address.objectId) {
+        console.log('Found an isEqual Coin,', address, 'setting objectId ', address.objectId);
+        that.objectId = address.objectId;
+        isDirty = true;
+        return false; // return false break _.each loop
+      }
+
+      return true; // simply here because eslint requires returning something
+    });
+
+    return isDirty;
   }
 
   get icon() {
