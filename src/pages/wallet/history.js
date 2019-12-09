@@ -244,18 +244,13 @@ class History extends Component {
       this.onRefresh = this.onRefresh.bind(this);
       const { navigation } = this.props;
       const {
-        name, address, coin,
+        coin,
       } = navigation.state.params;
+      const { address, defaultName: name, metadata: { queryKey } } = coin;
       this.name = name;
       this.address = address;
       this.coin = coin;
-      if (this.coin === 'BTCTestnet') {
-        this.coin = 'BTC';
-      } else if (this.coin === 'RBTCTestnet') {
-        this.coin = 'RBTC';
-      } else if (this.coin === 'RIFTestnet') {
-        this.coin = 'RIF';
-      }
+      this.queryKey = queryKey;
     }
 
     componentDidMount() {
@@ -303,6 +298,7 @@ class History extends Component {
           />
         );
       }
+      const symbol = this.coin.id.includes('BTC') ? 'BTC' : 'RSK';
 
       return (
         <View style={[flex.flex1]}>
@@ -329,13 +325,14 @@ class History extends Component {
             </ImageBackground>
             <View style={styles.headerBoardView}>
               <View style={styles.headerBoard}>
-                <Text style={styles.myAssets}>{`1.305 ${this.coin}`}</Text>
+                <Text style={styles.myAssets}>{`1.305 ${symbol}`}</Text>
                 <Text style={styles.assetsValue}>13,198.6 USD</Text>
-                <Text style={styles.sending}>{`0.0005 ${this.coin} (50.56USD)`}</Text>
+                <Text style={styles.sending}>{`0.0005 ${symbol} (50.56USD)`}</Text>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {
+                      console.log(navigation.state.params);
                       navigation.navigate('Transfer', navigation.state.params);
                     }}
                   >

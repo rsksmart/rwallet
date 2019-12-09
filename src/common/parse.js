@@ -145,11 +145,11 @@ class ParseHelper {
    * @param {string} param.data data field
    */
   static createRawTransaction({
-    symbol, type, sender, receiver, value, data,
+    symbol, type, sender, receiver, value, data, preference,
   }) {
-    console.log(`ParseHelper::createRawTransaction is called, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, data: ${data}`);
+    console.log(`ParseHelper::createRawTransaction is called, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, data: ${data}, preference: ${preference}`);
     return Parse.Cloud.run('createRawTransaction', {
-      symbol, type, sender, receiver, value, data,
+      symbol, type, sender, receiver, value, data, preference,
     }).then((res) => {
       console.log(`ParseHelper::createRawTransaction received, res: ${JSON.stringify(res)}`);
       return Promise.resolve(res);
@@ -174,6 +174,7 @@ class ParseHelper {
   }
 
   static getPrice({ symbols, currencies }) {
+    console.log('ParseHelper.getPrice', symbols, currencies);
     return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
