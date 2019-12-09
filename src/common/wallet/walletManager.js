@@ -11,6 +11,8 @@ class WalletManager {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
     this.assetValue = 0;
+
+    this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
   }
 
@@ -160,6 +162,24 @@ class WalletManager {
   getAddresses() {
     const { wallets } = this;
     return _.reduce(wallets, (accumulator, wallet) => accumulator.concat(wallet.coins), []);
+  }
+
+  /*
+   * Set Coin's objectId to values in parseWallets, and return true if there's any change
+   * @param {array} addresses Array of JSON objects
+   * @returns True if any Coin is updated
+   */
+  updateCoinObjectIds(addresses) {
+    const { wallets } = this;
+
+    let isDirty = false;
+    _.each(wallets, (wallet) => {
+      if (wallet.updateCoinObjectIds(addresses)) {
+        isDirty = true;
+      }
+    });
+
+    return isDirty;
   }
 }
 
