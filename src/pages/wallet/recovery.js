@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet, ScrollView, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Tags from '../../components/common/misc/tags';
@@ -15,6 +14,7 @@ import appActions from '../../redux/app/actions';
 import { strings } from '../../common/i18n';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   input: {
@@ -88,36 +88,31 @@ class WalletRecovery extends Component {
     this.inputWord = this.inputWord.bind(this);
     this.deleteWord = this.deleteWord.bind(this);
     this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
     this.onTagsPress = this.onTagsPress.bind(this);
     this.onImportPress = this.onImportPress.bind(this);
   }
 
   onSubmitEditing() {
-    const { phrase, phrases } = this.state;
-    const { addNotification } = this.props;
-    const inputText = phrase.trim();
-    if (inputText === '') {
-      this.setState({ phrase: '' });
+    const { phrase } = this.state;
+    const trimText = phrase.trim();
+    this.inputText(trimText);
+  }
+
+  onChangeText(text) {
+    const char = text[text.length - 1];
+    if (char !== ' ') {
+      this.setState({ phrase: text });
       return;
     }
-    if (phrases.length === 12) {
-      const notification = createInfoNotification(
-        'Too Many Words',
-        'The recovery phrase has to be 12 words',
-      );
-      addNotification(notification);
-      return;
-    }
-    if (phrases.length === 11) {
-      this.setState({ isCanSubmit: true });
-    }
-    this.inputWord();
-    this.setState({ phrase: '' });
+    const trimText = text.trim();
+    this.inputText(trimText);
   }
 
   onTagsPress(i) {
     this.deleteWord(i);
     this.setState({ isCanSubmit: false });
+    this.phraseInput.focus();
   }
 
   onImportPress() {
@@ -133,11 +128,35 @@ class WalletRecovery extends Component {
     navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
   }
 
-  inputWord() {
-    const { phrase, phrases } = this.state;
-    phrases.push(phrase);
-    this.setState({ phrases });
-    this.setState({ phrase: '' });
+  inputText(text) {
+    const words = text.split(' ');
+    words.forEach((word) => {
+      const trimWord = word.trim();
+      this.inputWord(trimWord);
+    });
+  }
+
+  inputWord(word) {
+    const { addNotification } = this.props;
+    const { phrases } = this.state;
+    if (word === '') {
+      this.setState({ phrase: '' });
+      return;
+    }
+    if (phrases.length === 12) {
+      const notification = createInfoNotification(
+        'Too Many Words',
+        'The recovery phrase has to be 12 words',
+      );
+      addNotification(notification);
+      return;
+    }
+    if (phrases.length === 11) {
+      this.setState({ isCanSubmit: true });
+    }
+    phrases.push(word);
+    this.setState({ phrases, phrase: '' });
+    this.phraseInput.focus();
   }
 
   deleteWord(i) {
@@ -157,9 +176,15 @@ class WalletRecovery extends Component {
             <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
               <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
               <View style={styles.phraseView}>
-                <Input
-                  style={[styles.input]}
-                  onChangeText={(text) => this.setState({ phrase: text })}
+                <TextInput
+                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                  // This code uses a ref to store a reference to a DOM node
+                  // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                  ref={(ref) => { this.phraseInput = ref; }}
+                  // set blurOnSubmit to false, to prevent keyboard flickering.
+                  blurOnSubmit={false}
+                  style={[presetStyles.textInput, styles.input]}
+                  onChangeText={this.onChangeText}
                   onSubmitEditing={this.onSubmitEditing}
                   value={phrase}
                 />
@@ -167,7 +192,7 @@ class WalletRecovery extends Component {
                   <Tags
                     style={[{ flex: 1 }]}
                     data={phrases}
-                    onPress={(i) => this.onTagsPress(i)}
+                    onPress={this.onTagsPress}
                   />
                 </View>
               </View>
