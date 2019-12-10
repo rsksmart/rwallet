@@ -63,8 +63,8 @@ export default class RBTCCoin {
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
-      this.addressPrivateKeyHex = RBTCCoin.getAddressPrivateKeyHex(master, addressNode);
-      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.addressPrivateKeyHex}`);
+      this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
+      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
@@ -72,15 +72,10 @@ export default class RBTCCoin {
     console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
-  static getAddressPrivateKeyHex(master, addressNode) {
-    let privateKey = RBTCCoin.getAddressPrivateKey(master, addressNode);
+  static getPrivateKey(master, addressNode) {
+    let privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
     privateKey = deserializePrivate(privateKey).privateKey;
     privateKey = Buffer.from(privateKey).toString('hex');
-    return privateKey;
-  }
-
-  static getAddressPrivateKey(master, addressNode) {
-    const privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
     return privateKey;
   }
 
@@ -211,15 +206,12 @@ export default class RBTCCoin {
     return this.metadata.defaultName;
   }
 
-  static derivePathFromNode(s, path) {
-    console.log('derivePathFromNode, s, path');
-    console.log(s);
-    console.log(path);
-    let deserialized = deserializePublic(s);
+  static derivePathFromNode(node, path) {
+    let deserialized = deserializePublic(node);
     let pub = true;
     if (!deserialized) {
       pub = false;
-      deserialized = deserializePrivate(s);
+      deserialized = deserializePrivate(node);
     }
     const derived = deserialized.derive(path);
     let serialized = '';

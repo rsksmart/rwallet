@@ -282,20 +282,20 @@ class Transfer extends Component {
         symbol: this.symbol,
         type: this.netType,
         sender: coin.address,
-        receiver: to || '0xf08f6c2eac2183dfc0a5910c58c186496f32498d',
+        receiver: to,
         value,
         data: '',
         gasPrice: '600000000',
         gas: 21000,
       };
       console.log(`transfer::sendRskTransaction, createRawTransaction, rawTransactionParams: ${JSON.stringify(rawTransactionParams)}`);
-      console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.addressPrivateKeyHex)}`);
+      console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.privateKey)}`);
       const result = await Parse.Cloud.run('createRawTransaction', rawTransactionParams);
       return result;
     };
     const sendSignedTransaction = async (rawTransaction) => {
       console.log('transfer::sendRskTransaction, sendSignedTransaction');
-      const privateKey = coin.addressPrivateKeyHex;
+      const { privateKey } = coin;
       console.log(`transfer::sendRskTransaction, sendSignedTransaction, privateKey: ${privateKey}`);
       const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
       const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
@@ -335,7 +335,7 @@ class Transfer extends Component {
         symbol: this.symbol,
         type: this.netType,
         sender: coin.address,
-        receiver: to || 'mxSZzJnUvtAmza4ewht1mLwwrK4xthNRzW',
+        receiver: to,
         value,
         data: '',
         preference,
@@ -385,7 +385,6 @@ class Transfer extends Component {
   }
 
   async confirm() {
-    this.a = 1;
     const { navigation, addNotification } = this.props;
     try {
       await this.sendTransaction();
@@ -491,9 +490,7 @@ class Transfer extends Component {
                 style={[styles.textInput]}
                 value={to}
                 onChangeText={(text) => {
-                  const self = this;
-                  console.log('paste to: ', text);
-                  self.setState({ to: text }, this.validateConfirmControl.bind(self));
+                  this.setState({ to: text }, this.validateConfirmControl.bind(this));
                 }}
               />
               <TouchableOpacity
