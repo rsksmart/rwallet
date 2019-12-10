@@ -215,7 +215,7 @@ class Transfer extends Component {
       isConfirm: false,
       enableConfirm: false,
     };
-    this.initContext();
+
     this.sendRskTransaction = this.sendRskTransaction.bind(this);
     this.sendBtcTransaction = this.sendBtcTransaction.bind(this);
     this.confirm = this.confirm.bind(this);
@@ -224,6 +224,7 @@ class Transfer extends Component {
   }
 
   componentDidMount() {
+    this.initContext();
     const { navigation } = this.props;
     appContext.eventEmitter.on('onFirstPasscode', async () => {
       await this.sendBtcTransaction();
@@ -265,6 +266,8 @@ class Transfer extends Component {
     this.symbol = context.symbol;
     this.feeData = context.feeData;
     this.netType = context.netType;
+    this.fixedGasPrice = '600000000';
+    this.fixedGas = 21000;
   }
 
   // symbol: RBTC, RIF
@@ -285,8 +288,8 @@ class Transfer extends Component {
         receiver: to,
         value,
         data: '',
-        gasPrice: '600000000',
-        gas: 21000,
+        gasPrice: this.fixedGasPrice,
+        gas: this.fixedGas,
       };
       console.log(`transfer::sendRskTransaction, createRawTransaction, rawTransactionParams: ${JSON.stringify(rawTransactionParams)}`);
       console.log(`transfer::sendRskTransaction, createRawTransaction, privateKey: ${JSON.stringify(coin.privateKey)}`);
