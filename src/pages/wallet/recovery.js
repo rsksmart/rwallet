@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet, ScrollView, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Input from '../../components/common/input/input';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Tags from '../../components/common/misc/tags';
@@ -15,6 +14,7 @@ import appActions from '../../redux/app/actions';
 import { strings } from '../../common/i18n';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   input: {
@@ -112,6 +112,7 @@ class WalletRecovery extends Component {
   onTagsPress(i) {
     this.deleteWord(i);
     this.setState({ isCanSubmit: false });
+    this.phraseInput.focus();
   }
 
   onImportPress() {
@@ -154,9 +155,7 @@ class WalletRecovery extends Component {
       this.setState({ isCanSubmit: true });
     }
     phrases.push(word);
-    this.setState({ phrases });
-    this.setState({ phrase: '' });
-    process.nextTick(() => {
+    this.setState({ phrases, phrase: '' }, () => {
       this.phraseInput.focus();
     });
   }
@@ -178,10 +177,12 @@ class WalletRecovery extends Component {
             <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
               <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
               <View style={styles.phraseView}>
-                <Input
-                  autoFocus
-                  reference={(ref) => { this.phraseInput = ref; }}
-                  style={[styles.input]}
+                <TextInput
+                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                  // This code uses a ref to store a reference to a DOM node
+                  // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                  ref={(ref) => { this.phraseInput = ref; }}
+                  style={[styles.input, presetStyles.textInput]}
                   onChangeText={this.onChangeText}
                   onSubmitEditing={this.onSubmitEditing}
                   value={phrase}
