@@ -52,9 +52,6 @@ class VerifyPhrase extends Component {
     this.wallet = navigation.state.params.wallet;
     this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
 
-    // Shuffle the 12-word here so user need to choose from a different order than the last time
-    // We want to make sure they really write down the phrase
-    this.shuffleWords = _.shuffle(this.correctPhrases);
     this.reset(true);
 
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
@@ -81,7 +78,7 @@ class VerifyPhrase extends Component {
 
   async onTagsPressed(index) {
     const { navigation, addNotification } = this.props;
-    const { selectedWordIndexs } = this.state;
+    const { shuffleWords, selectedWordIndexs } = this.state;
     selectedWordIndexs.push(index);
     this.setState({
       selectedWordIndexs,
@@ -90,7 +87,7 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       const selectedWords = [];
       selectedWordIndexs.forEach((selectedIndex) => {
-        selectedWords.push(this.shuffleWords[selectedIndex]);
+        selectedWords.push(shuffleWords[selectedIndex]);
       });
 
       const isEqual = _.isEqual(selectedWords, this.correctPhrases);
@@ -125,7 +122,10 @@ class VerifyPhrase extends Component {
 
   reset(isInitialize = false) {
     if (isInitialize) {
-      this.state = { selectedWordIndexs: [] };
+      // Shuffle the 12-word here so user need to choose from a different order than the last time
+      // We want to make sure they really write down the phrase
+      const shuffleWords = _.shuffle(this.correctPhrases);
+      this.state = { selectedWordIndexs: [], shuffleWords };
     } else {
       this.setState({ selectedWordIndexs: [] });
     }
@@ -144,7 +144,7 @@ class VerifyPhrase extends Component {
     const words = [];
     const margin = 200;
     let offset = 0;
-    const { selectedWordIndexs } = this.state;
+    const { shuffleWords, selectedWordIndexs } = this.state;
     if (selectedWordIndexs.length > 1) {
       offset = -margin * (selectedWordIndexs.length - 1);
     }
@@ -156,7 +156,7 @@ class VerifyPhrase extends Component {
       let text = '';
       if (i < selectedWordIndexs.length) {
         const index = selectedWordIndexs[i];
-        text = this.shuffleWords[index];
+        text = shuffleWords[index];
       }
       let isDisabled = false;
       if (i !== selectedWordIndexs.length - 1) {
@@ -173,7 +173,7 @@ class VerifyPhrase extends Component {
 
   render() {
     const { isLoading } = this.props;
-    const { selectedWordIndexs } = this.state;
+    const { shuffleWords, selectedWordIndexs } = this.state;
     return (
       <View>
         <Loader loading={isLoading} />
@@ -185,7 +185,7 @@ class VerifyPhrase extends Component {
           <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
           <Loc style={[styles.tip]} text="Tap each word in the correct order" />
           <Tags
-            data={this.shuffleWords}
+            data={shuffleWords}
             style={[styles.tags]}
             showNumber={false}
             onPress={this.onTagsPressed}
