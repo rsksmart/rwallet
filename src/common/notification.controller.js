@@ -20,9 +20,10 @@ export const createWarningNotification = (title, message) => ({
   message,
 });
 
-export const createErrorNotification = (title, message) => ({
+export const createErrorNotification = (title, message, buttonText) => ({
   id: Date.now(),
   type: 'error',
   title,
   message,
+  buttonText,
 });

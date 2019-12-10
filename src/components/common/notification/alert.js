@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
   },
+  errorButtonText: {
+    color: '#DF5264',
+  },
 });
 
 export default class Alert extends Component {
@@ -58,7 +61,7 @@ export default class Alert extends Component {
   render() {
     const { animationType, transparent } = this.state;
     const {
-      title, message, buttonText, onClosePress,
+      title, message, buttonText, onClosePress, type,
     } = this.props;
     return (
       <Modal
@@ -75,7 +78,7 @@ export default class Alert extends Component {
             </View>
             <View style={styles.line} />
             <TouchableOpacity onPress={onClosePress}>
-              <Loc style={[styles.button]} text={buttonText} />
+              <Loc style={type === 'error' ? [styles.button, styles.errorButtonText] : [styles.button]} text={buttonText} />
             </TouchableOpacity>
           </View>
         </View>
@@ -89,6 +92,7 @@ Alert.propTypes = {
   onClosePress: PropTypes.func,
   message: PropTypes.string.isRequired,
   buttonText: PropTypes.string,
+  type: PropTypes.string.isRequired,
 };
 
 Alert.defaultProps = {
