@@ -119,9 +119,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textInput: {
-    color: '#B5B5B5',
+    color: '#000000',
     fontSize: 12,
-    fontWeight: '300',
+    fontWeight: '500',
     paddingVertical: 0,
     marginLeft: 5,
     marginVertical: 10,
@@ -208,7 +208,7 @@ class Transfer extends Component {
     this.state = {
       loading: false,
       to: null,
-      amount: '0.00000001',
+      amount: '',
       memo: null,
       feeLevel: 1,
       preference: 'medium',
@@ -448,6 +448,7 @@ class Transfer extends Component {
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
+                placeholder="0.01"
                 value={amount}
                 onChangeText={(text) => {
                   this.setState({ amount: parseFloat(text) > 0 ? text : '' });
