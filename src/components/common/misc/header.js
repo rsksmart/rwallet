@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   noGobackTitleStyle: {
     fontSize: 20,
-    marginBottom: 63,
+    marginBottom: 70,
   },
 });
 
@@ -45,9 +45,7 @@ export default function Header({ title, goBack }) {
     backButton = (
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => {
-          goBack();
-        }}
+        onPress={goBack}
       >
         <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
       </TouchableOpacity>

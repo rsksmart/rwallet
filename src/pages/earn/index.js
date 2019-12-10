@@ -12,9 +12,12 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
+import { DEVICE } from '../../common/info';
 
 const giftcard = require('../../assets/images/misc/giftcard.png');
 const shapeshift = require('../../assets/images/misc/shapeshift.png');
+
+const BOARD_MARGIN_OFFSET = -86;
 
 const styles = StyleSheet.create({
   body: {
@@ -36,6 +39,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     alignSelf: 'center',
     marginTop: 30,
+  },
+  giftcardBoard: {
+    marginTop: DEVICE.isIphoneX ? BOARD_MARGIN_OFFSET + screenHelper.iphoneXExtendedHeight : BOARD_MARGIN_OFFSET,
+    flexDirection: 'row',
+  },
+  giftcardTouchable: {
+    alignSelf: 'center',
+    flex: 1,
+    marginHorizontal: 20,
   },
   giftcardView: {
     width: '100%',
@@ -87,24 +99,41 @@ class EarnIndex extends Component {
     header: null,
   });
 
-  render() {
+  constructor(props) {
+    super(props);
+    this.onGiftCardsPress = this.onGiftCardsPress.bind(this);
+    this.onShapeshiftPress = this.onShapeshiftPress.bind(this);
+  }
+
+  onGiftCardsPress() {
     const { addNotification } = this.props;
+    const notification = createInfoNotification(
+      'Buy Gift Cards',
+      'This feature is coming soon',
+    );
+    addNotification(notification);
+  }
+
+  onShapeshiftPress() {
+    const { addNotification } = this.props;
+    const notification = createInfoNotification(
+      'ShapeShift',
+      'This feature is coming soon',
+    );
+    addNotification(notification);
+  }
+
+  render() {
     return (
       <ScrollView>
-        <Header title="Earn" />
+        <Header
+          title="Earn"
+        />
         <View style={[screenHelper.styles.body, styles.body]}>
-          <View style={[styles.board, { marginTop: 30, flexDirection: 'row' }]}>
+          <View style={[styles.board, styles.giftcardBoard]}>
             <TouchableOpacity
-              style={[{
-                alignSelf: 'center', flex: 1, marginHorizontal: 20,
-              }]}
-              onPress={() => {
-                const notification = createInfoNotification(
-                  'Buy Gift Cards',
-                  'This feature is coming soon',
-                );
-                addNotification(notification);
-              }}
+              style={styles.giftcardTouchable}
+              onPress={this.onGiftCardsPress}
             >
               <View style={styles.giftcardView}>
                 <FullWidthImage source={giftcard} />
@@ -115,13 +144,7 @@ class EarnIndex extends Component {
           <Text style={styles.sectionTitle}>Service</Text>
           <TouchableOpacity
             style={[styles.shapeshiftView]}
-            onPress={() => {
-              const notification = createInfoNotification(
-                'ShapeShift',
-                'This feature is coming soon',
-              );
-              addNotification(notification);
-            }}
+            onPress={this.onShapeshiftPress}
           >
             <View style={styles.shapeshift}>
               <AutoHeightImage width={150} style={styles.shapeshiftIcon} source={shapeshift} />
@@ -153,5 +176,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EarnIndex);
-
-// <Image source={giftcard} style={styles.giftcard} resizeMode="contain" />
