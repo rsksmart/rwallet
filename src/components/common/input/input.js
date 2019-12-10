@@ -17,11 +17,10 @@ const styles = StyleSheet.create({
 });
 
 export default function Input({
-  style, placeholder, onChangeText, onSubmitEditing, value, editable, reference, autoFocus,
+  style, placeholder, onChangeText, onSubmitEditing, value, editable,
 }) {
   return (
     <TextInput
-      ref={reference}
       style={[styles.textInput, style]}
       onChangeText={onChangeText}
       placeholder={placeholder}
@@ -30,7 +29,6 @@ export default function Input({
       editable={editable}
       autoCapitalize="none"
       autoCorrect={false}
-      autoFocus={autoFocus}
     />
   );
 }
@@ -42,17 +40,13 @@ Input.propTypes = {
   onSubmitEditing: PropTypes.func,
   onChangeText: PropTypes.func,
   editable: PropTypes.bool,
-  autoFocus: PropTypes.bool,
-  reference: PropTypes.func,
 };
 
 Input.defaultProps = {
   style: null,
   placeholder: null,
-  reference: null,
   value: null,
   onSubmitEditing: null,
   onChangeText: null,
   editable: true,
-  autoFocus: false,
 };
