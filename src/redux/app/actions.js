@@ -36,11 +36,13 @@ const actions = {
   getServerInfo: () => ({
     type: actions.GET_SERVER_INFO,
   }),
-  getTransactions: (symbol, type, address) => {
+  getTransactions: (symbol, type, address, page) => {
     console.log('actions::getTransactions is called.');
     return {
       type: actions.GET_TRANSACTIONS,
-      payload: { symbol, type, address },
+      payload: {
+        symbol, type, address, page,
+      },
     };
   },
   createRawTransaction: (symbol, type, sender, receiver, value, data) => {
