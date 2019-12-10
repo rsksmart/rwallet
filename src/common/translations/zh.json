@@ -103,5 +103,7 @@
   "Earn": "收入",
   "ShapeShift": "ShapeShift",
   "Backup Phrase": "备份密语",
-  "Incorrect backup phrase": "备份密语不正确"
+  "Incorrect backup phrase": "备份密语不正确",
+  "Unable to recover": "不能备份",
+  "Unable to recover Body": "不能通过您的密语导入钱包，请确保正确输入密语。"
 }

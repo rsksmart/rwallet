@@ -12,9 +12,11 @@ import Loc from '../../components/common/misc/loc';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { strings } from '../../common/i18n';
-import { createInfoNotification } from '../../common/notification.controller';
+import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
+
+const Mnemonic = require('bitcore-mnemonic');
 
 const styles = StyleSheet.create({
   input: {
@@ -39,14 +41,15 @@ const styles = StyleSheet.create({
   buttonView: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginTop: 20,
   },
   bottomBorder: {
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
-    height: 170,
+    minHeight: 170,
+    paddingBottom: 10,
   },
   headerImage: {
     position: 'absolute',
@@ -116,7 +119,7 @@ class WalletRecovery extends Component {
   }
 
   onImportPress() {
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
     const { phrases } = this.state;
     let inputPhrases = '';
     for (let i = 0; i < phrases.length; i += 1) {
@@ -124,6 +127,18 @@ class WalletRecovery extends Component {
         inputPhrases += ' ';
       }
       inputPhrases += phrases[i];
+    }
+    // validate phrase
+    const isValid = Mnemonic.isValid(inputPhrases);
+    console.log(`isValid: ${isValid}`);
+    if (!isValid) {
+      const notification = createErrorNotification(
+        'Unable to recover',
+        'Unable to recover Body',
+        'GOT IT',
+      );
+      addNotification(notification);
+      return;
     }
     navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
   }
@@ -144,7 +159,7 @@ class WalletRecovery extends Component {
       return;
     }
     if (phrases.length === 12) {
-      const notification = createInfoNotification(
+      const notification = createErrorNotification(
         'Too Many Words',
         'The recovery phrase has to be 12 words',
       );
@@ -169,48 +184,48 @@ class WalletRecovery extends Component {
     const { phrase, phrases, isCanSubmit } = this.state;
     const { navigation } = this.props;
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView>
-          <Header title="Recovery Phrase" goBack={navigation.goBack} />
-          <View style={[screenHelper.styles.body]}>
-            <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
-              <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-              <View style={styles.phraseView}>
-                <TextInput
-                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                  // This code uses a ref to store a reference to a DOM node
-                  // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                  ref={(ref) => { this.phraseInput = ref; }}
-                  // set blurOnSubmit to false, to prevent keyboard flickering.
-                  blurOnSubmit={false}
-                  style={[presetStyles.textInput, styles.input]}
-                  onChangeText={this.onChangeText}
-                  onSubmitEditing={this.onSubmitEditing}
-                  value={phrase}
+      <ScrollView style={{ flex: 1 }}>
+        <Header title="Recovery Phrase" goBack={() => { navigation.goBack(); }} />
+        <View style={[screenHelper.styles.body]}>
+          <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
+            <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+            <View style={styles.phraseView}>
+              <TextInput
+                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                // This code uses a ref to store a reference to a DOM node
+                // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                ref={(ref) => { this.phraseInput = ref; }}
+                // set blurOnSubmit to false, to prevent keyboard flickering.
+                blurOnSubmit={false}
+                style={[presetStyles.textInput, styles.input]}
+                onChangeText={this.onChangeText}
+                onSubmitEditing={this.onSubmitEditing}
+                value={phrase}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                <Tags
+                  style={[{ flex: 1 }]}
+                  data={phrases}
+                  onPress={this.onTagsPress}
                 />
-                <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                  <Tags
-                    style={[{ flex: 1 }]}
-                    data={phrases}
-                    onPress={this.onTagsPress}
-                  />
-                </View>
               </View>
             </View>
-            <View style={[styles.sectionContainer, styles.bottomBorder]}>
-              <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-              <SwitchListItem title={strings('Specify derivation path')} value={false} />
-            </View>
           </View>
-        </ScrollView>
-        <View style={styles.buttonView}>
-          <Button
-            text="IMPORT"
-            onPress={this.onImportPress}
-            disabled={!isCanSubmit}
-          />
+          <View style={[styles.sectionContainer, styles.bottomBorder]}>
+            <Text style={[styles.sectionTitle]}>Advanced Options</Text>
+            <SwitchListItem title={strings('Specify derivation path')} value={false} />
+          </View>
+          <View style={styles.buttonView}>
+            <Button
+              text="IMPORT"
+              onPress={this.onImportPress}
+              disabled={!isCanSubmit}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
