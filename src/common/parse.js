@@ -83,7 +83,7 @@ class ParseHelper {
       });
       if (isSaved !== null) {
         // eslint-disable-next-line
-        coin.objectId = addAddrPObj.get('objectId');
+        coin.objectId = addAddrPObj._getId();
         addAddrPObjs.push(addAddrPObj);
       }
     };
@@ -243,7 +243,7 @@ class ParseHelper {
    * Get balance of parseObject and update property of each addresss
    * @param {array} addresses Array of Coin class instance
    */
-  static fetchBalances(addresses) {
+  static fetchBalance(addresses) {
     const promises = _.map(addresses, (address) => {
       const addressReference = address;
       if (!addressReference.objectId) {
