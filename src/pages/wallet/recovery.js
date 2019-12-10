@@ -155,9 +155,8 @@ class WalletRecovery extends Component {
       this.setState({ isCanSubmit: true });
     }
     phrases.push(word);
-    this.setState({ phrases, phrase: '' }, () => {
-      this.phraseInput.focus();
-    });
+    this.setState({ phrases, phrase: '' });
+    this.phraseInput.focus();
   }
 
   deleteWord(i) {
@@ -182,7 +181,9 @@ class WalletRecovery extends Component {
                   // This code uses a ref to store a reference to a DOM node
                   // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
                   ref={(ref) => { this.phraseInput = ref; }}
-                  style={[styles.input, presetStyles.textInput]}
+                  // set blurOnSubmit to false, to prevent keyboard flickering.
+                  blurOnSubmit={false}
+                  style={[presetStyles.textInput, styles.input]}
                   onChangeText={this.onChangeText}
                   onSubmitEditing={this.onSubmitEditing}
                   value={phrase}
