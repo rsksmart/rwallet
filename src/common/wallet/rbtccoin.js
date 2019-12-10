@@ -8,12 +8,20 @@ const ethereumjsUtil = require('ethereumjs-util');
 
 const MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8');
 
-function deserializePrivate(privateKey) {
+export function deserializePrivate(privateKey) {
   const master = JSON.parse(privateKey);
   const ret = new HDNode();
   ret.chainCode = Buffer.from(master.cc, 'hex');
   ret.privateKey = Buffer.from(master.prk, 'hex');
   return ret;
+}
+
+function serializePrivate(node) {
+  const ret = {
+    prk: node.privateKey.toString('hex'),
+    cc: node.chainCode.toString('hex'),
+  };
+  return JSON.stringify(ret);
 }
 
 function deserializePublic(s) {
@@ -55,11 +63,20 @@ export default class RBTCCoin {
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
+      this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
+      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
 
     console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
+  }
+
+  static getPrivateKey(master, addressNode) {
+    let privateKey = RBTCCoin.derivePathFromNode(master, addressNode.path);
+    privateKey = deserializePrivate(privateKey).privateKey;
+    privateKey = Buffer.from(privateKey).toString('hex');
+    return privateKey;
   }
 
   static fromMasterSeed(seedBuffer) {
@@ -187,5 +204,18 @@ export default class RBTCCoin {
 
   get defaultName() {
     return this.metadata.defaultName;
+  }
+
+  static derivePathFromNode(node, path) {
+    let deserialized = deserializePublic(node);
+    let pub = true;
+    if (!deserialized) {
+      pub = false;
+      deserialized = deserializePrivate(node);
+    }
+    const derived = deserialized.derive(path);
+    let serialized = '';
+    if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
+    return serialized;
   }
 }
