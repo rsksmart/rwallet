@@ -83,7 +83,7 @@ class ParseHelper {
       });
       if (isSaved !== null) {
         // eslint-disable-next-line
-        coin.objectId = addAddrPObj.get('objectId');
+        coin.objectId = addAddrPObj.id;
         addAddrPObjs.push(addAddrPObj);
       }
     };
