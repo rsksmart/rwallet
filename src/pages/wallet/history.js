@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
+  Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import flex from '../../assets/styles/layout.flex';
+import BigNumber from 'bignumber.js';
 import appActions from '../../redux/app/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 
 const header = require('../../assets/images/misc/header.png');
+const sending = require('../../assets/images/icon/sending.png');
 
 
 const styles = StyleSheet.create({
@@ -93,8 +94,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.94,
   },
   sending: {
-    marginTop: 7,
-    marginLeft: 25,
+    marginLeft: 5,
     color: '#000000',
     fontSize: 15,
     letterSpacing: 0.94,
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
   datetime: {
     color: '#939393',
     fontSize: 12,
+    alignSelf: 'flex-end',
   },
   headerImage: {
     position: 'absolute',
@@ -185,11 +186,53 @@ const styles = StyleSheet.create({
     height: screenHelper.headerHeight,
     marginTop: screenHelper.headerMarginTop,
   },
+  recent: {
+    color: '#000000',
+    fontSize: 13,
+    letterSpacing: 0.25,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  sendingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 25,
+    marginTop: 7,
+  },
+  sendingIcon: {
+    width: 15,
+    height: 15,
+  },
+  refreshControl: {
+    zIndex: 10000,
+  },
+  footerIndicator: {
+    marginVertical: 20,
+  },
 });
 
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y
+    >= contentSize.height - paddingToBottom;
+};
+
+const getStateIcon = (state) => {
+  let icon = null;
+  if (state === 'Sent') {
+    icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />;
+  } else if (state === 'Received') {
+    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
+  } else if (state === 'Sending') {
+    icon = <Image source={sending} />;
+  }
+  return icon;
+};
+
 function Item({
-  title, icon, amount, datetime,
+  title, amount, datetime,
 }) {
+  const icon = getStateIcon(title);
   return (
     <View style={[styles.row]}>
       {icon}
@@ -208,164 +251,304 @@ function Item({
 
 Item.propTypes = {
   title: PropTypes.string.isRequired,
-  icon: PropTypes.element.isRequired,
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
 };
 
 class History extends Component {
-    static navigationOptions = () => ({
-      header: null,
+  static navigationOptions = () => ({
+    header: null,
+  });
+
+  listData = [];
+
+  constructor(props) {
+    super(props);
+    const { navigation } = this.props;
+    const {
+      name, address, coin,
+    } = navigation.state.params;
+
+    this.state = {
+      totalCoin: '0',
+      totalCoinValue: '0',
+      sendingCoin: '0',
+      sendingCoinValue: '0',
+      isRefreshing: false,
+      isLoadMore: false,
+    };
+
+    this.name = name;
+    this.address = address;
+    switch (coin) {
+      case 'BTCTestnet':
+        this.coin = 'BTC';
+        this.net = 'Testnet';
+        break;
+      case 'RBTCTestnet':
+        this.coin = 'BTC';
+        this.net = 'Testnet';
+        break;
+      case 'RIFTestnet':
+        this.coin = 'BTC';
+        this.net = 'Testnet';
+        break;
+      default:
+        this.coin = coin;
+        this.net = 'Mainnet';
+    }
+    this.allTransactions = [];
+    this.listView = <ActivityIndicator size="small" color="#00ff00" />;
+    this.page = 1;
+    this.onRefresh = this.onRefresh.bind(this);
+    this.generateListView = this.generateListView.bind(this);
+    this.refreshControl = this.refreshControl.bind(this);
+    this.onEndReached = this.onEndReached.bind(this);
+    this.onSendButtonClick = this.onSendButtonClick.bind(this);
+    this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
+    this.onbackClick = this.onbackClick.bind(this);
+    this.getTransactions = this.getTransactions.bind(this);
+    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
+  }
+
+  componentWillMount() {
+    this.getTransactions();
+    const totalCoin = 0; // TODO: getBalancet
+    this.setState({ totalCoin: `${totalCoin}` });
+    this.calcTotalCoinValue(totalCoin);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      transactions, prices,
+    } = nextProps;
+    const { transactions: curTransactions, prices: curPrices } = this.props;
+    const { isLoadMore } = this.state;
+    console.log('WalletList.componentWillReceiveProps: prices,', prices);
+    const price = this.getTargetPrice(prices);
+    if (transactions !== curTransactions) {
+      this.setState({ isRefreshing: false });
+      if (transactions) {
+        if (isLoadMore) {
+          this.setState({ isLoadMore: false });
+          if (transactions.length !== 0) {
+            this.page += 1;
+            this.allTransactions = this.allTransactions.concat(transactions);
+          }
+        } else if (transactions.length > 0) {
+          this.allTransactions = transactions;
+        }
+        this.generateListView(this.allTransactions);
+        this.calcSendingCoin(this.allTransactions, price);
+      }
+    }
+    if (prices !== curPrices) {
+      this.calcSendingCoin(this.allTransactions, price);
+    }
+  }
+
+  onRefresh() {
+    this.page = 0;
+    this.setState({ isRefreshing: true });
+    this.getTransactions();
+  }
+
+  onEndReached() {
+    console.log('history::onEndReached');
+    const { isLoadMore } = this.state;
+    if (isLoadMore) {
+      return;
+    }
+    const { getTransactions } = this.props;
+    this.setState({ isLoadMore: true });
+    getTransactions(this.coin, this.net, this.address, this.page + 1);
+  }
+
+  onSendButtonClick() {
+    const { navigation } = this.props;
+    navigation.navigate('Transfer', navigation.state.params);
+  }
+
+  onReceiveButtonClick() {
+    const { navigation } = this.props;
+    navigation.navigate('WalletReceive', navigation.state.params);
+  }
+
+  static onScroll({ nativeEvent }) {
+    if (isCloseToBottom(nativeEvent)) {
+      // console.log('ScrollView isCloseToBottom');
+    }
+  }
+
+  onMomentumScrollEnd(e) {
+    // console.log('ScrollView onMomentumScrollEnd');
+    const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
+    const contentSizeHeight = e.nativeEvent.contentSize.height; // scrollView contentSize height
+    const oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; // scrollView height
+    if (offsetY + oriageScrollHeight >= contentSizeHeight) {
+      console.log('case 1');
+      this.onEndReached();
+    } else if (offsetY + oriageScrollHeight <= 1) {
+      console.log('case 2');
+    } else if (offsetY === 0) {
+      console.log('case 3');
+    }
+  }
+
+  onbackClick() {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
+  getTargetPrice(prices) {
+    if (!prices) {
+      return null;
+    }
+    let price = 0;
+    const { currency } = this.props;
+    for (let i = 0; i < prices.length; i += 1) {
+      const item = prices[i];
+      if (item.symbol === this.coin) {
+        price = item.price[currency];
+        break;
+      }
+    }
+    return price;
+  }
+
+  getTransactions() {
+    const { getTransactions } = this.props;
+    getTransactions(this.coin, this.net, this.address, this.page);
+  }
+
+  calcSendingCoin(transactions, price) {
+    if (!transactions) {
+      return;
+    }
+    let sendingCoin = new BigNumber(0);
+    transactions.forEach((transaction) => {
+      if (transaction.state === 'Sending') {
+        sendingCoin = sendingCoin.plus(transaction.amount);
+      }
     });
-
-    listData = [
-      {
-        type: 'Sending',
-        icon: <SimpleLineIcons name="refresh" size={30} style={{ color: '#000000' }} />,
-        amount: '0.005BTC',
-        datetime: 'a few seconds ago',
-      },
-      {
-        type: 'Received',
-        icon: <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />,
-        amount: '1.61BTC',
-        datetime: 'Sep 6. 2019',
-      },
-      {
-        type: 'Sent',
-        icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
-        amount: '0.3BTC',
-        datetime: 'Aug 12. 2019',
-      },
-    ];
-
-    constructor(props) {
-      super(props);
-      this.onRefresh = this.onRefresh.bind(this);
-      const { navigation } = this.props;
-      const {
-        coin,
-      } = navigation.state.params;
-      const { address, defaultName: name, metadata: { queryKey } } = coin;
-      this.name = name;
-      this.address = address;
-      this.coin = coin;
-      this.queryKey = queryKey;
+    const sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    this.setState({ sendingCoinValue });
+    const state = { sendingCoin: sendingCoin.toString() };
+    if (price) {
+      state.sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
     }
+    this.setState(state);
+  }
 
-    componentDidMount() {
-      this.onRefresh();
+  calcTotalCoinValue(totalCoin, price) {
+    if (!price) {
+      this.setState({ totalCoinValue: '0' });
+      return;
     }
+    const totalCoinBigNumber = new BigNumber(totalCoin);
+    const totalCoinValue = totalCoinBigNumber.times(price);
+    this.setState({ totalCoinValue: totalCoinValue.toString() });
+  }
 
-    onRefresh() {
-      const { getTransactions } = this.props;
-      const [coin, network, address] = ['RBTC', 'Testnet', '0x626042b6e0435e23706376D61bE5e8Fc21d5c7DB'];
-      // const [coin, network, address] = [this.coin, this.network, this.address];
-      getTransactions(coin, network, address);
+  generateListView(transactions) {
+    if (!transactions) {
+      return;
     }
-
-
-    render() {
-      const { transactions, isLoading, navigation } = this.props;
-      this.listData = [];
-      if (transactions) {
-        transactions.forEach((transaction) => {
-          const item = {
-            type: 'Sent',
-            icon: <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />,
-            amount: '0.3BTC',
-            datetime: moment(transaction.timestamp).format('MMM D. YYYY'),
-          };
-          this.listData.push(item);
-        });
-      }
-
-      let listView = <ActivityIndicator size="small" color="#00ff00" />;
-      if (transactions) {
-        listView = (
-          <FlatList
-            data={this.listData}
-            renderItem={({ item }) => (
-              <Item
-                title={item.type}
-                icon={item.icon}
-                amount={item.amount}
-                datetime={item.datetime}
-                onPress={item.onPress}
-              />
-            )}
-            keyExtractor={() => `${Math.random()}`}
+    this.listView = (
+      <FlatList
+        data={transactions}
+        renderItem={({ item }) => (
+          <Item
+            title={item.state}
+            icon={item.icon}
+            amount={`${item.amount}${this.coin}`}
+            datetime={item.datetime}
+            onPress={item.onPress}
           />
-        );
-      }
-      const symbol = this.coin.id.includes('BTC') ? 'BTC' : 'RSK';
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    );
+  }
 
-      return (
-        <View style={[flex.flex1]}>
-          <ScrollView refreshControl={(
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={() => {
-                this.onRefresh();
-              }}
-              title="Loading..."
-            />
-          )}
-          >
-            <ImageBackground source={header} style={[styles.headerImage]}>
-              <Text style={[styles.headerTitle]}>{this.name}</Text>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </ImageBackground>
-            <View style={styles.headerBoardView}>
-              <View style={styles.headerBoard}>
-                <Text style={styles.myAssets}>{`1.305 ${symbol}`}</Text>
-                <Text style={styles.assetsValue}>13,198.6 USD</Text>
-                <Text style={styles.sending}>{`0.0005 ${symbol} (50.56USD)`}</Text>
-                <View style={styles.myAssetsButtonsView}>
-                  <TouchableOpacity
-                    style={styles.ButtonView}
-                    onPress={() => {
-                      console.log(navigation.state.params);
-                      navigation.navigate('Transfer', navigation.state.params);
-                    }}
-                  >
-                    <Entypo name="swap" size={20} style={styles.sendIcon} />
-                    <Loc style={[styles.sendText]} text="Send" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                    onPress={() => {
-                      navigation.navigate('WalletReceive', navigation.state.params);
-                    }}
-                  >
-                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                    <Loc style={[styles.sendText]} text="Receive" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-              <Text style={{
-                color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginBottom: 10,
-              }}
-              >
-                Recent
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              {listView}
-            </View>
-          </ScrollView>
-        </View>
-      );
+  refreshControl() {
+    const { isRefreshing } = this.state;
+    return (
+      <RefreshControl
+        style={styles.refreshControl}
+        refreshing={isRefreshing}
+        onRefresh={this.onRefresh}
+        title="Loading..."
+      />
+    );
+  }
+
+  renderfooter() {
+    const { isLoadMore } = this.state;
+    let footer = null;
+    if (isLoadMore) {
+      footer = <ActivityIndicator style={styles.footerIndicator} size="small" color="#00ff00" />;
     }
+    return footer;
+  }
+
+  render() {
+    const { currency } = this.props;
+    const {
+      sendingCoin, sendingCoinValue, totalCoin, totalCoinValue,
+    } = this.state;
+    return (
+      <ScrollView
+        refreshControl={this.refreshControl()}
+        onScroll={History.onScroll}
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
+        scrollEventThrottle={400}
+      >
+        <ImageBackground source={header} style={[styles.headerImage]}>
+          <Text style={[styles.headerTitle]}>{this.name}</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={this.onbackClick}
+          >
+            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+          </TouchableOpacity>
+        </ImageBackground>
+        <View style={styles.headerBoardView}>
+          <View style={styles.headerBoard}>
+            <Text style={styles.myAssets}>{`${totalCoin} ${this.coin}`}</Text>
+            <Text style={styles.assetsValue}>{`${totalCoinValue} ${currency}`}</Text>
+            <View style={styles.sendingView}>
+              <Image style={styles.sendingIcon} source={sending} />
+              <Text style={styles.sending}>{`${sendingCoin}${this.coin} (${sendingCoinValue}${currency})`}</Text>
+            </View>
+            <View style={styles.myAssetsButtonsView}>
+              <TouchableOpacity
+                style={styles.ButtonView}
+                onPress={this.onSendButtonClick}
+              >
+                <Entypo name="swap" size={20} style={styles.sendIcon} />
+                <Loc style={[styles.sendText]} text="Send" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                onPress={this.onReceiveButtonClick}
+              >
+                <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                <Loc style={[styles.sendText]} text="Receive" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+          <Text style={styles.recent}>Recent</Text>
+        </View>
+        <View style={styles.sectionContainer}>
+          {this.listView}
+        </View>
+        {this.renderfooter()}
+      </ScrollView>
+    );
+  }
 }
 
 History.propTypes = {
@@ -375,24 +558,26 @@ History.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  transactions: PropTypes.arrayOf(PropTypes.shape({})),
   getTransactions: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
+  currency: PropTypes.string.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})),
+  transactions: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 History.defaultProps = {
   transactions: null,
-  isLoading: false,
+  prices: null,
 };
 
 const mapStateToProps = (state) => ({
   transactions: state.App.get('transactions'),
-  isLoading: state.App.get('isPageLoading'),
+  currency: state.App.get('currency'),
+  prices: state.Wallet.get('prices'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (symbol, type, address) => dispatch(
-    appActions.getTransactions(symbol, type, address),
+  getTransactions: (symbol, type, address, page) => dispatch(
+    appActions.getTransactions(symbol, type, address, page),
   ),
 });
 

@@ -50,6 +50,7 @@
   "COMFIRM & FINISH": "确认完成",
   "Sent": "已发送",
   "Sending": "发送",
+  "Received": "已接收",
   "To": "接收地址",
   "Memo": "备注",
   "Miner fee": "费用",
@@ -100,5 +101,9 @@
   "Buy Gift Cards": "购买礼物卡",
   "This feature is coming soon": "这个功能即将到来。",
   "Earn": "收入",
-  "ShapeShift": "ShapeShift"
+  "ShapeShift": "ShapeShift",
+  "Backup Phrase": "备份密语",
+  "Incorrect backup phrase": "备份密语不正确",
+  "Unable to recover": "不能备份",
+  "Unable to recover Body": "不能通过您的密语导入钱包，请确保正确输入密语。"
 }

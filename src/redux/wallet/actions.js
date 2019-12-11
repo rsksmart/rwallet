@@ -6,6 +6,7 @@ const actions = {
   GET_WALLETS_RESULT: 'GET_WALLETS_RESULT',
   GET_PRICE: 'GET_PRICE',
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
+  FETCH_BALANCE: 'FETCH_BALANCE',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
 
   // Functions definition
@@ -23,6 +24,10 @@ const actions = {
       currency,
     };
   },
+  fetchBalance: (walletManager) => ({
+    type: actions.FETCH_BALANCE,
+    walletManager,
+  }),
 };
 
 export default actions;

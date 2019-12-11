@@ -50,6 +50,7 @@
   "COMFIRM & FINISH": "COMFIRM & FINISH",
   "Sent": "Sent",
   "Sending": "Sending",
+  "Received": "Received",
   "To": "To",
   "Memo": "Memo",
   "Miner fee": "Miner fee",
@@ -100,5 +101,9 @@
   "Buy Gift Cards": "Buy Gift Cards",
   "This feature is coming soon": "This feature is coming soon.",
   "Earn": "Earn",
-  "ShapeShift": "ShapeShift"
+  "ShapeShift": "ShapeShift",
+  "Backup Phrase": "Backup Phrase",
+  "Incorrect backup phrase": "Incorrect backup phrase",
+  "Unable to recover": "Unable to recover",
+  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
 }

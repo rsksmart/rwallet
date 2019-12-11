@@ -280,11 +280,15 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation,
+        getPrice, currency, wallets, navigation, fetchBalance, walletManager,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
 
+      // 1. Get balance of each token
+      fetchBalance(walletManager);
+
+      // 2. Get price of each token
       const currencyStrings = _.map(currencySettings, (item) => item.name);
       getPrice(supportedTokens, currencyStrings, currency);
 
@@ -431,6 +435,9 @@ WalletList.propTypes = {
   wallets: PropTypes.arrayOf(PropTypes.object),
   totalAssetValue: PropTypes.number,
   prices: PropTypes.arrayOf(PropTypes.object),
+  fetchBalance: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  walletManager: PropTypes.object,
   // addNotification: PropTypes.func.isRequired,
   // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
@@ -439,11 +446,13 @@ WalletList.defaultProps = {
   wallets: undefined,
   prices: [],
   totalAssetValue: 0,
+  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
+  walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
   // allCurrencies: state.App.get('allCurrencies'),
@@ -452,6 +461,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
+  fetchBalance: (walletManager) => dispatch(walletActions.fetchBalance(walletManager)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),

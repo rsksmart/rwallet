@@ -55,17 +55,17 @@ class WalletSelectCurrency extends Component {
       {
         title: 'BTC',
         icon: BTC,
-        selected: true,
+        selected: false,
       },
       {
         title: 'RBTC',
         icon: RBTC,
-        selected: true,
+        selected: false,
       },
       {
         title: 'RIF',
         icon: RIF,
-        selected: true,
+        selected: false,
       },
     ];
 
