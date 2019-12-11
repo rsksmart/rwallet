@@ -100,7 +100,8 @@ class ParseHelper {
     const walletInfo = parseUser.get('wallets') || [];
     walletInfo.push(...addAddrPObjs);
     parseUser.set('wallets', walletInfo);
-    await parseUser.save();
+    const user = await parseUser.save();
+    return user;
   }
 
   /**
