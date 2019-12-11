@@ -64,7 +64,10 @@ class ParseHelper {
   static async updateUser({ wallets, settings }) {
     const parseUser = Parse.User.current();
     await parseUser.fetch();
-    parseUser.set('settings', settings);
+
+    if (!_.isUndefined(settings)) {
+      parseUser.set('settings', settings);
+    }
 
     const addAddrPObjs = [];
     const saveAddrTasks = [];
