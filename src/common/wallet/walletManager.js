@@ -1,8 +1,10 @@
 // import RNSecureStorage from 'rn-secure-storage';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import appContext from '../appContext';
+import common from '../common';
 
 const STORAGE_KEY = 'wallets';
 
@@ -10,7 +12,7 @@ class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
-    this.assetValue = 0;
+    this.assetValue = new BigNumber(0);
 
     this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
@@ -127,19 +129,31 @@ class WalletManager {
    * Fail silently if there is any exception
    * @param {*} prices
    */
-  updateAssetValue(prices) {
+  updateAssetValue(prices, currency) {
     const { wallets } = this;
     try {
       console.log('updateAssetValue.wallets', wallets);
       console.log('updateAssetValue.prices', prices);
-      this.assetValue = prices.reduce((acc, cur) => {
+      const assetValue = prices.reduce((acc, cur) => {
         const amountArray = wallets.map((wallet) => {
-          const coinObj = wallet.coins.find((coin) => coin.id === cur.symbol);
-          return coinObj ? coinObj.amount || 0 : 0;
+          const coinObj = wallet.coins.find((coin) => coin.symbol === cur.symbol);
+          return coinObj ? coinObj.balance || 0 : 0;
         });
-        const amount = amountArray.reduce((a, b) => a + b, 0);
-        return acc + cur.price * amount;
-      }, 0);
+        const amount = amountArray.reduce((a, b) => {
+          const hexNumberB = new BigNumber(b);
+          const amountB = common.convertHexToCoinAmount(cur.symbol, hexNumberB);
+          const sum = a.plus(amountB);
+          return sum;
+        }, new BigNumber(0));
+        const price = cur.price[currency];
+        const value = amount.times(price);
+        const sum = acc.plus(value);
+        console.log(`symbol: ${cur.symbol} sum :${value.toString()}`);
+        return sum;
+      }, new BigNumber(0));
+      this.assetValue = assetValue;
+      // this.assetValue = assetValue.toString();
+      // console.log(`this.assetValue: ${this.assetValue}`);
     } catch (ex) {
       console.log(ex);
     }

@@ -23,7 +23,7 @@ export default function walletReducer(state = initState, action) {
         const walletManager = state.get('walletManager');
         const { currency } = action.value; // currency is in appReducer so we need to reference from there
         if (walletManager) {
-          walletManager.updateAssetValue(prices);
+          walletManager.updateAssetValue(prices, currency);
           walletManager.getTotalAssetValue(currency);
         }
         newState = newState.set('prices', action.value && action.value.value);

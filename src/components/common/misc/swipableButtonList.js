@@ -77,13 +77,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingVertical: 20,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   right1: {
     flex: 1,
   },
   right2: {
     alignItems: 'flex-end',
-    marginRight: 5,
+    right: 5,
+    position: 'absolute',
   },
   icon: {
     marginRight: 20,
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     color: color.component.swipableButtonList.amount.color,
-    fontSize: 12,
+    fontSize: 13,
   },
 });
 

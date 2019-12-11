@@ -15,6 +15,8 @@ export default class Coin {
     this.chain = this.metadata.chain;
     this.type = this.metadata.type;
     this.symbol = this.metadata.symbol;
+    // TODO: parse.getBalance()
+    this.balance = '0x918';
   }
 
   derive(seed) {

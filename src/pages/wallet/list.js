@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
@@ -18,6 +19,7 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
+import common from '../../common/common';
 
 // currencySettings:
 const { consts: { supportedTokens, currencies: currencySettings } } = config;
@@ -223,7 +225,7 @@ class WalletList extends Component {
     /**
      * Transform from wallets to ListData for rendering
      */
-    static createListData(wallets, navigation) {
+    static createListData(wallets, prices, currency, currencySymbol, navigation) {
       console.log('list::createListData, wallets:', wallets);
       if (!_.isArray(wallets)) {
         return [];
@@ -232,15 +234,26 @@ class WalletList extends Component {
       const listData = [];
       wallets.forEach((wallet) => {
         const wal = { name: `Key ${wallet.id}`, coins: [] };
-        wallet.coins.forEach((coin) => {
+        wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-
+          let amountText = ' ';
+          let valueText = ' ';
+          if (coin.balance) {
+            const amount = common.convertHexToCoinAmount(coin.symbol, coin.balance);
+            const value = common.getCoinValue(amount, coin.symbol, currency, prices);
+            if (amount) {
+              amountText = amount.toString();
+            }
+            if (value) {
+              valueText = currencySymbol + value.decimalPlaces(2).toString();
+            }
+          }
           const item = {
-            key: `${Math.random()}`,
+            key: `${index}`,
             title: coin.defaultName,
             text: coinType,
-            worth: '',
-            amount: '',
+            worth: valueText,
+            amount: amountText,
             price: null,
             icon: coin.icon,
             r1Press: () => {
@@ -280,7 +293,7 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation,
+        getPrice, currency, wallets, navigation, prices,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
@@ -289,7 +302,7 @@ class WalletList extends Component {
       getPrice(supportedTokens, currencyStrings, currency);
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      const listData = WalletList.createListData(wallets, navigation);
+      const listData = WalletList.createListData(wallets, prices, currency, currencySymbol, navigation);
 
       this.setState({
         currencySymbol,
@@ -309,7 +322,7 @@ class WalletList extends Component {
 
       // Handle currency changed logic; get symbol string for the new currency
       newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      newState.listData = WalletList.createListData(wallets, navigation);
+      newState.listData = WalletList.createListData(wallets, prices, currency, newState.currencySymbol, navigation);
 
       this.setState(newState);
     }
@@ -322,7 +335,7 @@ class WalletList extends Component {
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
         const section = (
-          <View key={`${Math.random()}`}>
+          <View key={`${i}`}>
             <Text style={[styles.sectionTitle]}>{item.name}</Text>
             <SwipableButtonList data={item.coins} />
           </View>
@@ -363,7 +376,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <Text style={styles.myAssets}>{totalAssetValue}</Text>
+                <Text style={styles.myAssets}>{totalAssetValue.decimalPlaces(2).toString()}</Text>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
@@ -429,7 +442,9 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  totalAssetValue: PropTypes.number,
+  totalAssetValue: PropTypes.shape({
+    decimalPlaces: PropTypes.func.isRequired,
+  }),
   prices: PropTypes.arrayOf(PropTypes.object),
   // addNotification: PropTypes.func.isRequired,
   // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -438,14 +453,14 @@ WalletList.propTypes = {
 WalletList.defaultProps = {
   wallets: undefined,
   prices: [],
-  totalAssetValue: 0,
+  totalAssetValue: new BigNumber(0),
 };
 
 const mapStateToProps = (state) => ({
   prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
+  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
   // allCurrencies: state.App.get('allCurrencies'),
 });
 
