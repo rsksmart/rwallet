@@ -65,7 +65,7 @@ function* fetchBalanceRequest(action) {
   console.log('fetchBalanceRequest, get Coin instances:', addresses);
 
   try {
-    yield call(ParseHelper.fetchBalance(addresses));
+    yield call(ParseHelper.fetchBalance, addresses);
   } catch (err) {
     const message = yield call(ParseHelper.handlError, err);
     console.error(message);
