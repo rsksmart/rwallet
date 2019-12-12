@@ -15,6 +15,7 @@ import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import common from '../../common/common';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 const header = require('../../assets/images/misc/header.png');
 const sending = require('../../assets/images/icon/sending.png');
@@ -80,12 +81,12 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   myAssets: {
-    fontSize: 35,
-    fontWeight: '900',
-    letterSpacing: 2.92,
-    color: '#000000',
     marginTop: 17,
-    marginLeft: 25,
+    marginHorizontal: 25,
+  },
+  myAssetsFontStyle: {
+    fontWeight: '900',
+    color: '#000000',
   },
   assetsValue: {
     marginTop: 10,
@@ -503,7 +504,7 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <Text style={styles.myAssets}>{`${balanceText} ${symbol}`}</Text>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${balanceText} ${symbol}`}</ResponsiveText>
             <Text style={styles.assetsValue}>{`${balanceValue} ${currency}`}</Text>
             <View style={styles.sendingView}>
               <Image style={styles.sendingIcon} source={sending} />

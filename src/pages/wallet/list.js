@@ -20,6 +20,7 @@ import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 import common from '../../common/common';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 // currencySettings:
 const { consts: { supportedTokens, currencies: currencySettings } } = config;
@@ -111,11 +112,12 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   myAssets: {
-    fontSize: 35,
+    marginTop: 63,
+    marginHorizontal: 30,
+  },
+  myAssetsFontStyle: {
     fontWeight: 'bold',
     color: '#000000',
-    top: 63,
-    left: 30,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -293,10 +295,11 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, prices, fetchBalance, walletManager,
+        getPrice, currency, wallets, navigation, prices, fetchBalance, walletManager, isFetchingBalance,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
+      console.log('list::componentWillMount, isFetchingBalance:', isFetchingBalance);
 
       // 1. Get balance of each token
       fetchBalance(walletManager);
@@ -380,7 +383,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <Text style={styles.myAssets}>{totalAssetValue.decimalPlaces(2).toString()}</Text>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValue}`}</ResponsiveText>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
@@ -455,6 +458,7 @@ WalletList.propTypes = {
   walletManager: PropTypes.object,
   // addNotification: PropTypes.func.isRequired,
   // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isFetchingBalance: PropTypes.bool.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -470,6 +474,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
+  isFetchingBalance: state.Wallet.get('isFetchingBalance'),
   // allCurrencies: state.App.get('allCurrencies'),
 });
 

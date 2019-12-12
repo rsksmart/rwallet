@@ -1,11 +1,13 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 import actions from './actions';
+import settings from '../../common/settings';
 
 const initState = new Map({
   wallets: [],
   prices: [],
   walletManager: undefined, // WalletManager instance
+  isFetchingBalance: false,
 });
 
 export default function walletReducer(state = initState, action) {
@@ -33,6 +35,21 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.SET_WALLET_MANAGER:
       return state.set('walletManager', action.value);
+    case actions.FETCH_BALANCE:
+      return state.set('isFetchingBalance', false);
+    case actions.FETCH_BALANCE_RESULT: {
+      const prices = state.get('prices');
+      console.log('prices:', prices);
+      if (prices) {
+        // Update asset value in wallet manger
+        const walletManager = state.get('walletManager');
+        const currency = settings.get('currency');
+        if (walletManager) {
+          walletManager.updateAssetValue(prices, currency);
+        }
+      }
+      return state.set('isFetchingBalance', true);
+    }
     default:
       return state;
   }

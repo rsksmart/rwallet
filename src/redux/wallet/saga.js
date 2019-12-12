@@ -66,6 +66,9 @@ function* fetchBalanceRequest(action) {
 
   try {
     yield call(ParseHelper.fetchBalance, addresses);
+    yield put({
+      type: actions.FETCH_BALANCE_RESULT,
+    });
   } catch (err) {
     const message = yield call(ParseHelper.handlError, err);
     console.error(message);
