@@ -68,12 +68,12 @@ class ParseHelper {
 
     console.log(`wallets: ${JSON.stringify(wallets)}, settings: ${JSON.stringify(settings)}`);
 
-    // only set settings when it's not defined.
+    // Only set settings when it's defined.
     if (!_.isUndefined(settings)) {
       parseUser.set('settings', settings);
     }
 
-    // only set wallets when it's not defined.
+    // Only set wallets when it's defined.
     if (!_.isUndefined(wallets)) {
       const addAddrPObjs = [];
       const saveAddrTasks = [];
@@ -111,8 +111,14 @@ class ParseHelper {
       parseUser.set('wallets', walletInfo);
     }
 
-    const user = await parseUser.save();
-    return user;
+    // Only save parseUser when it's dirty.
+    // https://parseplatform.org/Parse-SDK-JS/api/v1.11.1/Parse.Object.html#dirty
+    const isDirty = parseUser.dirty();
+    console.log(`updateUser, isDirty: ${isDirty}`);
+    if (isDirty) {
+      return parseUser.save();
+    }
+    return parseUser;
   }
 
   /**

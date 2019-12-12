@@ -60,9 +60,9 @@ const actions = {
     key,
     value,
   }),
-  updateUser: (updateFields) => ({
+  updateUser: ({ wallets, settings }) => ({
     type: actions.UPDATE_USER,
-    payload: { updateFields },
+    payload: { wallets, settings },
   }),
 };
 

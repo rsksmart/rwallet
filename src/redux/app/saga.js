@@ -52,7 +52,7 @@ function* updateUser(updateWallets, updateSettings) {
 function* updateUserRequest(action) {
   // Upload wallets or settings to server
   try {
-    const { wallets: updateWallets, settings: updateSettings } = action.payload.updateFields;
+    const { wallets: updateWallets, settings: updateSettings } = action.payload;
     yield updateUser(updateWallets, updateSettings);
   } catch (err) {
     console.log(err);
