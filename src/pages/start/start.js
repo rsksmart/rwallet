@@ -8,7 +8,6 @@ import Button from '../../components/common/button/button';
 import Indicator from '../../components/common/misc/indicator';
 import appContext from '../../common/appContext';
 import appActions from '../../redux/app/actions';
-import common from '../../common/common';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -74,7 +73,7 @@ class StartPage extends Component {
 
   render() {
     const { loading, showButton } = this.state;
-    // const { navigation } = this.props;
+    const { navigation } = this.props;
     let buttonView = null;
     if (showButton) {
       buttonView = (
@@ -82,16 +81,9 @@ class StartPage extends Component {
           <Button
             text="GET STARTED"
             onPress={async () => {
-              // this.setState({ showButton: false });
+              this.setState({ showButton: false });
               // await this.login();
-              // navigation.navigate('TermsPage');
-              const btc = 1;
-              const satoshi = common.btcToSatoshiHex(btc);
-              console.log(`btc: ${btc}, TO weiHex: ${satoshi}`);
-
-              // const weiHex2 = '0xde0b6b3a7640000';
-              // const rif2 = common.weiHexToRif(weiHex2);
-              // console.log(`weiHex2: ${weiHex2}, To rif2: ${rif2}, `);
+              navigation.navigate('TermsPage');
             }}
           />
         </View>

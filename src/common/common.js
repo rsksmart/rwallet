@@ -1,7 +1,5 @@
-import Rsk3 from 'rsk3';
 import BigNumber from 'bignumber.js';
 import { Toast } from '@ant-design/react-native';
-import BN from 'bn.js';
 
 const common = {
   currentNavigation: null,
@@ -11,31 +9,27 @@ const common = {
     return false;
   },
   btcToSatoshiHex(amount) {
-    const satoshi = new BN(amount).mul(new BN(10e8));
-    const value = satoshi.toString(16);
-    return value;
+    const result = new BigNumber(amount).times('1e8').toString(16);
+    return result;
   },
   satoshiHexToBtc(satoshiHex) {
-    const satoshi = new BN(satoshiHex);
-    const result = satoshi.div('10e8');
+    const result = new BigNumber(satoshiHex).div('1e8');
     return result;
   },
   rbtcToWeiHex(amount) {
-    const bn = new BN(amount);
-    const result = Rsk3.utils.toWei(bn);
+    const result = new BigNumber(amount).times('1e18').toString(16);
     return result;
   },
   weiHexToRbtc(weiHex) {
-    const result = Rsk3.utils.fromWei(weiHex);
+    const result = new BigNumber(weiHex).div('1e18');
     return result;
   },
   rifToWeiHex(amount) {
-    const bn = new BN(amount);
-    const result = Rsk3.utils.toWei(bn);
+    const result = new BigNumber(amount).times('1e18').toString(16);
     return result;
   },
   weiHexToRif(weiHex) {
-    const result = Rsk3.utils.fromWei(weiHex);
+    const result = new BigNumber(weiHex).div('1e18');
     return result;
   },
   Toast(text, type, onClose, duration, mask) {
@@ -58,7 +52,6 @@ const common = {
         amount = common.weiHexToRbtc(hexNumber);
         break;
       case 'RIF':
-        // console.log(`wei: ${common.rifToWeiHex(1)}`);
         amount = common.weiHexToRif(hexNumber);
         break;
       default:
