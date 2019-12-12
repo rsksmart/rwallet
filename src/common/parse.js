@@ -100,7 +100,8 @@ class ParseHelper {
     const walletInfo = parseUser.get('wallets') || [];
     walletInfo.push(...addAddrPObjs);
     parseUser.set('wallets', walletInfo);
-    await parseUser.save();
+    const user = await parseUser.save();
+    return user;
   }
 
   /**
@@ -246,17 +247,22 @@ class ParseHelper {
   static fetchBalance(addresses) {
     const promises = _.map(addresses, (address) => {
       const addressReference = address;
+      console.log(`addressReference: ${JSON.stringify(addressReference)}`);
       if (!addressReference.objectId) {
         return Promise.resolve();
       }
 
       const query = new Parse.Query(ParseAddress);
+      console.log('fetchBalance, query:', query);
       return query.get(address.objectId)
         .then((parseObject) => {
           // Update address if the object was retrieved successfully.
           // This address is hex string which needs to be procced during either here or rendering
           addressReference.balance = parseObject.get('balance');
-        }, () => Promise.resolve());
+          console.log(`addressReference.balance: ${addressReference.balance}`);
+        }, (err) => {
+          console.log('fetchBalance, err:', err);
+        });
     });
 
     return Promise.all(promises);
