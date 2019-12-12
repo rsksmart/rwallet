@@ -59,52 +59,58 @@ class ParseHelper {
    * For settings, save JSON data into Users.settings
    * @param {*} param0
    * @param {array} param0.wallets
-   * @param {array} param0.wallets
+   * @param {array} param0.settings
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
     const parseUser = Parse.User.current();
     await parseUser.fetch();
 
+    console.log(`wallets: ${JSON.stringify(wallets)}, settings: ${JSON.stringify(settings)}`);
+
     // only set settings when it's not defined.
     if (!_.isUndefined(settings)) {
       parseUser.set('settings', settings);
     }
 
-    const addAddrPObjs = [];
-    const saveAddrTasks = [];
+    // only set wallets when it's not defined.
+    if (!_.isUndefined(wallets)) {
+      const addAddrPObjs = [];
+      const saveAddrTasks = [];
 
-    const handleSaveAddr = async (coin) => {
-      const { address } = coin;
-      const { chain, type, symbol } = CHAIN_MAP[coin.id];
-      const addAddrPObj = new ParseAddress()
-        .set('chain', chain)
-        .set('type', type)
-        .set('symbol', symbol)
-        .set('address', address);
-      const isSaved = await addAddrPObj.save().catch((err) => {
-        console.log(err);
-        return null;
-      });
-      if (isSaved !== null) {
-        // eslint-disable-next-line
-        coin.objectId = addAddrPObj.id;
-        addAddrPObjs.push(addAddrPObj);
-      }
-    };
-
-    wallets.forEach(({ coins }) => {
-      coins.forEach((coin) => {
-        if (!coin.objectId) {
-          saveAddrTasks.push(handleSaveAddr(coin));
+      const handleSaveAddr = async (coin) => {
+        const { address } = coin;
+        const { chain, type, symbol } = CHAIN_MAP[coin.id];
+        const addAddrPObj = new ParseAddress()
+          .set('chain', chain)
+          .set('type', type)
+          .set('symbol', symbol)
+          .set('address', address);
+        const isSaved = await addAddrPObj.save().catch((err) => {
+          console.log(err);
+          return null;
+        });
+        if (isSaved !== null) {
+          // eslint-disable-next-line
+          coin.objectId = addAddrPObj.id;
+          addAddrPObjs.push(addAddrPObj);
         }
-      });
-    });
-    await Promise.all(saveAddrTasks);
+      };
 
-    const walletInfo = parseUser.get('wallets') || [];
-    walletInfo.push(...addAddrPObjs);
-    parseUser.set('wallets', walletInfo);
+      wallets.forEach(({ coins }) => {
+        coins.forEach((coin) => {
+          if (!coin.objectId) {
+            saveAddrTasks.push(handleSaveAddr(coin));
+          }
+        });
+      });
+      await Promise.all(saveAddrTasks);
+
+      const walletInfo = parseUser.get('wallets') || [];
+      walletInfo.push(...addAddrPObjs);
+      parseUser.set('wallets', walletInfo);
+    }
+
     const user = await parseUser.save();
     return user;
   }

@@ -113,7 +113,7 @@ class WalletSelectCurrency extends Component {
       this.setState({ loading: true });
       const wallet = await WalletSelectCurrency.createWallet(phrases, coins);
       this.setState({ loading: false });
-      updateUser();
+      updateUser({ wallets: walletManager.wallets });
       if (phrases) {
         const resetAction = StackActions.reset({
           index: 0,
@@ -172,8 +172,8 @@ WalletSelectCurrency.propTypes = {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-  updateUser: () => dispatch(
-    appActions.updateUser(),
+  updateUser: (updateFields) => dispatch(
+    appActions.updateUser(updateFields),
   ),
 });
 

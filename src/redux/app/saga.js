@@ -31,12 +31,29 @@ function* serializeWalletsIfDirty(updatedParseUser) {
   }
 }
 
-function* updateUser() {
-  // Upload wallets and settings to server
+function* updateUser(updateWallets, updateSettings) {
+  // Upload wallets or settings to server
+  const updateParams = {};
+  if (updateWallets) {
+    updateParams.wallets = updateWallets;
+  }
+  if (updateSettings) {
+    updateParams.settings = updateSettings.toJSON();
+  }
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
+    const updatedParseUser = yield call(ParseHelper.updateUser, updateParams);
     console.log('Parse User updated:', updatedParseUser);
     yield serializeWalletsIfDirty(updatedParseUser);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function* updateUserRequest(action) {
+  // Upload wallets or settings to server
+  try {
+    const { wallets: updateWallets, settings: updateSettings } = action.payload.updateFields;
+    yield updateUser(updateWallets, updateSettings);
   } catch (err) {
     console.log(err);
   }
@@ -111,7 +128,7 @@ function* initAppRequest(/* action */) {
     }
 
     // 3. Upload wallets and settings to server
-    yield updateUser();
+    yield updateUser(walletManager.wallets, settings);
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
 
@@ -235,6 +252,6 @@ export default function* () {
     takeEvery(actions.GET_TRANSACTIONS, getTransactions),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
-    takeEvery(actions.UPDATE_USER, updateUser),
+    takeEvery(actions.UPDATE_USER, updateUserRequest),
   ]);
 }
