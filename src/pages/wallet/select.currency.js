@@ -40,6 +40,16 @@ export default class WalletSelectCurrency extends Component {
       header: null,
     });
 
+    static async createWallet(phrases, coins) {
+      let wallet = null;
+      if (phrases) {
+        wallet = await walletManager.createWallet('imported', phrases, coins);
+      } else {
+        wallet = await walletManager.createWallet('randomName', phrases, coins);
+      }
+      return wallet;
+    }
+
     mainnet = [
       {
         title: 'BTC',
@@ -120,12 +130,10 @@ export default class WalletSelectCurrency extends Component {
                       coins.push(coinId);
                     }
                   }
-                  const wallet = await walletManager.createWallet('randomName', phrases, coins);
+                  this.setState({ loading: true });
+                  const wallet = await WalletSelectCurrency.createWallet(phrases, coins);
+                  this.setState({ loading: false });
                   if (phrases) {
-                    this.setState({ loading: true });
-                    await walletManager.createWallet('imported', phrases, coins);
-                    this.setState({ loading: false });
-
                     const resetAction = StackActions.reset({
                       index: 0,
                       actions: [

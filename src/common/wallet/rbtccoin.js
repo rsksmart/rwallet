@@ -52,11 +52,6 @@ export default class RBTCCoin {
     this.chain = this.metadata.chain;
     this.type = this.metadata.type;
     this.symbol = this.metadata.symbol;
-    // TODO: parse.getBalance()
-    this.balance = '0x16345785d8a0000';
-    if (this.symbol === 'RIF') {
-      this.balance = '0xde0b6b3a7640000';
-    }
   }
 
   derive(seed) {
