@@ -171,6 +171,14 @@ class WalletManager {
   }
 
   /**
+   * Return all instances of Coin class within this WalletManager
+   */
+  getAddresses() {
+    const { wallets } = this;
+    return _.reduce(wallets, (accumulator, wallet) => accumulator.concat(wallet.coins), []);
+  }
+
+  /*
    * Set Coin's objectId to values in parseWallets, and return true if there's any change
    * @param {array} addresses Array of JSON objects
    * @returns True if any Coin is updated

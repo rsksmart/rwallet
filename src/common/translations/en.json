@@ -103,5 +103,7 @@
   "Earn": "Earn",
   "ShapeShift": "ShapeShift",
   "Backup Phrase": "Backup Phrase",
-  "Incorrect backup phrase": "Incorrect backup phrase"
+  "Incorrect backup phrase": "Incorrect backup phrase",
+  "Unable to recover": "Unable to recover",
+  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
 }

@@ -83,7 +83,7 @@ class ParseHelper {
       });
       if (isSaved !== null) {
         // eslint-disable-next-line
-        coin.objectId = addAddrPObj.get('objectId');
+        coin.objectId = addAddrPObj.id;
         addAddrPObjs.push(addAddrPObj);
       }
     };
@@ -237,6 +237,29 @@ class ParseHelper {
     }));
 
     return result;
+  }
+
+  /**
+   * Get balance of parseObject and update property of each addresss
+   * @param {array} addresses Array of Coin class instance
+   */
+  static fetchBalance(addresses) {
+    const promises = _.map(addresses, (address) => {
+      const addressReference = address;
+      if (!addressReference.objectId) {
+        return Promise.resolve();
+      }
+
+      const query = new Parse.Query(ParseAddress);
+      return query.get(address.objectId)
+        .then((parseObject) => {
+          // Update address if the object was retrieved successfully.
+          // This address is hex string which needs to be procced during either here or rendering
+          addressReference.balance = parseObject.get('balance');
+        }, () => Promise.resolve());
+    });
+
+    return Promise.all(promises);
   }
 }
 
