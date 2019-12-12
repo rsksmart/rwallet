@@ -4,14 +4,16 @@ import common from '../common';
 import * as btc from './btccoin';
 import * as rbtc from './rbtccoin';
 
-const createSignedTransaction = (symbol, rawTransaction, privateKey) => {
+const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
   switch (symbol) {
     case 'BTC':
-      return btc.signTransaction(rawTransaction, privateKey);
+      // eslint-disable-next-line no-return-await
+      return await btc.signTransaction(rawTransaction, privateKey);
     case 'RBTC':
     case 'RIF':
-      return rbtc.signTransaction(rawTransaction, privateKey);
+      // eslint-disable-next-line no-return-await
+      return await rbtc.signTransaction(rawTransaction, privateKey);
     default:
       return null;
   }
@@ -95,7 +97,7 @@ class Transaction {
     if (this.rawTransaction) {
       const { symbol, rawTransaction, privateKey } = this;
       try {
-        result = createSignedTransaction(symbol, rawTransaction, privateKey);
+        result = await createSignedTransaction(symbol, rawTransaction, privateKey);
       } catch (e) {
         console.log('Transaction.signTransaction err: ', e.message);
         throw e;

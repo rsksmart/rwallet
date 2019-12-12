@@ -16,10 +16,10 @@ export const getRawTransactionParam = ({
   };
 };
 
-export const signTransaction = (rawTransaction, privateKey) => {
+export const signTransaction = async (rawTransaction, privateKey) => {
   const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
-  const accountInfo = rsk3.accounts.privateKeyToAccount(privateKey);
-  const signedTransaction = accountInfo.signTransaction(
+  const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+  const signedTransaction = await accountInfo.signTransaction(
     rawTransaction, privateKey,
   );
   console.log(`signedTransaction: ${JSON.stringify(signedTransaction)}`);

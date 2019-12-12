@@ -15,7 +15,7 @@ export const getRawTransactionParam = ({
   preference: gasFee,
 });
 
-export const signTransaction = (transaction, privateKey) => {
+export const signTransaction = async (transaction, privateKey) => {
   const rawTransaction = _.cloneDeep(transaction);
   const buf = Buffer.from(privateKey, 'hex');
   const keys = bitcoin.ECPair.fromPrivateKey(buf);
