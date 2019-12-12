@@ -60,11 +60,13 @@ class ParseHelper {
    * @param {*} param0
    * @param {array} param0.wallets
    * @param {array} param0.wallets
+   * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
     const parseUser = Parse.User.current();
     await parseUser.fetch();
 
+    // only set settings when it's not defined.
     if (!_.isUndefined(settings)) {
       parseUser.set('settings', settings);
     }

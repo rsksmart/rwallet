@@ -15,12 +15,8 @@ import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import walletMock from '../../mock/wallet';
 
-function* updateUser() {
-  // 3. Upload wallets and settings to server
+function* serializeWalletsIfDirty(updatedParseUser) {
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
-    console.log('Parse User updated:', updatedParseUser);
-
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
     const isDirty = walletManager.updateCoinObjectIds(addressesJSON);
@@ -30,6 +26,17 @@ function* updateUser() {
       console.log('walletManager is dirty, serialize ...', walletManager);
       yield call(walletManager.serialize);
     }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function* updateUser() {
+  // Upload wallets and settings to server
+  try {
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
+    console.log('Parse User updated:', updatedParseUser);
+    yield serializeWalletsIfDirty(updatedParseUser);
   } catch (err) {
     console.log(err);
   }
