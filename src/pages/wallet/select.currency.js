@@ -3,7 +3,7 @@ import {
   View, StyleSheet, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 
 import { StackActions, NavigationActions } from 'react-navigation';
 import CoinTypeList from '../../components/wallet/coin.type.list';
@@ -13,6 +13,7 @@ import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -35,10 +36,20 @@ const BTC = require('../../assets/images/icon/BTC.png');
 const RBTC = require('../../assets/images/icon/RBTC.png');
 const RIF = require('../../assets/images/icon/RIF.png');
 
-export default class WalletSelectCurrency extends Component {
+class WalletSelectCurrency extends Component {
     static navigationOptions = () => ({
       header: null,
     });
+
+    static async createWallet(phrases, coins) {
+      let wallet = null;
+      if (phrases) {
+        wallet = await walletManager.createWallet('imported', phrases, coins);
+      } else {
+        wallet = await walletManager.createWallet('randomName', phrases, coins);
+      }
+      return wallet;
+    }
 
     mainnet = [
       {
@@ -81,19 +92,50 @@ export default class WalletSelectCurrency extends Component {
       this.state = {
         loading: false,
       };
+      this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
     }
+
+    async onCreateButtonPress() {
+      const { navigation, updateUser } = this.props;
+      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      const coins = [];
+      for (let i = 0; i < this.mainnet.length; i += 1) {
+        if (this.mainnet[i].selected) {
+          coins.push(this.mainnet[i].title);
+        }
+      }
+      for (let i = 0; i < this.testnet.length; i += 1) {
+        if (this.testnet[i].selected) {
+          const coinId = `${this.mainnet[i].title}Testnet`;
+          coins.push(coinId);
+        }
+      }
+      this.setState({ loading: true });
+      const wallet = await WalletSelectCurrency.createWallet(phrases, coins);
+      this.setState({ loading: false });
+      updateUser({ wallets: walletManager.wallets });
+      if (phrases) {
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'WalletList' }),
+          ],
+        });
+        navigation.dispatch(resetAction);
+      } else {
+        navigation.navigate('RecoveryPhrase', { wallet });
+      }
+    }
+
 
     render() {
       const { loading } = this.state;
       const { navigation } = this.props;
-      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       return (
         <ScrollView>
           <Header
             title="Select Wallet Currency"
-            goBack={() => {
-              navigation.goBack();
-            }}
+            goBack={navigation.goBack}
           />
           <View style={[screenHelper.styles.body]}>
             <View style={[styles.sectionContainer, { marginTop: 15 }]}>
@@ -107,37 +149,7 @@ export default class WalletSelectCurrency extends Component {
             <View style={styles.buttonView}>
               <Button
                 text="CREATE"
-                onPress={async () => {
-                  const coins = [];
-                  for (let i = 0; i < this.mainnet.length; i += 1) {
-                    if (this.mainnet[i].selected) {
-                      coins.push(this.mainnet[i].title);
-                    }
-                  }
-                  for (let i = 0; i < this.testnet.length; i += 1) {
-                    if (this.testnet[i].selected) {
-                      const coinId = `${this.mainnet[i].title}Testnet`;
-                      coins.push(coinId);
-                    }
-                  }
-                  const wallet = await walletManager.createWallet('randomName', phrases, coins);
-                  if (phrases) {
-                    this.setState({ loading: true });
-                    await walletManager.createWallet('imported', phrases, coins);
-                    this.setState({ loading: false });
-
-                    const resetAction = StackActions.reset({
-                      index: 0,
-                      actions: [
-                        NavigationActions.navigate({ routeName: 'WalletList' }),
-                      ],
-                    });
-
-                    navigation.dispatch(resetAction);
-                  } else {
-                    navigation.navigate('RecoveryPhrase', { wallet });
-                  }
-                }}
+                onPress={this.onCreateButtonPress}
               />
             </View>
             <Loader loading={loading} />
@@ -154,4 +166,15 @@ WalletSelectCurrency.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  updateUser: (updateFields) => dispatch(
+    appActions.updateUser(updateFields),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);

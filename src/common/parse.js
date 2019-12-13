@@ -59,48 +59,66 @@ class ParseHelper {
    * For settings, save JSON data into Users.settings
    * @param {*} param0
    * @param {array} param0.wallets
-   * @param {array} param0.wallets
+   * @param {array} param0.settings
+   * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
     const parseUser = Parse.User.current();
     await parseUser.fetch();
-    parseUser.set('settings', settings);
 
-    const addAddrPObjs = [];
-    const saveAddrTasks = [];
+    console.log(`wallets: ${JSON.stringify(wallets)}, settings: ${JSON.stringify(settings)}`);
 
-    const handleSaveAddr = async (coin) => {
-      const { address } = coin;
-      const { chain, type, symbol } = CHAIN_MAP[coin.id];
-      const addAddrPObj = new ParseAddress()
-        .set('chain', chain)
-        .set('type', type)
-        .set('symbol', symbol)
-        .set('address', address);
-      const isSaved = await addAddrPObj.save().catch((err) => {
-        console.log(err);
-        return null;
-      });
-      if (isSaved !== null) {
-        // eslint-disable-next-line
-        coin.objectId = addAddrPObj.id;
-        addAddrPObjs.push(addAddrPObj);
-      }
-    };
+    // Only set settings when it's defined.
+    if (!_.isUndefined(settings)) {
+      parseUser.set('settings', settings);
+    }
 
-    wallets.forEach(({ coins }) => {
-      coins.forEach((coin) => {
-        if (!coin.objectId) {
-          saveAddrTasks.push(handleSaveAddr(coin));
+    // Only set wallets when it's defined.
+    if (!_.isUndefined(wallets)) {
+      const addAddrPObjs = [];
+      const saveAddrTasks = [];
+
+      const handleSaveAddr = async (coin) => {
+        const { address } = coin;
+        const { chain, type, symbol } = CHAIN_MAP[coin.id];
+        const addAddrPObj = new ParseAddress()
+          .set('chain', chain)
+          .set('type', type)
+          .set('symbol', symbol)
+          .set('address', address);
+        const isSaved = await addAddrPObj.save().catch((err) => {
+          console.log(err);
+          return null;
+        });
+        if (isSaved !== null) {
+          // eslint-disable-next-line
+          coin.objectId = addAddrPObj.id;
+          addAddrPObjs.push(addAddrPObj);
         }
-      });
-    });
-    await Promise.all(saveAddrTasks);
+      };
 
-    const walletInfo = parseUser.get('wallets') || [];
-    walletInfo.push(...addAddrPObjs);
-    parseUser.set('wallets', walletInfo);
-    await parseUser.save();
+      wallets.forEach(({ coins }) => {
+        coins.forEach((coin) => {
+          if (!coin.objectId) {
+            saveAddrTasks.push(handleSaveAddr(coin));
+          }
+        });
+      });
+      await Promise.all(saveAddrTasks);
+
+      const walletInfo = parseUser.get('wallets') || [];
+      walletInfo.push(...addAddrPObjs);
+      parseUser.set('wallets', walletInfo);
+    }
+
+    // Only save parseUser when it's dirty.
+    // https://parseplatform.org/Parse-SDK-JS/api/v1.11.1/Parse.Object.html#dirty
+    const isDirty = parseUser.dirty();
+    console.log(`updateUser, isDirty: ${isDirty}`);
+    if (isDirty) {
+      return parseUser.save();
+    }
+    return parseUser;
   }
 
   /**

@@ -15,6 +15,50 @@ import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import walletMock from '../../mock/wallet';
 
+function* serializeWalletsIfDirty(updatedParseUser) {
+  try {
+    // Update coin's objectId and return isDirty true if there's coin updated
+    const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
+    const isDirty = walletManager.updateCoinObjectIds(addressesJSON);
+
+    // If Coins are updated then we need to serialize them
+    if (isDirty) {
+      console.log('walletManager is dirty, serialize ...', walletManager);
+      yield call(walletManager.serialize);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function* updateUser(updateWallets, updateSettings) {
+  // Upload wallets or settings to server
+  const updateParams = {};
+  if (updateWallets) {
+    updateParams.wallets = updateWallets;
+  }
+  if (updateSettings) {
+    updateParams.settings = updateSettings.toJSON();
+  }
+  try {
+    const updatedParseUser = yield call(ParseHelper.updateUser, updateParams);
+    console.log('Parse User updated:', updatedParseUser);
+    yield serializeWalletsIfDirty(updatedParseUser);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function* updateUserRequest(action) {
+  // Upload wallets or settings to server
+  try {
+    const { wallets: updateWallets, settings: updateSettings } = action.payload;
+    yield updateUser(updateWallets, updateSettings);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 function* initAppRequest(/* action */) {
   try {
     // yield call(storage.remove, 'wallets');
@@ -84,22 +128,7 @@ function* initAppRequest(/* action */) {
     }
 
     // 3. Upload wallets and settings to server
-    try {
-      const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings: settings.toJSON() });
-      console.log('Parse User updated:', updatedParseUser);
-
-      // Update coin's objectId and return isDirty true if there's coin updated
-      const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
-      const isDirty = walletManager.updateCoinObjectIds(addressesJSON);
-
-      // If Coins are updated then we need to serialize them
-      if (isDirty) {
-        console.log('walletManager is dirty, serialize ...', walletManager);
-        yield call(walletManager.serialize);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    yield updateUser(walletManager.wallets, settings);
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
 
@@ -223,5 +252,6 @@ export default function* () {
     takeEvery(actions.GET_TRANSACTIONS, getTransactions),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
+    takeEvery(actions.UPDATE_USER, updateUserRequest),
   ]);
 }
