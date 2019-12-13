@@ -304,9 +304,9 @@ class History extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      transactions, prices, wallets,
+      transactions, prices, wallets, currency,
     } = nextProps;
-    const { transactions: curTransactions, currency } = this.props;
+    const { transactions: curTransactions } = this.props;
     const { symbol, isLoadMore } = this.state;
     const { balance, balanceValue } = this.coin;
     const curPrice = this.price;
