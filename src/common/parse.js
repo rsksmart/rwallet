@@ -19,6 +19,7 @@ Parse.setAsyncStorage(AsyncStorage);
 /** Parse Class definition */
 // const ParseUser = Parse.User;
 const ParseAddress = Parse.Object.extend('Address');
+const ParseTransaction = Parse.Object.extend('Transaction');
 
 const CHAIN_MAP = {
   BTCTestnet: { chain: 'Bitcoin', type: 'Testnet', symbol: 'BTC' },
@@ -278,6 +279,49 @@ class ParseHelper {
     });
 
     return Promise.all(promises);
+  }
+
+  /**
+   * Get transactions of parseObject and update property of each addresss
+   *
+   * @static
+   * @param {array} addresses Array of Coin class instance
+   * @memberof ParseHelper
+   */
+  static async fetchTransaction(addresses) {
+    const promises = addresses.map((address) => ParseHelper.queryAddressTxs(address)
+      .then((txs) => {
+        // eslint-disable-next-line
+        address.transactions = txs;
+      })
+      .catch((ex) => {
+        console.error('fetchTransaction', ex.message);
+      }));
+
+    await Promise.all(promises);
+  }
+
+
+  /**
+   * Get transactions aboud the address
+   *
+   * @static
+   * @param {object} address of wallets coins
+   * @memberof ParseHelper
+   */
+  static async queryAddressTxs(address) {
+    const queryTo = new Parse.Query(ParseTransaction);
+    const queryFrom = new Parse.Query(ParseTransaction);
+    const { address: actualAddr, symbol } = address;
+
+    const transactionPObjs = await Parse.Query.or(
+      queryTo.equalTo('to', actualAddr).equalTo('symbol', symbol),
+      queryFrom.equalTo('from', actualAddr).equalTo('symbol', symbol),
+    ).find();
+
+    const transactions = transactionPObjs.map((tx) => tx.toJSON());
+
+    return transactions;
   }
 }
 

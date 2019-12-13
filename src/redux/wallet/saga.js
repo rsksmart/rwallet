@@ -75,11 +75,26 @@ function* fetchBalanceRequest(action) {
   }
 }
 
+function* fetchTransactionRequest(action) {
+  const { walletManager } = action;
+
+  const addresses = walletManager.getAddresses();
+  console.log('fetchTransactionRequest, get Coin instances:', addresses);
+
+  try {
+    yield call(ParseHelper.fetchTransaction, addresses);
+  } catch (err) {
+    const message = yield call(ParseHelper.handlError, err);
+    console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.GET_WALLETS, getWalletsRequest),
     takeEvery(actions.GET_PRICE, getPriceRequest),
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
+    takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
   ]);
 }
