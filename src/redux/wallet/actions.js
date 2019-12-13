@@ -9,8 +9,10 @@ const actions = {
   FETCH_BALANCE: 'FETCH_BALANCE',
   FETCH_BALANCE_RESULT: 'FETCH_BALANCE_RESULT',
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
+  FETCH_TRANSACTION_RESULT: 'FETCH_TRANSACTION_RESULT',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
   RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
+  RESET_TRANSACTION_UPDATED: 'RESET_TRANSACTION_UPDATED',
 
   // Functions definition
   getWallets: () => ({
@@ -37,6 +39,9 @@ const actions = {
   fetchTransaction: (walletManager) => ({
     type: actions.FETCH_TRANSACTION,
     walletManager,
+  }),
+  resetTransactionUpdated: () => ({
+    type: actions.RESET_TRANSACTION_UPDATED,
   }),
 };
 

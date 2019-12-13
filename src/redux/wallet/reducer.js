@@ -8,6 +8,7 @@ const initState = new Map({
   prices: [],
   walletManager: undefined, // WalletManager instance
   isBalanceUpdated: false,
+  isTransactionUpdated: false,
 });
 
 export default function walletReducer(state = initState, action) {
@@ -49,6 +50,14 @@ export default function walletReducer(state = initState, action) {
         }
       }
       const newState = state.set('isBalanceUpdated', true);
+      return newState;
+    }
+    case actions.RESET_TRANSACTION_UPDATED: {
+      return state.set('isTransactionUpdated', false);
+    }
+    case actions.FETCH_TRANSACTION_RESULT: {
+      console.log('FETCH_TRANSACTION_RESULT');
+      const newState = state.set('isTransactionUpdated', true);
       return newState;
     }
     default:
