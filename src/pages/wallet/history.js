@@ -294,9 +294,11 @@ class History extends Component {
   }
 
   componentWillMount() {
-    const { prices } = this.props;
+    const { prices, currency } = this.props;
+    const { symbol } = this.state;
+    const { balance, balanceValue } = this.coin;
     this.getPrice(prices);
-    this.generateBalanceText();
+    this.generateBalanceText(balance, balanceValue, symbol, currency);
     this.getTransactions(1);
   }
 
@@ -304,14 +306,14 @@ class History extends Component {
     const {
       transactions, prices, wallets,
     } = nextProps;
-    const { symbol } = this.state;
-    const { transactions: curTransactions } = this.props;
+    const { transactions: curTransactions, currency } = this.props;
+    const { symbol, isLoadMore } = this.state;
+    const { balance, balanceValue } = this.coin;
     const curPrice = this.price;
-    const { isLoadMore } = this.state;
     console.log('WalletList.componentWillReceiveProps: prices,', prices);
     console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
 
-    this.generateBalanceText();
+    this.generateBalanceText(balance, balanceValue, symbol, currency);
     // resetBalanceUpdated();
 
     this.getPrice(prices);
@@ -406,14 +408,14 @@ class History extends Component {
     this.price = price;
   }
 
-  generateBalanceText() {
+  generateBalanceText(balance, balanceValue, symbol, currency) {
     let balanceText = ' ';
     let balanceValueText = ' ';
-    if (this.coin.balance) {
-      balanceText = this.coin.balance.toString();
+    if (balance) {
+      balanceText = `${balance.toString()} ${symbol}`;
     }
-    if (this.coin.balanceValue) {
-      balanceValueText = this.coin.balanceValue.decimalPlaces(2).toString();
+    if (balanceValue) {
+      balanceValueText = `${balanceValue.decimalPlaces(2).toString()} ${currency}`;
     }
     this.setState({ balanceText, balanceValueText });
   }
@@ -504,8 +506,8 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${balanceText} ${symbol}`}</ResponsiveText>
-            <Text style={styles.assetsValue}>{`${balanceValueText} ${currency}`}</Text>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <Text style={styles.assetsValue}>{balanceValueText}</Text>
             <View style={styles.sendingView}>
               <Image style={styles.sendingIcon} source={sending} />
               <Text style={styles.sending}>{`${sendingCoin}${symbol} (${sendingCoinValue}${currency})`}</Text>

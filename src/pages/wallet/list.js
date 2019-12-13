@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { Card, CardItem, Body } from 'native-base';
@@ -271,6 +271,21 @@ class WalletList extends Component {
       return listData;
     }
 
+    static accountListView(listData) {
+      return (
+        <FlatList
+          data={listData}
+          renderItem={({ item }) => (
+            <View>
+              <Text style={[styles.sectionTitle]}>{item.name}</Text>
+              <SwipableButtonList data={item.coins} />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      );
+    }
+
     constructor(props) {
       super(props);
 
@@ -285,12 +300,13 @@ class WalletList extends Component {
       this.state = {
         listData: [],
         currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+        totalAssetValueText: ' ',
       };
     }
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, walletManager,
+        getPrice, currency, wallets, navigation, fetchBalance, walletManager, totalAssetValue,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
@@ -304,16 +320,18 @@ class WalletList extends Component {
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
+      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
 
       this.setState({
         currencySymbol,
         listData,
+        totalAssetValueText,
       });
     }
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, wallets, navigation, isBalanceUpdated, resetBalanceUpdated,
+        currency, wallets, navigation, isBalanceUpdated, resetBalanceUpdated, totalAssetValue,
       } = nextProps;
 
       const newState = this.state;
@@ -324,29 +342,15 @@ class WalletList extends Component {
       if (isBalanceUpdated) {
         newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
+        newState.totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
         resetBalanceUpdated();
       }
       this.setState(newState);
     }
 
     render() {
-      const { navigation, totalAssetValue } = this.props;
-      const { listData, currencySymbol } = this.state;
-      const accounts = [];
-
-      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
-
-      for (let i = 0; i < listData.length; i += 1) {
-        const item = listData[i];
-        const section = (
-          <View key={`${i}`}>
-            <Text style={[styles.sectionTitle]}>{item.name}</Text>
-            <SwipableButtonList data={item.coins} />
-          </View>
-        );
-        accounts.push(section);
-      }
-
+      const { navigation } = this.props;
+      const { listData, currencySymbol, totalAssetValueText } = this.state;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
@@ -411,7 +415,7 @@ class WalletList extends Component {
                 <Loc style={[styles.assetsTitle]} text="All Assets" />
               </View>
               <View style={styles.sectionContainer}>
-                {accounts}
+                {WalletList.accountListView(listData)}
               </View>
               <View style={[styles.sectionContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
