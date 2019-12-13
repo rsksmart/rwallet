@@ -17,6 +17,7 @@ const actions = {
   SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
+  UPDATE_USER: 'UPDATE_USER',
 
   // Functions definition
   initApp: () => ({
@@ -58,6 +59,10 @@ const actions = {
     type: actions.SET_SINGLE_SETTINGS,
     key,
     value,
+  }),
+  updateUser: ({ wallets, settings }) => ({
+    type: actions.UPDATE_USER,
+    payload: { wallets, settings },
   }),
 };
 
