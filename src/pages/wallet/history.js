@@ -9,13 +9,13 @@ import { connect } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import moment from 'moment';
+import BigNumber from 'bignumber.js';
+import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
-import common from '../../common/common';
 
 const header = require('../../assets/images/misc/header.png');
 const sending = require('../../assets/images/icon/sending.png');
@@ -226,8 +226,6 @@ const getStateIcon = (state) => {
     icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />;
   } else if (state === 'Received') {
     icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
-  } else if (state === 'Receiving') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
   } else if (state === 'Sending') {
     icon = <Image source={sending} />;
   }
@@ -265,60 +263,7 @@ class History extends Component {
     header: null,
   });
 
-  static createListData(transactions, symbol, address) {
-    console.log('History::createListData');
-    if (!transactions) {
-      return [];
-    }
-    const items = [];
-    transactions.forEach((transaction) => {
-      const amount = common.convertHexToCoinAmount(symbol, transaction.value);
-      const amountText = `${amount.toFixed()} ${symbol}`;
-      let datetime = transaction.createdAt;
-      let isComfirmed = true;
-      let isSender = false;
-      if (address === transaction.from) {
-        isSender = true;
-      }
-      if (transaction.blockHeight === -1) {
-        isComfirmed = false;
-      }
-      let state = '';
-      if (isSender) {
-        if (isComfirmed) {
-          state = 'Sent';
-        } else {
-          state = 'Sending';
-        }
-      } else if (isComfirmed) {
-        state = 'Received';
-      } else {
-        state = 'Receiving';
-      }
-      datetime = moment(datetime).format('MMM D. YYYY');
-      items.push({ state, datetime, amount: amountText });
-    });
-    return items;
-  }
-
-  static listView(listData) {
-    if (!listData) {
-      return <ActivityIndicator size="small" color="#00ff00" />;
-    }
-    return (
-      <FlatList
-        data={listData}
-        renderItem={({ item }) => (
-          <Item
-            title={item.state}
-            amount={item.amount}
-            datetime={item.datetime}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
-  }
+  listData = [];
 
   constructor(props) {
     super(props);
@@ -334,10 +279,11 @@ class History extends Component {
       balanceText: '',
       balanceValueText: '',
       coinId: coin.id,
-      listData: null,
     };
     this.coin = coin;
     this.price = 0;
+    this.allTransactions = [];
+    this.listView = <ActivityIndicator size="small" color="#00ff00" />;
     this.page = 1;
     this.onRefresh = this.onRefresh.bind(this);
     this.refreshControl = this.refreshControl.bind(this);
@@ -348,34 +294,54 @@ class History extends Component {
   }
 
   componentWillMount() {
-    const { prices, fetchTransaction, walletManager } = this.props;
+    const { prices, currency } = this.props;
+    const { symbol } = this.state;
+    const { balance, balanceValue } = this.coin;
     this.getPrice(prices);
-    fetchTransaction(walletManager);
-    this.generateBalanceText();
+    this.generateBalanceText(balance, balanceValue, symbol, currency);
+    this.getTransactions(1);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      prices, wallets, isTransactionUpdated, resetTransactionUpdated,
+      transactions, prices, wallets,
     } = nextProps;
-    const { symbol } = this.state;
-    // const { transactions: curTransactions } = this.props;
-    // const { isLoadMore } = this.state;
-    console.log('History.componentWillReceiveProps: prices,', prices);
-    console.log('History.componentWillReceiveProps: wallets,', wallets);
-    console.log('History.componentWillReceiveProps: isTransactionUpdated,', isTransactionUpdated);
-    this.generateBalanceText();
-    const newState = this.state;
-    if (isTransactionUpdated) {
-      newState.listData = History.createListData(this.coin.transactions, symbol);
-      resetTransactionUpdated();
+    const { transactions: curTransactions, currency } = this.props;
+    const { symbol, isLoadMore } = this.state;
+    const { balance, balanceValue } = this.coin;
+    const curPrice = this.price;
+    console.log('WalletList.componentWillReceiveProps: prices,', prices);
+    console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
+
+    this.generateBalanceText(balance, balanceValue, symbol, currency);
+    // resetBalanceUpdated();
+
+    this.getPrice(prices);
+    if (curPrice !== this.price || transactions !== curTransactions) {
+      this.setState({ isRefreshing: false });
+      if (transactions) {
+        if (isLoadMore) {
+          this.setState({ isLoadMore: false });
+          if (transactions.length !== 0) {
+            this.page += 1;
+            this.allTransactions = this.allTransactions.concat(transactions);
+          }
+        } else if (transactions.length > 0) {
+          this.allTransactions = transactions;
+        }
+        this.generateListView(this.allTransactions, symbol);
+        this.calcSendingCoin(this.allTransactions);
+      }
     }
-    this.setState(newState);
+    if (curPrice !== this.price) {
+      this.calcSendingCoin(this.allTransactions);
+    }
   }
 
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    this.getTransactions(1);
   }
 
   onEndReached() {
@@ -385,6 +351,7 @@ class History extends Component {
       return;
     }
     this.setState({ isLoadMore: true });
+    this.getTransactions(this.page + 1);
   }
 
   onSendButtonClick() {
@@ -418,6 +385,12 @@ class History extends Component {
     navigation.goBack();
   }
 
+  getTransactions(page) {
+    const { getTransactions } = this.props;
+    const { symbol, type, address } = this.coin;
+    getTransactions(symbol, type, address, page);
+  }
+
   getPrice(prices) {
     const { symbol } = this.state;
     if (!prices) {
@@ -435,16 +408,57 @@ class History extends Component {
     this.price = price;
   }
 
-  generateBalanceText() {
+  generateBalanceText(balance, balanceValue, symbol, currency) {
     let balanceText = ' ';
     let balanceValueText = ' ';
-    if (this.coin.balance) {
-      balanceText = this.coin.balance.toFixed();
+    if (balance) {
+      balanceText = `${balance.toString()} ${symbol}`;
     }
-    if (this.coin.balanceValue) {
-      balanceValueText = this.coin.balanceValue.decimalPlaces(2).toFixed();
+    if (balanceValue) {
+      balanceValueText = `${balanceValue.decimalPlaces(2).toString()} ${currency}`;
     }
     this.setState({ balanceText, balanceValueText });
+  }
+
+  calcSendingCoin(transactions) {
+    const { price } = this;
+    if (!transactions) {
+      return;
+    }
+    let sendingCoin = new BigNumber(0);
+    transactions.forEach((transaction) => {
+      if (transaction.state === 'Sending') {
+        sendingCoin = sendingCoin.plus(transaction.amount);
+      }
+    });
+    const sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    this.setState({ sendingCoinValue });
+    const state = { sendingCoin: sendingCoin.toString() };
+    if (price) {
+      state.sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    }
+    this.setState(state);
+  }
+
+  generateListView(transactions, symbol) {
+    if (!transactions) {
+      return;
+    }
+    this.listView = (
+      <FlatList
+        data={transactions}
+        renderItem={({ item }) => (
+          <Item
+            title={item.state}
+            icon={item.icon}
+            amount={`${item.amount}${symbol}`}
+            datetime={item.datetime}
+            onPress={item.onPress}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    );
   }
 
   refreshControl() {
@@ -472,11 +486,15 @@ class History extends Component {
     const { currency } = this.props;
 
     const {
-      sendingCoin, sendingCoinValue, symbol, balanceText, balanceValueText, coinId, listData,
+      sendingCoin, sendingCoinValue, symbol, balanceText, balanceValueText, coinId,
     } = this.state;
-
     return (
-      <ScrollView>
+      <ScrollView
+        refreshControl={this.refreshControl()}
+        onScroll={History.onScroll}
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
+        scrollEventThrottle={400}
+      >
         <ImageBackground source={header} style={[styles.headerImage]}>
           <Text style={[styles.headerTitle]}>{coinId}</Text>
           <TouchableOpacity
@@ -488,8 +506,8 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${balanceText} ${symbol}`}</ResponsiveText>
-            <Text style={styles.assetsValue}>{`${balanceValueText} ${currency}`}</Text>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <Text style={styles.assetsValue}>{balanceValueText}</Text>
             <View style={styles.sendingView}>
               <Image style={styles.sendingIcon} source={sending} />
               <Text style={styles.sending}>{`${sendingCoin}${symbol} (${sendingCoinValue}${currency})`}</Text>
@@ -516,7 +534,7 @@ class History extends Component {
           <Text style={styles.recent}>Recent</Text>
         </View>
         <View style={styles.sectionContainer}>
-          {History.listView(listData)}
+          {this.listView}
         </View>
         {this.renderfooter()}
       </ScrollView>
@@ -531,36 +549,33 @@ History.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  getTransactions: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})),
+  transactions: PropTypes.arrayOf(PropTypes.shape({})),
   wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
   // isBalanceUpdated: PropTypes.bool.isRequired,
   // resetBalanceUpdated: PropTypes.func.isRequired,
-  fetchTransaction: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  walletManager: PropTypes.object,
-  isTransactionUpdated: PropTypes.bool.isRequired,
-  resetTransactionUpdated: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
+  transactions: null,
   prices: null,
-  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
+  transactions: state.App.get('transactions'),
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  walletManager: state.Wallet.get('walletManager'),
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  isTransactionUpdated: state.Wallet.get('isTransactionUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  getTransactions: (symbol, type, address, page) => dispatch(
+    appActions.getTransactions(symbol, type, address, page),
+  ),
   resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
-  resetTransactionUpdated: () => dispatch(walletActions.resetTransactionUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
