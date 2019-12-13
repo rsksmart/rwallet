@@ -287,15 +287,21 @@ class History extends Component {
       if (isSender) {
         if (isComfirmed) {
           state = 'Sent';
+          datetime = transaction.confirmedAt;
         } else {
           state = 'Sending';
         }
       } else if (isComfirmed) {
         state = 'Received';
+        datetime = transaction.confirmedAt;
       } else {
         state = 'Receiving';
       }
-      datetime = moment(datetime).format('MMM D. YYYY');
+      if (datetime) {
+        datetime = moment(datetime).format('MMM D. YYYY');
+      } else {
+        datetime = '';
+      }
       items.push({ state, datetime, amount: amountText });
     });
     return items;
