@@ -280,7 +280,7 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, walletManager,
+        getPrice, currency, wallets, navigation, fetchBalance, walletManager, fetchTransaction,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
@@ -291,6 +291,9 @@ class WalletList extends Component {
       // 2. Get price of each token
       const currencyStrings = _.map(currencySettings, (item) => item.name);
       getPrice(supportedTokens, currencyStrings, currency);
+
+      // 3. Get transactions of each token
+      fetchTransaction(walletManager);
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, navigation);
@@ -436,6 +439,7 @@ WalletList.propTypes = {
   totalAssetValue: PropTypes.number,
   prices: PropTypes.arrayOf(PropTypes.object),
   fetchBalance: PropTypes.func.isRequired,
+  fetchTransaction: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   walletManager: PropTypes.object,
   // addNotification: PropTypes.func.isRequired,
@@ -462,6 +466,7 @@ const mapDispatchToProps = (dispatch) => ({
   // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
   fetchBalance: (walletManager) => dispatch(walletActions.fetchBalance(walletManager)),
+  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),

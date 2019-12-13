@@ -7,6 +7,7 @@ const actions = {
   GET_PRICE: 'GET_PRICE',
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
   FETCH_BALANCE: 'FETCH_BALANCE',
+  FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
 
   // Functions definition
@@ -26,6 +27,10 @@ const actions = {
   },
   fetchBalance: (walletManager) => ({
     type: actions.FETCH_BALANCE,
+    walletManager,
+  }),
+  fetchTransaction: (walletManager) => ({
+    type: actions.FETCH_TRANSACTION,
     walletManager,
   }),
 };
