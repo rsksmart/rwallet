@@ -11,10 +11,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
 import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
-import common from '../../common/common';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 
 const header = require('../../assets/images/misc/header.png');
@@ -268,7 +268,7 @@ class History extends Component {
   constructor(props) {
     super(props);
     const { navigation } = this.props;
-    const { wallet, coin } = navigation.state.params;
+    const { coin } = navigation.state.params;
 
     this.state = {
       sendingCoin: '0',
@@ -276,15 +276,12 @@ class History extends Component {
       isRefreshing: false,
       isLoadMore: false,
       symbol: coin.symbol,
-      type: coin.type,
       balanceText: '',
-      balanceValue: '',
+      balanceValueText: '',
       coinId: coin.id,
     };
-    this.walletId = wallet.id;
+    this.coin = coin;
     this.price = 0;
-    this.address = coin.address;
-    this.balance = coin.balance;
     this.allTransactions = [];
     this.listView = <ActivityIndicator size="small" color="#00ff00" />;
     this.page = 1;
@@ -299,7 +296,7 @@ class History extends Component {
   componentWillMount() {
     const { prices } = this.props;
     this.getPrice(prices);
-    this.calcBalance();
+    this.generateBalanceText();
     this.getTransactions(1);
   }
 
@@ -313,10 +310,11 @@ class History extends Component {
     const { isLoadMore } = this.state;
     console.log('WalletList.componentWillReceiveProps: prices,', prices);
     console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
+
+    this.generateBalanceText();
+    // resetBalanceUpdated();
+
     this.getPrice(prices);
-    if (curPrice !== this.price) {
-      this.calcBalance();
-    }
     if (curPrice !== this.price || transactions !== curTransactions) {
       this.setState({ isRefreshing: false });
       if (transactions) {
@@ -387,7 +385,7 @@ class History extends Component {
 
   getTransactions(page) {
     const { getTransactions } = this.props;
-    const { symbol, type, address } = this.state;
+    const { symbol, type, address } = this.coin;
     getTransactions(symbol, type, address, page);
   }
 
@@ -408,14 +406,16 @@ class History extends Component {
     this.price = price;
   }
 
-  calcBalance() {
-    const { symbol } = this.state;
-    const balanceHex = this.balance;
-    const balance = common.convertHexToCoinAmount(symbol, balanceHex);
-    const balanceText = balance.toString();
-    const value = balance.times(this.price);
-    const balanceValue = value.decimalPlaces(2).toString();
-    this.setState({ balanceText, balanceValue });
+  generateBalanceText() {
+    let balanceText = ' ';
+    let balanceValueText = ' ';
+    if (this.coin.balance) {
+      balanceText = this.coin.balance.toString();
+    }
+    if (this.coin.balanceValue) {
+      balanceValueText = this.coin.balanceValue.decimalPlaces(2).toString();
+    }
+    this.setState({ balanceText, balanceValueText });
   }
 
   calcSendingCoin(transactions) {
@@ -484,7 +484,7 @@ class History extends Component {
     const { currency } = this.props;
 
     const {
-      sendingCoin, sendingCoinValue, balanceText, symbol, balanceValue, coinId,
+      sendingCoin, sendingCoinValue, symbol, balanceText, balanceValueText, coinId,
     } = this.state;
     return (
       <ScrollView
@@ -505,7 +505,7 @@ class History extends Component {
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${balanceText} ${symbol}`}</ResponsiveText>
-            <Text style={styles.assetsValue}>{`${balanceValue} ${currency}`}</Text>
+            <Text style={styles.assetsValue}>{`${balanceValueText} ${currency}`}</Text>
             <View style={styles.sendingView}>
               <Image style={styles.sendingIcon} source={sending} />
               <Text style={styles.sending}>{`${sendingCoin}${symbol} (${sendingCoinValue}${currency})`}</Text>
@@ -552,6 +552,8 @@ History.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})),
   transactions: PropTypes.arrayOf(PropTypes.shape({})),
   wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // isBalanceUpdated: PropTypes.bool.isRequired,
+  // resetBalanceUpdated: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -564,12 +566,14 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getTransactions: (symbol, type, address, page) => dispatch(
     appActions.getTransactions(symbol, type, address, page),
   ),
+  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
