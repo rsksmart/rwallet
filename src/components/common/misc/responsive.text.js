@@ -24,7 +24,7 @@ export default class ResponsiveText extends Component {
   }
 
   componentWillReceiveProps() {
-    this.setState({ isAdjusted: true });
+    this.setState({ isAdjusted: false });
   }
 
   onLayout = (event) => {

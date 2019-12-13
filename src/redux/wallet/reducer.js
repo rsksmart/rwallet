@@ -7,7 +7,7 @@ const initState = new Map({
   wallets: [],
   prices: [],
   walletManager: undefined, // WalletManager instance
-  isFetchingBalance: false,
+  isBalanceUpdated: false,
 });
 
 export default function walletReducer(state = initState, action) {
@@ -30,13 +30,13 @@ export default function walletReducer(state = initState, action) {
         }
         newState = newState.set('prices', action.value && action.value.value);
       }
-
+      newState = newState.set('isBalanceUpdated', true);
       return newState;
     }
     case actions.SET_WALLET_MANAGER:
       return state.set('walletManager', action.value);
-    case actions.FETCH_BALANCE:
-      return state.set('isFetchingBalance', false);
+    case actions.RESET_BALANCE_UPDATED:
+      return state.set('isBalanceUpdated', false);
     case actions.FETCH_BALANCE_RESULT: {
       const prices = state.get('prices');
       console.log('prices:', prices);
@@ -48,7 +48,8 @@ export default function walletReducer(state = initState, action) {
           walletManager.updateAssetValue(prices, currency);
         }
       }
-      return state.set('isFetchingBalance', true);
+      const newState = state.set('isBalanceUpdated', true);
+      return newState;
     }
     default:
       return state;

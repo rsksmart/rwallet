@@ -8,7 +8,7 @@ const config = {
     appId: 'rwallet',
     javascriptKey: '',
     masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
-    serverURL: 'http://34.68.143.178:30050/parse',
+    serverURL: 'http://192.168.31.177:1338/parse',
   },
   defaultSettings: {
     language: 'en',

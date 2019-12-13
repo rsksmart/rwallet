@@ -3,6 +3,7 @@ import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
+import common from './common';
 
 const parseConfig = config && config.parse;
 
@@ -274,7 +275,11 @@ class ParseHelper {
         .then((parseObject) => {
           // Update address if the object was retrieved successfully.
           // This address is hex string which needs to be procced during either here or rendering
-          addressReference.balance = parseObject.get('balance');
+          let balance = parseObject.get('balance');
+          if (balance) {
+            balance = common.convertHexToCoinAmount(address.symbol, balance);
+          }
+          addressReference.balance = balance;
         }, () => Promise.resolve());
     });
 

@@ -19,7 +19,6 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
-import common from '../../common/common';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 
 // currencySettings:
@@ -227,7 +226,7 @@ class WalletList extends Component {
     /**
      * Transform from wallets to ListData for rendering
      */
-    static createListData(wallets, prices, currency, currencySymbol, navigation) {
+    static createListData(wallets, currencySymbol, navigation) {
       console.log('list::createListData, wallets:', wallets);
       if (!_.isArray(wallets)) {
         return [];
@@ -240,15 +239,12 @@ class WalletList extends Component {
           const coinType = coin.id;
           let amountText = ' ';
           let valueText = ' ';
+          console.log(`list::createListData, coin.symbol: ${coin.symbol}, coin.balance: ${coin.balance}`);
           if (coin.balance) {
-            const amount = common.convertHexToCoinAmount(coin.symbol, coin.balance);
-            const value = common.getCoinValue(amount, coin.symbol, currency, prices);
-            if (amount) {
-              amountText = amount.toString();
-            }
-            if (value) {
-              valueText = currencySymbol + value.decimalPlaces(2).toString();
-            }
+            amountText = coin.balance.toString();
+          }
+          if (coin.balanceValue) {
+            valueText = `${currencySymbol}${coin.balanceValue.decimalPlaces(2).toString()}`;
           }
           const item = {
             key: `${index}`,
@@ -256,7 +252,6 @@ class WalletList extends Component {
             text: coinType,
             worth: valueText,
             amount: amountText,
-            price: null,
             icon: coin.icon,
             r1Press: () => {
               navigation.navigate('Transfer', { wallet, coin });
@@ -295,11 +290,10 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, prices, fetchBalance, walletManager, isFetchingBalance, fetchTransaction,
+        getPrice, currency, wallets, navigation, fetchBalance, walletManager,
       } = this.props;
 
       console.log('list::componentWillMount, wallets:', wallets);
-      console.log('list::componentWillMount, isFetchingBalance:', isFetchingBalance);
 
       // 1. Get balance of each token
       fetchBalance(walletManager);
@@ -308,11 +302,8 @@ class WalletList extends Component {
       const currencyStrings = _.map(currencySettings, (item) => item.name);
       getPrice(supportedTokens, currencyStrings, currency);
 
-      // 3. Get transactions of each token
-      fetchTransaction(walletManager);
-
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      const listData = WalletList.createListData(wallets, prices, currency, currencySymbol, navigation);
+      const listData = WalletList.createListData(wallets, currencySymbol, navigation);
 
       this.setState({
         currencySymbol,
@@ -322,18 +313,19 @@ class WalletList extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, wallets, prices, navigation,
+        currency, wallets, navigation, isBalanceUpdated, resetBalanceUpdated,
       } = nextProps;
 
       const newState = this.state;
 
       console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
-      console.log('WalletList.componentWillReceiveProps: prices,', prices);
 
       // Handle currency changed logic; get symbol string for the new currency
-      newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      newState.listData = WalletList.createListData(wallets, prices, currency, newState.currencySymbol, navigation);
-
+      if (isBalanceUpdated) {
+        newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+        newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
+        resetBalanceUpdated();
+      }
       this.setState(newState);
     }
 
@@ -341,6 +333,8 @@ class WalletList extends Component {
       const { navigation, totalAssetValue } = this.props;
       const { listData, currencySymbol } = this.state;
       const accounts = [];
+
+      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toString();
 
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
@@ -386,7 +380,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValue}`}</ResponsiveText>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
@@ -455,30 +449,27 @@ WalletList.propTypes = {
   totalAssetValue: PropTypes.shape({
     decimalPlaces: PropTypes.func.isRequired,
   }),
-  prices: PropTypes.arrayOf(PropTypes.object),
   fetchBalance: PropTypes.func.isRequired,
-  fetchTransaction: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   walletManager: PropTypes.object,
   // addNotification: PropTypes.func.isRequired,
   // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isFetchingBalance: PropTypes.bool.isRequired,
+  isBalanceUpdated: PropTypes.bool.isRequired,
+  resetBalanceUpdated: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
   wallets: undefined,
-  prices: [],
   totalAssetValue: new BigNumber(0),
   walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
-  isFetchingBalance: state.Wallet.get('isFetchingBalance'),
+  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   // allCurrencies: state.App.get('allCurrencies'),
 });
 
@@ -486,7 +477,7 @@ const mapDispatchToProps = (dispatch) => ({
   // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
   fetchBalance: (walletManager) => dispatch(walletActions.fetchBalance(walletManager)),
-  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
+  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
   // addNotification: (notification) => dispatch(
   //     appActions.addNotification(notification),
   // ),

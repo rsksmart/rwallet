@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import appContext from '../appContext';
-import common from '../common';
 
 const STORAGE_KEY = 'wallets';
 
@@ -135,18 +134,19 @@ class WalletManager {
       console.log('updateAssetValue.wallets', wallets);
       console.log('updateAssetValue.prices', prices);
       const assetValue = prices.reduce((acc, cur) => {
-        const amountArray = wallets.map((wallet) => {
+        const coins = wallets.map((wallet) => {
           const coinObj = wallet.coins.find((coin) => coin.symbol === cur.symbol);
-          return coinObj ? coinObj.balance || 0 : 0;
+          return coinObj;
         });
-        const amount = amountArray.reduce((a, b) => {
-          const hexNumberB = new BigNumber(b);
-          const amountB = common.convertHexToCoinAmount(cur.symbol, hexNumberB);
-          const sum = a.plus(amountB);
-          return sum;
-        }, new BigNumber(0));
         const price = cur.price[currency];
-        const value = amount.times(price);
+        let value = new BigNumber(0);
+        coins.forEach((coin) => {
+          if (coin.balance) {
+            // eslint-disable-next-line no-param-reassign
+            coin.balanceValue = coin.balance.times(price);
+            value = value.plus(coin.balanceValue);
+          }
+        });
         const sum = acc.plus(value);
         console.log(`symbol: ${cur.symbol} sum :${value.toString()}`);
         return sum;
