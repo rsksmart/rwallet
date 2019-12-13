@@ -241,10 +241,10 @@ class WalletList extends Component {
           let valueText = ' ';
           console.log(`list::createListData, coin.symbol: ${coin.symbol}, coin.balance: ${coin.balance}`);
           if (coin.balance) {
-            amountText = coin.balance.toString();
+            amountText = coin.balance.toFixed();
           }
           if (coin.balanceValue) {
-            valueText = `${currencySymbol}${coin.balanceValue.decimalPlaces(2).toString()}`;
+            valueText = `${currencySymbol}${coin.balanceValue.decimalPlaces(2).toFixed()}`;
           }
           const item = {
             key: `${index}`,
@@ -334,7 +334,7 @@ class WalletList extends Component {
       const { listData, currencySymbol } = this.state;
       const accounts = [];
 
-      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toString();
+      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
 
       for (let i = 0; i < listData.length; i += 1) {
         const item = listData[i];
