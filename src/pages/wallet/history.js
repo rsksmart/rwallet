@@ -412,10 +412,10 @@ class History extends Component {
     let balanceText = ' ';
     let balanceValueText = ' ';
     if (balance) {
-      balanceText = `${balance.toString()} ${symbol}`;
+      balanceText = `${balance.toFixed()} ${symbol}`;
     }
     if (balanceValue) {
-      balanceValueText = `${balanceValue.decimalPlaces(2).toString()} ${currency}`;
+      balanceValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
     }
     this.setState({ balanceText, balanceValueText });
   }
@@ -431,11 +431,11 @@ class History extends Component {
         sendingCoin = sendingCoin.plus(transaction.amount);
       }
     });
-    const sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+    const sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toFixed();
     this.setState({ sendingCoinValue });
-    const state = { sendingCoin: sendingCoin.toString() };
+    const state = { sendingCoin: sendingCoin.toFixed() };
     if (price) {
-      state.sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toString();
+      state.sendingCoinValue = sendingCoin.times(price).decimalPlaces(2).toFixed();
     }
     this.setState(state);
   }
