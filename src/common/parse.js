@@ -277,10 +277,14 @@ class ParseHelper {
           // This address is hex string which needs to be procced during either here or rendering
           let balance = parseObject.get('balance');
           if (balance) {
-            balance = common.convertHexToCoinAmount(address.symbol, balance);
+            balance = common.convertHexToCoinAmount(addressReference.symbol, balance);
           }
           addressReference.balance = balance;
-        }, () => Promise.resolve());
+          console.log(`fetchBalance, symbol: ${addressReference.symbol}, balance: ${balance}`);
+        }, (err) => {
+          console.log(`fetchBalance, err: ${err.message}`);
+          return Promise.reject(err);
+        });
     });
 
     return Promise.all(promises);
