@@ -298,10 +298,12 @@ class ParseHelper {
    * @memberof ParseHelper
    */
   static async fetchTransaction(addresses) {
+    console.log('fetchTransaction, addresses:', addresses);
     const promises = addresses.map((address) => ParseHelper.queryAddressTxs(address)
       .then((txs) => {
         // eslint-disable-next-line
         address.transactions = txs;
+        console.log('fetchTransaction, address.transactions: ', address.transactions);
       })
       .catch((ex) => {
         console.error('fetchTransaction', ex.message);

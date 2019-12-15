@@ -23,7 +23,7 @@ function* getWalletsRequest() {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    const message = yield call(ParseHelper.handleError, err);
 
     console.error(message);
 
@@ -46,7 +46,7 @@ function* getPriceRequest(action) {
       value: Object.assign(response, { currency }),
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    const message = yield call(ParseHelper.handleError, err);
 
     console.error(message);
 
@@ -70,7 +70,7 @@ function* fetchBalanceRequest(action) {
       type: actions.FETCH_BALANCE_RESULT,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    const message = yield call(ParseHelper.handleError, err);
     console.error(message);
   }
 }
@@ -83,8 +83,11 @@ function* fetchTransactionRequest(action) {
 
   try {
     yield call(ParseHelper.fetchTransaction, addresses);
+    yield put({
+      type: actions.FETCH_TRANSACTION_RESULT,
+    });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
+    const message = yield call(ParseHelper.handleError, err);
     console.error(message);
   }
 }
