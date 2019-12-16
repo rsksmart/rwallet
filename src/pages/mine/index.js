@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   right: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginLeft: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#EDEDED',
@@ -84,6 +86,45 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginLeft: 10,
   },
+  communityIcon: {
+    marginLeft: -5.5,
+  },
+  keyListView: {
+    marginLeft: 10,
+  },
+  keyListRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  keyListRowRight: {
+    alignItems: 'center',
+  },
+  keyIcon: {
+    color: '#4A4A4A', transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
+  },
+  keyTitle: {
+    marginLeft: 10,
+  },
+  keyWallets: {
+    backgroundColor: '#F3F3F3',
+    borderRadius: 5,
+    padding: 5,
+    color: '#000',
+    position: 'absolute',
+    right: 0,
+  },
+  createWalletButtonView: {
+    marginTop: 20,
+    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+  },
+  createWalletButtonText: {
+    color: '#00B520',
+    fontSize: 16,
+  },
 });
 
 const header = require('../../assets/images/misc/header.png');
@@ -122,17 +163,48 @@ Item.defaultProps = {
 };
 
 
-const iconSize = 20;
+const ICON_SIZE = 20;
 
 class MineIndex extends Component {
   static navigationOptions = () => ({
     header: null,
   });
 
+  static createKeyListData(wallets) {
+    const listData = [];
+    wallets.forEach((wallet) => {
+      const item = {
+        name: `Key ${wallet.id}`,
+        walletCount: wallet.coins.length,
+      };
+      listData.push(item);
+    });
+    return listData;
+  }
+
+  static renderKeyListView(listData) {
+    return (
+      <FlatList
+        style={styles.keyListView}
+        data={listData}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.keyListRow}>
+            <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
+            <View style={styles.right}>
+              <Text>{item.name}</Text>
+              <Text style={styles.keyWallets}>{`${item.walletCount} Wallets`}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    );
+  }
+
   settings = [
     {
       title: 'Language',
-      icon: <MaterialIcons name="language" size={iconSize} style={{ color: '#4A4A4A' }} />,
+      icon: <MaterialIcons name="language" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />,
       onPress: () => {
         const { navigation } = this.props;
         navigation.navigate('Language');
@@ -141,7 +213,7 @@ class MineIndex extends Component {
     {
       title: 'Currency',
       icon: (
-        <MaterialCommunityIcons name="currency-usd" size={iconSize} style={{ color: '#4A4A4A' }} />
+        <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />
       ),
       onPress: () => {
         const { navigation } = this.props;
@@ -153,7 +225,7 @@ class MineIndex extends Component {
       icon: (
         <MaterialCommunityIcons
           name="two-factor-authentication"
-          size={iconSize}
+          size={ICON_SIZE}
           style={{ color: '#4A4A4A' }}
         />
       ),
@@ -167,54 +239,66 @@ class MineIndex extends Component {
   joins = [
     {
       title: 'Twitter',
-      icon: <FontAwesome name="twitter" size={30} style={{ color: '#039BE5' }} />,
+      icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: '#039BE5' }]} />,
       onPress: () => {
         Linking.openURL('https://twitter.com');
       },
     },
     {
       title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={{ color: '#6FC062' }} />,
+      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#6FC062' }]} />,
       onPress: () => {
         Linking.openURL('https://telegram.org');
       },
     },
     {
       title: 'Facebook',
-      icon: <Entypo name="facebook-with-circle" size={30} style={{ color: '#3F51B5' }} />,
+      icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: '#3F51B5' }]} />,
       onPress: () => {
         Linking.openURL('https://facebook.com');
       },
     },
     {
       title: 'Discord',
-      icon: <FontAwesome5 name="discord" size={30} style={{ color: '#8C9EFF' }} />,
+      icon: <FontAwesome5 name="discord" size={30} style={[styles.communityIcon, { color: '#8C9EFF' }]} />,
       onPress: () => {
         Linking.openURL('https://discordapp.com/');
       },
     },
     {
       title: 'Reddit',
-      icon: <FontAwesome name="reddit" size={30} style={{ color: '#FF4500' }} />,
+      icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: '#FF4500' }]} />,
       onPress: () => {
         Linking.openURL('https://reddit.com/');
       },
     },
     {
       title: 'YouTube',
-      icon: <Entypo name="youtube-with-circle" size={30} style={{ color: '#D2142B' }} />,
+      icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: '#D2142B' }]} />,
       onPress: () => {
         Linking.openURL('https://youtube.com/');
       },
     },
   ];
 
+  constructor(props) {
+    super(props);
+    const { wallets } = this.props;
+    const keyListData = MineIndex.createKeyListData(wallets);
+    this.state = {
+      keyListData,
+      settings: this.settings,
+      joins: this.joins,
+    };
+  }
+
   render() {
     let headerHeight = 160;
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXExtendedHeight;
     }
-    const { language } = this.props;
+    const { language, navigation } = this.props;
+    const { keyListData, settings, joins } = this.state;
     return (
       <View style={flex.flex1}>
         <ScrollView style={[flex.flex1]}>
@@ -231,7 +315,7 @@ class MineIndex extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.sectionTitle]} text="Settings" />
               <FlatList
-                data={this.settings}
+                data={settings}
                 extraData={language}
                 renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
                 keyExtractor={() => `${Math.random()}`}
@@ -239,9 +323,18 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
+            <Text style={styles.sectionTitle}>Keys</Text>
+            {MineIndex.renderKeyListView(keyListData)}
+            <View style={styles.createWalletButtonView}>
+              <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
+                <Text style={styles.createWalletButtonText}>Create or Import a Key</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Text style={styles.sectionTitle}>Join Community</Text>
             <FlatList
-              data={this.joins}
+              data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
               keyExtractor={() => `${Math.random()}`}
             />
@@ -268,14 +361,16 @@ MineIndex.propTypes = {
 
 MineIndex.propTypes = {
   language: PropTypes.string.isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
 };
 
-Loc.defaultProps = {
-  style: null,
+MineIndex.defaultProps = {
+  wallets: undefined,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
 export default connect(mapStateToProps)(MineIndex);
