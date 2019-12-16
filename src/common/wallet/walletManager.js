@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import appContext from '../appContext';
+import common from '../common';
 
 const STORAGE_KEY = 'wallets';
 
@@ -12,6 +13,8 @@ class WalletManager {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
     this.assetValue = new BigNumber(0);
+    this.balanceLastUpdated = new Date();
+    this.assetValueLastUpdated = new Date();
 
     this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
@@ -122,56 +125,80 @@ class WalletManager {
   }
 
   /**
-   * Update asset value, and save them into each wallet
+   * Update asset value and save them into each wallet as BigNumber, and sum up total asset value
    * Fail silently if there is any exception
    * @param {*} prices
    */
   updateAssetValue(prices, currency) {
     const { wallets } = this;
+
+    // Return early if prices or currency is invalid
+    if (_.isEmpty(prices) || _.isUndefined(currency)) {
+      return;
+    }
+
     try {
-      console.log('updateAssetValue.wallets', wallets);
-      console.log('updateAssetValue.prices', prices);
-      const assetValue = prices.reduce((acc, cur) => {
+      const assetValue = prices.reduce((totalAssetValue, priceObject) => {
+        const tokenSymbol = priceObject.symbol;
+        const tokenPrice = priceObject.price && priceObject.price.currency;
+        let value = new BigNumber(0);
+
+        // Find Coin instances by symbol
         const coins = wallets.map((wallet) => {
-          const coinObj = wallet.coins.find((coin) => coin.symbol === cur.symbol);
+          const coinObj = wallet.coins.find((coin) => coin.symbol === tokenSymbol);
           return coinObj;
         });
-        const price = cur.price[currency];
-        let value = new BigNumber(0);
+
         coins.forEach((coin) => {
           if (coin.balance) {
             // eslint-disable-next-line no-param-reassign
-            coin.balanceValue = coin.balance.times(price);
+            coin.balanceValue = coin.balance.times(tokenPrice);
             value = value.plus(coin.balanceValue);
           }
         });
-        const sum = acc.plus(value);
-        console.log(`symbol: ${cur.symbol} sum :${value.toString()}`);
-        return sum;
+
+        console.log(`${tokenSymbol} total value: ${value.toString()}`);
+
+        return totalAssetValue.plus(value);
       }, new BigNumber(0));
+
       this.assetValue = assetValue;
-      // this.assetValue = assetValue.toString();
-      // console.log(`this.assetValue: ${this.assetValue}`);
     } catch (ex) {
-      console.log(ex);
+      console.error('walletManager.updateAssetValue', ex.message);
     }
   }
 
+
   /**
-   * Return total asset value for all wallets in this walletManager
-   * @returns {number} Total Asset Value in currency
+   * Update balances of Token based on input
+   * @param {array} balances Array of balance object in form of {objectId, balance(hex string)}
    */
-  getTotalAssetValue(currency) {
-    const { wallets } = this;
-    console.log('getTotalAssetValue.wallets', wallets);
-    console.log('getTotalAssetValue.currency', currency);
-    return this.assetValue;
+  updateBalance(balances) {
+    const tokenInstances = this.getTokens();
+    const that = this;
+
+    _.each(tokenInstances, (token) => {
+      const newToken = token;
+      const match = _.find(balances, (balanceObject) => balanceObject.objectId === token.objectId);
+
+      if (match) {
+        try {
+          // Try to convert hex string to BigNumber
+          newToken.balance = common.convertHexToCoinAmount(match.symbol, match.balance);
+
+          // Set this.balanceLastUpdated to mark update timestamp
+          that.balanceLastUpdated = new Date();
+        } catch (err) {
+          console.warn(`fetchBalance, unable to convert ${match.symbol} balance ${match.balance} to BigNumber`);
+        }
+      }
+    });
   }
 
   /**
    * Return all instances of Coin class within this WalletManager
    */
-  getAddresses() {
+  getTokens() {
     const { wallets } = this;
     return _.reduce(wallets, (accumulator, wallet) => accumulator.concat(wallet.coins), []);
   }

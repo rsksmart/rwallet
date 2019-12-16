@@ -3,7 +3,6 @@ import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
-import common from './common';
 
 const parseConfig = config && config.parse;
 
@@ -115,31 +114,11 @@ class ParseHelper {
     // Only save parseUser when it's dirty.
     // https://parseplatform.org/Parse-SDK-JS/api/v1.11.1/Parse.Object.html#dirty
     if (parseUser.dirty()) {
-      console.log(`ParseHelper.updateUser, ${parseUser.dirty('wallets') && 'wallets'} ${parseUser.dirty('settings') && 'settings'} will be saved.`);
+      console.log(`ParseHelper.updateUser, ${parseUser.dirty('wallets') && 'wallets'} ${parseUser.dirty('settings') && 'settings'} will be uploaded to server.`);
       return parseUser.save();
     }
 
     return parseUser;
-  }
-
-  /**
-   * Get balances of all addresses associated with a user
-   * @returns {array} for example, [{address:"", balance:"", symbol: ""}]
-   */
-  static async getAddresses() {
-    const parseUser = Parse.User.current();
-    await parseUser.fetchWithInclude('wallets');
-
-    const resAddresses = parseUser.get('wallets')
-      .map((addrPObj) => ({
-        chain: addrPObj.get('chain'),
-        type: addrPObj.get('type'),
-        symbol: addrPObj.get('symbol'),
-        address: addrPObj.get('address'),
-        balance: addrPObj.get('balance'),
-      }));
-
-    return resAddresses;
   }
 
   static getTransactionsByAddress({ symbol, type, address }) {
@@ -260,29 +239,28 @@ class ParseHelper {
 
   /**
    * Get balance of parseObject and update property of each addresss
-   * @param {array} addresses Array of Coin class instance
+   * @param {array} tokens Array of Coin class instance
+   * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  static fetchBalance(addresses) {
-    const promises = _.map(addresses, (address) => {
-      const addressReference = address;
-      if (!addressReference.objectId) {
-        return Promise.resolve();
-      }
-
+  static fetchBalance(tokens) {
+    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+    const promises = _.map(validObjects, (token) => {
+      const { objectId, symbol } = token;
       const query = new Parse.Query(ParseAddress);
-      return query.get(address.objectId)
+      return query.get(objectId)
         .then((parseObject) => {
           // Update address if the object was retrieved successfully.
           // This address is hex string which needs to be procced during either here or rendering
-          let balance = parseObject.get('balance');
-          if (balance) {
-            balance = common.convertHexToCoinAmount(addressReference.symbol, balance);
-          }
-          addressReference.balance = balance;
-          console.log(`fetchBalance, symbol: ${addressReference.symbol}, balance: ${balance}`);
+          const balance = parseObject.get('balance');
+
+          console.log(`fetchBalance, symbol: ${symbol}, balance: ${balance}`);
+          return Promise.resolve({
+            objectId,
+            balance,
+          });
         }, (err) => {
-          console.log(`fetchBalance, err: ${err.message}`);
-          return Promise.reject(err);
+          console.warn(`fetchBalance, err: ${err.message}`);
+          return Promise.resolve();
         });
     });
 

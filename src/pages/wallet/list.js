@@ -32,6 +32,7 @@ const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
 const DEFAULT_CURRENCY_SYMBOL = '$';
+const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -227,30 +228,26 @@ class WalletList extends Component {
      * Transform from wallets to ListData for rendering
      */
     static createListData(wallets, currencySymbol, navigation) {
-      console.log('list::createListData, wallets:', wallets);
       if (!_.isArray(wallets)) {
         return [];
       }
 
       const listData = [];
+
+      // Create element for each wallet (e.g. key 0)
       wallets.forEach((wallet) => {
         const wal = { name: `Key ${wallet.id}`, coins: [] };
+        // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-          let amountText = ' ';
-          let valueText = ' ';
           console.log(`list::createListData, coin.symbol: ${coin.symbol}, coin.balance: ${coin.balance}`);
-          if (coin.balance) {
-            amountText = coin.balance.toFixed();
-          }
-          if (coin.balanceValue) {
-            valueText = `${currencySymbol}${coin.balanceValue.decimalPlaces(2).toFixed()}`;
-          }
+          const amountText = coin.balance ? coin.balance.toFixed() : '';
+          const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
           const item = {
             key: `${index}`,
             title: coin.defaultName,
             text: coinType,
-            worth: valueText,
+            worth: worthText,
             amount: amountText,
             icon: coin.icon,
             r1Press: () => {
@@ -265,6 +262,7 @@ class WalletList extends Component {
           };
           wal.coins.push(item);
         });
+
         listData.push(wal);
       });
 
@@ -297,6 +295,9 @@ class WalletList extends Component {
         return settingsObj;
       }, {});
 
+      // Currency names used to pass into getPrice
+      this.currencyNames = _.map(currencySettings, (item) => item.name);
+
       this.state = {
         listData: [],
         currencySymbol: DEFAULT_CURRENCY_SYMBOL,
@@ -306,17 +307,18 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, walletManager, totalAssetValue,
+        getPrice, currency, wallets, navigation, fetchBalance, totalAssetValue, startFetchBalanceTimer, coinInstances,
       } = this.props;
 
-      console.log('list::componentWillMount, wallets:', wallets);
+      console.log('list::componentWillMount, coinInstances:', coinInstances);
 
       // 1. Get balance of each token
-      fetchBalance(walletManager);
+      fetchBalance(coinInstances);
 
       // 2. Get price of each token
-      const currencyStrings = _.map(currencySettings, (item) => item.name);
-      getPrice(supportedTokens, currencyStrings, currency);
+      getPrice(supportedTokens, this.currencyNames, currency);
+
+      startFetchBalanceTimer();
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
@@ -331,20 +333,34 @@ class WalletList extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, wallets, navigation, isBalanceUpdated, resetBalanceUpdated, totalAssetValue,
+        currency, prices, balanceLastUpdated, wallets, navigation, totalAssetValue,
       } = nextProps;
+
+      const {
+        currency: originalCurrency, prices: originalPrices, balanceLastUpdated: originalBalanceLastUpdated, updateWalletAssetValue,
+      } = this.props;
 
       const newState = this.state;
 
-      console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
+      console.log('WalletList.componentWillReceiveProps: nextProps,', nextProps);
+      console.log('WalletList.componentWillReceiveProps: oldProps,', this.props);
 
-      // Handle currency changed logic; get symbol string for the new currency
-      if (isBalanceUpdated) {
+      const isCurrencyChanged = (currency !== originalCurrency);
+      const isPricesChanged = (!_.isEqual(prices, originalPrices));
+      const isBalanceChanged = (balanceLastUpdated.getTime() !== originalBalanceLastUpdated.getTime());
+
+      // Update currency symbol such as $ if currency settings has chagned
+      if (isCurrencyChanged) {
         newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      }
+
+      // Update total asset value and list data if there's currency, price, or balance change
+      if (isCurrencyChanged || isPricesChanged || isBalanceChanged) {
+        updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
         newState.totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
-        resetBalanceUpdated();
       }
+
       this.setState(newState);
     }
 
@@ -454,37 +470,33 @@ WalletList.propTypes = {
     decimalPlaces: PropTypes.func.isRequired,
   }),
   fetchBalance: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  walletManager: PropTypes.object,
-  // addNotification: PropTypes.func.isRequired,
-  // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isBalanceUpdated: PropTypes.bool.isRequired,
-  resetBalanceUpdated: PropTypes.func.isRequired,
+  updateWalletAssetValue: PropTypes.func.isRequired,
+  startFetchBalanceTimer: PropTypes.func.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.object).isRequired,
+  balanceLastUpdated: PropTypes.instanceOf(Date).isRequired,
+  coinInstances: PropTypes.arrayOf(PropTypes.object),
 };
 
 WalletList.defaultProps = {
   wallets: undefined,
+  coinInstances: undefined,
   totalAssetValue: new BigNumber(0),
-  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
-  walletManager: state.Wallet.get('walletManager'),
+  prices: state.Wallet.get('prices'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  // allCurrencies: state.App.get('allCurrencies'),
+  balanceLastUpdated: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').lastUpdated,
+  coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
-  fetchBalance: (walletManager) => dispatch(walletActions.fetchBalance(walletManager)),
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  // addNotification: (notification) => dispatch(
-  //     appActions.addNotification(notification),
-  // ),
+  fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
+  updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
+  startFetchBalanceTimer: () => dispatch(walletActions.startFetchBalanceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
