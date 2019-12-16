@@ -21,16 +21,6 @@ Parse.setAsyncStorage(AsyncStorage);
 // const ParseUser = Parse.User;
 const ParseAddress = Parse.Object.extend('Address');
 const ParseTransaction = Parse.Object.extend('Transaction');
-
-const CHAIN_MAP = {
-  BTCTestnet: { chain: 'Bitcoin', type: 'Testnet', symbol: 'BTC' },
-  RBTCTestnet: { chain: 'Rootstock', type: 'Testnet', symbol: 'RBTC' },
-  RIFTestnet: { chain: 'Rootstock', type: 'Testnet', symbol: 'RIF' },
-  BTC: { chain: 'Bitcoin', type: 'Mainnet', symbol: 'BTC' },
-  RBTC: { chain: 'Rootstock', type: 'Mainnet', symbol: 'RBTC' },
-  RIF: { chain: 'Rootstock', type: 'Mainnet', symbol: 'RIF' },
-};
-
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
  * so that we don't need to reference ParseUser, ParseGlobal in other files
@@ -46,12 +36,10 @@ class ParseHelper {
     user.set('deviceId', DeviceInfo.getUniqueID());
 
     // TODO: other information needed to be set here.
-    console.log('parse.signup is called.');
     return user.signUp();
   }
 
   static signIn(appId) {
-    console.log('parse.signin is called.', appId);
     return Parse.User.logIn(appId, appId);
   }
 
@@ -71,55 +59,66 @@ class ParseHelper {
     console.log(`wallets: ${JSON.stringify(wallets)}, settings: ${JSON.stringify(settings)}`);
 
     // Only set settings when it's defined.
-    if (!_.isUndefined(settings)) {
+    if (_.isObject(settings)) {
       parseUser.set('settings', settings);
     }
 
     // Only set wallets when it's defined.
-    if (!_.isUndefined(wallets)) {
-      const addAddrPObjs = [];
-      const saveAddrTasks = [];
+    if (_.isArray(wallets)) {
+      // 1. Save Address into database if Coin has no objectId
+      // After save, add objectId to Coin instance
+      let promises = [];
 
-      const handleSaveAddr = async (coin) => {
-        const { address } = coin;
-        const { chain, type, symbol } = CHAIN_MAP[coin.id];
-        const addAddrPObj = new ParseAddress()
-          .set('chain', chain)
-          .set('type', type)
-          .set('symbol', symbol)
-          .set('address', address);
-        const isSaved = await addAddrPObj.save().catch((err) => {
-          console.log(err);
-          return null;
-        });
-        if (isSaved !== null) {
-          // eslint-disable-next-line
-          coin.objectId = addAddrPObj.id;
-          addAddrPObjs.push(addAddrPObj);
-        }
-      };
+      // 2. At the same time, add links to newly created Address object to User.wallets
+      const originalWallets = parseUser.get('wallets') || [];
+      const addedAddressObjects = [];
 
       wallets.forEach(({ coins }) => {
-        coins.forEach((coin) => {
-          if (!coin.objectId) {
-            saveAddrTasks.push(handleSaveAddr(coin));
-          }
-        });
-      });
-      await Promise.all(saveAddrTasks);
+        promises = promises.concat(coins.map((coin) => {
+          // Check if coin.objectId exists
+          // If coin already has objectId then we should have created the ParseAddress and saved to User.wallets
+          const query = new Parse.Query(ParseAddress);
+          return query.get(coin.objectId).then(() => Promise.resolve(), (err) => {
+            if (err.message === 'Object not found.') {
+              const coinObject = coin;
+              const {
+                address, chain, type, symbol,
+              } = coin;
 
-      const walletInfo = parseUser.get('wallets') || [];
-      walletInfo.push(...addAddrPObjs);
-      parseUser.set('wallets', walletInfo);
+              const parseAddress = new ParseAddress()
+                .set('chain', chain)
+                .set('type', type)
+                .set('symbol', symbol)
+                .set('address', address);
+
+              return parseAddress.save().then((savedParseAddress) => {
+                coinObject.objectId = savedParseAddress.id;
+                addedAddressObjects.push(savedParseAddress);
+                return Promise.resolve(savedParseAddress);
+              }, (error) => {
+                console.warn('updateUser', error.message);
+                return Promise.resolve(error.message);
+              });
+            }
+
+            return Promise.resolve();
+          });
+        }));
+      });
+
+      await Promise.all(promises);
+
+      originalWallets.push(...addedAddressObjects);
+      parseUser.set('wallets', wallets);
     }
 
     // Only save parseUser when it's dirty.
     // https://parseplatform.org/Parse-SDK-JS/api/v1.11.1/Parse.Object.html#dirty
-    const isDirty = parseUser.dirty();
-    console.log(`updateUser, isDirty: ${isDirty}`);
-    if (isDirty) {
+    if (parseUser.dirty()) {
+      console.log(`ParseHelper.updateUser, ${parseUser.dirty('wallets') && 'wallets'} ${parseUser.dirty('settings') && 'settings'} will be saved.`);
       return parseUser.save();
     }
+
     return parseUser;
   }
 
