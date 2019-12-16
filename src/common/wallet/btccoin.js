@@ -37,7 +37,7 @@ export default class Coin {
       console.error(ex);
     }
 
-    console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
+    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
   static getPrivateKeyBuffer(master, addressNode, network) {

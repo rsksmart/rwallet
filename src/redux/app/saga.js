@@ -41,7 +41,6 @@ function* updateUser(updateWallets, updateSettings) {
   }
   try {
     const updatedParseUser = yield call(ParseHelper.updateUser, updateParams);
-    console.log('Parse User updated:', updatedParseUser);
     yield serializeWalletsIfDirty(updatedParseUser);
   } catch (err) {
     console.log(err);
@@ -82,7 +81,6 @@ function* initAppRequest(/* action */) {
     });
 
     // 3. Deserialize appId from permenate storage
-    console.log('application', application);
     yield call(application.deserialize);
 
     console.log('initAppRequest, appId:', application.get('id'));
@@ -106,8 +104,6 @@ function* initAppRequest(/* action */) {
     // 1. Test server connection and get Server info
     const response = yield call(ParseHelper.getServerInfo);
 
-    console.log('initAppRequest got response, response: ', response);
-
     // Sets state in reducer for success
     yield put({
       type: actions.GET_SERVER_INFO_RESULT,
@@ -120,9 +116,11 @@ function* initAppRequest(/* action */) {
     // ParseHelper will have direct access to the User object so we don't need to pass it to state here
     try {
       yield call(ParseHelper.signIn, appId);
+      console.log(`User found with appId ${appId}. Sign in successful.`);
     } catch (err) {
       if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
         yield call(ParseHelper.signUp, appId);
+        console.log(`User NOT found with appId ${appId}. Signed up.`);
       }
     }
 

@@ -16,7 +16,7 @@ export default class Wallet {
     this.mnemonic = mnemonic;
     // this.createdAt = new Date();
 
-    console.log('Wallet.create.coins', coins);
+    // console.log('Wallet.create.coins', coins);
 
     // Create coins based on ids
     this.coins = [];
@@ -132,7 +132,7 @@ export default class Wallet {
    * @param {*} json
    */
   static async fromJSON(json) {
-    console.log('Wallet.fromJSON.', json);
+    // console.log('Wallet.fromJSON.', json);
     const {
       id, name, coins,
     } = json;

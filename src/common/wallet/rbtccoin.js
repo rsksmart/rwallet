@@ -68,7 +68,7 @@ export default class RBTCCoin {
       console.error(ex);
     }
 
-    console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
+    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
   static getPrivateKey(master, addressNode) {
