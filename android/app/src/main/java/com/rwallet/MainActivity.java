@@ -1,4 +1,4 @@
-package com.rwallet;
+package com.rsk.rwallet.reactnative;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
