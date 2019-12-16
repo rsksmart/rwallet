@@ -105,8 +105,6 @@ class WalletManager {
   async deserialize() {
     const result = await storage.load({ key: 'wallets' });
 
-    console.log('Deserialized Wallets from Storage.', result);
-
     if (!_.isNull(result) && _.isObject(result)) {
       // Retrieve currentKeyId from storage result
       if (_.isNumber(result.currentKeyId)) {
@@ -117,10 +115,10 @@ class WalletManager {
       const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
 
-      console.log('deserialize.wallets', wallets);
       this.wallets = wallets;
-      console.log('deserialize.this.wallets', this.wallets, this.wallets.length);
     }
+
+    console.log('Deserialized Wallets from Storage.', this.wallets);
   }
 
   /**
