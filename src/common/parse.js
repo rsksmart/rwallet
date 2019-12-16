@@ -75,11 +75,11 @@ class ParseHelper {
 
       wallets.forEach(({ coins }) => {
         promises = promises.concat(coins.map((coin) => {
-          // Check if coin.objectId exists
-          // If coin already has objectId then we should have created the ParseAddress and saved to User.wallets
+          // Check if ParseAddress with coin.objectId exists
           const query = new Parse.Query(ParseAddress);
           return query.get(coin.objectId).then(() => Promise.resolve(), (err) => {
             if (err.message === 'Object not found.') {
+              // If ParseAddress not exists then we will create a new one and saved to User.wallets
               const coinObject = coin;
               const {
                 address, chain, type, symbol,
@@ -92,8 +92,8 @@ class ParseHelper {
                 .set('address', address);
 
               return parseAddress.save().then((savedParseAddress) => {
-                coinObject.objectId = savedParseAddress.id;
-                addedAddressObjects.push(savedParseAddress);
+                coinObject.objectId = savedParseAddress.id; // Save objectId to walletManager.wallets
+                addedAddressObjects.push(savedParseAddress); // Save ParseAddress link to ParseUser.wallets
                 return Promise.resolve(savedParseAddress);
               }, (error) => {
                 console.warn('updateUser', error.message);
