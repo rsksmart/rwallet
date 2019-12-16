@@ -64,12 +64,11 @@ export default class RBTCCoin {
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
       this.address = RBTCCoin.getAddress(addressNode);
       this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
-      console.log(`RBTCCoin::derive, addressPrivateKeyHex: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
 
-    console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
+    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
   static getPrivateKey(master, addressNode) {
