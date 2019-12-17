@@ -182,13 +182,16 @@ class MineIndex extends Component {
     return listData;
   }
 
-  static renderKeyListView(listData) {
+  static renderKeyListView(listData, navigation) {
     return (
       <FlatList
         style={styles.keyListView}
         data={listData}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.keyListRow}>
+          <TouchableOpacity
+            style={styles.keyListRow}
+            onPress={() => navigation.navigate('KeySettings')}
+          >
             <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
             <View style={styles.right}>
               <Text>{item.name}</Text>
@@ -324,7 +327,7 @@ class MineIndex extends Component {
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Text style={styles.sectionTitle}>Keys</Text>
-            {MineIndex.renderKeyListView(keyListData)}
+            {MineIndex.renderKeyListView(keyListData, navigation)}
             <View style={styles.createWalletButtonView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
                 <Text style={styles.createWalletButtonText}>Create or Import a Key</Text>

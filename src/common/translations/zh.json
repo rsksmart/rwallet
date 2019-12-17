@@ -105,5 +105,10 @@
   "Backup Phrase": "备份密语",
   "Incorrect backup phrase": "备份密语不正确",
   "Unable to recover": "不能备份",
-  "Unable to recover Body": "不能通过您的密语导入钱包，请确保正确输入密语。"
+  "Unable to recover Body": "不能通过您的密语导入钱包，请确保正确输入密语。",
+  "Key Settings": "钥匙设置",
+  "SAVE": "保存",
+  "What do you call this key?": "你如何称呼这个钥匙呢？",
+  "You can change the name displayed on the device below": "在下面你可以改变显示的名字",
+  "Name": "名字"
 }
