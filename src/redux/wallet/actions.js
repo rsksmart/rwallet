@@ -9,6 +9,7 @@ const actions = {
   FETCH_BALANCE: 'FETCH_BALANCE',
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
+  DELETE_KEY: 'DELETE_KEY',
 
   // Functions definition
   getWallets: () => ({
@@ -32,6 +33,12 @@ const actions = {
   fetchTransaction: (walletManager) => ({
     type: actions.FETCH_TRANSACTION,
     walletManager,
+  }),
+  deleteKey: (key) => ({
+    type: actions.FETCH_TRANSACTION,
+    payload: {
+      key,
+    },
   }),
 };
 

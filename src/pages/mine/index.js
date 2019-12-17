@@ -176,6 +176,7 @@ class MineIndex extends Component {
       const item = {
         name: `Key ${wallet.id}`,
         walletCount: wallet.coins.length,
+        wallet,
       };
       listData.push(item);
     });
@@ -190,7 +191,7 @@ class MineIndex extends Component {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.keyListRow}
-            onPress={() => navigation.navigate('KeySettings')}
+            onPress={() => navigation.navigate('KeySettings', { key: item.wallet })}
           >
             <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
             <View style={styles.right}>
@@ -321,7 +322,7 @@ class MineIndex extends Component {
                 data={settings}
                 extraData={language}
                 renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
-                keyExtractor={() => `${Math.random()}`}
+                keyExtractor={(item, index) => index.toString()}
               />
             </View>
           </View>
@@ -339,7 +340,7 @@ class MineIndex extends Component {
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
-              keyExtractor={() => `${Math.random()}`}
+              keyExtractor={(item, index) => index.toString()}
             />
           </View>
         </ScrollView>

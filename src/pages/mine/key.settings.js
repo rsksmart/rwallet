@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ImageBackground, TouchableOpacity, ScrollView, Text,
+  View, StyleSheet, ImageBackground, TouchableOpacity, ScrollView, Text, FlatList, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import flex from '../../assets/styles/layout.flex';
 import screenHelper from '../../common/screenHelper';
 import Loc from '../../components/common/misc/loc';
+import walletActions from '../../redux/wallet/actions';
 
 
 const styles = StyleSheet.create({
@@ -49,22 +50,144 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#000',
-    marginBottom: 20,
+    marginBottom: 17,
+  },
+  keyNameView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EDEDED',
+    paddingVertical: 20,
+  },
+  keyNameLabel: {
+    backgroundColor: '#F3F3F3',
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    color: '#000',
+    position: 'absolute',
+    right: 0,
+  },
+  keyName: {
+    fontSize: 15,
+  },
+  keyTitle: {
+    fontSize: 15,
+  },
+  walletRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EDEDED',
+    paddingVertical: 10,
+  },
+  walletRowTitle: {
+    marginLeft: 15,
+  },
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EDEDED',
+    paddingVertical: 20,
+  },
+  listRowTitle: {
+    marginLeft: 5,
   },
 });
 
 const header = require('../../assets/images/misc/header.png');
+const BTC = require('../../assets/images/icon/BTC.png');
+const RBTC = require('../../assets/images/icon/RBTC.png');
+const RIF = require('../../assets/images/icon/RIF.png');
+
+
+const getIcon = (symbol) => {
+  const icons = { BTC, RBTC, RIF };
+  return icons[symbol];
+};
+
+const ListRow = ({ title, onPress }) => {
+  const listRow = (
+    <TouchableOpacity style={styles.listRow} onPress={onPress}>
+      <Text style={styles.listRowTitle}>{title}</Text>
+    </TouchableOpacity>
+  );
+  return listRow;
+};
 
 class KeySettings extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
+    static createWalletListData(coins) {
+      const listData = [];
+      coins.forEach((coin) => {
+        const icon = getIcon(coin.symbol);
+        const item = {
+          icon,
+          title: coin.id,
+          onPress: () => {
+            console.log('onPress, coin: ', coin);
+          },
+        };
+        listData.push(item);
+      });
+      return listData;
+    }
+
+    static renderWalletList(listData) {
+      return (
+        <FlatList
+          data={listData}
+          extraData={listData}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.walletRow} onPress={item.onPress}>
+              <Image source={item.icon} />
+              <Text style={styles.walletRowTitle}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      );
+    }
+
+    static renderAdvancedList(listData) {
+      return (
+        <FlatList
+          data={listData}
+          extraData={listData}
+          renderItem={({ item }) => (
+            <ListRow title={item.title} onPress={item.onPress} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      );
+    }
+
     constructor(props) {
       super(props);
       this.state = {
-        walletCount: 3,
+        walletCount: 0,
+        name: '',
       };
+    }
+
+    componentWillMount() {
+      const { navigation } = this.props;
+      const { key } = navigation.state.params;
+      const { coins, name } = key;
+      const walletListData = KeySettings.createWalletListData(coins);
+      const advancedListData = this.createAdvancedListData(coins);
+      this.key = key;
+      this.setState({
+        walletCount: coins.length,
+        name,
+        walletListData,
+        advancedListData,
+      });
+      this.onBackupPress = this.onBackupPress.bind(this);
     }
 
     static renderBackButton(navigation) {
@@ -79,10 +202,30 @@ class KeySettings extends Component {
       return backButton;
     }
 
+    onBackupPress() {
+      const { navigation } = this.props;
+      navigation.navigate('RecoveryPhrase', { wallet: this.key });
+    }
+
+    createAdvancedListData() {
+      const { deleteKey } = this.props;
+      const listData = [
+        {
+          title: 'Delete',
+          onPress: () => {
+            console.log('Delete, key: ', this.key);
+            deleteKey(this.key);
+          },
+        },
+      ];
+      return listData;
+    }
 
     render() {
       const { navigation } = this.props;
-      const { walletCount } = this.state;
+      const {
+        walletCount, name, walletListData, advancedListData,
+      } = this.state;
       return (
         <ScrollView style={[flex.flex1]}>
           <ImageBackground source={header} style={[styles.headerImage]}>
@@ -92,19 +235,22 @@ class KeySettings extends Component {
           </ImageBackground>
           <View style={screenHelper.styles.body}>
             <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-              <TouchableOpacity onPress={() => navigation.navigate('KeyName')}>
-                <Text>Key Name</Text>
-                <Text>Key 1</Text>
+              <TouchableOpacity style={styles.keyNameView} onPress={() => navigation.navigate('KeyName')}>
+                <Text style={styles.keyTitle}>Key Name</Text>
+                <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
               </TouchableOpacity>
             </View>
             <View style={[styles.sectionContainer, { marginTop: 10 }]}>
               <Loc style={[styles.sectionTitle]} text="Wallets" />
+              {KeySettings.renderWalletList(walletListData)}
             </View>
             <View style={[styles.sectionContainer, { marginTop: 10 }]}>
               <Loc style={[styles.sectionTitle]} text="Security" />
+              <ListRow title="Backup" onPress={this.onBackupPress} />
             </View>
-            <View style={[styles.sectionContainer, { marginTop: 10 }]}>
+            <View style={[styles.sectionContainer, { marginTop: 10, marginBottom: 10 }]}>
               <Loc style={[styles.sectionTitle]} text="Advanced" />
+              {KeySettings.renderAdvancedList(advancedListData)}
             </View>
           </View>
         </ScrollView>
@@ -121,10 +267,22 @@ KeySettings.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = () => ({
+KeySettings.propTypes = {
+  // eslint-disable-next-line react/no-unused-prop-types
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  deleteKey: PropTypes.func.isRequired,
+};
+
+KeySettings.defaultProps = {
+  wallets: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  deleteKey: (key) => dispatch(walletActions.deleteKey(key)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);
