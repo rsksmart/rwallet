@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
-import _ from 'lodash';
 import actions from './actions';
 
 const initState = new Map({
   wallets: [],
   prices: [],
   walletManager: undefined, // WalletManager instance
+  isAssetValueUpdated: false,
   isTransactionUpdated: false,
 });
 
@@ -14,27 +14,27 @@ export default function walletReducer(state = initState, action) {
     case actions.GET_WALLETS_RESULT:
       return state.set('wallets', action.value);
     case actions.GET_PRICE_RESULT:
-    {
-      // Only set state when price is an array, to prevent saving mal-formatted data into state
-      if (_.isArray(action.value)) {
-        return state.set('prices', action.value);
-      }
-
-      return state;
-    }
+      return state.set('prices', action.value && action.value.value);
     case actions.SET_WALLET_MANAGER:
       return state.set('walletManager', action.value);
     case actions.FETCH_BALANCE_RESULT: {
       const balances = action.value;
+      let newState = state;
 
       // Update balances in walletManager
       const walletManager = state.get('walletManager');
       if (walletManager) {
-        walletManager.updateBalance(balances);
+        const isDirty = walletManager.updateBalance(balances);
+
+        if (isDirty) {
+          newState = newState.set('isAssetValueUpdated', true);
+        }
       }
 
-      return state.set('walletManager', walletManager);
+      return newState;
     }
+    case actions.RESET_ASSET_VALUE_UPDATED:
+      return state.set('isAssetValueUpdated', false);
     case actions.RESET_TRANSACTION_UPDATED: {
       return state.set('isTransactionUpdated', false);
     }
@@ -46,13 +46,13 @@ export default function walletReducer(state = initState, action) {
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
       const prices = state.get('prices');
-      const { currency } = actions.payload;
+      const currency = action.payload;
 
       if (walletManager) {
         walletManager.updateAssetValue(prices, currency);
       }
 
-      return state.set('walletManager', walletManager);
+      return state.set('isAssetValueUpdated', true);
     }
     default:
       return state;

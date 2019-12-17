@@ -301,7 +301,7 @@ class WalletList extends Component {
       this.state = {
         listData: [],
         currencySymbol: DEFAULT_CURRENCY_SYMBOL,
-        totalAssetValueText: ' ',
+        totalAssetValueText: '',
       };
     }
 
@@ -333,11 +333,11 @@ class WalletList extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, prices, balanceLastUpdated, wallets, navigation, totalAssetValue,
+        currency, prices, isAssetValueUpdated, wallets, navigation,
       } = nextProps;
 
       const {
-        currency: originalCurrency, prices: originalPrices, balanceLastUpdated: originalBalanceLastUpdated, updateWalletAssetValue,
+        currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetAssetValueUpdated, totalAssetValue,
       } = this.props;
 
       const newState = this.state;
@@ -347,7 +347,6 @@ class WalletList extends Component {
 
       const isCurrencyChanged = (currency !== originalCurrency);
       const isPricesChanged = (!_.isEqual(prices, originalPrices));
-      const isBalanceChanged = (balanceLastUpdated.getTime() !== originalBalanceLastUpdated.getTime());
 
       // Update currency symbol such as $ if currency settings has chagned
       if (isCurrencyChanged) {
@@ -355,10 +354,11 @@ class WalletList extends Component {
       }
 
       // Update total asset value and list data if there's currency, price, or balance change
-      if (isCurrencyChanged || isPricesChanged || isBalanceChanged) {
+      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated) {
         updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
         newState.totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
+        resetAssetValueUpdated();
       }
 
       this.setState(newState);
@@ -466,14 +466,13 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  totalAssetValue: PropTypes.shape({
-    decimalPlaces: PropTypes.func.isRequired,
-  }),
+  totalAssetValue: PropTypes.instanceOf(BigNumber),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   startFetchBalanceTimer: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
-  balanceLastUpdated: PropTypes.instanceOf(Date).isRequired,
+  isAssetValueUpdated: PropTypes.bool.isRequired,
+  resetAssetValueUpdated: PropTypes.func.isRequired,
   coinInstances: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -488,13 +487,14 @@ const mapStateToProps = (state) => ({
   prices: state.Wallet.get('prices'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
-  balanceLastUpdated: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').lastUpdated,
+  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
   fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
+  resetAssetValueUpdated: () => dispatch(walletActions.resetAssetValueUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
   startFetchBalanceTimer: () => dispatch(walletActions.startFetchBalanceTimer()),
 });

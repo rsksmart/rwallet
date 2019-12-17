@@ -13,11 +13,11 @@ class WalletManager {
     this.wallets = wallets;
     this.currentKeyId = currentKeyId;
     this.assetValue = new BigNumber(0);
-    this.balanceLastUpdated = new Date();
-    this.assetValueLastUpdated = new Date();
 
     this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
+    this.updateAssetValue = this.updateAssetValue.bind(this);
+    this.getTokens = this.getTokens.bind(this);
   }
 
   /**
@@ -130,7 +130,7 @@ class WalletManager {
    * @param {*} prices
    */
   updateAssetValue(prices, currency) {
-    const { wallets } = this;
+    const { getTokens } = this;
 
     // Return early if prices or currency is invalid
     if (_.isEmpty(prices) || _.isUndefined(currency)) {
@@ -140,14 +140,11 @@ class WalletManager {
     try {
       const assetValue = prices.reduce((totalAssetValue, priceObject) => {
         const tokenSymbol = priceObject.symbol;
-        const tokenPrice = priceObject.price && priceObject.price.currency;
+        const tokenPrice = priceObject.price && priceObject.price[currency];
         let value = new BigNumber(0);
 
         // Find Coin instances by symbol
-        const coins = wallets.map((wallet) => {
-          const coinObj = wallet.coins.find((coin) => coin.symbol === tokenSymbol);
-          return coinObj;
-        });
+        const coins = getTokens({ symbol: tokenSymbol });
 
         coins.forEach((coin) => {
           if (coin.balance) {
@@ -163,6 +160,7 @@ class WalletManager {
       }, new BigNumber(0));
 
       this.assetValue = assetValue;
+      console.log(`Wallet total value: ${this.assetValue.toString()}`);
     } catch (ex) {
       console.error('walletManager.updateAssetValue', ex.message);
     }
@@ -172,10 +170,11 @@ class WalletManager {
   /**
    * Update balances of Token based on input
    * @param {array} balances Array of balance object in form of {objectId, balance(hex string)}
+   * @returns {boolean} True if any balance has changed
    */
   updateBalance(balances) {
     const tokenInstances = this.getTokens();
-    const that = this;
+    let isDirty = false;
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
@@ -184,23 +183,37 @@ class WalletManager {
       if (match) {
         try {
           // Try to convert hex string to BigNumber
-          newToken.balance = common.convertHexToCoinAmount(match.symbol, match.balance);
+          newToken.balance = common.convertHexToCoinAmount(newToken.symbol, match.balance);
 
-          // Set this.balanceLastUpdated to mark update timestamp
-          that.balanceLastUpdated = new Date();
+          isDirty = true;
         } catch (err) {
           console.warn(`fetchBalance, unable to convert ${match.symbol} balance ${match.balance} to BigNumber`);
         }
       }
     });
+
+    return isDirty;
   }
 
   /**
    * Return all instances of Coin class within this WalletManager
+   * @param {object} filter AND filter to select token with given criteras
+   * @param {string} filter.symbol
    */
-  getTokens() {
+  getTokens(filter) {
     const { wallets } = this;
-    return _.reduce(wallets, (accumulator, wallet) => accumulator.concat(wallet.coins), []);
+    return _.reduce(wallets, (accumulator, wallet) => {
+      _.each(wallet.coins, (coin) => {
+        if (!_.isObject(filter)) { // Accumulator adds everything if there's no filter
+          accumulator.push(coin);
+        } else if (filter.symbol) {
+          if (coin.symbol === filter.symbol) { // Only adds given symbol if there's a symbol filter
+            accumulator.push(coin);
+          }
+        }
+      });
+      return accumulator;
+    }, []);
   }
 
   /*

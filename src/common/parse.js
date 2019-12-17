@@ -172,7 +172,6 @@ class ParseHelper {
   }
 
   static getPrice({ symbols, currencies }) {
-    console.log('ParseHelper.getPrice', symbols, currencies);
     return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
@@ -242,7 +241,7 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  static fetchBalance(tokens) {
+  static async fetchBalance(tokens) {
     const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
     const promises = _.map(validObjects, (token) => {
       const { objectId, symbol } = token;
@@ -259,12 +258,15 @@ class ParseHelper {
             balance,
           });
         }, (err) => {
-          console.warn(`fetchBalance, err: ${err.message}`);
+          console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
           return Promise.resolve();
         });
     });
 
-    return Promise.all(promises);
+    const results = await Promise.all(promises);
+
+    // Only return items with valid value
+    return _.filter(results, (item) => !_.isUndefined(item));
   }
 
   /**

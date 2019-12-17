@@ -11,6 +11,7 @@ const actions = {
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   FETCH_TRANSACTION_RESULT: 'FETCH_TRANSACTION_RESULT',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
+  RESET_ASSET_VALUE_UPDATED: 'RESET_ASSET_VALUE_UPDATED',
   RESET_TRANSACTION_UPDATED: 'RESET_TRANSACTION_UPDATED',
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
   START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
@@ -34,16 +35,18 @@ const actions = {
     type: actions.FETCH_TRANSACTION,
     walletManager,
   }),
+  resetAssetValueUpdated: () => ({
+    type: actions.RESET_ASSET_VALUE_UPDATED,
+  }),
   resetTransactionUpdated: () => ({
     type: actions.RESET_TRANSACTION_UPDATED,
   }),
   updateAssetValue: (currency) => ({
     type: actions.UPDATE_ASSET_VALUE,
-    payload: { currency },
+    payload: currency,
   }),
   startFetchBalanceTimer: () => ({
     type: actions.START_FETCH_BALANCE_TIMER,
-
   }),
 };
 
