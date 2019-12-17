@@ -14,9 +14,13 @@ import config from '../../../config';
 
 const {
   consts: { supportedTokens, currencies: currencySettings },
-  interval: { fetchPrice: fetchPriceInterval },
+  interval: { fetchPrice: FETCH_PRICE_INTERVAL },
 } = config;
 
+/**
+ * Utility function to create a channel to emit an event periodically
+ * @param {number} interval interval between invoke in milliseconds
+ */
 function createTimer(interval) {
   return eventChannel((emitter) => {
     const intervalInstance = setInterval(() => {
@@ -31,8 +35,11 @@ function createTimer(interval) {
   });
 }
 
+/**
+ * Start the timer to call actions.GET_PRICE periodically
+ */
 export function* startFetchPriceTimerRequest() {
-  const chan = yield call(createTimer, fetchPriceInterval);
+  const chan = yield call(createTimer, FETCH_PRICE_INTERVAL);
 
   try {
     while (true) {
@@ -46,9 +53,6 @@ export function* startFetchPriceTimerRequest() {
         },
       });
     }
-  } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
-    console.warn(message);
   } finally {
     console.log('fetchPrice Channel closed.');
   }
