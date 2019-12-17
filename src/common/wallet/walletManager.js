@@ -154,13 +154,10 @@ class WalletManager {
           }
         });
 
-        console.log(`${tokenSymbol} total value: ${value.toString()}`);
-
         return totalAssetValue.plus(value);
       }, new BigNumber(0));
 
       this.assetValue = assetValue;
-      console.log(`Wallet total value: ${this.assetValue.toString()}`);
     } catch (ex) {
       console.error('walletManager.updateAssetValue', ex.message);
     }

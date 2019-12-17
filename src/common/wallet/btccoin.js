@@ -136,7 +136,6 @@ export default class Coin {
 
     _.each(addresses, (address) => {
       if (that.isEqual(address) && that.objectId !== address.objectId) {
-        console.log('Found an isEqual Coin,', address, 'setting objectId ', address.objectId);
         that.objectId = address.objectId;
         isDirty = true;
         return false; // return false break _.each loop

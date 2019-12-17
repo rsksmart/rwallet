@@ -55,8 +55,6 @@ class ParseHelper {
     const parseUser = Parse.User.current();
     await parseUser.fetch();
 
-    console.log(`wallets: ${JSON.stringify(wallets)}, settings: ${JSON.stringify(settings)}`);
-
     // Only set settings when it's defined.
     if (_.isObject(settings)) {
       parseUser.set('settings', settings);
@@ -69,46 +67,41 @@ class ParseHelper {
       let promises = [];
 
       // 2. At the same time, add links to newly created Address object to User.wallets
-      const originalWallets = parseUser.get('wallets') || [];
-      const addedAddressObjects = [];
-
-      wallets.forEach(({ coins }) => {
+      _.each(wallets, ({ coins }) => {
         promises = promises.concat(coins.map((coin) => {
           // Check if ParseAddress with coin.objectId exists
           const query = new Parse.Query(ParseAddress);
-          return query.get(coin.objectId).then(() => Promise.resolve(), (err) => {
-            if (err.message === 'Object not found.') {
-              // If ParseAddress not exists then we will create a new one and saved to User.wallets
-              const coinObject = coin;
-              const {
-                address, chain, type, symbol,
-              } = coin;
+          return query.get(coin.objectId)
+            .then((existingParseAddress) => Promise.resolve(existingParseAddress), (err) => {
+              if (err.message === 'Object not found.') {
+                // If ParseAddress not exists then we will create a new one and saved to User.wallets
+                const {
+                  address, chain, type, symbol,
+                } = coin;
 
-              const parseAddress = new ParseAddress()
-                .set('chain', chain)
-                .set('type', type)
-                .set('symbol', symbol)
-                .set('address', address);
+                const parseAddress = new ParseAddress()
+                  .set('chain', chain)
+                  .set('type', type)
+                  .set('symbol', symbol)
+                  .set('address', address);
 
-              return parseAddress.save().then((savedParseAddress) => {
-                coinObject.objectId = savedParseAddress.id; // Save objectId to walletManager.wallets
-                addedAddressObjects.push(savedParseAddress); // Save ParseAddress link to ParseUser.wallets
-                return Promise.resolve(savedParseAddress);
-              }, (error) => {
-                console.warn('updateUser', error.message);
-                return Promise.resolve(error.message);
-              });
-            }
+                return parseAddress.save().then((savedParseAddress) => {
+                  console.log(`updateUser, ${coin.objectId} is not found; created a new address ${savedParseAddress.id}.`);
+                  return Promise.resolve(savedParseAddress);
+                }, (error) => {
+                  console.warn('updateUser', error.message);
+                  return Promise.resolve();
+                });
+              }
 
-            return Promise.resolve();
-          });
+              return Promise.resolve();
+            });
         }));
       });
 
-      await Promise.all(promises);
-
-      originalWallets.push(...addedAddressObjects);
-      parseUser.set('wallets', wallets);
+      let parseAddresses = await Promise.all(promises);
+      parseAddresses = _.filter(parseAddresses, (item) => !_.isUndefined(item));
+      parseUser.set('wallets', parseAddresses);
     }
 
     // Only save parseUser when it's dirty.
@@ -276,42 +269,37 @@ class ParseHelper {
    * @param {array} addresses Array of Coin class instance
    * @memberof ParseHelper
    */
-  static async fetchTransaction(addresses) {
-    console.log('fetchTransaction, addresses:', addresses);
-    const promises = addresses.map((address) => ParseHelper.queryAddressTxs(address)
-      .then((txs) => {
-        // eslint-disable-next-line
-        address.transactions = txs;
-        console.log('fetchTransaction, address.transactions: ', address.transactions);
-      })
-      .catch((ex) => {
-        console.error('fetchTransaction', ex.message);
-      }));
+  static fetchTransaction(tokens) {
+    console.log('fetchTransaction, tokens:', tokens);
+    const promises = _.map(tokens, (token) => {
+      const {
+        address, symbol, chain, type,
+      } = token;
+      const newToken = token;
 
-    await Promise.all(promises);
-  }
+      // Find relavent transactions of which token.address is either from or to
+      const queryTo = new Parse.Query(ParseTransaction);
+      queryTo.equalTo('to', address)
+        .equalTo('symbol', symbol)
+        .equalTo('chain', chain)
+        .equalTo('type', type);
 
+      const queryFrom = new Parse.Query(ParseTransaction);
+      queryFrom.equalTo('from', address)
+        .equalTo('symbol', symbol)
+        .equalTo('chain', chain)
+        .equalTo('type', type);
 
-  /**
-   * Get transactions aboud the address
-   *
-   * @static
-   * @param {object} address of wallets coins
-   * @memberof ParseHelper
-   */
-  static async queryAddressTxs(address) {
-    const queryTo = new Parse.Query(ParseTransaction);
-    const queryFrom = new Parse.Query(ParseTransaction);
-    const { address: actualAddr, symbol } = address;
+      return Parse.Query.or(queryTo, queryFrom).find()
+        .then((results) => {
+          newToken.transactions = _.map(results, (item) => item.toJSON());
+          console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
+        }, (err) => {
+          console.warn(`fetchTransaction, token ${symbol}`, err.message);
+        });
+    });
 
-    const transactionPObjs = await Parse.Query.or(
-      queryTo.equalTo('to', actualAddr).equalTo('symbol', symbol),
-      queryFrom.equalTo('from', actualAddr).equalTo('symbol', symbol),
-    ).find();
-
-    const transactions = transactionPObjs.map((tx) => tx.toJSON());
-
-    return transactions;
+    return Promise.all(promises);
   }
 }
 

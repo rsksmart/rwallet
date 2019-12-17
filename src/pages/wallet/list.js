@@ -225,6 +225,18 @@ class WalletList extends Component {
     }
 
     /**
+     * Returns number string based on walletManager.assetValue; 0 as default value
+     */
+    static getTotalAssetValueText(walletManager) {
+      let assetValue = new BigNumber(0);
+      if (walletManager) {
+        assetValue = walletManager && walletManager.assetValue;
+      }
+
+      return assetValue.decimalPlaces(2).toFixed();
+    }
+
+    /**
      * Transform from wallets to ListData for rendering
      */
     static createListData(wallets, currencySymbol, navigation) {
@@ -240,7 +252,6 @@ class WalletList extends Component {
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-          console.log(`list::createListData, coin.symbol: ${coin.symbol}, coin.balance: ${coin.balance}`);
           const amountText = coin.balance ? coin.balance.toFixed() : '';
           const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
           const item = {
@@ -307,10 +318,8 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, totalAssetValue, startFetchBalanceTimer, coinInstances,
+        getPrice, currency, wallets, navigation, fetchBalance, startFetchBalanceTimer, coinInstances, walletManager,
       } = this.props;
-
-      console.log('list::componentWillMount, coinInstances:', coinInstances);
 
       // 1. Get balance of each token
       fetchBalance(coinInstances);
@@ -322,7 +331,7 @@ class WalletList extends Component {
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
-      const totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
+      const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
 
       this.setState({
         currencySymbol,
@@ -337,13 +346,10 @@ class WalletList extends Component {
       } = nextProps;
 
       const {
-        currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetAssetValueUpdated, totalAssetValue,
+        currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetAssetValueUpdated, walletManager,
       } = this.props;
 
       const newState = this.state;
-
-      console.log('WalletList.componentWillReceiveProps: nextProps,', nextProps);
-      console.log('WalletList.componentWillReceiveProps: oldProps,', this.props);
 
       const isCurrencyChanged = (currency !== originalCurrency);
       const isPricesChanged = (!_.isEqual(prices, originalPrices));
@@ -357,7 +363,7 @@ class WalletList extends Component {
       if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated) {
         updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
-        newState.totalAssetValueText = totalAssetValue.decimalPlaces(2).toFixed();
+        newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
         resetAssetValueUpdated();
       }
 
@@ -466,7 +472,7 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  totalAssetValue: PropTypes.instanceOf(BigNumber),
+  walletManager: PropTypes.shape(PropTypes.object),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   startFetchBalanceTimer: PropTypes.func.isRequired,
@@ -479,14 +485,14 @@ WalletList.propTypes = {
 WalletList.defaultProps = {
   wallets: undefined,
   coinInstances: undefined,
-  totalAssetValue: new BigNumber(0),
+  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
+  walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').assetValue,
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
 });
