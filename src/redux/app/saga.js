@@ -22,8 +22,10 @@ function* serializeWalletsIfDirty(updatedParseUser) {
 
     // If Coins are updated then we need to serialize them
     if (isDirty) {
-      console.log('walletManager is dirty, serialize ...', walletManager);
+      console.log('serializeWalletsIfDirty, walletManager is dirty, serialize ...', walletManager);
       yield call(walletManager.serialize);
+    } else {
+      console.log('serializeWalletsIfDirty, walletManager is not dirty; no change');
     }
   } catch (err) {
     console.log(err);

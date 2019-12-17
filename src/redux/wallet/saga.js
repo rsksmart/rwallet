@@ -1,13 +1,46 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  call, all, takeEvery, put,
+  take, call, all, takeEvery, put,
 } from 'redux-saga/effects';
 
+import { eventChannel, END } from 'redux-saga';
 
 import actions from './actions';
 import appActions from '../app/actions';
 
 import ParseHelper from '../../common/parse';
+
+function countdown(seconds) {
+  let secs = seconds;
+  return eventChannel((emitter) => {
+    const iv = setInterval(() => {
+      secs -= 1;
+      if (secs > 0) {
+        emitter(secs);
+      } else {
+        // this causes the channel to close
+        emitter(END);
+      }
+    }, 1000);
+      // The subscriber must return an unsubscribe function
+    return () => {
+      clearInterval(iv);
+    };
+  });
+}
+
+export function* startFetchBalanceTimerRequest() {
+  const chan = yield call(countdown, 5);
+  try {
+    while (true) {
+      // take(END) will cause the saga to terminate by jumping to the finally block
+      const seconds = yield take(chan);
+      console.log(`countdown: ${seconds}`);
+    }
+  } finally {
+    console.log('countdown terminated');
+  }
+}
 
 function* getWalletsRequest() {
   console.log('saga.getWalletsRequest is called');
@@ -36,14 +69,14 @@ function* getWalletsRequest() {
 }
 
 function* getPriceRequest(action) {
-  const { payload, currency } = action;
+  const { symbols, currencies } = action.payload;
   try {
-    const response = yield call(ParseHelper.getPrice, payload);
+    const response = yield call(ParseHelper.getPrice, { symbols, currencies });
 
     // Sets state in reducer for success
     yield put({
       type: actions.GET_PRICE_RESULT,
-      value: Object.assign(response, { currency }),
+      value: response,
     });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
@@ -59,15 +92,13 @@ function* getPriceRequest(action) {
 }
 
 function* fetchBalanceRequest(action) {
-  const { walletManager } = action;
-
-  const addresses = walletManager.getAddresses();
-  console.log('fetchBalanceRequest, get Coin instances:', addresses);
+  const tokens = action.payload;
 
   try {
-    yield call(ParseHelper.fetchBalance, addresses);
+    const response = yield call(ParseHelper.fetchBalance, tokens);
     yield put({
       type: actions.FETCH_BALANCE_RESULT,
+      value: response,
     });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
@@ -78,11 +109,10 @@ function* fetchBalanceRequest(action) {
 function* fetchTransactionRequest(action) {
   const { walletManager } = action;
 
-  const addresses = walletManager.getAddresses();
-  console.log('fetchTransactionRequest, get Coin instances:', addresses);
+  const tokens = walletManager.getTokens();
 
   try {
-    yield call(ParseHelper.fetchTransaction, addresses);
+    yield call(ParseHelper.fetchTransaction, tokens);
     yield put({
       type: actions.FETCH_TRANSACTION_RESULT,
     });
@@ -99,5 +129,6 @@ export default function* () {
     takeEvery(actions.GET_PRICE, getPriceRequest),
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
+    takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
   ]);
 }

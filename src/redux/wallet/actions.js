@@ -11,37 +11,42 @@ const actions = {
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   FETCH_TRANSACTION_RESULT: 'FETCH_TRANSACTION_RESULT',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
-  RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
+  RESET_ASSET_VALUE_UPDATED: 'RESET_ASSET_VALUE_UPDATED',
   RESET_TRANSACTION_UPDATED: 'RESET_TRANSACTION_UPDATED',
+  UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
+  START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
 
   // Functions definition
   getWallets: () => ({
     type: actions.GET_WALLETS,
   }),
-  getPrice: (symbols, currencies, currency) => {
-    console.log('actions::getPrice is called.', symbols, currencies, currency);
-    return {
-      type: actions.GET_PRICE,
-      payload: {
-        symbols,
-        currencies,
-      },
-      currency,
-    };
-  },
-  fetchBalance: (walletManager) => ({
-    type: actions.FETCH_BALANCE,
-    walletManager,
+  getPrice: (symbols, currencies) => ({
+    type: actions.GET_PRICE,
+    payload: {
+      symbols,
+      currencies,
+    },
   }),
-  resetBalanceUpdated: () => ({
-    type: actions.RESET_BALANCE_UPDATED,
+  fetchBalance: (tokens) => ({
+    type: actions.FETCH_BALANCE,
+    payload: tokens,
   }),
   fetchTransaction: (walletManager) => ({
     type: actions.FETCH_TRANSACTION,
     walletManager,
   }),
+  resetAssetValueUpdated: () => ({
+    type: actions.RESET_ASSET_VALUE_UPDATED,
+  }),
   resetTransactionUpdated: () => ({
     type: actions.RESET_TRANSACTION_UPDATED,
+  }),
+  updateAssetValue: (currency) => ({
+    type: actions.UPDATE_ASSET_VALUE,
+    payload: currency,
+  }),
+  startFetchBalanceTimer: () => ({
+    type: actions.START_FETCH_BALANCE_TIMER,
   }),
 };
 

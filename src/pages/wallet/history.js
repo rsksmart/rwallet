@@ -366,15 +366,12 @@ class History extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      prices, wallets, isTransactionUpdated, resetTransactionUpdated, currency,
+      isTransactionUpdated, resetTransactionUpdated, currency,
     } = nextProps;
     const { symbol } = this.state;
     const { balance, balanceValue } = this.coin;
     // const { transactions: curTransactions } = this.props;
     // const { isLoadMore } = this.state;
-    console.log('History.componentWillReceiveProps: prices,', prices);
-    console.log('History.componentWillReceiveProps: wallets,', wallets);
-    console.log('History.componentWillReceiveProps: isTransactionUpdated,', isTransactionUpdated);
     this.generateBalanceText(balance, balanceValue, symbol, currency);
     const newState = this.state;
     if (isTransactionUpdated) {
@@ -544,12 +541,10 @@ History.propTypes = {
   }).isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})),
-  wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
   // isBalanceUpdated: PropTypes.bool.isRequired,
   // resetBalanceUpdated: PropTypes.func.isRequired,
   fetchTransaction: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  walletManager: PropTypes.object,
+  walletManager: PropTypes.shape(PropTypes.object),
   isTransactionUpdated: PropTypes.bool.isRequired,
   resetTransactionUpdated: PropTypes.func.isRequired,
 };
@@ -562,7 +557,6 @@ History.defaultProps = {
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
-  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   walletManager: state.Wallet.get('walletManager'),
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   isTransactionUpdated: state.Wallet.get('isTransactionUpdated'),
