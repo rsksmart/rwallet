@@ -318,16 +318,16 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, startFetchBalanceTimer, coinInstances, walletManager,
+        getPrice, currency, wallets, navigation, fetchBalance, startFetchPriceTimer, coinInstances, walletManager,
       } = this.props;
 
       // 1. Get balance of each token
       fetchBalance(coinInstances);
 
       // 2. Get price of each token
-      getPrice(supportedTokens, this.currencyNames, currency);
+      getPrice(supportedTokens, this.currencyNames);
 
-      startFetchBalanceTimer();
+      startFetchPriceTimer();
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
@@ -475,7 +475,7 @@ WalletList.propTypes = {
   walletManager: PropTypes.shape(PropTypes.object),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  startFetchBalanceTimer: PropTypes.func.isRequired,
+  startFetchPriceTimer: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAssetValueUpdated: PropTypes.bool.isRequired,
   resetAssetValueUpdated: PropTypes.func.isRequired,
@@ -498,11 +498,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
+  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
   fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
   resetAssetValueUpdated: () => dispatch(walletActions.resetAssetValueUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
-  startFetchBalanceTimer: () => dispatch(walletActions.startFetchBalanceTimer()),
+  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
