@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { Card, CardItem, Body } from 'native-base';
@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
@@ -18,6 +19,7 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 // currencySettings:
 const { consts: { supportedTokens, currencies: currencySettings } } = config;
@@ -30,6 +32,7 @@ const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
 const DEFAULT_CURRENCY_SYMBOL = '$';
+const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -109,11 +112,12 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   myAssets: {
-    fontSize: 35,
+    marginTop: 63,
+    marginHorizontal: 30,
+  },
+  myAssetsFontStyle: {
     fontWeight: 'bold',
     color: '#000000',
-    top: 63,
-    left: 30,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -221,27 +225,41 @@ class WalletList extends Component {
     }
 
     /**
+     * Returns number string based on walletManager.assetValue; 0 as default value
+     */
+    static getTotalAssetValueText(walletManager) {
+      let assetValue = new BigNumber(0);
+      if (walletManager) {
+        assetValue = walletManager && walletManager.assetValue;
+      }
+
+      return assetValue.decimalPlaces(2).toFixed();
+    }
+
+    /**
      * Transform from wallets to ListData for rendering
      */
-    static createListData(wallets, navigation) {
-      console.log('list::createListData, wallets:', wallets);
+    static createListData(wallets, currencySymbol, navigation) {
       if (!_.isArray(wallets)) {
         return [];
       }
 
       const listData = [];
+
+      // Create element for each wallet (e.g. key 0)
       wallets.forEach((wallet) => {
         const wal = { name: `Key ${wallet.id}`, coins: [] };
-        wallet.coins.forEach((coin) => {
+        // Create element for each Token (e.g. BTC, RBTC, RIF)
+        wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-
+          const amountText = coin.balance ? coin.balance.toFixed() : '';
+          const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
           const item = {
-            key: `${Math.random()}`,
+            key: `${index}`,
             title: coin.defaultName,
             text: coinType,
-            worth: '',
-            amount: '',
-            price: null,
+            worth: worthText,
+            amount: amountText,
             icon: coin.icon,
             r1Press: () => {
               navigation.navigate('Transfer', { wallet, coin });
@@ -255,10 +273,26 @@ class WalletList extends Component {
           };
           wal.coins.push(item);
         });
+
         listData.push(wal);
       });
 
       return listData;
+    }
+
+    static accountListView(listData) {
+      return (
+        <FlatList
+          data={listData}
+          renderItem={({ item }) => (
+            <View>
+              <Text style={[styles.sectionTitle]}>{item.name}</Text>
+              <SwipableButtonList data={item.coins} />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      );
     }
 
     constructor(props) {
@@ -272,71 +306,73 @@ class WalletList extends Component {
         return settingsObj;
       }, {});
 
+      // Currency names used to pass into getPrice
+      this.currencyNames = _.map(currencySettings, (item) => item.name);
+
       this.state = {
         listData: [],
         currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+        totalAssetValueText: '',
       };
     }
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, walletManager, fetchTransaction,
+        getPrice, currency, wallets, navigation, fetchBalance, startFetchBalanceTimer, coinInstances, walletManager,
       } = this.props;
 
-      console.log('list::componentWillMount, wallets:', wallets);
-
       // 1. Get balance of each token
-      fetchBalance(walletManager);
+      fetchBalance(coinInstances);
 
       // 2. Get price of each token
-      const currencyStrings = _.map(currencySettings, (item) => item.name);
-      getPrice(supportedTokens, currencyStrings, currency);
+      getPrice(supportedTokens, this.currencyNames, currency);
 
-      // 3. Get transactions of each token
-      fetchTransaction(walletManager);
+      startFetchBalanceTimer();
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      const listData = WalletList.createListData(wallets, navigation);
+      const listData = WalletList.createListData(wallets, currencySymbol, navigation);
+      const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
 
       this.setState({
         currencySymbol,
         listData,
+        totalAssetValueText,
       });
     }
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, wallets, prices, navigation,
+        currency, prices, isAssetValueUpdated, wallets, navigation,
       } = nextProps;
+
+      const {
+        currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetAssetValueUpdated, walletManager,
+      } = this.props;
 
       const newState = this.state;
 
-      console.log('WalletList.componentWillReceiveProps: wallets,', wallets);
-      console.log('WalletList.componentWillReceiveProps: prices,', prices);
+      const isCurrencyChanged = (currency !== originalCurrency);
+      const isPricesChanged = (!_.isEqual(prices, originalPrices));
 
-      // Handle currency changed logic; get symbol string for the new currency
-      newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
-      newState.listData = WalletList.createListData(wallets, navigation);
+      // Update currency symbol such as $ if currency settings has chagned
+      if (isCurrencyChanged) {
+        newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      }
+
+      // Update total asset value and list data if there's currency, price, or balance change
+      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated) {
+        updateWalletAssetValue(currency);
+        newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
+        newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
+        resetAssetValueUpdated();
+      }
 
       this.setState(newState);
     }
 
     render() {
-      const { navigation, totalAssetValue } = this.props;
-      const { listData, currencySymbol } = this.state;
-      const accounts = [];
-
-      for (let i = 0; i < listData.length; i += 1) {
-        const item = listData[i];
-        const section = (
-          <View key={`${Math.random()}`}>
-            <Text style={[styles.sectionTitle]}>{item.name}</Text>
-            <SwipableButtonList data={item.coins} />
-          </View>
-        );
-        accounts.push(section);
-      }
-
+      const { navigation } = this.props;
+      const { listData, currencySymbol, totalAssetValueText } = this.state;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
@@ -370,7 +406,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <Text style={styles.myAssets}>{totalAssetValue}</Text>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
@@ -401,7 +437,7 @@ class WalletList extends Component {
                 <Loc style={[styles.assetsTitle]} text="All Assets" />
               </View>
               <View style={styles.sectionContainer}>
-                {accounts}
+                {WalletList.accountListView(listData)}
               </View>
               <View style={[styles.sectionContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
@@ -436,40 +472,37 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  totalAssetValue: PropTypes.number,
-  prices: PropTypes.arrayOf(PropTypes.object),
+  walletManager: PropTypes.shape(PropTypes.object),
   fetchBalance: PropTypes.func.isRequired,
-  fetchTransaction: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  walletManager: PropTypes.object,
-  // addNotification: PropTypes.func.isRequired,
-  // allCurrencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  updateWalletAssetValue: PropTypes.func.isRequired,
+  startFetchBalanceTimer: PropTypes.func.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isAssetValueUpdated: PropTypes.bool.isRequired,
+  resetAssetValueUpdated: PropTypes.func.isRequired,
+  coinInstances: PropTypes.arrayOf(PropTypes.object),
 };
 
 WalletList.defaultProps = {
   wallets: undefined,
-  prices: [],
-  totalAssetValue: 0,
+  coinInstances: undefined,
   walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
+  prices: state.Wallet.get('prices'),
   walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  totalAssetValue: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').totalAssetValue,
-  // allCurrencies: state.App.get('allCurrencies'),
+  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
+  coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // getWallets: () => dispatch(walletActions.getWallets()),
   getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
-  fetchBalance: (walletManager) => dispatch(walletActions.fetchBalance(walletManager)),
-  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
-  // addNotification: (notification) => dispatch(
-  //     appActions.addNotification(notification),
-  // ),
+  fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
+  resetAssetValueUpdated: () => dispatch(walletActions.resetAssetValueUpdated()),
+  updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
+  startFetchBalanceTimer: () => dispatch(walletActions.startFetchBalanceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

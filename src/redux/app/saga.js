@@ -13,7 +13,6 @@ import ParseHelper from '../../common/parse';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
-import walletMock from '../../mock/wallet';
 
 function* serializeWalletsIfDirty(updatedParseUser) {
   try {
@@ -23,8 +22,10 @@ function* serializeWalletsIfDirty(updatedParseUser) {
 
     // If Coins are updated then we need to serialize them
     if (isDirty) {
-      console.log('walletManager is dirty, serialize ...', walletManager);
+      console.log('serializeWalletsIfDirty, walletManager is dirty, serialize ...', walletManager);
       yield call(walletManager.serialize);
+    } else {
+      console.log('serializeWalletsIfDirty, walletManager is not dirty; no change');
     }
   } catch (err) {
     console.log(err);
@@ -42,7 +43,6 @@ function* updateUser(updateWallets, updateSettings) {
   }
   try {
     const updatedParseUser = yield call(ParseHelper.updateUser, updateParams);
-    console.log('Parse User updated:', updatedParseUser);
     yield serializeWalletsIfDirty(updatedParseUser);
   } catch (err) {
     console.log(err);
@@ -83,7 +83,6 @@ function* initAppRequest(/* action */) {
     });
 
     // 3. Deserialize appId from permenate storage
-    console.log('application', application);
     yield call(application.deserialize);
 
     console.log('initAppRequest, appId:', application.get('id'));
@@ -107,8 +106,6 @@ function* initAppRequest(/* action */) {
     // 1. Test server connection and get Server info
     const response = yield call(ParseHelper.getServerInfo);
 
-    console.log('initAppRequest got response, response: ', response);
-
     // Sets state in reducer for success
     yield put({
       type: actions.GET_SERVER_INFO_RESULT,
@@ -121,9 +118,11 @@ function* initAppRequest(/* action */) {
     // ParseHelper will have direct access to the User object so we don't need to pass it to state here
     try {
       yield call(ParseHelper.signIn, appId);
+      console.log(`User found with appId ${appId}. Sign in successful.`);
     } catch (err) {
       if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
         yield call(ParseHelper.signUp, appId);
+        console.log(`User NOT found with appId ${appId}. Signed up.`);
       }
     }
 
@@ -152,42 +151,9 @@ function* getServerInfoRequest(action) {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handlError, err);
-
-    console.error(message);
-    // On error, also sets state in reducer
-    // so UI could reflect those errors
-    // Note that error value here is to be consumed by UI,
-    // so it should be an object contains at least a message field
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message },
-    });
-  }
-}
-
-function* getTransactions(action) {
-  const { payload } = action;
-
-  console.log('getTransactions is triggered, value: ', payload); // This is undefined
-
-  try {
-    // const response = yield call(ParseHelper.getTransactionsByAddress, payload);
-    const response = yield call(walletMock.getTransactionsByAddress, payload);
-
-    console.log('getTransactions got response, response: ', response);
-
-    // Sets state in reducer for success
-    yield put({
-      type: actions.GET_TRANSACTIONS_RESULT,
-      page: payload.page,
-      value: response,
-    });
-  } catch (err) {
-    console.log(err);
     const message = yield call(ParseHelper.handleError, err);
 
-    // console.error(message);
+    console.error(message);
     // On error, also sets state in reducer
     // so UI could reflect those errors
     // Note that error value here is to be consumed by UI,
@@ -249,7 +215,6 @@ export default function* () {
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_APP, initAppRequest),
     takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
-    takeEvery(actions.GET_TRANSACTIONS, getTransactions),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),

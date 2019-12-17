@@ -1,11 +1,12 @@
 import { Map } from 'immutable';
-import _ from 'lodash';
 import actions from './actions';
 
 const initState = new Map({
   wallets: [],
   prices: [],
   walletManager: undefined, // WalletManager instance
+  isAssetValueUpdated: false,
+  isTransactionUpdated: false,
 });
 
 export default function walletReducer(state = initState, action) {
@@ -13,26 +14,46 @@ export default function walletReducer(state = initState, action) {
     case actions.GET_WALLETS_RESULT:
       return state.set('wallets', action.value);
     case actions.GET_PRICE_RESULT:
-    {
-      const prices = action.value && action.value.value;
+      return state.set('prices', action.value && action.value.value);
+    case actions.SET_WALLET_MANAGER:
+      return state.set('walletManager', action.value);
+    case actions.FETCH_BALANCE_RESULT: {
+      const balances = action.value;
       let newState = state;
 
-      // Only set state and calculate total asset value when price is not undefined and have changed
-      if (prices && !_.isEqual(state.get('prices') && prices)) {
-        // Update asset value in wallet manger
-        const walletManager = state.get('walletManager');
-        const { currency } = action.value; // currency is in appReducer so we need to reference from there
-        if (walletManager) {
-          walletManager.updateAssetValue(prices);
-          walletManager.getTotalAssetValue(currency);
+      // Update balances in walletManager
+      const walletManager = state.get('walletManager');
+      if (walletManager) {
+        const isDirty = walletManager.updateBalance(balances);
+
+        if (isDirty) {
+          newState = newState.set('isAssetValueUpdated', true);
         }
-        newState = newState.set('prices', action.value && action.value.value);
       }
 
       return newState;
     }
-    case actions.SET_WALLET_MANAGER:
-      return state.set('walletManager', action.value);
+    case actions.RESET_ASSET_VALUE_UPDATED:
+      return state.set('isAssetValueUpdated', false);
+    case actions.RESET_TRANSACTION_UPDATED: {
+      return state.set('isTransactionUpdated', false);
+    }
+    case actions.FETCH_TRANSACTION_RESULT: {
+      console.log('FETCH_TRANSACTION_RESULT');
+      const newState = state.set('isTransactionUpdated', true);
+      return newState;
+    }
+    case actions.UPDATE_ASSET_VALUE: {
+      const walletManager = state.get('walletManager');
+      const prices = state.get('prices');
+      const currency = action.payload;
+
+      if (walletManager) {
+        walletManager.updateAssetValue(prices, currency);
+      }
+
+      return state.set('isAssetValueUpdated', true);
+    }
     default:
       return state;
   }
