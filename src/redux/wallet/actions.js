@@ -17,6 +17,10 @@ const actions = {
   RESET_TRANSACTION_UPDATED: 'RESET_TRANSACTION_UPDATED',
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
   START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
+  WALLTES_UPDATED: 'WALLTES_UPDATED',
+  RESET_WALLETS_UPDATED: 'RESET_WALLETS_UPDATED',
+  WALLTE_NAME_UPDATED: 'WALLTE_NAME_UPDATED',
+  RESET_WALLET_NAME_UPDATED: 'RESET_WALLTE_NAME_UPDATED',
 
   // Functions definition
   getWallets: () => ({
@@ -37,14 +41,6 @@ const actions = {
     type: actions.FETCH_TRANSACTION,
     walletManager,
   }),
-  deleteKey: (key) => ({
-    type: actions.DELETE_KEY,
-    payload: key,
-  }),
-  renameKey: (key) => ({
-    type: actions.RENAME_KEY,
-    payload: key,
-  }),
   resetAssetValueUpdated: () => ({
     type: actions.RESET_ASSET_VALUE_UPDATED,
   }),
@@ -57,6 +53,27 @@ const actions = {
   }),
   startFetchBalanceTimer: () => ({
     type: actions.START_FETCH_BALANCE_TIMER,
+  }),
+  deleteKey: (key, walletManager) => ({
+    type: actions.DELETE_KEY,
+    payload: {
+      key,
+      walletManager,
+    },
+  }),
+  renameKey: (key, name, walletManager) => ({
+    type: actions.RENAME_KEY,
+    payload: {
+      key,
+      name,
+      walletManager,
+    },
+  }),
+  resetWalletsUpdated: () => ({
+    type: actions.RESET_WALLETS_UPDATED,
+  }),
+  resetWalletNameUpdated: () => ({
+    type: actions.RESET_WALLET_NAME_UPDATED,
   }),
 };
 

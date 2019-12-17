@@ -18,6 +18,8 @@ class WalletManager {
     this.deserialize = this.deserialize.bind(this);
     this.updateAssetValue = this.updateAssetValue.bind(this);
     this.getTokens = this.getTokens.bind(this);
+    this.deleteWallet = this.deleteWallet.bind(this);
+    this.renameWallet = this.renameWallet.bind(this);
   }
 
   /**
@@ -229,6 +231,25 @@ class WalletManager {
     });
 
     return isDirty;
+  }
+
+  async deleteWallet(wallet) {
+    console.log('walletManager::deleteWallet, wallet: ', wallet);
+    const { wallets } = this;
+    for (let i = 0; i < wallets.length; i += 1) {
+      const item = wallets[i];
+      if (wallet === item) {
+        wallets.splice(i, 1);
+        break;
+      }
+    }
+    await this.serialize();
+  }
+
+  async renameWallet(wallet, name) {
+    const modifyWallet = wallet;
+    modifyWallet.name = name;
+    await this.serialize();
   }
 }
 

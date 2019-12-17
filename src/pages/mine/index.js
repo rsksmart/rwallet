@@ -307,6 +307,14 @@ class MineIndex extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { isWalletsUpdated, wallets } = nextProps;
+    if (isWalletsUpdated && wallets) {
+      const keyListData = MineIndex.createKeyListData(wallets);
+      this.setState({ keyListData });
+    }
+  }
+
   render() {
     let headerHeight = 160;
     if (DEVICE.isIphoneX) {
@@ -371,10 +379,7 @@ MineIndex.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-};
-
-
-MineIndex.propTypes = {
+  isWalletsUpdated: PropTypes.bool.isRequired,
   language: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
 };
@@ -386,6 +391,7 @@ MineIndex.defaultProps = {
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 
 export default connect(mapStateToProps)(MineIndex);

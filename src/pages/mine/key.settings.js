@@ -9,7 +9,8 @@ import flex from '../../assets/styles/layout.flex';
 import screenHelper from '../../common/screenHelper';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
-
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -171,6 +172,7 @@ class KeySettings extends Component {
       this.state = {
         walletCount: 0,
         name: '',
+        isShowNotification: false,
       };
     }
 
@@ -189,6 +191,34 @@ class KeySettings extends Component {
       });
       this.onBackupPress = this.onBackupPress.bind(this);
       this.onKeyNamePress = this.onKeyNamePress.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const {
+        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated, isWalletNameUpdated,
+      } = nextProps;
+      const { isShowNotification } = this.state;
+
+      // If isWalletsUpdated, wallet is deleted.
+      if (isWalletsUpdated && navigation && addNotification && resetWalletsUpdated) {
+        const infoNotification = createInfoNotification(
+          'Key deleted',
+          'The key is deleted',
+        );
+        addNotification(infoNotification);
+        resetWalletsUpdated();
+        this.setState({ isShowNotification: true });
+      }
+
+      if (isWalletNameUpdated) {
+        this.setState({ name: this.key.name });
+      }
+
+      // If notification removed by user, go back
+      if (isShowNotification && notification === null && navigation) {
+        this.setState({ isShowNotification: false });
+        navigation.goBack();
+      }
     }
 
     static renderBackButton(navigation) {
@@ -214,13 +244,13 @@ class KeySettings extends Component {
     }
 
     createAdvancedListData() {
-      const { deleteKey } = this.props;
+      const { deleteKey, walletManager } = this.props;
       const listData = [
         {
           title: 'Delete',
           onPress: () => {
             console.log('Delete, key: ', this.key);
-            deleteKey(this.key);
+            deleteKey(this.key, walletManager);
           },
         },
       ];
@@ -275,24 +305,31 @@ KeySettings.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-};
-
-KeySettings.propTypes = {
-  // eslint-disable-next-line react/no-unused-prop-types
-  wallets: PropTypes.arrayOf(PropTypes.object),
+  walletManager: PropTypes.shape(PropTypes.object),
   deleteKey: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
+  isWalletNameUpdated: PropTypes.bool.isRequired,
+  addNotification: PropTypes.func.isRequired,
+  notification: PropTypes.shape({}),
+  resetWalletsUpdated: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
-  wallets: undefined,
+  walletManager: undefined,
+  notification: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  walletManager: state.Wallet.get('walletManager'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
+  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteKey: (key) => dispatch(walletActions.deleteKey(key)),
+  deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

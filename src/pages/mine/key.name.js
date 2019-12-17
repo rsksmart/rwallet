@@ -11,7 +11,8 @@ import Loc from '../../components/common/misc/loc';
 import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
-
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -84,6 +85,7 @@ class KeyName extends Component {
       super(props);
       this.state = {
         name: '',
+        isShowNotification: false,
       };
       this.onChangeText = this.onChangeText.bind(this);
       this.onSubmitEditing = this.onSubmitEditing.bind(this);
@@ -97,12 +99,34 @@ class KeyName extends Component {
       this.setState({ name: key.name });
     }
 
+    componentWillReceiveProps(nextProps) {
+      const {
+        isWalletNameUpdated, navigation, addNotification, notification, resetWalletNameUpdated,
+      } = nextProps;
+      const { isShowNotification } = this.state;
+      // If isWalletsUpdated, wallet is deleted.
+      if (isWalletNameUpdated && navigation && addNotification && resetWalletNameUpdated) {
+        const infoNotification = createInfoNotification(
+          'Key renamed',
+          'The key is renamed',
+        );
+        addNotification(infoNotification);
+        resetWalletNameUpdated();
+        this.setState({ isShowNotification: true });
+      }
+
+      // If notification removed by user, go back
+      if (isShowNotification && notification === null && navigation) {
+        this.setState({ isShowNotification: false });
+        navigation.goBack();
+      }
+    }
+
     onPress() {
       const { name } = this.state;
-      const { navigation, renameKey } = this.props;
+      const { renameKey, walletManager } = this.props;
       console.log(`Key name save! name: ${name}`);
-      renameKey(this.key);
-      navigation.goBack();
+      renameKey(this.key, name, walletManager);
     }
 
     onSubmitEditing() {
@@ -151,13 +175,28 @@ KeyName.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   renameKey: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape(PropTypes.object),
+  isWalletNameUpdated: PropTypes.bool.isRequired,
+  addNotification: PropTypes.func.isRequired,
+  notification: PropTypes.shape({}),
+  resetWalletNameUpdated: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
+KeyName.defaultProps = {
+  walletManager: undefined,
+  notification: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
+  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  renameKey: (key) => dispatch(walletActions.renameKey(key)),
+  renameKey: (key, name, walletManager) => dispatch(walletActions.renameKey(key, name, walletManager)),
+  resetWalletNameUpdated: () => dispatch(walletActions.resetWalletNameUpdated()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyName);

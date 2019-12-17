@@ -122,6 +122,32 @@ function* fetchTransactionRequest(action) {
   }
 }
 
+function* deleteKeyRequest(action) {
+  const { walletManager, key } = action.payload;
+  try {
+    yield call(walletManager.deleteWallet, key);
+    yield put({
+      type: actions.WALLTES_UPDATED,
+    });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
+function* renameKeyRequest(action) {
+  const { walletManager, key, name } = action.payload;
+  try {
+    yield call(walletManager.renameWallet, key, name);
+    yield put({
+      type: actions.WALLTE_NAME_UPDATED,
+    });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -130,5 +156,7 @@ export default function* () {
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
     takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
+    takeEvery(actions.DELETE_KEY, deleteKeyRequest),
+    takeEvery(actions.RENAME_KEY, renameKeyRequest),
   ]);
 }
