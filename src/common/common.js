@@ -1,4 +1,3 @@
-import Rsk3 from 'rsk3';
 import BigNumber from 'bignumber.js';
 import { Toast } from '@ant-design/react-native';
 
@@ -10,33 +9,27 @@ const common = {
     return false;
   },
   btcToSatoshiHex(amount) {
-    const c = Math.floor(Number(amount) * 10e8);
-    const value = Rsk3.utils.toHex(c);
-    return value;
+    const result = new BigNumber(amount).times('1e8').toString(16);
+    return result;
   },
   satoshiHexToBtc(satoshiHex) {
-    const satoshi = new BigNumber(satoshiHex);
-    const result = satoshi.dividedBy(10e8);
+    const result = new BigNumber(satoshiHex).div('1e8');
     return result;
   },
   rbtcToWeiHex(amount) {
-    const c = Math.floor(Number(amount) * 10e18);
-    const value = Rsk3.utils.toHex(c);
-    return value;
+    const result = new BigNumber(amount).times('1e18').toString(16);
+    return result;
   },
   weiHexToRbtc(weiHex) {
-    const wei = new BigNumber(weiHex);
-    const result = wei.dividedBy(10e18);
+    const result = new BigNumber(weiHex).div('1e18');
     return result;
   },
   rifToWeiHex(amount) {
-    const c = Math.floor(Number(amount) * 10e18);
-    const value = Rsk3.utils.toHex(c);
-    return value;
+    const result = new BigNumber(amount).times('1e18').toString(16);
+    return result;
   },
   weiHexToRif(weiHex) {
-    const wei = new BigNumber(weiHex);
-    const result = wei.dividedBy(10e18);
+    const result = new BigNumber(weiHex).div('1e18');
     return result;
   },
   Toast(text, type, onClose, duration, mask) {
@@ -48,6 +41,46 @@ const common = {
     } else { // none
       Toast.info(text, last, onClose, mask);
     }
+  },
+  convertHexToCoinAmount(symbol, hexNumber) {
+    let amount = null;
+    switch (symbol) {
+      case 'BTC':
+        amount = common.satoshiHexToBtc(hexNumber);
+        break;
+      case 'RBTC':
+        amount = common.weiHexToRbtc(hexNumber);
+        break;
+      case 'RIF':
+        amount = common.weiHexToRif(hexNumber);
+        break;
+      default:
+    }
+    return amount;
+  },
+  getCoinPrice(symbol, currency, prices) {
+    for (let i = 0; i < prices.length; i += 1) {
+      const priceRow = prices[i];
+      if (symbol === priceRow.symbol) {
+        const price = priceRow.price[currency];
+        return price;
+      }
+    }
+    return null;
+  },
+  getCoinValue(amount, symbol, currency, prices) {
+    if (!amount || !prices || prices.length === 0) {
+      return null;
+    }
+    try {
+      const price = this.getCoinPrice(symbol, currency, prices);
+      const amountBigNumber = new BigNumber(amount);
+      const value = amountBigNumber.times(price);
+      return value;
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
   },
 };
 
