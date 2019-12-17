@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: '900',
     color: '#000000',
+    fontSize: 35,
   },
   assetsValue: {
     marginTop: 10,
@@ -102,10 +103,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.94,
   },
   myAssetsButtonsView: {
-    marginTop: 13,
-    marginLeft: 15,
     width: '100%',
     flexDirection: 'row',
+    position: 'absolute',
+    left: 15,
+    bottom: 15,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -332,8 +334,6 @@ class History extends Component {
     const { coin } = navigation.state.params;
 
     this.state = {
-      sendingCoin: '0',
-      sendingCoinValue: '0',
       isRefreshing: false,
       isLoadMore: false,
       symbol: coin.symbol,
@@ -341,6 +341,8 @@ class History extends Component {
       balanceValueText: '',
       coinId: coin.id,
       listData: null,
+      pendingBalanceText: '',
+      pendingBalanceValueText: '',
     };
     this.coin = coin;
     this.price = 0;
@@ -411,6 +413,18 @@ class History extends Component {
     }
   }
 
+  static renderPendingBalance(pendingBalanceText, pendingBalanceValueText) {
+    if (pendingBalanceText === '') {
+      return null;
+    }
+    return (
+      <View style={styles.sendingView}>
+        <Image style={styles.sendingIcon} source={sending} />
+        <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+      </View>
+    );
+  }
+
   onMomentumScrollEnd(e) {
     // console.log('ScrollView onMomentumScrollEnd');
     const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
@@ -477,10 +491,8 @@ class History extends Component {
   }
 
   render() {
-    const { currency } = this.props;
-
     const {
-      sendingCoin, sendingCoinValue, symbol, balanceText, balanceValueText, coinId, listData,
+      balanceText, balanceValueText, coinId, listData, pendingBalanceText, pendingBalanceValueText,
     } = this.state;
 
     return (
@@ -496,12 +508,9 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
-            <View style={styles.sendingView}>
-              <Image style={styles.sendingIcon} source={sending} />
-              <Text style={styles.sending}>{`${sendingCoin}${symbol} (${sendingCoinValue}${currency})`}</Text>
-            </View>
+            {History.renderPendingBalance(pendingBalanceText, pendingBalanceValueText)}
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}

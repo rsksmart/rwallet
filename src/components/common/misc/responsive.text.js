@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 
 // https://github.com/facebook/react-native/issues/20906
-const FONT_SIZE_TIMES = 1.7; // magic number
+// magic number, estimated value, fontSize = fontWidth * FONT_SIZE_TIMES;
+const FONT_SIZE_TIMES = 1.7;
 
 
 const getFontSize = (width, length, maxFontSize) => {
@@ -12,6 +13,7 @@ const getFontSize = (width, length, maxFontSize) => {
   return fontSize;
 };
 
+// ResponsiveText, fontSize will calculate by text length again
 export default class ResponsiveText extends Component {
   constructor(props) {
     super(props);
@@ -19,22 +21,27 @@ export default class ResponsiveText extends Component {
       adjustsStyle: {
         fontSize: 5,
       },
+      // If fontSize is adjusted, isAdjusted will be set to true, then layout will not be calculated again.
       isAdjusted: false,
     };
   }
 
   componentWillReceiveProps() {
+    console.log('ResponsiveText::componentWillReceiveProps');
     this.setState({ isAdjusted: false });
   }
 
   onLayout = (event) => {
-    const { children, maxFontSize } = this.props;
+    console.log('ResponsiveText::onLayout');
+    const { style, children } = this.props;
     const { isAdjusted } = this.state;
     if (isAdjusted) {
       return;
     }
     const { width } = event.nativeEvent.layout;
-    const fontSize = getFontSize(width, children.length, maxFontSize);
+    console.log(`ResponsiveText::onLayout, width: ${width} children.length: ${children.length}`);
+    const fontSize = getFontSize(width, children.length, style.fontSize);
+    console.log('ResponsiveText::onLayout, fontSize: ', fontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
@@ -43,19 +50,31 @@ export default class ResponsiveText extends Component {
     });
   }
 
-  render() {
-    const { style, children, fontStyle } = this.props;
+  renderTextElement() {
+    const { children, fontStyle } = this.props;
     const { adjustsStyle } = this.state;
-    const textElement = (
-      <Text
-        style={[adjustsStyle, fontStyle]}
-      >
-        {children}
-      </Text>
-    );
+    let textElement = null;
+    if (Platform.OS === 'ios') {
+      textElement = (
+        <Text style={[fontStyle]} adjustsFontSizeToFit numberOfLines={1}>
+          {children}
+        </Text>
+      );
+    } else {
+      textElement = (
+        <Text style={[adjustsStyle, fontStyle]}>
+          {children}
+        </Text>
+      );
+    }
+    return textElement;
+  }
+
+  render() {
+    const { style } = this.props;
     return (
-      <View onLayout={this.onLayout} style={[style]}>
-        {textElement}
+      <View onLayout={this.onLayout} style={style}>
+        {this.renderTextElement()}
       </View>
     );
   }
@@ -65,12 +84,10 @@ ResponsiveText.propTypes = {
   style: PropTypes.arrayOf(PropTypes.object),
   fontStyle: PropTypes.arrayOf(PropTypes.object),
   children: PropTypes.string,
-  maxFontSize: PropTypes.number,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
   fontStyle: null,
   children: null,
-  maxFontSize: 35,
 };
