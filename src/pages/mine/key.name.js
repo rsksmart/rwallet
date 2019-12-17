@@ -10,6 +10,7 @@ import Header from '../../components/common/misc/header';
 import Loc from '../../components/common/misc/loc';
 import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
+import walletActions from '../../redux/wallet/actions';
 
 
 const styles = StyleSheet.create({
@@ -89,10 +90,18 @@ class KeyName extends Component {
       this.onPress = this.onPress.bind(this);
     }
 
+    componentWillMount() {
+      const { navigation } = this.props;
+      const { key } = navigation.state.params;
+      this.key = key;
+      this.setState({ name: key.name });
+    }
+
     onPress() {
       const { name } = this.state;
-      const { navigation } = this.props;
+      const { navigation, renameKey } = this.props;
       console.log(`Key name save! name: ${name}`);
+      renameKey(this.key);
       navigation.goBack();
     }
 
@@ -141,12 +150,14 @@ KeyName.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  renameKey: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => ({
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  renameKey: (key) => dispatch(walletActions.renameKey(key)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyName);

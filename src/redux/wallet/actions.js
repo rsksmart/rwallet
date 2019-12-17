@@ -10,6 +10,7 @@ const actions = {
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
   DELETE_KEY: 'DELETE_KEY',
+  RENAME_KEY: 'RENAME_KEY',
 
   // Functions definition
   getWallets: () => ({
@@ -35,7 +36,13 @@ const actions = {
     walletManager,
   }),
   deleteKey: (key) => ({
-    type: actions.FETCH_TRANSACTION,
+    type: actions.DELETE_KEY,
+    payload: {
+      key,
+    },
+  }),
+  renameKey: (key) => ({
+    type: actions.RENAME_KEY,
     payload: {
       key,
     },

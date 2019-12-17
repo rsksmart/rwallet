@@ -110,7 +110,7 @@ const getIcon = (symbol) => {
 const ListRow = ({ title, onPress }) => {
   const listRow = (
     <TouchableOpacity style={styles.listRow} onPress={onPress}>
-      <Text style={styles.listRowTitle}>{title}</Text>
+      <Loc style={[styles.listRowTitle]} text={title} />
     </TouchableOpacity>
   );
   return listRow;
@@ -188,6 +188,7 @@ class KeySettings extends Component {
         advancedListData,
       });
       this.onBackupPress = this.onBackupPress.bind(this);
+      this.onKeyNamePress = this.onKeyNamePress.bind(this);
     }
 
     static renderBackButton(navigation) {
@@ -205,6 +206,11 @@ class KeySettings extends Component {
     onBackupPress() {
       const { navigation } = this.props;
       navigation.navigate('RecoveryPhrase', { wallet: this.key });
+    }
+
+    onKeyNamePress() {
+      const { navigation } = this.props;
+      navigation.navigate('KeyName', { key: this.key });
     }
 
     createAdvancedListData() {
@@ -230,13 +236,17 @@ class KeySettings extends Component {
         <ScrollView style={[flex.flex1]}>
           <ImageBackground source={header} style={[styles.headerImage]}>
             <Loc style={[styles.headerTitle]} text="Key Settings" />
-            <Text style={[styles.headerText]}>{`This key contains ${walletCount} wallets`}</Text>
+            <Text style={[styles.headerText]}>
+              <Loc text="This key contains" />
+              {` ${walletCount} `}
+              <Loc text="wallets" />
+            </Text>
             { KeySettings.renderBackButton(navigation) }
           </ImageBackground>
           <View style={screenHelper.styles.body}>
             <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-              <TouchableOpacity style={styles.keyNameView} onPress={() => navigation.navigate('KeyName')}>
-                <Text style={styles.keyTitle}>Key Name</Text>
+              <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
+                <Loc style={[styles.keyTitle]} text="Key Name" />
                 <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
               </TouchableOpacity>
             </View>

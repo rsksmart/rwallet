@@ -196,7 +196,10 @@ class MineIndex extends Component {
             <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
             <View style={styles.right}>
               <Text>{item.name}</Text>
-              <Text style={styles.keyWallets}>{`${item.walletCount} Wallets`}</Text>
+              <Text style={styles.keyWallets}>
+                {`${item.walletCount} `}
+                <Loc text="Wallets" />
+              </Text>
             </View>
           </TouchableOpacity>
         )}
@@ -287,13 +290,21 @@ class MineIndex extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      keyListData: [],
+      settings: [],
+      joins: [],
+    };
+  }
+
+  componentWillMount() {
     const { wallets } = this.props;
     const keyListData = MineIndex.createKeyListData(wallets);
-    this.state = {
+    this.setState({
       keyListData,
       settings: this.settings,
       joins: this.joins,
-    };
+    });
   }
 
   render() {
@@ -327,7 +338,7 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-            <Text style={styles.sectionTitle}>Keys</Text>
+            <Loc style={[styles.sectionTitle]} text="Keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
             <View style={styles.createWalletButtonView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
@@ -336,7 +347,7 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-            <Text style={styles.sectionTitle}>Join Community</Text>
+            <Loc style={[styles.sectionTitle]} text="Join Community" />
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
