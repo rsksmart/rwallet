@@ -143,7 +143,7 @@ function* renameKeyRequest(action) {
     yield put(appActions.updateUser({ wallets: walletManager.wallets }));
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
-    const notification = createErrorNotification('Name error', message.message);
+    const notification = createErrorNotification('Incorrect name', message.message);
     yield put(appActions.addNotification(notification));
     // console.error(message);
   }

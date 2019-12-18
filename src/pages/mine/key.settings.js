@@ -203,7 +203,7 @@ class KeySettings extends Component {
       if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
         const infoNotification = createInfoNotification(
           'Key deleted',
-          'The key is deleted',
+          'Key has been deleted successfully.',
         );
         addNotification(infoNotification);
         resetWalletsUpdated();

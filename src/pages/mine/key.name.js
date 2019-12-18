@@ -12,7 +12,6 @@ import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -85,7 +84,6 @@ class KeyName extends Component {
       super(props);
       this.state = {
         name: '',
-        isShowNotification: false,
       };
       this.onChangeText = this.onChangeText.bind(this);
       this.onSubmitEditing = this.onSubmitEditing.bind(this);
@@ -101,23 +99,11 @@ class KeyName extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletNameUpdated, navigation, addNotification, notification, resetWalletNameUpdated,
+        isWalletNameUpdated, navigation, resetWalletNameUpdated,
       } = nextProps;
-      const { isShowNotification } = this.state;
       // If isWalletsUpdated, wallet is deleted.
-      if (isWalletNameUpdated && addNotification && resetWalletNameUpdated) {
-        const infoNotification = createInfoNotification(
-          'Key renamed',
-          'The key is renamed',
-        );
-        addNotification(infoNotification);
+      if (isWalletNameUpdated && resetWalletNameUpdated) {
         resetWalletNameUpdated();
-        this.setState({ isShowNotification: true });
-      }
-
-      // If notification removed by user, go back
-      if (isShowNotification && notification === null) {
-        this.setState({ isShowNotification: false });
         navigation.goBack();
       }
     }
@@ -180,7 +166,6 @@ KeyName.propTypes = {
   renameKey: PropTypes.func.isRequired,
   walletManager: PropTypes.shape(PropTypes.object),
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  addNotification: PropTypes.func.isRequired,
   notification: PropTypes.shape({}),
   resetWalletNameUpdated: PropTypes.func.isRequired,
 };

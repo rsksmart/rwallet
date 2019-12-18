@@ -252,7 +252,7 @@ class WalletManager {
     const match = regex.exec(name);
     if (!match) {
       console.log('renameWallet, regex validatiton failed');
-      throw new Error('Wallet name is not valid.');
+      throw new Error('Wallet name contains invalid characters.');
     }
     const modifyWallet = wallet;
     modifyWallet.name = name;
