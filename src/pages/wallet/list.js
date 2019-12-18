@@ -24,8 +24,6 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 // currencySettings:
 const { consts: { supportedTokens, currencies: currencySettings } } = config;
 
-// import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
-
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
@@ -340,10 +338,10 @@ class WalletList extends Component {
       });
     }
 
-    componentDidMount() {
-      const { showToast } = global.functions;
-      showToast('Hello Master');
-    }
+    // componentDidMount() {
+    //   const { showToast } = global.functions;
+    //   showToast('Hello Master');
+    // }
 
     componentWillReceiveProps(nextProps) {
       const {

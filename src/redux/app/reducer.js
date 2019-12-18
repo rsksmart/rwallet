@@ -5,14 +5,18 @@ import config from '../../../config';
 const { defaultSettings } = config;
 
 const initState = new Map({
+  isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
+  isInitWithParseDone: false, // Mark whether the second step, initalization with Parse done
+
+  application: undefined,
+  settings: undefined, // Settings instance
+
   isPageLoading: false,
   serverVersion: undefined,
   error: undefined,
   transactions: undefined,
   showNotification: false,
   notification: null,
-  application: undefined,
-  settings: undefined, // Settings instance
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
@@ -21,8 +25,15 @@ const initState = new Map({
 export default function appReducer(state = initState, action) {
   switch (action.type) {
     case actions.IS_PAGE_LOADING:
-      return state.set('isPageLoading', action.value);
-
+      return state.set('isPageLoading', true);
+    case actions.INIT_FROM_STORAGE_DONE:
+    {
+      return state.set('isInitFromStorageDone', true);
+    }
+    case actions.INIT_WITH_PARSE_DONE:
+    {
+      return state.set('isInitWithParseDone', true);
+    }
     case actions.GET_SERVER_INFO_RESULT:
     {
       const serverVersion = action.value && action.value.version;

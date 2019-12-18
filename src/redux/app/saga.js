@@ -8,14 +8,19 @@ import _ from 'lodash';
 import actions from './actions';
 import walletActions from '../wallet/actions';
 
-/* Component Dependencies */
-import ParseHelper from '../../common/parse';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 
-function* serializeWalletsIfDirty(updatedParseUser) {
+
+/* Component Dependencies */
+import ParseHelper from '../../common/parse';
+
+function* updateUserRequest() {
+  // Upload wallets or settings to server
   try {
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings });
+
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
     const isDirty = walletManager.updateCoinObjectIds(addressesJSON);
@@ -28,38 +33,11 @@ function* serializeWalletsIfDirty(updatedParseUser) {
       console.log('serializeWalletsIfDirty, walletManager is not dirty; no change');
     }
   } catch (err) {
-    console.log(err);
+    console.log('updateUserRequest', err);
   }
 }
 
-function* updateUser(updateWallets, updateSettings) {
-  // Upload wallets or settings to server
-  const updateParams = {};
-  if (updateWallets) {
-    updateParams.wallets = updateWallets;
-  }
-  if (updateSettings) {
-    updateParams.settings = updateSettings.toJSON();
-  }
-  try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, updateParams);
-    yield serializeWalletsIfDirty(updatedParseUser);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function* updateUserRequest(action) {
-  // Upload wallets or settings to server
-  try {
-    const { wallets: updateWallets, settings: updateSettings } = action.payload;
-    yield updateUser(updateWallets, updateSettings);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function* initAppRequest(/* action */) {
+function* initFromStorageRequest() {
   try {
     // yield call(storage.remove, 'wallets');
 
@@ -74,7 +52,6 @@ function* initAppRequest(/* action */) {
 
     // 2. Deserialize Wallets from permenate storage
     yield call(walletManager.deserialize);
-    console.log('initAppRequest, walletManager: ', walletManager);
 
     // Sets state in reducer for success
     yield put({
@@ -85,23 +62,24 @@ function* initAppRequest(/* action */) {
     // 3. Deserialize appId from permenate storage
     yield call(application.deserialize);
 
-    console.log('initAppRequest, appId:', application.get('id'));
+    console.log('initFromStorageRequest, appId:', application.get('id'));
 
     yield put({
       type: actions.SET_APPLICATION,
       value: application,
     });
+
+    // If we don't encounter error here, mark initialization finished
+    yield put({
+      type: actions.INIT_FROM_STORAGE_DONE,
+    });
   } catch (err) {
     const { message } = err; // TODO: handle app error in a class
-
     console.error(message);
-
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message },
-    });
   }
+}
 
+function* initWithParseRequest() {
   try {
     // 1. Test server connection and get Server info
     const response = yield call(ParseHelper.getServerInfo);
@@ -127,41 +105,18 @@ function* initAppRequest(/* action */) {
     }
 
     // 3. Upload wallets and settings to server
-    yield updateUser(walletManager.wallets, settings);
-  } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
-
-    console.error(message);
-  }
-}
-
-function* getServerInfoRequest(action) {
-  const { value } = action;
-
-  console.log('getServerInfoRequest is triggered, value: ', value); // This is undefined
-
-  try {
-    const response = yield call(ParseHelper.getServerInfo);
-
-    console.log('getServerInfoRequest got response, response: ', response);
-
-    // Sets state in reducer for success
     yield put({
-      type: actions.GET_SERVER_INFO_RESULT,
-      value: response,
+      type: actions.UPDATE_USER,
+      payload: { walletManager, settings },
+    });
+
+    // If we don't encounter error here, mark initialization finished
+    yield put({
+      type: actions.INIT_WITH_PARSE_DONE,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
-
+    const { message } = err;
     console.error(message);
-    // On error, also sets state in reducer
-    // so UI could reflect those errors
-    // Note that error value here is to be consumed by UI,
-    // so it should be an object contains at least a message field
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message },
-    });
   }
 }
 
@@ -213,8 +168,8 @@ function* setSingleSettingsRequest(action) {
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
-    takeEvery(actions.INIT_APP, initAppRequest),
-    takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
+    takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
+    takeEvery(actions.INIT_WITH_PARSE, initWithParseRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
