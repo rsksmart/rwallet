@@ -20,17 +20,18 @@ import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 import ResponsiveText from '../../components/common/misc/responsive.text';
-
-// currencySettings:
-const { consts: { supportedTokens, currencies: currencySettings } } = config;
+import common from '../../common/common';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
-const DEFAULT_CURRENCY_SYMBOL = '$';
 const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
+
+const { consts: { supportedTokens } } = config;
+const { getCurrencySymbol, getCurrencyNames } = common;
+const currencyNames = getCurrencyNames();
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -211,18 +212,6 @@ class WalletList extends Component {
     });
 
     /**
-     * Get currency symbol string for example '$' based on currency
-     * @param {string} currency currency string such as 'USD'
-     */
-    static getCurrencySymbol(currency, currencySymbols) {
-      if (currencySymbols[currency]) {
-        return currencySymbols[currency];
-      }
-
-      return DEFAULT_CURRENCY_SYMBOL;
-    }
-
-    /**
      * Returns number string based on walletManager.assetValue; 0 as default value
      */
     static getTotalAssetValueText(walletManager) {
@@ -296,20 +285,9 @@ class WalletList extends Component {
     constructor(props) {
       super(props);
 
-      // Extract currency symbols from config
-      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
-      this.currencySymbols = _.reduce(currencySettings, (obj, row) => {
-        const settingsObj = obj;
-        settingsObj[row.name] = row.symbol;
-        return settingsObj;
-      }, {});
-
-      // Currency names used to pass into getPrice
-      this.currencyNames = _.map(currencySettings, (item) => item.name);
-
       this.state = {
         listData: [],
-        currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+        currencySymbol: getCurrencySymbol(props.currency),
         totalAssetValueText: '',
       };
     }
@@ -323,9 +301,9 @@ class WalletList extends Component {
       fetchBalance(coinInstances);
 
       // 2. Get price of each token
-      getPrice(supportedTokens, this.currencyNames);
+      getPrice(supportedTokens, currencyNames);
 
-      const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      const currencySymbol = getCurrencySymbol(currency);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
       const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
 
@@ -357,7 +335,7 @@ class WalletList extends Component {
 
       // Update currency symbol such as $ if currency settings has chagned
       if (isCurrencyChanged) {
-        newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+        newState.currencySymbol = getCurrencySymbol(currency);
       }
 
       // Update total asset value and list data if there's currency, price, or balance change
