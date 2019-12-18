@@ -245,6 +245,7 @@ class WalletManager {
 
   /*
    * Rename a wallet
+   * @param {string} name, accept a-z, A-Z, 0-9 and blank
    */
   async renameWallet(wallet, name) {
     const regex = /^[a-zA-Z0-9 ]+$/g;
