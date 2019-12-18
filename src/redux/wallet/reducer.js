@@ -41,7 +41,6 @@ export default function walletReducer(state = initState, action) {
       return state.set('isTransactionUpdated', false);
     }
     case actions.FETCH_TRANSACTION_RESULT: {
-      console.log('FETCH_TRANSACTION_RESULT');
       const newState = state.set('isTransactionUpdated', true);
       return newState;
     }
