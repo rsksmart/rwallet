@@ -14,6 +14,7 @@ import Notifications from '../components/common/notification/notifications';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import appActions from '../redux/app/actions';
+import walletActions from '../redux/wallet/actions';
 
 const DEFAULT_ROUTE_CONFIG_MAP = {
   Start: {
@@ -64,7 +65,7 @@ class RootComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
+      isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
     } = nextProps;
 
     const newState = this.state;
@@ -72,12 +73,20 @@ class RootComponent extends Component {
     // As long as the app initialized from storage, we mark state.isInitialized to true
     if (isInitFromStorageDone && !isInitWithParseDone) {
       newState.isInitialized = true;
+
+      // Start the first page from Wallet Dashboard if there's any wallet
       newState.SwitchNavComponent = createAppContainer(
         createSwitchNavigator(
           DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
         ),
       );
+
+      // Upload current wallet settings to Parse in order to get balances and transactions
       initializeWithParse();
+
+      // Start timer to get price frequently
+      // TODO: we will need to get rid of timer and replace with Push Notification
+      startFetchPriceTimer();
     }
 
     this.setState(newState);
@@ -111,6 +120,7 @@ RootComponent.propTypes = {
   dispatch: PropTypes.func.isRequired,
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
+  startFetchPriceTimer: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
@@ -125,6 +135,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initializeWithParse: () => dispatch(appActions.initializeWithParse()),
+  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

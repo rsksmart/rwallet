@@ -316,7 +316,7 @@ class WalletList extends Component {
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, startFetchPriceTimer, coinInstances, walletManager,
+        getPrice, currency, wallets, navigation, fetchBalance, coinInstances, walletManager,
       } = this.props;
 
       // 1. Get balance of each token
@@ -324,8 +324,6 @@ class WalletList extends Component {
 
       // 2. Get price of each token
       getPrice(supportedTokens, this.currencyNames);
-
-      startFetchPriceTimer();
 
       const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
@@ -478,7 +476,6 @@ WalletList.propTypes = {
   walletManager: PropTypes.shape({}),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  startFetchPriceTimer: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAssetValueUpdated: PropTypes.bool.isRequired,
   resetAssetValueUpdated: PropTypes.func.isRequired,
@@ -509,7 +506,6 @@ const mapDispatchToProps = (dispatch) => ({
   fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
   resetAssetValueUpdated: () => dispatch(walletActions.resetAssetValueUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
-  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
