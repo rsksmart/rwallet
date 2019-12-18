@@ -139,7 +139,7 @@ function* createKeyRequest(action) {
   try {
     yield call(walletManager.createWallet, name, phrase, coinIds);
     yield put({ type: actions.WALLTES_UPDATED });
-    yield put({ type: actions.UPDATE_USER });
+    yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
     console.error(message);
@@ -151,7 +151,7 @@ function* deleteKeyRequest(action) {
   try {
     yield call(walletManager.deleteWallet, key);
     yield put({ type: actions.WALLTES_UPDATED });
-    yield put({ type: actions.UPDATE_USER });
+    yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
     console.error(message);
@@ -163,7 +163,7 @@ function* renameKeyRequest(action) {
   try {
     yield call(walletManager.renameWallet, key, name);
     yield put({ type: actions.WALLTE_NAME_UPDATED });
-    yield put({ type: actions.UPDATE_USER });
+    yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
     const notification = createErrorNotification('Incorrect name', message.message);
