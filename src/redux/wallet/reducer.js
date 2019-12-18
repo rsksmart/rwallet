@@ -7,6 +7,8 @@ const initState = new Map({
   walletManager: undefined, // WalletManager instance
   isAssetValueUpdated: false,
   isTransactionUpdated: false,
+  isWalletsUpdated: false,
+  isWalletNameUpdated: false,
 });
 
 export default function walletReducer(state = initState, action) {
@@ -53,6 +55,18 @@ export default function walletReducer(state = initState, action) {
       }
 
       return state.set('isAssetValueUpdated', true);
+    }
+    case actions.WALLTES_UPDATED: {
+      return state.set('isWalletsUpdated', true);
+    }
+    case actions.RESET_WALLETS_UPDATED: {
+      return state.set('isWalletsUpdated', false);
+    }
+    case actions.WALLTE_NAME_UPDATED: {
+      return state.set('isWalletNameUpdated', true);
+    }
+    case actions.RESET_WALLET_NAME_UPDATED: {
+      return state.set('isWalletNameUpdated', false);
     }
     default:
       return state;

@@ -248,7 +248,7 @@ class WalletList extends Component {
 
       // Create element for each wallet (e.g. key 0)
       wallets.forEach((wallet) => {
-        const wal = { name: `Key ${wallet.id}`, coins: [] };
+        const wal = { name: wallet.name, coins: [] };
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
@@ -347,7 +347,7 @@ class WalletList extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, prices, isAssetValueUpdated, wallets, navigation,
+        currency, prices, isAssetValueUpdated, wallets, navigation, isWalletNameUpdated, isWalletsUpdated,
       } = nextProps;
 
       const {
@@ -365,7 +365,7 @@ class WalletList extends Component {
       }
 
       // Update total asset value and list data if there's currency, price, or balance change
-      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated) {
+      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated || isWalletNameUpdated || isWalletsUpdated) {
         updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
         newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
@@ -485,6 +485,8 @@ WalletList.propTypes = {
   isAssetValueUpdated: PropTypes.bool.isRequired,
   resetAssetValueUpdated: PropTypes.func.isRequired,
   coinInstances: PropTypes.arrayOf(PropTypes.object),
+  isWalletNameUpdated: PropTypes.bool.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -500,6 +502,8 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -18,6 +18,9 @@ class WalletManager {
     this.deserialize = this.deserialize.bind(this);
     this.updateAssetValue = this.updateAssetValue.bind(this);
     this.getTokens = this.getTokens.bind(this);
+    this.deleteWallet = this.deleteWallet.bind(this);
+    this.renameWallet = this.renameWallet.bind(this);
+    this.createWallet = this.createWallet.bind(this);
   }
 
   /**
@@ -229,6 +232,32 @@ class WalletManager {
     });
 
     return isDirty;
+  }
+
+  /*
+   * Delete a wallet
+   */
+  async deleteWallet(wallet) {
+    console.log('walletManager::deleteWallet, wallet: ', wallet);
+    const { wallets } = this;
+    _.remove(wallets, (item) => item === wallet);
+    await this.serialize();
+  }
+
+  /*
+   * Rename a wallet
+   * @param {string} name, accept a-z, A-Z, 0-9 and space
+   */
+  async renameWallet(wallet, name) {
+    const regex = /^[a-zA-Z0-9 ]+$/g;
+    const match = regex.exec(name);
+    if (!match) {
+      console.log('renameWallet, regex validatiton failed');
+      throw new Error('Key name contains invalid characters.');
+    }
+    const modifyWallet = wallet;
+    modifyWallet.name = name;
+    await this.serialize();
   }
 }
 

@@ -7,12 +7,14 @@ import RBTCCoin from './rbtccoin';
 const Mnemonic = require('bitcore-mnemonic');
 
 const PHRASE_KEY_STORAGE_PREFIX = 'wallet_';
+const WALLET_NAME_PREFIX = 'Key ';
+
 export default class Wallet {
   constructor({
     id, name, mnemonic, coins,
   }) {
     this.id = id;
-    this.name = name;
+    this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
     // this.createdAt = new Date();
 

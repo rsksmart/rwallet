@@ -10,6 +10,8 @@ import { eventChannel /* END */ } from 'redux-saga';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
+
+import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
 
 const {
@@ -26,8 +28,7 @@ function createTimer(interval) {
     const intervalInstance = setInterval(() => {
       emitter((new Date()).getTime());
 
-      // this causes the channel to close
-      // emitter(END);
+      // To close this channel, user emitter(END);
     }, interval);
     return () => {
       clearInterval(intervalInstance);
@@ -131,6 +132,46 @@ function* fetchTransactionRequest(action) {
   }
 }
 
+function* createKeyRequest(action) {
+  const {
+    name, phrase, coinIds, walletManager,
+  } = action.payload;
+  try {
+    yield call(walletManager.createWallet, name, phrase, coinIds);
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
+function* deleteKeyRequest(action) {
+  const { walletManager, key } = action.payload;
+  try {
+    yield call(walletManager.deleteWallet, key);
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
+function* renameKeyRequest(action) {
+  const { walletManager, key, name } = action.payload;
+  try {
+    yield call(walletManager.renameWallet, key, name);
+    yield put({ type: actions.WALLTE_NAME_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    const notification = createErrorNotification('Incorrect name', message.message);
+    yield put(appActions.addNotification(notification));
+    // console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -139,5 +180,8 @@ export default function* () {
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
     takeEvery(actions.START_FETCH_PRICE_TIMER, startFetchPriceTimerRequest),
+    takeEvery(actions.DELETE_KEY, deleteKeyRequest),
+    takeEvery(actions.RENAME_KEY, renameKeyRequest),
+    takeEvery(actions.CREATE_KEY, createKeyRequest),
   ]);
 }
