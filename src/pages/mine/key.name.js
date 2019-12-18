@@ -127,6 +127,7 @@ class KeyName extends Component {
       const { renameKey, walletManager } = this.props;
       console.log(`Key name save! name: ${name}`);
       renameKey(this.key, name, walletManager);
+      this.nameInput.focus();
     }
 
     onSubmitEditing() {
@@ -151,12 +152,14 @@ class KeyName extends Component {
             <Loc text="You can change the name displayed on the device below" />
             <Loc style={[styles.title, styles.name]} text="Name" />
             <TextInput
+              ref={(ref) => { this.nameInput = ref; }}
               style={[presetStyle.textInput, styles.nameInput]}
               value={name}
               onChangeText={this.onChangeText}
               onSubmitEditing={this.onSubmitEditing}
               autoCapitalize="none"
               autoCorrect={false}
+              blurOnSubmit={false}
             />
             <View style={styles.buttonView}>
               <Button text="SAVE" onPress={this.onPress} />
