@@ -477,7 +477,7 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   startFetchPriceTimer: PropTypes.func.isRequired,

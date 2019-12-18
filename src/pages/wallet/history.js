@@ -544,7 +544,7 @@ History.propTypes = {
   // isBalanceUpdated: PropTypes.bool.isRequired,
   // resetBalanceUpdated: PropTypes.func.isRequired,
   fetchTransaction: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   isTransactionUpdated: PropTypes.bool.isRequired,
   resetTransactionUpdated: PropTypes.func.isRequired,
 };
