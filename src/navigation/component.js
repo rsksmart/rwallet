@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -10,6 +10,7 @@ import TermsPage from '../pages/start/terms';
 import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
 import flex from '../assets/styles/layout.flex';
+import Toast from '../components/common/notification/toast';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -33,18 +34,32 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
 
-const RootComponent = (props) => {
-  const { showNotification, notification, dispatch } = props;
-  return (
-    <View style={[flex.flex1]}>
-      <Root>
-        <SwitchNavi uriPrefix={uriPrefix} />
-        {false && <UpdateModal showUpdate mandatory={false} />}
-        <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
-      </Root>
-    </View>
-  );
-};
+class RootComponent extends Component {
+  constructor(props) {
+    super(props);
+    global.functions = {
+      showToast: (wording) => {
+        // eslint-disable-next-line react/no-string-refs
+        this.toast.showToast(wording);
+      },
+    };
+  }
+
+  render() {
+    const { showNotification, notification, dispatch } = this.props;
+    // eslint-disable-next-line react/no-string-refs
+    return (
+      <View style={[flex.flex1]}>
+        <Root>
+          <SwitchNavi uriPrefix={uriPrefix} />
+          {false && <UpdateModal showUpdate mandatory={false} />}
+          <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
+          <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
+        </Root>
+      </View>
+    );
+  }
+}
 
 RootComponent.propTypes = {
   showNotification: PropTypes.bool.isRequired,
