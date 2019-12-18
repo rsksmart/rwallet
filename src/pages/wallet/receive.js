@@ -95,22 +95,24 @@ const styles = StyleSheet.create({
 
 const header = require('../../assets/images/misc/header.png');
 const copyIcon = require('../../assets/images/icon/copy.png');
-const refreshIcon = require('../../assets/images/icon/refresh.png');
+// const refreshIcon = require('../../assets/images/icon/refresh.png');
 
 class WalletReceive extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    componentDidMount() {}
-
     render() {
       const { navigation, addNotification } = this.props;
-      const { address, coin } = navigation.state.params;
+      const { coin } = navigation.state.params;
       const logo = navigation.state.params.icon;
       const qrSize = 270;
       const qrLogoSize = qrSize * 0.2;
-      const qrText = `rWalletAddress://${address}.${coin}`;
+
+      const address = coin && coin.address;
+      const symbol = coin && coin.symbol;
+
+      const qrText = address;
 
       let headerHeight = 100;
       if (DEVICE.isIphoneX) {
@@ -122,7 +124,7 @@ class WalletReceive extends Component {
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Text style={styles.headerTitle}>
               <Loc text="Receive" />
-              {` ${coin}`}
+              {symbol}
             </Text>
             <TouchableOpacity
               style={styles.backButton}
@@ -149,9 +151,12 @@ class WalletReceive extends Component {
                   <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
                 <Text style={styles.addressText} ellipsizeMode="tail" numberOfLines={1}>{address}</Text>
+                {/* TODO: we hide the refresh icon for now
+                Coin should have a isChangable member to decide whether it could generate more addresses
+                Only BTC is allowed to do that.
                 <TouchableOpacity>
                   <Image style={styles.refreshIcon} source={refreshIcon} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
             <View style={[styles.sectionContainer, styles.qrView]}>

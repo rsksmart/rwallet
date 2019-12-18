@@ -1,5 +1,18 @@
 import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
+import config from '../../config';
+
+const { consts: { currencies } } = config;
+const DEFAULT_CURRENCY_SYMBOL = '$';
+
+// Extract currency symbols from config
+// Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+const currencySymbols = _.reduce(currencies, (obj, row) => {
+  const settingsObj = obj;
+  settingsObj[row.name] = row.symbol;
+  return settingsObj;
+}, {});
 
 const common = {
   currentNavigation: null,
@@ -81,6 +94,22 @@ const common = {
       console.error(e);
     }
     return null;
+  },
+
+  getCurrencyNames() {
+    return _.map(currencies, (item) => item.name);
+  },
+
+  /**
+   * Get currency symbol string for example '$' based on currency
+  * @param {string} currency currency string such as 'USD'
+  */
+  getCurrencySymbol(currency) {
+    if (currencySymbols[currency]) {
+      return currencySymbols[currency];
+    }
+
+    return DEFAULT_CURRENCY_SYMBOL;
   },
 };
 

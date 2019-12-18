@@ -13,11 +13,6 @@ const appContext = {
     walletId: 0,
     wallets: [],
     user: null,
-    settings: {
-      currency: 'USD',
-      fingerprint: false,
-      language: 'en',
-    },
   },
   user: null,
   async set(key, value) {
