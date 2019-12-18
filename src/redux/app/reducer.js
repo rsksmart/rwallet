@@ -54,7 +54,6 @@ export default function appReducer(state = initState, action) {
         .set('showNotification', true)
         .set('notification', action.notification);
     case actions.REMOVE_NOTIFICATION:
-      console.log('REMOVE_NOTIFICATION');
       return state
         .set('showNotification', false)
         .set('notification', null);
