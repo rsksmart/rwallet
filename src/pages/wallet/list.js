@@ -340,6 +340,11 @@ class WalletList extends Component {
       });
     }
 
+    componentDidMount() {
+      const { showToast } = global.functions;
+      showToast('Hello Master');
+    }
+
     componentWillReceiveProps(nextProps) {
       const {
         currency, prices, isAssetValueUpdated, wallets, navigation,
