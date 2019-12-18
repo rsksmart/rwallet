@@ -141,7 +141,7 @@ class WalletSelectCurrency extends Component {
         <ScrollView>
           <Header
             title="Select Wallet Currency"
-            goBack={navigation.goBack}
+            goBack={() => { navigation.goBack(); }}
           />
           <View style={[screenHelper.styles.body]}>
             <View style={[styles.sectionContainer, { marginTop: 15 }]}>
