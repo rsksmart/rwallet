@@ -342,7 +342,7 @@ class WalletList extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        currency, prices, isAssetValueUpdated, wallets, navigation, isWalletNameUpdated,
+        currency, prices, isAssetValueUpdated, wallets, navigation, isWalletNameUpdated, isWalletsUpdated,
       } = nextProps;
 
       const {
@@ -360,7 +360,7 @@ class WalletList extends Component {
       }
 
       // Update total asset value and list data if there's currency, price, or balance change
-      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated || isWalletNameUpdated) {
+      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated || isWalletNameUpdated || isWalletsUpdated) {
         updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
         newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
@@ -481,6 +481,7 @@ WalletList.propTypes = {
   resetAssetValueUpdated: PropTypes.func.isRequired,
   coinInstances: PropTypes.arrayOf(PropTypes.object),
   isWalletNameUpdated: PropTypes.bool.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -496,6 +497,7 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
 });
 

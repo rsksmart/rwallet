@@ -239,7 +239,7 @@ class WalletManager {
   async deleteWallet(wallet) {
     console.log('walletManager::deleteWallet, wallet: ', wallet);
     const { wallets } = this;
-    this.wallets = _.remove(wallets, (item) => item === wallet);
+    _.remove(wallets, (item) => item === wallet);
     await this.serialize();
   }
 
