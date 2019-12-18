@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
   name: {
     marginTop: 17,
   },
+  notice: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#DF5264',
+    marginHorizontal: 5,
+  },
 });
 
 class KeyName extends Component {
@@ -147,6 +153,7 @@ class KeyName extends Component {
               autoCorrect={false}
               blurOnSubmit={false}
             />
+            <Loc style={[styles.notice]} text="* Key name can contain letters (a-z), numbers (0-9), and space" />
             <View style={styles.buttonView}>
               <Button text="SAVE" onPress={this.onPress} />
             </View>

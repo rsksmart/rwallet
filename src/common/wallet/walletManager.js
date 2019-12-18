@@ -245,14 +245,14 @@ class WalletManager {
 
   /*
    * Rename a wallet
-   * @param {string} name, accept a-z, A-Z, 0-9 and blank
+   * @param {string} name, accept a-z, A-Z, 0-9 and space
    */
   async renameWallet(wallet, name) {
     const regex = /^[a-zA-Z0-9 ]+$/g;
     const match = regex.exec(name);
     if (!match) {
       console.log('renameWallet, regex validatiton failed');
-      throw new Error('Wallet name contains invalid characters.');
+      throw new Error('Key name contains invalid characters.');
     }
     const modifyWallet = wallet;
     modifyWallet.name = name;
