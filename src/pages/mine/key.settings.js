@@ -200,7 +200,7 @@ class KeySettings extends Component {
       const { isShowNotification } = this.state;
 
       // If isWalletsUpdated, wallet is deleted.
-      if (isWalletsUpdated && navigation && addNotification && resetWalletsUpdated) {
+      if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
         const infoNotification = createInfoNotification(
           'Key deleted',
           'The key is deleted',
@@ -215,7 +215,7 @@ class KeySettings extends Component {
       }
 
       // If notification removed by user, go back
-      if (isShowNotification && notification === null && navigation) {
+      if (isShowNotification && notification === null) {
         this.setState({ isShowNotification: false });
         navigation.goBack();
       }

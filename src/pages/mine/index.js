@@ -174,7 +174,7 @@ class MineIndex extends Component {
     const listData = [];
     wallets.forEach((wallet) => {
       const item = {
-        name: `Key ${wallet.id}`,
+        name: wallet.name,
         walletCount: wallet.coins.length,
         wallet,
       };
@@ -308,8 +308,8 @@ class MineIndex extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { isWalletsUpdated, wallets } = nextProps;
-    if (isWalletsUpdated && wallets) {
+    const { isWalletsUpdated, isWalletNameUpdated, wallets } = nextProps;
+    if ((isWalletsUpdated || isWalletNameUpdated) && wallets) {
       const keyListData = MineIndex.createKeyListData(wallets);
       this.setState({ keyListData });
     }
@@ -380,6 +380,7 @@ MineIndex.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  isWalletNameUpdated: PropTypes.bool.isRequired,
   language: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
 };
@@ -392,6 +393,7 @@ const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
 });
 
 export default connect(mapStateToProps)(MineIndex);

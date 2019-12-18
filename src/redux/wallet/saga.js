@@ -9,6 +9,7 @@ import actions from './actions';
 import appActions from '../app/actions';
 
 import ParseHelper from '../../common/parse';
+import { createErrorNotification } from '../../common/notification.controller';
 
 function countdown(seconds) {
   let secs = seconds;
@@ -126,9 +127,8 @@ function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
   try {
     yield call(walletManager.deleteWallet, key);
-    yield put({
-      type: actions.WALLTES_UPDATED,
-    });
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
     console.error(message);
@@ -139,12 +139,13 @@ function* renameKeyRequest(action) {
   const { walletManager, key, name } = action.payload;
   try {
     yield call(walletManager.renameWallet, key, name);
-    yield put({
-      type: actions.WALLTE_NAME_UPDATED,
-    });
+    yield put({ type: actions.WALLTE_NAME_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
-    console.error(message);
+    const notification = createErrorNotification('Name error', message.message);
+    yield put(appActions.addNotification(notification));
+    // console.error(message);
   }
 }
 

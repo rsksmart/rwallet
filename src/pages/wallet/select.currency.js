@@ -44,9 +44,9 @@ class WalletSelectCurrency extends Component {
     static async createWallet(phrases, coins) {
       let wallet = null;
       if (phrases) {
-        wallet = await walletManager.createWallet('imported', phrases, coins);
+        wallet = await walletManager.createWallet(null, phrases, coins);
       } else {
-        wallet = await walletManager.createWallet('randomName', phrases, coins);
+        wallet = await walletManager.createWallet(null, phrases, coins);
       }
       return wallet;
     }

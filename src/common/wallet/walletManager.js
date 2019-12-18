@@ -233,20 +233,26 @@ class WalletManager {
     return isDirty;
   }
 
+  /*
+   * Delete a wallet
+   */
   async deleteWallet(wallet) {
     console.log('walletManager::deleteWallet, wallet: ', wallet);
     const { wallets } = this;
-    for (let i = 0; i < wallets.length; i += 1) {
-      const item = wallets[i];
-      if (wallet === item) {
-        wallets.splice(i, 1);
-        break;
-      }
-    }
+    this.wallets = _.remove(wallets, (item) => item === wallet);
     await this.serialize();
   }
 
+  /*
+   * Rename a wallet
+   */
   async renameWallet(wallet, name) {
+    const regex = /^[a-zA-Z0-9 ]+$/g;
+    const match = regex.exec(name);
+    if (!match) {
+      console.log('renameWallet, regex validatiton failed');
+      throw new Error('Wallet name is not valid.');
+    }
     const modifyWallet = wallet;
     modifyWallet.name = name;
     await this.serialize();
