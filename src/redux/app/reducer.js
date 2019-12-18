@@ -25,7 +25,9 @@ const initState = new Map({
 export default function appReducer(state = initState, action) {
   switch (action.type) {
     case actions.IS_PAGE_LOADING:
-      return state.set('isPageLoading', true);
+    {
+      return state.set('isPageLoading', action.value);
+    }
     case actions.INIT_FROM_STORAGE_DONE:
     {
       return state.set('isInitFromStorageDone', true);
@@ -52,7 +54,6 @@ export default function appReducer(state = initState, action) {
         .set('showNotification', true)
         .set('notification', action.notification);
     case actions.REMOVE_NOTIFICATION:
-      console.log('REMOVE_NOTIFICATION');
       return state
         .set('showNotification', false)
         .set('notification', null);

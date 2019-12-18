@@ -98,5 +98,45 @@ TODO: How to debug android app with Mac OS is to be added
 
 ## Deployment
 
+## Testing Procedure
 
+### Unit Testing
+Unit Testing module is to be added.
 
+### Manual Testing
+Manual Testing has to be done on a real iOS/android device. This is to make sure we mimic real user's experience.
+
+#### Steps
+1. Create a wallet
+    - Check Go Back Button
+    - Enable all three testnet tokens
+1. Import a wallet
+    - Check Go Back Button
+    - Enable all three testnet tokens
+1. Delete a walelt
+    - Goes to Me bottom tab and delete a Key
+    - Go back to dashboard and make sure wallet is deleted
+1. Receive Test BTC
+    - Send Test BTC from an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test BTC from rWallet, and make sure transaction and balance correctin Address Detail page
+1. Receive Test RBTC
+    - Send Test RBTC from an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test RBTC from rWallet, and make sure transaction and balance correctin Address Detail page
+1. Receive Test RIF
+    - Send Test RIF from an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test RIF from rWallet, and make sure transaction and balance correctin Address Detail page
+1. Send Test BTC
+    - Send Test BTC to an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test BTC to another address in rWallet, and make sure transaction and balance correctin Address Detail page
+1. Send Test RBTC
+    - Send Test RBTC to an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test RBTC to another address in rWallet, and make sure transaction and balance correctin Address Detail page
+1. Send Test RIF
+    - Send Test RIF to an external wallet, and make sure transaction and balance correct in Address Detail page
+    - Send Test RIF to another address in rWallet, and make sure transaction and balance correctin Address Detail page
+1. Change Language Settings
+    - Change Language in Me tab, and make sure the App doesn't crash (We don't support any other launage yet)
+1. Change Currency Settings
+    - Change Currency in Me tab, and make sure the App doesn't crash (We don't support any other launage yet)
+1. Click on Social Media Link
+    - Click on all Social Media link, and make sure mobile phone could navigate to the correct webpage/app

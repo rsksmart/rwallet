@@ -270,7 +270,6 @@ class ParseHelper {
    * @memberof ParseHelper
    */
   static fetchTransaction(tokens) {
-    console.log('fetchTransaction, tokens:', tokens);
     const promises = _.map(tokens, (token) => {
       const {
         address, symbol, chain, type,
@@ -293,7 +292,9 @@ class ParseHelper {
       return Parse.Query.or(queryTo, queryFrom).find()
         .then((results) => {
           newToken.transactions = _.map(results, (item) => item.toJSON());
-          console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
+          if (!_.isEmpty(newToken.transactions)) {
+            console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
+          }
         }, (err) => {
           console.warn(`fetchTransaction, token ${symbol}`, err.message);
         });
