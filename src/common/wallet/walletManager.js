@@ -20,6 +20,7 @@ class WalletManager {
     this.getTokens = this.getTokens.bind(this);
     this.deleteWallet = this.deleteWallet.bind(this);
     this.renameWallet = this.renameWallet.bind(this);
+    this.createWallet = this.createWallet.bind(this);
   }
 
   /**

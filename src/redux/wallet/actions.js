@@ -13,6 +13,7 @@ const actions = {
   SET_WALLET_MANAGER: 'SET_WALLET_MANAGER',
   DELETE_KEY: 'DELETE_KEY',
   RENAME_KEY: 'RENAME_KEY',
+  CREATE_KEY: 'CREATE_KEY',
   RESET_ASSET_VALUE_UPDATED: 'RESET_ASSET_VALUE_UPDATED',
   RESET_TRANSACTION_UPDATED: 'RESET_TRANSACTION_UPDATED',
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
@@ -66,6 +67,15 @@ const actions = {
     payload: {
       key,
       name,
+      walletManager,
+    },
+  }),
+  createKey: (name, phrase, coinIds, walletManager) => ({
+    type: actions.CREATE_KEY,
+    payload: {
+      name,
+      phrase,
+      coinIds,
       walletManager,
     },
   }),

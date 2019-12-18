@@ -171,7 +171,7 @@ KeyName.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   renameKey: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   isWalletNameUpdated: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}),
   resetWalletNameUpdated: PropTypes.func.isRequired,

@@ -123,6 +123,20 @@ function* fetchTransactionRequest(action) {
   }
 }
 
+function* createKeyRequest(action) {
+  const {
+    name, phrase, coinIds, walletManager,
+  } = action.payload;
+  try {
+    yield call(walletManager.createWallet, name, phrase, coinIds);
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put(appActions.updateUser({ wallets: walletManager.wallets }));
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
 function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
   try {
@@ -159,5 +173,6 @@ export default function* () {
     takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
+    takeEvery(actions.CREATE_KEY, createKeyRequest),
   ]);
 }
