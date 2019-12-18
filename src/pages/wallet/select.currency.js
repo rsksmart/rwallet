@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions } from 'react-navigation';
 import CoinTypeList from '../../components/wallet/coin.type.list';
 import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
@@ -115,13 +115,8 @@ class WalletSelectCurrency extends Component {
       this.setState({ loading: false });
       updateUser({ wallets: walletManager.wallets });
       if (phrases) {
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'WalletList' }),
-          ],
-        });
-        navigation.dispatch(resetAction);
+        const statckActions = StackActions.popToTop();
+        navigation.dispatch(statckActions);
       } else {
         navigation.navigate('RecoveryPhrase', { wallet });
       }
