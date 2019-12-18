@@ -305,7 +305,7 @@ KeySettings.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   deleteKey: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
