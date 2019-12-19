@@ -7,6 +7,8 @@ const initState = new Map({
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
   isBalanceUpdated: false,
+  isWalletsUpdated: false,
+  isWalletNameUpdated: false,
 });
 
 /**
