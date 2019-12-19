@@ -214,6 +214,9 @@ const styles = StyleSheet.create({
   footerIndicator: {
     marginVertical: 20,
   },
+  noTransNotice: {
+    textAlign: 'center',
+  },
 });
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -311,6 +314,9 @@ class History extends Component {
   static listView(listData) {
     if (!listData) {
       return <ActivityIndicator size="small" color="#00ff00" />;
+    }
+    if (listData.length === 0) {
+      return <Loc style={[styles.noTransNotice]} text="There is no transaction found in this wallet" />;
     }
     return (
       <FlatList
