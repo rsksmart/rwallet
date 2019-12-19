@@ -31,13 +31,14 @@ export default class ResponsiveText extends Component {
   }
 
   onLayout = (event) => {
-    const { style, children } = this.props;
+    const { fontStyle, children } = this.props;
     const { isAdjusted } = this.state;
     if (isAdjusted) {
       return;
     }
     const { width } = event.nativeEvent.layout;
-    const fontSize = getFontSize(width, children.length, style.fontSize);
+    const [fontStyleItem] = fontStyle;
+    const fontSize = getFontSize(width, children.length, fontStyleItem.fontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
@@ -58,7 +59,7 @@ export default class ResponsiveText extends Component {
       );
     } else {
       textElement = (
-        <Text style={[adjustsStyle, fontStyle]}>
+        <Text style={[fontStyle, adjustsStyle]}>
           {children}
         </Text>
       );
