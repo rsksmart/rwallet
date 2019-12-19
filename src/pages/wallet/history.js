@@ -375,7 +375,9 @@ class History extends Component {
   static getAssetValueText(balanceValue, currency) {
     let assetValueText = '';
 
-    assetValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
+    if (!_.isUndefined(balanceValue)) {
+      assetValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
+    }
 
     return assetValueText;
   }
