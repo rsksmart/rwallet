@@ -5,23 +5,30 @@ const initState = new Map({
   wallets: [],
   prices: [],
   walletManager: undefined, // WalletManager instance
-  isAssetValueUpdated: false,
-  isTransactionUpdated: false,
-  isWalletsUpdated: false,
-  isWalletNameUpdated: false,
+  updateTimestamp: 0,
+  isBalanceUpdated: false,
 });
+
+/**
+ * Return current Date's timestamp in order to update updateTimestamp value
+ */
+function getUpdateTimestamp() {
+  return (new Date()).getTime();
+}
 
 export default function walletReducer(state = initState, action) {
   switch (action.type) {
-    case actions.GET_WALLETS_RESULT:
-      return state.set('wallets', action.value);
-    case actions.GET_PRICE_RESULT:
-      return state.set('prices', action.value && action.value.value);
     case actions.SET_WALLET_MANAGER:
+    {
       return state.set('walletManager', action.value);
-    case actions.FETCH_BALANCE_RESULT: {
+    }
+    case actions.GET_PRICE_RESULT:
+    {
+      return state.set('prices', action.value && action.value.value);
+    }
+    case actions.FETCH_BALANCE_RESULT:
+    {
       const balances = action.value;
-      let newState = state;
 
       // Update balances in walletManager
       const walletManager = state.get('walletManager');
@@ -29,21 +36,17 @@ export default function walletReducer(state = initState, action) {
         const isDirty = walletManager.updateBalance(balances);
 
         if (isDirty) {
-          newState = newState.set('isAssetValueUpdated', true);
+          return state.set('isBalanceUpdated', true);
         }
       }
 
-      return newState;
+      return state;
     }
-    case actions.RESET_ASSET_VALUE_UPDATED:
-      return state.set('isAssetValueUpdated', false);
-    case actions.RESET_TRANSACTION_UPDATED: {
-      return state.set('isTransactionUpdated', false);
+    case actions.RESET_BALANCE_UPDATED: {
+      return state.set('isBalanceUpdated', false);
     }
     case actions.FETCH_TRANSACTION_RESULT: {
-      console.log('FETCH_TRANSACTION_RESULT');
-      const newState = state.set('isTransactionUpdated', true);
-      return newState;
+      return state.set('updateTimestamp', getUpdateTimestamp());
     }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
@@ -54,19 +57,10 @@ export default function walletReducer(state = initState, action) {
         walletManager.updateAssetValue(prices, currency);
       }
 
-      return state.set('isAssetValueUpdated', true);
+      return state.set('updateTimestamp', getUpdateTimestamp());
     }
-    case actions.WALLTES_UPDATED: {
-      return state.set('isWalletsUpdated', true);
-    }
-    case actions.RESET_WALLETS_UPDATED: {
-      return state.set('isWalletsUpdated', false);
-    }
-    case actions.WALLTE_NAME_UPDATED: {
-      return state.set('isWalletNameUpdated', true);
-    }
-    case actions.RESET_WALLET_NAME_UPDATED: {
-      return state.set('isWalletNameUpdated', false);
+    case actions.WALLETS_UPDATED: {
+      return state.set('updateTimestamp', getUpdateTimestamp());
     }
     default:
       return state;
