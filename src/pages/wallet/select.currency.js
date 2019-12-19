@@ -14,6 +14,7 @@ import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
+import flex from '../../assets/styles/layout.flex';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -27,8 +28,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   buttonView: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
     alignSelf: 'center',
-    marginVertical: 20,
+    paddingVertical: 20,
+    bottom: 0,
   },
 });
 
@@ -138,29 +144,31 @@ class WalletSelectCurrency extends Component {
       const { loading } = this.state;
       const { navigation } = this.props;
       return (
-        <ScrollView>
-          <Header
-            title="Select Wallet Currency"
-            goBack={() => { navigation.goBack(); }}
-          />
-          <View style={[screenHelper.styles.body]}>
-            <View style={[styles.sectionContainer, { marginTop: 15 }]}>
-              <Loc style={[styles.sectionTitle]} text="Mainnet" />
-              <CoinTypeList data={this.mainnet} />
+        <View style={[flex.flex1]}>
+          <ScrollView>
+            <Header
+              title="Select Wallet Currency"
+              goBack={() => { navigation.goBack(); }}
+            />
+            <View style={[screenHelper.styles.body]}>
+              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+                <Loc style={[styles.sectionTitle]} text="Mainnet" />
+                <CoinTypeList data={this.mainnet} />
+              </View>
+              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+                <Loc style={[styles.sectionTitle]} text="Testnet" />
+                <CoinTypeList data={this.testnet} />
+              </View>
+              <Loader loading={loading} />
             </View>
-            <View style={[styles.sectionContainer, { marginTop: 15 }]}>
-              <Loc style={[styles.sectionTitle]} text="Testnet" />
-              <CoinTypeList data={this.testnet} />
-            </View>
-            <View style={styles.buttonView}>
-              <Button
-                text="CREATE"
-                onPress={this.onCreateButtonPress}
-              />
-            </View>
-            <Loader loading={loading} />
+          </ScrollView>
+          <View style={[styles.buttonView]}>
+            <Button
+              text="CREATE"
+              onPress={this.onCreateButtonPress}
+            />
           </View>
-        </ScrollView>
+        </View>
       );
     }
 }
