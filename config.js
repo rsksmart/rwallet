@@ -30,6 +30,9 @@ const config = {
   development: {
     reduxLoggerEnabled: false,
   },
+  interval: {
+    fetchPrice: 10000,
+  },
 };
 
 export default config;
