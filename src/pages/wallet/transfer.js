@@ -266,7 +266,7 @@ class Transfer extends Component {
     const feeData = feeDatas[coin.symbol];
     feeData.forEach((fee) => {
       const item = fee;
-      item.coin = `${item.coin} ${coin.symbol}`;
+      item.coin = `${item.coin}${coin.symbol}`;
       // TODO: calculate coin value
     });
     this.setState({
@@ -294,8 +294,8 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
+      let notification = null;
       if (error.code === 141) {
-        let notification;
         const message = error.message.split('|');
         switch (message[0]) {
           case 'err.notenoughbalance':
@@ -303,7 +303,6 @@ class Transfer extends Component {
               'Transfer is failed',
               'You need more balance to complete the transfer',
             );
-            addNotification(notification);
             break;
           case 'err.timeout':
             notification = createInfoNotification(
@@ -317,17 +316,24 @@ class Transfer extends Component {
               'Transfer is failed',
               message[1],
             );
-            addNotification(notification);
             break;
           default:
             notification = createInfoNotification(
               'Transfer is failed',
               'Please contact our customer service',
             );
-            addNotification(notification);
             break;
         }
       }
+      if (!notification) {
+        notification = createInfoNotification(
+          'Transfer error',
+          'Please contact our customer service',
+        );
+      }
+      addNotification(notification);
+      this.setState({ isConfirm: false });
+      this.confirmSlider.reset();
     }
   }
 
@@ -449,7 +455,7 @@ class Transfer extends Component {
           pointerEvents={enableConfirm ? 'auto' : 'none'}
         >
           <ConfirmSlider // All parameter should be adjusted for the real case
-              // ref={(ref) => this.confirmSlider = ref}
+            ref={(ref) => { this.confirmSlider = ref; }}
             width={screen.width - 50}
             buttonSize={30}
             buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
@@ -459,8 +465,8 @@ class Transfer extends Component {
             borderRadius={15}
             okButton={{ visible: true, duration: 400 }}
             onVerified={async () => {
-              await this.confirm();
               this.setState({ isConfirm: true });
+              await this.confirm();
             }}
             icon={(
               <Image
