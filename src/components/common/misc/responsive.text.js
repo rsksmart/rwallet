@@ -31,7 +31,6 @@ export default class ResponsiveText extends Component {
   }
 
   onLayout = (event) => {
-    console.log('ResponsiveText::onLayout');
     const { style, children } = this.props;
     const { isAdjusted } = this.state;
     if (isAdjusted) {
