@@ -27,7 +27,6 @@ export default class ResponsiveText extends Component {
   }
 
   componentWillReceiveProps() {
-    console.log('ResponsiveText::componentWillReceiveProps');
     this.setState({ isAdjusted: false });
   }
 
@@ -39,9 +38,7 @@ export default class ResponsiveText extends Component {
       return;
     }
     const { width } = event.nativeEvent.layout;
-    console.log(`ResponsiveText::onLayout, width: ${width} children.length: ${children.length}`);
     const fontSize = getFontSize(width, children.length, style.fontSize);
-    console.log('ResponsiveText::onLayout, fontSize: ', fontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
