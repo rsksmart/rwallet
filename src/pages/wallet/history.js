@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
@@ -10,7 +11,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
-import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
@@ -343,9 +343,12 @@ class History extends Component {
       sendingCoinValue: '0',
       isRefreshing: false,
       isLoadMore: false,
-      coin,
+      symbol: coin && coin.symbol,
+      balance: coin && coin.balance,
+      balanceValue: coin && coin.balanceValue,
+      transactions: coin && coin.transactions,
       balanceText: '',
-      balanceValueText: '',
+      assetValueText: '',
       listData: null,
     };
 
@@ -359,32 +362,42 @@ class History extends Component {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
-  componentWillMount() {
-    const {
-      currency, fetchTransaction, walletManager,
-    } = this.props;
-    const { coin: { symbol, balance, balanceValue } } = this.state;
-    this.generateBalanceText(balance, balanceValue, symbol, currency);
-    fetchTransaction(walletManager);
+  static getBalanceText(balance, symbol) {
+    let balanceText = '';
+
+    if (!_.isUndefined(balance)) {
+      balanceText = `${balance.toFixed()} ${symbol}`;
+    }
+
+    return balanceText;
+  }
+
+  static getAssetValueText(balanceValue, currency) {
+    let assetValueText = '';
+
+    assetValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
+
+    return assetValueText;
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      isTransactionUpdated, resetTransactionUpdated, currency,
+      currency, updateTimestamp,
     } = nextProps;
+
+    const { updateTimestamp: lastUpdateTimestamp } = this.props;
     const {
-      coin: {
-        symbol, balance, balanceValue, transactions,
-      },
+      symbol, balance, balanceValue, transactions,
     } = this.state;
-    // const { transactions: curTransactions } = this.props;
-    // const { isLoadMore } = this.state;
-    this.generateBalanceText(balance, balanceValue, symbol, currency);
+
     const newState = this.state;
-    if (isTransactionUpdated) {
+
+    if (updateTimestamp !== lastUpdateTimestamp) {
+      newState.balanceText = History.getBalanceText(balance, symbol);
+      newState.assetValueText = History.getAssetValueText(balanceValue, currency);
       newState.listData = History.createListData(transactions, symbol);
-      resetTransactionUpdated();
     }
+
     this.setState(newState);
   }
 
@@ -433,18 +446,6 @@ class History extends Component {
     navigation.goBack();
   }
 
-  generateBalanceText(balance, balanceValue, symbol, currency) {
-    let balanceText = ' ';
-    let balanceValueText = ' ';
-    if (balance) {
-      balanceText = `${balance.toFixed()} ${symbol}`;
-    }
-    if (balanceValue) {
-      balanceValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
-    }
-    this.setState({ balanceText, balanceValueText });
-  }
-
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -470,7 +471,7 @@ class History extends Component {
     const { currency } = this.props;
 
     const {
-      coin, sendingCoin, sendingCoinValue, balanceText, balanceValueText, listData,
+      coin, sendingCoin, sendingCoinValue, balanceText, assetValueText, listData,
     } = this.state;
 
     const symbol = coin && coin.symbol;
@@ -496,7 +497,7 @@ class History extends Component {
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
-            <Text style={styles.assetsValue}>{balanceValueText}</Text>
+            <Text style={styles.assetsValue}>{assetValueText}</Text>
             <View style={styles.sendingView}>
               <Image style={styles.sendingIcon} source={sending} />
               <Text style={styles.sending}>{`${sendingCoin} ${symbol} (${currencySymbol}${sendingCoinValue})`}</Text>
@@ -539,12 +540,8 @@ History.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   currency: PropTypes.string.isRequired,
-  // isBalanceUpdated: PropTypes.bool.isRequired,
-  // resetBalanceUpdated: PropTypes.func.isRequired,
-  fetchTransaction: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}),
-  isTransactionUpdated: PropTypes.bool.isRequired,
-  resetTransactionUpdated: PropTypes.func.isRequired,
+  updateTimestamp: PropTypes.number.isRequired,
 };
 
 History.defaultProps = {
@@ -554,14 +551,10 @@ History.defaultProps = {
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  isTransactionUpdated: state.Wallet.get('isTransactionUpdated'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
-  resetTransactionUpdated: () => dispatch(walletActions.resetTransactionUpdated()),
+const mapDispatchToProps = () => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
