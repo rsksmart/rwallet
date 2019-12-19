@@ -61,7 +61,7 @@ class WalletCreate extends Component {
       const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Create Wallet" goBack={navigation.goBack} />
+          <Header title="Create Wallet" goBack={() => { navigation.goBack(); }} />
           <View style={[styles.sectionContainer, styles.bottomBorder, { paddingBottom: 20 }]}>
             <Text style={[styles.sectionTitle, styles.walletName]}>Wallet Name</Text>
             <Input
