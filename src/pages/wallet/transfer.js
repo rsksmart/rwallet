@@ -332,138 +332,145 @@ class Transfer extends Component {
     }
 
     return (
-      <ScrollView style={[flex.flex1]}>
-        <ImageBackground source={header} style={[{ height: headerHeight }]}>
-          <Text style={styles.headerTitle}>
-            <Loc text="Send" />
-            {` ${coin.defaultName}`}
-          </Text>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-          </TouchableOpacity>
-        </ImageBackground>
-        <View style={styles.body}>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.title1]} text="Sending" />
-            <View style={styles.textInputView}>
-              <TextInput
-                style={[styles.textInput]}
-                placeholder="0.01"
-                value={amount}
-                keyboardType="numeric"
-                onChangeText={(text) => {
-                  const self = this;
-                  self.setState({ amount: text });
-                  if (parseFloat(text) >= 0) {
-                    self.setState({ amount: text }, self.validateConfirmControl.bind(self));
-                  }
-                }}
-              />
-              <Image source={currencyExchange} style={styles.textInputIcon} />
-            </View>
-          </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.title2]} text="To" />
-            <View style={styles.textInputView}>
-              <TextInput
-                style={[styles.textInput]}
-                value={to}
-                onChangeText={(text) => {
-                  this.setState({ to: text }, this.validateConfirmControl.bind(this));
-                }}
-              />
-              <TouchableOpacity
-                style={styles.textInputIcon}
-                onPress={() => {
-                  navigation.navigate('Scan', {
-                    onQrcodeDetected: (data) => {
-                      const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-                      const url = data;
-                      const result = parseUrl.exec(url);
-                      const host = result[3];
-                      const [address2, coin2] = host.split('.');
-                      this.setState({ to: address2 });
-                      console.log(`coin: ${coin2}`);
-                    },
-                  });
-                }}
-              >
-                <Image source={address} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="Memo" />
-            <View style={styles.textInputView}>
-              <TextInput
-                style={[styles.textInput, { textAlignVertical: 'top' }]}
-                placeholder="Enter a transaction memo"
-                multiline
-                numberOfLines={4}
-                value={memo}
-                onChange={(text) => {
-                  this.setState({ memo: text });
-                }}
-              />
-            </View>
-          </View>
-          <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
-            <Loc style={[styles.title2]} text="Miner fee" />
-            <Loc style={[styles.question]} text="How fast you want this done?" />
-            <RadioGroup
-              data={this.feeData}
-              selected={feeLevel}
-              onChange={(i) => {
-                let preference = '';
-                switch (i) {
-                  case 0:
-                    preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
-                    break;
-                  case 2:
-                    preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
-                    break;
-                  case 1:
-                  default:
-                    preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
-                    break;
-                }
-                this.setState({ preference });
+      <View style={[flex.flex1]}>
+        <ScrollView>
+          <ImageBackground source={header} style={[{ height: headerHeight }]}>
+            <Text style={styles.headerTitle}>
+              <Loc text="Send" />
+              {` ${coin.defaultName}`}
+            </Text>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                navigation.goBack();
               }}
-            />
-          </View>
-          <View style={[styles.sectionContainer, { opacity: enableConfirm ? 1 : 0.5 }]} pointerEvents={enableConfirm ? 'auto' : 'none'}>
-            <ConfirmSlider // All parameter should be adjusted for the real case
-                // ref={(ref) => this.confirmSlider = ref}
-              width={screen.width - 50}
-              buttonSize={30}
-              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
-              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={15}
-              okButton={{ visible: true, duration: 400 }}
-              onVerified={async () => {
-                await this.confirm();
-                this.setState({ isConfirm: true });
-              }}
-              icon={(
-                <Image
-                  source={isConfirm ? circleCheckIcon : circleIcon}
-                  style={{ width: 32, height: 32 }}
-                />
-                )}
             >
-              <Text style={[{ fontWeight: 'bold', color: 'black' }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
-            </ConfirmSlider>
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+          </ImageBackground>
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Loc style={[styles.title1]} text="Sending" />
+              <View style={styles.textInputView}>
+                <TextInput
+                  style={[styles.textInput]}
+                  placeholder="0.01"
+                  value={amount}
+                  keyboardType="numeric"
+                  onChangeText={(text) => {
+                    const self = this;
+                    self.setState({ amount: text });
+                    if (parseFloat(text) >= 0) {
+                      self.setState({ amount: text }, self.validateConfirmControl.bind(self));
+                    }
+                  }}
+                />
+                <Image source={currencyExchange} style={styles.textInputIcon} />
+              </View>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Loc style={[styles.title2]} text="To" />
+              <View style={styles.textInputView}>
+                <TextInput
+                  style={[styles.textInput]}
+                  value={to}
+                  onChangeText={(text) => {
+                    this.setState({ to: text }, this.validateConfirmControl.bind(this));
+                  }}
+                />
+                <TouchableOpacity
+                  style={styles.textInputIcon}
+                  onPress={() => {
+                    navigation.navigate('Scan', {
+                      onQrcodeDetected: (data) => {
+                        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                        const url = data;
+                        const result = parseUrl.exec(url);
+                        const host = result[3];
+                        const [address2, coin2] = host.split('.');
+                        this.setState({ to: address2 });
+                        console.log(`coin: ${coin2}`);
+                      },
+                    });
+                  }}
+                >
+                  <Image source={address} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Loc style={[styles.title3]} text="Memo" />
+              <View style={styles.textInputView}>
+                <TextInput
+                  style={[styles.textInput, { textAlignVertical: 'top' }]}
+                  placeholder="Enter a transaction memo"
+                  multiline
+                  numberOfLines={4}
+                  value={memo}
+                  onChange={(text) => {
+                    this.setState({ memo: text });
+                  }}
+                />
+              </View>
+            </View>
+            <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
+              <Loc style={[styles.title2]} text="Miner fee" />
+              <Loc style={[styles.question]} text="How fast you want this done?" />
+              <RadioGroup
+                data={this.feeData}
+                selected={feeLevel}
+                onChange={(i) => {
+                  let preference = '';
+                  switch (i) {
+                    case 0:
+                      preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
+                      break;
+                    case 2:
+                      preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
+                      break;
+                    case 1:
+                    default:
+                      preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
+                      break;
+                  }
+                  this.setState({ preference });
+                }}
+              />
+            </View>
           </View>
+          <Loader loading={loading} />
+        </ScrollView>
+        <View
+          style={[styles.sectionContainer, {
+            opacity: enableConfirm ? 1 : 0.5, position: 'absolute', bottom: 0, width: '100%', paddingVertical: 20,
+          }]}
+          pointerEvents={enableConfirm ? 'auto' : 'none'}
+        >
+          <ConfirmSlider // All parameter should be adjusted for the real case
+              // ref={(ref) => this.confirmSlider = ref}
+            width={screen.width - 50}
+            buttonSize={30}
+            buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+            textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
+            borderRadius={15}
+            okButton={{ visible: true, duration: 400 }}
+            onVerified={async () => {
+              await this.confirm();
+              this.setState({ isConfirm: true });
+            }}
+            icon={(
+              <Image
+                source={isConfirm ? circleCheckIcon : circleIcon}
+                style={{ width: 32, height: 32 }}
+              />
+              )}
+          >
+            <Text style={[{ fontWeight: 'bold', color: 'black' }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
+          </ConfirmSlider>
         </View>
-        <Loader loading={loading} />
-      </ScrollView>
+      </View>
     );
   }
 }
