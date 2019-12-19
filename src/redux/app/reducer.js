@@ -50,10 +50,9 @@ export default function appReducer(state = initState, action) {
     case actions.SET_ERROR:
       return state.set('error', action.value);
     case actions.ADD_NOTIFICATION:
-      // return state
-      //   .set('showNotification', true)
-      //   .set('notification', action.notification);
-      return state;
+      return state
+        .set('showNotification', true)
+        .set('notification', action.notification);
     case actions.REMOVE_NOTIFICATION:
       return state
         .set('showNotification', false)
