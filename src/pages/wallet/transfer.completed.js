@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
@@ -89,8 +89,18 @@ export default class TransferCompleted extends Component {
     header: null,
   });
 
-  render() {
+  constructor(props) {
+    super(props);
+    this.onBackPress = this.onBackPress.bind(this);
+  }
+
+  onBackPress() {
     const { navigation } = this.props;
+    const statckActions = StackActions.popToTop();
+    navigation.dispatch(statckActions);
+  }
+
+  render() {
     return (
       <View style={[flex.flex1]}>
 
@@ -102,31 +112,14 @@ export default class TransferCompleted extends Component {
             <Image style={styles.check} source={completed} />
             <Loc style={[styles.title]} text="Transfer Completed!" />
             <Loc style={[styles.text]} text="TransferText" />
-            <TouchableOpacity onPress={() => {
-              const resetAction = StackActions.reset({
-                index: 0,
-                actions: [
-                  NavigationActions.navigate({ routeName: 'WalletList' }),
-                ],
-              });
-              navigation.dispatch(resetAction);
-            }}
-            >
+            <TouchableOpacity onPress={this.onBackPress}>
               <Text style={[styles.text, styles.link]}>Click to view in explorer</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonView}>
             <Button
               text="BACK TO WALLET"
-              onPress={() => {
-                const resetAction = StackActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'WalletList' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
-              }}
+              onPress={this.onBackPress}
             />
           </View>
         </View>
