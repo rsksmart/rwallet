@@ -369,7 +369,7 @@ class History extends Component {
   }
 
   static getBalanceText(balance, symbol) {
-    let balanceText = '';
+    let balanceText = `0 ${symbol}`;
 
     if (!_.isUndefined(balance)) {
       balanceText = `${balance.toFixed()} ${symbol}`;
@@ -379,7 +379,7 @@ class History extends Component {
   }
 
   static getAssetValueText(balanceValue, currencySymbol) {
-    let assetValueText = '';
+    let assetValueText = `${currencySymbol}0`;
 
     if (!_.isUndefined(balanceValue)) {
       assetValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
@@ -393,8 +393,12 @@ class History extends Component {
     const state = {};
     state.balanceText = History.getBalanceText(balance, symbol);
     state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
-    state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
-    state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
+    if (pendingBalance) {
+      state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
+    }
+    if (pendingBalanceValue) {
+      state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
+    }
     state.listData = History.createListData(transactions, symbol, address);
     return state;
   }
