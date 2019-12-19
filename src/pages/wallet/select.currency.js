@@ -103,10 +103,13 @@ class WalletSelectCurrency extends Component {
       const {
         navigation, wallets, updateTimestamp,
       } = nextProps;
+      const {
+        updateTimestamp: lastUpdateTimeStamp,
+      } = this.props;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
-      if (updateTimestamp) {
+      if (updateTimestamp !== lastUpdateTimeStamp) {
         this.setState({ loading: false });
-        if (phrases) {
+        if (phrases !== '') {
           const statckActions = StackActions.popToTop();
           navigation.dispatch(statckActions);
         } else {
