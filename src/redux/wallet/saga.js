@@ -44,6 +44,15 @@ function createTimer(interval) {
  * Start the timer to call actions.GET_PRICE periodically
  */
 export function* startFetchPriceTimerRequest() {
+  // Call actions.GET_PRICE once to start off
+  // yield put({
+  //   type: actions.GET_PRICE,
+  //   payload: {
+  //     symbols: supportedTokens,
+  //     currencies: _.map(currencySettings, (item) => item.name),
+  //   },
+  // });
+
   const chan = yield call(createTimer, FETCH_PRICE_INTERVAL);
 
   try {
@@ -68,6 +77,13 @@ export function* startFetchPriceTimerRequest() {
  */
 export function* startFetchBalanceTimerRequest(action) {
   const walletManager = action.payload;
+
+  // Call actions.FETCH_BALANCE once to start off
+  // yield put({
+  //   type: actions.FETCH_BALANCE,
+  //   payload: walletManager,
+  // });
+
   const chan = yield call(createTimer, FETCH_BALANCE_INTERVAL);
 
   try {
@@ -89,6 +105,13 @@ export function* startFetchBalanceTimerRequest(action) {
  */
 export function* startFetchTransactionTimerRequest(action) {
   const walletManager = action.payload;
+
+  // Call actions.FETCH_TRANSACTION once to start off
+  // yield put({
+  //   type: actions.FETCH_TRANSACTION,
+  //   payload: walletManager,
+  // });
+
   const chan = yield call(createTimer, FETCH_TRANSACTION_INTERVAL);
 
   try {

@@ -67,6 +67,10 @@ export default function appReducer(state = initState, action) {
         .set('language', settings && settings.get('language'))
         .set('fingerprint', settings && settings.get('fingerprint'));
     }
+    case actions.RESET_INIT_DONE: {
+      return state.set('isInitFromStorageDone', false)
+        .set('isInitWithParseDone', false);
+    }
     default:
       return state;
   }
