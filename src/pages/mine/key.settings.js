@@ -195,11 +195,8 @@ class KeySettings extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated, updateTimestamp,
+        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated,
       } = nextProps;
-      const {
-        updateTimestamp: lastUpdateTimeStamp,
-      } = this.props;
       const { key } = navigation.state.params;
       const { name, coins } = key;
 
@@ -207,24 +204,15 @@ class KeySettings extends Component {
 
       // If isWalletsUpdated, wallet is deleted.
       if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
-        // const infoNotification = createInfoNotification(
-        //   'Key deleted',
-        //   'Key has been deleted successfully.',
-        // );
-        // addNotification(infoNotification);
+        const walletListData = KeySettings.createWalletListData(coins);
+        this.setState({ walletListData, name, isShowNotification: true });
         resetWalletsUpdated();
-        this.setState({ isShowNotification: true });
       }
 
       // If notification removed by user, go back
       if (isShowNotification && notification === null) {
         this.setState({ isShowNotification: false });
         navigation.goBack();
-      }
-
-      if (updateTimestamp !== lastUpdateTimeStamp) {
-        const walletListData = KeySettings.createWalletListData(coins);
-        this.setState({ walletListData, name });
       }
     }
 
@@ -318,7 +306,6 @@ KeySettings.propTypes = {
   addNotification: PropTypes.func.isRequired,
   notification: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
-  updateTimestamp: PropTypes.number.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -330,7 +317,6 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   notification: state.App.get('notification'),
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

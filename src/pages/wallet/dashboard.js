@@ -33,7 +33,7 @@ Dashboard.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
