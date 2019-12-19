@@ -25,6 +25,11 @@ const actions = {
   START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
   START_FETCH_TRANSACTION_TIMER: 'START_FETCH_TRANSACTION_TIMER',
 
+  WALLTES_UPDATED: 'WALLTES_UPDATED',
+  RESET_WALLETS_UPDATED: 'RESET_WALLETS_UPDATED',
+  WALLTE_NAME_UPDATED: 'WALLTE_NAME_UPDATED',
+  RESET_WALLET_NAME_UPDATED: 'RESET_WALLTE_NAME_UPDATED',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -82,6 +87,13 @@ const actions = {
       coinIds,
       walletManager,
     },
+  }),
+
+  resetWalletsUpdated: () => ({
+    type: actions.RESET_WALLETS_UPDATED,
+  }),
+  resetWalletNameUpdated: () => ({
+    type: actions.RESET_WALLET_NAME_UPDATED,
   }),
 };
 
