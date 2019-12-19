@@ -268,7 +268,6 @@ class History extends Component {
   });
 
   static createListData(transactions, symbol, address) {
-    console.log('History::createListData');
     if (!transactions) {
       return [];
     }
@@ -336,17 +335,16 @@ class History extends Component {
     this.state = {
       isRefreshing: false,
       isLoadMore: false,
-      symbol: coin.symbol,
+      coin,
       balanceText: '',
       balanceValueText: '',
-      coinId: coin.id,
       listData: null,
       pendingBalanceText: '',
       pendingBalanceValueText: '',
     };
-    this.coin = coin;
-    this.price = 0;
+
     this.page = 1;
+
     this.onRefresh = this.onRefresh.bind(this);
     this.refreshControl = this.refreshControl.bind(this);
     this.onSendButtonClick = this.onSendButtonClick.bind(this);
@@ -357,11 +355,9 @@ class History extends Component {
 
   componentWillMount() {
     const {
-      prices, currency, fetchTransaction, walletManager,
+      currency, fetchTransaction, walletManager,
     } = this.props;
-    const { symbol } = this.state;
-    const { balance, balanceValue } = this.coin;
-    this.getPrice(prices);
+    const { coin: { symbol, balance, balanceValue } } = this.state;
     this.generateBalanceText(balance, balanceValue, symbol, currency);
     fetchTransaction(walletManager);
   }
@@ -370,14 +366,17 @@ class History extends Component {
     const {
       isTransactionUpdated, resetTransactionUpdated, currency,
     } = nextProps;
-    const { symbol } = this.state;
-    const { balance, balanceValue } = this.coin;
+    const {
+      coin: {
+        symbol, balance, balanceValue, transactions,
+      },
+    } = this.state;
     // const { transactions: curTransactions } = this.props;
     // const { isLoadMore } = this.state;
     this.generateBalanceText(balance, balanceValue, symbol, currency);
     const newState = this.state;
     if (isTransactionUpdated) {
-      newState.listData = History.createListData(this.coin.transactions, symbol);
+      newState.listData = History.createListData(transactions, symbol);
       resetTransactionUpdated();
     }
     this.setState(newState);
@@ -440,23 +439,6 @@ class History extends Component {
     navigation.goBack();
   }
 
-  getPrice(prices) {
-    const { symbol } = this.state;
-    if (!prices) {
-      return;
-    }
-    let price = 0;
-    const { currency } = this.props;
-    for (let i = 0; i < prices.length; i += 1) {
-      const item = prices[i];
-      if (item.symbol === symbol) {
-        price = item.price[currency];
-        break;
-      }
-    }
-    this.price = price;
-  }
-
   generateBalanceText(balance, balanceValue, symbol, currency) {
     let balanceText = ' ';
     let balanceValueText = ' ';
@@ -492,13 +474,20 @@ class History extends Component {
 
   render() {
     const {
-      balanceText, balanceValueText, coinId, listData, pendingBalanceText, pendingBalanceValueText,
+      coin, balanceText, balanceValueText, listData, pendingBalanceText, pendingBalanceValueText,
     } = this.state;
+
+    const symbol = coin && coin.symbol;
+    const type = coin && coin.type;
 
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
-          <Text style={[styles.headerTitle]}>{coinId}</Text>
+          <Text style={[styles.headerTitle]}>
+            {symbol}
+            {' '}
+            {type === 'Testnet' ? type : ''}
+          </Text>
           <TouchableOpacity
             style={styles.backButton}
             onPress={this.onbackClick}
@@ -549,23 +538,20 @@ History.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   currency: PropTypes.string.isRequired,
-  prices: PropTypes.arrayOf(PropTypes.shape({})),
   // isBalanceUpdated: PropTypes.bool.isRequired,
   // resetBalanceUpdated: PropTypes.func.isRequired,
   fetchTransaction: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   isTransactionUpdated: PropTypes.bool.isRequired,
   resetTransactionUpdated: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
-  prices: null,
   walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
-  prices: state.Wallet.get('prices'),
   walletManager: state.Wallet.get('walletManager'),
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   isTransactionUpdated: state.Wallet.get('isTransactionUpdated'),

@@ -20,19 +20,18 @@ import screenHelper from '../../common/screenHelper';
 import walletActions from '../../redux/wallet/actions';
 import config from '../../../config';
 import ResponsiveText from '../../components/common/misc/responsive.text';
-
-// currencySettings:
-const { consts: { supportedTokens, currencies: currencySettings } } = config;
-
-// import {createSuccessNotification, createInfoNotification, createWarningNotification, createErrorNotification} from '../../common/notification.controller'
+import common from '../../common/common';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
-const DEFAULT_CURRENCY_SYMBOL = '$';
 const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
+
+const { consts: { supportedTokens } } = config;
+const { getCurrencySymbol, getCurrencyNames } = common;
+const currencyNames = getCurrencyNames();
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -214,18 +213,6 @@ class WalletList extends Component {
     });
 
     /**
-     * Get currency symbol string for example '$' based on currency
-     * @param {string} currency currency string such as 'USD'
-     */
-    static getCurrencySymbol(currency, currencySymbols) {
-      if (currencySymbols[currency]) {
-        return currencySymbols[currency];
-      }
-
-      return DEFAULT_CURRENCY_SYMBOL;
-    }
-
-    /**
      * Returns number string based on walletManager.assetValue; 0 as default value
      */
     static getTotalAssetValueText(walletManager) {
@@ -249,7 +236,7 @@ class WalletList extends Component {
 
       // Create element for each wallet (e.g. key 0)
       wallets.forEach((wallet) => {
-        const wal = { name: `Key ${wallet.id}`, coins: [] };
+        const wal = { name: wallet.name, coins: [] };
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
@@ -299,38 +286,25 @@ class WalletList extends Component {
     constructor(props) {
       super(props);
 
-      // Extract currency symbols from config
-      // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
-      this.currencySymbols = _.reduce(currencySettings, (obj, row) => {
-        const settingsObj = obj;
-        settingsObj[row.name] = row.symbol;
-        return settingsObj;
-      }, {});
-
-      // Currency names used to pass into getPrice
-      this.currencyNames = _.map(currencySettings, (item) => item.name);
-
       this.state = {
         listData: [],
-        currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+        currencySymbol: getCurrencySymbol(props.currency),
         totalAssetValueText: '',
       };
     }
 
     componentWillMount() {
       const {
-        getPrice, currency, wallets, navigation, fetchBalance, startFetchBalanceTimer, coinInstances, walletManager,
+        getPrice, currency, wallets, navigation, fetchBalance, coinInstances, walletManager,
       } = this.props;
 
       // 1. Get balance of each token
       fetchBalance(coinInstances);
 
       // 2. Get price of each token
-      getPrice(supportedTokens, this.currencyNames, currency);
+      getPrice(supportedTokens, currencyNames);
 
-      startFetchBalanceTimer();
-
-      const currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+      const currencySymbol = getCurrencySymbol(currency);
       const listData = WalletList.createListData(wallets, currencySymbol, navigation);
       const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
 
@@ -341,9 +315,14 @@ class WalletList extends Component {
       });
     }
 
+    // componentDidMount() {
+    //   const { showToast } = global.functions;
+    //   showToast('Hello Master');
+    // }
+
     componentWillReceiveProps(nextProps) {
       const {
-        currency, prices, isAssetValueUpdated, wallets, navigation,
+        currency, prices, isAssetValueUpdated, wallets, navigation, isWalletNameUpdated, isWalletsUpdated,
       } = nextProps;
 
       const {
@@ -357,11 +336,11 @@ class WalletList extends Component {
 
       // Update currency symbol such as $ if currency settings has chagned
       if (isCurrencyChanged) {
-        newState.currencySymbol = WalletList.getCurrencySymbol(currency, this.currencySymbols);
+        newState.currencySymbol = getCurrencySymbol(currency);
       }
 
       // Update total asset value and list data if there's currency, price, or balance change
-      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated) {
+      if (isCurrencyChanged || isPricesChanged || isAssetValueUpdated || isWalletNameUpdated || isWalletsUpdated) {
         updateWalletAssetValue(currency);
         newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
         newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
@@ -473,14 +452,15 @@ WalletList.propTypes = {
   getPrice: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  walletManager: PropTypes.shape(PropTypes.object),
+  walletManager: PropTypes.shape({}),
   fetchBalance: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  startFetchBalanceTimer: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAssetValueUpdated: PropTypes.bool.isRequired,
   resetAssetValueUpdated: PropTypes.func.isRequired,
   coinInstances: PropTypes.arrayOf(PropTypes.object),
+  isWalletNameUpdated: PropTypes.bool.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -496,14 +476,15 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   coinInstances: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').getTokens(),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getPrice: (symbols, currencies, currency) => dispatch(walletActions.getPrice(symbols, currencies, currency)),
+  getPrice: (symbols, currencies) => dispatch(walletActions.getPrice(symbols, currencies)),
   fetchBalance: (tokens) => dispatch(walletActions.fetchBalance(tokens)),
   resetAssetValueUpdated: () => dispatch(walletActions.resetAssetValueUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
-  startFetchBalanceTimer: () => dispatch(walletActions.startFetchBalanceTimer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

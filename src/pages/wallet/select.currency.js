@@ -5,15 +5,15 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions } from 'react-navigation';
 import CoinTypeList from '../../components/wallet/coin.type.list';
-import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -41,14 +41,12 @@ class WalletSelectCurrency extends Component {
       header: null,
     });
 
-    static async createWallet(phrases, coins) {
-      let wallet = null;
+    static async createWallet(phrases, coins, walletManager, createKey) {
       if (phrases) {
-        wallet = await walletManager.createWallet('imported', phrases, coins);
+        createKey(null, phrases, coins, walletManager);
       } else {
-        wallet = await walletManager.createWallet('randomName', phrases, coins);
+        createKey(null, phrases, coins, walletManager);
       }
-      return wallet;
     }
 
     mainnet = [
@@ -95,8 +93,29 @@ class WalletSelectCurrency extends Component {
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+      const {
+        isWalletsUpdated, resetWalletsUpdated, navigation, wallets,
+      } = nextProps;
+      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      if (isWalletsUpdated && resetWalletsUpdated) {
+        this.setState({ loading: false });
+        if (phrases) {
+          const statckActions = StackActions.popToTop();
+          navigation.dispatch(statckActions);
+        } else {
+          // the last wallet is created just now.
+          const wallet = wallets[wallets.length - 1];
+          navigation.navigate('RecoveryPhrase', { wallet });
+        }
+        resetWalletsUpdated();
+      }
+    }
+
     async onCreateButtonPress() {
-      const { navigation, updateUser } = this.props;
+      const {
+        navigation, walletManager, createKey,
+      } = this.props;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
@@ -111,20 +130,7 @@ class WalletSelectCurrency extends Component {
         }
       }
       this.setState({ loading: true });
-      const wallet = await WalletSelectCurrency.createWallet(phrases, coins);
-      this.setState({ loading: false });
-      updateUser({ wallets: walletManager.wallets });
-      if (phrases) {
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'WalletList' }),
-          ],
-        });
-        navigation.dispatch(resetAction);
-      } else {
-        navigation.navigate('RecoveryPhrase', { wallet });
-      }
+      WalletSelectCurrency.createWallet(phrases, coins, walletManager, createKey);
     }
 
 
@@ -135,7 +141,7 @@ class WalletSelectCurrency extends Component {
         <ScrollView>
           <Header
             title="Select Wallet Currency"
-            goBack={navigation.goBack}
+            goBack={() => { navigation.goBack(); }}
           />
           <View style={[screenHelper.styles.body]}>
             <View style={[styles.sectionContainer, { marginTop: 15 }]}>
@@ -166,15 +172,28 @@ WalletSelectCurrency.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  updateUser: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({}),
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  createKey: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
+  resetWalletsUpdated: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+WalletSelectCurrency.defaultProps = {
+  walletManager: undefined,
+  wallets: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
-  updateUser: (updateFields) => dispatch(
-    appActions.updateUser(updateFields),
-  ),
+  updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
+  createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);

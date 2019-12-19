@@ -33,6 +33,8 @@ import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import ResetPasscode from '../pages/mine/reset.passcode';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
+import KeySettings from '../pages/mine/key.settings';
+import KeyName from '../pages/mine/key.name';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -239,6 +241,20 @@ const routeConfigMap = {
       path: 'ResetPasscodeSuccess',
       navigationOptions: () => ({
         headerTitle: 'ResetPasscode',
+      }),
+    },
+    KeySettings: {
+      screen: KeySettings,
+      path: 'KeySettings',
+      navigationOptions: () => ({
+        headerTitle: 'KeySettings',
+      }),
+    },
+    KeyName: {
+      screen: KeyName,
+      path: 'KeyName',
+      navigationOptions: () => ({
+        headerTitle: 'KeyName',
       }),
     },
   },

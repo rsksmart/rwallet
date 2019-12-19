@@ -3,9 +3,15 @@
 const actions = {
   // Constants definition
   IS_PAGE_LOADING: 'IS_PAGE_LOADING',
-  INIT_APP: 'INIT_APP',
 
-  GET_SERVER_INFO: 'GET_SERVER_INFO',
+  INIT_FROM_STORAGE: 'INIT_FROM_STORAGE',
+  INIT_FROM_STORAGE_DONE: 'INIT_FROM_STORAGE_DONE',
+
+  INIT_WITH_PARSE: 'INIT_WITH_PARSE',
+  INIT_WITH_PARSE_DONE: 'INIT_WITH_PARSE_DONE',
+
+  UPDATE_USER: 'UPDATE_USER',
+
   GET_SERVER_INFO_RESULT: 'GET_SERVER_INFO_RESULT',
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   GET_TRANSACTIONS_RESULT: 'GET_TRANSACTIONS_RESULT',
@@ -17,11 +23,13 @@ const actions = {
   SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
-  UPDATE_USER: 'UPDATE_USER',
 
   // Functions definition
-  initApp: () => ({
-    type: actions.INIT_APP,
+  initializeFromStorage: () => ({
+    type: actions.INIT_FROM_STORAGE,
+  }),
+  initializeWithParse: () => ({
+    type: actions.INIT_WITH_PARSE,
   }),
   addNotification: (notification) => ({
     type: actions.ADD_NOTIFICATION,
@@ -33,9 +41,6 @@ const actions = {
   setPageLoading: (isLoading) => ({
     type: actions.IS_PAGE_LOADING,
     value: isLoading,
-  }),
-  getServerInfo: () => ({
-    type: actions.GET_SERVER_INFO,
   }),
   getTransactions: (symbol, type, address, page) => {
     console.log('actions::getTransactions is called.');
@@ -60,9 +65,8 @@ const actions = {
     key,
     value,
   }),
-  updateUser: ({ wallets, settings }) => ({
+  updateUser: () => ({
     type: actions.UPDATE_USER,
-    payload: { wallets, settings },
   }),
 };
 

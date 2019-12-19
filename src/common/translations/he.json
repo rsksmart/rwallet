@@ -106,5 +106,20 @@
   "Backup Phrase": "Backup Phrase",
   "Incorrect backup phrase": "Incorrect backup phrase",
   "Unable to recover": "Unable to recover",
-  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
+  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct.",
+  "Key Settings": "Key Settings",
+  "SAVE": "SAVE",
+  "What do you call this key?": "What do you call this key?",
+  "You can change the name displayed on the device below": "You can change the name displayed on the device below.",
+  "Name": "Name",
+  "Security": "Security",
+  "Advanced": "Advanced",
+  "Wallets": "Wallets",
+  "wallets": "wallets",
+  "Key Name": "Key Name",
+  "Delete": "Delete",
+  "Backup": "Backup",
+  "Keys": "Keys",
+  "Join Community": "Join Community",
+  "This key contains": "This key contains"
 }

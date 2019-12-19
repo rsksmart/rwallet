@@ -3,42 +3,59 @@ import {
   take, call, all, takeEvery, put,
 } from 'redux-saga/effects';
 
-import { eventChannel, END } from 'redux-saga';
+import _ from 'lodash';
+
+import { eventChannel /* END */ } from 'redux-saga';
 
 import actions from './actions';
 import appActions from '../app/actions';
-
 import ParseHelper from '../../common/parse';
 
-function countdown(seconds) {
-  let secs = seconds;
+import { createErrorNotification } from '../../common/notification.controller';
+import config from '../../../config';
+
+const {
+  consts: { supportedTokens, currencies: currencySettings },
+  interval: { fetchPrice: FETCH_PRICE_INTERVAL },
+} = config;
+
+/**
+ * Utility function to create a channel to emit an event periodically
+ * @param {number} interval interval between invoke in milliseconds
+ */
+function createTimer(interval) {
   return eventChannel((emitter) => {
-    const iv = setInterval(() => {
-      secs -= 1;
-      if (secs > 0) {
-        emitter(secs);
-      } else {
-        // this causes the channel to close
-        emitter(END);
-      }
-    }, 1000);
-      // The subscriber must return an unsubscribe function
+    const intervalInstance = setInterval(() => {
+      emitter((new Date()).getTime());
+
+      // To close this channel, user emitter(END);
+    }, interval);
     return () => {
-      clearInterval(iv);
+      clearInterval(intervalInstance);
     };
   });
 }
 
-export function* startFetchBalanceTimerRequest() {
-  const chan = yield call(countdown, 5);
+/**
+ * Start the timer to call actions.GET_PRICE periodically
+ */
+export function* startFetchPriceTimerRequest() {
+  const chan = yield call(createTimer, FETCH_PRICE_INTERVAL);
+
   try {
     while (true) {
       // take(END) will cause the saga to terminate by jumping to the finally block
-      const seconds = yield take(chan);
-      console.log(`countdown: ${seconds}`);
+      yield take(chan);
+      yield put({
+        type: actions.GET_PRICE,
+        payload: {
+          symbols: supportedTokens,
+          currencies: _.map(currencySettings, (item) => item.name),
+        },
+      });
     }
   } finally {
-    console.log('countdown terminated');
+    console.log('fetchPrice Channel closed.');
   }
 }
 
@@ -80,14 +97,7 @@ function* getPriceRequest(action) {
     });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
-
-    console.error(message);
-
-    // On error, use appActions.SET_ERROR to notify UI
-    yield put({
-      type: appActions.SET_ERROR,
-      value: { message },
-    });
+    console.warn(message);
   }
 }
 
@@ -122,13 +132,55 @@ function* fetchTransactionRequest(action) {
   }
 }
 
+function* createKeyRequest(action) {
+  const {
+    name, phrase, coinIds, walletManager,
+  } = action.payload;
+  try {
+    yield call(walletManager.createWallet, name, phrase, coinIds);
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
+function* deleteKeyRequest(action) {
+  const { walletManager, key } = action.payload;
+  try {
+    yield call(walletManager.deleteWallet, key);
+    yield put({ type: actions.WALLTES_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
+function* renameKeyRequest(action) {
+  const { walletManager, key, name } = action.payload;
+  try {
+    yield call(walletManager.renameWallet, key, name);
+    yield put({ type: actions.WALLTE_NAME_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    const notification = createErrorNotification('Incorrect name', message.message);
+    yield put(appActions.addNotification(notification));
+    // console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
-    // When app loading action is fired, try to fetch server info
     takeEvery(actions.GET_WALLETS, getWalletsRequest),
     takeEvery(actions.GET_PRICE, getPriceRequest),
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
-    takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
+    takeEvery(actions.START_FETCH_PRICE_TIMER, startFetchPriceTimerRequest),
+    takeEvery(actions.DELETE_KEY, deleteKeyRequest),
+    takeEvery(actions.RENAME_KEY, renameKeyRequest),
+    takeEvery(actions.CREATE_KEY, createKeyRequest),
   ]);
 }
