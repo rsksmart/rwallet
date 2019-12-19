@@ -357,11 +357,20 @@ class History extends Component {
 
   componentWillMount() {
     const {
-      currency, fetchTransaction, walletManager,
+      fetchTransaction, walletManager,
     } = this.props;
-    const { coin: { symbol, balance, balanceValue } } = this.state;
-    this.generateBalanceText(balance, balanceValue, symbol, currency);
     fetchTransaction(walletManager);
+  }
+
+  componentDidMount() {
+    const { currency } = this.props;
+    const {
+      coin: {
+        symbol, balance, balanceValue, pendingBalance, pendingBalanceValue,
+      },
+    } = this.state;
+    this.generateBalanceText(balance, balanceValue, symbol, currency);
+    this.generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -370,12 +379,13 @@ class History extends Component {
     } = nextProps;
     const {
       coin: {
-        symbol, balance, balanceValue, transactions,
+        symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
       },
     } = this.state;
     // const { transactions: curTransactions } = this.props;
     // const { isLoadMore } = this.state;
     this.generateBalanceText(balance, balanceValue, symbol, currency);
+    this.generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency);
     const newState = this.state;
     if (isTransactionUpdated) {
       newState.listData = History.createListData(transactions, symbol);
@@ -452,6 +462,19 @@ class History extends Component {
       balanceValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
     }
     this.setState({ balanceText, balanceValueText });
+  }
+
+  generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency) {
+    let pendingBalanceText = '';
+    let pendingBalanceValueText = '';
+    const currencySymbol = getCurrencySymbol(currency);
+    if (pendingBalance) {
+      pendingBalanceText = `${pendingBalance.toFixed()} ${symbol}`;
+    }
+    if (pendingBalanceValue) {
+      pendingBalanceValueText = `${currencySymbol}${pendingBalanceValue.decimalPlaces(2).toFixed()}`;
+    }
+    this.setState({ pendingBalanceText, pendingBalanceValueText });
   }
 
   refreshControl() {
