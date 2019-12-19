@@ -195,7 +195,7 @@ class KeySettings extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated,
+        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated, isWalletNameUpdated,
       } = nextProps;
       const { key } = navigation.state.params;
       const { name, coins } = key;
@@ -205,13 +205,17 @@ class KeySettings extends Component {
       // If isWalletsUpdated, wallet is deleted.
       if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
         const walletListData = KeySettings.createWalletListData(coins);
-        this.setState({ walletListData, name, isShowNotification: true });
+        this.setState({ walletListData, isShowNotification: true });
         resetWalletsUpdated();
         const infoNotification = createInfoNotification(
           'Key deleted',
           'Key has been deleted successfully.',
         );
         addNotification(infoNotification);
+      }
+
+      if (isWalletNameUpdated) {
+        this.setState({ name });
       }
 
       // If notification removed by user, go back
@@ -311,6 +315,7 @@ KeySettings.propTypes = {
   addNotification: PropTypes.func.isRequired,
   notification: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
+  isWalletNameUpdated: PropTypes.bool.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -321,6 +326,7 @@ KeySettings.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
   notification: state.App.get('notification'),
 });
 

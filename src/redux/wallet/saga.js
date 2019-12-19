@@ -207,7 +207,7 @@ function* renameKeyRequest(action) {
   const { walletManager, key, name } = action.payload;
   try {
     yield call(walletManager.renameWallet, key, name);
-    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: actions.WALLTE_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
