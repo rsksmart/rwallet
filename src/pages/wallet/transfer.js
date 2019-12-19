@@ -210,6 +210,7 @@ class Transfer extends Component {
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
+    this.onGroupSelect = this.onGroupSelect.bind(this);
   }
 
   componentDidMount() {
@@ -225,37 +226,53 @@ class Transfer extends Component {
     appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
+  onGroupSelect(i) {
+    let preference = '';
+    switch (i) {
+      case 0:
+        preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
+        break;
+      case 2:
+        preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
+        break;
+      case 1:
+      default:
+        preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
+        break;
+    }
+    this.setState({ preference });
+  }
+
   initContext() {
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
     const btcFees = [
-      { coin: '0.0046 BTC' },
-      { coin: '0.0048 BTC' },
-      { coin: '0.0052 BTC' },
+      { coin: 0.0046, value: '$ 0.46' },
+      { coin: 0.0048, value: '$ 0.68' },
+      { coin: 0.0052, value: '$ 0.84' },
     ];
     const rbtcFees = [
-      { coin: '0.0046 RBTC' },
-      { coin: '0.0048 RBTC' },
-      { coin: '0.0052 RBTC' },
+      { coin: 0.0046, value: '$ 0.46' },
+      { coin: 0.0048, value: '$ 0.68' },
+      { coin: 0.0052, value: '$ 0.84' },
     ];
     const rifFees = [
-      { coin: '0.0046 RIF' },
-      { coin: '0.0048 RIF' },
-      { coin: '0.0052 RIF' },
+      { coin: 0.0046, value: '$ 0.46' },
+      { coin: 0.0048, value: '$ 0.68' },
+      { coin: 0.0052, value: '$ 0.84' },
     ];
-    const contexts = {
-      BTC: { symbol: 'BTC', feeData: btcFees, netType: 'Mainnet' },
-      BTCTestnet: { symbol: 'BTC', feeData: btcFees, netType: 'Testnet' },
-      RBTC: { symbol: 'RBTC', feeData: rbtcFees, netType: 'Mainnet' },
-      RBTCTestnet: { symbol: 'RBTC', feeData: rbtcFees, netType: 'Testnet' },
-      RIF: { symbol: 'RIF', feeData: rifFees, netType: 'Mainnet' },
-      RIFTestnet: { symbol: 'RIF', feeData: rifFees, netType: 'Testnet' },
-    };
-    const context = contexts[coin.id];
-    this.symbol = context.symbol;
-    this.feeData = context.feeData;
-    this.netType = context.netType;
-    this.setState({ preference: this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 } });
+    const feeDatas = { BTC: btcFees, RBTC: rbtcFees, RIF: rifFees };
+    this.symbol = coin.symbol;
+    const feeData = feeDatas[coin.symbol];
+    feeData.forEach((fee) => {
+      const item = fee;
+      item.coin = `${item.coin} ${coin.symbol}`;
+      // TODO: calculate coin value
+    });
+    this.setState({
+      preference: this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 },
+      feeData,
+    });
   }
 
   async confirm() {
@@ -321,7 +338,7 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, feeLevel, isConfirm, enableConfirm,
+      loading, to, amount, memo, feeLevel, isConfirm, enableConfirm, feeData,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -417,24 +434,9 @@ class Transfer extends Component {
               <Loc style={[styles.title2]} text="Miner fee" />
               <Loc style={[styles.question]} text="How fast you want this done?" />
               <RadioGroup
-                data={this.feeData}
-                selected={feeLevel}
-                onChange={(i) => {
-                  let preference = '';
-                  switch (i) {
-                    case 0:
-                      preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                    case 2:
-                      preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                    case 1:
-                    default:
-                      preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                  }
-                  this.setState({ preference });
-                }}
+                data={feeData}
+                selectIndex={feeLevel}
+                onChange={(i) => this.onGroupSelect(i)}
               />
             </View>
           </View>
