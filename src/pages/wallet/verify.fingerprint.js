@@ -54,16 +54,14 @@ export default class VerifyFingerprint extends Component {
       const { errorMessage } = this.state;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Verify Fingerprint" goBack={navigation.goBack} />
+          <Header title="Verify Fingerprint" goBack={() => { navigation.goBack(); }} />
           <TouchSensorModal
             ref={(ref) => { this.touchSensor = ref; }}
             onUsePasscodePress={() => {
               navigation.goBack();
               navigation.navigate('VerifyPasscode', { verified: navigation.state.params.verified });
             }}
-            onUserCancel={() => {
-              navigation.goBack();
-            }}
+            onUserCancel={() => { navigation.goBack(); }}
             errorMessage={errorMessage}
           />
         </View>
