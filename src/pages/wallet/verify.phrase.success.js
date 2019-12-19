@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View, StyleSheet, Image,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
@@ -79,13 +79,8 @@ export default class VerifyPhraseSuccess extends Component {
             <Button
               text="GO TO WALLET"
               onPress={async () => {
-                const resetAction = StackActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'WalletList' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
+                const statckActions = StackActions.popToTop();
+                navigation.dispatch(statckActions);
               }}
             />
           </View>

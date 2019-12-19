@@ -101,10 +101,10 @@ class WalletSelectCurrency extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, resetWalletsUpdated, navigation, wallets,
+        navigation, wallets, updateTimestamp,
       } = nextProps;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
-      if (isWalletsUpdated && resetWalletsUpdated) {
+      if (updateTimestamp) {
         this.setState({ loading: false });
         if (phrases) {
           const statckActions = StackActions.popToTop();
@@ -114,7 +114,6 @@ class WalletSelectCurrency extends Component {
           const wallet = wallets[wallets.length - 1];
           navigation.navigate('RecoveryPhrase', { wallet });
         }
-        resetWalletsUpdated();
       }
     }
 
@@ -183,8 +182,7 @@ WalletSelectCurrency.propTypes = {
   walletManager: PropTypes.shape({}),
   wallets: PropTypes.arrayOf(PropTypes.object),
   createKey: PropTypes.func.isRequired,
-  isWalletsUpdated: PropTypes.bool.isRequired,
-  resetWalletsUpdated: PropTypes.func.isRequired,
+  updateTimestamp: PropTypes.number.isRequired,
 };
 
 WalletSelectCurrency.defaultProps = {
@@ -195,13 +193,12 @@ WalletSelectCurrency.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
-  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);
