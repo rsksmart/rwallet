@@ -442,7 +442,7 @@ class Transfer extends Component {
         </ScrollView>
         <View
           style={[styles.sectionContainer, {
-            opacity: enableConfirm ? 1 : 0.5, position: 'absolute', bottom: 0, width: '100%', paddingVertical: 20,
+            opacity: enableConfirm ? 1 : 0.5, position: 'absolute', bottom: 0, width: '100%', paddingTop: 20, paddingBottom: 35,
           }]}
           pointerEvents={enableConfirm ? 'auto' : 'none'}
         >
@@ -467,7 +467,7 @@ class Transfer extends Component {
               />
               )}
           >
-            <Text style={[{ fontWeight: 'bold', color: 'black' }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
+            <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
           </ConfirmSlider>
         </View>
       </View>
