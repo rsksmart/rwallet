@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: '900',
     color: '#000000',
+    fontSize: 35,
   },
   assetsValue: {
     marginTop: 10,
@@ -104,10 +105,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.94,
   },
   myAssetsButtonsView: {
-    marginTop: 13,
-    marginLeft: 15,
     width: '100%',
     flexDirection: 'row',
+    position: 'absolute',
+    left: 15,
+    bottom: 15,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -339,8 +341,6 @@ class History extends Component {
     const { coin } = navigation.state.params;
 
     this.state = {
-      sendingCoin: '0',
-      sendingCoinValue: '0',
       isRefreshing: false,
       isLoadMore: false,
       symbol: coin && coin.symbol,
@@ -350,6 +350,8 @@ class History extends Component {
       balanceText: '',
       assetValueText: '',
       listData: null,
+      pendingBalanceText: '',
+      pendingAssetValueText: '',
     };
 
     this.page = 1;
@@ -372,33 +374,53 @@ class History extends Component {
     return balanceText;
   }
 
-  static getAssetValueText(balanceValue, currency) {
+  static getAssetValueText(balanceValue, currencySymbol) {
     let assetValueText = '';
 
-    assetValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
+    if (!_.isUndefined(balanceValue)) {
+      assetValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
+    }
 
     return assetValueText;
   }
 
+  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency) {
+    const currencySymbol = getCurrencySymbol(currency);
+    const state = {};
+    state.balanceText = History.getBalanceText(balance, symbol);
+    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
+    state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
+    state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
+    state.listData = History.createListData(transactions, symbol);
+    return state;
+  }
+
+  componentDidMount() {
+    const { currency } = this.props;
+    const {
+      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+    } = this.state;
+    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+    this.setState(newState);
+  }
+
   componentWillReceiveProps(nextProps) {
     const {
-      currency, updateTimestamp,
+      currency, updateTimestamp, navigation,
     } = nextProps;
-
     const { updateTimestamp: lastUpdateTimestamp } = this.props;
-    const {
-      symbol, balance, balanceValue, transactions,
-    } = this.state;
-
-    const newState = this.state;
-
-    if (updateTimestamp !== lastUpdateTimestamp) {
-      newState.balanceText = History.getBalanceText(balance, symbol);
-      newState.assetValueText = History.getAssetValueText(balanceValue, currency);
-      newState.listData = History.createListData(transactions, symbol);
+    const { symbol } = this.state;
+    const { coin } = navigation.state.params;
+    if (updateTimestamp !== lastUpdateTimestamp && coin) {
+      const {
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      } = coin;
+      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+      newState = {
+        ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      };
+      this.setState(newState);
     }
-
-    this.setState(newState);
   }
 
   onRefresh() {
@@ -429,6 +451,18 @@ class History extends Component {
     if (isCloseToBottom(nativeEvent)) {
       // console.log('ScrollView isCloseToBottom');
     }
+  }
+
+  static renderPendingBalance(pendingBalanceText, pendingBalanceValueText) {
+    if (pendingBalanceText === '') {
+      return null;
+    }
+    return (
+      <View style={styles.sendingView}>
+        <Image style={styles.sendingIcon} source={sending} />
+        <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+      </View>
+    );
   }
 
   onMomentumScrollEnd(e) {
@@ -468,16 +502,12 @@ class History extends Component {
   }
 
   render() {
-    const { currency } = this.props;
-
     const {
-      coin, sendingCoin, sendingCoinValue, balanceText, assetValueText, listData,
+      coin, balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
     } = this.state;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
-
-    const currencySymbol = getCurrencySymbol(currency);
 
     return (
       <ScrollView>
@@ -496,12 +526,9 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{assetValueText}</Text>
-            <View style={styles.sendingView}>
-              <Image style={styles.sendingIcon} source={sending} />
-              <Text style={styles.sending}>{`${sendingCoin} ${symbol} (${currencySymbol}${sendingCoinValue})`}</Text>
-            </View>
+            {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
