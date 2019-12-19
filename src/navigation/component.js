@@ -47,7 +47,8 @@ class RootComponent extends Component {
     };
 
     this.state = {
-      isInitialized: false,
+      isStorageRead: false,
+      isParseWritten: false,
       SwitchNavComponent: undefined,
     };
   }
@@ -66,27 +67,58 @@ class RootComponent extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
+      startFetchBalanceTimer, startFetchTransactionTimer, walletManager, currency, prices, isBalanceUpdated,
     } = nextProps;
+
+    const {
+      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated,
+    } = this.props;
+
+    const { isStorageRead, isParseWritten } = this.state;
 
     const newState = this.state;
 
-    // As long as the app initialized from storage, we mark state.isInitialized to true
-    if (isInitFromStorageDone && !isInitWithParseDone) {
-      newState.isInitialized = true;
+    if (isStorageRead && isParseWritten) { // Post-Initialization logic
+      const isCurrencyChanged = (currency !== originalCurrency);
+      const isPricesChanged = (!_.isEqual(prices, originalPrices));
+      let needUpdate = false;
 
-      // Start the first page from Wallet Dashboard if there's any wallet
-      newState.SwitchNavComponent = createAppContainer(
-        createSwitchNavigator(
-          DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
-        ),
-      );
+      console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
+      // Update total asset value and list data if there's currency or price change
+      // Balance, name, creation/deletion are handled in reducer directly
+      if (isBalanceUpdated) {
+        needUpdate = true;
+        resetBalanceUpdated();
+      } else if (isCurrencyChanged || isPricesChanged) {
+        needUpdate = true;
+      }
 
-      // Upload current wallet settings to Parse in order to get balances and transactions
-      initializeWithParse();
+      if (needUpdate) {
+        updateWalletAssetValue(currency);
+      }
+    } else if (isInitFromStorageDone) { // Initialization logic
+      if (!isInitWithParseDone) {
+        // Start the first page from Wallet Dashboard if there's any wallet
+        newState.SwitchNavComponent = createAppContainer(
+          createSwitchNavigator(
+            DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
+          ),
+        );
 
-      // Start timer to get price frequently
-      // TODO: we will need to get rid of timer and replace with Push Notification
-      startFetchPriceTimer();
+        // Upload current wallet settings to Parse in order to get balances and transactions
+        initializeWithParse();
+        // As long as the app initialized from storage, we mark state.isStorageRead to true
+
+        newState.isStorageRead = true;
+      } else {
+        // Start timer to get price frequently
+        // TODO: we will need to get rid of timer and replace with Push Notification
+        startFetchPriceTimer();
+        startFetchBalanceTimer(walletManager);
+        startFetchTransactionTimer(walletManager);
+
+        newState.isParseWritten = true;
+      }
     }
 
     this.setState(newState);
@@ -94,11 +126,11 @@ class RootComponent extends Component {
 
   render() {
     const { showNotification, notification, dispatch } = this.props;
-    const { isInitialized, SwitchNavComponent } = this.state;
+    const { isStorageRead, SwitchNavComponent } = this.state;
 
     return (
       <View style={[flex.flex1]}>
-        {isInitialized // TODO: what do we show while waiting for initialized?
+        {isStorageRead // TODO: what do we show while waiting for initialized?
         && (
         <Root>
           <SwitchNavComponent uriPrefix={uriPrefix} />
@@ -115,27 +147,48 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
+
+  startFetchBalanceTimer: PropTypes.func.isRequired,
+  startFetchTransactionTimer: PropTypes.func.isRequired,
+  resetBalanceUpdated: PropTypes.func.isRequired,
+  updateWalletAssetValue: PropTypes.func.isRequired,
+
+  walletManager: PropTypes.shape({}),
+
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   dispatch: PropTypes.func.isRequired,
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
   startFetchPriceTimer: PropTypes.func.isRequired,
+  isBalanceUpdated: PropTypes.bool.isRequired,
+  currency: PropTypes.string.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 RootComponent.defaultProps = {
   notification: null,
+  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isInitWithParseDone: state.App.get('isInitWithParseDone'),
+  walletManager: state.Wallet.get('walletManager'),
+  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
+  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
+  currency: state.App.get('currency'),
+  prices: state.Wallet.get('prices'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initializeWithParse: () => dispatch(appActions.initializeWithParse()),
   startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
+  startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
+  startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
+  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
+  updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

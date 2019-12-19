@@ -12,7 +12,6 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 
-
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
