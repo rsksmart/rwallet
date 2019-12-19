@@ -195,7 +195,6 @@ WalletSelectCurrency.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 
