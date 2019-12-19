@@ -56,12 +56,12 @@ class RecoveryPhrase extends Component {
     }
 
     componentDidMount() {
-      const { addNotification } = this.props;
-      const notification = createInfoNotification(
-        'Recovery Phrase',
-        'Safeguard your recovery phrase Text',
-      );
-      addNotification(notification);
+      // const { addNotification } = this.props;
+      // const notification = createInfoNotification(
+      //   'Recovery Phrase',
+      //   'Safeguard your recovery phrase Text',
+      // );
+      // addNotification(notification);
     }
 
     render() {

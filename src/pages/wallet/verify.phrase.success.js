@@ -58,15 +58,23 @@ export default class VerifyPhraseSuccess extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onBackPress = this.onBackPress.bind(this);
+    }
+
+    onBackPress() {
       const { navigation } = this.props;
+      const statckActions = StackActions.popToTop();
+      navigation.dispatch(statckActions);
+    }
+
+    render() {
       return (
         <View style={[flex.flex1]}>
           <Header
             title="Verify Phrase Success"
-            goBack={() => {
-              navigation.goBack();
-            }}
+            goBack={this.onBackPress}
           />
           <View style={[screenHelper.styles.body]}>
             <View style={styles.content}>
@@ -78,10 +86,7 @@ export default class VerifyPhraseSuccess extends Component {
           <View style={styles.buttonView}>
             <Button
               text="GO TO WALLET"
-              onPress={async () => {
-                const statckActions = StackActions.popToTop();
-                navigation.dispatch(statckActions);
-              }}
+              onPress={this.onBackPress}
             />
           </View>
         </View>

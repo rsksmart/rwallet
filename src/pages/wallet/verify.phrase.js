@@ -96,14 +96,6 @@ class VerifyPhrase extends Component {
       console.log('isEqual', isEqual);
 
       if (isEqual) {
-        // const resetAction = StackActions.reset({
-        //   index: 0,
-        //   actions: [
-        //     NavigationActions.navigate({ routeName: 'WalletList' }),
-        //     NavigationActions.navigate({ routeName: 'VerifyPhraseSuccess' }),
-        //   ],
-        // });
-        // navigation.dispatch(resetAction);
         navigation.navigate('VerifyPhraseSuccess');
       } else {
         const notification = createErrorNotification(

@@ -10,7 +10,7 @@ import screenHelper from '../../common/screenHelper';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import { createInfoNotification } from '../../common/notification.controller';
+// import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -207,11 +207,11 @@ class KeySettings extends Component {
 
       // If isWalletsUpdated, wallet is deleted.
       if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
-        const infoNotification = createInfoNotification(
-          'Key deleted',
-          'Key has been deleted successfully.',
-        );
-        addNotification(infoNotification);
+        // const infoNotification = createInfoNotification(
+        //   'Key deleted',
+        //   'Key has been deleted successfully.',
+        // );
+        // addNotification(infoNotification);
         resetWalletsUpdated();
         this.setState({ isShowNotification: true });
       }
