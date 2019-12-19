@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
@@ -10,7 +11,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
-import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
@@ -216,6 +216,9 @@ const styles = StyleSheet.create({
   footerIndicator: {
     marginVertical: 20,
   },
+  noTransNotice: {
+    textAlign: 'center',
+  },
 });
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -314,6 +317,9 @@ class History extends Component {
     if (!listData) {
       return <ActivityIndicator size="small" color="#00ff00" />;
     }
+    if (listData.length === 0) {
+      return <Loc style={[styles.noTransNotice]} text="There is no transaction found in this wallet" />;
+    }
     return (
       <FlatList
         data={listData}
@@ -337,12 +343,15 @@ class History extends Component {
     this.state = {
       isRefreshing: false,
       isLoadMore: false,
-      coin,
+      symbol: coin && coin.symbol,
+      balance: coin && coin.balance,
+      balanceValue: coin && coin.balanceValue,
+      transactions: coin && coin.transactions,
       balanceText: '',
-      balanceValueText: '',
+      assetValueText: '',
       listData: null,
       pendingBalanceText: '',
-      pendingBalanceValueText: '',
+      pendingAssetValueText: '',
     };
 
     this.page = 1;
@@ -355,43 +364,58 @@ class History extends Component {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
-  componentWillMount() {
-    const {
-      fetchTransaction, walletManager,
-    } = this.props;
-    fetchTransaction(walletManager);
+  static getBalanceText(balance, symbol) {
+    let balanceText = '';
+
+    if (!_.isUndefined(balance)) {
+      balanceText = `${balance.toFixed()} ${symbol}`;
+    }
+
+    return balanceText;
+  }
+
+  static getAssetValueText(balanceValue, currencySymbol) {
+    let assetValueText = '';
+
+    if (!_.isUndefined(balanceValue)) {
+      assetValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
+    }
+
+    return assetValueText;
+  }
+
+  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency) {
+    const currencySymbol = getCurrencySymbol(currency);
+    const state = {};
+    state.balanceText = History.getBalanceText(balance, symbol);
+    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
+    state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
+    state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
+    state.listData = History.createListData(transactions, symbol);
+    return state;
   }
 
   componentDidMount() {
     const { currency } = this.props;
     const {
-      coin: {
-        symbol, balance, balanceValue, pendingBalance, pendingBalanceValue,
-      },
+      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
     } = this.state;
-    this.generateBalanceText(balance, balanceValue, symbol, currency);
-    this.generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency);
+    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+    this.setState(newState);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      isTransactionUpdated, resetTransactionUpdated, currency,
+      currency, updateTimestamp,
     } = nextProps;
+    const { updateTimestamp: lastUpdateTimestamp } = this.props;
     const {
-      coin: {
-        symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
-      },
+      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
     } = this.state;
-    // const { transactions: curTransactions } = this.props;
-    // const { isLoadMore } = this.state;
-    this.generateBalanceText(balance, balanceValue, symbol, currency);
-    this.generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency);
-    const newState = this.state;
-    if (isTransactionUpdated) {
-      newState.listData = History.createListData(transactions, symbol);
-      resetTransactionUpdated();
+    if (updateTimestamp !== lastUpdateTimestamp) {
+      const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+      this.setState(newState);
     }
-    this.setState(newState);
   }
 
   onRefresh() {
@@ -451,32 +475,6 @@ class History extends Component {
     navigation.goBack();
   }
 
-  generateBalanceText(balance, balanceValue, symbol, currency) {
-    let balanceText = ' ';
-    let balanceValueText = ' ';
-    const currencySymbol = getCurrencySymbol(currency);
-    if (balance) {
-      balanceText = `${balance.toFixed()} ${symbol}`;
-    }
-    if (balanceValue) {
-      balanceValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
-    }
-    this.setState({ balanceText, balanceValueText });
-  }
-
-  generatePendingBalanceText(pendingBalance, pendingBalanceValue, symbol, currency) {
-    let pendingBalanceText = '';
-    let pendingBalanceValueText = '';
-    const currencySymbol = getCurrencySymbol(currency);
-    if (pendingBalance) {
-      pendingBalanceText = `${pendingBalance.toFixed()} ${symbol}`;
-    }
-    if (pendingBalanceValue) {
-      pendingBalanceValueText = `${currencySymbol}${pendingBalanceValue.decimalPlaces(2).toFixed()}`;
-    }
-    this.setState({ pendingBalanceText, pendingBalanceValueText });
-  }
-
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -500,7 +498,7 @@ class History extends Component {
 
   render() {
     const {
-      coin, balanceText, balanceValueText, listData, pendingBalanceText, pendingBalanceValueText,
+      coin, balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
     } = this.state;
 
     const symbol = coin && coin.symbol;
@@ -524,8 +522,8 @@ class History extends Component {
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{balanceText}</ResponsiveText>
-            <Text style={styles.assetsValue}>{balanceValueText}</Text>
-            {History.renderPendingBalance(pendingBalanceText, pendingBalanceValueText)}
+            <Text style={styles.assetsValue}>{assetValueText}</Text>
+            {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
@@ -564,12 +562,8 @@ History.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   currency: PropTypes.string.isRequired,
-  // isBalanceUpdated: PropTypes.bool.isRequired,
-  // resetBalanceUpdated: PropTypes.func.isRequired,
-  fetchTransaction: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}),
-  isTransactionUpdated: PropTypes.bool.isRequired,
-  resetTransactionUpdated: PropTypes.func.isRequired,
+  updateTimestamp: PropTypes.number.isRequired,
 };
 
 History.defaultProps = {
@@ -579,14 +573,10 @@ History.defaultProps = {
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  isTransactionUpdated: state.Wallet.get('isTransactionUpdated'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  fetchTransaction: (walletManager) => dispatch(walletActions.fetchTransaction(walletManager)),
-  resetTransactionUpdated: () => dispatch(walletActions.resetTransactionUpdated()),
+const mapDispatchToProps = () => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

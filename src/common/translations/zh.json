@@ -121,5 +121,6 @@
   "Backup": "备份",
   "Keys": "钥匙",
   "Join Community": "加入社群",
-  "This key contains": "这个钥匙包含"
+  "This key contains": "这个钥匙包含",
+  "There is no transaction found in this wallet": "此钱包还没有任何交易"
 }

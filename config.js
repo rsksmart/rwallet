@@ -31,7 +31,9 @@ const config = {
     reduxLoggerEnabled: false,
   },
   interval: {
-    fetchPrice: 10000,
+    fetchPrice: 30000,
+    fetchBalance: 30000,
+    fetchTransaction: 30000,
   },
 };
 

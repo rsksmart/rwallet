@@ -237,7 +237,7 @@ class ParseHelper {
   static async fetchBalance(tokens) {
     const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
     const promises = _.map(validObjects, (token) => {
-      const { objectId, symbol } = token;
+      const { objectId } = token;
       const query = new Parse.Query(ParseAddress);
       return query.get(objectId)
         .then((parseObject) => {
@@ -245,7 +245,6 @@ class ParseHelper {
           // This address is hex string which needs to be procced during either here or rendering
           const balance = parseObject.get('balance');
 
-          console.log(`fetchBalance, symbol: ${symbol}, balance: ${balance}`);
           return Promise.resolve({
             objectId,
             balance,
@@ -257,6 +256,7 @@ class ParseHelper {
     });
 
     const results = await Promise.all(promises);
+    console.log('fetchBalance, results:', results);
 
     // Only return items with valid value
     return _.filter(results, (item) => !_.isUndefined(item));
