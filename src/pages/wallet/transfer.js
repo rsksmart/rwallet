@@ -210,6 +210,7 @@ class Transfer extends Component {
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
+    this.onGroupSelect = this.onGroupSelect.bind(this);
   }
 
   componentDidMount() {
@@ -223,6 +224,23 @@ class Transfer extends Component {
 
   componentWillUnmount() {
     appContext.eventEmitter.removeAllListeners('onFirstPasscode');
+  }
+
+  onGroupSelect(i) {
+    let preference = '';
+    switch (i) {
+      case 0:
+        preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
+        break;
+      case 2:
+        preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
+        break;
+      case 1:
+      default:
+        preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
+        break;
+    }
+    this.setState({ preference });
   }
 
   initContext() {
@@ -418,22 +436,7 @@ class Transfer extends Component {
               <RadioGroup
                 data={feeData}
                 selectIndex={feeLevel}
-                onChange={(i) => {
-                  let preference = '';
-                  switch (i) {
-                    case 0:
-                      preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                    case 2:
-                      preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                    case 1:
-                    default:
-                      preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
-                      break;
-                  }
-                  this.setState({ preference });
-                }}
+                onChange={(i) => this.onGroupSelect(i)}
               />
             </View>
           </View>
