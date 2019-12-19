@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
 
 
 const header = require('../../assets/images/misc/header.png');
-const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
+// const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
 const address = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
@@ -365,7 +365,7 @@ class Transfer extends Component {
                     }
                   }}
                 />
-                <Image source={currencyExchange} style={styles.textInputIcon} />
+                {/* <Image source={currencyExchange} style={styles.textInputIcon} /> */}
               </View>
             </View>
             <View style={styles.sectionContainer}>
