@@ -32,7 +32,7 @@ const DEFAULT_ROUTE_CONFIG_MAP = {
 };
 
 const DEFUALT_SWITCH_CONFIG = {
-  initialRouteName: 'PrimaryTabNavigator',
+  initialRouteName: 'Start',
 };
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
@@ -98,10 +98,16 @@ class RootComponent extends Component {
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
+        const switchConfig = DEFUALT_SWITCH_CONFIG;
+        // eslint-disable-next-line react/prop-types
+        if (!_.isEmpty(walletManager.wallets)) {
+          _.extend(switchConfig, { initialRouteName: 'PrimaryTabNavigator' });
+        }
+
         // Start the first page from Wallet Dashboard if there's any wallet
         newState.SwitchNavComponent = createAppContainer(
           createSwitchNavigator(
-            DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
+            DEFAULT_ROUTE_CONFIG_MAP, switchConfig,
           ),
         );
 
