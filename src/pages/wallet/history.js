@@ -17,6 +17,8 @@ import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 
+const { getCurrencySymbol } = common;
+
 const header = require('../../assets/images/misc/header.png');
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -442,11 +444,12 @@ class History extends Component {
   generateBalanceText(balance, balanceValue, symbol, currency) {
     let balanceText = ' ';
     let balanceValueText = ' ';
+    const currencySymbol = getCurrencySymbol(currency);
     if (balance) {
       balanceText = `${balance.toFixed()} ${symbol}`;
     }
     if (balanceValue) {
-      balanceValueText = `${balanceValue.decimalPlaces(2).toFixed()} ${currency}`;
+      balanceValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
     }
     this.setState({ balanceText, balanceValueText });
   }
