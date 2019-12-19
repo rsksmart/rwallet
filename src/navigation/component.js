@@ -32,7 +32,7 @@ const DEFAULT_ROUTE_CONFIG_MAP = {
 };
 
 const DEFUALT_SWITCH_CONFIG = {
-  initialRouteName: 'PrimaryTabNavigator',
+  initialRouteName: 'Start',
 };
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
