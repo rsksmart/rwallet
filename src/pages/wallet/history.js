@@ -511,8 +511,10 @@ class History extends Component {
 
   render() {
     const {
-      coin, balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
+      balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
     } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
