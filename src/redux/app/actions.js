@@ -9,7 +9,6 @@ const actions = {
 
   INIT_WITH_PARSE: 'INIT_WITH_PARSE',
   INIT_WITH_PARSE_DONE: 'INIT_WITH_PARSE_DONE',
-  RESET_INIT_DONE: 'RESET_INIT_DONE',
 
   UPDATE_USER: 'UPDATE_USER',
 
@@ -68,9 +67,6 @@ const actions = {
   }),
   updateUser: () => ({
     type: actions.UPDATE_USER,
-  }),
-  resetInitDone: () => ({
-    type: actions.RESET_INIT_DONE,
   }),
 };
 

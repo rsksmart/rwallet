@@ -147,7 +147,6 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-  // resetInitDone: PropTypes.func.isRequired,
 
   startFetchBalanceTimer: PropTypes.func.isRequired,
   startFetchTransactionTimer: PropTypes.func.isRequired,
@@ -185,7 +184,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  // resetInitDone: () => dispatch(appActions.resetInitDone()),
   startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
   startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
   startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
