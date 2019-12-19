@@ -406,14 +406,19 @@ class History extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      currency, updateTimestamp,
+      currency, updateTimestamp, navigation,
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp } = this.props;
-    const {
-      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
-    } = this.state;
-    if (updateTimestamp !== lastUpdateTimestamp) {
-      const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+    const { symbol } = this.state;
+    const { coin } = navigation.state.params;
+    if (updateTimestamp !== lastUpdateTimestamp && coin) {
+      const {
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      } = coin;
+      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+      newState = {
+        ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      };
       this.setState(newState);
     }
   }
