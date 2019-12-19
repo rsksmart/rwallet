@@ -62,9 +62,6 @@ export default function walletReducer(state = initState, action) {
       return state.set('updateTimestamp', getUpdateTimestamp());
     }
     case actions.WALLETS_UPDATED: {
-      return state.set('updateTimestamp', getUpdateTimestamp());
-    }
-    case actions.WALLTES_UPDATED: {
       return state.set('isWalletsUpdated', true)
         .set('updateTimestamp', getUpdateTimestamp());
     }
