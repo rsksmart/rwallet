@@ -45,13 +45,11 @@ class ResetPasscode extends Component {
       }
       return (
         <View style={[flex.flex1]}>
-          <Header title="Reset Passcode" goBack={navigation.goBack} />
+          <Header title="Reset Passcode" goBack={() => { navigation.goBack(); }} />
           <PasscodeModal
             title={title}
             ref={(ref) => { this.passcodeModal = ref; }}
-            onPress={() => {
-              navigation.goBack();
-            }}
+            onPress={() => { navigation.goBack(); }}
             onFill={async (passcode) => {
               if (flow === 'oldPasscode') {
                 this.passcodeModal.setModalVisible(true);
