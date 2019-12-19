@@ -278,8 +278,11 @@ class History extends Component {
     }
     const items = [];
     transactions.forEach((transaction) => {
-      const amount = common.convertHexToCoinAmount(symbol, transaction.value);
-      const amountText = `${amount.toFixed()} ${symbol}`;
+      let amountText = ' ';
+      if (transaction.value) {
+        const amount = common.convertHexToCoinAmount(symbol, transaction.value);
+        amountText = `${amount.toFixed()} ${symbol}`;
+      }
       let datetime = transaction.createdAt;
       let isComfirmed = true;
       let isSender = false;
@@ -347,6 +350,7 @@ class History extends Component {
       balance: coin && coin.balance,
       balanceValue: coin && coin.balanceValue,
       transactions: coin && coin.transactions,
+      address: coin && coin.address,
       balanceText: '',
       assetValueText: '',
       listData: null,
@@ -384,23 +388,23 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency) {
+  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency) {
     const currencySymbol = getCurrencySymbol(currency);
     const state = {};
     state.balanceText = History.getBalanceText(balance, symbol);
     state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
     state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
     state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
-    state.listData = History.createListData(transactions, symbol);
+    state.listData = History.createListData(transactions, symbol, address);
     return state;
   }
 
   componentDidMount() {
     const { currency } = this.props;
     const {
-      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
     } = this.state;
-    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency);
     this.setState(newState);
   }
 
@@ -413,9 +417,9 @@ class History extends Component {
     const { coin } = navigation.state.params;
     if (updateTimestamp !== lastUpdateTimestamp && coin) {
       const {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
       } = coin;
-      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
+      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency);
       newState = {
         ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
       };
