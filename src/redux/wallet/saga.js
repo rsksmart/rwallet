@@ -45,13 +45,13 @@ function createTimer(interval) {
  */
 export function* startFetchPriceTimerRequest() {
   // Call actions.GET_PRICE once to start off
-  // yield put({
-  //   type: actions.GET_PRICE,
-  //   payload: {
-  //     symbols: supportedTokens,
-  //     currencies: _.map(currencySettings, (item) => item.name),
-  //   },
-  // });
+  yield put({
+    type: actions.GET_PRICE,
+    payload: {
+      symbols: supportedTokens,
+      currencies: _.map(currencySettings, (item) => item.name),
+    },
+  });
 
   const chan = yield call(createTimer, FETCH_PRICE_INTERVAL);
 
@@ -79,10 +79,10 @@ export function* startFetchBalanceTimerRequest(action) {
   const walletManager = action.payload;
 
   // Call actions.FETCH_BALANCE once to start off
-  // yield put({
-  //   type: actions.FETCH_BALANCE,
-  //   payload: walletManager,
-  // });
+  yield put({
+    type: actions.FETCH_BALANCE,
+    payload: walletManager,
+  });
 
   const chan = yield call(createTimer, FETCH_BALANCE_INTERVAL);
 
@@ -107,10 +107,10 @@ export function* startFetchTransactionTimerRequest(action) {
   const walletManager = action.payload;
 
   // Call actions.FETCH_TRANSACTION once to start off
-  // yield put({
-  //   type: actions.FETCH_TRANSACTION,
-  //   payload: walletManager,
-  // });
+  yield put({
+    type: actions.FETCH_TRANSACTION,
+    payload: walletManager,
+  });
 
   const chan = yield call(createTimer, FETCH_TRANSACTION_INTERVAL);
 
@@ -132,6 +132,8 @@ function* getPriceRequest(action) {
   const { symbols, currencies } = action.payload;
   try {
     const response = yield call(ParseHelper.getPrice, { symbols, currencies });
+
+    console.log('getPrice', response);
 
     // Sets state in reducer for success
     yield put({

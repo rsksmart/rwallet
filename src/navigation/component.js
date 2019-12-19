@@ -78,35 +78,12 @@ class RootComponent extends Component {
 
     const newState = this.state;
 
-    // As long as the app initialized from storage, we mark state.isStorageRead to true
-    if (isInitFromStorageDone) {
-      if (!isInitWithParseDone) {
-      // Start the first page from Wallet Dashboard if there's any wallet
-        newState.SwitchNavComponent = createAppContainer(
-          createSwitchNavigator(
-            DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
-          ),
-        );
-
-        // Upload current wallet settings to Parse in order to get balances and transactions
-        initializeWithParse();
-        newState.isStorageRead = true;
-      } else {
-      // Start timer to get price frequently
-      // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchPriceTimer();
-        startFetchBalanceTimer(walletManager);
-        startFetchTransactionTimer(walletManager);
-
-        newState.isParseWritten = true;
-      }
-    }
-
-    if (isStorageRead && isParseWritten) {
+    if (isStorageRead && isParseWritten) { // Post-Initialization logic
       const isCurrencyChanged = (currency !== originalCurrency);
       const isPricesChanged = (!_.isEqual(prices, originalPrices));
       let needUpdate = false;
 
+      console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
       // Update total asset value and list data if there's currency or price change
       // Balance, name, creation/deletion are handled in reducer directly
       if (isBalanceUpdated) {
@@ -118,6 +95,29 @@ class RootComponent extends Component {
 
       if (needUpdate) {
         updateWalletAssetValue(currency);
+      }
+    } else if (isInitFromStorageDone) { // Initialization logic
+      if (!isInitWithParseDone) {
+        // Start the first page from Wallet Dashboard if there's any wallet
+        newState.SwitchNavComponent = createAppContainer(
+          createSwitchNavigator(
+            DEFAULT_ROUTE_CONFIG_MAP, _.extend(DEFUALT_SWITCH_CONFIG, { initialRouteName: 'PrimaryTabNavigator' }),
+          ),
+        );
+
+        // Upload current wallet settings to Parse in order to get balances and transactions
+        initializeWithParse();
+        // As long as the app initialized from storage, we mark state.isStorageRead to true
+
+        newState.isStorageRead = true;
+      } else {
+        // Start timer to get price frequently
+        // TODO: we will need to get rid of timer and replace with Push Notification
+        startFetchPriceTimer();
+        startFetchBalanceTimer(walletManager);
+        startFetchTransactionTimer(walletManager);
+
+        newState.isParseWritten = true;
       }
     }
 
