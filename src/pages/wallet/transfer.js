@@ -447,37 +447,37 @@ class Transfer extends Component {
             </View>
           </View>
           <Loader loading={loading} />
-        </ScrollView>
-        <View
-          style={[styles.sectionContainer, {
-            opacity: enableConfirm ? 1 : 0.5, position: 'absolute', bottom: 0, width: '100%', paddingTop: 20, paddingBottom: 35,
-          }]}
-          pointerEvents={enableConfirm ? 'auto' : 'none'}
-        >
-          <ConfirmSlider // All parameter should be adjusted for the real case
-            ref={(ref) => { this.confirmSlider = ref; }}
-            width={screen.width - 50}
-            buttonSize={30}
-            buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
-            borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
-            backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
-            textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-            borderRadius={15}
-            okButton={{ visible: true, duration: 400 }}
-            onVerified={async () => {
-              this.setState({ isConfirm: true });
-              await this.confirm();
-            }}
-            icon={(
-              <Image
-                source={isConfirm ? circleCheckIcon : circleIcon}
-                style={{ width: 32, height: 32 }}
-              />
-              )}
+          <View
+            style={[styles.sectionContainer, {
+              opacity: enableConfirm ? 1 : 0.5, width: '100%', paddingTop: 20, paddingBottom: 35,
+            }]}
+            pointerEvents={enableConfirm ? 'auto' : 'none'}
           >
-            <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
-          </ConfirmSlider>
-        </View>
+            <ConfirmSlider // All parameter should be adjusted for the real case
+              ref={(ref) => { this.confirmSlider = ref; }}
+              width={screen.width - 50}
+              buttonSize={30}
+              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
+              borderRadius={15}
+              okButton={{ visible: true, duration: 400 }}
+              onVerified={async () => {
+                this.setState({ isConfirm: true });
+                await this.confirm();
+              }}
+              icon={(
+                <Image
+                  source={isConfirm ? circleCheckIcon : circleIcon}
+                  style={{ width: 32, height: 32 }}
+                />
+                )}
+            >
+              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
+            </ConfirmSlider>
+          </View>
+        </ScrollView>
       </View>
     );
   }

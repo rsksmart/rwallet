@@ -28,13 +28,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   buttonView: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
     alignSelf: 'center',
-    paddingVertical: 20,
-    bottom: 0,
   },
 });
 
