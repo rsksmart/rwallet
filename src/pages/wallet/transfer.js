@@ -20,6 +20,7 @@ import circleIcon from '../../assets/images/misc/circle.png';
 import { createInfoNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -266,7 +267,7 @@ class Transfer extends Component {
     const feeData = feeDatas[feeSymbol];
     feeData.forEach((fee) => {
       const item = fee;
-      item.coin = `${item.coin} ${feeSymbol}`;
+      item.coin = `${common.getBalanceString(feeSymbol, item.coin)} ${feeSymbol}`;
       // TODO: calculate coin value
     });
     this.setState({
