@@ -272,6 +272,35 @@ class History extends Component {
     header: null,
   });
 
+  /**
+   * createBoardState
+   * return a state object {
+   *   balanceText,
+   *   assetValueText,
+   *   pendingBalanceText(If pendingBalance exsist),
+   *   pendingAssetValueText(If pendingAssetValue exsist)
+   * }
+   * @param {BigNumber} balance
+   * @param {BigNumber} balanceValue
+   * @param {BigNumber} pendingBalance
+   * @param {BigNumber} pendingBalanceValue
+   * @param {string} symbol
+   * @param {*} currency
+   */
+  static createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+    const currencySymbol = getCurrencySymbol(currency);
+    const state = {};
+    state.balanceText = History.getBalanceText(balance, symbol);
+    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
+    if (pendingBalance) {
+      state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
+    }
+    if (pendingBalanceValue) {
+      state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
+    }
+    return state;
+  }
+
   static createListData(transactions, symbol, address) {
     if (!transactions) {
       return [];
@@ -388,27 +417,13 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency) {
-    const currencySymbol = getCurrencySymbol(currency);
-    const state = {};
-    state.balanceText = History.getBalanceText(balance, symbol);
-    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
-    if (pendingBalance) {
-      state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
-    }
-    if (pendingBalanceValue) {
-      state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
-    }
-    state.listData = History.createListData(transactions, symbol, address);
-    return state;
-  }
-
   componentDidMount() {
     const { currency } = this.props;
     const {
       symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
     } = this.state;
-    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency);
+    const newState = History.createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+    newState.listData = History.createListData(transactions, symbol, address);
     this.setState(newState);
   }
 
@@ -423,7 +438,8 @@ class History extends Component {
       const {
         balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
       } = coin;
-      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address, symbol, currency);
+      let newState = History.createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+      newState.listData = History.createListData(transactions, symbol, address);
       newState = {
         ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
       };
