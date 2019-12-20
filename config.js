@@ -35,6 +35,12 @@ const config = {
     fetchBalance: 8000,
     fetchTransaction: 8000,
   },
+  symbolDecimalPlaces: {
+    BTC: 6,
+    RBTC: 6,
+    RIF: 3,
+  },
+  assetValueDecimalPlaces: 2,
 };
 
 export default config;

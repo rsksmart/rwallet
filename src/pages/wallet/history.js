@@ -281,7 +281,7 @@ class History extends Component {
       let amountText = ' ';
       if (transaction.value) {
         const amount = common.convertHexToCoinAmount(symbol, transaction.value);
-        amountText = `${amount.toFixed()} ${symbol}`;
+        amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
       let datetime = transaction.createdAt;
       let isComfirmed = true;
@@ -372,7 +372,7 @@ class History extends Component {
     let balanceText = `0 ${symbol}`;
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${balance.toFixed()} ${symbol}`;
+      balanceText = `${common.getBalanceString(symbol, balance)} ${symbol}`;
     }
 
     return balanceText;
@@ -382,7 +382,7 @@ class History extends Component {
     let assetValueText = `${currencySymbol}0`;
 
     if (!_.isUndefined(balanceValue)) {
-      assetValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
+      assetValueText = `${currencySymbol}${common.getAssetValueString(balanceValue)}`;
     }
 
     return assetValueText;

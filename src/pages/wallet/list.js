@@ -25,8 +25,6 @@ const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
-const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
-
 const { getCurrencySymbol } = common;
 
 const styles = StyleSheet.create({
@@ -217,7 +215,7 @@ class WalletList extends Component {
         assetValue = walletManager && walletManager.assetValue;
       }
 
-      return assetValue.decimalPlaces(2).toFixed();
+      return common.getAssetValueString(assetValue);
     }
 
     /**
@@ -236,8 +234,8 @@ class WalletList extends Component {
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-          const amountText = coin.balance ? coin.balance.toFixed() : '';
-          const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
+          const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
+          const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : '';
           const item = {
             key: `${index}`,
             title: coin.defaultName,
