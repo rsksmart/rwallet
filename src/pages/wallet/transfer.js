@@ -10,14 +10,13 @@ import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import { screen, DEVICE } from '../../common/info';
 import Loader from '../../components/common/misc/loader';
-import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
 
 import ScreenHelper from '../../common/screenHelper';
 import ConfirmSlider from '../../components/wallet/confirm.slider';
 import circleCheckIcon from '../../assets/images/misc/circle.check.png';
 import circleIcon from '../../assets/images/misc/circle.png';
-import { createInfoNotification } from '../../common/notification.controller';
+import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
@@ -216,15 +215,6 @@ class Transfer extends Component {
 
   componentDidMount() {
     this.initContext();
-    const { navigation } = this.props;
-    appContext.eventEmitter.on('onFirstPasscode', async () => {
-      await this.sendBtcTransaction();
-      navigation.navigate('TransferCompleted');
-    });
-  }
-
-  componentWillUnmount() {
-    appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
   onGroupSelect(i) {
@@ -295,44 +285,47 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
+      const buttonText = 'RETRY';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
           case 'err.notenoughbalance':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               'You need more balance to complete the transfer',
+              buttonText,
             );
             break;
           case 'err.timeout':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               'Sorry server timeout',
+              buttonText,
             );
             addNotification(notification);
             break;
           case 'err.customized':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               message[1],
+              buttonText,
             );
             break;
           default:
-            notification = createInfoNotification(
-              'Transfer is failed',
-              'Please contact our customer service',
-            );
             break;
         }
       }
+      // Default error notification
       if (!notification) {
-        notification = createInfoNotification(
-          'Transfer error',
+        notification = createErrorNotification(
+          'Transfer is failed',
           'Please contact our customer service',
+          buttonText,
         );
       }
       addNotification(notification);
+      // Reset confirmSlider
       this.setState({ isConfirm: false });
       this.confirmSlider.reset();
     }
