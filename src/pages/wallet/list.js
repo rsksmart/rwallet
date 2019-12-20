@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: 'bold',
     color: '#000000',
-    fontSize: 35,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -364,7 +363,7 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{`${totalAssetValueText}`}</ResponsiveText>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}

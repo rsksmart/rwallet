@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
   },
   radioItemText2: {
     color: '#4A4A4A',
-    fontSize: 12,
     fontWeight: '500',
     letterSpacing: 0.23,
   },
@@ -193,8 +192,8 @@ function Item({
       </View>
       <View style={styles.radioItemRight}>
         <Loc style={[styles.radioItemText1]} text={name} />
-        <ResponsiveText fontStyle={[styles.radioItemText2]}>{coin}</ResponsiveText>
-        <ResponsiveText fontStyle={[styles.radioItemText2]}>{value}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{coin}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );
