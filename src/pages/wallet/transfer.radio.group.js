@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color.ts';
 import Loc from '../../components/common/misc/loc';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 
 const styles = StyleSheet.create({
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   },
   circle: {
     marginTop: 5,
-    marginRight: 10,
+    marginHorizontal: 7,
     height: 20,
     width: 20,
     borderRadius: 10,
@@ -172,6 +173,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  radioItemRight: {
+    flex: 1,
+  },
 });
 
 function Item({
@@ -187,14 +191,10 @@ function Item({
       <View style={styles.radioItemLeft}>
         {check}
       </View>
-      <View>
+      <View style={styles.radioItemRight}>
         <Loc style={[styles.radioItemText1]} text={name} />
-        <Text style={styles.radioItemText2}>
-          {coin}
-        </Text>
-        <Text style={styles.radioItemText2}>
-          {value}
-        </Text>
+        <ResponsiveText fontStyle={[styles.radioItemText2]}>{coin}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText2]}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );

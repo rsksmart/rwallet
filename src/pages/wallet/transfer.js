@@ -10,16 +10,16 @@ import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import { screen, DEVICE } from '../../common/info';
 import Loader from '../../components/common/misc/loader';
-import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
 
 import ScreenHelper from '../../common/screenHelper';
 import ConfirmSlider from '../../components/wallet/confirm.slider';
 import circleCheckIcon from '../../assets/images/misc/circle.check.png';
 import circleIcon from '../../assets/images/misc/circle.png';
-import { createInfoNotification } from '../../common/notification.controller';
+import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -215,15 +215,6 @@ class Transfer extends Component {
 
   componentDidMount() {
     this.initContext();
-    const { navigation } = this.props;
-    appContext.eventEmitter.on('onFirstPasscode', async () => {
-      await this.sendBtcTransaction();
-      navigation.navigate('TransferCompleted');
-    });
-  }
-
-  componentWillUnmount() {
-    appContext.eventEmitter.removeAllListeners('onFirstPasscode');
   }
 
   onGroupSelect(i) {
@@ -256,17 +247,17 @@ class Transfer extends Component {
       { coin: 0.0048, value: '$ 0.68' },
       { coin: 0.0052, value: '$ 0.84' },
     ];
-    const rifFees = [
-      { coin: 0.0046, value: '$ 0.46' },
-      { coin: 0.0048, value: '$ 0.68' },
-      { coin: 0.0052, value: '$ 0.84' },
-    ];
-    const feeDatas = { BTC: btcFees, RBTC: rbtcFees, RIF: rifFees };
+    const feeDatas = { BTC: btcFees, RBTC: rbtcFees };
     this.symbol = coin.symbol;
-    const feeData = feeDatas[coin.symbol];
+
+    let feeSymbol = coin.symbol;
+    if (feeSymbol === 'RIF') {
+      feeSymbol = 'RBTC';
+    }
+    const feeData = feeDatas[feeSymbol];
     feeData.forEach((fee) => {
       const item = fee;
-      item.coin = `${item.coin}${coin.symbol}`;
+      item.coin = `${common.getBalanceString(feeSymbol, item.coin)} ${feeSymbol}`;
       // TODO: calculate coin value
     });
     this.setState({
@@ -294,44 +285,47 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
+      const buttonText = 'RETRY';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
           case 'err.notenoughbalance':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               'You need more balance to complete the transfer',
+              buttonText,
             );
             break;
           case 'err.timeout':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               'Sorry server timeout',
+              buttonText,
             );
             addNotification(notification);
             break;
           case 'err.customized':
-            notification = createInfoNotification(
+            notification = createErrorNotification(
               'Transfer is failed',
               message[1],
+              buttonText,
             );
             break;
           default:
-            notification = createInfoNotification(
-              'Transfer is failed',
-              'Please contact our customer service',
-            );
             break;
         }
       }
+      // Default error notification
       if (!notification) {
-        notification = createInfoNotification(
-          'Transfer error',
+        notification = createErrorNotification(
+          'Transfer is failed',
           'Please contact our customer service',
+          buttonText,
         );
       }
       addNotification(notification);
+      // Reset confirmSlider
       this.setState({ isConfirm: false });
       this.confirmSlider.reset();
     }
@@ -355,8 +349,8 @@ class Transfer extends Component {
     }
 
     return (
-      <ScrollView style={{ height: screen.height }}>
-        <View style={{ height: screen.height }}>
+      <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
+        <View style={{ height: screen.height - 25 }}>
           <View style={[flex.flex10]}>
             <ImageBackground source={header} style={[{ height: headerHeight }]}>
               <Text style={styles.headerTitle}>
@@ -450,8 +444,9 @@ class Transfer extends Component {
           </View>
           <View
             style={[flex.flex1, styles.sectionContainer, {
-              // opacity: enableConfirm ? 1 : 0.5,
-              width: '100%', justifyContent: 'center',
+              opacity: enableConfirm ? 1 : 0.5,
+              width: '100%',
+              justifyContent: 'center',
             }]}
             pointerEvents={enableConfirm ? 'auto' : 'none'}
           >

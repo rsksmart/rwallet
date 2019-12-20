@@ -195,6 +195,8 @@ function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
   try {
     yield call(walletManager.deleteWallet, key);
+    // TODO: delete relevant transactions about the wallet
+    yield call(ParseHelper.deleteWallet, key);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {

@@ -249,10 +249,15 @@ class WalletManager {
 
   /*
    * Rename a wallet
-   * @param {string} name, accept a-z, A-Z, 0-9 and space
+   * @param {string} name, accept a-z, A-Z, 0-9 and space, max length is 32
    */
   async renameWallet(wallet, name) {
-    const regex = /^[a-zA-Z0-9 ]+$/g;
+    if (name.length < 1) {
+      throw new Error('Key name too short.');
+    } else if (name.length > 32) {
+      throw new Error('Key name too long.');
+    }
+    const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
     const match = regex.exec(name);
     if (!match) {
       console.log('renameWallet, regex validatiton failed');

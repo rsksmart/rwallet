@@ -71,6 +71,36 @@ const common = {
     }
     return amount;
   },
+  /**
+   * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} balance
+   */
+  getBalanceString(symbol, balance) {
+    const decimalPlaces = config.symbolDecimalPlaces[symbol];
+    if (balance) {
+      let balanceBigNumber = balance;
+      if (typeof balance === 'number' || typeof value === 'string') {
+        balanceBigNumber = new BigNumber(balance);
+      }
+      return balanceBigNumber.decimalPlaces(decimalPlaces).toFixed();
+    }
+    return null;
+  },
+  /**
+   * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
+   * @param {BigNumber | number | string} value
+   */
+  getAssetValueString(value) {
+    if (value) {
+      let valueBigNumber = value;
+      if (typeof value === 'number' || typeof value === 'string') {
+        valueBigNumber = new BigNumber(value);
+      }
+      return valueBigNumber.decimalPlaces(config.assetValueDecimalPlaces).toFixed();
+    }
+    return null;
+  },
   getCoinPrice(symbol, currency, prices) {
     for (let i = 0; i < prices.length; i += 1) {
       const priceRow = prices[i];

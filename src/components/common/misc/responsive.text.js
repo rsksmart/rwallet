@@ -8,7 +8,7 @@ const FONT_SIZE_TIMES = 1.7;
 
 
 const getFontSize = (width, length, maxFontSize) => {
-  let fontSize = width / length;
+  let fontSize = Math.floor(width / length);
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
   return fontSize;
 };

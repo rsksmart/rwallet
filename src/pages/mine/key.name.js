@@ -153,7 +153,7 @@ class KeyName extends Component {
               autoCorrect={false}
               blurOnSubmit={false}
             />
-            <Loc style={[styles.notice]} text="* Key name can contain letters (a-z), numbers (0-9), and space" />
+            <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
             <View style={styles.buttonView}>
               <Button text="SAVE" onPress={this.onPress} />
             </View>
