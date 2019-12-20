@@ -31,14 +31,13 @@ export default class ResponsiveText extends Component {
   }
 
   onLayout = (event) => {
-    const { fontStyle, children } = this.props;
+    const { children, maxFontSize } = this.props;
     const { isAdjusted } = this.state;
     if (isAdjusted) {
       return;
     }
     const { width } = event.nativeEvent.layout;
-    const [fontStyleItem] = fontStyle;
-    const fontSize = getFontSize(width, children.length, fontStyleItem.fontSize);
+    const fontSize = getFontSize(width, children.length, maxFontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
@@ -81,6 +80,7 @@ ResponsiveText.propTypes = {
   style: PropTypes.arrayOf(PropTypes.object),
   fontStyle: PropTypes.arrayOf(PropTypes.object),
   children: PropTypes.string,
+  maxFontSize: PropTypes.number.isRequired,
 };
 
 ResponsiveText.defaultProps = {

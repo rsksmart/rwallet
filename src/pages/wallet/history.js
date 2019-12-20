@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: '900',
     color: '#000000',
-    fontSize: 35,
   },
   assetsValue: {
     marginTop: 10,
@@ -536,7 +535,7 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{balanceText}</ResponsiveText>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{assetValueText}</Text>
             {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
             <View style={styles.myAssetsButtonsView}>
