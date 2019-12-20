@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 // https://github.com/facebook/react-native/issues/20906
 // magic number, estimated value, fontSize = fontWidth * FONT_SIZE_TIMES;
-const FONT_SIZE_TIMES = 1.7;
+const FONT_SIZE_TIMES = 1.6;
 
 
 const getFontSize = (width, length, maxFontSize) => {
