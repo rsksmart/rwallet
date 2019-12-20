@@ -256,17 +256,17 @@ class Transfer extends Component {
       { coin: 0.0048, value: '$ 0.68' },
       { coin: 0.0052, value: '$ 0.84' },
     ];
-    const rifFees = [
-      { coin: 0.0046, value: '$ 0.46' },
-      { coin: 0.0048, value: '$ 0.68' },
-      { coin: 0.0052, value: '$ 0.84' },
-    ];
-    const feeDatas = { BTC: btcFees, RBTC: rbtcFees, RIF: rifFees };
+    const feeDatas = { BTC: btcFees, RBTC: rbtcFees };
     this.symbol = coin.symbol;
-    const feeData = feeDatas[coin.symbol];
+
+    let feeSymbol = coin.symbol;
+    if (feeSymbol === 'RIF') {
+      feeSymbol = 'RBTC';
+    }
+    const feeData = feeDatas[feeSymbol];
     feeData.forEach((fee) => {
       const item = fee;
-      item.coin = `${item.coin}${coin.symbol}`;
+      item.coin = `${item.coin}${feeSymbol}`;
       // TODO: calculate coin value
     });
     this.setState({
