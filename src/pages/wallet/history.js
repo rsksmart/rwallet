@@ -272,35 +272,6 @@ class History extends Component {
     header: null,
   });
 
-  /**
-   * createTopBoardState
-   * return a state object {
-   *   balanceText,
-   *   assetValueText,
-   *   pendingBalanceText(If pendingBalance exsist),
-   *   pendingAssetValueText(If pendingAssetValue exsist)
-   * }
-   * @param {BigNumber} balance
-   * @param {BigNumber} balanceValue
-   * @param {BigNumber} pendingBalance
-   * @param {BigNumber} pendingBalanceValue
-   * @param {string} symbol
-   * @param {*} currency
-   */
-  static createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
-    const currencySymbol = getCurrencySymbol(currency);
-    const state = {};
-    state.balanceText = History.getBalanceText(balance, symbol);
-    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
-    if (pendingBalance) {
-      state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
-    }
-    if (pendingBalanceValue) {
-      state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
-    }
-    return state;
-  }
-
   static createListData(transactions, symbol, address) {
     if (!transactions) {
       return [];
@@ -380,11 +351,7 @@ class History extends Component {
       balanceValue: coin && coin.balanceValue,
       transactions: coin && coin.transactions,
       address: coin && coin.address,
-      balanceText: '',
-      assetValueText: '',
       listData: null,
-      pendingBalanceText: '',
-      pendingAssetValueText: '',
     };
 
     this.page = 1;
@@ -397,39 +364,37 @@ class History extends Component {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
-  static getBalanceText(balance, symbol) {
-    let balanceText = `0 ${symbol}`;
+  static getBalanceText(symbol, balance) {
+    let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(symbol, balance)} ${symbol}`;
+      balanceText = `${common.getBalanceString(symbol, balance)}`;
     }
 
     return balanceText;
   }
 
-  static getAssetValueText(balanceValue, currencySymbol) {
-    let assetValueText = `${currencySymbol}0`;
+  static getAssetValueText(balanceValue) {
+    let assetValueText = '0';
 
     if (!_.isUndefined(balanceValue)) {
-      assetValueText = `${currencySymbol}${common.getAssetValueString(balanceValue)}`;
+      assetValueText = `${common.getAssetValueString(balanceValue)}`;
     }
 
     return assetValueText;
   }
 
   componentDidMount() {
-    const { currency } = this.props;
     const {
-      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
+      symbol, transactions, address,
     } = this.state;
-    const newState = History.createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
-    newState.listData = History.createListData(transactions, symbol, address);
-    this.setState(newState);
+    const listData = History.createListData(transactions, symbol, address);
+    this.setState({ listData });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      currency, updateTimestamp, navigation,
+      updateTimestamp, navigation,
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp } = this.props;
     const { symbol } = this.state;
@@ -438,12 +403,11 @@ class History extends Component {
       const {
         balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
       } = coin;
-      let newState = History.createTopBoardState(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
-      newState.listData = History.createListData(transactions, symbol, address);
-      newState = {
-        ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      const listData = History.createListData(transactions, symbol, address);
+      const state = {
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, listData,
       };
-      this.setState(newState);
+      this.setState(state);
     }
   }
 
@@ -525,15 +489,29 @@ class History extends Component {
     return footer;
   }
 
+
   render() {
     const {
-      balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
+      balance, balanceValue, pendingBalance, pendingBalanceValue, listData,
     } = this.state;
-    const { navigation } = this.props;
+    const { navigation, currency } = this.props;
     const { coin } = navigation.state.params;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
+
+    // generate balance, value texts
+    const currencySymbol = getCurrencySymbol(currency);
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
+    let pendingBalanceText = '';
+    if (pendingBalance) {
+      pendingBalanceText = `${History.getBalanceText(symbol, pendingBalance)} ${symbol}`;
+    }
+    let pendingAssetValueText = '';
+    if (pendingBalanceValue) {
+      pendingAssetValueText = `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}`;
+    }
 
     return (
       <ScrollView>
