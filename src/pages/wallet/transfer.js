@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, ImageBackground,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -356,7 +356,7 @@ class Transfer extends Component {
 
     return (
       <View style={[flex.flex1]}>
-        <ScrollView>
+        <View style={[flex.flex11]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Text style={styles.headerTitle}>
               <Loc text="Send" />
@@ -446,38 +446,38 @@ class Transfer extends Component {
               />
             </View>
           </View>
-          <Loader loading={loading} />
-          <View
-            style={[styles.sectionContainer, {
-              opacity: enableConfirm ? 1 : 0.5, width: '100%', paddingTop: 20, paddingBottom: 35,
-            }]}
-            pointerEvents={enableConfirm ? 'auto' : 'none'}
+        </View>
+        <View
+          style={[flex.flex1, styles.sectionContainer, {
+            opacity: enableConfirm ? 1 : 0.5, width: '100%', justifyContent: 'center',
+          }]}
+          pointerEvents={enableConfirm ? 'auto' : 'none'}
+        >
+          <ConfirmSlider // All parameter should be adjusted for the real case
+            ref={(ref) => { this.confirmSlider = ref; }}
+            width={screen.width - 50}
+            buttonSize={30}
+            buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+            textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
+            borderRadius={15}
+            okButton={{ visible: true, duration: 400 }}
+            onVerified={async () => {
+              this.setState({ isConfirm: true });
+              await this.confirm();
+            }}
+            icon={(
+              <Image
+                source={isConfirm ? circleCheckIcon : circleIcon}
+                style={{ width: 32, height: 32 }}
+              />
+              )}
           >
-            <ConfirmSlider // All parameter should be adjusted for the real case
-              ref={(ref) => { this.confirmSlider = ref; }}
-              width={screen.width - 50}
-              buttonSize={30}
-              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
-              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={15}
-              okButton={{ visible: true, duration: 400 }}
-              onVerified={async () => {
-                this.setState({ isConfirm: true });
-                await this.confirm();
-              }}
-              icon={(
-                <Image
-                  source={isConfirm ? circleCheckIcon : circleIcon}
-                  style={{ width: 32, height: 32 }}
-                />
-                )}
-            >
-              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
-            </ConfirmSlider>
-          </View>
-        </ScrollView>
+            <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
+          </ConfirmSlider>
+        </View>
+        <Loader loading={loading} />
       </View>
     );
   }

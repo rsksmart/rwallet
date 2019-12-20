@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   radioItemText2: {
     color: '#4A4A4A',
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '300',
     letterSpacing: 0.23,
   },

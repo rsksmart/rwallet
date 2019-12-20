@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     alignSelf: 'center',
+    paddingVertical: 15,
   },
 });
 
