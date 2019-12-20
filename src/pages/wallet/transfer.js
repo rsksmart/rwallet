@@ -357,7 +357,7 @@ class Transfer extends Component {
     return (
       <ScrollView style={{ height: screen.height }}>
         <View style={{ height: screen.height }}>
-          <View style={[flex.flex11]}>
+          <View style={[flex.flex10]}>
             <ImageBackground source={header} style={[{ height: headerHeight }]}>
               <Text style={styles.headerTitle}>
                 <Loc text="Send" />
