@@ -273,7 +273,7 @@ class History extends Component {
   });
 
   /**
-   * createBoardState
+   * createTopBoardState
    * return a state object {
    *   balanceText,
    *   assetValueText,
