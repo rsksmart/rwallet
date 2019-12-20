@@ -266,7 +266,7 @@ class Transfer extends Component {
     const feeData = feeDatas[feeSymbol];
     feeData.forEach((fee) => {
       const item = fee;
-      item.coin = `${item.coin}${feeSymbol}`;
+      item.coin = `${item.coin} ${feeSymbol}`;
       // TODO: calculate coin value
     });
     this.setState({
