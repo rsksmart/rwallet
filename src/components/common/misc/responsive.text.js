@@ -79,12 +79,11 @@ export default class ResponsiveText extends Component {
 ResponsiveText.propTypes = {
   style: PropTypes.arrayOf(PropTypes.object),
   fontStyle: PropTypes.arrayOf(PropTypes.object),
-  children: PropTypes.string,
+  children: PropTypes.string.isRequired,
   maxFontSize: PropTypes.number.isRequired,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
   fontStyle: null,
-  children: null,
 };
