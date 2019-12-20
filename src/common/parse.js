@@ -302,6 +302,27 @@ class ParseHelper {
 
     return Promise.all(promises);
   }
+
+
+  static async deleteWallet(wallet) {
+    const promises = wallet.coins.map(async ({ objectId }) => {
+      if (!objectId) {
+        return;
+      }
+
+      const query = new Parse.Query(ParseAddress);
+      const addressPObj = await query.get(objectId).catch(() => null);
+      if (!addressPObj) {
+        return;
+      }
+
+      await addressPObj.destroy();
+    });
+
+    await Promise.all(promises).catch((err) => {
+      console.error('deleteWallet', err);
+    });
+  }
 }
 
 export default ParseHelper;
