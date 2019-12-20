@@ -1,7 +1,7 @@
 import App from './app/reducer';
-import LanguageSwitcher from './languageSwitcher/reducer';
+import Wallet from './wallet/reducer';
 
 export default {
   App,
-  LanguageSwitcher,
+  Wallet,
 };

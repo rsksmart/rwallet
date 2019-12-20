@@ -1,23 +1,33 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Image
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image, FlatList,
 } from 'react-native';
-import { Card, CardItem, Body} from 'native-base';
-import flex from '../../assets/styles/layout.flex';
-import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import PropTypes from 'prop-types';
+// import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Header from '../../components/common/misc/header';
-import wm from '../../common/wallet/walletManager';
-import Parse from 'parse/react-native'
+import { connect } from 'react-redux';
+import BigNumber from 'bignumber.js';
+import SwipableButtonList from '../../components/common/misc/swipableButtonList';
+import Loc from '../../components/common/misc/loc';
+import flex from '../../assets/styles/layout.flex';
 
-const header = require('../../assets/images/misc/header.png')
-const send = require('../../assets/images/icon/send.png')
+// import appActions from '../../redux/app/actions';
+import { DEVICE } from '../../common/info';
+import screenHelper from '../../common/screenHelper';
+import ResponsiveText from '../../components/common/misc/responsive.text';
+import common from '../../common/common';
 
+const header = require('../../assets/images/misc/header.png');
+const rsk = require('../../assets/images/mine/rsk.png');
+const swap = require('../../assets/images/icon/swap.png');
+const scan = require('../../assets/images/icon/scan.png');
 
+const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
 
+const { getCurrencySymbol } = common;
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -28,13 +38,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   sectionContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
   addAsset: {
     color: '#77869E',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: 20,
   },
   addCircle: {
     marginLeft: 10,
@@ -53,43 +64,60 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     position: 'absolute',
-    top: 48,
+    bottom: 120,
     left: 24,
     color: '#FFF',
   },
+  scanView: {
+    position: 'absolute',
+    bottom: 120,
+    right: 40,
+  },
+  scan: {
+    width: 30,
+    height: 30,
+  },
   headerBoard: {
     width: '85%',
-    top: 100,
     height: 166,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: '#FFF',
   },
   headerBoardView: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
   },
   chevron: {
     color: '#FFF',
   },
   myAssetsTitle: {
     position: 'absolute',
-    top: 5,
-    left: 5,
+    top: 25,
+    left: 30,
     fontWeight: 'bold',
     fontSize: 15,
-    color: '#000000'
+    color: '#000000',
   },
   myAssets: {
-    fontSize: 35,
+    marginTop: 63,
+    marginHorizontal: 30,
+  },
+  myAssetsFontStyle: {
     fontWeight: 'bold',
     color: '#000000',
-    top: 40,
-    left: 5,
+    fontSize: 35,
   },
   myAssetsButtonsView: {
     position: 'absolute',
-    top: 110,
+    bottom: 20,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -130,161 +158,295 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     letterSpacing: 0.25,
-  }
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: screenHelper.headerHeight,
+    marginTop: screenHelper.headerMarginTop,
+  },
+  assetsTitle: {
+    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+  },
+  logoView: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  powerby: {
+    color: '#727372',
+    fontSize: 17,
+    fontWeight: '900',
+    marginTop: 5,
+  },
 });
 
-class WalletList extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
-    };
-    constructor(props) {
-      super(props);
-      this.listData = [];
-      this.refreshData = this.refreshData.bind(this);
-      this.state = {
-        listData: this.listData,
-      }
-    }
-    componentDidMount(){
-      this.refreshData();
-    }
-    refreshData(){
-      this.wallets = wm.wallets;
-      let updateValue = (item) => {
-        if(item.price!=null && item.amount!==''){
-          item.worth = '$' + item.price * item.amount;
-        }
-      };
-      let getBalance = (coin, item)=>{
-        let queryKey = coin.queryKey;
-        let address = coin.address;
-        if(queryKey==='TRSK' || queryKey==='RSK' || queryKey==='RIF' || queryKey==='TRIF'){
-          address = address.toLowerCase();
-        }
-        Parse.Cloud.run('getBalance', {
-          name: queryKey,
-          addr: address,
-        }).then((result)=>{
-          console.log(result);
-          item.amount = result;
-          updateValue(item);
-          this.setState({listData: this.listData});
-        }).catch((reason)=>{
-          console.log(reason);
-        });
-      };
-      let getPrice = (coin, item)=>{
-        let queryKey = coin.queryKey;
-        Parse.Cloud.run('getTokenPrice', {
-          coinTicker: queryKey,
-        }).then((result)=>{
-          console.log(result);
-          item.price = result.price;
-          updateValue(item);
-          this.setState({listData: this.listData});
-        }).catch((reason)=>{
-          console.log(reason);
-        });
-      };
+/**
+ * Formatting number with thousand separator.
+ * @param  {number} num e.g. 1000000.65
+ * @return {string}   "1,000,000.65"
+ */
+export function formatNumberThousands(num) {
+  if (_.isUndefined(num)) {
+    return num;
+  }
 
-      this.listData = [];
-      this.wallets.forEach((wallet, i)=>{
-        let wal = {name: `Key ${i+1}`, coins: [] };
-        wallet.coins.forEach((coin, j)=>{
-          let item = {
-            key: Math.random()+'',
+  const numStr = num.toString();
+  const parts = numStr.split('.');
+
+  const decimalStr = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const period = _.isUndefined(parts[1]) ? '' : '.';
+  const floatStr = _.isUndefined(parts[1]) ? '' : parts[1];
+
+  return `${decimalStr}${period}${floatStr}`;
+}
+
+class WalletList extends Component {
+    static navigationOptions = () => ({
+      header: null,
+    });
+
+    /**
+     * Returns number string based on walletManager.assetValue; 0 as default value
+     */
+    static getTotalAssetValueText(walletManager) {
+      let assetValue = new BigNumber(0);
+      if (walletManager) {
+        assetValue = walletManager && walletManager.assetValue;
+      }
+
+      return assetValue.decimalPlaces(2).toFixed();
+    }
+
+    /**
+     * Transform from wallets to ListData for rendering
+     */
+    static createListData(wallets, currencySymbol, navigation) {
+      if (!_.isArray(wallets)) {
+        return [];
+      }
+
+      const listData = [];
+
+      // Create element for each wallet (e.g. key 0)
+      wallets.forEach((wallet) => {
+        const wal = { name: wallet.name, coins: [] };
+        // Create element for each Token (e.g. BTC, RBTC, RIF)
+        wallet.coins.forEach((coin, index) => {
+          const coinType = coin.id;
+          const amountText = coin.balance ? coin.balance.toFixed() : '';
+          const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
+          const item = {
+            key: `${index}`,
             title: coin.defaultName,
-            text: coin.type,
-            worth: '',
-            amount: '',
-            price: null,
+            text: coinType,
+            worth: worthText,
+            amount: amountText,
             icon: coin.icon,
-            r2Press: ()=>{
-              // alert('r2Press');
-              this.props.navigation.navigate('WalletReceive', {address: coin.address, icon: coin.icon});
+            r1Press: () => {
+              navigation.navigate('Transfer', { wallet, coin });
             },
-            onPress: ()=>{
-              this.props.navigation.navigate('WalletHistory', {address: coin.address});
-            }
+            r2Press: () => {
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
+            },
+            onPress: () => {
+              navigation.navigate('WalletHistory', { wallet, coin });
+            },
           };
-          getBalance(coin, item);
-          getPrice(coin, item);
           wal.coins.push(item);
         });
-        this.listData.push(wal);
+
+        listData.push(wal);
       });
 
+      return listData;
+    }
+
+    static accountListView(listData) {
+      return (
+        <FlatList
+          data={listData}
+          renderItem={({ item }) => (
+            <View>
+              <Text style={[styles.sectionTitle]}>{item.name}</Text>
+              <SwipableButtonList data={item.coins} />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      );
+    }
+
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        listData: [],
+        currencySymbol: getCurrencySymbol(props.currency),
+        totalAssetValueText: '',
+      };
+    }
+
+    componentWillMount() {
+      const {
+        currency, walletManager, navigation,
+      } = this.props;
+
+      const { wallets } = walletManager;
+
+      const currencySymbol = getCurrencySymbol(currency);
+      const listData = WalletList.createListData(wallets, currencySymbol, navigation);
+      const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
+
       this.setState({
-        listData: this.listData
+        currencySymbol,
+        listData,
+        totalAssetValueText,
       });
     }
-    render() {
-      const {navigation} = this.props;
-      let accounts = [];
-      for (var i = 0; i < this.state.listData.length; i++) {
-        let item = this.state.listData[i];
-        let section = (<View key={Math.random()+''}>
-          <Text style={[styles.sectionTitle]}>{item.name}</Text>
-          <SwipableButtonList data={item.coins} />
-        </View>);
-        accounts.push(section);
+
+    componentWillReceiveProps(nextProps) {
+      const {
+        updateTimestamp, currency, navigation, walletManager,
+      } = nextProps;
+
+      const { wallets } = walletManager;
+      const {
+        updateTimestamp: lastUpdateTimeStamp,
+      } = this.props;
+
+      const newState = this.state;
+
+      // Update currency symbol such as $
+      newState.currencySymbol = getCurrencySymbol(currency);
+
+      if (updateTimestamp !== lastUpdateTimeStamp) {
+        newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
+        newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
       }
+
+      this.setState(newState);
+    }
+
+    render() {
+      const { navigation } = this.props;
+      const { listData, currencySymbol, totalAssetValueText } = this.state;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
-            <View style={[{height: 300}]}>
-              <Image source={header} />
-              <View style={styles.headerView}>
-                <Text style={styles.headerTitle}>Your Wallet</Text>
-                <View style={styles.headerBoardView}>
-                  <Card style={styles.headerBoard} >
-                    <CardItem>
-                      <Body>
-                        <Text style={styles.myAssetsTitle}>My Assets ($)</Text>
-                        <Text style={styles.myAssets}>173,586.3</Text>
-                        <View style={styles.myAssetsButtonsView}>
-                          <TouchableOpacity style={styles.ButtonView} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <Entypo name="swap" size={20} style={styles.sendIcon} /><Text style={styles.sendText}>Send</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.ButtonView} onPress={()=>{
-                            alert('send');
-                          }}>
-                            <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} /><Text style={styles.receiveText}>Receive</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={[styles.ButtonView, {borderRightWidth: 0}]} onPress={()=>{
-                            alert('swap');
-                          }}>
-                            <AntDesign name="switcher" size={20} style={styles.swapIcon} /><Text style={styles.swapText}>Swap</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </Body>
-                    </CardItem>
-                  </Card>
+            <ImageBackground source={header} style={[styles.headerImage]}>
+              <Loc style={[styles.headerTitle]} text="Your Wallet" />
+              <TouchableOpacity
+                style={styles.scanView}
+                onPress={() => {
+                  // TODO: transfer from first wallet
+                  // navigation.navigate('Transfer', { address: coin.address, coin: coinType });
+                  navigation.navigate('Scan', {
+                    onQrcodeDetected: (data) => {
+                      const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                      const url = data;
+                      const result = parseUrl.exec(url);
+                      const host = result[3];
+                      const [address2, coin2] = host.split('.');
+                      console.log(`address2: ${address2}, coin: ${coin2},`);
+                      // TODO: transfer from first wallet
+                      // navigation.navigate('Transfer', { address: coin.address, coin: coinType });
+                    },
+                  });
+                }}
+              >
+                <Image style={[styles.scan]} source={scan} />
+              </TouchableOpacity>
+            </ImageBackground>
+            <View style={styles.headerBoardView}>
+              <View style={styles.headerBoard}>
+                <Text style={styles.myAssetsTitle}>
+                  <Loc text="My Assets" />
+                  {` (${currencySymbol})`}
+                </Text>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{`${totalAssetValueText}`}</ResponsiveText>
+                <View style={styles.myAssetsButtonsView}>
+                  <TouchableOpacity
+                    style={styles.ButtonView}
+                    onPress={() => {}}
+                  >
+                    <Entypo name="swap" size={20} style={styles.sendIcon} />
+                    <Text style={styles.sendText}>Send</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.ButtonView}
+                    onPress={() => {}}
+                  >
+                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                    <Text style={styles.receiveText}>Receive</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                    onPress={() => {}}
+                  >
+                    <Image source={swap} style={{ width: 17, height: 17 }} />
+                    <Text style={styles.swapText}>Swap</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-             <View style={styles.sectionContainer}>
-              <Text style={{color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10}}>All Assets</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              {accounts}
-            </View>
-            <View style={styles.sectionContainer}>
-              <TouchableOpacity
-                onPress={()=>{
-                  navigation.navigate('WalletAddIndex');
-                }}>
-                <View style={styles.addAsset}><Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} /><Text>Add Asset</Text></View>
-              </TouchableOpacity>
+            <View style={{ width: '85%', alignSelf: 'center' }}>
+              <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+                <Loc style={[styles.assetsTitle]} text="All Assets" />
+              </View>
+              <View style={styles.sectionContainer}>
+                {WalletList.accountListView(listData)}
+              </View>
+              <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('WalletAddIndex');
+                  }}
+                >
+                  <View style={styles.addAsset}>
+                    <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                    <Loc text="Add Asset" />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
+          <View style={styles.logoView}>
+            <Text style={styles.powerby}>Powered by</Text>
+            <Image source={rsk} />
+          </View>
         </View>
       );
     }
 }
 
-export default WalletList;
+WalletList.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+  currency: PropTypes.string.isRequired,
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array.isRequired,
+  }),
+  updateTimestamp: PropTypes.number.isRequired,
+};
+
+WalletList.defaultProps = {
+  walletManager: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  currency: state.App.get('currency'),
+  walletManager: state.Wallet.get('walletManager'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
+});
+
+const mapDispatchToProps = () => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

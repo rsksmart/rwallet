@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet, View, Switch, Text,
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   item: {
@@ -39,3 +39,8 @@ export default class SwitchListItem extends Component {
     );
   }
 }
+
+SwitchListItem.propTypes = {
+  title: PropTypes.string.isRequired,
+  value: PropTypes.bool.isRequired,
+};

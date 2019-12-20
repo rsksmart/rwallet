@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, Text, StyleSheet, Image, TouchableOpacity,
+  Modal, View, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
+import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,6 +17,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: color.component.touchSensorModal.panel.backgroundColor,
     borderRadius: 5,
+    paddingBottom: 60,
   },
   scanView: {
     flex: 1,
@@ -30,31 +33,55 @@ const styles = StyleSheet.create({
   },
   finger: {
     marginTop: 45,
-    marginBottom: 100,
+    marginBottom: 30,
+  },
+  passcode: {},
+  passcodeText: {
+    color: '#000000',
+  },
+  errView: {
+    marginTop: 5,
+    color: 'red',
   },
 });
 
+const finger = require('../../../assets/images/misc/finger.png');
+
 export default class TouchSensorModal extends Component {
   constructor(props) {
-    super(props); // 这一句不能省略，照抄即可
+    super(props);
     this.state = {
-      animationType: 'fade', // none slide fade
-      modalVisible: false, // 模态场景是否可见
-      transparent: true, // 是否透明显示
+      animationType: 'fade',
+      modalVisible: false,
+      transparent: true,
+      errorMessage: null,
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      errorMessage: nextProps.errorMessage,
+    });
+  }
 
     setModalVisible = (visible) => {
       this.setState({ modalVisible: visible });
     }
 
-    startShow = () => {
-      //   alert('开始显示了');
-    }
+    startShow = () => {}
 
     render() {
+      const {
+        onUsePasscodePress, onUserCancel,
+      } = this.props;
       const { animationType, transparent, modalVisible } = this.state;
+      let errView = null;
+      const { errorMessage } = this.state;
+      if (errorMessage && errorMessage !== '') {
+        errView = (
+          <Loc style={[styles.errView]} text={errorMessage} />
+        );
+      }
       return (
         <Modal
           animationType={animationType}
@@ -62,21 +89,43 @@ export default class TouchSensorModal extends Component {
           visible={modalVisible}
           onRequestClose={() => {
             this.setModalVisible(false);
+            onUserCancel();
           }}
           onShow={this.startShow}
         >
-          <TouchableOpacity
-            onPress={() => {
-              this.setModalVisible(false);
-            }}
+          <View
             style={styles.container}
           >
             <View style={styles.panel}>
-              <Text style={styles.title}>Touch Sensor</Text>
-              <Image style={styles.finger} source={require('../../../assets/images/misc/finger.png')} />
+              <Loc style={[styles.title]} text="Touch Sensor" />
+              <Image style={styles.finger} source={finger} />
+              <TouchableOpacity
+                style={styles.passcode}
+                onPress={() => {
+                  if (onUsePasscodePress) {
+                    this.setModalVisible(false);
+                    onUsePasscodePress();
+                  }
+                }}
+              >
+                <Loc style={[styles.passcodeText]} text="Use passcode" />
+              </TouchableOpacity>
+              {errView}
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
       );
     }
 }
+
+TouchSensorModal.propTypes = {
+  onUsePasscodePress: PropTypes.func,
+  onUserCancel: PropTypes.func,
+  errorMessage: PropTypes.string,
+};
+
+TouchSensorModal.defaultProps = {
+  onUsePasscodePress: null,
+  onUserCancel: null,
+  errorMessage: null,
+};

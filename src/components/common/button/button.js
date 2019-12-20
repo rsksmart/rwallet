@@ -1,19 +1,24 @@
 import React from 'react';
 import {
-  StyleSheet, TouchableOpacity, Text, View,
+  StyleSheet, TouchableOpacity, View,
 } from 'react-native';
-import color from '../../../assets/styles/color';
+import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color.ts';
+import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
   button: {
     width: 260,
-    alignItems: 'center',
     backgroundColor: color.component.button.backgroundColor,
     borderRadius: 27,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  btnDisabled: {
+    opacity: 0.3,
   },
   buttonText: {
-    textAlign: 'center',
-    padding: 20,
     color: color.component.button.color,
     fontSize: 16,
     fontFamily: 'Avenir Black',
@@ -21,12 +26,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Button({ text, onPress }) {
+export default function Button({ text, onPress, disabled }) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>{text}</Text>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
+        <Loc style={[styles.buttonText]} text={text} />
       </View>
     </TouchableOpacity>
   );
 }
+
+Button.propTypes = {
+  text: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+Button.defaultProps = {
+  disabled: false,
+};

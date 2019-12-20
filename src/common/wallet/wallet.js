@@ -1,303 +1,178 @@
+import RNSecureStorage from 'rn-secure-storage';
+import _ from 'lodash';
+import Coin from './btccoin';
+import RBTCCoin from './rbtccoin';
+// import storage from '../storage';
+
 const Mnemonic = require('bitcore-mnemonic');
-import {BIP32, fromPrivateKey, fromPublicKey, fromSeed, fromBase58} from 'bip32';
-import {mnemonicToSeed, generateMnemonic, wordlists} from 'bip39';
-import storage from '../storage'
-import {
-    address, ECPair, networks, payments, TransactionBuilder, Transaction, Network
-} from 'bitcoinjs-lib';
-const HDNode = require('hdkey');
-const crypto_1 = require("crypto");
-const ethereumjs_util_1 = require("ethereumjs-util");
-const MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8');
 
-const btc = require('../../assets/images/icon/BTC.png')
-const rbtc = require('../../assets/images/icon/RBTC.png')
-const rif = require('../../assets/images/icon/RIF.png')
-
-
-function deserializePrivate(s) {
-    let master = JSON.parse(s);
-    let ret = new HDNode();
-    ret.chainCode = new Buffer(master.cc, 'hex');
-    ret.privateKey = new Buffer(master.prk, 'hex');
-    return ret;
-}
-
-function deserializePublic(s) {
-    let master = JSON.parse(s);
-    if (master.prk)
-        return null;
-    let ret = new HDNode();
-    ret.chainCode = new Buffer(master.cc, 'hex');
-    ret.publicKey = new Buffer(master.puk, 'hex');
-    return ret;
-}
-
-function serializePublic(node) {
-    let ret = {
-        puk: node.publicKey.toString('hex'),
-        cc: node.chainCode.toString('hex')
-    };
-    return JSON.stringify(ret);
-}
-
-class PathKeyPair {
-    constructor(path = '', pk = '') {
-        this.path = path;
-        this.public_key = pk;
-    }
-}
-//BTC TBTC RSK TRSK RIF TRIF
-let coinType = {
-    BTC: {
-        networkId: 0,
-        network: networks.bitcoin,
-        icon: btc,
-        queryKey: 'BTC',
-        defaultName: 'Bitcoin',
-    },
-    RBTC: {
-        networkId: 137,
-        icon: rbtc,
-        queryKey: 'RSK',
-        defaultName: 'SmartBitcoin',
-    },
-    RIF: {
-        networkId: 137,
-        icon: rif,
-        queryKey: 'RIF',
-        defaultName: 'RIF',
-    },
-    BTCTestNet: {
-        networkId: 1,
-        network: networks.testnet,
-        icon: btc,
-        queryKey: 'TBTC',
-        defaultName: 'Bitcoin Testnet',
-    },
-    RBTCTestNet: {
-        networkId: 37310,
-        icon: rbtc,
-        queryKey: 'TRSK',
-        defaultName: 'SmartBitcoin Testnet',
-    },
-    RIFTestNet: {
-        networkId: 37310,
-        icon: rif,
-        queryKey: 'TRIF',
-        defaultName: 'RIF Testnet',
-    }
-}
-
-class Coin {
-    constructor(network) {
-        this.type = network;
-        this.networkId = coinType[network].networkId;
-        this.network = coinType[network].network;
-        this.icon = coinType[network].icon;
-        this.queryKey = coinType[network].queryKey;
-        this.defaultName = coinType[network].defaultName;
-        this.amount = 0;
-        this.value = 0;
-        this.address = '';
-        this.networkNode = null;
-        this.accountNode = null;
-        this.addressNode = null;
-        this.master = '';
-    }
-    generate_master_from_seed(seed){
-        console.log(`generate_master_from_recovery_phrase, seed: ${seed}`);
-        this.master = fromSeed(seed, this.network).toBase58();
-        return this.master;
-    }
-    getNetworkNode() {
-        let path = "m/44'/" + this.networkId + "'/0'";
-        let pk = fromBase58(this.master, this.network)
-            .derivePath(path)
-            .neutered()
-            .toBase58();
-        this.networkNode = new PathKeyPair(path, pk);
-        return this.networkNode;
-    }
-    derive(seed){
-        this.generate_master_from_seed(seed);
-        this.getNetworkNode();
-        this.generateAccountNode(0);
-        this.generateAddressNode(0);
-        this.generateAddress();
-    }
-    generateAccountNode(index){
-        let path = this.networkNode.path + '/' + index;
-        let public_key = this.deriveChildFromNode(
-            this.networkNode.public_key,
-            index
-        );
-        this.accountNode = new PathKeyPair(path, public_key);
-        return this.accountNode;
-    }
-    generateAddressNode(index){
-        let pk = this.accountNode;
-        let path = pk.path + '/' + index;
-        console.log(`[TRACE]generateAddressNode, index: ${index}, pk: ${JSON.stringify(pk)}, path: ${path}`);
-        let result = this.deriveChildFromNode(pk.public_key, index)
-        console.log(`[TRACE]generateAddressNode, publicKey: ${result}`);
-        this.addressNode = new PathKeyPair(path, result);
-        return this.addressNode;
-    }
-    generateAddress(){
-        let options = {
-            pubkey: fromBase58(this.addressNode.public_key, this.network).publicKey,
-            network: this.network,
-        };
-        console.log(`[TRACE]BaseBtcCryptoNetwork::get_address, pubkey: ${options.pubkey}, network: ${options.network}`);
-        this.address = payments.p2pkh(options).address
-        return this.address;
-    }
-    deriveChildFromNode(node, index) {
-        let t = fromBase58(node, this.network).derive(index);
-        return t.toBase58();
-    }
-}
-
-class RBTCCoin {
-    constructor(network) {
-        this.type = network;
-        this.networkId = coinType[network].networkId;
-        this.network = coinType[network].network;
-        this.icon = coinType[network].icon;
-        this.queryKey = coinType[network].queryKey;
-        this.defaultName = coinType[network].defaultName;
-        this.amount = 0;
-        this.value = 0;
-        this.address = '';
-        this.networkNode = null;
-        this.accountNode = null;
-        this.addressNode = null;
-        this.master = '';
-    }
-    serializePrivate(node: HDNode): string {
-        let ret: any = {
-            prk: node.privateKey.toString('hex'),
-            cc: node.chainCode.toString('hex')
-        };
-        return JSON.stringify(ret);
-    }
-    fromMasterSeed(seed_buffer: Buffer) {
-        //let t = HmacSHA512(lib.WordArray.create(seed_buffer), 'Bitcoin seed').toString();
-        //let I = new Buffer(t, 'hex');
-        let I = crypto_1.createHmac('sha512', MASTER_SECRET)
-            .update(seed_buffer)
-            .digest();
-        let IL = I.slice(0, 32);
-        let IR = I.slice(32);
-
-        let ret = new HDNode();
-        ret.chainCode = IR;
-        ret.privateKey = IL;
-
-        return ret;
-    }
-    generate_master_from_seed(seed){
-        console.log(`[TRACE]RBTCCoin::generate_master_from_recovery_phrase, seed: ${seed}`);
-        let master = this.fromMasterSeed(seed);
-        return this.serializePrivate(master);
-    }
-    generate_root_node_from_master(s) {
-        console.log(`[TRACE]RBTCCoin::generate_root_node_from_master, s: ${s}`);
-        let node = deserializePrivate(s);
-        let path = "m/44'/" + this.networkId + "'/0'";
-        node = node.derive(path);
-        return new PathKeyPair(path, serializePublic(node));
-    }
-    derive(seed){
-        let master = this.generate_master_from_seed(seed);
-        this.networkNode = this.generate_root_node_from_master(master);
-        this.generateAccountNode(0);
-        this.generateAddressNode(0);
-        this.address = this.get_address(this.addressNode.public_key);
-    }
-
-    generateAccountNode(index){
-        let path = this.networkNode.path + '/' + index;
-        let public_key = this.deriveChildFromNode(
-            this.networkNode.public_key,
-            index
-        );
-        this.accountNode = new PathKeyPair(path, public_key);
-        return this.accountNode;
-    }
-
-    generateAddressNode(index){
-        let path = this.accountNode.path + '/' + index;
-        let public_key = this.deriveChildFromNode(
-            this.accountNode.public_key,
-            index
-        );
-        this.addressNode = new PathKeyPair(path, public_key);
-        return this.addressNode;
-    }
-
-    deriveChildFromNode(s, index) {
-        let deserialized = deserializePublic(s) || deserializePrivate(s);
-        return serializePublic(deserialized.deriveChild(index));
-    }
-    get_address(s) {
-        let public_key = JSON.parse(s).puk;
-        let address_bin = ethereumjs_util_1.pubToAddress(new Buffer(public_key, 'hex'), true);
-        let address = Buffer.from(address_bin).toString('hex');
-        return this.to_checksum_address(address);
-    }
-    to_checksum_address(s) {
-        return ethereumjs_util_1.toChecksumAddress(s);
-    }
-}
+const PHRASE_KEY_STORAGE_PREFIX = 'wallet_';
+const WALLET_NAME_PREFIX = 'Key ';
 
 export default class Wallet {
-    constructor(name='Account', coinTypes=['BTC', 'RBTC', 'RIF']){
-        this.id = 0,
-        this.name = name,
-        this.coins = [];
-        coinTypes.forEach((coinType)=>{ 
-            let coin = null;
-            if(coinType==='BTC'){
-                coin = new Coin('BTC');
-            } else {
-                coin = new RBTCCoin(coinType);
-            }
-            this.coins.push(coin);
-        });
-    }
-    static create(name, phrase=null, coinTypes){
-        let mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
-        let wallet = new Wallet(name, coinTypes);
-        wallet.mnemonic = mnemonic;
-        wallet.derive();
-        return wallet;
-    }
-    static load(master){
-        let wallet = new Wallet();
-        return wallet;
-    }
-    derive(){
-        for(let i=0; i<this.coins.length; i++){
-            let coin = this.coins[i];
-            let seed = this.mnemonic.toSeed();
-            // this process cost time.
-            coin.derive(seed);
+  constructor({
+    id, name, mnemonic, coins,
+  }) {
+    this.id = id;
+    this.name = name || WALLET_NAME_PREFIX + id;
+    this.mnemonic = mnemonic;
+    // this.createdAt = new Date();
+
+    // console.log('Wallet.create.coins', coins);
+
+    // Create coins based on ids
+    this.coins = [];
+    const seed = this.mnemonic.toSeed();
+
+    if (!_.isEmpty(coins)) {
+      coins.forEach((item) => {
+        const {
+          id: coinId, amount, address, objectId,
+        } = item;
+
+        let coin;
+        if (coinId === 'BTC' || coinId === 'BTCTestnet') {
+          coin = new Coin(coinId, amount, address);
+        } else {
+          coin = new RBTCCoin(coinId, amount, address);
         }
+
+        // Add objectId to coin if there is one
+        if (objectId) {
+          coin.objectId = objectId;
+        }
+
+        // TODO: right now we always derive privateKey hex string from seed
+        // In future we could save those keys into storage to cut derive time
+        coin.derive(seed);
+
+        this.coins.push(coin);
+      });
     }
-    // async getMaster(){
-    //     let master = null;
-    //     try{
-    //         master = await storage.load({key: 'master'});
-    //     }catch(e){}
-    //     if(!master){
-    //         let mnemonic = this.generateMnemonic();
-    //         let master = await this.generate_master_from_recovery_phrase(mnemonic.phrase);
-    //         await storage.save('master', master);
-    //         return {master, phrase: mnemonic.phrase};
-    //     } else {
-    //         return {master};
-    //     }
-    // },
+  }
+
+  /**
+   *
+   * @param {object} param0
+   * @param {string} param0.id id of this wallet instance
+   * @param {string} param0.name Name of wallet
+   * @param {string} param0.phrase 12-word mnemonic phrase
+   * @param {array} param0.coins Array of coin JSON
+   *
+   */
+  static create({
+    id, name, phrase, coins,
+  }) {
+    // If phrase is defined we will create mnemonic with phrase
+    // Otherwise this line will generate a random mnemonic
+    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
+
+    const wallet = new Wallet({
+      id, name, mnemonic, coins,
+    });
+
+    // We need to save the phrase to secure storage after generation
+    // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
+    Wallet.savePhrase(wallet.id, wallet.mnemonic.toString());
+
+    return wallet;
+  }
+
+  // static load() {
+  //   const wallet = new Wallet();
+  //   return wallet;
+  // }
+
+  /**
+   * Save phrase with walletId into secure storage if exits
+   */
+  static async savePhrase(id, phrase) {
+    try {
+      const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
+      console.log(`savePhrase, key: ${key}, phrase: ${phrase}`);
+      await RNSecureStorage.set(key, phrase, {});
+    } catch (ex) {
+      console.log('savePhrase, error', ex.message);
+    }
+  }
+
+  /**
+   * Restore phrase by walletId from secure storage; set to null if storage lookup fails
+   */
+  static async restorePhrase(id) {
+    const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
+
+    try {
+      const phrase = await RNSecureStorage.get(key);
+      return phrase;
+    } catch (err) {
+      console.log(err);
+      console.log(err.message);
+    }
+
+    return null;
+  }
+
+
+  /**
+   * Returns a JSON to save required data to backend server; empty array if there's no coins
+   */
+  toJSON() {
+    const result = {
+      id: this.id,
+      name: this.name,
+      // createdAt: this.createdAt,
+      coins: this.coins.map((coin) => coin.toJSON()),
+    };
+
+    return result;
+  }
+
+  /**
+   * Return a Wallet object based on raw wallet JSON
+   * Returns null if Wallet restoration fails
+   * @param {*} json
+   */
+  static async fromJSON(json) {
+    // console.log('Wallet.fromJSON.', json);
+    const {
+      id, name, coins,
+    } = json;
+
+    // TODO: use secure storage to restore phrase
+    const phrase = await Wallet.restorePhrase(id);
+
+    if (!_.isString(phrase)) { // We are be able to restore phrase; do not continue.
+      console.log(`Wallet.fromJSON: phrase restored is not a string, Id=${id}; returning null.`);
+      return null;
+    }
+
+    console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
+
+    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
+
+    const wallet = new Wallet({
+      id, name, mnemonic, coins,
+    });
+
+    return wallet;
+  }
+
+  /**
+   * Set Coin's objectId to values in parseWallets, and return true if there's any change
+   * @param {array} addresses Array of JSON objects
+   * @returns True if any Coin is updated
+   */
+  updateCoinObjectIds(addresses) {
+    const { coins } = this;
+
+    let isDirty = false;
+    _.each(coins, (coin) => {
+      if (coin.updateCoinObjectIds(addresses)) {
+        isDirty = true;
+      }
+    });
+
+    return isDirty;
+  }
 }

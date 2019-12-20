@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  StyleSheet, View, FlatList, Text, TouchableOpacity,
+  StyleSheet, View, FlatList, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/Entypo';
+import Loc from '../common/misc/loc';
 
 const styles = StyleSheet.create({
   item: {
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 7,
+    paddingBottom: 13,
     borderBottomColor: '#D5D5D5',
   },
   textView: {
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
     color: '#4A4A4A',
     fontSize: 15,
     flex: 1,
+    marginTop: 9,
   },
   chevron: {
     color: '#D5D5D5',
@@ -53,8 +56,8 @@ function Item({
         </View>
         <View style={[styles.right]}>
           <View style={styles.textView}>
-            <Text style={[styles.title]}>{title}</Text>
-            <Text style={[styles.text]}>{text}</Text>
+            <Loc style={[styles.title]} text={title} />
+            <Loc style={[styles.text]} text={text} />
           </View>
           <Icon name="chevron-small-right" size={35} style={styles.chevron} />
         </View>
@@ -63,9 +66,25 @@ function Item({
   );
 }
 
-export default function WalletTypeList({ data }) {
+Item.propTypes = {
+  icon: PropTypes.element,
+  title: PropTypes.string,
+  text: PropTypes.string,
+  onPress: PropTypes.func,
+};
+
+Item.defaultProps = {
+  icon: null,
+  title: null,
+  text: null,
+  onPress: null,
+};
+
+
+export default function WalletTypeList({ data, style }) {
   return (
     <FlatList
+      style={style}
       data={data}
       renderItem={({ item }) => (
         <Item
@@ -79,3 +98,5 @@ export default function WalletTypeList({ data }) {
     />
   );
 }
+
+WalletTypeList.propTypes = Item.propTypes;

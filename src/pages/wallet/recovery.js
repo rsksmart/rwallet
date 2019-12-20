@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView
+  View, Text, StyleSheet, ScrollView, TextInput,
 } from 'react-native';
-
-import flex from '../../assets/styles/layout.flex';
-import Input from '../../components/common/input/input';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Button from '../../components/common/button/button';
 import SwitchListItem from '../../components/common/list/switchListItem';
-import Header from '../../components/common/misc/header';
-import walletManager from '../../common/wallet/walletManager';
 import Tags from '../../components/common/misc/tags';
+import Header from '../../components/common/misc/header';
+import Loc from '../../components/common/misc/loc';
+import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { strings } from '../../common/i18n';
+import { createErrorNotification } from '../../common/notification.controller';
+import color from '../../assets/styles/color.ts';
+import presetStyles from '../../assets/styles/style';
+
+const Mnemonic = require('bitcore-mnemonic');
 
 const styles = StyleSheet.create({
   input: {
-    height: 50,
+    height: 40,
+    borderWidth: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
     fontSize: 14,
@@ -26,90 +35,219 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginTop: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 30,
     paddingBottom: 10,
   },
   buttonView: {
-    flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingBottom: 20,
+    marginTop: 20,
   },
   bottomBorder: {
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
+    minHeight: 170,
+    paddingBottom: 10,
+  },
+  headerImage: {
+    position: 'absolute',
+    width: '100%',
+    height: 350,
+    marginTop: -150,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    position: 'absolute',
+    top: 200,
+    left: 24,
+    color: '#FFF',
+  },
+  phraseView: {
+    flex: 1,
     borderBottomColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: color.component.input.backgroundColor,
+    borderColor: color.component.input.borderColor,
+    borderRadius: 4,
+    borderStyle: 'solid',
   },
 });
 
-export default class WalletRecovery extends Component {
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
-      }
+class WalletRecovery extends Component {
+  static navigationOptions = () => ({
+    header: null,
+  });
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      phrases: [],
+      phrase: '',
+      isCanSubmit: false,
     };
-    constructor(props) {
-      super(props);
-      let phrases = 'camp lazy topic stomach oyster behind know music melt raccoon during spirit'.split(' ');
-      this.state = {
-        walletName: '',
-        phrases: phrases,
-        phrase: '',
-      };
-      this.inputWord = this.inputWord.bind(this);
-      this.deleteWord = this.deleteWord.bind(this);
-      
+    this.inputWord = this.inputWord.bind(this);
+    this.deleteWord = this.deleteWord.bind(this);
+    this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
+    this.onTagsPress = this.onTagsPress.bind(this);
+    this.onImportPress = this.onImportPress.bind(this);
+  }
+
+  onSubmitEditing() {
+    const { phrase } = this.state;
+    const trimText = phrase.trim();
+    this.inputText(trimText);
+  }
+
+  onChangeText(text) {
+    const char = text[text.length - 1];
+    if (char !== ' ') {
+      this.setState({ phrase: text });
+      return;
     }
-    inputWord(){
-      this.state.phrases.push(this.state.phrase);
-      this.setState({phrases: this.state.phrases});
-      this.setState({phrase: ''});
+    const trimText = text.trim();
+    this.inputText(trimText);
+  }
+
+  onTagsPress(i) {
+    this.deleteWord(i);
+    this.setState({ isCanSubmit: false });
+    this.phraseInput.focus();
+  }
+
+  onImportPress() {
+    const { navigation, addNotification } = this.props;
+    const { phrases } = this.state;
+    let inputPhrases = '';
+    for (let i = 0; i < phrases.length; i += 1) {
+      if (i !== 0) {
+        inputPhrases += ' ';
+      }
+      inputPhrases += phrases[i];
     }
-    deleteWord(i){
-      this.state.phrases.splice(i, 1);
-      this.setState({phrases: this.state.phrases});
+    // validate phrase
+    const isValid = Mnemonic.isValid(inputPhrases);
+    console.log(`isValid: ${isValid}`);
+    if (!isValid) {
+      const notification = createErrorNotification(
+        'Unable to recover',
+        'Unable to recover Body',
+        'GOT IT',
+      );
+      addNotification(notification);
+      return;
     }
-    render() {
-      return (
-        <ScrollView style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={this.props.navigation.goBack}/>
-          <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
-            <Text style={[styles.sectionTitle]}>Type the recovery phrase(usually 12 words)</Text>
-            <Input style={styles.input} onChangeText={(text)=>this.setState({phrase: text})} onSubmitEditing={()=>{
-              this.inputWord();
-            }} value={this.state.phrase}/>
-          </View>
-          <View style={[styles.sectionContainer, styles.phrasesBorder]}>
-              <Tags data={this.state.phrases} onPress={(i)=>{
-                this.deleteWord(i);
-              }} />
+    navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
+  }
+
+  inputText(text) {
+    const words = text.split(' ');
+    words.forEach((word) => {
+      const trimWord = word.trim();
+      this.inputWord(trimWord);
+    });
+  }
+
+  inputWord(word) {
+    const { addNotification } = this.props;
+    const { phrases } = this.state;
+    if (word === '') {
+      this.setState({ phrase: '' });
+      return;
+    }
+    if (phrases.length === 12) {
+      const notification = createErrorNotification(
+        'Too Many Words',
+        'The recovery phrase has to be 12 words',
+      );
+      addNotification(notification);
+      return;
+    }
+    if (phrases.length === 11) {
+      this.setState({ isCanSubmit: true });
+    }
+    phrases.push(word);
+    this.setState({ phrases, phrase: '' });
+    this.phraseInput.focus();
+  }
+
+  deleteWord(i) {
+    const { phrases } = this.state;
+    phrases.splice(i, 1);
+    this.setState({ phrases });
+  }
+
+  render() {
+    const { phrase, phrases, isCanSubmit } = this.state;
+    const { navigation } = this.props;
+    return (
+      <ScrollView style={{ flex: 1 }}>
+        <Header title="Recovery Phrase" goBack={() => { navigation.goBack(); }} />
+        <View style={[screenHelper.styles.body]}>
+          <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
+            <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+            <View style={styles.phraseView}>
+              <TextInput
+                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                // This code uses a ref to store a reference to a DOM node
+                // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                ref={(ref) => { this.phraseInput = ref; }}
+                // set blurOnSubmit to false, to prevent keyboard flickering.
+                blurOnSubmit={false}
+                style={[presetStyles.textInput, styles.input]}
+                onChangeText={this.onChangeText}
+                onSubmitEditing={this.onSubmitEditing}
+                value={phrase}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                <Tags
+                  style={[{ flex: 1 }]}
+                  data={phrases}
+                  onPress={this.onTagsPress}
+                />
+              </View>
+            </View>
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
             <Text style={[styles.sectionTitle]}>Advanced Options</Text>
-            <SwitchListItem title="Single address" value={false} />
-          </View>
-          <View style={[styles.sectionContainer]}>
-            <Text style={[styles.sectionTitle]}>Wallet Service URL</Text>
-            <Text>https://bws.bitpay.com/bws/api</Text>
+            <SwitchListItem title={strings('Specify derivation path')} value={false} />
           </View>
           <View style={styles.buttonView}>
-            <Button text="CREATE" onPress={async () => {
-              const { navigation } = this.props;
-              let phrases = '';
-              for (let i = 0; i < this.state.phrases.length; i++) {
-                if(i!==0){
-                  phrases += ' ';
-                }
-                phrases += this.state.phrases[i];
-              }
-              navigation.navigate('WalletSelectCurrency', {phrases});
-            }} />
+            <Button
+              text="IMPORT"
+              onPress={this.onImportPress}
+              disabled={!isCanSubmit}
+            />
           </View>
-        </ScrollView>
-      );
-    }
+        </View>
+      </ScrollView>
+    );
+  }
 }
+
+WalletRecovery.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+  addNotification: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletRecovery);

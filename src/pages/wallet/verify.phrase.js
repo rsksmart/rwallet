@@ -1,150 +1,227 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 import {
-	View, Text, ScrollView, StyleSheet
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import Tags from '../../components/common/misc/tags'
-import Header from '../../components/common/misc/header'
-import WordField from '../../components/common/misc/wordField'
-import Alert from '../../components/common/modal/alert';
+import PropTypes from 'prop-types';
+import Tags from '../../components/common/misc/tags';
+import WordField from '../../components/common/misc/wordField';
+// import walletManager from '../../common/wallet/walletManager';
+import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
+
+// import appActions from '../../redux/app/actions';
+
+const MNEMONIC_PHRASE_LENGTH = 12;
 
 const styles = StyleSheet.create({
-	wordFieldView: {
-		height: 150,
-		marginTop: 15,
-	},
-	tags: {
-		justifyContent: 'center',
-    	alignItems: 'center',
-    	marginTop: 15,
-    	marginHorizontal: 20,
-    	alignSelf: 'center',
-	},
-	tip: {
-		color: '#000000',
-		fontSize: 15,
-		fontWeight: '500',
-		letterSpacing: 0.29,
-		alignSelf: 'center',
-	}
+  wordFieldView: {
+    height: 150,
+    marginTop: 15,
+  },
+  tags: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    marginHorizontal: 20,
+    alignSelf: 'center',
+  },
+  tip: {
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: '500',
+    letterSpacing: 0.29,
+    alignSelf: 'center',
+  },
 });
 
-export default class VerifyPhrase extends Component {
-	static navigationOptions = ({navigation})=>{
-		return {
-			header: null,
-		}
-	}
-	constructor(props){
-		super(props);
-		this.wallet = this.props.navigation.state.params.wallet;
-		this.correctPhrases = this.wallet.mnemonic.phrase.split(' ');
-		let shuffle = (org)=>{
-			let input = [];
-			Object.assign(input, org);
-		    for (var i = input.length-1; i >=0; i--) {
-		        var randomIndex = Math.floor(Math.random()*(i+1));
-		        var itemAtIndex = input[randomIndex];
-		        input[randomIndex] = input[i];
-		        input[i] = itemAtIndex;
-		    }
-		    return input;
-		}
-		this.randomPhrases = shuffle(this.correctPhrases);
-		this.randomPhrases2 = [];
-		Object.assign(this.randomPhrases2, this.randomPhrases);
+class VerifyPhrase extends Component {
+  static navigationOptions = () => ({
+    header: null,
+  });
 
-		this.state = {
-			tags: this.randomPhrases,
-			phrases : [],
-		};
-		this.renderAllItem = this.renderAllItem.bind(this);
-		this.tap = this.tap.bind(this);
-		this.reset = this.reset.bind(this);
-	}
-	reset(){
-		Object.assign(this.randomPhrases, this.randomPhrases2);
-		this.setState({
-			tags: this.randomPhrases,
-			phrases : [],
-		});
-	}
-	async tap(i){
-		let s = this.state.tags.splice(i, 1);
-		this.setState({tags: this.state.tags});
-		this.state.phrases.push(s[0]);
-		this.setState({phrases: this.state.phrases});
-		if(this.state.phrases.length===12){
-			let same = true;
-			for(let i=0; i<this.state.phrases.length; i++){
-				let phrase = this.state.phrases[i];
-				let c = this.correctPhrases[i];
-				if(c!==phrase){
-					same = false;
-					break;
-				}
-			}
-			if(same){
-				await walletManager.addWallet(this.wallet);
-				const resetAction = StackActions.reset({
-					index: 1,
-					actions: [
-						NavigationActions.navigate({ routeName: 'Test1' }),
-						NavigationActions.navigate({ routeName: 'WalletList' })
-					],
-				});
-				this.props.navigation.dispatch(resetAction);
-			} else {
-				this.alert.setModalVisible(true); 
-			}
-			
-		}
-	}
-	renderAllItem(){
-		let startX = -82;
-		let startY = 0;
-		let words = [];
-		let margin = 200;
-		let offset = 0;
-		if(this.state.phrases.length>1){
-			offset = -margin*(this.state.phrases.length-1);
-		} 
-		for(let i=0; i<12; i++){
-			let marginLeft = startX + i*margin + offset;
-			let style = {position:'absolute', left: '50%', top:10, marginLeft: marginLeft};
-			let text = '';
-			if(i<this.state.phrases.length){
-				text = this.state.phrases[i];
-			}
-			words.push(<View style={style} key={Math.random()+''}><WordField text={text} /></View>);
-		}
-		return words;
-	}
-	render(){
-		let alertTitle = "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.";
-		let alertPress = ()=>{
-			this.reset();
-		}
-		return (
-			<View>
-				<Header title="Verify Your Phrase" goBack={()=>{
-					if(this.state.phrases.length===0){
-		            	this.props.navigation.goBack();
-		            } else {
-		            	this.reset();
-		            }
-				}} />
-				<View style={styles.wordFieldView}>
-	                {this.renderAllItem()}
-	            </View>
-				<Text style={styles.tip}>Tap each word in the correct order</Text>
-				<Tags data={this.state.tags} style={[styles.tags]} showNumber={false} onPress={(i)=>{
-					this.tap(i);
-				}}/>
-				<Alert ref={(ref)=>{this.alert = ref;}} title={alertTitle} onPress={()=>{
-					this.reset();
-				}}/>
-			</View>
-		);
-	}
+  constructor(props) {
+    super(props);
+    const { navigation } = this.props;
+    this.wallet = navigation.state.params.wallet;
+    this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
+
+    this.reset(true);
+
+    this.renderSelectedWords = this.renderSelectedWords.bind(this);
+    this.onTagsPressed = this.onTagsPressed.bind(this);
+    this.onGobackPress = this.onGobackPress.bind(this);
+    this.reset = this.reset.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { notification } = nextProps;
+    const { notification: curNotification } = this.props;
+    if (notification !== curNotification && notification === null) {
+      this.onNotificationRemoved();
+    }
+  }
+
+  onNotificationRemoved() {
+    this.reset();
+  }
+
+  onWordFieldPress(i) {
+    this.revert(i);
+  }
+
+  async onTagsPressed(index) {
+    const { navigation, addNotification } = this.props;
+    const { shuffleWords, selectedWordIndexs } = this.state;
+    selectedWordIndexs.push(index);
+    this.setState({
+      selectedWordIndexs,
+    });
+
+    if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
+      const selectedWords = [];
+      selectedWordIndexs.forEach((selectedIndex) => {
+        selectedWords.push(shuffleWords[selectedIndex]);
+      });
+
+      const isEqual = _.isEqual(selectedWords, this.correctPhrases);
+      console.log('selectedWords', selectedWords);
+      console.log('this.correctPhrases', this.correctPhrases);
+      console.log('isEqual', isEqual);
+
+      if (isEqual) {
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: 'WalletList' }),
+            NavigationActions.navigate({ routeName: 'VerifyPhraseSuccess' }),
+          ],
+        });
+        navigation.dispatch(resetAction);
+      } else {
+        const notification = createErrorNotification(
+          'Incorrect backup phrase',
+          'verifyPhraseAlertTitle',
+          'START OVER',
+        );
+        addNotification(notification);
+      }
+    }
+  }
+
+  onGobackPress() {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
+  reset(isInitialize = false) {
+    if (isInitialize) {
+      // Shuffle the 12-word here so user need to choose from a different order than the last time
+      // We want to make sure they really write down the phrase
+      const shuffleWords = _.shuffle(this.correctPhrases);
+      this.state = { selectedWordIndexs: [], shuffleWords };
+    } else {
+      this.setState({ selectedWordIndexs: [] });
+    }
+  }
+
+  revert() {
+    const { selectedWordIndexs } = this.state;
+    selectedWordIndexs.pop();
+    this.setState({
+      selectedWordIndexs,
+    });
+  }
+
+  renderSelectedWords() {
+    const startX = -82;
+    const words = [];
+    const margin = 200;
+    let offset = 0;
+    const { shuffleWords, selectedWordIndexs } = this.state;
+    if (selectedWordIndexs.length > 1) {
+      offset = -margin * (selectedWordIndexs.length - 1);
+    }
+    for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
+      const marginLeft = startX + i * margin + offset;
+      const style = {
+        position: 'absolute', left: '50%', top: 10, marginLeft,
+      };
+      let text = '';
+      if (i < selectedWordIndexs.length) {
+        const index = selectedWordIndexs[i];
+        text = shuffleWords[index];
+      }
+      let isDisabled = false;
+      if (i !== selectedWordIndexs.length - 1) {
+        isDisabled = true;
+      }
+      words.push(
+        <TouchableOpacity style={style} key={(`${i}`)} disabled={isDisabled} onPress={() => this.onWordFieldPress(i)}>
+          <WordField text={text} />
+        </TouchableOpacity>,
+      );
+    }
+    return words;
+  }
+
+  render() {
+    const { isLoading } = this.props;
+    const { shuffleWords, selectedWordIndexs } = this.state;
+    return (
+      <View>
+        <Loader loading={isLoading} />
+        <Header
+          title="Backup Phrase"
+          goBack={this.onGobackPress}
+        />
+        <View style={[screenHelper.styles.body]}>
+          <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
+          <Loc style={[styles.tip]} text="Tap each word in the correct order" />
+          <Tags
+            data={shuffleWords}
+            style={[styles.tags]}
+            showNumber={false}
+            onPress={this.onTagsPressed}
+            disableIndexs={selectedWordIndexs}
+          />
+        </View>
+      </View>
+    );
+  }
 }
+
+VerifyPhrase.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  addNotification: PropTypes.func.isRequired,
+  notification: PropTypes.shape({}),
+};
+
+VerifyPhrase.defaultProps = {
+  notification: null,
+};
+
+const mapStateToProps = (state) => ({
+  notification: state.App.get('notification'),
+  isLoading: state.App.get('isPageLoading'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

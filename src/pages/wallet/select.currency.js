@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, FlatList
+  View, StyleSheet, ScrollView,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-
-
-import flex from '../../assets/styles/layout.flex';
-import IconList from '../../components/common/list/iconList';
-import SwitchListItem from '../../components/common/list/switchListItem';
+import { StackActions } from 'react-navigation';
 import CoinTypeList from '../../components/wallet/coin.type.list';
-import Header from '../../components/common/misc/header';
-import walletManager from '../../common/wallet/walletManager';
 import Button from '../../components/common/button/button';
-import { StackActions, NavigationActions } from 'react-navigation';
+import Loader from '../../components/common/misc/loader';
+import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
+import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
+import flex from '../../assets/styles/layout.flex';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -23,110 +25,183 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sectionContainer: {
-    marginTop: 10,
     paddingHorizontal: 10,
   },
   buttonView: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
-    bottom: '10%',
+    alignSelf: 'center',
+    paddingVertical: 20,
+    bottom: 0,
   },
 });
 
-const testnet = [
-  {
-    id: '1',
-    title: 'BTC Testnet',
-    icon: require('../../assets/images/icon/BTC.png'),
-    onPress: () => {
-      // alert('Address Book')
-    },
-  },
-  {
-    id: '2',
-    title: 'RBTC Testnet',
-    icon: require('../../assets/images/icon/RBTC.png'),
-    onPress: () => {
-      // alert('Address Book')
-    },
-  },
-  {
-    id: '3',
-    title: 'RIF Testnet',
-    icon: require('../../assets/images/icon/RIF.png'),
-    onPress: () => {
-      // alert('Requires invitation to join')
-    },
-  },
-];
+const BTC = require('../../assets/images/icon/BTC.png');
+const RBTC = require('../../assets/images/icon/RBTC.png');
+const RIF = require('../../assets/images/icon/RIF.png');
 
 class WalletSelectCurrency extends Component {
+    static navigationOptions = () => ({
+      header: null,
+    });
+
+    static async createWallet(phrases, coins, walletManager, createKey) {
+      if (phrases) {
+        createKey(null, phrases, coins, walletManager);
+      } else {
+        createKey(null, phrases, coins, walletManager);
+      }
+    }
+
     mainnet = [
       {
-        id: '1',
         title: 'BTC',
-        icon: require('../../assets/images/icon/BTC.png'),
-        selected: true,
+        icon: BTC,
+        selected: false,
       },
       {
-        id: '2',
         title: 'RBTC',
-        icon: require('../../assets/images/icon/RBTC.png'),
+        icon: RBTC,
+        selected: false,
+      },
+      {
+        title: 'RIF',
+        icon: RIF,
+        selected: false,
+      },
+    ];
+
+    testnet = [
+      {
+        title: 'BTC',
+        icon: BTC,
         selected: true,
       },
       {
-        id: '3',
+        title: 'RBTC',
+        icon: RBTC,
+        selected: true,
+      },
+      {
         title: 'RIF',
-        icon: require('../../assets/images/icon/RIF.png'),
+        icon: RIF,
         selected: true,
       },
     ];
 
-    static navigationOptions = ({ navigation }) => {
-      return{
-        header: null,
+    constructor(props) {
+      super(props);
+      this.state = {
+        loading: false,
+      };
+      this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const {
+        isWalletsUpdated, resetWalletsUpdated, navigation, wallets,
+      } = nextProps;
+      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      if (isWalletsUpdated && resetWalletsUpdated) {
+        this.setState({ loading: false });
+        if (phrases) {
+          const statckActions = StackActions.popToTop();
+          navigation.dispatch(statckActions);
+        } else {
+          // the last wallet is created just now.
+          const wallet = wallets[wallets.length - 1];
+          navigation.navigate('RecoveryPhrase', { wallet });
+        }
+        resetWalletsUpdated();
       }
-    };
+    }
+
+    async onCreateButtonPress() {
+      const {
+        navigation, walletManager, createKey,
+      } = this.props;
+      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      const coins = [];
+      for (let i = 0; i < this.mainnet.length; i += 1) {
+        if (this.mainnet[i].selected) {
+          coins.push(this.mainnet[i].title);
+        }
+      }
+      for (let i = 0; i < this.testnet.length; i += 1) {
+        if (this.testnet[i].selected) {
+          const coinId = `${this.mainnet[i].title}Testnet`;
+          coins.push(coinId);
+        }
+      }
+      this.setState({ loading: true });
+      WalletSelectCurrency.createWallet(phrases, coins, walletManager, createKey);
+    }
+
 
     render() {
-      let phrases = this.props.navigation.state.params ? this.props.navigation.state.params.phrases : '';
+      const { loading } = this.state;
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Select Wallet Currency" goBack={this.props.navigation.goBack}/>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Mainnet</Text>
-            <CoinTypeList data={this.mainnet}/>
-          </View>
-          <View style={{alignItems: 'center', flex: 1}}>
-            <View style={styles.buttonView}>
-              <Button text="CREATE" onPress={async () => {
-                let coins = [];
-                for(let i=0; i<this.mainnet.length; i++){
-                  if(this.mainnet[i].selected){
-                    coins.push(this.mainnet[i].title);
-                  }
-                }
-                const { navigation } = this.props;
-                let wallet = await walletManager.createWallet(phrases, null, coins);
-                if(phrases){
-                  await walletManager.addWallet(wallet);
-                  const resetAction = StackActions.reset({
-                    index: 1,
-                    actions: [
-                      NavigationActions.navigate({ routeName: 'Test1' }),
-                      NavigationActions.navigate({ routeName: 'WalletList' })
-                    ],
-                  });
-                  navigation.dispatch(resetAction);
-                } else {
-                  navigation.navigate('RecoveryPhrase', {wallet});
-                }
-              }} />
+          <ScrollView>
+            <Header
+              title="Select Wallet Currency"
+              goBack={() => { navigation.goBack(); }}
+            />
+            <View style={[screenHelper.styles.body]}>
+              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+                <Loc style={[styles.sectionTitle]} text="Mainnet" />
+                <CoinTypeList data={this.mainnet} />
+              </View>
+              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+                <Loc style={[styles.sectionTitle]} text="Testnet" />
+                <CoinTypeList data={this.testnet} />
+              </View>
+              <Loader loading={loading} />
             </View>
+          </ScrollView>
+          <View style={[styles.buttonView]}>
+            <Button
+              text="CREATE"
+              onPress={this.onCreateButtonPress}
+            />
           </View>
         </View>
       );
     }
 }
 
+WalletSelectCurrency.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
+  walletManager: PropTypes.shape({}),
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  createKey: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
+  resetWalletsUpdated: PropTypes.func.isRequired,
+};
 
-export default WalletSelectCurrency;
+WalletSelectCurrency.defaultProps = {
+  walletManager: undefined,
+  wallets: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
+  createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, Dimensions, Image, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import color from '../../../assets/styles/color';
+import color from '../../../assets/styles/color.ts';
+import Loc from './loc';
 
 const styles = StyleSheet.create({
   backText: {
@@ -75,13 +77,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingVertical: 20,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   right1: {
     flex: 1,
   },
   right2: {
     alignItems: 'flex-end',
-    marginRight: 5,
+    right: 5,
+    position: 'absolute',
   },
   icon: {
     marginRight: 20,
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     color: color.component.swipableButtonList.amount.color,
-    fontSize: 12,
+    fontSize: 13,
   },
 });
 
@@ -112,15 +116,19 @@ export default class SwipableButtonList extends Component {
     const { data } = this.props;
     return (
       <SwipeListView
-        ref={(ref)=>{this.listView = ref;}}
+        ref={(ref) => { this.listView = ref; }}
         data={data}
         renderItem={(data1) => (
-          <TouchableOpacity style={styles.rowFront} activeOpacity={1.0} onPress={()=>{
-            this.listView.safeCloseOpenRow();
-            if(data1.item.onPress){
-              data1.item.onPress();
-            }
-          }}>
+          <TouchableOpacity
+            style={styles.rowFront}
+            activeOpacity={1.0}
+            onPress={() => {
+              this.listView.safeCloseOpenRow();
+              if (data1.item.onPress) {
+                data1.item.onPress();
+              }
+            }}
+          >
             <Image style={styles.icon} source={data1.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
@@ -152,27 +160,28 @@ export default class SwipableButtonList extends Component {
                 styles.backRightBtn,
                 styles.backRightBtnLeft,
               ]}
-              onPress={() => this.closeRow(rowMap, data1.item.key)}
+              onPress={() => {
+                this.listView.safeCloseOpenRow();
+                if (data1.item.r1Press) {
+                  data1.item.r1Press();
+                }
+              }}
             >
-              <Text style={styles.backText}>
-                            Send
-              </Text>
+              <Loc style={[styles.backText]} text="Send" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.backRightBtn,
                 styles.backRightBtnRight,
               ]}
-              onPress={()=>{
+              onPress={() => {
                 this.listView.safeCloseOpenRow();
-                if(data1.item.r2Press){
+                if (data1.item.r2Press) {
                   data1.item.r2Press();
                 }
               }}
             >
-              <Text style={styles.backText}>
-                            Receive
-              </Text>
+              <Loc style={[styles.backText]} text="Receive" />
             </TouchableOpacity>
           </View>
         )}
@@ -184,3 +193,13 @@ export default class SwipableButtonList extends Component {
     );
   }
 }
+
+SwipableButtonList.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    item: PropTypes.shape({
+      icon: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }),
+  })).isRequired,
+};
