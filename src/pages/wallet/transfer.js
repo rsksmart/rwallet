@@ -211,6 +211,7 @@ class Transfer extends Component {
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
+    this.inputAmount = this.inputAmount.bind(this);
   }
 
   componentDidMount() {
@@ -336,6 +337,14 @@ class Transfer extends Component {
     this.setState({ enableConfirm: to && amount });
   }
 
+  inputAmount(text) {
+    this.setState({ amount: text });
+    if (parseFloat(text) >= 0) {
+      this.setState({ amount: text }, this.validateConfirmControl.bind(this));
+    }
+  }
+
+
   render() {
     const {
       loading, to, amount, memo, feeLevel, isConfirm, enableConfirm, feeData,
@@ -375,15 +384,8 @@ class Transfer extends Component {
                     placeholder="0.01"
                     value={amount}
                     keyboardType="numeric"
-                    onChangeText={(text) => {
-                      const self = this;
-                      self.setState({ amount: text });
-                      if (parseFloat(text) >= 0) {
-                        self.setState({ amount: text }, self.validateConfirmControl.bind(self));
-                      }
-                    }}
+                    onChangeText={this.inputAmount}
                   />
-                  {/* <Image source={currencyExchange} style={styles.textInputIcon} /> */}
                 </View>
               </View>
               <View style={styles.sectionContainer}>
@@ -405,9 +407,8 @@ class Transfer extends Component {
                           const url = data;
                           const result = parseUrl.exec(url);
                           const host = result[3];
-                          const [address2, coin2] = host.split('.');
+                          const [address2] = host.split('.');
                           this.setState({ to: address2 });
-                          console.log(`coin: ${coin2}`);
                         },
                       });
                     }}
