@@ -16,24 +16,25 @@ import Toast from '../components/common/notification/toast';
 import appActions from '../redux/app/actions';
 import walletActions from '../redux/wallet/actions';
 
-const DEFAULT_ROUTE_CONFIG_MAP = {
-  Start: {
-    screen: Start,
-    path: 'start',
+const SwitchNavi = createAppContainer(createSwitchNavigator(
+  {
+    Start: {
+      screen: Start,
+      path: 'start',
+    },
+    PrimaryTabNavigator: {
+      screen: PrimaryTabNavigatorComp,
+      path: 'tab',
+    },
+    TermsPage: {
+      screen: TermsPage,
+      path: 'terms',
+    },
   },
-  PrimaryTabNavigator: {
-    screen: PrimaryTabNavigatorComp,
-    path: 'tab',
+  {
+    initialRouteName: 'Start',
   },
-  TermsPage: {
-    screen: TermsPage,
-    path: 'terms',
-  },
-};
-
-const DEFUALT_SWITCH_CONFIG = {
-  initialRouteName: 'Start',
-};
+));
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
 class RootComponent extends Component {
@@ -49,7 +50,6 @@ class RootComponent extends Component {
     this.state = {
       isStorageRead: false,
       isParseWritten: false,
-      SwitchNavComponent: undefined,
     };
   }
 
@@ -98,18 +98,18 @@ class RootComponent extends Component {
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
-        const switchConfig = DEFUALT_SWITCH_CONFIG;
-        // eslint-disable-next-line react/prop-types
-        if (!_.isEmpty(walletManager.wallets)) {
-          _.extend(switchConfig, { initialRouteName: 'PrimaryTabNavigator' });
-        }
+        // const switchConfig = DEFUALT_SWITCH_CONFIG;
+        // // eslint-disable-next-line react/prop-types
+        // if (!_.isEmpty(walletManager.wallets)) {
+        //   _.extend(switchConfig, { initialRouteName: 'PrimaryTabNavigator' });
+        // }
 
-        // Start the first page from Wallet Dashboard if there's any wallet
-        newState.SwitchNavComponent = createAppContainer(
-          createSwitchNavigator(
-            DEFAULT_ROUTE_CONFIG_MAP, switchConfig,
-          ),
-        );
+        // // Start the first page from Wallet Dashboard if there's any wallet
+        // newState.SwitchNavComponent = createAppContainer(
+        //   createSwitchNavigator(
+        //     DEFAULT_ROUTE_CONFIG_MAP, switchConfig,
+        //   ),
+        // );
 
         // Upload current wallet settings to Parse in order to get balances and transactions
         initializeWithParse();
@@ -132,19 +132,15 @@ class RootComponent extends Component {
 
   render() {
     const { showNotification, notification, dispatch } = this.props;
-    const { isStorageRead, SwitchNavComponent } = this.state;
 
     return (
       <View style={[flex.flex1]}>
-        {isStorageRead // TODO: what do we show while waiting for initialized?
-        && (
         <Root>
-          <SwitchNavComponent uriPrefix={uriPrefix} />
+          <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
-        )}
       </View>
     );
   }
