@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, ImageBackground,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -211,6 +211,7 @@ class Transfer extends Component {
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
+    this.inputAmount = this.inputAmount.bind(this);
   }
 
   componentDidMount() {
@@ -336,6 +337,14 @@ class Transfer extends Component {
     this.setState({ enableConfirm: to && amount });
   }
 
+  inputAmount(text) {
+    this.setState({ amount: text });
+    if (parseFloat(text) >= 0) {
+      this.setState({ amount: text }, this.validateConfirmControl.bind(this));
+    }
+  }
+
+
   render() {
     const {
       loading, to, amount, memo, feeLevel, isConfirm, enableConfirm, feeData,
@@ -349,101 +358,96 @@ class Transfer extends Component {
     }
 
     return (
-      <View style={[flex.flex1]}>
-        <ScrollView>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Send" />
-              {` ${coin.defaultName}`}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </ImageBackground>
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title1]} text="Sending" />
-              <View style={styles.textInputView}>
-                <TextInput
-                  style={[styles.textInput]}
-                  placeholder="0.01"
-                  value={amount}
-                  keyboardType="numeric"
-                  onChangeText={(text) => {
-                    const self = this;
-                    self.setState({ amount: text });
-                    if (parseFloat(text) >= 0) {
-                      self.setState({ amount: text }, self.validateConfirmControl.bind(self));
-                    }
-                  }}
-                />
-                {/* <Image source={currencyExchange} style={styles.textInputIcon} /> */}
+      <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
+        <View style={{ height: screen.height - 25 }}>
+          <View style={[flex.flex10]}>
+            <ImageBackground source={header} style={[{ height: headerHeight }]}>
+              <Text style={styles.headerTitle}>
+                <Loc text="Send" />
+                {` ${coin.defaultName}`}
+              </Text>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              >
+                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+              </TouchableOpacity>
+            </ImageBackground>
+            <View style={styles.body}>
+              <View style={styles.sectionContainer}>
+                <Loc style={[styles.title1]} text="Sending" />
+                <View style={styles.textInputView}>
+                  <TextInput
+                    style={[styles.textInput]}
+                    placeholder="0.01"
+                    value={amount}
+                    keyboardType="numeric"
+                    onChangeText={this.inputAmount}
+                  />
+                </View>
               </View>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title2]} text="To" />
-              <View style={styles.textInputView}>
-                <TextInput
-                  style={[styles.textInput]}
-                  value={to}
-                  onChangeText={(text) => {
-                    this.setState({ to: text }, this.validateConfirmControl.bind(this));
-                  }}
-                />
-                <TouchableOpacity
-                  style={styles.textInputIcon}
-                  onPress={() => {
-                    navigation.navigate('Scan', {
-                      onQrcodeDetected: (data) => {
-                        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-                        const url = data;
-                        const result = parseUrl.exec(url);
-                        const host = result[3];
-                        const [address2, coin2] = host.split('.');
-                        this.setState({ to: address2 });
-                        console.log(`coin: ${coin2}`);
-                      },
-                    });
-                  }}
-                >
-                  <Image source={address} />
-                </TouchableOpacity>
+              <View style={styles.sectionContainer}>
+                <Loc style={[styles.title2]} text="To" />
+                <View style={styles.textInputView}>
+                  <TextInput
+                    style={[styles.textInput]}
+                    value={to}
+                    onChangeText={(text) => {
+                      this.setState({ to: text }, this.validateConfirmControl.bind(this));
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={styles.textInputIcon}
+                    onPress={() => {
+                      navigation.navigate('Scan', {
+                        onQrcodeDetected: (data) => {
+                          const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                          const url = data;
+                          const result = parseUrl.exec(url);
+                          const host = result[3];
+                          const [address2] = host.split('.');
+                          this.setState({ to: address2 });
+                        },
+                      });
+                    }}
+                  >
+                    <Image source={address} />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title3]} text="Memo" />
-              <View style={styles.textInputView}>
-                <TextInput
-                  style={[styles.textInput, { textAlignVertical: 'top' }]}
-                  placeholder="Enter a transaction memo"
-                  multiline
-                  numberOfLines={4}
-                  value={memo}
-                  onChange={(text) => {
-                    this.setState({ memo: text });
-                  }}
+              <View style={styles.sectionContainer}>
+                <Loc style={[styles.title3]} text="Memo" />
+                <View style={styles.textInputView}>
+                  <TextInput
+                    style={[styles.textInput, { textAlignVertical: 'top' }]}
+                    placeholder="Enter a transaction memo"
+                    multiline
+                    numberOfLines={4}
+                    value={memo}
+                    onChange={(text) => {
+                      this.setState({ memo: text });
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
+                <Loc style={[styles.title2]} text="Miner fee" />
+                <Loc style={[styles.question]} text="How fast you want this done?" />
+                <RadioGroup
+                  data={feeData}
+                  selectIndex={feeLevel}
+                  onChange={(i) => this.onGroupSelect(i)}
                 />
               </View>
-            </View>
-            <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
-              <Loc style={[styles.title2]} text="Miner fee" />
-              <Loc style={[styles.question]} text="How fast you want this done?" />
-              <RadioGroup
-                data={feeData}
-                selectIndex={feeLevel}
-                onChange={(i) => this.onGroupSelect(i)}
-              />
             </View>
           </View>
-          <Loader loading={loading} />
           <View
-            style={[styles.sectionContainer, {
-              opacity: enableConfirm ? 1 : 0.5, width: '100%', paddingTop: 20, paddingBottom: 35,
+            style={[flex.flex1, styles.sectionContainer, {
+              opacity: enableConfirm ? 1 : 0.5,
+              width: '100%',
+              justifyContent: 'center',
             }]}
             pointerEvents={enableConfirm ? 'auto' : 'none'}
           >
@@ -471,8 +475,9 @@ class Transfer extends Component {
               <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
             </ConfirmSlider>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+        <Loader loading={loading} />
+      </ScrollView>
     );
   }
 }

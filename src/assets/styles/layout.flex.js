@@ -4,6 +4,7 @@
  */
 import { StyleSheet } from 'react-native';
 
+// convert style sheet into variable. Different flex is used for the different ratio of the flex style
 const flex = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -85,6 +86,15 @@ const flex = StyleSheet.create({
   },
   flex9: {
     flex: 9,
+  },
+  flex10: {
+    flex: 10,
+  },
+  flex11: {
+    flex: 11,
+  },
+  flex12: {
+    flex: 12,
   },
   shrink0: {
     flexShrink: 0,

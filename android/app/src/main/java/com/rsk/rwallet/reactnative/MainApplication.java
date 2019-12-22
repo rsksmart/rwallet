@@ -3,6 +3,9 @@ package com.rsk.rwallet.reactnative;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.tradle.react.UdpSocketsModule;
+import com.peel.react.TcpSocketsModule;
 import org.reactnative.camera.RNCameraPackage;
 import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
@@ -34,6 +37,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new VectorIconsPackage(),
+            new UdpSocketsModule(),
+            new TcpSocketsModule(),
             new RNCameraPackage(),
             new RNUUIDGeneratorPackage(),
             new ReactNativeFingerprintScannerPackage(),
