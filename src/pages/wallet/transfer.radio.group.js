@@ -193,8 +193,8 @@ function Item({
       </View>
       <View style={styles.radioItemRight}>
         <Loc style={[styles.radioItemText1]} text={name} />
-        <ResponsiveText fontStyle={[styles.radioItemText2]}>{coin}</ResponsiveText>
-        <ResponsiveText fontStyle={[styles.radioItemText2]}>{value}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{coin}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );

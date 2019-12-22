@@ -101,7 +101,7 @@ class WalletSelectCurrency extends Component {
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       if (isWalletsUpdated && resetWalletsUpdated) {
         this.setState({ loading: false });
-        if (phrases !== '') {
+        if (phrases) {
           const statckActions = StackActions.popToTop();
           navigation.dispatch(statckActions);
         } else {
