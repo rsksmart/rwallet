@@ -33,10 +33,10 @@ class Language extends Component {
         title: 'English',
       },
       {
-        title: 'French',
+        title: 'Spanish',
       },
       {
-        title: 'Hebrew',
+        title: 'Portuguese',
       },
       {
         title: 'Chinese',
@@ -93,7 +93,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   changeLanguage: (value) => dispatch(
-    actions.setSingleSettings('language', value),
+    actions.changeLanguage(value),
   ),
 });
 

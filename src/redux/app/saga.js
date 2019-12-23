@@ -11,6 +11,7 @@ import walletActions from '../wallet/actions';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
+import I18n from '../../common/i18n';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -164,6 +165,25 @@ function* setSingleSettingsRequest(action) {
   }
 }
 
+function* changeLanguageRequest(action) {
+  const { language } = action;
+  console.log('saga::changeLanguageRequest is triggered, language: ', language);
+  try {
+    // 1. Set I18n.locale
+    I18n.locale = language;
+
+    // 2. Save setting
+    yield put(actions.setSingleSettings('language', language));
+  } catch (err) {
+    console.log(err);
+
+    yield put({
+      type: actions.SET_ERROR,
+      value: { message: err.message },
+    });
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -172,5 +192,6 @@ export default function* () {
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
+    takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
   ]);
 }
