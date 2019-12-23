@@ -551,7 +551,7 @@ class History extends Component {
           </View>
         </View>
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-          <Loc style={styles.recent} text="Recent" />
+          <Loc style={[styles.recent]} text="Recent" />
         </View>
         <View style={styles.sectionContainer}>
           {History.listView(listData)}

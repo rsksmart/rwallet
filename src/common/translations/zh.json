@@ -128,5 +128,8 @@
   "Recent": "最近的",
   "Transfer is failed": "Transfer is failed",
   "You need more balance to complete the transfer": "You need more balance to complete the transfer",
-  "Sorry server timeout": "Sorry server timeout"
+  "Sorry server timeout": "Sorry server timeout",
+  "Enter a transaction memo": "请输入转账备注",
+  "CONFIRMED": "CONFIRMED",
+  "Slide to confirm": "Slide to confirm"
 }

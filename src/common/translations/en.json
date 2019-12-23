@@ -128,5 +128,8 @@
   "Recent": "Recent",
   "Transfer is failed": "Transfer is failed",
   "You need more balance to complete the transfer": "You need more balance to complete the transfer",
-  "Sorry server timeout": "Sorry server timeout"
+  "Sorry server timeout": "Sorry server timeout",
+  "Enter a transaction memo": "Enter a transaction memo",
+  "CONFIRMED": "CONFIRMED",
+  "Slide to confirm": "Slide to confirm"
 }
