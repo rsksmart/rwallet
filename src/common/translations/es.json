@@ -124,5 +124,9 @@
   "This key contains": "This key contains",
   "There is no transaction found in this wallet": "There is no transaction found in this wallet.",
   "Internal server error": "Internal server error",
-  "Please contact customer support": "Please contact customer support."
+  "Please contact customer support": "Please contact customer support.",
+  "Recent": "Recent",
+  "Transfer is failed": "Transfer is failed",
+  "You need more balance to complete the transfer": "You need more balance to complete the transfer",
+  "Sorry server timeout": "Sorry server timeout"
 }

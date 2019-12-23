@@ -124,5 +124,9 @@
   "This key contains": "这个钥匙包含",
   "There is no transaction found in this wallet": "此钱包还没有任何交易",
   "Internal server error": "内部服务器错误",
-  "Please contact customer support": "请联系客服。"
+  "Please contact customer support": "请联系客服。",
+  "Recent": "最近的",
+  "Transfer is failed": "Transfer is failed",
+  "You need more balance to complete the transfer": "You need more balance to complete the transfer",
+  "Sorry server timeout": "Sorry server timeout"
 }

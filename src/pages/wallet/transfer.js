@@ -321,7 +321,7 @@ class Transfer extends Component {
       if (!notification) {
         notification = createErrorNotification(
           'Transfer is failed',
-          'Please contact our customer service',
+          'Please contact customer service',
           buttonText,
         );
       }
