@@ -355,7 +355,7 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Join Community" />
+            <Loc style={[styles.sectionTitle]} text="Join RSK's community" />
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
