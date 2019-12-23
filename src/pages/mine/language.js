@@ -33,10 +33,10 @@ class Language extends Component {
         title: 'English',
       },
       {
-        title: 'French',
+        title: 'Spanish',
       },
       {
-        title: 'Hebrew',
+        title: 'Portuguese',
       },
       {
         title: 'Chinese',
