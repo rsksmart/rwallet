@@ -129,13 +129,13 @@
   "Transfer is failed": "A transferência falhou",
   "You need more balance to complete the transfer": "Você precisa de mais saldo para concluir a transferência",
   "Sorry server timeout": "Desculpe o tempo limite do servidor",
-  "Enter a transaction memo": "Enter a transaction memo",
-  "CONFIRMED": "CONFIRMED",
-  "Slide to confirm": "Slide to confirm",
-  "Click to view in explorer": "Click to view in explorer",
-  "Copy": "Copy",
-  "Swap": "Swap",
-  "Powered by": "Powered by",
-  "Key deleted": "Key deleted",
-  "Key has been deleted successfully.": "Key has been deleted successfully."
+  "Enter a transaction memo": "Inserir uma nota de transação",
+  "CONFIRMED": "CONFIRMADO",
+  "Slide to confirm": "Deslize para confirmar",
+  "Click to view in explorer": "Clique para ver no explorer",
+  "Copy": "cópia de",
+  "Swap": "Troca",
+  "Powered by": "Distribuído por",
+  "Key deleted": "Chave excluída",
+  "Key has been deleted successfully.": "A chave foi excluída com sucesso."
 }
