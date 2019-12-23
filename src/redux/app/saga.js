@@ -16,6 +16,14 @@ import I18n from '../../common/i18n';
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
+import { createErrorNotification } from '../../common/notification.controller';
+
+// Define default error notification
+function createDefaultErrorNofication() {
+  const notification = createErrorNotification('Internal server error', 'Please contact customer support');
+  return notification;
+}
+
 function* updateUserRequest() {
   // Upload wallets or settings to server
   try {
@@ -43,6 +51,9 @@ function* initFromStorageRequest() {
 
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
+
+    // set I18n.locale
+    I18n.locale = settings.get('language');
 
     // Sets state in reducer for success
     yield put({
@@ -157,11 +168,8 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message: err.message },
-    });
+    const notification = createDefaultErrorNofication();
+    yield put(actions.addNotification(notification));
   }
 }
 
@@ -176,11 +184,8 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message: err.message },
-    });
+    const notification = createDefaultErrorNofication();
+    yield put(actions.addNotification(notification));
   }
 }
 
