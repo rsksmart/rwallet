@@ -93,7 +93,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   changeLanguage: (value) => dispatch(
-    actions.setSingleSettings('language', value),
+    actions.changeLanguage(value),
   ),
 });
 
