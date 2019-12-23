@@ -24,12 +24,18 @@ export const isRTL = currentLocale.indexOf('he') === 0 || currentLocale.indexOf(
 ReactNative.I18nManager.allowRTL(isRTL);
 
 // The method we'll use instead of a regular string
-export function strings(name, params = {}) {
-  return I18n.t(name, params);
-}
-
 export function isContainTranslation(words) {
   return en[words];
 }
+
+// If contain translation, return translation, else return original text.
+export function strings(name, params = {}) {
+  const isContain = isContainTranslation(name);
+  if (isContain) {
+    return I18n.t(name, params);
+  }
+  return name;
+}
+
 
 export default I18n;
