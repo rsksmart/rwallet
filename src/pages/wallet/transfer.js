@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
@@ -183,8 +184,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  customFeeSlider: {
+    width: '100%',
+    height: 40,
+  },
+  customFeeText: {
+    alignSelf: 'flex-end',
+    fontSize: 13,
+  },
 });
 
+
+const FEE_LEVEL_ADJUSTMENT = 0.25;
+const DEFAULT_RBTC_MEDIUM_FEE = 21000;
+const DEFAULT_BTC_MEDIUM_FEE = 48000;
+const DEFAULT_RBTC_GAS_PRICE = '600000000';
 
 const header = require('../../assets/images/misc/header.png');
 // const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
@@ -206,48 +220,103 @@ class Transfer extends Component {
       preference: null,
       isConfirm: false,
       enableConfirm: false,
+      isCustomFee: false,
+      customFee: 0,
+      customFeeValue: 0,
+      feeSymbol: null,
     };
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
+    this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
+    this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
+    this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
   }
 
   componentDidMount() {
     this.initContext();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { prices, currency } = nextProps;
+    const { prices: curPrices } = this.props;
+
+    if (prices && prices !== curPrices) {
+      const { customFee, feeSymbol } = this.state;
+      const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+      this.setState(customFeeValue);
+    }
+  }
+
   onGroupSelect(i) {
     let preference = '';
     switch (i) {
       case 0:
-        preference = this.symbol === 'BTC' ? 'low' : { gasPrice: '600000000', gas: 21000 };
+        preference = this.symbol === 'BTC' ? 'low' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT) };
         break;
       case 2:
-        preference = this.symbol === 'BTC' ? 'high' : { gasPrice: '600000000', gas: 21000 };
+        preference = this.symbol === 'BTC' ? 'high' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE };
         break;
       case 1:
       default:
-        preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 };
+        preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT) };
         break;
     }
     this.setState({ preference });
   }
 
-  initContext() {
+  onQrcodeScanPress() {
     const { navigation } = this.props;
+    navigation.navigate('Scan', {
+      onQrcodeDetected: (data) => {
+        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+        const url = data;
+        const result = parseUrl.exec(url);
+        const host = result[3];
+        const [address2] = host.split('.');
+        this.setState({ to: address2 });
+      },
+    });
+  }
+
+  async onConfirmSliderVerified() {
+    this.setState({ isConfirm: true });
+    await this.confirm();
+  }
+
+  onCustomFeeSlideValueChange(value) {
+    console.log('onCustomFeeSlideValueChange, value: ', value);
+    const { currency, prices } = this.props;
+    const { feeSymbol } = this.state;
+    const mediumValue = feeSymbol === 'BTC' ? DEFAULT_BTC_MEDIUM_FEE : DEFAULT_RBTC_MEDIUM_FEE;
+    const high = 2 * mediumValue * (1 + FEE_LEVEL_ADJUSTMENT);
+    const fee = high * value;
+    const customFee = common.convertUnitToCoinAmount(feeSymbol, fee);
+    const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    console.log(`onCustomFeeSlideValueChange, customFee: ${customFee.toFixed().toString()},  customFeeValue: ${customFeeValue.toFixed().toString()}`);
+    this.setState({ customFee, customFeeValue });
+  }
+
+  initContext() {
+    const { navigation, prices, currency } = this.props;
+
+    console.log('prices: ', prices);
+    console.log('currency: ', currency);
+
     const { coin } = navigation.state.params;
     const btcFees = [
-      { coin: 0.0046, value: '$ 0.46' },
-      { coin: 0.0048, value: '$ 0.68' },
-      { coin: 0.0052, value: '$ 0.84' },
+      DEFAULT_BTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT),
+      DEFAULT_BTC_MEDIUM_FEE,
+      DEFAULT_BTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT),
     ];
     const rbtcFees = [
-      { coin: 0.0046, value: '$ 0.46' },
-      { coin: 0.0048, value: '$ 0.68' },
-      { coin: 0.0052, value: '$ 0.84' },
+      DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT),
+      DEFAULT_RBTC_MEDIUM_FEE,
+      DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT),
     ];
+
     const feeDatas = { BTC: btcFees, RBTC: rbtcFees };
     this.symbol = coin.symbol;
 
@@ -255,15 +324,22 @@ class Transfer extends Component {
     if (feeSymbol === 'RIF') {
       feeSymbol = 'RBTC';
     }
-    const feeData = feeDatas[feeSymbol];
-    feeData.forEach((fee) => {
-      const item = fee;
-      item.coin = `${common.getBalanceString(feeSymbol, item.coin)} ${feeSymbol}`;
-      // TODO: calculate coin value
+    const symbolFee = feeDatas[feeSymbol];
+    const feeData = [];
+    symbolFee.forEach((fee) => {
+      const item = {};
+      const coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
+      const currencySymbol = common.getCurrencySymbol(currency);
+      let coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
+      coinValue = common.getAssetValueString(coinValue);
+      item.value = `${currencySymbol} ${coinValue}`;
+      item.coin = `${coinAmount.toFixed().toString()} ${feeSymbol}`;
+      feeData.push(item);
     });
     this.setState({
-      preference: this.symbol === 'BTC' ? 'medium' : { gasPrice: '600000000', gas: 21000 },
+      preference: this.symbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: 21000 },
       feeData,
+      feeSymbol,
     });
   }
 
@@ -344,10 +420,45 @@ class Transfer extends Component {
     }
   }
 
+  renderCustomFee(isCustomFee) {
+    const { customFee, feeSymbol, customFeeValue } = this.state;
+    const { currency } = this.props;
+    if (!isCustomFee) {
+      return null;
+    }
+    const currencySymbol = common.getCurrencySymbol(currency);
+    return (
+      <View disabled={!isCustomFee}>
+        <Slider
+          style={styles.customFeeSlider}
+          minimumValue={0}
+          maximumValue={1}
+          minimumTrackTintColor="#00B520"
+          maximumTrackTintColor="#D8D8D8"
+          thumbTintColor="#00B520"
+          onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
+        />
+        <Text style={styles.customFeeText}>
+          {`${customFee.toFixed().toString()} ${feeSymbol} = ${currencySymbol}${customFeeValue}`}
+        </Text>
+      </View>
+    );
+  }
+
+  renderFeeOptions() {
+    const { feeData, feeLevel } = this.state;
+    return (
+      <RadioGroup
+        data={feeData}
+        selectIndex={feeLevel}
+        onChange={(i) => this.onGroupSelect(i)}
+      />
+    );
+  }
 
   render() {
     const {
-      loading, to, amount, memo, feeLevel, isConfirm, enableConfirm, feeData,
+      loading, to, amount, memo, isConfirm, enableConfirm, isCustomFee,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -359,7 +470,7 @@ class Transfer extends Component {
 
     return (
       <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
-        <View style={{ height: screen.height - 25 }}>
+        <View>
           <View style={[flex.flex10]}>
             <ImageBackground source={header} style={[{ height: headerHeight }]}>
               <Text style={styles.headerTitle}>
@@ -400,18 +511,7 @@ class Transfer extends Component {
                   />
                   <TouchableOpacity
                     style={styles.textInputIcon}
-                    onPress={() => {
-                      navigation.navigate('Scan', {
-                        onQrcodeDetected: (data) => {
-                          const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-                          const url = data;
-                          const result = parseUrl.exec(url);
-                          const host = result[3];
-                          const [address2] = host.split('.');
-                          this.setState({ to: address2 });
-                        },
-                      });
-                    }}
+                    onPress={this.onQrcodeScanPress}
                   >
                     <Image source={address} />
                   </TouchableOpacity>
@@ -426,20 +526,24 @@ class Transfer extends Component {
                     multiline
                     numberOfLines={4}
                     value={memo}
-                    onChange={(text) => {
-                      this.setState({ memo: text });
-                    }}
+                    onChange={(text) => this.setState({ memo: text })}
                   />
                 </View>
               </View>
               <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
                 <Loc style={[styles.title2]} text="Miner fee" />
                 <Loc style={[styles.question]} text="How fast you want this done?" />
-                <RadioGroup
-                  data={feeData}
-                  selectIndex={feeLevel}
-                  onChange={(i) => this.onGroupSelect(i)}
-                />
+                {this.renderFeeOptions()}
+              </View>
+              <View style={[styles.sectionContainer]}>
+                <View style={[styles.customRow]}>
+                  <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
+                  <Switch
+                    value={isCustomFee}
+                    onValueChange={(v) => this.setState({ isCustomFee: v })}
+                  />
+                </View>
+                {this.renderCustomFee(isCustomFee)}
               </View>
             </View>
           </View>
@@ -461,10 +565,7 @@ class Transfer extends Component {
               textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
               borderRadius={15}
               okButton={{ visible: true, duration: 400 }}
-              onVerified={async () => {
-                this.setState({ isConfirm: true });
-                await this.confirm();
-              }}
+              onVerified={this.onConfirmSliderVerified}
               icon={(
                 <Image
                   source={isConfirm ? circleCheckIcon : circleIcon}
@@ -490,10 +591,13 @@ Transfer.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  currency: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  prices: state.Wallet.get('prices'),
+  currency: state.App.get('currency'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

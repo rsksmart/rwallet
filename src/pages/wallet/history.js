@@ -279,7 +279,7 @@ class History extends Component {
     transactions.forEach((transaction) => {
       let amountText = ' ';
       if (transaction.value) {
-        const amount = common.convertHexToCoinAmount(symbol, transaction.value);
+        const amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
       let datetime = transaction.createdAt;

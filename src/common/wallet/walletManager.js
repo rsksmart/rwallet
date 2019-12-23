@@ -183,7 +183,7 @@ class WalletManager {
       if (match) {
         try {
           // Try to convert hex string to BigNumber
-          const newBalance = common.convertHexToCoinAmount(newToken.symbol, match.balance);
+          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
 
           if (!newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;
