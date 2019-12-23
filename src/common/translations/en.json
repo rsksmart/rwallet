@@ -137,5 +137,8 @@
   "Swap": "Swap",
   "Powered by": "Powered by",
   "Key deleted": "Key deleted",
-  "Key has been deleted successfully.": "Key has been deleted successfully."
+  "Key has been deleted successfully.": "Key has been deleted successfully.",
+  "Key name too short.": "Key name too short.",
+  "Key name too long.": "Key name too long.",
+  "Key name contains invalid characters.": "Key name contains invalid characters."
 }
