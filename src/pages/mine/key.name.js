@@ -11,7 +11,6 @@ import Loc from '../../components/common/misc/loc';
 import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
-import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -173,25 +172,21 @@ KeyName.propTypes = {
   renameKey: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}),
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  notification: PropTypes.shape({}),
   resetWalletNameUpdated: PropTypes.func.isRequired,
 };
 
 KeyName.defaultProps = {
   walletManager: undefined,
-  notification: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
-  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   renameKey: (key, name, walletManager) => dispatch(walletActions.renameKey(key, name, walletManager)),
   resetWalletNameUpdated: () => dispatch(walletActions.resetWalletNameUpdated()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyName);

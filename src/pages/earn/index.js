@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, Text, ScrollView,
+  View, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import { DEVICE } from '../../common/info';
+import Loc from '../../components/common/misc/loc';
 
 const giftcard = require('../../assets/images/misc/giftcard.png');
 const shapeshift = require('../../assets/images/misc/shapeshift.png');
@@ -138,10 +139,10 @@ class EarnIndex extends Component {
               <View style={styles.giftcardView}>
                 <FullWidthImage source={giftcard} />
               </View>
-              <Text style={[styles.buttonText]}>Buy Gift Cards</Text>
+              <Loc style={[styles.buttonText]} text="Buy Gift Cards" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.sectionTitle}>Service</Text>
+          <Loc style={[styles.sectionTitle]} text="Service" />
           <TouchableOpacity
             style={[styles.shapeshiftView]}
             onPress={this.onShapeshiftPress}

@@ -128,5 +128,14 @@
   "Recent": "Reciente",
   "Transfer is failed": "La transferencia ha fallado",
   "You need more balance to complete the transfer": "Necesita más saldo para completar la transferencia",
-  "Sorry server timeout": "Disculpe el tiempo de espera del servidor"
+  "Sorry server timeout": "Disculpe el tiempo de espera del servidor",
+  "Enter a transaction memo": "Enter a transaction memo",
+  "CONFIRMED": "CONFIRMED",
+  "Slide to confirm": "Slide to confirm",
+  "Click to view in explorer": "Click to view in explorer",
+  "Copy": "Copy",
+  "Swap": "Swap",
+  "Powered by": "Powered by",
+  "Key deleted": "Key deleted",
+  "Key has been deleted successfully.": "Key has been deleted successfully."
 }
