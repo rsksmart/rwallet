@@ -89,4 +89,4 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
-export default connect(mapStateToProps)(StartPage);
+export default connect(mapStateToProps, null)(StartPage);
