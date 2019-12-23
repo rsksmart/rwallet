@@ -72,12 +72,24 @@ class ParseHelper {
           // Check if ParseAddress with coin.objectId exists
           const query = new Parse.Query(ParseAddress);
           return query.get(coin.objectId)
-            .then((existingParseAddress) => Promise.resolve(existingParseAddress), (err) => {
+            .then((existingParseAddress) => Promise.resolve(existingParseAddress), async (err) => {
               if (err.message === 'Object not found.') {
                 // If ParseAddress not exists then we will create a new one and saved to User.wallets
                 const {
                   address, chain, type, symbol,
                 } = coin;
+
+                // If same address already exist, then use it
+                const existAddrQuery = new Parse.Query(ParseAddress);
+                const existAddr = await existAddrQuery
+                  .equalTo('address', address)
+                  .equalTo('chain', chain)
+                  .equalTo('type', type)
+                  .equalTo('symbol', symbol)
+                  .first();
+                if (existAddr) {
+                  return existAddr;
+                }
 
                 const parseAddress = new ParseAddress()
                   .set('chain', chain)
@@ -301,27 +313,6 @@ class ParseHelper {
     });
 
     return Promise.all(promises);
-  }
-
-
-  static async deleteWallet(wallet) {
-    const promises = wallet.coins.map(async ({ objectId }) => {
-      if (!objectId) {
-        return;
-      }
-
-      const query = new Parse.Query(ParseAddress);
-      const addressPObj = await query.get(objectId).catch(() => null);
-      if (!addressPObj) {
-        return;
-      }
-
-      await addressPObj.destroy();
-    });
-
-    await Promise.all(promises).catch((err) => {
-      console.error('deleteWallet', err);
-    });
   }
 }
 
