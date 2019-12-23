@@ -171,7 +171,6 @@ function* changeLanguageRequest(action) {
   try {
     // 1. Set I18n.locale
     I18n.locale = language;
-    console.log('settings', settings);
 
     // 2. Save setting
     yield put(actions.setSingleSettings('language', language));
