@@ -52,6 +52,9 @@ function* initFromStorageRequest() {
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
+    // set I18n.locale
+    I18n.locale = settings.get('language');
+
     // Sets state in reducer for success
     yield put({
       type: actions.SET_SETTINGS,
