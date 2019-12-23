@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Clipboard,
+  View, TouchableOpacity, StyleSheet, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -94,7 +94,7 @@ class RecoveryPhrase extends Component {
                 addNotification(notification);
               }}
             >
-              <Text style={styles.copy}>Copy</Text>
+              <Loc style={[styles.copy]} text="Copy" />
             </TouchableOpacity>
             <View style={styles.buttonView}>
               <Button

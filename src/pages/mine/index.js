@@ -364,7 +364,7 @@ class MineIndex extends Component {
           </View>
         </ScrollView>
         <View style={styles.logoView}>
-          <Text style={styles.powerby}>Powered by</Text>
+          <Loc style={[styles.powerby]} text="Powered by" />
           <Image source={rsk} />
         </View>
       </View>
