@@ -137,5 +137,8 @@
   "Swap": "交换",
   "Powered by": "Powered by",
   "Key deleted": "钥匙已删除",
-  "Key has been deleted successfully.": "钥匙已成功删除。"
+  "Key has been deleted successfully.": "钥匙已成功删除。",
+  "Key name is too short.": "钥匙名字太短。",
+  "Key name is too long.": "钥匙名字太长。",
+  "Key name contains invalid characters.": "钥匙名字含有不合法字符"
 }
