@@ -18,11 +18,9 @@ import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
-// Define default error notification
-function createDefaultErrorNofication() {
-  const notification = createErrorNotification('Internal server error', 'Please contact customer support');
-  return notification;
-}
+// Define default error notification text
+const DEFAULT_ERROR_NOTIFICATION_TITLE = 'Internal server error';
+const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'Please contact customer support';
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
@@ -168,7 +166,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createDefaultErrorNofication();
+    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
     yield put(actions.addNotification(notification));
   }
 }
@@ -184,7 +182,7 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createDefaultErrorNofication();
+    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
     yield put(actions.addNotification(notification));
   }
 }
