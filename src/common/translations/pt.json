@@ -137,5 +137,8 @@
   "Swap": "Troca",
   "Powered by": "Distribuído por",
   "Key deleted": "Chave excluída",
-  "Key has been deleted successfully.": "A chave foi excluída com sucesso."
+  "Key has been deleted successfully.": "A chave foi excluída com sucesso.",
+  "Key name is too short.": "O nome da chave é muito curto.",
+  "Key name is too long.": "O nome da chave é muito longo.",
+  "Key name contains invalid characters.": "O nome da chave contém caracteres inválidos."
 }

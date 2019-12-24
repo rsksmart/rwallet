@@ -137,5 +137,8 @@
   "Swap": "Intercambiar",
   "Powered by": "Energizado por",
   "Key deleted": "Clave eliminada",
-  "Key has been deleted successfully.": "La clave se ha eliminado con éxito."
+  "Key has been deleted successfully.": "La clave se ha eliminado con éxito.",
+  "Key name is too short.": "El nombre de la clave es demasiado corto.",
+  "Key name is too long.": "El nombre de la clave es demasiado largo.",
+  "Key name contains invalid characters.": "El nombre de la clave contiene caracteres no válidos."
 }
