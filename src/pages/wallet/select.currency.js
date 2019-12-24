@@ -96,10 +96,10 @@ class WalletSelectCurrency extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        navigation, wallets, resetWalletsUpdated, isWalletsUpdated,
+        navigation, wallets, isWalletsUpdated,
       } = nextProps;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
-      if (isWalletsUpdated && resetWalletsUpdated) {
+      if (isWalletsUpdated) {
         this.setState({ loading: false });
         if (phrases) {
           const statckActions = StackActions.popToTop();
@@ -109,6 +109,13 @@ class WalletSelectCurrency extends Component {
           const wallet = wallets[wallets.length - 1];
           navigation.navigate('RecoveryPhrase', { wallet });
         }
+      }
+    }
+
+    // call resetWalletsUpdated when componentWillUnmount
+    componentWillUnmount() {
+      const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+      if (isWalletsUpdated && resetWalletsUpdated) {
         resetWalletsUpdated();
       }
     }
