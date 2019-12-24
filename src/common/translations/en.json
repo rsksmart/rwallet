@@ -26,7 +26,7 @@
   "All Assets": "All Assets",
   "Add Asset": "Add Asset",
   "Create Basic Wallet": "Create Basic Wallet",
-  "Recommended for first-time user": "Recommended for first-time user",
+  "Recommended for first-time users": "Recommended for first-time users",
   "Import existing Wallet": "Import existing Wallet",
   "Recover your wallet using your passphrase": "Recover your wallet using your passphrase",
   "Mainnet": "Mainnet",
@@ -137,5 +137,8 @@
   "Swap": "Swap",
   "Powered by": "Powered by",
   "Key deleted": "Key deleted",
-  "Key has been deleted successfully.": "Key has been deleted successfully."
+  "Key has been deleted successfully.": "Key has been deleted successfully.",
+  "Key name is too short.": "Key name is too short.",
+  "Key name is too long.": "Key name is too long.",
+  "Key name contains invalid characters.": "Key name contains invalid characters."
 }

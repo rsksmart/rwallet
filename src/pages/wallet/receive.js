@@ -111,6 +111,7 @@ class WalletReceive extends Component {
 
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
+      const type = coin && coin.type;
 
       const qrText = address;
 
@@ -119,12 +120,14 @@ class WalletReceive extends Component {
         headerHeight += ScreenHelper.iphoneXExtendedHeight;
       }
 
+      const titleText = ` ${symbol} ${type === 'Testnet' ? type : ''}`;
+
       return (
         <View style={[flex.flex1]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Text style={styles.headerTitle}>
               <Loc text="Receive" />
-              {symbol}
+              {titleText}
             </Text>
             <TouchableOpacity
               style={styles.backButton}

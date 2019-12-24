@@ -19,7 +19,7 @@ class WalletAddIndex extends Component {
       {
         id: '1',
         title: 'Create Basic Wallet',
-        text: 'Recommended for first-time user',
+        text: 'Recommended for first-time users',
         icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
           this.createWalletFlow('WalletSelectCurrency');
