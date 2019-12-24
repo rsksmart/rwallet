@@ -23,6 +23,7 @@ const actions = {
   SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
+  CHANGE_LANGUAGE: 'CHANGE_LANGUAGE',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -67,6 +68,10 @@ const actions = {
   }),
   updateUser: () => ({
     type: actions.UPDATE_USER,
+  }),
+  changeLanguage: (language) => ({
+    type: actions.CHANGE_LANGUAGE,
+    language,
   }),
 };
 

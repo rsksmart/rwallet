@@ -22,28 +22,28 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: HomeStackNavigator,
       path: 'home',
       navigationOptions: {
-        title: strings('root.Wallet'),
+        title: strings('root/Wallet'),
       },
     },
     Send: {
       screen: SpendStackNavigator,
       path: 'spend',
       navigationOptions: {
-        title: strings('root.Spend'),
+        title: strings('root/Spend'),
       },
     },
     Receive: {
       screen: EarnStackNavigator,
       path: 'earn',
       navigationOptions: {
-        title: strings('root.Earn'),
+        title: strings('root/Earn'),
       },
     },
     Mine: {
       screen: MineStackNavigator,
       path: 'mine',
       navigationOptions: {
-        title: strings('root.Me'),
+        title: strings('root/Me'),
       },
     },
   },
