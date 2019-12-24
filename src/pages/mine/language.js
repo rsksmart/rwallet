@@ -56,7 +56,7 @@ class Language extends Component {
     render() {
       const { navigation, language } = this.props;
       const selected = {
-        en: 0, fr: 1, he: 2, zh: 3,
+        en: 0, es: 1, pt: 2, zh: 3,
       }[language];
       return (
         <ScrollView style={[flex.flex1]}>
