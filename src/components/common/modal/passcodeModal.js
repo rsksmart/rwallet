@@ -98,7 +98,8 @@ export default class PasscodeModal extends Component {
     this.setState({ passcode });
     if (passcode.length >= 4) {
       const { onFill } = this.props;
-      this.setModalVisible(false);
+      // User control visible
+      // this.setModalVisible(false);
       if (onFill) {
         onFill(passcode);
       }
