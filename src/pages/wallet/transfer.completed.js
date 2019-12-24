@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity,
+  View, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions } from 'react-navigation';
@@ -113,7 +113,7 @@ export default class TransferCompleted extends Component {
             <Loc style={[styles.title]} text="Transfer Completed!" />
             <Loc style={[styles.text]} text="TransferText" />
             <TouchableOpacity onPress={this.onBackPress}>
-              <Text style={[styles.text, styles.link]}>Click to view in explorer</Text>
+              <Loc style={[styles.text, styles.link]} text="Click to view in explorer" />
             </TouchableOpacity>
           </View>
           <View style={styles.buttonView}>

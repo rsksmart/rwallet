@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TextInput,
+  View, StyleSheet, ScrollView, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -214,7 +214,7 @@ class WalletRecovery extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, styles.bottomBorder]}>
-            <Text style={[styles.sectionTitle]}>Advanced Options</Text>
+            <Loc style={[styles.sectionTitle]} text="Advanced Options" />
             <SwitchListItem title={strings('Specify derivation path')} value={false} />
           </View>
           <View style={styles.buttonView}>
