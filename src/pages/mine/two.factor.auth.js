@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, Switch, TouchableOpacity, ScrollView,
+  View, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -57,7 +57,7 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation, fingerprint, loading } = this.props;
+      const { navigation, loading } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -75,13 +75,13 @@ class TwoFactorAuth extends Component {
               <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
-            <View style={styles.row}>
-              <Loc style={[styles.title]} text="Use Fingerprint" />
-              <Switch
-                value={fingerprint}
-                onValueChange={this.setSingleSettings}
-              />
-            </View>
+            {/* <View style={styles.row}> */}
+            {/*  <Loc style={[styles.title]} text="Use Fingerprint" /> */}
+            {/*  <Switch */}
+            {/*    value={fingerprint} */}
+            {/*    onValueChange={this.setSingleSettings} */}
+            {/*  /> */}
+            {/* </View> */}
           </View>
         </ScrollView>
       );
@@ -96,14 +96,12 @@ TwoFactorAuth.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   setSingleSettings: PropTypes.func,
-  fingerprint: PropTypes.bool,
   loading: PropTypes.bool,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
-  fingerprint: undefined,
   loading: false,
 };
 

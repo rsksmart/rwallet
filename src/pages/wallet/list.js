@@ -19,6 +19,8 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
+import PasscodeModal from '../../components/common/modal/passcodeModal';
+import appContext from '../../common/appContext';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
@@ -283,7 +285,10 @@ class WalletList extends Component {
         listData: [],
         currencySymbol: getCurrencySymbol(props.currency),
         totalAssetValueText: '',
+        pass: null,
       };
+
+      this.passcodeOnFill = this.passcodeOnFill.bind(this);
     }
 
     componentWillMount() {
@@ -302,6 +307,16 @@ class WalletList extends Component {
         listData,
         totalAssetValueText,
       });
+    }
+
+    async componentDidMount() {
+      const self = this;
+      const pass = await appContext.secureGet('passcode');
+      if (pass) {
+        this.setState({ pass }, () => {
+          self.passcodeModal.setModalVisible(true);
+        });
+      }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -326,6 +341,13 @@ class WalletList extends Component {
 
       this.setState(newState);
     }
+
+    passcodeOnFill = async (passcode) => {
+      const { pass } = this.state;
+      if (passcode === pass) {
+        this.passcodeModal.setModalVisible(false);
+      }
+    };
 
     render() {
       const { navigation } = this.props;
@@ -414,6 +436,15 @@ class WalletList extends Component {
             <Loc style={[styles.powerby]} text="Powered by" />
             <Image source={rsk} />
           </View>
+          <PasscodeModal
+            ref={(ref) => {
+              this.passcodeModal = ref;
+            }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+            onFill={this.passcodeOnFill}
+          />
         </View>
       );
     }

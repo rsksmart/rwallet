@@ -139,51 +139,51 @@ export default class PasscodeModal extends Component {
       dots.push(t);
     }
 
-    const { onPress, title } = this.props;
-    return (
-      <View
-        animationType={animationType}
-        transparent={transparent}
-        visible={modalVisible}
-        style={[styles.background, { position: 'absolute', flex: 1 }]}
-      >
-        <TouchableHighlight style={styles.container}>
-          <View style={{ alignItems: 'center' }}>
-            <Loc style={[styles.title]} text={title} />
-            <View style={styles.dotRow}>
-              {dots}
+    const { onPress } = this.props;
+    if (modalVisible) {
+      return (
+        <View
+          animationType={animationType}
+          transparent={transparent}
+          style={[styles.background, { position: 'absolute', flex: 1 }]}
+        >
+          <TouchableHighlight style={styles.container}>
+            <View style={{ alignItems: 'center' }}>
+              <Loc style={[styles.title]} text="Enter Passcode" />
+              <View style={styles.dotRow}>
+                {dots}
+              </View>
+              <View style={styles.buttonView}>
+                {buttons}
+              </View>
+              <View style={{ width: '100%' }}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    this.setModalVisible(false);
+                    if (onPress) {
+                      onPress();
+                    }
+                  }}
+                >
+                  <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.buttonView}>
-              {buttons}
-            </View>
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => {
-                  this.setModalVisible(false);
-                  if (onPress) {
-                    onPress();
-                  }
-                }}
-              >
-                <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableHighlight>
-      </View>
-    );
+          </TouchableHighlight>
+        </View>
+      );
+    }
+    return null;
   }
 }
 
 PasscodeModal.propTypes = {
   onPress: PropTypes.func,
   onFill: PropTypes.func,
-  title: PropTypes.string,
 };
 
 PasscodeModal.defaultProps = {
   onPress: null,
   onFill: null,
-  title: 'Enter Passcode',
 };
