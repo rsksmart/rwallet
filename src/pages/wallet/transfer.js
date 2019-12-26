@@ -5,6 +5,7 @@ import {
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
+import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
 import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
@@ -222,9 +223,10 @@ class Transfer extends Component {
       isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
-      customFee: 0,
-      customFeeValue: 0,
+      customFee: new BigNumber(0),
+      customFeeValue: new BigNumber(0),
       feeSymbol: null,
+      feeSliderValue: 0,
     };
 
     this.confirm = this.confirm.bind(this);
@@ -247,22 +249,23 @@ class Transfer extends Component {
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      this.setState(customFeeValue);
+      this.setState({ customFeeValue });
     }
   }
 
   onGroupSelect(i) {
+    const { feeSymbol } = this.state;
     let preference = '';
     switch (i) {
       case 0:
-        preference = this.symbol === 'BTC' ? 'low' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT) };
+        preference = feeSymbol === 'BTC' ? 'low' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT) };
         break;
       case 2:
-        preference = this.symbol === 'BTC' ? 'high' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE };
+        preference = feeSymbol === 'BTC' ? 'high' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE };
         break;
       case 1:
       default:
-        preference = this.symbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT) };
+        preference = feeSymbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT) };
         break;
     }
     this.setState({ preference });
@@ -287,6 +290,14 @@ class Transfer extends Component {
     await this.confirm();
   }
 
+  onCustomFeeSwitchValueChange(value) {
+    this.setState({ isCustomFee: value });
+    if (value) {
+      this.setState({ feeSliderValue: 0.5 });
+      this.onCustomFeeSlideValueChange(value);
+    }
+  }
+
   onCustomFeeSlideValueChange(value) {
     console.log('onCustomFeeSlideValueChange, value: ', value);
     const { currency, prices } = this.props;
@@ -302,11 +313,11 @@ class Transfer extends Component {
 
   initContext() {
     const { navigation, prices, currency } = this.props;
+    const { coin } = navigation.state.params;
 
     console.log('prices: ', prices);
     console.log('currency: ', currency);
 
-    const { coin } = navigation.state.params;
     const btcFees = [
       DEFAULT_BTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT),
       DEFAULT_BTC_MEDIUM_FEE,
@@ -317,9 +328,7 @@ class Transfer extends Component {
       DEFAULT_RBTC_MEDIUM_FEE,
       DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT),
     ];
-
     const feeDatas = { BTC: btcFees, RBTC: rbtcFees };
-    this.symbol = coin.symbol;
 
     let feeSymbol = coin.symbol;
     if (feeSymbol === 'RIF') {
@@ -330,15 +339,13 @@ class Transfer extends Component {
     symbolFee.forEach((fee) => {
       const item = {};
       const coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
-      const currencySymbol = common.getCurrencySymbol(currency);
-      let coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
-      coinValue = common.getAssetValueString(coinValue);
-      item.value = `${currencySymbol} ${coinValue}`;
-      item.coin = `${coinAmount.toFixed().toString()} ${feeSymbol}`;
+      const coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
+      item.value = coinValue;
+      item.coin = coinAmount;
       feeData.push(item);
     });
     this.setState({
-      preference: this.symbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: 21000 },
+      preference: feeSymbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE },
       feeData,
       feeSymbol,
     });
@@ -349,11 +356,23 @@ class Transfer extends Component {
     const { params } = state;
     const { coin } = params;
     const {
-      amount, to, preference,
+      amount, to, preference, isCustomFee, feeSymbol, customFee,
     } = this.state;
     try {
       this.setState({ loading: true });
-      let transaction = new Transaction(coin, to, amount, '', preference);
+
+      let feePreference = null;
+      if (!isCustomFee) {
+        feePreference = preference;
+      } else {
+        // TODO: custom fee
+        feePreference = {};
+        if (feeSymbol === 'RBTC') {
+          feePreference = { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: customFee };
+        }
+      }
+
+      let transaction = new Transaction(coin, to, amount, '', feePreference);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -422,7 +441,9 @@ class Transfer extends Component {
   }
 
   renderCustomFee(isCustomFee) {
-    const { customFee, feeSymbol, customFeeValue } = this.state;
+    const {
+      customFee, feeSymbol, customFeeValue, feeSliderValue,
+    } = this.state;
     const { currency } = this.props;
     if (!isCustomFee) {
       return null;
@@ -431,6 +452,7 @@ class Transfer extends Component {
     return (
       <View disabled={!isCustomFee}>
         <Slider
+          value={feeSliderValue}
           style={styles.customFeeSlider}
           minimumValue={0}
           maximumValue={1}
@@ -440,17 +462,32 @@ class Transfer extends Component {
           onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
         />
         <Text style={styles.customFeeText}>
-          {`${customFee.toFixed().toString()} ${feeSymbol} = ${currencySymbol}${customFeeValue}`}
+          {`${customFee.toFixed().toString()} ${feeSymbol} = ${currencySymbol}${customFeeValue.toFixed().toString()}`}
         </Text>
       </View>
     );
   }
 
   renderFeeOptions() {
-    const { feeData, feeLevel } = this.state;
+    const {
+      feeSymbol, feeData, feeLevel, currency,
+    } = this.state;
+    const currencySymbol = common.getCurrencySymbol(currency);
+    const items = [];
+    for (let i = 0; i < feeData; i += 1) {
+      const item = {};
+      const fee = feeData[i];
+      // const coinAmount = common.getBalanceString(fee.coin);
+      const coinAmount = fee.coin.toFixed();
+      item.coin = `${coinAmount} ${feeSymbol}`;
+      // const coinValue = common.getAssetValueString(fee.value);
+      const coinValue = fee.value.toFixed();
+      item.value = `${currencySymbol}${coinValue}`;
+      items.push(item);
+    }
     return (
       <RadioGroup
-        data={feeData}
+        data={items}
         selectIndex={feeLevel}
         onChange={(i) => this.onGroupSelect(i)}
       />
@@ -541,7 +578,7 @@ class Transfer extends Component {
                   <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
                   <Switch
                     value={isCustomFee}
-                    onValueChange={(v) => this.setState({ isCustomFee: v })}
+                    onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
                   />
                 </View>
                 {this.renderCustomFee(isCustomFee)}
