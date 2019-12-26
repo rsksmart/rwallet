@@ -99,8 +99,11 @@ class WalletSelectCurrency extends Component {
         navigation, wallets, isWalletsUpdated,
       } = nextProps;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
       if (isWalletsUpdated) {
         this.setState({ loading: false });
+        // if phrases exsist, indicates the wallet is imported by phrase, the navigation pop to top
+        // if phrases doesn't exsist, indicates the wallet is created by no phrase, navigate to 'RecoveryPhrase' page
         if (phrases) {
           const statckActions = StackActions.popToTop();
           navigation.dispatch(statckActions);
@@ -109,13 +112,14 @@ class WalletSelectCurrency extends Component {
           const wallet = wallets[wallets.length - 1];
           navigation.navigate('RecoveryPhrase', { wallet });
         }
+        // Don't resetWalletsUpdated here, it's too early, other pages will detected isWalletsUpdated is false.
       }
     }
 
-    // call resetWalletsUpdated when componentWillUnmount
+    // call resetWalletsUpdated when componentWillUnmount is safe.
     componentWillUnmount() {
       const { isWalletsUpdated, resetWalletsUpdated } = this.props;
-      if (isWalletsUpdated && resetWalletsUpdated) {
+      if (isWalletsUpdated) {
         resetWalletsUpdated();
       }
     }
