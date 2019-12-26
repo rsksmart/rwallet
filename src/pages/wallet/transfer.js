@@ -223,7 +223,7 @@ class Transfer extends Component {
       isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
-      customFee: new BigNumber(0),
+      customFee: null,
       customFeeValue: new BigNumber(0),
       feeSymbol: null,
       feeSliderValue: 0,
@@ -236,6 +236,7 @@ class Transfer extends Component {
     this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
     this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
+    this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
   }
 
   componentDidMount() {
@@ -291,7 +292,11 @@ class Transfer extends Component {
   }
 
   onCustomFeeSwitchValueChange(value) {
+    const { customFee } = this.state;
     this.setState({ isCustomFee: value });
+    if (customFee) {
+      return;
+    }
     if (value) {
       this.setState({ feeSliderValue: 0.5 });
       this.onCustomFeeSlideValueChange(value);
@@ -309,6 +314,10 @@ class Transfer extends Component {
     const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
     console.log(`onCustomFeeSlideValueChange, customFee: ${customFee.toFixed().toString()},  customFeeValue: ${customFeeValue.toFixed().toString()}`);
     this.setState({ customFee, customFeeValue });
+  }
+
+  onCustomFeeSlidingComplete(value) {
+    this.setState({ feeSliderValue: value });
   }
 
   initContext() {
@@ -460,6 +469,7 @@ class Transfer extends Component {
           maximumTrackTintColor="#D8D8D8"
           thumbTintColor="#00B520"
           onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
+          onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
         />
         <Text style={styles.customFeeText}>
           {`${customFee.toFixed().toString()} ${feeSymbol} = ${currencySymbol}${customFeeValue.toFixed().toString()}`}
@@ -474,7 +484,10 @@ class Transfer extends Component {
     } = this.state;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
-    for (let i = 0; i < feeData; i += 1) {
+    if (!feeData) {
+      return null;
+    }
+    for (let i = 0; i < feeData.length; i += 1) {
       const item = {};
       const fee = feeData[i];
       // const coinAmount = common.getBalanceString(fee.coin);
