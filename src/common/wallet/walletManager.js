@@ -253,9 +253,9 @@ class WalletManager {
    */
   async renameWallet(wallet, name) {
     if (name.length < 1) {
-      throw new Error('Key name too short.');
+      throw new Error('Key name is too short.');
     } else if (name.length > 32) {
-      throw new Error('Key name too long.');
+      throw new Error('Key name is too long.');
     }
     const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
     const match = regex.exec(name);

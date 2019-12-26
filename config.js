@@ -17,7 +17,7 @@ const config = {
   },
   consts: {
     supportedTokens: ['BTC', 'RBTC', 'RIF'],
-    languages: ['en', 'fr', 'he', 'zh'],
+    languages: ['en', 'es', 'pt', 'zh'],
     currencies: [
       { name: 'USD', fullName: 'US Dollar', symbol: '$' },
       { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },

@@ -11,9 +11,16 @@ import walletActions from '../wallet/actions';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
+import I18n from '../../common/i18n';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
+
+import { createErrorNotification } from '../../common/notification.controller';
+
+// Define default error notification text
+const DEFAULT_ERROR_NOTIFICATION_TITLE = 'Internal server error';
+const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'Please contact customer support';
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
@@ -42,6 +49,9 @@ function* initFromStorageRequest() {
 
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
+
+    // set I18n.locale
+    I18n.locale = settings.get('language');
 
     // Sets state in reducer for success
     yield put({
@@ -156,11 +166,24 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
+    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    yield put(actions.addNotification(notification));
+  }
+}
 
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message: err.message },
-    });
+function* changeLanguageRequest(action) {
+  const { language } = action;
+  console.log('saga::changeLanguageRequest is triggered, language: ', language);
+  try {
+    // 1. Set I18n.locale
+    I18n.locale = language;
+
+    // 2. Save setting
+    yield put(actions.setSingleSettings('language', language));
+  } catch (err) {
+    console.log(err);
+    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    yield put(actions.addNotification(notification));
   }
 }
 
@@ -172,5 +195,6 @@ export default function* () {
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
+    takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
   ]);
 }

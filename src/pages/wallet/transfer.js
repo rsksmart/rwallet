@@ -21,6 +21,7 @@ import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -397,7 +398,7 @@ class Transfer extends Component {
       if (!notification) {
         notification = createErrorNotification(
           'Transfer is failed',
-          'Please contact our customer service',
+          'Please contact customer service',
           buttonText,
         );
       }
@@ -522,7 +523,7 @@ class Transfer extends Component {
                 <View style={styles.textInputView}>
                   <TextInput
                     style={[styles.textInput, { textAlignVertical: 'top' }]}
-                    placeholder="Enter a transaction memo"
+                    placeholder={strings('Enter a transaction memo')}
                     multiline
                     numberOfLines={4}
                     value={memo}
@@ -573,7 +574,7 @@ class Transfer extends Component {
                 />
                 )}
             >
-              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? 'CONFIRMED' : 'Slide to confirm'}</Text>
+              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}</Text>
             </ConfirmSlider>
           </View>
         </View>
@@ -598,6 +599,8 @@ Transfer.propTypes = {
 const mapStateToProps = (state) => ({
   prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

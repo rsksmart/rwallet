@@ -370,21 +370,21 @@ class WalletList extends Component {
                     onPress={() => {}}
                   >
                     <Entypo name="swap" size={20} style={styles.sendIcon} />
-                    <Text style={styles.sendText}>Send</Text>
+                    <Loc style={[styles.sendText]} text="Send" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {}}
                   >
                     <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                    <Text style={styles.receiveText}>Receive</Text>
+                    <Loc style={[styles.receiveText]} text="Receive" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.ButtonView, { borderRightWidth: 0 }]}
                     onPress={() => {}}
                   >
                     <Image source={swap} style={{ width: 17, height: 17 }} />
-                    <Text style={styles.swapText}>Swap</Text>
+                    <Loc style={[styles.swapText]} text="Swap" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -411,7 +411,7 @@ class WalletList extends Component {
             </View>
           </ScrollView>
           <View style={styles.logoView}>
-            <Text style={styles.powerby}>Powered by</Text>
+            <Loc style={[styles.powerby]} text="Powered by" />
             <Image source={rsk} />
           </View>
         </View>

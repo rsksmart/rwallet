@@ -57,7 +57,7 @@ class StartPage extends Component {
         {(isInitWithParseDone && isEmpty(wallets)) && (
         <View style={styles.buttonView}>
           <Button
-            text="GET STARTED"
+            text="Get Started"
             onPress={async () => {
               navigation.navigate('TermsPage');
             }}
@@ -89,4 +89,4 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 
-export default connect(mapStateToProps)(StartPage);
+export default connect(mapStateToProps, null)(StartPage);

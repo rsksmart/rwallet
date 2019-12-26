@@ -98,19 +98,6 @@ class RootComponent extends Component {
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
-        // const switchConfig = DEFUALT_SWITCH_CONFIG;
-        // // eslint-disable-next-line react/prop-types
-        // if (!_.isEmpty(walletManager.wallets)) {
-        //   _.extend(switchConfig, { initialRouteName: 'PrimaryTabNavigator' });
-        // }
-
-        // // Start the first page from Wallet Dashboard if there's any wallet
-        // newState.SwitchNavComponent = createAppContainer(
-        //   createSwitchNavigator(
-        //     DEFAULT_ROUTE_CONFIG_MAP, switchConfig,
-        //   ),
-        // );
-
         // Upload current wallet settings to Parse in order to get balances and transactions
         initializeWithParse();
         // As long as the app initialized from storage, we mark state.isStorageRead to true
