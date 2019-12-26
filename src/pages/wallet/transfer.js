@@ -23,6 +23,7 @@ import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
+import config from '../../../config';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -198,9 +199,13 @@ const styles = StyleSheet.create({
 
 
 const FEE_LEVEL_ADJUSTMENT = 0.25;
-const DEFAULT_RBTC_MEDIUM_FEE = 21000;
+const DEFAULT_RBTC_MIN_GAS = 21000;
+const DEFAULT_RIF_MIN_GAS = 23064;
+const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
+const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_BTC_MEDIUM_FEE = 48000;
-const DEFAULT_RBTC_GAS_PRICE = '600000000';
+const DEFAULT_RBTC_GAS_PRICE = 600000000;
+const MAX_FEE_TIMES = 2;
 
 const header = require('../../assets/images/misc/header.png');
 // const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
@@ -219,7 +224,7 @@ class Transfer extends Component {
       amount: '',
       memo: null,
       feeLevel: 1,
-      preference: null,
+      preference: 'medium',
       isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
@@ -254,21 +259,9 @@ class Transfer extends Component {
     }
   }
 
-  onGroupSelect(i) {
-    const { feeSymbol } = this.state;
-    let preference = '';
-    switch (i) {
-      case 0:
-        preference = feeSymbol === 'BTC' ? 'low' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT) };
-        break;
-      case 2:
-        preference = feeSymbol === 'BTC' ? 'high' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE };
-        break;
-      case 1:
-      default:
-        preference = feeSymbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT) };
-        break;
-    }
+  onGroupSelect(index) {
+    const preferences = ['low', 'medium', 'high'];
+    const preference = preferences[index];
     this.setState({ preference });
   }
 
@@ -298,26 +291,74 @@ class Transfer extends Component {
       return;
     }
     if (value) {
-      this.setState({ feeSliderValue: 0.5 });
-      this.onCustomFeeSlideValueChange(value);
+      const feeSliderValue = 0.5;
+      this.setState({ feeSliderValue });
+      this.onCustomFeeSlideValueChange(feeSliderValue);
     }
   }
 
+  /**
+   * onCustomFeeSlideValueChange
+   * @param {number} value slider value, 0-1
+   */
   onCustomFeeSlideValueChange(value) {
     console.log('onCustomFeeSlideValueChange, value: ', value);
     const { currency, prices } = this.props;
     const { feeSymbol } = this.state;
-    const mediumValue = feeSymbol === 'BTC' ? DEFAULT_BTC_MEDIUM_FEE : DEFAULT_RBTC_MEDIUM_FEE;
-    const high = 2 * mediumValue * (1 + FEE_LEVEL_ADJUSTMENT);
-    const fee = high * value;
-    const customFee = common.convertUnitToCoinAmount(feeSymbol, fee);
+    // maxFee = 2 times high fee
+    const maxFee = this.mediumFee.times(MAX_FEE_TIMES).times(1 + FEE_LEVEL_ADJUSTMENT);
+    // If feeSymbol is RBTC, fee must multiply DEFAULT_RBTC_GAS_PRICE
+    let minFee = null;
+    if (feeSymbol === 'RBTC') {
+      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+    } else {
+      // minFee: ten to the power of -N
+      minFee = new BigNumber(`1e-${config.symbolDecimalPlaces[feeSymbol]}`);
+    }
+    // minFee + (maxFee-minFee) * value
+    const customFee = minFee.plus(maxFee.minus(minFee).times(value));
     const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-    console.log(`onCustomFeeSlideValueChange, customFee: ${customFee.toFixed().toString()},  customFeeValue: ${customFeeValue.toFixed().toString()}`);
     this.setState({ customFee, customFeeValue });
   }
 
   onCustomFeeSlidingComplete(value) {
     this.setState({ feeSliderValue: value });
+  }
+
+  getFeeParams() {
+    const {
+      feeSymbol, isCustomFee, customFee, preference,
+    } = this.state;
+    let feeParams = null;
+    if (isCustomFee) {
+      if (feeSymbol === 'RBTC') {
+        const fee = customFee.div(DEFAULT_RBTC_GAS_PRICE);
+        const wei = common.rbtcToWei(fee);
+        feeParams = {
+          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
+          gas: wei.decimalPlaces(0).toNumber(),
+        };
+      } else {
+        // If BTC is costom fee, set fees field = customFee hex
+        feeParams = {
+          fees: common.btcToSatoshiHex(customFee),
+        };
+      }
+    } else if (feeSymbol === 'RBTC') {
+      const feeLevels = {
+        low: 1 - FEE_LEVEL_ADJUSTMENT,
+        medium: FEE_LEVEL_ADJUSTMENT,
+        high: 1 + FEE_LEVEL_ADJUSTMENT,
+      };
+      feeParams = {
+        gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
+        gas: DEFAULT_RBTC_MEDIUM_GAS * feeLevels[preference],
+      };
+    } else if (feeSymbol === 'BTC') {
+      // If BTC is not costom fee, set preference field = high/medium/low
+      feeParams = { preference };
+    }
+    return feeParams;
   }
 
   initContext() {
@@ -327,61 +368,43 @@ class Transfer extends Component {
     console.log('prices: ', prices);
     console.log('currency: ', currency);
 
-    const btcFees = [
-      DEFAULT_BTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT),
-      DEFAULT_BTC_MEDIUM_FEE,
-      DEFAULT_BTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT),
+    const feeLevels = [
+      1 - FEE_LEVEL_ADJUSTMENT,
+      1,
+      1 + FEE_LEVEL_ADJUSTMENT,
     ];
-    const rbtcFees = [
-      DEFAULT_RBTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT),
-      DEFAULT_RBTC_MEDIUM_FEE,
-      DEFAULT_RBTC_MEDIUM_FEE * (1 + FEE_LEVEL_ADJUSTMENT),
-    ];
-    const feeDatas = { BTC: btcFees, RBTC: rbtcFees };
-
+    const feeBase = { BTC: DEFAULT_BTC_MEDIUM_FEE, RBTC: DEFAULT_RBTC_MEDIUM_GAS, RIF: DEFAULT_RIF_MEDIUM_GAS };
     let feeSymbol = coin.symbol;
     if (feeSymbol === 'RIF') {
       feeSymbol = 'RBTC';
     }
-    const symbolFee = feeDatas[feeSymbol];
     const feeData = [];
-    symbolFee.forEach((fee) => {
+    for (let i = 0; i < 3; i += 1) {
       const item = {};
-      const coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
+      const fee = feeLevels[i] * feeBase[coin.symbol];
+
+      let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
+      if (feeSymbol === 'RBTC') {
+        coinAmount = coinAmount.times(DEFAULT_RBTC_GAS_PRICE);
+      }
       const coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
       item.value = coinValue;
       item.coin = coinAmount;
       feeData.push(item);
-    });
-    this.setState({
-      preference: feeSymbol === 'BTC' ? 'medium' : { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: DEFAULT_RBTC_MEDIUM_FEE },
-      feeData,
-      feeSymbol,
-    });
+    }
+    this.mediumFee = feeData[1].coin;
+    this.setState({ feeData, feeSymbol });
   }
 
   async confirm() {
     const { navigation, navigation: { state }, addNotification } = this.props;
     const { params } = state;
     const { coin } = params;
-    const {
-      amount, to, preference, isCustomFee, feeSymbol, customFee,
-    } = this.state;
+    const { amount, to } = this.state;
     try {
       this.setState({ loading: true });
-
-      let feePreference = null;
-      if (!isCustomFee) {
-        feePreference = preference;
-      } else {
-        // TODO: custom fee
-        feePreference = {};
-        if (feeSymbol === 'RBTC') {
-          feePreference = { gasPrice: DEFAULT_RBTC_GAS_PRICE, gas: customFee };
-        }
-      }
-
-      let transaction = new Transaction(coin, to, amount, '', feePreference);
+      const feeParams = this.getFeeParams();
+      let transaction = new Transaction(coin, to, amount, '', feeParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -472,7 +495,7 @@ class Transfer extends Component {
           onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
         />
         <Text style={styles.customFeeText}>
-          {`${customFee.toFixed().toString()} ${feeSymbol} = ${currencySymbol}${customFeeValue.toFixed().toString()}`}
+          {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
         </Text>
       </View>
     );
@@ -490,11 +513,9 @@ class Transfer extends Component {
     for (let i = 0; i < feeData.length; i += 1) {
       const item = {};
       const fee = feeData[i];
-      // const coinAmount = common.getBalanceString(fee.coin);
-      const coinAmount = fee.coin.toFixed();
+      const coinAmount = common.getBalanceString(feeSymbol, fee.coin);
       item.coin = `${coinAmount} ${feeSymbol}`;
-      // const coinValue = common.getAssetValueString(fee.value);
-      const coinValue = fee.value.toFixed();
+      const coinValue = common.getAssetValueString(fee.value);
       item.value = `${currencySymbol}${coinValue}`;
       items.push(item);
     }

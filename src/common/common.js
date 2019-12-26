@@ -33,6 +33,10 @@ const common = {
     const result = `0x${new BigNumber(amount).times('1e18').toString(16)}`;
     return result;
   },
+  rbtcToWei(amount) {
+    const result = new BigNumber(amount).times('1e18');
+    return result;
+  },
   weiToRbtc(wei) {
     const result = new BigNumber(wei).div('1e18');
     return result;
