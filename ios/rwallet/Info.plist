@@ -48,7 +48,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to location when open.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to use photo library.</string>
+	<string>$(PRODUCT_NAME) needs access to Photo Library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>
