@@ -22,7 +22,7 @@ const common = {
     return false;
   },
   btcToSatoshiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e8').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e8').toFixed(0).toString(16)}`;
     return result;
   },
   satoshiToBtc(satoshi) {
@@ -30,7 +30,7 @@ const common = {
     return result;
   },
   rbtcToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e18').toFixed(0).toString(16)}`;
     return result;
   },
   rbtcToWei(amount) {
@@ -42,7 +42,7 @@ const common = {
     return result;
   },
   rifToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e18').toFixed(0).toString(16)}`;
     return result;
   },
   weiToRif(wei) {

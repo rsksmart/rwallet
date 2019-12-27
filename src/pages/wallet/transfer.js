@@ -24,6 +24,7 @@ import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import config from '../../../config';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -302,7 +303,7 @@ class Transfer extends Component {
    * @param {number} value slider value, 0-1
    */
   onCustomFeeSlideValueChange(value) {
-    console.log('onCustomFeeSlideValueChange, value: ', value);
+    // console.log('onCustomFeeSlideValueChange, value: ', value);
     const { currency, prices } = this.props;
     const { feeSymbol } = this.state;
     // maxFee = 2 times high fee
@@ -542,7 +543,7 @@ class Transfer extends Component {
 
     return (
       <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
-        <View>
+        <View style={presetStyles.lastBlockMarginBottom}>
           <View style={[flex.flex10]}>
             <ImageBackground source={header} style={[{ height: headerHeight }]}>
               <Text style={styles.headerTitle}>

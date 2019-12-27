@@ -56,6 +56,9 @@ const style = StyleSheet.create({
     height: 40,
     paddingHorizontal: 10,
   },
+  lastBlockMarginBottom: {
+    marginBottom: 15,
+  },
 });
 
 export default style;
