@@ -98,7 +98,7 @@ export default class Wallet {
    */
   static async restorePhrase(id) {
     try {
-      const phrase = await storage.setMnemonicPhrase(id);
+      const phrase = await storage.getMnemonicPhrase(id);
 
       return phrase;
     } catch (err) {
