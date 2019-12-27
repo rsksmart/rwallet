@@ -118,42 +118,40 @@ export default class SwipableButtonList extends Component {
       <SwipeListView
         ref={(ref) => { this.listView = ref; }}
         data={data}
-        renderItem={(data1) => (
+        renderItem={(rowData) => (
           <TouchableOpacity
             style={styles.rowFront}
             activeOpacity={1.0}
             onPress={() => {
               this.listView.safeCloseOpenRow();
-              if (data1.item.onPress) {
-                data1.item.onPress();
+              if (rowData.item.onPress) {
+                rowData.item.onPress();
               }
             }}
           >
-            <Image style={styles.icon} source={data1.item.icon} />
+            <Image style={styles.icon} source={rowData.item.icon} />
             <View style={styles.right}>
               <View style={styles.right1}>
-                <Text style={styles.title}>{data1.item.title}</Text>
-                <Text style={styles.text}>{data1.item.text}</Text>
+                <Text style={styles.title}>{rowData.item.title}</Text>
+                <Text style={styles.text}>{rowData.item.text}</Text>
               </View>
               <View style={styles.right2}>
-                <Text style={styles.worth}>{data1.item.worth}</Text>
-                <Text style={styles.amount}>{data1.item.amount}</Text>
+                <Text style={styles.worth}>{rowData.item.worth}</Text>
+                <Text style={styles.amount}>{rowData.item.amount}</Text>
               </View>
             </View>
           </TouchableOpacity>
         )}
-        renderHiddenItem={(data1, rowMap) => (
+        renderHiddenItem={(data1) => (
           <View style={styles.rowBack}>
             <TouchableOpacity
               style={[
                 styles.backLeftBtn,
                 styles.backLeftBtnLeft,
               ]}
-              onPress={() => this.closeRow(rowMap, data1.item.key)}
+              onPress={() => this.listView.safeCloseOpenRow()}
             >
-              <Text style={styles.backText}>
-                          Swap
-              </Text>
+              <Loc style={[styles.backText]} text="Swap" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
