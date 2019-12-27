@@ -14,6 +14,7 @@ import flex from '../../assets/styles/layout.flex';
 import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -368,7 +369,7 @@ class MineIndex extends Component {
         </ScrollView>
         <View style={styles.logoView}>
           <Loc style={[styles.powerby]} text="Powered by" />
-          <Image source={rsk} />
+          <Image style={presetStyles.rskIcon} source={rsk} />
         </View>
       </View>
     );

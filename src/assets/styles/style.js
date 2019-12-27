@@ -56,6 +56,12 @@ const style = StyleSheet.create({
     height: 40,
     paddingHorizontal: 10,
   },
+  rskIcon: {
+    width: 75,
+    height: 47,
+    marginLeft: -5,
+    marginTop: -2,
+  },
 });
 
 export default style;

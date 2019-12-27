@@ -19,6 +19,7 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
+import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
@@ -412,7 +413,7 @@ class WalletList extends Component {
           </ScrollView>
           <View style={styles.logoView}>
             <Loc style={[styles.powerby]} text="Powered by" />
-            <Image source={rsk} />
+            <Image style={presetStyles.rskIcon} source={rsk} />
           </View>
         </View>
       );
