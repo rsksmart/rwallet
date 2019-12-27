@@ -1,5 +1,11 @@
+/* eslint class-methods-use-this: 0 */
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
+import RNSecureStorage from 'rn-secure-storage';
+
+const KEY_WALLETS = 'WALLETS';
+const SECURE_KEY_PASSCODE = 'PASSCODE';
+const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 
 class RNStorage {
   constructor() {
@@ -15,6 +21,8 @@ class RNStorage {
       // cache data in the memory. default is true.
       enableCache: true,
     });
+
+    this.secureInstance = RNSecureStorage;
 
     this.remove = this.remove.bind(this);
   }
@@ -132,6 +140,84 @@ class RNStorage {
    */
   getIdsForKey(key) {
     return this.instance.getIdsForKey(key);
+  }
+
+  /**
+   * Set value of a key from RNSecureStorage
+   * @param {string} key
+   * @param {string} value
+   */
+  static secureSet(key, value) {
+    return RNSecureStorage.set(key, value, {});
+  }
+
+  /**
+   * Return value of a key from RNSecureStorage
+   * null if not found or failed
+   * @param {string} key
+   */
+  static secureGet(key) {
+    return RNSecureStorage.exists(key)
+      .then((isKeyExists) => {
+        if (isKeyExists) {
+          return RNSecureStorage.get(key);
+        }
+
+        return Promise.resolve(null);
+      })
+      .catch((err) => {
+        console.error('RNStorage.secureGet', err);
+        return Promise.resolve(null);
+      });
+  }
+
+  /**
+   * Set Wallets using normal storage
+   * @param {string} id Key local Id
+   * @param {string} phrase String of Mnemonic Phrase
+   */
+  setWallets(json) {
+    return this.save(KEY_WALLETS, json);
+  }
+
+  /**
+   * Return Wallets json data from normal storage; null if not found or failed
+   * @param {string} id Key local Id
+   */
+  getWallets() {
+    return this.load({ key: KEY_WALLETS });
+  }
+
+  /**
+   * Set Passcode using secure storage
+   * @param {string} passcode String of Passcode
+   */
+  setPasscode(passcode) {
+    return RNStorage.secureSet(SECURE_KEY_PASSCODE, passcode);
+  }
+
+  /**
+   * Return Passcode from secure storage; null if not found or failed
+   */
+  getPasscode() {
+    return RNStorage.secureGet(SECURE_KEY_PASSCODE);
+  }
+
+  /**
+   * Set Mnemonic Phrase using secure storage
+   * @param {string} id Key local Id
+   * @param {string} phrase String of Mnemonic Phrase
+   */
+  setMnemonicPhrase(id, phrase) {
+    return RNStorage.secureSet(`${SECURE_KEY_PHRASE_PREFIX}${id}`, phrase);
+  }
+
+  /**
+   * Return Mnemonic Phrase from secure storage; null if not found or failed
+   * @param {string} id Key local Id
+   */
+  getMnemonicPhrase(id) {
+    return RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`);
   }
 }
 
