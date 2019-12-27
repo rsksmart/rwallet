@@ -59,6 +59,12 @@ const style = StyleSheet.create({
   lastBlockMarginBottom: {
     marginBottom: 15,
   },
+  rskIcon: {
+    width: 75,
+    height: 47,
+    marginLeft: -5,
+    marginTop: -2,
+  },
 });
 
 export default style;

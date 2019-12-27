@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
+import _ from 'lodash';
 import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/app/actions';
@@ -13,7 +14,10 @@ import screenHelper from '../../common/screenHelper';
 
 import config from '../../../config';
 
-const { consts: { languages: locales } } = config;
+const { consts: { locales } } = config;
+
+const localeNames = _.map(locales, ['name']);
+const localeIds = _.map(locales, ['id']);
 
 const styles = StyleSheet.create({
   listView: {
@@ -28,20 +32,6 @@ class Language extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        title: 'English',
-      },
-      {
-        title: 'Spanish',
-      },
-      {
-        title: 'Portuguese',
-      },
-      {
-        title: 'Chinese',
-      },
-    ];
 
     constructor(props) {
       super(props);
@@ -50,14 +40,16 @@ class Language extends Component {
 
     onChange(index) {
       const { changeLanguage } = this.props;
-      changeLanguage(locales[index]);
+      changeLanguage(localeIds[index]);
     }
 
     render() {
-      const { navigation, language } = this.props;
-      const selected = {
-        en: 0, es: 1, pt: 2, zh: 3,
-      }[language];
+      const { navigation, currentLocale } = this.props;
+
+      // Get index of current selected locale string; default 0
+      let selectedIndex = _.indexOf(localeIds, currentLocale);
+      selectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
+
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -68,7 +60,7 @@ class Language extends Component {
           />
           <View style={screenHelper.styles.body}>
             <View style={styles.listView}>
-              <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
+              <SelectionList data={localeNames} onChange={this.onChange} selected={selectedIndex} />
             </View>
           </View>
         </ScrollView>
@@ -84,11 +76,11 @@ Language.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   changeLanguage: PropTypes.func.isRequired,
-  language: PropTypes.string.isRequired,
+  currentLocale: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  language: state.App.get('language'),
+  currentLocale: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -97,7 +89,4 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export {
-  Language,
-};
 export default connect(mapStateToProps, mapDispatchToProps)(Language);
