@@ -6,11 +6,10 @@ import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
-import appContext from '../../common/appContext';
+import storage from '../../common/storage';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
-
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -66,7 +65,7 @@ export default class ResetPasscodeSuccess extends Component {
                   page = navigation.state.params.page;
                 }
                 if (page && page === 'Transfer') {
-                  appContext.eventEmitter.emit('onFirstPasscode');
+                  storage.eventEmitter.emit('onFirstPasscode');
                   navigation.navigate('Transfer');
                 } else {
                   const resetAction = StackActions.reset({

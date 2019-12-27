@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import PasscodeModal from '../../components/common/modal/passcodeModal';
-import appContext from '../../common/appContext';
+import storage from '../../common/storage';
+
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 
@@ -26,7 +27,7 @@ class ResetPasscode extends Component {
 
     async componentDidMount() {
       this.passcodeModal.setModalVisible(true);
-      const value = await appContext.secureGet('passcode');
+      const value = await storage.getPasscode();
       if (!value) {
         this.setState({ flow: 'newPasscode' });
       } else {
@@ -53,7 +54,7 @@ class ResetPasscode extends Component {
             onFill={async (passcode) => {
               if (flow === 'oldPasscode') {
                 this.passcodeModal.setModalVisible(true);
-                const value = await appContext.secureGet('passcode');
+                const value = await storage.getPasscode();
                 if (value === passcode) {
                   this.setState({ flow: 'newPasscode' });
                 } else {
@@ -68,7 +69,7 @@ class ResetPasscode extends Component {
                 this.setState({ flow: 'confirmPasscode', newPasscode: passcode });
               } else if (flow === 'confirmPasscode') {
                 if (passcode === newPasscode) {
-                  await appContext.secureSet('passcode', newPasscode);
+                  await storage.setPasscode(newPasscode);
                   navigation.navigate('ResetPasscodeSuccess', navigation.state.params);
                 } else {
                   this.passcodeModal.setModalVisible(true);
