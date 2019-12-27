@@ -125,6 +125,9 @@ const styles = StyleSheet.create({
     color: '#00B520',
     fontSize: 16,
   },
+  lastBlockMarginBottom: {
+    marginBottom: 15,
+  },
 });
 
 const header = require('../../assets/images/misc/header.png');
@@ -354,7 +357,7 @@ class MineIndex extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
+          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="Join RSK's community" />
             <FlatList
               data={joins}
