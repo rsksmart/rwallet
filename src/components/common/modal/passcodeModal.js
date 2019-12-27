@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableHighlight, TouchableOpacity,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
@@ -38,7 +40,6 @@ const styles = StyleSheet.create({
     width: dotSize,
     height: dotSize,
     borderRadius: dotSize / 2,
-    borderColor: color.component.passcodeModal.dot.borderColor,
     borderWidth: 2,
   },
   dot1: {},
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 7,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonView: {
     flexDirection: 'row',
@@ -88,104 +90,109 @@ export default class PasscodeModal extends Component {
       modalVisible: false,
       transparent: true,
       passcode: '',
+      attemptFailed: false,
+      // changeScreen: false
     };
     this.onPressButton = this.onPressButton.bind(this);
+    this.shakeDotsView = this.shakeDotsView.bind(this);
   }
 
   onPressButton(i) {
-    let { passcode } = this.state;
-    passcode += i;
-    this.setState({ passcode });
-    if (passcode.length >= 4) {
-      const { onFill } = this.props;
-      // User control visible,
-      // this.setModalVisible(false);
-      if (onFill) {
-        onFill(passcode);
+    const { pass } = this.props;
+    // eslint-disable-next-line react/destructuring-assignment
+    this.setState((prevState) => ({ passcode: prevState.passcode + i }), () => {
+      const { passcode } = this.state;
+      if (passcode.length >= 4) {
+        if (passcode === pass) {
+          this.setState({ passcode: '', attemptFailed: false, modalVisible: false });
+        } else {
+          this.setState({ attemptFailed: true, modalVisible: true });
+          this.shakeDotsView(() => {
+            this.setState({ passcode: '' });
+          });
+        }
       }
-      this.setState({ passcode: '' });
-    }
+    });
   }
 
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible, passcode: '' });
-  }
+    setModalVisible = (visible) => {
+      this.setState({ modalVisible: visible, passcode: '' });
+    };
 
-  startShow = () => {}
+    shakeDotsView = (callback) => this.dotsView.shake(800).then(callback);
 
-  render() {
-    const {
-      animationType, transparent, modalVisible, passcode,
-    } = this.state;
-    const buttons = [];
-    const chars = ['', 'ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQRS', 'TUV', 'WXYZ', ''];
-    for (let i = 0; i < 10; i += 1) {
-      const t = (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            this.onPressButton((i + 1) % 10);
-          }}
-          key={i}
-        >
-          <Text style={styles.number}>{(i + 1) % 10}</Text>
-          <Text style={styles.char}>{chars[i]}</Text>
-        </TouchableOpacity>
-      );
-      buttons.push(t);
-    }
-    const dots = [];
-    for (let i = 0; i < 4; i += 1) {
-      const style = i >= passcode.length ? styles.dot1 : styles.dot2;
-      const t = (<View style={[styles.dot, style]} key={i} />);
-      dots.push(t);
-    }
+    render() {
+      const {
+        animationType, transparent, modalVisible, passcode,
+        attemptFailed,
+      } = this.state;
+      const buttons = [];
+      for (let i = 0; i < 10; i += 1) {
+        const t = (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              this.onPressButton((i + 1) % 10);
+            }}
+            key={i}
+          >
+            <Text style={styles.number}>{(i + 1) % 10}</Text>
+          </TouchableOpacity>
+        );
+        buttons.push(t);
+      }
+      const dots = [];
+      for (let i = 0; i < 4; i += 1) {
+        const style = i >= passcode.length ? styles.dot1 : styles.dot2;
+        const t = (<View style={[styles.dot, style, { borderColor: color.component.passcodeModal.dot.borderColor }]} key={i} />);
+        dots.push(t);
+      }
 
-    const { onPress } = this.props;
-    if (modalVisible) {
-      return (
-        <View
-          animationType={animationType}
-          transparent={transparent}
-          style={[styles.background, { position: 'absolute', flex: 1 }]}
-        >
-          <TouchableHighlight style={styles.container}>
-            <View style={{ alignItems: 'center' }}>
-              <Loc style={[styles.title]} text="Enter Passcode" />
-              <View style={styles.dotRow}>
-                {dots}
+      const { onPress } = this.props;
+      if (modalVisible) {
+        const modalTitle = (attemptFailed && 'Incorrect Pin') || 'Enter Passcode';
+        return (
+          <View
+            animationType={animationType}
+            transparent={transparent}
+            style={[styles.background, { position: 'absolute', flex: 1 }]}
+          >
+            <TouchableHighlight style={styles.container}>
+              <View style={{ alignItems: 'center' }}>
+                <Loc style={[styles.title]} text={modalTitle} />
+                <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+                  {dots}
+                </Animatable.View>
+                <View style={styles.buttonView}>
+                  {buttons}
+                </View>
+                <View style={{ width: '100%' }}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => {
+                      this.setModalVisible(false);
+                      if (onPress) {
+                        onPress();
+                      }
+                    }}
+                  >
+                    <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.buttonView}>
-                {buttons}
-              </View>
-              <View style={{ width: '100%' }}>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => {
-                    this.setModalVisible(false);
-                    if (onPress) {
-                      onPress();
-                    }
-                  }}
-                >
-                  <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableHighlight>
-        </View>
-      );
+            </TouchableHighlight>
+          </View>
+        );
+      }
+      return null;
     }
-    return null;
-  }
 }
 
 PasscodeModal.propTypes = {
   onPress: PropTypes.func,
-  onFill: PropTypes.func,
+  pass: PropTypes.string.isRequired,
 };
 
 PasscodeModal.defaultProps = {
   onPress: null,
-  onFill: null,
 };

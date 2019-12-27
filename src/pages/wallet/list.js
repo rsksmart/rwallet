@@ -342,16 +342,11 @@ class WalletList extends Component {
       this.setState(newState);
     }
 
-    passcodeOnFill = async (passcode) => {
-      const { pass } = this.state;
-      if (passcode === pass) {
-        this.passcodeModal.setModalVisible(false);
-      }
-    };
-
     render() {
       const { navigation } = this.props;
-      const { listData, currencySymbol, totalAssetValueText } = this.state;
+      const {
+        listData, currencySymbol, totalAssetValueText, pass,
+      } = this.state;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
@@ -443,7 +438,7 @@ class WalletList extends Component {
             onPress={() => {
               navigation.goBack();
             }}
-            onFill={this.passcodeOnFill}
+            pass={pass}
           />
         </View>
       );
