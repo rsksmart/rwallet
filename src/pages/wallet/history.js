@@ -283,7 +283,7 @@ class History extends Component {
       let isSender = false;
       let state = 'Receiving';
       if (transaction.value) {
-        const amount = common.convertHexToCoinAmount(symbol, transaction.value);
+        const amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
       if (address === transaction.from) {
