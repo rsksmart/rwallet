@@ -106,7 +106,7 @@ android {
         applicationId "com.rsk.rwallet.reactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 7
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }

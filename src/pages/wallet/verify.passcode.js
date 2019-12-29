@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
 import PasscodeModal from '../../components/common/modal/passcodeModal';
-import appContext from '../../common/appContext';
+import storage from '../../common/storage';
 
 export default class VerifyPasscode extends Component {
     static navigationOptions = () => ({
@@ -26,7 +26,7 @@ export default class VerifyPasscode extends Component {
             ref={(ref) => { this.passcodeModal = ref; }}
             onPress={() => { navigation.goBack(); }}
             onFill={async (passcode) => {
-              const value = await appContext.secureGet('passcode');
+              const value = await storage.getPasscode();
               if (passcode === value) {
                 navigation.state.params.verified();
                 navigation.goBack();
