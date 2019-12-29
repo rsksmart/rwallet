@@ -162,14 +162,15 @@ RootComponent.propTypes = {
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
-  showPasscode: PropTypes.func.isRequired,
-  passcodeType: PropTypes.string.isRequired,
+  showPasscode: PropTypes.bool.isRequired,
+  passcodeType: PropTypes.string,
   closePasscodeModal: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
   notification: null,
   walletManager: undefined,
+  passcodeType: null,
 };
 
 const mapStateToProps = (state) => ({

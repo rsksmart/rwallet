@@ -5,15 +5,22 @@ const bitcoin = require('bitcoinjs-lib');
 
 export const getRawTransactionParam = ({
   netType, sender, receiver, value, data, gasFee,
-}) => ({
-  symbol: 'BTC',
-  type: netType,
-  sender,
-  receiver,
-  value,
-  data,
-  preference: gasFee,
-});
+}) => {
+  const param = {
+    symbol: 'BTC',
+    type: netType,
+    sender,
+    receiver,
+    value,
+    data,
+  };
+  if (gasFee.preference) {
+    param.preference = gasFee.preference;
+  } else {
+    param.fees = gasFee.fees;
+  }
+  return param;
+};
 
 export const signTransaction = async (transaction, privateKey) => {
   const rawTransaction = _.cloneDeep(transaction);

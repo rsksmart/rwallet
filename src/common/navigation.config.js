@@ -15,7 +15,6 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase';
 import WalletList from '../pages/wallet/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
-import VerifyPasscode from '../pages/wallet/verify.passcode';
 import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
@@ -158,13 +157,7 @@ const routeConfigMap = {
         headerTitle: 'WalletHistory',
       }),
     },
-    VerifyPasscode: {
-      screen: VerifyPasscode,
-      path: 'VerifyPasscode',
-      navigationOptions: () => ({
-        headerTitle: 'VerifyPasscode',
-      }),
-    },
+
     VerifyFingerprint: {
       screen: VerifyFingerprint,
       path: 'VerifyFingerprint',

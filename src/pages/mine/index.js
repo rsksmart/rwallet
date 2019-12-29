@@ -14,6 +14,7 @@ import flex from '../../assets/styles/layout.flex';
 import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -124,6 +125,9 @@ const styles = StyleSheet.create({
   createWalletButtonText: {
     color: '#00B520',
     fontSize: 16,
+  },
+  lastBlockMarginBottom: {
+    marginBottom: 15,
   },
 });
 
@@ -354,7 +358,7 @@ class MineIndex extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
+          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="Join RSK's community" />
             <FlatList
               data={joins}
@@ -365,7 +369,7 @@ class MineIndex extends Component {
         </ScrollView>
         <View style={styles.logoView}>
           <Loc style={[styles.powerby]} text="Powered by" />
-          <Image source={rsk} />
+          <Image style={presetStyles.rskIcon} source={rsk} />
         </View>
       </View>
     );

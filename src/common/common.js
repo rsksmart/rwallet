@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import config from '../../config';
-import appContext from './appContext';
+import store from './storage';
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = '$';
@@ -23,27 +23,31 @@ const common = {
     return false;
   },
   btcToSatoshiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e8').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e8').toFixed(0).toString(16)}`;
     return result;
   },
-  satoshiHexToBtc(satoshiHex) {
-    const result = new BigNumber(satoshiHex).div('1e8');
+  satoshiToBtc(satoshi) {
+    const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
   rbtcToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e18').toFixed(0).toString(16)}`;
     return result;
   },
-  weiHexToRbtc(weiHex) {
-    const result = new BigNumber(weiHex).div('1e18');
+  rbtcToWei(amount) {
+    const result = new BigNumber(amount).times('1e18');
+    return result;
+  },
+  weiToRbtc(wei) {
+    const result = new BigNumber(wei).div('1e18');
     return result;
   },
   rifToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').toString(16)}`;
+    const result = `0x${new BigNumber(amount).times('1e18').toFixed(0).toString(16)}`;
     return result;
   },
-  weiHexToRif(weiHex) {
-    const result = new BigNumber(weiHex).div('1e18');
+  weiToRif(wei) {
+    const result = new BigNumber(wei).div('1e18');
     return result;
   },
   Toast(text, type, onClose, duration, mask) {
@@ -56,17 +60,17 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
-  convertHexToCoinAmount(symbol, hexNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber) {
     let amount = null;
     switch (symbol) {
       case 'BTC':
-        amount = common.satoshiHexToBtc(hexNumber);
+        amount = common.satoshiToBtc(unitNumber);
         break;
       case 'RBTC':
-        amount = common.weiHexToRbtc(hexNumber);
+        amount = common.weiToRbtc(unitNumber);
         break;
       case 'RIF':
-        amount = common.weiHexToRif(hexNumber);
+        amount = common.weiToRif(unitNumber);
         break;
       default:
     }
@@ -146,12 +150,12 @@ const common = {
   async updateInAppPasscode(input) {
     let passcode = null;
     if (input) {
-      await appContext.secureSet('passcode', input);
+      await store.setPasscode(input);
       // eslint-disable-next-line no-multi-assign
       global.passcode = passcode = input;
     } else {
       // eslint-disable-next-line no-multi-assign
-      global.passcode = passcode = await appContext.secureGet('passcode');
+      global.passcode = passcode = await store.getPasscode();
     }
     return passcode;
   },

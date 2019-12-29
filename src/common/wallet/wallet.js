@@ -1,12 +1,10 @@
-import RNSecureStorage from 'rn-secure-storage';
 import _ from 'lodash';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
-// import storage from '../storage';
+import storage from '../storage';
 
 const Mnemonic = require('bitcore-mnemonic');
 
-const PHRASE_KEY_STORAGE_PREFIX = 'wallet_';
 const WALLET_NAME_PREFIX = 'Key ';
 
 export default class Wallet {
@@ -88,9 +86,8 @@ export default class Wallet {
    */
   static async savePhrase(id, phrase) {
     try {
-      const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
-      console.log(`savePhrase, key: ${key}, phrase: ${phrase}`);
-      await RNSecureStorage.set(key, phrase, {});
+      console.log(`savePhrase, id: ${id}, phrase: ${phrase}`);
+      await storage.setMnemonicPhrase(id, phrase);
     } catch (ex) {
       console.log('savePhrase, error', ex.message);
     }
@@ -100,13 +97,11 @@ export default class Wallet {
    * Restore phrase by walletId from secure storage; set to null if storage lookup fails
    */
   static async restorePhrase(id) {
-    const key = `${PHRASE_KEY_STORAGE_PREFIX}${id}`;
-
     try {
-      const phrase = await RNSecureStorage.get(key);
+      const phrase = await storage.getMnemonicPhrase(id);
+
       return phrase;
     } catch (err) {
-      console.log(err);
       console.log(err.message);
     }
 
@@ -134,7 +129,6 @@ export default class Wallet {
    * @param {*} json
    */
   static async fromJSON(json) {
-    // console.log('Wallet.fromJSON.', json);
     const {
       id, name, coins,
     } = json;

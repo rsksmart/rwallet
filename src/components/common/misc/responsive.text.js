@@ -47,12 +47,12 @@ export default class ResponsiveText extends Component {
   }
 
   renderTextElement() {
-    const { children, fontStyle } = this.props;
+    const { children, fontStyle, maxFontSize } = this.props;
     const { adjustsStyle } = this.state;
     let textElement = null;
     if (Platform.OS === 'ios') {
       textElement = (
-        <Text style={[fontStyle]} adjustsFontSizeToFit numberOfLines={1}>
+        <Text style={[fontStyle, { fontSize: maxFontSize }]} adjustsFontSizeToFit numberOfLines={1}>
           {children}
         </Text>
       );

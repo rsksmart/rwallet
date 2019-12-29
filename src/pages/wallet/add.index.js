@@ -45,8 +45,7 @@ class WalletAddIndex extends Component {
 
     componentDidMount() {
       const { navigation, showPasscode } = this.props;
-      const { skipPasscode } = navigation.state.params;
-      if (!skipPasscode) {
+      if (!navigation.state.params || !navigation.state.params.skipPasscode) {
         showPasscode('verify');
       }
     }
