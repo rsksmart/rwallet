@@ -278,20 +278,20 @@ class History extends Component {
     const items = [];
     transactions.forEach((transaction) => {
       let amountText = ' ';
+      let datetime = transaction.createdAt;
+      let isComfirmed = true;
+      let isSender = false;
+      let state = 'Receiving';
       if (transaction.value) {
         const amount = common.convertHexToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
-      let datetime = transaction.createdAt;
-      let isComfirmed = true;
-      let isSender = false;
       if (address === transaction.from) {
         isSender = true;
       }
       if (transaction.blockHeight === -1) {
         isComfirmed = false;
       }
-      let state = '';
       if (isSender) {
         if (isComfirmed) {
           state = 'Sent';
@@ -302,8 +302,6 @@ class History extends Component {
       } else if (isComfirmed) {
         state = 'Received';
         datetime = transaction.confirmedAt;
-      } else {
-        state = 'Receiving';
       }
       if (datetime) {
         datetime = moment(datetime).format('MMM D. YYYY');
@@ -503,15 +501,8 @@ class History extends Component {
     const currencySymbol = getCurrencySymbol(currency);
     const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
     const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    let pendingBalanceText = '';
-    if (pendingBalance) {
-      pendingBalanceText = `${History.getBalanceText(symbol, pendingBalance)} ${symbol}`;
-    }
-    let pendingAssetValueText = '';
-    if (pendingBalanceValue) {
-      pendingAssetValueText = `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}`;
-    }
-
+    const pendingBalanceText = pendingBalance ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
+    const pendingAssetValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
