@@ -11,10 +11,12 @@ import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
+import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import appActions from '../redux/app/actions';
 import walletActions from '../redux/wallet/actions';
+import common from '../common/common';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -62,6 +64,10 @@ class RootComponent extends Component {
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
+  }
+
+  async componentDidMount() {
+    await common.updateInAppPasscode();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,7 +124,9 @@ class RootComponent extends Component {
   }
 
   render() {
-    const { showNotification, notification, dispatch } = this.props;
+    const {
+      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, dispatch,
+    } = this.props;
 
     return (
       <View style={[flex.flex1]}>
@@ -126,6 +134,7 @@ class RootComponent extends Component {
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
+          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>
@@ -153,6 +162,9 @@ RootComponent.propTypes = {
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
+  showPasscode: PropTypes.func.isRequired,
+  passcodeType: PropTypes.string.isRequired,
+  closePasscodeModal: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

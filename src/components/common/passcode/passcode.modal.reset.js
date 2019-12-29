@@ -1,0 +1,86 @@
+/* eslint "default-case": "off" */
+import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import PasscodeModalBase from './passcode.modal.base';
+import common from '../../../common/common';
+
+class ResetPasscodeModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.flows = [
+      { index: 0, title: 'Type your old passcode' },
+      { index: 1, title: 'Type your new passcode' },
+      { index: 2, title: 'Confirm your new passcode' },
+      { index: 3, title: 'Old Passcode is incorrect, try again' },
+      { index: 4, title: 'Passcode not match, Try again' },
+    ];
+    this.flowIndex = 0;
+    this.tempPasscode = '';
+    this.title = this.flows[0].title;
+    const { closePasscodeModal } = this.props;
+    this.closePasscodeModal = closePasscodeModal;
+    this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
+    this.passcodeOnFill = this.passcodeOnFill.bind(this);
+  }
+
+  componentDidMount(): void {
+    this.passcode = global.passcode;
+  }
+
+    cancelBtnOnPress = () => {
+      this.closePasscodeModal();
+    };
+
+    passcodeOnFill = async (input) => {
+      let flow = null;
+      switch (this.flowIndex) {
+        case 0:
+        case 3:
+          if (input === this.passcode) {
+            this.flowIndex = 1;
+            flow = _.find(this.flows, { index: this.flowIndex });
+            this.baseModal.resetModal(flow.title);
+          } else {
+            this.flowIndex = 3;
+            flow = _.find(this.flows, { index: this.flowIndex });
+            this.baseModal.rejectPasscord(flow.title);
+          }
+          break;
+        case 1:
+          this.tempPasscode = input;
+          this.flowIndex = 2;
+          flow = _.find(this.flows, { index: this.flowIndex });
+          this.baseModal.resetModal(flow.title);
+          break;
+        case 2:
+        case 4:
+          if (this.tempPasscode === input) {
+            await common.updateInAppPasscode(input);
+            this.closePasscodeModal();
+          } else {
+            this.flowIndex = 4;
+            flow = _.find(this.flows, { index: this.flowIndex });
+            this.baseModal.rejectPasscord(flow.title);
+          }
+          break;
+      }
+    };
+
+    render() {
+      return (
+        <PasscodeModalBase
+          ref={(ref) => { this.baseModal = ref; }}
+          passcodeOnFill={this.passcodeOnFill}
+          cancelBtnOnPress={this.cancelBtnOnPress}
+          title={this.title}
+        />
+      );
+    }
+}
+
+ResetPasscodeModal.propTypes = {
+  closePasscodeModal: PropTypes.func.isRequired,
+};
+
+export default ResetPasscodeModal;

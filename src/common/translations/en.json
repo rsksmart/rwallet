@@ -140,5 +140,8 @@
   "Key has been deleted successfully.": "Key has been deleted successfully.",
   "Key name is too short.": "Key name is too short.",
   "Key name is too long.": "Key name is too long.",
-  "Key name contains invalid characters.": "Key name contains invalid characters."
+  "Key name contains invalid characters.": "Key name contains invalid characters.",
+  "Password not match, Try again": "Password not match, Try again",
+  "Type your passcode": "Type your passcode",
+  "Passcode is incorrected": "Passcode is incorrected"
 }

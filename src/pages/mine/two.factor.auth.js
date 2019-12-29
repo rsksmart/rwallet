@@ -57,7 +57,7 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation, loading } = this.props;
+      const { loading, showPasscode } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -69,19 +69,12 @@ class TwoFactorAuth extends Component {
             <TouchableOpacity
               style={styles.row}
               onPress={() => {
-                navigation.navigate('ResetPasscode');
+                showPasscode(global.passcode ? 'reset' : 'create');
               }}
             >
               <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
-            {/* <View style={styles.row}> */}
-            {/*  <Loc style={[styles.title]} text="Use Fingerprint" /> */}
-            {/*  <Switch */}
-            {/*    value={fingerprint} */}
-            {/*    onValueChange={this.setSingleSettings} */}
-            {/*  /> */}
-            {/* </View> */}
           </View>
         </ScrollView>
       );
@@ -97,6 +90,7 @@ TwoFactorAuth.propTypes = {
   }).isRequired,
   setSingleSettings: PropTypes.func,
   loading: PropTypes.bool,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 
@@ -112,6 +106,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
+  showPasscode: (category) => dispatch(
+    appActions.showPasscode(category),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TwoFactorAuth);

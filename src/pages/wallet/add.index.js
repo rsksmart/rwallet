@@ -5,12 +5,12 @@ import {
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { connect } from 'react-redux';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
-import PasscodeModal from '../../components/common/modal/passcodeModal';
-import appContext from '../../common/appContext';
+import appActions from '../../redux/app/actions';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -40,29 +40,16 @@ class WalletAddIndex extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {
-        pass: null,
-      };
       this.createWalletFlow = this.createWalletFlow.bind(this);
-      this.passcodeOnFill = this.passcodeOnFill.bind(this);
     }
 
-    async componentDidMount() {
-      const self = this;
-      const pass = await appContext.secureGet('passcode');
-      if (pass) {
-        this.setState({ pass }, () => {
-          self.passcodeModal.setModalVisible(true);
-        });
+    componentDidMount() {
+      const { navigation, showPasscode } = this.props;
+      const { skipPasscode } = navigation.state.params;
+      if (!skipPasscode) {
+        showPasscode('verify');
       }
     }
-
-    passcodeOnFill = async (passcode) => {
-      const { pass } = this.state;
-      if (passcode === pass) {
-        this.passcodeModal.setModalVisible(false);
-      }
-    };
 
     async createWalletFlow(page) {
       const { navigation } = this.props;
@@ -82,21 +69,10 @@ class WalletAddIndex extends Component {
           <View style={[screenHelper.styles.body]}>
             <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
           </View>
-          <PasscodeModal
-            ref={(ref) => {
-              this.passcodeModal = ref;
-            }}
-            onPress={() => {
-              navigation.goBack();
-            }}
-            onFill={this.passcodeOnFill}
-          />
         </View>
       );
     }
 }
-
-export default WalletAddIndex;
 
 WalletAddIndex.propTypes = {
   navigation: PropTypes.shape({
@@ -105,4 +81,15 @@ WalletAddIndex.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  showPasscode: (category) => dispatch(
+    appActions.showPasscode(category),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletAddIndex);

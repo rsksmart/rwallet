@@ -31,8 +31,6 @@ import EarnIndex from '../pages/earn/index';
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
-import ResetPasscode from '../pages/mine/reset.passcode';
-import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 
@@ -227,20 +225,6 @@ const routeConfigMap = {
       path: 'TwoFactorAuth',
       navigationOptions: () => ({
         headerTitle: 'TwoFactorAuth',
-      }),
-    },
-    ResetPasscode: {
-      screen: ResetPasscode,
-      path: 'ResetPasscode',
-      navigationOptions: () => ({
-        headerTitle: 'ResetPasscode',
-      }),
-    },
-    ResetPasscodeSuccess: {
-      screen: ResetPasscodeSuccess,
-      path: 'ResetPasscodeSuccess',
-      navigationOptions: () => ({
-        headerTitle: 'ResetPasscode',
       }),
     },
     KeySettings: {

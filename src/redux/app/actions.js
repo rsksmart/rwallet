@@ -23,6 +23,8 @@ const actions = {
   SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
+  SHOW_PASSCODE: 'SHOW_PASSCODE',
+  HIDE_PASSCODE: 'HIDE_PASSCODE',
   CHANGE_LANGUAGE: 'CHANGE_LANGUAGE',
 
   // Functions definition
@@ -39,19 +41,23 @@ const actions = {
   removeNotification: () => ({
     type: actions.REMOVE_NOTIFICATION,
   }),
+  showPasscode: (category) => ({
+    type: actions.SHOW_PASSCODE,
+    category,
+  }),
+  hidePasscode: () => ({
+    type: actions.HIDE_PASSCODE,
+  }),
   setPageLoading: (isLoading) => ({
     type: actions.IS_PAGE_LOADING,
     value: isLoading,
   }),
-  getTransactions: (symbol, type, address, page) => {
-    console.log('actions::getTransactions is called.');
-    return {
-      type: actions.GET_TRANSACTIONS,
-      payload: {
-        symbol, type, address, page,
-      },
-    };
-  },
+  getTransactions: (symbol, type, address, page) => ({
+    type: actions.GET_TRANSACTIONS,
+    payload: {
+      symbol, type, address, page,
+    },
+  }),
   createRawTransaction: (symbol, type, sender, receiver, value, data) => {
     console.log('actions::createRawTransaction is called.');
     return {

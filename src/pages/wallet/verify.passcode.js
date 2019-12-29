@@ -5,8 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Header from '../../components/common/misc/header';
 import flex from '../../assets/styles/layout.flex';
-import PasscodeModal from '../../components/common/modal/passcodeModal';
-import appContext from '../../common/appContext';
+// import PasscodeModalMake from '../../components/common/passcode/passcodeModal';
 
 export default class VerifyPasscode extends Component {
     static navigationOptions = () => ({
@@ -14,7 +13,6 @@ export default class VerifyPasscode extends Component {
     });
 
     componentDidMount() {
-      this.passcodeModal.setModalVisible(true);
     }
 
     render() {
@@ -22,17 +20,17 @@ export default class VerifyPasscode extends Component {
       return (
         <View style={[flex.flex1]}>
           <Header title="Verify Passcode" goBack={() => { navigation.goBack(); }} />
-          <PasscodeModal
-            ref={(ref) => { this.passcodeModal = ref; }}
-            onPress={() => { navigation.goBack(); }}
-            onFill={async (passcode) => {
-              const value = await appContext.secureGet('passcode');
-              if (passcode === value) {
-                navigation.state.params.verified();
-                navigation.goBack();
-              }
-            }}
-          />
+          {/* <PasscodeModalMake */}
+          {/*  ref={(ref) => { this.passcodeModal = ref; }} */}
+          {/*  onPress={() => { navigation.goBack(); }} */}
+          {/*  onFill={async (passcode) => { */}
+          {/*    const value = await appContext.secureGet('passcode'); */}
+          {/*    if (passcode === value) { */}
+          {/*      navigation.state.params.verified(); */}
+          {/*      navigation.goBack(); */}
+          {/*    } */}
+          {/*  }} */}
+          {/* /> */}
         </View>
       );
     }
