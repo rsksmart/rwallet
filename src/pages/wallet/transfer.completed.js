@@ -84,8 +84,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const header = require('../../assets/images/misc/header.png');
-
 export default class TransferCompleted extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -105,11 +103,6 @@ export default class TransferCompleted extends Component {
   render() {
     return (
       <View style={[flex.flex1]}>
-
-        <View style={[{ height: 100 }]}>
-          <Image source={header} style={styles.headImage} />
-        </View>
-
         <Header
           title="Reset Passcode"
           goBack={this.onBackPress}
