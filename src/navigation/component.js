@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -14,8 +13,6 @@ import Notifications from '../components/common/notification/notifications';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
-import appActions from '../redux/app/actions';
-import walletActions from '../redux/wallet/actions';
 import common from '../common/common';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
@@ -125,7 +122,7 @@ class RootComponent extends Component {
 
   render() {
     const {
-      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, dispatch,
+      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification,
     } = this.props;
 
     return (
@@ -133,7 +130,7 @@ class RootComponent extends Component {
         <Root>
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
-          <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
+          <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
@@ -145,17 +142,13 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-
   startFetchBalanceTimer: PropTypes.func.isRequired,
   startFetchTransactionTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-
   walletManager: PropTypes.shape({}),
-
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
-  dispatch: PropTypes.func.isRequired,
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
   startFetchPriceTimer: PropTypes.func.isRequired,
@@ -165,6 +158,7 @@ RootComponent.propTypes = {
   showPasscode: PropTypes.bool.isRequired,
   passcodeType: PropTypes.string,
   closePasscodeModal: PropTypes.func.isRequired,
+  removeNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
@@ -173,24 +167,4 @@ RootComponent.defaultProps = {
   passcodeType: null,
 };
 
-const mapStateToProps = (state) => ({
-  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
-  walletManager: state.Wallet.get('walletManager'),
-  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  currency: state.App.get('currency'),
-  prices: state.Wallet.get('prices'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
-  initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
-  startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
-  startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
+export default RootComponent;
