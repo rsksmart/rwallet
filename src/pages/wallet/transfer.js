@@ -24,7 +24,6 @@ import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import config from '../../../config';
-import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -196,6 +195,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     fontSize: 13,
   },
+  wapper: {
+    height: screen.height - 25,
+  },
 });
 
 
@@ -304,14 +306,17 @@ class Transfer extends Component {
    */
   onCustomFeeSlideValueChange(value) {
     // console.log('onCustomFeeSlideValueChange, value: ', value);
-    const { currency, prices } = this.props;
+    const { currency, prices, navigation } = this.props;
+    const { coin } = navigation.state.params;
     const { feeSymbol } = this.state;
     // maxFee = 2 times high fee
     const maxFee = this.mediumFee.times(MAX_FEE_TIMES).times(1 + FEE_LEVEL_ADJUSTMENT);
     // If feeSymbol is RBTC, fee must multiply DEFAULT_RBTC_GAS_PRICE
     let minFee = null;
-    if (feeSymbol === 'RBTC') {
+    if (coin.symbol === 'RBTC') {
       minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+    } else if (coin.symbol === 'RIF') {
+      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
     } else {
       // minFee: ten to the power of -N
       minFee = new BigNumber(`1e-${config.symbolDecimalPlaces[feeSymbol]}`);
@@ -543,7 +548,7 @@ class Transfer extends Component {
 
     return (
       <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
-        <View style={presetStyles.lastBlockMarginBottom}>
+        <View style={styles.wapper}>
           <View style={[flex.flex10]}>
             <ImageBackground source={header} style={[{ height: headerHeight }]}>
               <Text style={styles.headerTitle}>

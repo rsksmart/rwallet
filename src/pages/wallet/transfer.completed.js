@@ -7,6 +7,8 @@ import { StackActions } from 'react-navigation';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
+import Header from '../../components/common/misc/header';
+import screenHelper from '../../common/screenHelper';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -107,7 +109,12 @@ export default class TransferCompleted extends Component {
         <View style={[{ height: 100 }]}>
           <Image source={header} style={styles.headImage} />
         </View>
-        <View style={styles.body}>
+
+        <Header
+          title="Reset Passcode"
+          goBack={this.onBackPress}
+        />
+        <View style={[screenHelper.styles.body, styles.body]}>
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
             <Loc style={[styles.title]} text="Transfer Completed!" />
