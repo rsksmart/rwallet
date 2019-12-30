@@ -32,8 +32,8 @@ class ParseHelper {
     // No real password is needed because we only want to get access to Parse.User here to access related data
     user.set('username', appId);
     user.set('password', appId);
-    console.log('DeviceInfo.getUniqueID()', DeviceInfo.getUniqueId());
-    user.set('deviceId', DeviceInfo.getUniqueId());
+    console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
+    user.set('deviceId', DeviceInfo.getDeviceId());
 
     // TODO: other information needed to be set here.
     return user.signUp();
