@@ -16,8 +16,8 @@ import config from '../../../config';
 
 const { consts: { locales } } = config;
 
-const localeNames = _.map(locales, ['name']);
-const localeIds = _.map(locales, ['id']);
+const localeNames = _.map(locales, (row) => ({ title: row.name }));
+const localeIds = _.map(locales, 'id');
 
 const styles = StyleSheet.create({
   listView: {

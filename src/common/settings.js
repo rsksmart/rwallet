@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import _ from 'lodash';
 import storage from './storage';
 import config from '../../config';
+import { getCurrentLanguage } from './i18n';
 
 /**
 * defaultSettings
@@ -19,6 +20,7 @@ const { defaultSettings } = config;
 class Settings {
   constructor() {
     this.data = Map(defaultSettings);
+    this.set('language', getCurrentLanguage());
     this.serialize = this.serialize.bind(this);
     this.deserialize = this.deserialize.bind(this);
   }
