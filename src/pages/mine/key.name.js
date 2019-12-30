@@ -61,13 +61,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-  body: {
-    marginHorizontal: 22,
-  },
   buttonView: {
     alignSelf: 'center',
-    marginTop: 37,
-    marginBottom: 20,
+    paddingVertical: 15,
   },
   name: {
     marginTop: 17,
@@ -136,28 +132,32 @@ class KeyName extends Component {
       const { navigation } = this.props;
       const { name } = this.state;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header goBack={() => navigation.goBack()} title="Key Name" />
-          <View style={[screenHelper.styles.body, styles.body]}>
-            <Loc style={[styles.title]} text="What do you call this key?" />
-            <Loc text="You can change the name displayed on the device below" />
-            <Loc style={[styles.title, styles.name]} text="Name" />
-            <TextInput
-              ref={(ref) => { this.nameInput = ref; }}
-              style={[presetStyle.textInput, styles.nameInput]}
-              value={name}
-              onChangeText={this.onChangeText}
-              onSubmitEditing={this.onSubmitEditing}
-              autoCapitalize="none"
-              autoCorrect={false}
-              blurOnSubmit={false}
-            />
-            <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+        <View style={[flex.flex1]}>
+          <ScrollView style={[flex.flex1]}>
+            <Header goBack={() => navigation.goBack()} title="Key Name" />
+            <View style={[screenHelper.styles.body, { paddingHorizontal: 25 }]}>
+              <Loc style={[styles.title]} text="What do you call this key?" />
+              <Loc text="You can change the name displayed on the device below" />
+              <Loc style={[styles.title, styles.name]} text="Name" />
+              <TextInput
+                ref={(ref) => { this.nameInput = ref; }}
+                style={[presetStyle.textInput, styles.nameInput]}
+                value={name}
+                onChangeText={this.onChangeText}
+                onSubmitEditing={this.onSubmitEditing}
+                autoCapitalize="none"
+                autoCorrect={false}
+                blurOnSubmit={false}
+              />
+              <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+            </View>
+          </ScrollView>
+          <View style={[styles.buttonView]}>
             <View style={styles.buttonView}>
               <Button text="SAVE" onPress={this.onPress} />
             </View>
           </View>
-        </ScrollView>
+        </View>
       );
     }
 }
