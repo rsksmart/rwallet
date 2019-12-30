@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, StyleSheet } from 'react-native';
+import {
+  View, Image, StyleSheet, Text,
+} from 'react-native';
 import { isEmpty } from 'lodash';
+import DeviceInfo from 'react-native-device-info';
 
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
-import Indicator from '../../components/common/misc/indicator';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -22,6 +24,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: '10%',
   },
+  versionText: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    fontSize: 16,
+    color: '#565c66',
+    fontWeight: 'bold',
+  },
 });
 
 class StartPage extends Component {
@@ -32,7 +42,7 @@ class StartPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      version: '',
     };
   }
 
@@ -44,15 +54,18 @@ class StartPage extends Component {
     return null;
   }
 
-  render() {
-    const { loading } = this.state;
-    const { navigation, isInitWithParseDone, wallets } = this.props;
+  async componentDidMount() {
+    const version = await DeviceInfo.getVersion();
+    this.setState({ version });
+  }
 
+  render() {
+    const { navigation, isInitWithParseDone, wallets } = this.props;
+    const { version } = this.state;
     return (
       <View style={styles.page}>
         <View style={styles.logo}>
           <Image source={logo} />
-          <Indicator visible={loading} style={[{ marginTop: 20 }]} />
         </View>
         {(isInitWithParseDone && isEmpty(wallets)) && (
         <View style={styles.buttonView}>
@@ -64,6 +77,7 @@ class StartPage extends Component {
           />
         </View>
         )}
+        <Text style={styles.versionText}>{`version: ${version}`}</Text>
       </View>
     );
   }
