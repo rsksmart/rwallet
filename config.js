@@ -1,8 +1,8 @@
-/** Store app level configurations */
+/** App level configurations */
 // serverURL list
-// product http://130.211.12.3/parse
-// dev1 http://10.0.2.2:1338/parse
-// dev2 http://192.168.31.177:1338/parse
+// Dogfood http://130.211.12.3/parse
+// Dev Android Simulator http://10.0.2.2:1338/parse
+// Dev iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
 const config = {
   parse: {
     appId: 'rwallet',
@@ -17,7 +17,12 @@ const config = {
   },
   consts: {
     supportedTokens: ['BTC', 'RBTC', 'RIF'],
-    languages: ['en', 'fr', 'he', 'zh'],
+    locales: [
+      { name: 'English', id: 'en' },
+      { name: 'Spanish', id: 'es' },
+      { name: 'Portuguese', id: 'pt' },
+      { name: 'Chinese', id: 'zh' },
+    ],
     currencies: [
       { name: 'USD', fullName: 'US Dollar', symbol: '$' },
       { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
@@ -31,10 +36,16 @@ const config = {
     reduxLoggerEnabled: false,
   },
   interval: {
-    fetchPrice: 30000,
-    fetchBalance: 30000,
-    fetchTransaction: 30000,
+    fetchPrice: 8000,
+    fetchBalance: 8000,
+    fetchTransaction: 8000,
   },
+  symbolDecimalPlaces: {
+    BTC: 6,
+    RBTC: 6,
+    RIF: 3,
+  },
+  assetValueDecimalPlaces: 2,
 };
 
 export default config;

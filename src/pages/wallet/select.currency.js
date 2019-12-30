@@ -28,13 +28,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   buttonView: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
     alignSelf: 'center',
-    paddingVertical: 20,
-    bottom: 0,
+    paddingVertical: 15,
   },
 });
 
@@ -101,11 +96,14 @@ class WalletSelectCurrency extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, resetWalletsUpdated, navigation, wallets,
+        navigation, wallets, isWalletsUpdated,
       } = nextProps;
       const phrases = navigation.state.params ? navigation.state.params.phrases : '';
-      if (isWalletsUpdated && resetWalletsUpdated) {
+      // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
+      if (isWalletsUpdated) {
         this.setState({ loading: false });
+        // if phrases exsist, indicates the wallet is imported by phrase, the navigation pop to top
+        // if phrases doesn't exsist, indicates the wallet is created by no phrase, navigate to 'RecoveryPhrase' page
         if (phrases) {
           const statckActions = StackActions.popToTop();
           navigation.dispatch(statckActions);
@@ -114,6 +112,14 @@ class WalletSelectCurrency extends Component {
           const wallet = wallets[wallets.length - 1];
           navigation.navigate('RecoveryPhrase', { wallet });
         }
+        // Don't resetWalletsUpdated here, it's too early, other pages will detected isWalletsUpdated is false.
+      }
+    }
+
+    // call resetWalletsUpdated when componentWillUnmount is safe.
+    componentWillUnmount() {
+      const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+      if (isWalletsUpdated) {
         resetWalletsUpdated();
       }
     }
@@ -183,8 +189,8 @@ WalletSelectCurrency.propTypes = {
   walletManager: PropTypes.shape({}),
   wallets: PropTypes.arrayOf(PropTypes.object),
   createKey: PropTypes.func.isRequired,
-  isWalletsUpdated: PropTypes.bool.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 WalletSelectCurrency.defaultProps = {

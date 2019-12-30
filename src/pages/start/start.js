@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet } from 'react-native';
+import { isEmpty } from 'lodash';
 
+import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import Indicator from '../../components/common/misc/indicator';
 
@@ -31,39 +33,37 @@ class StartPage extends Component {
     super(props);
     this.state = {
       loading: false,
-      showButton: false,
     };
   }
 
-  async componentDidMount() {
-    console.log();
-    this.setState({ showButton: true });
+  static getDerivedStateFromProps(nextProps) {
+    const { isInitWithParseDone, wallets, navigation } = nextProps;
+    if (isInitWithParseDone && !isEmpty(wallets)) {
+      navigation.navigate('PrimaryTabNavigator');
+    }
+    return null;
   }
 
   render() {
-    const { loading, showButton } = this.state;
-    const { navigation } = this.props;
-    let buttonView = null;
-    if (showButton) {
-      buttonView = (
-        <View style={styles.buttonView}>
-          <Button
-            text="GET STARTED"
-            onPress={async () => {
-              this.setState({ showButton: false });
-              navigation.navigate('TermsPage');
-            }}
-          />
-        </View>
-      );
-    }
+    const { loading } = this.state;
+    const { navigation, isInitWithParseDone, wallets } = this.props;
+
     return (
       <View style={styles.page}>
         <View style={styles.logo}>
           <Image source={logo} />
           <Indicator visible={loading} style={[{ marginTop: 20 }]} />
         </View>
-        {buttonView}
+        {(isInitWithParseDone && isEmpty(wallets)) && (
+        <View style={styles.buttonView}>
+          <Button
+            text="Get Started"
+            onPress={async () => {
+              navigation.navigate('TermsPage');
+            }}
+          />
+        </View>
+        )}
       </View>
     );
   }
@@ -76,9 +76,17 @@ StartPage.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  isInitWithParseDone: PropTypes.bool.isRequired,
 };
 
 StartPage.defaultProps = {
+  wallets: undefined,
 };
 
-export default StartPage;
+const mapStateToProps = (state) => ({
+  isInitWithParseDone: state.App.get('isInitWithParseDone'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+});
+
+export default connect(mapStateToProps, null)(StartPage);

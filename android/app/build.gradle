@@ -106,7 +106,7 @@ android {
         applicationId "com.rsk.rwallet.reactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 7
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
@@ -151,6 +151,11 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-udp')
+    implementation project(':react-native-tcp')
+    implementation project(':react-native-os')
+    implementation project(':@react-native-community_slider')
     implementation project(':react-native-camera')
     implementation project(':react-native-uuid-generator')
     implementation project(':react-native-fingerprint-scanner')

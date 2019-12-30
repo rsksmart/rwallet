@@ -32,7 +32,8 @@ class ParseHelper {
     // No real password is needed because we only want to get access to Parse.User here to access related data
     user.set('username', appId);
     user.set('password', appId);
-    user.set('deviceId', DeviceInfo.getUniqueID());
+    console.log('DeviceInfo.getUniqueID()', DeviceInfo.getUniqueId());
+    user.set('deviceId', DeviceInfo.getUniqueId());
 
     // TODO: other information needed to be set here.
     return user.signUp();
@@ -72,12 +73,24 @@ class ParseHelper {
           // Check if ParseAddress with coin.objectId exists
           const query = new Parse.Query(ParseAddress);
           return query.get(coin.objectId)
-            .then((existingParseAddress) => Promise.resolve(existingParseAddress), (err) => {
+            .then((existingParseAddress) => Promise.resolve(existingParseAddress), async (err) => {
               if (err.message === 'Object not found.') {
                 // If ParseAddress not exists then we will create a new one and saved to User.wallets
                 const {
                   address, chain, type, symbol,
                 } = coin;
+
+                // If same address already exist, then use it
+                const existAddrQuery = new Parse.Query(ParseAddress);
+                const existAddr = await existAddrQuery
+                  .equalTo('address', address)
+                  .equalTo('chain', chain)
+                  .equalTo('type', type)
+                  .equalTo('symbol', symbol)
+                  .first();
+                if (existAddr) {
+                  return existAddr;
+                }
 
                 const parseAddress = new ParseAddress()
                   .set('chain', chain)

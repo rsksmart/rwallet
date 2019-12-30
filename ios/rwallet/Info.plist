@@ -39,18 +39,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to this device's camera.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires FaceID access to allows you quick and secure access.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to location when open.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to location when in the background.</string>
-  <key>NSCameraUsageDescription</key>
-  <string>$(PRODUCT_NAME) needs access to use camera.</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>$(PRODUCT_NAME) needs access to use photo library.</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>$(PRODUCT_NAME) needs access to use microphone.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to Photo Library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>

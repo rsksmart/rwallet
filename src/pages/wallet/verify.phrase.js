@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
   View, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
+// import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
@@ -96,14 +96,7 @@ class VerifyPhrase extends Component {
       console.log('isEqual', isEqual);
 
       if (isEqual) {
-        const resetAction = StackActions.reset({
-          index: 1,
-          actions: [
-            NavigationActions.navigate({ routeName: 'WalletList' }),
-            NavigationActions.navigate({ routeName: 'VerifyPhraseSuccess' }),
-          ],
-        });
-        navigation.dispatch(resetAction);
+        navigation.navigate('VerifyPhraseSuccess');
       } else {
         const notification = createErrorNotification(
           'Incorrect backup phrase',

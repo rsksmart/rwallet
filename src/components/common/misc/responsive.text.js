@@ -8,7 +8,7 @@ const FONT_SIZE_TIMES = 1.7;
 
 
 const getFontSize = (width, length, maxFontSize) => {
-  let fontSize = width / length;
+  let fontSize = Math.floor(width / length);
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
   return fontSize;
 };
@@ -31,13 +31,13 @@ export default class ResponsiveText extends Component {
   }
 
   onLayout = (event) => {
-    const { style, children } = this.props;
+    const { children, maxFontSize } = this.props;
     const { isAdjusted } = this.state;
     if (isAdjusted) {
       return;
     }
     const { width } = event.nativeEvent.layout;
-    const fontSize = getFontSize(width, children.length, style.fontSize);
+    const fontSize = getFontSize(width, children.length, maxFontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
@@ -47,18 +47,18 @@ export default class ResponsiveText extends Component {
   }
 
   renderTextElement() {
-    const { children, fontStyle } = this.props;
+    const { children, fontStyle, maxFontSize } = this.props;
     const { adjustsStyle } = this.state;
     let textElement = null;
     if (Platform.OS === 'ios') {
       textElement = (
-        <Text style={[fontStyle]} adjustsFontSizeToFit numberOfLines={1}>
+        <Text style={[fontStyle, { fontSize: maxFontSize }]} adjustsFontSizeToFit numberOfLines={1}>
           {children}
         </Text>
       );
     } else {
       textElement = (
-        <Text style={[adjustsStyle, fontStyle]}>
+        <Text style={[fontStyle, adjustsStyle]}>
           {children}
         </Text>
       );
@@ -79,11 +79,11 @@ export default class ResponsiveText extends Component {
 ResponsiveText.propTypes = {
   style: PropTypes.arrayOf(PropTypes.object),
   fontStyle: PropTypes.arrayOf(PropTypes.object),
-  children: PropTypes.string,
+  children: PropTypes.string.isRequired,
+  maxFontSize: PropTypes.number.isRequired,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
   fontStyle: null,
-  children: null,
 };

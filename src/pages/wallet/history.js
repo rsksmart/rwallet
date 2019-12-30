@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: '900',
     color: '#000000',
-    fontSize: 35,
   },
   assetsValue: {
     marginTop: 10,
@@ -278,18 +277,21 @@ class History extends Component {
     }
     const items = [];
     transactions.forEach((transaction) => {
-      const amount = common.convertHexToCoinAmount(symbol, transaction.value);
-      const amountText = `${amount.toFixed()} ${symbol}`;
+      let amountText = ' ';
       let datetime = transaction.createdAt;
       let isComfirmed = true;
       let isSender = false;
+      let state = 'Receiving';
+      if (transaction.value) {
+        const amount = common.convertUnitToCoinAmount(symbol, transaction.value);
+        amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
+      }
       if (address === transaction.from) {
         isSender = true;
       }
       if (transaction.blockHeight === -1) {
         isComfirmed = false;
       }
-      let state = '';
       if (isSender) {
         if (isComfirmed) {
           state = 'Sent';
@@ -300,8 +302,6 @@ class History extends Component {
       } else if (isComfirmed) {
         state = 'Received';
         datetime = transaction.confirmedAt;
-      } else {
-        state = 'Receiving';
       }
       if (datetime) {
         datetime = moment(datetime).format('MMM D. YYYY');
@@ -347,11 +347,8 @@ class History extends Component {
       balance: coin && coin.balance,
       balanceValue: coin && coin.balanceValue,
       transactions: coin && coin.transactions,
-      balanceText: '',
-      assetValueText: '',
+      address: coin && coin.address,
       listData: null,
-      pendingBalanceText: '',
-      pendingAssetValueText: '',
     };
 
     this.page = 1;
@@ -364,62 +361,50 @@ class History extends Component {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
-  static getBalanceText(balance, symbol) {
-    let balanceText = '';
+  static getBalanceText(symbol, balance) {
+    let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${balance.toFixed()} ${symbol}`;
+      balanceText = `${common.getBalanceString(symbol, balance)}`;
     }
 
     return balanceText;
   }
 
-  static getAssetValueText(balanceValue, currencySymbol) {
-    let assetValueText = '';
+  static getAssetValueText(balanceValue) {
+    let assetValueText = '0';
 
     if (!_.isUndefined(balanceValue)) {
-      assetValueText = `${currencySymbol}${balanceValue.decimalPlaces(2).toFixed()}`;
+      assetValueText = `${common.getAssetValueString(balanceValue)}`;
     }
 
     return assetValueText;
   }
 
-  static getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency) {
-    const currencySymbol = getCurrencySymbol(currency);
-    const state = {};
-    state.balanceText = History.getBalanceText(balance, symbol);
-    state.assetValueText = History.getAssetValueText(balanceValue, currencySymbol);
-    state.pendingBalanceText = History.getBalanceText(pendingBalance, symbol);
-    state.pendingAssetValueText = History.getAssetValueText(pendingBalanceValue, currencySymbol);
-    state.listData = History.createListData(transactions, symbol);
-    return state;
-  }
-
   componentDidMount() {
-    const { currency } = this.props;
     const {
-      symbol, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      symbol, transactions, address,
     } = this.state;
-    const newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
-    this.setState(newState);
+    const listData = History.createListData(transactions, symbol, address);
+    this.setState({ listData });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      currency, updateTimestamp, navigation,
+      updateTimestamp, navigation,
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp } = this.props;
     const { symbol } = this.state;
     const { coin } = navigation.state.params;
     if (updateTimestamp !== lastUpdateTimestamp && coin) {
       const {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
       } = coin;
-      let newState = History.getPageState(balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, symbol, currency);
-      newState = {
-        ...newState, balance, balanceValue, pendingBalance, pendingBalanceValue, transactions,
+      const listData = History.createListData(transactions, symbol, address);
+      const state = {
+        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, listData,
       };
-      this.setState(newState);
+      this.setState(state);
     }
   }
 
@@ -501,14 +486,23 @@ class History extends Component {
     return footer;
   }
 
+
   render() {
     const {
-      coin, balanceText, assetValueText, listData, pendingBalanceText, pendingAssetValueText,
+      balance, balanceValue, pendingBalance, pendingBalanceValue, listData,
     } = this.state;
+    const { navigation, currency } = this.props;
+    const { coin } = navigation.state.params;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
 
+    // generate balance, value texts
+    const currencySymbol = getCurrencySymbol(currency);
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
+    const pendingBalanceText = pendingBalance ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
+    const pendingAssetValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
@@ -526,7 +520,7 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{balanceText}</ResponsiveText>
+            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{assetValueText}</Text>
             {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
             <View style={styles.myAssetsButtonsView}>
@@ -548,7 +542,7 @@ class History extends Component {
           </View>
         </View>
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-          <Text style={styles.recent}>Recent</Text>
+          <Loc style={[styles.recent]} text="Recent" />
         </View>
         <View style={styles.sectionContainer}>
           {History.listView(listData)}

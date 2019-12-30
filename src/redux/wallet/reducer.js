@@ -7,6 +7,8 @@ const initState = new Map({
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
   isBalanceUpdated: false,
+  isWalletsUpdated: false,
+  isWalletNameUpdated: false,
 });
 
 /**
@@ -60,7 +62,18 @@ export default function walletReducer(state = initState, action) {
       return state.set('updateTimestamp', getUpdateTimestamp());
     }
     case actions.WALLETS_UPDATED: {
-      return state.set('updateTimestamp', getUpdateTimestamp());
+      return state.set('isWalletsUpdated', true)
+        .set('updateTimestamp', getUpdateTimestamp());
+    }
+    case actions.RESET_WALLETS_UPDATED: {
+      return state.set('isWalletsUpdated', false);
+    }
+    case actions.WALLTE_NAME_UPDATED: {
+      return state.set('isWalletNameUpdated', true)
+        .set('updateTimestamp', getUpdateTimestamp());
+    }
+    case actions.RESET_WALLET_NAME_UPDATED: {
+      return state.set('isWalletNameUpdated', false);
     }
     default:
       return state;

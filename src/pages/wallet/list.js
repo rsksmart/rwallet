@@ -19,13 +19,12 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
+import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.png');
 const rsk = require('../../assets/images/mine/rsk.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
-
-const DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE = 2;
 
 const { getCurrencySymbol } = common;
 
@@ -113,7 +112,6 @@ const styles = StyleSheet.create({
   myAssetsFontStyle: {
     fontWeight: 'bold',
     color: '#000000',
-    fontSize: 35,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -217,7 +215,7 @@ class WalletList extends Component {
         assetValue = walletManager && walletManager.assetValue;
       }
 
-      return assetValue.decimalPlaces(2).toFixed();
+      return common.getAssetValueString(assetValue);
     }
 
     /**
@@ -236,8 +234,8 @@ class WalletList extends Component {
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
           const coinType = coin.id;
-          const amountText = coin.balance ? coin.balance.toFixed() : '';
-          const worthText = coin.balanceValue ? `${currencySymbol}${coin.balanceValue.toFixed(DEFAULT_DECIMAL_DIGITS_CURRENCY_VALUE)}` : '';
+          const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
+          const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : '';
           const item = {
             key: `${index}`,
             title: coin.defaultName,
@@ -366,28 +364,28 @@ class WalletList extends Component {
                   <Loc text="My Assets" />
                   {` (${currencySymbol})`}
                 </Text>
-                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]}>{`${totalAssetValueText}`}</ResponsiveText>
+                <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
                 <View style={styles.myAssetsButtonsView}>
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {}}
                   >
                     <Entypo name="swap" size={20} style={styles.sendIcon} />
-                    <Text style={styles.sendText}>Send</Text>
+                    <Loc style={[styles.sendText]} text="Send" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {}}
                   >
                     <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                    <Text style={styles.receiveText}>Receive</Text>
+                    <Loc style={[styles.receiveText]} text="Receive" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.ButtonView, { borderRightWidth: 0 }]}
                     onPress={() => {}}
                   >
                     <Image source={swap} style={{ width: 17, height: 17 }} />
-                    <Text style={styles.swapText}>Swap</Text>
+                    <Loc style={[styles.swapText]} text="Swap" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -414,8 +412,8 @@ class WalletList extends Component {
             </View>
           </ScrollView>
           <View style={styles.logoView}>
-            <Text style={styles.powerby}>Powered by</Text>
-            <Image source={rsk} />
+            <Loc style={[styles.powerby]} text="Powered by" />
+            <Image style={presetStyles.rskIcon} source={rsk} />
           </View>
         </View>
       );
