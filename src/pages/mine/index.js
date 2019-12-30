@@ -354,7 +354,7 @@ class MineIndex extends Component {
             {MineIndex.renderKeyListView(keyListData, navigation)}
             <View style={styles.createWalletButtonView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Text style={styles.createWalletButtonText}>Create or Import a Key</Text>
+                <Loc style={[styles.createWalletButtonText]} text="Create or Import a Key" />
               </TouchableOpacity>
             </View>
           </View>

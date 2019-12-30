@@ -1,5 +1,7 @@
 import ReactNative from 'react-native';
+import _ from 'lodash';
 import I18n from 'react-native-i18n';
+import config from '../../config';
 
 // Import all locales
 import en from './translations/en.json';
@@ -33,5 +35,20 @@ export function strings(name, params = {}) {
   return translation;
 }
 
+/**
+ * get matched language from current locale
+ * for example
+ * If currentLocale is en-us, en-nz or en-ca, return en
+ * If currentLocale is zh-cn, zh-hk or zh-tw, return zh
+ */
+export function getCurrentLanguage() {
+  let currentLanguage = config.defaultSettings.language;
+  const regex = /^([a-z]+)[_-].*/g;
+  const language = currentLocale.replace(regex, '$1');
+  const keys = Object.keys(I18n.translations);
+  const foundLanuage = _.find(keys, (key) => key === language);
+  currentLanguage = foundLanuage || currentLanguage;
+  return currentLanguage;
+}
 
 export default I18n;

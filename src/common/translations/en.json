@@ -141,6 +141,7 @@
   "Key name is too short.": "Key name is too short.",
   "Key name is too long.": "Key name is too long.",
   "Key name contains invalid characters.": "Key name contains invalid characters.",
+  "Create or Import a Key": "Create or Import a Key",
   "Password not match, Try again": "Password not match, Try again",
   "Type your passcode": "Type your passcode",
   "Passcode is incorrected": "Passcode is incorrected"
