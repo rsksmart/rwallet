@@ -140,5 +140,6 @@
   "Key has been deleted successfully.": "Key has been deleted successfully.",
   "Key name is too short.": "Key name is too short.",
   "Key name is too long.": "Key name is too long.",
-  "Key name contains invalid characters.": "Key name contains invalid characters."
+  "Key name contains invalid characters.": "Key name contains invalid characters.",
+  "Create or Import a Key": "Create or Import a Key"
 }
