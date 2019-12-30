@@ -164,7 +164,6 @@ dependencies {
     implementation project(':react-native-randombytes')
     implementation project(':react-native-i18n')
     implementation project(':@react-native-community_async-storage')
-    implementation project(':react-native-device-info')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-screens')
     implementation fileTree(dir: "libs", include: ["*.jar"])

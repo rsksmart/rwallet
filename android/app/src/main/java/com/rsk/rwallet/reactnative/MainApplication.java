@@ -14,7 +14,6 @@ import com.horcrux.svg.SvgPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.facebook.react.ReactNativeHost;
@@ -49,7 +48,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RandomBytesPackage(),
             new RNI18nPackage(),
             new AsyncStoragePackage(),
-            new RNDeviceInfo(),
             new RNGestureHandlerPackage(),
             new RNScreensPackage(),
             new ReactSliderPackage()
