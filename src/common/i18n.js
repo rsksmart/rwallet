@@ -37,6 +37,9 @@ export function strings(name, params = {}) {
 
 /**
  * get matched language from current locale
+ * for example
+ * If currentLocale is en-us, en-nz or en-ca, return en
+ * If currentLocale is zh-cn, zh-hk or zh-tw, return zh
  */
 export function getCurrentLanguage() {
   let currentLanguage = config.defaultSettings.language;

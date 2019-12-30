@@ -16,7 +16,7 @@ import config from '../../../config';
 
 const { consts: { locales } } = config;
 
-const localeNames = _.map(locales, 'name');
+const localeNames = _.map(locales, (row) => ({ title: row.name }));
 const localeIds = _.map(locales, 'id');
 
 const styles = StyleSheet.create({
@@ -36,14 +36,6 @@ class Language extends Component {
     constructor(props) {
       super(props);
       this.onChange = this.onChange.bind(this);
-      this.state = {
-        listData: [],
-      };
-    }
-
-    componentDidMount() {
-      const listData = localeNames.map((name) => ({ title: name }));
-      this.setState({ listData });
     }
 
     onChange(index) {
@@ -53,7 +45,6 @@ class Language extends Component {
 
     render() {
       const { navigation, currentLocale } = this.props;
-      const { listData } = this.state;
 
       // Get index of current selected locale string; default 0
       let selectedIndex = _.indexOf(localeIds, currentLocale);
@@ -69,7 +60,7 @@ class Language extends Component {
           />
           <View style={screenHelper.styles.body}>
             <View style={styles.listView}>
-              <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />
+              <SelectionList data={localeNames} onChange={this.onChange} selected={selectedIndex} />
             </View>
           </View>
         </ScrollView>
