@@ -11,12 +11,12 @@ import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/app/actions';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import { strings } from '../../common/i18n';
 
 import config from '../../../config';
 
 const { consts: { locales } } = config;
 
-const localeNames = _.map(locales, (row) => ({ title: row.name }));
 const localeIds = _.map(locales, 'id');
 
 const styles = StyleSheet.create({
@@ -32,10 +32,29 @@ class Language extends Component {
       header: null,
     });
 
+    static createListData() {
+      const listData = _.map(locales, (row) => ({ title: strings(row.name) }));
+      return listData;
+    }
 
     constructor(props) {
       super(props);
       this.onChange = this.onChange.bind(this);
+      this.state = { listData: [] };
+    }
+
+    componentDidMount() {
+      const listData = Language.createListData();
+      this.setState({ listData });
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { currentLocale: nextLocale } = nextProps;
+      const { currentLocale } = this.props;
+      if (currentLocale !== nextLocale) {
+        const listData = Language.createListData();
+        this.setState({ listData });
+      }
     }
 
     onChange(index) {
@@ -45,6 +64,7 @@ class Language extends Component {
 
     render() {
       const { navigation, currentLocale } = this.props;
+      const { listData } = this.state;
 
       // Get index of current selected locale string; default 0
       let selectedIndex = _.indexOf(localeIds, currentLocale);
@@ -52,15 +72,10 @@ class Language extends Component {
 
       return (
         <ScrollView style={[flex.flex1]}>
-          <Header
-            title="Language"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
+          <Header title="Language" goBack={() => navigation.goBack()} />
           <View style={screenHelper.styles.body}>
             <View style={styles.listView}>
-              <SelectionList data={localeNames} onChange={this.onChange} selected={selectedIndex} />
+              <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />
             </View>
           </View>
         </ScrollView>
