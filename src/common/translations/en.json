@@ -141,5 +141,9 @@
   "Key name is too short.": "Key name is too short.",
   "Key name is too long.": "Key name is too long.",
   "Key name contains invalid characters.": "Key name contains invalid characters.",
-  "Create or Import a Key": "Create or Import a Key"
+  "Create or Import a Key": "Create or Import a Key",
+  "English": "English",
+  "Spanish": "Spanish",
+  "Portuguese": "Portuguese",
+  "Chinese": "Chinese"
 }
