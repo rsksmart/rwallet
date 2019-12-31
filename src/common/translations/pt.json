@@ -140,5 +140,10 @@
   "Key has been deleted successfully.": "A chave foi excluída com sucesso.",
   "Key name is too short.": "O nome da chave é muito curto.",
   "Key name is too long.": "O nome da chave é muito longo.",
-  "Key name contains invalid characters.": "O nome da chave contém caracteres inválidos."
+  "Key name contains invalid characters.": "O nome da chave contém caracteres inválidos.",
+  "Create or Import a Key": "Criar ou importar uma chave",
+  "English": "Inglês",
+  "Spanish": "Espanhol",
+  "Portuguese": "Português",
+  "Chinese": "Chinês"
 }
