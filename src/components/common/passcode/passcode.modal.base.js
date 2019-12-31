@@ -150,7 +150,7 @@ class PasscodeModalBase extends PureComponent {
     const {
       title,
     } = this.state;
-    const { cancelBtnOnPress } = this.props;
+    const { cancelBtnOnPress, showCancel } = this.props;
 
     return (
       <Modal
@@ -167,6 +167,7 @@ class PasscodeModalBase extends PureComponent {
             <View style={styles.buttonView}>
               {this.renderButtons()}
             </View>
+            {showCancel && (
             <View style={{ width: '100%' }}>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -175,6 +176,7 @@ class PasscodeModalBase extends PureComponent {
                 <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
               </TouchableOpacity>
             </View>
+            )}
           </View>
         </TouchableHighlight>
       </Modal>
@@ -185,7 +187,13 @@ class PasscodeModalBase extends PureComponent {
 PasscodeModalBase.propTypes = {
   title: PropTypes.string.isRequired,
   passcodeOnFill: PropTypes.func.isRequired,
-  cancelBtnOnPress: PropTypes.func.isRequired,
+  cancelBtnOnPress: PropTypes.func,
+  showCancel: PropTypes.bool,
+};
+
+PasscodeModalBase.defaultProps = {
+  showCancel: true,
+  cancelBtnOnPress: null,
 };
 
 export default PasscodeModalBase;

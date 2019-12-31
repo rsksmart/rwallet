@@ -145,5 +145,13 @@
   "English": "Inglês",
   "Spanish": "Espanhol",
   "Portuguese": "Português",
-  "Chinese": "Chinês"
+  "Chinese": "Chinês",
+  "Type your old passcode": "Digite sua senha antiga",
+  "Type your new passcode": "Digite sua nova senha",
+  "Confirm your new passcode": "Confirme sua nova senha",
+  "Password not match, Try again": "A senha não corresponde, tente novamente",
+  "Old Passcode is incorrect, try again": "A senha antiga está incorreta. Tente novamente",
+  "Passcode not match, Try again": "A senha não corresponde, tente novamente",
+  "Type your passcode": "Digite sua senha",
+  "Passcode is incorrected": "A senha está incorreta"
 }

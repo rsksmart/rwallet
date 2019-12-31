@@ -142,11 +142,16 @@
   "Key name is too long.": "Key name is too long.",
   "Key name contains invalid characters.": "Key name contains invalid characters.",
   "Create or Import a Key": "Create or Import a Key",
-  "Password not match, Try again": "Password not match, Try again",
-  "Type your passcode": "Type your passcode",
-  "Passcode is incorrected": "Passcode is incorrected",
   "English": "English",
   "Spanish": "Spanish",
   "Portuguese": "Portuguese",
-  "Chinese": "Chinese"
+  "Chinese": "Chinese",
+  "Type your old passcode": "Type your old passcode",
+  "Type your new passcode": "Type your new passcode",
+  "Confirm your new passcode": "Confirm your new passcode",
+  "Password not match, Try again": "Password not match, Try again",
+  "Old Passcode is incorrect, try again": "Old Passcode is incorrect, try again",
+  "Passcode not match, Try again": "Passcode not match, Try again",
+  "Type your passcode": "Type your passcode",
+  "Passcode is incorrected": "Passcode is incorrected"
 }

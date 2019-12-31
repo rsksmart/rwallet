@@ -16,16 +16,12 @@ class VerifyPasscodeModal extends PureComponent {
     const { closePasscodeModal, passcodeCallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
-    this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
 
   componentDidMount(): void {
     this.passcode = global.passcode;
   }
-
-    cancelBtnOnPress = () => {
-    };
 
     passcodeOnFill = async (input) => {
       let flow = null;
@@ -50,10 +46,12 @@ class VerifyPasscodeModal extends PureComponent {
     render() {
       return (
         <PasscodeModalBase
-          ref={(ref) => { this.baseModal = ref; }}
+          ref={(ref) => {
+            this.baseModal = ref;
+          }}
           passcodeOnFill={this.passcodeOnFill}
-          cancelBtnOnPress={this.cancelBtnOnPress}
           title={this.title}
+          showCancel={false}
         />
       );
     }

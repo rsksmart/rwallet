@@ -145,5 +145,13 @@
   "English": "英语",
   "Spanish": "西班牙语",
   "Portuguese": "葡萄牙语",
-  "Chinese": "中文"
+  "Chinese": "中文",
+  "Type your old passcode": "输入您的旧密码",
+  "Type your new passcode": "输入新密码",
+  "Confirm your new passcode": "确认新密码",
+  "Password not match, Try again": "密码不匹配，请重试",
+  "Old Passcode is incorrect, try again": "旧密码不正确，请重试",
+  "Passcode not match, Try again": "密码不匹配，请重试",
+  "Type your passcode": "输入密码",
+  "Passcode is incorrected": "密码不正确"
 }
