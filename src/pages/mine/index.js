@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   },
   communityIcon: {
     marginLeft: -5.5,
+    width: 30,
   },
   keyListView: {
     marginLeft: 10,
