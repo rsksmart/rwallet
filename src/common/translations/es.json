@@ -145,5 +145,10 @@
   "Confirm your new passcode": "Confirm your new passcode",
   "Key name is too short.": "El nombre de la llave es demasiado corto.",
   "Key name is too long.": "El nombre de la llave es demasiado largo.",
-  "Key name contains invalid characters.": "El nombre de la clave contiene caracteres no válidos."
+  "Key name contains invalid characters.": "El nombre de la clave contiene caracteres no válidos.",
+  "Create or Import a Key": "Crear o importar una clave",
+  "English": "Inglés",
+  "Spanish": "Español",
+  "Portuguese": "Portugués",
+  "Chinese": "Chino"
 }

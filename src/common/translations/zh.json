@@ -141,5 +141,9 @@
   "Key name is too short.": "密钥名字太短。",
   "Key name is too long.": "密钥名字太长。",
   "Key name contains invalid characters.": "密钥名字含有不合法字符",
-  "Create or Import a Key": "创建或导入一个密钥"
+  "Create or Import a Key": "创建或导入一个密钥",
+  "English": "英语",
+  "Spanish": "西班牙语",
+  "Portuguese": "葡萄牙语",
+  "Chinese": "中文"
 }
