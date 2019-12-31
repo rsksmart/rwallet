@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   communityIcon: {
     marginLeft: -5.5,
     width: 30,
+    textAlign: 'center',
   },
   keyListView: {
     marginLeft: 10,
@@ -272,7 +273,7 @@ class MineIndex extends Component {
     },
     {
       title: 'Gitter',
-      icon: <FontAwesome5 name="gitter" size={30} style={[styles.communityIcon]} />,
+      icon: <FontAwesome5 name="gitter" size={26} style={[styles.communityIcon]} />,
       onPress: () => {
         Linking.openURL('https://gitter.im/rsksmart');
       },
