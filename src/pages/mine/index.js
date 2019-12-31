@@ -271,7 +271,7 @@ class MineIndex extends Component {
     },
     {
       title: 'Gitter',
-      icon: <FontAwesome5 name="gitter" size={30} style={[styles.communityIcon, { color: '#8C9EFF' }]} />,
+      icon: <FontAwesome5 name="gitter" size={30} style={[styles.communityIcon]} />,
       onPress: () => {
         Linking.openURL('https://gitter.im/rsksmart');
       },
