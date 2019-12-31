@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 999,
     elevation: 999,
-    opacity: 0.8,
+    opacity: 0.9,
   },
   container: {
     flex: 1,

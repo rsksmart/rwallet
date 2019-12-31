@@ -10,7 +10,6 @@ import WalletTypeList from '../../components/wallet/wallet.type.list';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
-import appActions from '../../redux/app/actions';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -43,13 +42,6 @@ class WalletAddIndex extends Component {
       this.createWalletFlow = this.createWalletFlow.bind(this);
     }
 
-    componentDidMount() {
-      const { navigation, showPasscode } = this.props;
-      if (!navigation.state.params || !navigation.state.params.skipPasscode) {
-        showPasscode('verify');
-      }
-    }
-
     async createWalletFlow(page) {
       const { navigation } = this.props;
       navigation.navigate(page);
@@ -80,15 +72,8 @@ WalletAddIndex.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  showPasscode: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch) => ({
-  showPasscode: (category) => dispatch(
-    appActions.showPasscode(category),
-  ),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletAddIndex);
+export default connect(mapStateToProps)(WalletAddIndex);

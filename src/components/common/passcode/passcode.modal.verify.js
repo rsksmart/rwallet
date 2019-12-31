@@ -13,8 +13,9 @@ class VerifyPasscodeModal extends PureComponent {
     ];
     this.flowIndex = 0;
     this.title = this.flows[0].title;
-    const { closePasscodeModal } = this.props;
+    const { closePasscodeModal, passcodeCallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
+    this.passcodeCallback = passcodeCallback;
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
@@ -34,6 +35,9 @@ class VerifyPasscodeModal extends PureComponent {
           if (input === this.passcode) {
             this.baseModal.resetModal();
             this.closePasscodeModal();
+            if (this.passcodeCallback) {
+              this.passcodeCallback();
+            }
           } else {
             this.flowIndex = 1;
             flow = _.find(this.flows, { index: this.flowIndex });
@@ -57,6 +61,11 @@ class VerifyPasscodeModal extends PureComponent {
 
 VerifyPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
+  passcodeCallback: PropTypes.func,
+};
+
+VerifyPasscodeModal.defaultProps = {
+  passcodeCallback: null,
 };
 
 export default VerifyPasscodeModal;

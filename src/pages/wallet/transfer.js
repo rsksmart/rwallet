@@ -536,11 +536,10 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, enableConfirm, isCustomFee,
+      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm,
     } = this.state;
-    const { navigation } = this.props;
+    const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
-
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXExtendedHeight;
@@ -643,7 +642,14 @@ class Transfer extends Component {
               textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
               borderRadius={15}
               okButton={{ visible: true, duration: 400 }}
-              onVerified={this.onConfirmSliderVerified}
+              // onVerified={this.onConfirmSliderVerified}
+              onVerified={async () => {
+                if (global.passcode) {
+                  showPasscode('verify', this.onConfirmSliderVerified);
+                } else {
+                  await this.onConfirmSliderVerified();
+                }
+              }}
               icon={(
                 <Image
                   source={isConfirm ? circleCheckIcon : circleIcon}
@@ -671,6 +677,7 @@ Transfer.propTypes = {
   addNotification: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -683,6 +690,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
+  ),
+  showPasscode: (category, callback) => dispatch(
+    appActions.showPasscode(category, callback),
   ),
 });
 

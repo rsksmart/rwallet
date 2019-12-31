@@ -8,6 +8,7 @@ const mapStateToProps = (state) => ({
   notification: state.App.get('notification'),
   showPasscode: state.App.get('showPasscode'),
   passcodeType: state.App.get('passcodeType'),
+  passcodeCallback: state.App.get('passcodeCallback'),
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isInitWithParseDone: state.App.get('isInitWithParseDone'),
   walletManager: state.Wallet.get('walletManager'),
