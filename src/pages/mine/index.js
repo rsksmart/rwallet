@@ -252,42 +252,42 @@ class MineIndex extends Component {
       title: 'Twitter',
       icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: '#039BE5' }]} />,
       onPress: () => {
-        Linking.openURL('https://twitter.com');
+        Linking.openURL('https://twitter.com/rsksmart');
       },
     },
     {
       title: 'Telegram',
       icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#6FC062' }]} />,
       onPress: () => {
-        Linking.openURL('https://telegram.org');
+        Linking.openURL('https://t.me/rskofficialcommunity');
       },
     },
     {
       title: 'Facebook',
       icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: '#3F51B5' }]} />,
       onPress: () => {
-        Linking.openURL('https://facebook.com');
+        Linking.openURL('https://www.facebook.com/RSKsmart/');
       },
     },
     {
-      title: 'Discord',
-      icon: <FontAwesome5 name="discord" size={30} style={[styles.communityIcon, { color: '#8C9EFF' }]} />,
+      title: 'Gitter',
+      icon: <FontAwesome5 name="gitter" size={30} style={[styles.communityIcon, { color: '#8C9EFF' }]} />,
       onPress: () => {
-        Linking.openURL('https://discordapp.com/');
+        Linking.openURL('https://gitter.im/rsksmart');
       },
     },
     {
       title: 'Reddit',
       icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: '#FF4500' }]} />,
       onPress: () => {
-        Linking.openURL('https://reddit.com/');
+        Linking.openURL('https://www.reddit.com/r/rootstock/');
       },
     },
     {
       title: 'YouTube',
       icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: '#D2142B' }]} />,
       onPress: () => {
-        Linking.openURL('https://youtube.com/');
+        Linking.openURL('https://www.youtube.com/rsksmart');
       },
     },
   ];
