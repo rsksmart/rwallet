@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
-    marginTop: 200,
+    marginTop: 100,
   },
   check: {
     margin: 25,
