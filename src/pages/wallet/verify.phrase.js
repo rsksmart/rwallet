@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   View, StyleSheet, TouchableOpacity,
 } from 'react-native';
-// import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
@@ -14,6 +13,7 @@ import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 
 // import appActions from '../../redux/app/actions';
@@ -49,9 +49,8 @@ class VerifyPhrase extends Component {
   constructor(props) {
     super(props);
     const { navigation } = this.props;
-    this.wallet = navigation.state.params.wallet;
-    this.correctPhrases = this.wallet.mnemonic.toString().split(' ');
-
+    const { phrase } = navigation.state.params;
+    this.correctPhrases = phrase.split(' ');
     this.reset(true);
 
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
@@ -61,10 +60,26 @@ class VerifyPhrase extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      navigation, isWalletsUpdated,
+    } = nextProps;
     const { notification } = nextProps;
     const { notification: curNotification } = this.props;
     if (notification !== curNotification && notification === null) {
       this.onNotificationRemoved();
+    }
+    // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
+    if (isWalletsUpdated) {
+      this.setState({ isLoading: false });
+      navigation.navigate('VerifyPhraseSuccess');
+    }
+  }
+
+  // call resetWalletsUpdated when componentWillUnmount is safe.
+  componentWillUnmount() {
+    const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+    if (isWalletsUpdated) {
+      resetWalletsUpdated();
     }
   }
 
@@ -76,8 +91,14 @@ class VerifyPhrase extends Component {
     this.revert(i);
   }
 
+  onPhraseValid() {
+    const { navigation, createKey, walletManager } = this.props;
+    const { phrase, coins } = navigation.state.params;
+    createKey(null, phrase, coins, walletManager);
+  }
+
   async onTagsPressed(index) {
-    const { navigation, addNotification } = this.props;
+    const { addNotification } = this.props;
     const { shuffleWords, selectedWordIndexs } = this.state;
     selectedWordIndexs.push(index);
     this.setState({
@@ -96,7 +117,7 @@ class VerifyPhrase extends Component {
       console.log('isEqual', isEqual);
 
       if (isEqual) {
-        navigation.navigate('VerifyPhraseSuccess');
+        this.onPhraseValid();
       } else {
         const notification = createErrorNotification(
           'Incorrect backup phrase',
@@ -118,7 +139,7 @@ class VerifyPhrase extends Component {
       // Shuffle the 12-word here so user need to choose from a different order than the last time
       // We want to make sure they really write down the phrase
       const shuffleWords = _.shuffle(this.correctPhrases);
-      this.state = { selectedWordIndexs: [], shuffleWords };
+      this.state = { selectedWordIndexs: [], shuffleWords, isLoading: false };
     } else {
       this.setState({ selectedWordIndexs: [] });
     }
@@ -165,15 +186,11 @@ class VerifyPhrase extends Component {
   }
 
   render() {
-    const { isLoading } = this.props;
-    const { shuffleWords, selectedWordIndexs } = this.state;
+    const { shuffleWords, selectedWordIndexs, isLoading } = this.state;
     return (
       <View>
         <Loader loading={isLoading} />
-        <Header
-          title="Backup Phrase"
-          goBack={this.onGobackPress}
-        />
+        <Header title="Backup Phrase" goBack={this.onGobackPress} />
         <View style={[screenHelper.styles.body]}>
           <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
           <Loc style={[styles.tip]} text="Tap each word in the correct order" />
@@ -197,24 +214,29 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  walletManager: PropTypes.shape({}),
   addNotification: PropTypes.func.isRequired,
   notification: PropTypes.shape({}),
+  createKey: PropTypes.func.isRequired,
+  resetWalletsUpdated: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
+  walletManager: undefined,
   notification: null,
 };
 
 const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   notification: state.App.get('notification'),
-  isLoading: state.App.get('isPageLoading'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addNotification: (notification) => dispatch(
-    appActions.addNotification(notification),
-  ),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);
