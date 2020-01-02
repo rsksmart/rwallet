@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
@@ -218,7 +219,15 @@ const styles = StyleSheet.create({
   noTransNotice: {
     textAlign: 'center',
   },
+  stateIcon: {
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
 });
+
+const TRANSACTION_TIMEOUT_MINUTES = 15;
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
@@ -229,15 +238,20 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const getStateIcon = (state) => {
   let icon = null;
   if (state === 'Sent') {
-    icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={{ color: '#6875B7' }} />;
+    icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />;
   } else if (state === 'Received') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
+    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />;
   } else if (state === 'Receiving') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={{ color: '#6FC062' }} />;
+    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />;
   } else if (state === 'Sending') {
     icon = <Image source={sending} />;
+  } else if (state === 'Failed') {
+    icon = <MaterialIcons name="error-outline" size={36} style={[{ color: '#E73934' }]} />;
   }
-  return icon;
+  const item = (
+    <View style={[styles.stateIcon]}>{icon}</View>
+  );
+  return item;
 };
 
 function Item({
@@ -266,6 +280,11 @@ Item.propTypes = {
   datetime: PropTypes.string.isRequired,
 };
 
+const isFailedTransaction = (createdAt) => {
+  const durationMinutes = moment.duration(moment().diff(createdAt)).asMinutes();
+  return durationMinutes >= TRANSACTION_TIMEOUT_MINUTES;
+};
+
 class History extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -275,6 +294,7 @@ class History extends Component {
     if (!transactions) {
       return [];
     }
+
     const items = [];
     transactions.forEach((transaction) => {
       let amountText = ' ';
@@ -298,10 +318,17 @@ class History extends Component {
           datetime = transaction.confirmedAt;
         } else {
           state = 'Sending';
+          if (transaction.createdAt) {
+            const isFailed = isFailedTransaction(transaction.createdAt);
+            state = isFailed ? 'Failed' : state;
+          }
         }
       } else if (isComfirmed) {
         state = 'Received';
         datetime = transaction.confirmedAt;
+      } else if (transaction.createdAt) {
+        const isFailed = isFailedTransaction(transaction.createdAt);
+        state = isFailed ? 'Failed' : state;
       }
       if (datetime) {
         datetime = moment(datetime).format('MMM D. YYYY');
