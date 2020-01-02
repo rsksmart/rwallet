@@ -6,7 +6,7 @@ import PasscodeModal from './passcode.modal.wrapper';
 
 const PasscodeModals = (props) => {
   const {
-    showPasscode, passcodeType, closePasscodeModal, passcodeCallback,
+    showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
   } = props;
 
   return (
@@ -16,6 +16,7 @@ const PasscodeModals = (props) => {
           type={passcodeType}
           closePasscodeModal={closePasscodeModal}
           passcodeCallback={passcodeCallback}
+          passcodeFallback={passcodeFallback}
         />
       )}
     </View>
@@ -27,12 +28,14 @@ PasscodeModals.propTypes = {
   passcodeType: PropTypes.string,
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
+  passcodeFallback: PropTypes.func,
 };
 
 PasscodeModals.defaultProps = {
   // eslint-disable-next-line react/forbid-prop-types
   passcodeType: null,
   passcodeCallback: null,
+  passcodeFallback: null,
 };
 
 export default PasscodeModals;

@@ -122,7 +122,7 @@ class RootComponent extends Component {
 
   render() {
     const {
-      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback,
+      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback,
     } = this.props;
 
     return (
@@ -131,7 +131,7 @@ class RootComponent extends Component {
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
-          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} />
+          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>
@@ -158,6 +158,7 @@ RootComponent.propTypes = {
   showPasscode: PropTypes.bool.isRequired,
   passcodeType: PropTypes.string,
   passcodeCallback: PropTypes.func,
+  passcodeFallback: PropTypes.func,
   closePasscodeModal: PropTypes.func.isRequired,
   removeNotification: PropTypes.func.isRequired,
 };
@@ -167,6 +168,7 @@ RootComponent.defaultProps = {
   walletManager: undefined,
   passcodeType: null,
   passcodeCallback: null,
+  passcodeFallback: null,
 };
 
 export default RootComponent;

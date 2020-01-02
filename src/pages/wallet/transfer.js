@@ -645,7 +645,7 @@ class Transfer extends Component {
               // onVerified={this.onConfirmSliderVerified}
               onVerified={async () => {
                 if (global.passcode) {
-                  showPasscode('verify', this.onConfirmSliderVerified);
+                  showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
                 } else {
                   await this.onConfirmSliderVerified();
                 }
@@ -691,8 +691,8 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
   ),
-  showPasscode: (category, callback) => dispatch(
-    appActions.showPasscode(category, callback),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
   ),
 });
 
