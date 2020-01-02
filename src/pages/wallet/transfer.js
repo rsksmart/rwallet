@@ -335,6 +335,8 @@ class Transfer extends Component {
     const {
       feeSymbol, isCustomFee, customFee, preference,
     } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
     let feeParams = null;
     if (isCustomFee) {
       if (feeSymbol === 'RBTC') {
@@ -353,12 +355,13 @@ class Transfer extends Component {
     } else if (feeSymbol === 'RBTC') {
       const feeLevels = {
         low: 1 - FEE_LEVEL_ADJUSTMENT,
-        medium: FEE_LEVEL_ADJUSTMENT,
+        medium: 1,
         high: 1 + FEE_LEVEL_ADJUSTMENT,
       };
+      const mediumGas = coin.symbol === 'RIF' ? DEFAULT_RIF_MEDIUM_GAS : DEFAULT_RBTC_MEDIUM_GAS;
       feeParams = {
         gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-        gas: DEFAULT_RBTC_MEDIUM_GAS * feeLevels[preference],
+        gas: mediumGas * feeLevels[preference],
       };
     } else if (feeSymbol === 'BTC') {
       // If BTC is not costom fee, set preference field = high/medium/low
