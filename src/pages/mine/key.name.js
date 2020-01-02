@@ -152,10 +152,8 @@ class KeyName extends Component {
               <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
             </View>
           </ScrollView>
-          <View style={[styles.buttonView]}>
-            <View style={styles.buttonView}>
-              <Button text="SAVE" onPress={this.onPress} />
-            </View>
+          <View style={styles.buttonView}>
+            <Button text="SAVE" onPress={this.onPress} />
           </View>
         </View>
       );

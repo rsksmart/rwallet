@@ -15,6 +15,8 @@ import { strings } from '../../common/i18n';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
+import flex from '../../assets/styles/layout.flex';
+import { screen } from '../../common/info';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -35,13 +37,11 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginTop: 10,
-    marginHorizontal: 30,
     paddingBottom: 10,
   },
   buttonView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
+    alignSelf: 'center',
+    paddingVertical: 15,
   },
   bottomBorder: {
     borderBottomColor: '#bbb',
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   phraseView: {
-    flex: 1,
     borderBottomColor: '#bbb',
     borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: color.component.input.backgroundColor,
@@ -74,160 +73,172 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderStyle: 'solid',
   },
+  wapper: {
+    height: screen.height - 25,
+  },
 });
 
 class WalletRecovery extends Component {
-  static navigationOptions = () => ({
-    header: null,
-  });
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      phrases: [],
-      phrase: '',
-      isCanSubmit: false,
-    };
-    this.inputWord = this.inputWord.bind(this);
-    this.deleteWord = this.deleteWord.bind(this);
-    this.onSubmitEditing = this.onSubmitEditing.bind(this);
-    this.onChangeText = this.onChangeText.bind(this);
-    this.onTagsPress = this.onTagsPress.bind(this);
-    this.onImportPress = this.onImportPress.bind(this);
-  }
-
-  onSubmitEditing() {
-    const { phrase } = this.state;
-    const trimText = phrase.trim();
-    this.inputText(trimText);
-  }
-
-  onChangeText(text) {
-    const char = text[text.length - 1];
-    if (char !== ' ') {
-      this.setState({ phrase: text });
-      return;
-    }
-    const trimText = text.trim();
-    this.inputText(trimText);
-  }
-
-  onTagsPress(i) {
-    this.deleteWord(i);
-    this.setState({ isCanSubmit: false });
-    this.phraseInput.focus();
-  }
-
-  onImportPress() {
-    const { navigation, addNotification } = this.props;
-    const { phrases } = this.state;
-    let inputPhrases = '';
-    for (let i = 0; i < phrases.length; i += 1) {
-      if (i !== 0) {
-        inputPhrases += ' ';
-      }
-      inputPhrases += phrases[i];
-    }
-    // validate phrase
-    const isValid = Mnemonic.isValid(inputPhrases);
-    console.log(`isValid: ${isValid}`);
-    if (!isValid) {
-      const notification = createErrorNotification(
-        'Unable to recover',
-        'Unable to recover Body',
-        'GOT IT',
-      );
-      addNotification(notification);
-      return;
-    }
-    navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
-  }
-
-  inputText(text) {
-    const words = text.split(' ');
-    words.forEach((word) => {
-      const trimWord = word.trim();
-      this.inputWord(trimWord);
+    static navigationOptions = () => ({
+      header: null,
     });
-  }
 
-  inputWord(word) {
-    const { addNotification } = this.props;
-    const { phrases } = this.state;
-    if (word === '') {
-      this.setState({ phrase: '' });
-      return;
+    constructor(props) {
+      super(props);
+      this.state = {
+        phrases: [],
+        phrase: '',
+        isCanSubmit: false,
+      };
+      this.inputWord = this.inputWord.bind(this);
+      this.deleteWord = this.deleteWord.bind(this);
+      this.onSubmitEditing = this.onSubmitEditing.bind(this);
+      this.onChangeText = this.onChangeText.bind(this);
+      this.onTagsPress = this.onTagsPress.bind(this);
+      this.onImportPress = this.onImportPress.bind(this);
     }
-    if (phrases.length === 12) {
-      const notification = createErrorNotification(
-        'Too Many Words',
-        'The recovery phrase has to be 12 words',
-      );
-      addNotification(notification);
-      return;
-    }
-    if (phrases.length === 11) {
-      this.setState({ isCanSubmit: true });
-    }
-    phrases.push(word);
-    this.setState({ phrases, phrase: '' });
-    this.phraseInput.focus();
-  }
 
-  deleteWord(i) {
-    const { phrases } = this.state;
-    phrases.splice(i, 1);
-    this.setState({ phrases });
-  }
+    onSubmitEditing() {
+      const { phrase } = this.state;
+      const trimText = phrase.trim();
+      this.inputText(trimText);
+    }
 
-  render() {
-    const { phrase, phrases, isCanSubmit } = this.state;
-    const { navigation } = this.props;
-    return (
-      <ScrollView style={{ flex: 1 }}>
-        <Header title="Recovery Phrase" goBack={() => { navigation.goBack(); }} />
-        <View style={[screenHelper.styles.body]}>
-          <View style={[{ marginTop: 20, marginHorizontal: 30 }]}>
-            <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-            <View style={styles.phraseView}>
-              <TextInput
-                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                // This code uses a ref to store a reference to a DOM node
-                // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                ref={(ref) => { this.phraseInput = ref; }}
-                // set blurOnSubmit to false, to prevent keyboard flickering.
-                blurOnSubmit={false}
-                style={[presetStyles.textInput, styles.input]}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-                value={phrase}
-                autoCapitalize="none"
-                autoCorrect={false}
+    onChangeText(text) {
+      const char = text[text.length - 1];
+      if (char !== ' ') {
+        this.setState({ phrase: text });
+        return;
+      }
+      const trimText = text.trim();
+      this.inputText(trimText);
+    }
+
+    onTagsPress(i) {
+      this.deleteWord(i);
+      this.setState({ isCanSubmit: false });
+      this.phraseInput.focus();
+    }
+
+    onImportPress() {
+      const { navigation, addNotification } = this.props;
+      const { phrases } = this.state;
+      let inputPhrases = '';
+      for (let i = 0; i < phrases.length; i += 1) {
+        if (i !== 0) {
+          inputPhrases += ' ';
+        }
+        inputPhrases += phrases[i];
+      }
+      // validate phrase
+      const isValid = Mnemonic.isValid(inputPhrases);
+      console.log(`isValid: ${isValid}`);
+      if (!isValid) {
+        const notification = createErrorNotification(
+          'Unable to recover',
+          'Unable to recover Body',
+          'GOT IT',
+        );
+        addNotification(notification);
+        return;
+      }
+      navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
+    }
+
+    inputText(text) {
+      const words = text.split(' ');
+      words.forEach((word) => {
+        const trimWord = word.trim();
+        this.inputWord(trimWord);
+      });
+    }
+
+    inputWord(word) {
+      const { addNotification } = this.props;
+      const { phrases } = this.state;
+      if (word === '') {
+        this.setState({ phrase: '' });
+        return;
+      }
+      if (phrases.length === 12) {
+        const notification = createErrorNotification(
+          'Too Many Words',
+          'The recovery phrase has to be 12 words',
+        );
+        addNotification(notification);
+        return;
+      }
+      if (phrases.length === 11) {
+        this.setState({ isCanSubmit: true });
+      }
+      phrases.push(word);
+      this.setState({ phrases, phrase: '' });
+      this.phraseInput.focus();
+    }
+
+    deleteWord(i) {
+      const { phrases } = this.state;
+      phrases.splice(i, 1);
+      this.setState({ phrases });
+    }
+
+    render() {
+      const { phrase, phrases, isCanSubmit } = this.state;
+      const { navigation } = this.props;
+      return (
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.wapper}>
+            <View style={[flex.flex10]}>
+              <Header
+                title="Recovery Phrase"
+                goBack={() => {
+                  navigation.goBack();
+                }}
               />
-              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                <Tags
-                  style={[{ flex: 1 }]}
-                  data={phrases}
-                  onPress={this.onTagsPress}
-                />
+              <View style={[screenHelper.styles.body, flex.flex1, { paddingHorizontal: 20, marginTop: screenHelper.bodyMarginTop + 10 }]}>
+                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+                <View style={styles.phraseView}>
+                  <TextInput
+                    autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                    // This code uses a ref to store a reference to a DOM node
+                                    // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                    ref={(ref) => {
+                      this.phraseInput = ref;
+                    }}
+                                    // set blurOnSubmit to false, to prevent keyboard flickering.
+                    blurOnSubmit={false}
+                    style={[presetStyles.textInput, styles.input]}
+                    onChangeText={this.onChangeText}
+                    onSubmitEditing={this.onSubmitEditing}
+                    value={phrase}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                    <Tags
+                      style={[{ flex: 1 }]}
+                      data={phrases}
+                      onPress={this.onTagsPress}
+                    />
+                  </View>
+                </View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Loc style={[styles.sectionTitle]} text="Advanced Options" />
+                  <SwitchListItem title={strings('Specify derivation path')} value={false} />
+                </View>
               </View>
             </View>
+            <View style={[flex.flex1, styles.sectionContainer, { width: '100%', justifyContent: 'center', alignItems: 'center' }]}>
+              <Button
+                text="IMPORT"
+                onPress={this.onImportPress}
+                disabled={!isCanSubmit}
+              />
+            </View>
           </View>
-          <View style={[styles.sectionContainer, styles.bottomBorder]}>
-            <Loc style={[styles.sectionTitle]} text="Advanced Options" />
-            <SwitchListItem title={strings('Specify derivation path')} value={false} />
-          </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="IMPORT"
-              onPress={this.onImportPress}
-              disabled={!isCanSubmit}
-            />
-          </View>
-        </View>
-      </ScrollView>
-    );
-  }
+        </ScrollView>
+      );
+    }
 }
 
 WalletRecovery.propTypes = {
