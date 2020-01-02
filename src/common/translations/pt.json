@@ -153,5 +153,6 @@
   "Old Passcode is incorrect, try again": "A senha antiga está incorreta. Tente novamente",
   "Passcode not match, Try again": "A senha não corresponde, tente novamente",
   "Type your passcode": "Digite sua senha",
-  "Passcode is incorrected": "A senha está incorreta"
+  "Passcode is incorrected": "A senha está incorreta",
+  "Failed": "Failed"
 }

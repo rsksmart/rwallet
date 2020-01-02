@@ -153,5 +153,6 @@
   "Old Passcode is incorrect, try again": "El código de acceso anterior es incorrecto, intente nuevamente",
   "Passcode not match, Try again": "La contraseña no coincide, intente nuevamente",
   "Type your passcode": "Escribe tu contraseña",
-  "Passcode is incorrected": "El código de acceso está incorrecto"
+  "Passcode is incorrected": "El código de acceso está incorrecto",
+  "Failed": "Failed"
 }

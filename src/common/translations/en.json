@@ -153,5 +153,6 @@
   "Old Passcode is incorrect, try again": "Old Passcode is incorrect, try again",
   "Passcode not match, Try again": "Passcode not match, Try again",
   "Type your passcode": "Type your passcode",
-  "Passcode is incorrected": "Passcode is incorrected"
+  "Passcode is incorrected": "Passcode is incorrected",
+  "Failed": "Failed"
 }
