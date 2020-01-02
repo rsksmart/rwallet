@@ -59,7 +59,7 @@ export default class VerifyFingerprint extends Component {
             ref={(ref) => { this.touchSensor = ref; }}
             onUsePasscodePress={() => {
               navigation.goBack();
-              navigation.navigate('VerifyPasscode', { verified: navigation.state.params.verified });
+              navigation.navigate('VerifyPasscode');
             }}
             onUserCancel={() => { navigation.goBack(); }}
             errorMessage={errorMessage}

@@ -14,11 +14,11 @@ import SwipableButtonList from '../../components/common/misc/swipableButtonList'
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 
-// import appActions from '../../redux/app/actions';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
+import appActions from '../../redux/app/actions';
 import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.png');
@@ -305,6 +305,11 @@ class WalletList extends Component {
       });
     }
 
+    async componentDidMount() {
+      const { showPasscode } = this.props;
+      showPasscode('verify');
+    }
+
     componentWillReceiveProps(nextProps) {
       const {
         updateTimestamp, currency, navigation, walletManager,
@@ -330,7 +335,9 @@ class WalletList extends Component {
 
     render() {
       const { navigation } = this.props;
-      const { listData, currencySymbol, totalAssetValueText } = this.state;
+      const {
+        listData, currencySymbol, totalAssetValueText,
+      } = this.state;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
@@ -400,7 +407,7 @@ class WalletList extends Component {
               <View style={[styles.sectionContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('WalletAddIndex');
+                    navigation.navigate('WalletAddIndex', { skipPasscode: true });
                   }}
                 >
                   <View style={styles.addAsset}>
@@ -432,6 +439,7 @@ WalletList.propTypes = {
     wallets: PropTypes.array.isRequired,
   }),
   updateTimestamp: PropTypes.number.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -444,7 +452,10 @@ const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  showPasscode: (category) => dispatch(
+    appActions.showPasscode(category),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { connect } from 'react-redux';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import flex from '../../assets/styles/layout.flex';
 import Header from '../../components/common/misc/header';
@@ -64,8 +65,6 @@ class WalletAddIndex extends Component {
     }
 }
 
-export default WalletAddIndex;
-
 WalletAddIndex.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -74,3 +73,7 @@ WalletAddIndex.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = () => ({});
+
+export default connect(mapStateToProps)(WalletAddIndex);

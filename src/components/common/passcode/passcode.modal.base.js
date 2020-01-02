@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableHighlight, TouchableOpacity,
+  View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, Modal,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
@@ -13,9 +15,14 @@ const styles = StyleSheet.create({
   background: {
     backgroundColor: color.component.passcodeModal.backgroundColor,
     position: 'absolute',
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+    elevation: 999,
     opacity: 0.9,
   },
   container: {
@@ -38,10 +45,8 @@ const styles = StyleSheet.create({
     width: dotSize,
     height: dotSize,
     borderRadius: dotSize / 2,
-    borderColor: color.component.passcodeModal.dot.borderColor,
     borderWidth: 2,
   },
-  dot1: {},
   dot2: {
     backgroundColor: color.component.passcodeModal.dot2.backgroundColor,
   },
@@ -54,6 +59,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 7,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonView: {
     flexDirection: 'row',
@@ -80,43 +86,38 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class PasscodeModal extends Component {
+class PasscodeModalBase extends PureComponent {
   constructor(props) {
-    super(props); // 这一句不能省略，照抄即可
+    super(props);
+    const { title } = props;
     this.state = {
-      animationType: 'fade',
-      modalVisible: false,
-      transparent: true,
-      passcode: '',
+      title,
+      input: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
   }
 
   onPressButton(i) {
-    let { passcode } = this.state;
-    passcode += i;
-    this.setState({ passcode });
-    if (passcode.length >= 4) {
-      const { onFill } = this.props;
-      this.setModalVisible(false);
-      if (onFill) {
-        onFill(passcode);
+    const { passcodeOnFill } = this.props;
+    // eslint-disable-next-line react/destructuring-assignment
+    this.setState((prevState) => ({ input: prevState.input + i }), () => {
+      const { input } = this.state;
+      if (input.length >= 4) {
+        passcodeOnFill(input);
       }
-    }
+    });
   }
 
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible, passcode: '' });
-  }
+  resetModal = (title) => {
+    this.setState({ input: '', title: title || '' });
+  };
 
-  startShow = () => {}
+  rejectPasscord = (title) => {
+    this.setState({ input: '', title }, () => this.dotsView.shake(800));
+  };
 
-  render() {
-    const {
-      animationType, transparent, modalVisible, passcode,
-    } = this.state;
+  renderButtons() {
     const buttons = [];
-    const chars = ['', 'ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQRS', 'TUV', 'WXYZ', ''];
     for (let i = 0; i < 10; i += 1) {
       const t = (
         <TouchableOpacity
@@ -127,63 +128,72 @@ export default class PasscodeModal extends Component {
           key={i}
         >
           <Text style={styles.number}>{(i + 1) % 10}</Text>
-          <Text style={styles.char}>{chars[i]}</Text>
         </TouchableOpacity>
       );
       buttons.push(t);
     }
+    return buttons;
+  }
+
+  renderDots() {
+    const { input } = this.state;
     const dots = [];
     for (let i = 0; i < 4; i += 1) {
-      const style = i >= passcode.length ? styles.dot1 : styles.dot2;
-      const t = (<View style={[styles.dot, style]} key={i} />);
+      const style = i >= input.length ? {} : styles.dot2;
+      const t = (<View style={[styles.dot, style, { borderColor: color.component.passcodeModal.dot.borderColor }]} key={i} />);
       dots.push(t);
     }
+    return dots;
+  }
 
-    const { onPress, title } = this.props;
+  render() {
+    const {
+      title,
+    } = this.state;
+    const { cancelBtnOnPress, showCancel } = this.props;
+
     return (
-      <View
-        animationType={animationType}
-        transparent={transparent}
-        visible={modalVisible}
-        style={[styles.background, { position: 'absolute', flex: 1 }]}
+      <Modal
+        style={[]}
+        animationType="fade"
+        transparent
       >
-        <TouchableHighlight style={styles.container}>
+        <TouchableHighlight style={[styles.background, styles.container]}>
           <View style={{ alignItems: 'center' }}>
             <Loc style={[styles.title]} text={title} />
-            <View style={styles.dotRow}>
-              {dots}
-            </View>
+            <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+              {this.renderDots()}
+            </Animatable.View>
             <View style={styles.buttonView}>
-              {buttons}
+              {this.renderButtons()}
             </View>
+            {showCancel && (
             <View style={{ width: '100%' }}>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={() => {
-                  this.setModalVisible(false);
-                  if (onPress) {
-                    onPress();
-                  }
-                }}
+                onPress={cancelBtnOnPress}
               >
                 <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
               </TouchableOpacity>
             </View>
+            )}
           </View>
         </TouchableHighlight>
-      </View>
+      </Modal>
     );
   }
 }
 
-PasscodeModal.propTypes = {
-  onPress: PropTypes.func,
-  onFill: PropTypes.func,
-  title: PropTypes.string,
+PasscodeModalBase.propTypes = {
+  title: PropTypes.string.isRequired,
+  passcodeOnFill: PropTypes.func.isRequired,
+  cancelBtnOnPress: PropTypes.func,
+  showCancel: PropTypes.bool,
 };
 
-PasscodeModal.defaultProps = {
-  onPress: null,
-  onFill: null,
-  title: 'Enter Passcode',
+PasscodeModalBase.defaultProps = {
+  showCancel: true,
+  cancelBtnOnPress: null,
 };
+
+export default PasscodeModalBase;

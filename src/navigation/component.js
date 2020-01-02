@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -11,10 +10,10 @@ import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
+import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
-import appActions from '../redux/app/actions';
-import walletActions from '../redux/wallet/actions';
+import common from '../common/common';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -62,6 +61,10 @@ class RootComponent extends Component {
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
+  }
+
+  async componentDidMount() {
+    await common.updateInAppPasscode();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,14 +121,17 @@ class RootComponent extends Component {
   }
 
   render() {
-    const { showNotification, notification, dispatch } = this.props;
+    const {
+      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback,
+    } = this.props;
 
     return (
       <View style={[flex.flex1]}>
         <Root>
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
-          <Notifications showNotification={showNotification} notification={notification} dispatch={dispatch} />
+          <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
+          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>
@@ -136,48 +142,31 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-
   startFetchBalanceTimer: PropTypes.func.isRequired,
   startFetchTransactionTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-
   walletManager: PropTypes.shape({}),
-
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
-  dispatch: PropTypes.func.isRequired,
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
   startFetchPriceTimer: PropTypes.func.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
+  showPasscode: PropTypes.bool.isRequired,
+  passcodeType: PropTypes.string,
+  passcodeCallback: PropTypes.func,
+  closePasscodeModal: PropTypes.func.isRequired,
+  removeNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
   notification: null,
   walletManager: undefined,
+  passcodeType: null,
+  passcodeCallback: null,
 };
 
-const mapStateToProps = (state) => ({
-  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
-  walletManager: state.Wallet.get('walletManager'),
-  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  currency: state.App.get('currency'),
-  prices: state.Wallet.get('prices'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
-  initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
-  startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
-  startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
+export default RootComponent;

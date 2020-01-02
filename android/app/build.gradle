@@ -107,7 +107,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 7
-        versionName "1.0"
+        versionName "0.8.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
@@ -151,6 +151,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-udp')
     implementation project(':react-native-tcp')
@@ -164,7 +165,6 @@ dependencies {
     implementation project(':react-native-randombytes')
     implementation project(':react-native-i18n')
     implementation project(':@react-native-community_async-storage')
-    implementation project(':react-native-device-info')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-screens')
     implementation fileTree(dir: "libs", include: ["*.jar"])

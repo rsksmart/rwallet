@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import config from '../../config';
+import store from './storage';
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = '$';
@@ -144,6 +145,19 @@ const common = {
     }
 
     return DEFAULT_CURRENCY_SYMBOL;
+  },
+
+  async updateInAppPasscode(input) {
+    let passcode = null;
+    if (input) {
+      await store.setPasscode(input);
+      // eslint-disable-next-line no-multi-assign
+      global.passcode = passcode = input;
+    } else {
+      // eslint-disable-next-line no-multi-assign
+      global.passcode = passcode = await store.getPasscode();
+    }
+    return passcode;
   },
 };
 

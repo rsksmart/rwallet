@@ -17,6 +17,9 @@ const initState = new Map({
   transactions: undefined,
   showNotification: false,
   notification: null,
+  showPasscode: false,
+  passcodeType: null,
+  passcodeCallback: null,
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
@@ -57,6 +60,16 @@ export default function appReducer(state = initState, action) {
       return state
         .set('showNotification', false)
         .set('notification', null);
+    case actions.SHOW_PASSCODE:
+      return state
+        .set('showPasscode', true)
+        .set('passcodeType', action.value.category)
+        .set('passcodeCallback', action.value.callback);
+    case actions.HIDE_PASSCODE:
+      return state
+        .set('showPasscode', false)
+        .set('passcodeType', null)
+        .set('passcodeCallback', null);
     case actions.SET_APPLICATION:
       return state.set('application', action.value);
     case actions.SET_SETTINGS:

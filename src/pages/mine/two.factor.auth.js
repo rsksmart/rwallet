@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, Switch, TouchableOpacity, ScrollView,
+  View, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -57,7 +57,7 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation, fingerprint, loading } = this.props;
+      const { loading, showPasscode } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -69,19 +69,12 @@ class TwoFactorAuth extends Component {
             <TouchableOpacity
               style={styles.row}
               onPress={() => {
-                navigation.navigate('ResetPasscode');
+                showPasscode(global.passcode ? 'reset' : 'create');
               }}
             >
               <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
-            <View style={styles.row}>
-              <Loc style={[styles.title]} text="Use Fingerprint" />
-              <Switch
-                value={fingerprint}
-                onValueChange={this.setSingleSettings}
-              />
-            </View>
           </View>
         </ScrollView>
       );
@@ -96,14 +89,13 @@ TwoFactorAuth.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   setSingleSettings: PropTypes.func,
-  fingerprint: PropTypes.bool,
   loading: PropTypes.bool,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
-  fingerprint: undefined,
   loading: false,
 };
 
@@ -114,6 +106,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
+  showPasscode: (category) => dispatch(
+    appActions.showPasscode(category),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TwoFactorAuth);

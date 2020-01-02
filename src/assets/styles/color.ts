@@ -67,6 +67,7 @@ const color = {
             backgroundColor: '#080808',
             title: {
                 color: '#FFF',
+                alert: '#FC4349',
             },
             dot: {
                 borderColor: '#00B520'

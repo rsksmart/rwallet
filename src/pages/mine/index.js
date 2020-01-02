@@ -233,20 +233,20 @@ class MineIndex extends Component {
         navigation.navigate('Currency');
       },
     },
-    // {
-    //   title: 'Two-Factor Authentication',
-    //   icon: (
-    //     <MaterialCommunityIcons
-    //       name="two-factor-authentication"
-    //       size={ICON_SIZE}
-    //       style={{ color: '#4A4A4A' }}
-    //     />
-    //   ),
-    //   onPress: () => {
-    //     const { navigation } = this.props;
-    //     navigation.navigate('TwoFactorAuth');
-    //   },
-    // },
+    {
+      title: 'Two-Factor Authentication',
+      icon: (
+        <MaterialCommunityIcons
+          name="two-factor-authentication"
+          size={ICON_SIZE}
+          style={{ color: '#4A4A4A' }}
+        />
+      ),
+      onPress: () => {
+        const { navigation } = this.props;
+        navigation.navigate('TwoFactorAuth');
+      },
+    },
   ];
 
   joins = [
