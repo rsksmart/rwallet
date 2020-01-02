@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
+
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
 
@@ -71,6 +72,9 @@ const TabBar = (props) => {
             key={getLabelText({ route }).replace(' ', '_')}
             style={styles.tabButton}
             onPress={() => {
+              if (route.key === 'Home' && route.index === 0) {
+                global.eventEmitter.emit('INVOKE_PASSCODE', {});
+              }
               onTabPress({ route });
             }}
             onLongPress={() => {

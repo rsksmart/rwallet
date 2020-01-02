@@ -9,6 +9,9 @@ import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 
+// eslint-disable-next-line import/no-unresolved
+const EventEmitter = require('EventEmitter');
+
 const logo = require('../../assets/images/icon/logo.png');
 
 const styles = StyleSheet.create({
@@ -57,6 +60,7 @@ class StartPage extends Component {
   async componentDidMount() {
     const version = await DeviceInfo.getVersion();
     this.setState({ version });
+    global.eventEmitter = new EventEmitter();
   }
 
   render() {

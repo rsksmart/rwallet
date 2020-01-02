@@ -12,7 +12,17 @@ class Dashboard extends Component {
       header: null,
     });
 
+    constructor(props) {
+      super(props);
+      this.callPasscodeInput = this.callPasscodeInput.bind(this);
+    }
+
     async componentDidMount() {
+      this.callPasscodeInput();
+      global.eventEmitter.on('INVOKE_PASSCODE', this.callPasscodeInput);
+    }
+
+    callPasscodeInput() {
       const { wallets, showPasscode } = this.props;
       if (!isEmpty(wallets)) {
         showPasscode('verify');
