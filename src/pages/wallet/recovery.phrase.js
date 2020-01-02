@@ -13,6 +13,8 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 
+const Mnemonic = require('bitcore-mnemonic');
+
 const styles = StyleSheet.create({
   text: {},
   note: {
@@ -48,11 +50,13 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      this.wallet = props.navigation.state.params.wallet;
-      const phrases = this.wallet.mnemonic.phrase.split(' ');
+      this.phrase = new Mnemonic('', Mnemonic.Words.ENGLISH).toString();
+      const phrases = this.phrase.split(' ');
       this.state = {
         phrases,
       };
+      this.onNextPress = this.onNextPress.bind(this);
+      this.onCopyPress = this.onCopyPress.bind(this);
     }
 
     componentDidMount() {
@@ -64,18 +68,29 @@ class RecoveryPhrase extends Component {
       addNotification(notification);
     }
 
+    onNextPress() {
+      const { navigation } = this.props;
+      const params = { ...navigation.state.params, phrase: this.phrase };
+      navigation.navigate('VerifyPhrase', params);
+    }
+
+    onCopyPress() {
+      const { phrase } = this;
+      const { addNotification } = this.props;
+      Clipboard.setString(phrase);
+      const notification = createInfoNotification(
+        'Copied',
+        'The recovery phrase has been copied to clipboard',
+      );
+      addNotification(notification);
+    }
+
     render() {
-      const { phrase } = this.wallet.mnemonic;
       const { phrases } = this.state;
-      const { navigation, addNotification } = this.props;
+      const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
-          <Header
-            title="Recovery Phrase"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
+          <Header title="Recovery Phrase" goBack={() => navigation.goBack()} />
           <View style={[screenHelper.styles.body, flex.flex1]}>
             <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
             <Loc style={[styles.note]} text="in the right order and save them" />
@@ -83,26 +98,11 @@ class RecoveryPhrase extends Component {
             <View style={styles.tagsView}>
               <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
             </View>
-            <TouchableOpacity
-              style={{ marginTop: 10 }}
-              onPress={() => {
-                Clipboard.setString(phrase);
-                const notification = createInfoNotification(
-                  'Copied',
-                  'The recovery phrase has been copied to clipboard',
-                );
-                addNotification(notification);
-              }}
-            >
+            <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPress}>
               <Loc style={[styles.copy]} text="Copy" />
             </TouchableOpacity>
             <View style={styles.buttonView}>
-              <Button
-                text="NEXT"
-                onPress={async () => {
-                  navigation.navigate('VerifyPhrase', { wallet: this.wallet });
-                }}
-              />
+              <Button text="NEXT" onPress={this.onNextPress} />
             </View>
           </View>
         </View>
