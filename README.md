@@ -97,6 +97,20 @@ TODO: How to debug android app with Mac OS is to be added
 
 
 ## Deployment
+1. Android
+    1. Modify keystore setting in ./android/gradle.properties
+    1. Run `npm run android` to build android apk. the apk file will be generated at the path: ./android/app/build/outputs/apk/release
+1. iOS
+    
+    1. Change signing team in the project settings
+    ![signingTeam](https://user-images.githubusercontent.com/16951509/71573427-c7d72380-2b1e-11ea-9164-8d051b458570.png)
+    1. Build ios app via Product -> Archive in Xcode
+    1. Window -> Organizer, Distribute app to App Store Connect
+    ![Distribute](https://user-images.githubusercontent.com/16951509/71651686-85018f80-2d5a-11ea-80ab-edb476400184.jpg) 
+    1. Login App Store Connect, add new build to TestFlight 
+    ![AddBuildToTestFlight](https://user-images.githubusercontent.com/16951509/71652854-b763ba80-2d63-11ea-8d8f-677ffd8e2d17.jpg)
+
+
 
 ## Testing Procedure
 
