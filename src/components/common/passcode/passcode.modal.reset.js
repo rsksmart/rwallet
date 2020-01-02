@@ -18,8 +18,9 @@ class ResetPasscodeModal extends PureComponent {
     this.flowIndex = 0;
     this.tempPasscode = '';
     this.title = this.flows[0].title;
-    const { closePasscodeModal } = this.props;
+    const { closePasscodeModal, passcodeCallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
+    this.passcodeCallback = passcodeCallback;
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
@@ -28,59 +29,67 @@ class ResetPasscodeModal extends PureComponent {
     this.passcode = global.passcode;
   }
 
-    cancelBtnOnPress = () => {
-      this.closePasscodeModal();
-    };
+  cancelBtnOnPress = () => {
+    this.closePasscodeModal();
+  };
 
-    passcodeOnFill = async (input) => {
-      let flow = null;
-      switch (this.flowIndex) {
-        case 0:
-        case 3:
-          if (input === this.passcode) {
-            this.flowIndex = 1;
-            flow = _.find(this.flows, { index: this.flowIndex });
-            this.baseModal.resetModal(flow.title);
-          } else {
-            this.flowIndex = 3;
-            flow = _.find(this.flows, { index: this.flowIndex });
-            this.baseModal.rejectPasscord(flow.title);
-          }
-          break;
-        case 1:
-          this.tempPasscode = input;
-          this.flowIndex = 2;
+  passcodeOnFill = async (input) => {
+    let flow = null;
+    switch (this.flowIndex) {
+      case 0:
+      case 3:
+        if (input === this.passcode) {
+          this.flowIndex = 1;
           flow = _.find(this.flows, { index: this.flowIndex });
           this.baseModal.resetModal(flow.title);
-          break;
-        case 2:
-        case 4:
-          if (this.tempPasscode === input) {
-            await common.updateInAppPasscode(input);
-            this.closePasscodeModal();
-          } else {
-            this.flowIndex = 4;
-            flow = _.find(this.flows, { index: this.flowIndex });
-            this.baseModal.rejectPasscord(flow.title);
+        } else {
+          this.flowIndex = 3;
+          flow = _.find(this.flows, { index: this.flowIndex });
+          this.baseModal.rejectPasscord(flow.title);
+        }
+        break;
+      case 1:
+        this.tempPasscode = input;
+        this.flowIndex = 2;
+        flow = _.find(this.flows, { index: this.flowIndex });
+        this.baseModal.resetModal(flow.title);
+        break;
+      case 2:
+      case 4:
+        if (this.tempPasscode === input) {
+          await common.updateInAppPasscode(input);
+          this.closePasscodeModal();
+          if (this.passcodeCallback) {
+            this.passcodeCallback();
           }
-          break;
-      }
-    };
-
-    render() {
-      return (
-        <PasscodeModalBase
-          ref={(ref) => { this.baseModal = ref; }}
-          passcodeOnFill={this.passcodeOnFill}
-          cancelBtnOnPress={this.cancelBtnOnPress}
-          title={this.title}
-        />
-      );
+        } else {
+          this.flowIndex = 4;
+          flow = _.find(this.flows, { index: this.flowIndex });
+          this.baseModal.rejectPasscord(flow.title);
+        }
+        break;
     }
+  };
+
+  render() {
+    return (
+      <PasscodeModalBase
+        ref={(ref) => { this.baseModal = ref; }}
+        passcodeOnFill={this.passcodeOnFill}
+        cancelBtnOnPress={this.cancelBtnOnPress}
+        title={this.title}
+      />
+    );
+  }
 }
 
 ResetPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
+  passcodeCallback: PropTypes.func,
+};
+
+ResetPasscodeModal.defaultProps = {
+  passcodeCallback: null,
 };
 
 export default ResetPasscodeModal;
