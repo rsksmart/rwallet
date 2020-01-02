@@ -334,7 +334,7 @@ class MineIndex extends Component {
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Image source={avatar} style={styles.avatar} />
             <View style={styles.nameView}>
-              <Text style={styles.name}>Jean Payene</Text>
+              <Text style={styles.name}>Anonymous User</Text>
               <TouchableOpacity style={styles.nameEditView}>
                 <FontAwesome name="edit" size={25} style={styles.nameEdit} />
               </TouchableOpacity>
