@@ -10,6 +10,7 @@ import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
+import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
@@ -122,7 +123,7 @@ class RootComponent extends Component {
 
   render() {
     const {
-      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback,
+      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback, isShowConfirmation, confirmation, removeConfirmation, confirmationCallback,
     } = this.props;
 
     return (
@@ -131,6 +132,7 @@ class RootComponent extends Component {
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
+          <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
@@ -161,6 +163,10 @@ RootComponent.propTypes = {
   passcodeFallback: PropTypes.func,
   closePasscodeModal: PropTypes.func.isRequired,
   removeNotification: PropTypes.func.isRequired,
+  isShowConfirmation: PropTypes.bool.isRequired,
+  confirmation: PropTypes.shape({}),
+  removeConfirmation: PropTypes.func.isRequired,
+  confirmationCallback: PropTypes.func,
 };
 
 RootComponent.defaultProps = {
@@ -169,6 +175,8 @@ RootComponent.defaultProps = {
   passcodeType: null,
   passcodeCallback: null,
   passcodeFallback: null,
+  confirmation: null,
+  confirmationCallback: null,
 };
 
 export default RootComponent;

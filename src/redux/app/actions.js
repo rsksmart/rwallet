@@ -26,6 +26,8 @@ const actions = {
   SHOW_PASSCODE: 'SHOW_PASSCODE',
   HIDE_PASSCODE: 'HIDE_PASSCODE',
   CHANGE_LANGUAGE: 'CHANGE_LANGUAGE',
+  ADD_CONFIRMATION: 'ADD_CONFIRMATION',
+  REMOVE_CONFIRMATION: 'REMOVE_CONFIRMATION',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -78,6 +80,13 @@ const actions = {
   changeLanguage: (language) => ({
     type: actions.CHANGE_LANGUAGE,
     language,
+  }),
+  addConfirmation: (confirmation) => ({
+    type: actions.ADD_CONFIRMATION,
+    confirmation,
+  }),
+  removeConfirmation: () => ({
+    type: actions.REMOVE_CONFIRMATION,
   }),
 };
 

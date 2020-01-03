@@ -10,7 +10,7 @@ import screenHelper from '../../common/screenHelper';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import { createInfoNotification } from '../../common/notification.controller';
+import createInfoConfirmation from '../../common/confirmation.controller';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -172,8 +172,9 @@ class KeySettings extends Component {
       this.state = {
         walletCount: 0,
         name: '',
-        isShowNotification: false,
+        isConfirmDeleteKey: false,
       };
+      this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
     }
 
     componentWillMount() {
@@ -195,33 +196,24 @@ class KeySettings extends Component {
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated, isWalletNameUpdated,
+        isWalletsUpdated, navigation, resetWalletsUpdated, isWalletNameUpdated,
       } = nextProps;
       const { key } = navigation.state.params;
       const { name, coins } = key;
-
-      const { isShowNotification } = this.state;
+      const { isConfirmDeleteKey } = this.state;
 
       // If isWalletsUpdated, wallet is deleted.
-      if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
+      if (isWalletsUpdated && resetWalletsUpdated) {
         const walletListData = KeySettings.createWalletListData(coins);
-        this.setState({ walletListData, isShowNotification: true });
+        this.setState({ walletListData });
         resetWalletsUpdated();
-        const infoNotification = createInfoNotification(
-          'Key deleted',
-          'Key has been deleted successfully.',
-        );
-        addNotification(infoNotification);
+        if (isConfirmDeleteKey) {
+          navigation.goBack();
+        }
       }
 
       if (isWalletNameUpdated) {
         this.setState({ name });
-      }
-
-      // If notification removed by user, go back
-      if (isShowNotification && notification === null) {
-        this.setState({ isShowNotification: false });
-        navigation.goBack();
       }
     }
 
@@ -247,14 +239,25 @@ class KeySettings extends Component {
       navigation.navigate('KeyName', { key: this.key });
     }
 
-    createAdvancedListData() {
+    onDeleteConfirm() {
       const { deleteKey, walletManager } = this.props;
+      deleteKey(this.key, walletManager);
+      this.setState({ isConfirmDeleteKey: true });
+      console.log('Delete, key: ', this.key);
+    }
+
+    createAdvancedListData() {
+      const { addConfirmation } = this.props;
       const listData = [
         {
           title: 'Delete',
           onPress: () => {
-            console.log('Delete, key: ', this.key);
-            deleteKey(this.key, walletManager);
+            const infoConfirmation = createInfoConfirmation(
+              'Warning!',
+              'Are you sure you want to delete all wallets using this key?',
+              this.onDeleteConfirm,
+            );
+            addConfirmation(infoConfirmation);
           },
         },
       ];
@@ -312,28 +315,28 @@ KeySettings.propTypes = {
   walletManager: PropTypes.shape({}),
   deleteKey: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
-  addNotification: PropTypes.func.isRequired,
-  notification: PropTypes.shape({}),
+  addConfirmation: PropTypes.func.isRequired,
+  confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
-  notification: undefined,
+  confirmation: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
-  notification: state.App.get('notification'),
+  confirmation: state.App.get('confirmation'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

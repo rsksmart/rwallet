@@ -24,6 +24,8 @@ const initState = new Map({
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
+  isShowConfirmation: false,
+  confirmation: null,
 });
 
 export default function appReducer(state = initState, action) {
@@ -61,6 +63,16 @@ export default function appReducer(state = initState, action) {
       return state
         .set('showNotification', false)
         .set('notification', null);
+    case actions.ADD_CONFIRMATION:
+      return state
+        .set('isShowConfirmation', true)
+        .set('confirmation', action.confirmation)
+        .set('confirmationCallback', action.confirmation.confirmationCallback);
+    case actions.REMOVE_CONFIRMATION:
+      return state
+        .set('isShowConfirmation', false)
+        .set('confirmation', null)
+        .set('confirmationCallback', null);
     case actions.SHOW_PASSCODE:
       return state
         .set('showPasscode', true)
