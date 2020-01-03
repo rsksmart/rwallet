@@ -22,8 +22,9 @@ class CreatePasscodeModal extends PureComponent {
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
 
-    cancelBtnOnPress = () => {
-    };
+  cancelBtnOnPress = () => {
+    this.closePasscodeModal();
+  };
 
     passcodeOnFill = async (passcode) => {
       let flow = null;

@@ -42,14 +42,6 @@ class WalletSelectCurrency extends Component {
       header: null,
     });
 
-    static async createWallet(phrases, coins, walletManager, createKey) {
-      if (phrases) {
-        createKey(null, phrases, coins, walletManager);
-      } else {
-        createKey(null, phrases, coins, walletManager);
-      }
-    }
-
     mainnet = [
       {
         title: 'BTC',
@@ -88,31 +80,24 @@ class WalletSelectCurrency extends Component {
 
     constructor(props) {
       super(props);
+      const { navigation } = this.props;
       this.state = {
-        loading: false,
+        isLoading: false,
       };
+      this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
+      this.isImportWallet = !!this.phrase;
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
       const {
-        navigation, wallets, isWalletsUpdated,
+        navigation, isWalletsUpdated,
       } = nextProps;
-      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
       if (isWalletsUpdated) {
-        this.setState({ loading: false });
-        // if phrases exsist, indicates the wallet is imported by phrase, the navigation pop to top
-        // if phrases doesn't exsist, indicates the wallet is created by no phrase, navigate to 'RecoveryPhrase' page
-        if (phrases) {
-          const statckActions = StackActions.popToTop();
-          navigation.dispatch(statckActions);
-        } else {
-          // the last wallet is created just now.
-          const wallet = wallets[wallets.length - 1];
-          navigation.navigate('RecoveryPhrase', { wallet });
-        }
-        // Don't resetWalletsUpdated here, it's too early, other pages will detected isWalletsUpdated is false.
+        this.setState({ isLoading: false });
+        const statckActions = StackActions.popToTop();
+        navigation.dispatch(statckActions);
       }
     }
 
@@ -125,10 +110,7 @@ class WalletSelectCurrency extends Component {
     }
 
     async onCreateButtonPress() {
-      const {
-        navigation, walletManager, createKey,
-      } = this.props;
-      const phrases = navigation.state.params ? navigation.state.params.phrases : '';
+      const { navigation, createKey, walletManager } = this.props;
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
         if (this.mainnet[i].selected) {
@@ -141,21 +123,22 @@ class WalletSelectCurrency extends Component {
           coins.push(coinId);
         }
       }
-      this.setState({ loading: true });
-      WalletSelectCurrency.createWallet(phrases, coins, walletManager, createKey);
+      if (this.isImportWallet) {
+        this.setState({ isLoading: true });
+        createKey(null, this.phrase, coins, walletManager);
+      } else {
+        navigation.navigate('RecoveryPhrase', { coins });
+      }
     }
 
 
     render() {
-      const { loading } = this.state;
+      const { isLoading } = this.state;
       const { navigation } = this.props;
       return (
         <View style={[flex.flex1]}>
           <ScrollView>
-            <Header
-              title="Select Wallet Currency"
-              goBack={() => { navigation.goBack(); }}
-            />
+            <Header title="Select Wallet Currency" goBack={() => navigation.goBack()} />
             <View style={[screenHelper.styles.body]}>
               <View style={[styles.sectionContainer, { marginTop: 15 }]}>
                 <Loc style={[styles.sectionTitle]} text="Mainnet" />
@@ -165,14 +148,11 @@ class WalletSelectCurrency extends Component {
                 <Loc style={[styles.sectionTitle]} text="Testnet" />
                 <CoinTypeList data={this.testnet} />
               </View>
-              <Loader loading={loading} />
+              <Loader loading={isLoading} />
             </View>
           </ScrollView>
           <View style={[styles.buttonView]}>
-            <Button
-              text="CREATE"
-              onPress={this.onCreateButtonPress}
-            />
+            <Button text="CREATE" onPress={this.onCreateButtonPress} />
           </View>
         </View>
       );
@@ -187,7 +167,6 @@ WalletSelectCurrency.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({}),
-  wallets: PropTypes.arrayOf(PropTypes.object),
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
@@ -195,12 +174,10 @@ WalletSelectCurrency.propTypes = {
 
 WalletSelectCurrency.defaultProps = {
   walletManager: undefined,
-  wallets: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
-  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 

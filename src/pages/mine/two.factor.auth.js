@@ -57,7 +57,7 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { loading, showPasscode } = this.props;
+      const { loading, showPasscode, navigation } = this.props;
       return (
         <ScrollView style={[flex.flex1]}>
           <Header
@@ -69,7 +69,11 @@ class TwoFactorAuth extends Component {
             <TouchableOpacity
               style={styles.row}
               onPress={() => {
-                showPasscode(global.passcode ? 'reset' : 'create');
+                if (global.passcode) {
+                  showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
+                } else {
+                  showPasscode('create');
+                }
               }}
             >
               <Loc style={[styles.title]} text="Reset Passcode" />
@@ -106,8 +110,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
-  showPasscode: (category) => dispatch(
-    appActions.showPasscode(category),
+  showPasscode: (category, callback) => dispatch(
+    appActions.showPasscode(category, callback),
   ),
 });
 

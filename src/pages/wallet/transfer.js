@@ -23,7 +23,6 @@ import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
-import config from '../../../config';
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -206,7 +205,8 @@ const DEFAULT_RBTC_MIN_GAS = 21000;
 const DEFAULT_RIF_MIN_GAS = 23064;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_BTC_MEDIUM_FEE = 8000;
+const DEFAULT_BTC_MIN_FEE = 60000;
+const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const MAX_FEE_TIMES = 2;
 
@@ -318,8 +318,7 @@ class Transfer extends Component {
     } else if (coin.symbol === 'RIF') {
       minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
     } else {
-      // minFee: ten to the power of -N
-      minFee = new BigNumber(`1e-${config.symbolDecimalPlaces[feeSymbol]}`);
+      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_BTC_MIN_FEE);
     }
     // minFee + (maxFee-minFee) * value
     const customFee = minFee.plus(maxFee.minus(minFee).times(value));
@@ -335,6 +334,8 @@ class Transfer extends Component {
     const {
       feeSymbol, isCustomFee, customFee, preference,
     } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
     let feeParams = null;
     if (isCustomFee) {
       if (feeSymbol === 'RBTC') {
@@ -353,12 +354,13 @@ class Transfer extends Component {
     } else if (feeSymbol === 'RBTC') {
       const feeLevels = {
         low: 1 - FEE_LEVEL_ADJUSTMENT,
-        medium: FEE_LEVEL_ADJUSTMENT,
+        medium: 1,
         high: 1 + FEE_LEVEL_ADJUSTMENT,
       };
+      const mediumGas = coin.symbol === 'RIF' ? DEFAULT_RIF_MEDIUM_GAS : DEFAULT_RBTC_MEDIUM_GAS;
       feeParams = {
         gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-        gas: DEFAULT_RBTC_MEDIUM_GAS * feeLevels[preference],
+        gas: mediumGas * feeLevels[preference],
       };
     } else if (feeSymbol === 'BTC') {
       // If BTC is not costom fee, set preference field = high/medium/low
@@ -645,7 +647,7 @@ class Transfer extends Component {
               // onVerified={this.onConfirmSliderVerified}
               onVerified={async () => {
                 if (global.passcode) {
-                  showPasscode('verify', this.onConfirmSliderVerified);
+                  showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
                 } else {
                   await this.onConfirmSliderVerified();
                 }
@@ -691,8 +693,8 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
   ),
-  showPasscode: (category, callback) => dispatch(
-    appActions.showPasscode(category, callback),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
   ),
 });
 

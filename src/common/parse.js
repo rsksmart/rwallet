@@ -302,7 +302,7 @@ class ParseHelper {
         .equalTo('chain', chain)
         .equalTo('type', type);
 
-      return Parse.Query.or(queryTo, queryFrom).find()
+      return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
         .then((results) => {
           newToken.transactions = _.map(results, (item) => item.toJSON());
           if (!_.isEmpty(newToken.transactions)) {

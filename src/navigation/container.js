@@ -9,6 +9,7 @@ const mapStateToProps = (state) => ({
   showPasscode: state.App.get('showPasscode'),
   passcodeType: state.App.get('passcodeType'),
   passcodeCallback: state.App.get('passcodeCallback'),
+  passcodeFallback: state.App.get('passcodeFallback'),
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isInitWithParseDone: state.App.get('isInitWithParseDone'),
   walletManager: state.Wallet.get('walletManager'),

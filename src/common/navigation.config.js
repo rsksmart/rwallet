@@ -26,6 +26,7 @@ import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
 import SpendIndex from '../pages/spend/index';
 import EarnIndex from '../pages/earn/index';
+import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 /* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
@@ -218,6 +219,13 @@ const routeConfigMap = {
       path: 'TwoFactorAuth',
       navigationOptions: () => ({
         headerTitle: 'TwoFactorAuth',
+      }),
+    },
+    ResetPasscodeSuccess: {
+      screen: ResetPasscodeSuccess,
+      path: 'ResetPasscodeSuccess',
+      navigationOptions: () => ({
+        headerTitle: 'ResetPasscode',
       }),
     },
     KeySettings: {

@@ -18,7 +18,6 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
-import appActions from '../../redux/app/actions';
 import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.png');
@@ -305,11 +304,6 @@ class WalletList extends Component {
       });
     }
 
-    async componentDidMount() {
-      const { showPasscode } = this.props;
-      showPasscode('verify');
-    }
-
     componentWillReceiveProps(nextProps) {
       const {
         updateTimestamp, currency, navigation, walletManager,
@@ -439,7 +433,7 @@ WalletList.propTypes = {
     wallets: PropTypes.array.isRequired,
   }),
   updateTimestamp: PropTypes.number.isRequired,
-  showPasscode: PropTypes.func.isRequired,
+
 };
 
 WalletList.defaultProps = {
@@ -452,10 +446,4 @@ const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  showPasscode: (category) => dispatch(
-    appActions.showPasscode(category),
-  ),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
+export default connect(mapStateToProps, null)(WalletList);
