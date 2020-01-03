@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   createWalletButtonView: {
     marginTop: 20,
-    marginBottom: 5,
+    marginBottom: 25,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
