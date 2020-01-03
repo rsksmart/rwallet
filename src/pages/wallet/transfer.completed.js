@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity,
+  View, StyleSheet, Image, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions } from 'react-navigation';
@@ -84,6 +84,28 @@ const styles = StyleSheet.create({
   },
 });
 
+const urls = {
+  BTC: {
+    Mainnet: 'https://live.blockcypher.com/btc/tx',
+    Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
+  },
+  RBTC: {
+    Mainnet: 'https://explorer.rsk.co/tx',
+    Testnet: 'https://explorer.testnet.rsk.co/tx',
+  },
+  RIF: {
+    Mainnet: 'https://explorer.rsk.co/tx/',
+    Testnet: 'https://explorer.testnet.rsk.co/tx',
+  },
+};
+
+
+const getExplorerUrl = (symbol, type, hash) => {
+  let url = urls[symbol][type];
+  url = `${url}/${hash}/`;
+  return url;
+};
+
 export default class TransferCompleted extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -92,12 +114,20 @@ export default class TransferCompleted extends Component {
   constructor(props) {
     super(props);
     this.onBackPress = this.onBackPress.bind(this);
+    this.onExplorePress = this.onExplorePress.bind(this);
   }
 
   onBackPress() {
     const { navigation } = this.props;
     const statckActions = StackActions.popToTop();
     navigation.dispatch(statckActions);
+  }
+
+  onExplorePress() {
+    const { navigation } = this.props;
+    const { symbol, type, hash } = navigation.state.params;
+    const url = getExplorerUrl(symbol, type, hash);
+    Linking.openURL(url);
   }
 
   render() {
@@ -112,7 +142,7 @@ export default class TransferCompleted extends Component {
             <Image style={styles.check} source={completed} />
             <Loc style={[styles.title]} text="Transfer Completed!" />
             <Loc style={[styles.text]} text="TransferText" />
-            <TouchableOpacity onPress={this.onBackPress}>
+            <TouchableOpacity onPress={this.onExplorePress}>
               <Loc style={[styles.text, styles.link]} text="Click to view in explorer" />
             </TouchableOpacity>
           </View>
