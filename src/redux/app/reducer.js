@@ -20,6 +20,7 @@ const initState = new Map({
   showPasscode: false,
   passcodeType: null,
   passcodeCallback: null,
+  passcodeFallback: null,
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
@@ -64,12 +65,14 @@ export default function appReducer(state = initState, action) {
       return state
         .set('showPasscode', true)
         .set('passcodeType', action.value.category)
-        .set('passcodeCallback', action.value.callback);
+        .set('passcodeCallback', action.value.callback)
+        .set('passcodeFallback', action.value.fallback);
     case actions.HIDE_PASSCODE:
       return state
         .set('showPasscode', false)
         .set('passcodeType', null)
-        .set('passcodeCallback', null);
+        .set('passcodeCallback', null)
+        .set('passcodeFallback', null);
     case actions.SET_APPLICATION:
       return state.set('application', action.value);
     case actions.SET_SETTINGS:

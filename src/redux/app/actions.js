@@ -41,9 +41,9 @@ const actions = {
   removeNotification: () => ({
     type: actions.REMOVE_NOTIFICATION,
   }),
-  showPasscode: (category, callback) => ({
+  showPasscode: (category, callback, fallback) => ({
     type: actions.SHOW_PASSCODE,
-    value: { category, callback },
+    value: { category, callback, fallback },
   }),
   hidePasscode: () => ({
     type: actions.HIDE_PASSCODE,

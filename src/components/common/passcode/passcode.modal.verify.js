@@ -13,57 +13,69 @@ class VerifyPasscodeModal extends PureComponent {
     ];
     this.flowIndex = 0;
     this.title = this.flows[0].title;
-    const { closePasscodeModal, passcodeCallback } = this.props;
+    const { closePasscodeModal, passcodeCallback, passcodeFallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
+    this.passcodeFallback = passcodeFallback;
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
+    this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
   }
 
   componentDidMount(): void {
     this.passcode = global.passcode;
   }
 
-    passcodeOnFill = async (input) => {
-      let flow = null;
-      switch (this.flowIndex) {
-        case 0:
-        case 1:
-          if (input === this.passcode) {
-            this.baseModal.resetModal();
-            this.closePasscodeModal();
-            if (this.passcodeCallback) {
-              this.passcodeCallback();
-            }
-          } else {
-            this.flowIndex = 1;
-            flow = _.find(this.flows, { index: this.flowIndex });
-            this.baseModal.rejectPasscord(flow.title);
+  passcodeOnFill = async (input) => {
+    let flow = null;
+    switch (this.flowIndex) {
+      case 0:
+      case 1:
+        if (input === this.passcode) {
+          this.baseModal.resetModal();
+          this.closePasscodeModal();
+          if (this.passcodeCallback) {
+            this.passcodeCallback();
           }
-          break;
-      }
-    };
-
-    render() {
-      return (
-        <PasscodeModalBase
-          ref={(ref) => {
-            this.baseModal = ref;
-          }}
-          passcodeOnFill={this.passcodeOnFill}
-          title={this.title}
-          showCancel={false}
-        />
-      );
+        } else {
+          this.flowIndex = 1;
+          flow = _.find(this.flows, { index: this.flowIndex });
+          this.baseModal.rejectPasscord(flow.title);
+        }
+        break;
     }
+  };
+
+  cancelBtnOnPress = () => {
+    if (this.passcodeFallback) {
+      this.passcodeFallback();
+    }
+    this.closePasscodeModal();
+  };
+
+  render() {
+    return (
+      <PasscodeModalBase
+        ref={(ref) => {
+          this.baseModal = ref;
+        }}
+        passcodeOnFill={this.passcodeOnFill}
+        title={this.title}
+        cancelBtnOnPress={this.cancelBtnOnPress}
+        showCancel={!!this.passcodeFallback}
+      />
+    );
+  }
 }
 
 VerifyPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
+  passcodeFallback: PropTypes.func,
 };
 
 VerifyPasscodeModal.defaultProps = {
   passcodeCallback: null,
+  passcodeFallback: null,
 };
 
 export default VerifyPasscodeModal;
