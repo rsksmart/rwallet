@@ -10,6 +10,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
+import LinearGradient from 'react-native-linear-gradient';
+
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
@@ -171,12 +173,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
+    height: 50,
+    width: '100%',
   },
   powerby: {
     color: '#727372',
     fontSize: 17,
     fontWeight: '900',
     marginTop: 5,
+  },
+  linearGradient: {
   },
 });
 
@@ -412,10 +418,13 @@ class WalletList extends Component {
               </View>
             </View>
           </ScrollView>
-          <View style={styles.logoView}>
+          <LinearGradient
+            colors={['transparent', '#ffffff']}
+            style={[flex.justifyEnd, styles.logoView]}
+          >
             <Loc style={[styles.powerby]} text="Powered by" />
             <Image style={presetStyles.rskIcon} source={rsk} />
-          </View>
+          </LinearGradient>
         </View>
       );
     }
