@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 15,
+    marginBottom: 60,
   },
 });
 
@@ -361,7 +361,7 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Join RSK's community" />
+            <Loc style={[styles.sectionTitle]} text="Join RSK's Community" />
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
