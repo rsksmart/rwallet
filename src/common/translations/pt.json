@@ -154,5 +154,6 @@
   "Passcode not match, Try again": "A senha não corresponde, tente novamente",
   "Type your passcode": "Digite sua senha",
   "Passcode is incorrected": "A senha está incorreta",
-  "Failed": "Failed"
+  "Failed": "Failed",
+  "Confirm": "confirme"
 }
