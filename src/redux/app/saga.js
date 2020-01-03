@@ -89,8 +89,22 @@ function* initFromStorageRequest() {
 }
 
 function* initWithParseRequest() {
+  const appId = application.get('id');
+
+  // 1. Sign in or sign up to get Parse.User object
+  // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    // 1. Test server connection and get Server info
+    yield call(ParseHelper.signIn, appId);
+    console.log(`User found with appId ${appId}. Sign in successful.`);
+  } catch (err) {
+    if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+      yield call(ParseHelper.signUp, appId);
+      console.log(`User NOT found with appId ${appId}. Signed up.`);
+    }
+  }
+
+  // 2. Test server connection and get Server info
+  try {
     const response = yield call(ParseHelper.getServerInfo);
 
     // Sets state in reducer for success
@@ -98,35 +112,21 @@ function* initWithParseRequest() {
       type: actions.GET_SERVER_INFO_RESULT,
       value: response,
     });
-
-    const appId = application.get('id');
-
-    // 2. Sign in or sign up to get Parse.User object
-    // ParseHelper will have direct access to the User object so we don't need to pass it to state here
-    try {
-      yield call(ParseHelper.signIn, appId);
-      console.log(`User found with appId ${appId}. Sign in successful.`);
-    } catch (err) {
-      if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-        yield call(ParseHelper.signUp, appId);
-        console.log(`User NOT found with appId ${appId}. Signed up.`);
-      }
-    }
-
-    // 3. Upload wallets and settings to server
-    yield put({
-      type: actions.UPDATE_USER,
-      payload: { walletManager, settings },
-    });
-
-    // If we don't encounter error here, mark initialization finished
-    yield put({
-      type: actions.INIT_WITH_PARSE_DONE,
-    });
   } catch (err) {
     const { message } = err;
-    console.error(message);
+    console.warn(message);
   }
+
+  // 3. Upload wallets and settings to server
+  yield put({
+    type: actions.UPDATE_USER,
+    payload: { walletManager, settings },
+  });
+
+  // If we don't encounter error here, mark initialization finished
+  yield put({
+    type: actions.INIT_WITH_PARSE_DONE,
+  });
 }
 
 function* createRawTransaction(action) {
