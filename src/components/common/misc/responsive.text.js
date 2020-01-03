@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, Platform } from 'react-native';
+import {
+  Text, View, Platform, StyleSheet,
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 // https://github.com/facebook/react-native/issues/20906
@@ -13,6 +15,13 @@ const getFontSize = (width, length, maxFontSize) => {
   return fontSize;
 };
 
+const styles = StyleSheet.create({
+  textView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
+
 // ResponsiveText, fontSize will calculate by text length again
 export default class ResponsiveText extends Component {
   constructor(props) {
@@ -21,11 +30,21 @@ export default class ResponsiveText extends Component {
       adjustsStyle: {
         fontSize: 5,
       },
+      // If fontSize is adjusted, isAdjusted will be set to true, then layout will not be calculated again.
+      isAdjusted: false,
     };
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ isAdjusted: false });
   }
 
   onLayout = (event) => {
     const { children, maxFontSize } = this.props;
+    const { isAdjusted } = this.state;
+    if (isAdjusted) {
+      return;
+    }
     const { width } = event.nativeEvent.layout;
     const fontSize = getFontSize(width, children.length, maxFontSize);
     this.setState({
@@ -56,10 +75,11 @@ export default class ResponsiveText extends Component {
   }
 
   render() {
-    const { style } = this.props;
+    const { style, suffixElement } = this.props;
     return (
-      <View onLayout={this.onLayout} style={style}>
+      <View onLayout={this.onLayout} style={[style, styles.textView]}>
         {this.renderTextElement()}
+        {suffixElement}
       </View>
     );
   }
@@ -70,9 +90,11 @@ ResponsiveText.propTypes = {
   fontStyle: PropTypes.arrayOf(PropTypes.object),
   children: PropTypes.string.isRequired,
   maxFontSize: PropTypes.number.isRequired,
+  suffixElement: PropTypes.element,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
   fontStyle: null,
+  suffixElement: null,
 };

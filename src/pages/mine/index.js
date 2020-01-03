@@ -83,14 +83,17 @@ const styles = StyleSheet.create({
     bottom: 5,
   },
   name: {
+    width: '100%',
+    paddingBottom: 6,
+  },
+  nameFont: {
     fontWeight: '900',
     letterSpacing: 0.39,
     color: '#FFFFFF',
-    paddingBottom: 6,
   },
   nameEditView: {
     marginLeft: 10,
-    marginBottom: 2,
+    marginBottom: -5,
   },
   nameEdit: {
     color: '#FFFFFF',
@@ -126,7 +129,7 @@ const styles = StyleSheet.create({
   },
   createWalletButtonView: {
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -137,7 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 60,
+    marginBottom: 15,
   },
 });
 
@@ -342,10 +345,18 @@ class MineIndex extends Component {
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Image source={avatar} style={styles.avatar} />
             <View style={styles.nameView}>
-              <ResponsiveText fontStyle={[styles.name]} maxFontSize={20}>{strings('Anonymous User')}</ResponsiveText>
-              <TouchableOpacity style={styles.nameEditView}>
-                <FontAwesome name="edit" size={25} style={styles.nameEdit} />
-              </TouchableOpacity>
+              <ResponsiveText
+                style={[styles.name]}
+                fontStyle={[styles.nameFont]}
+                maxFontSize={20}
+                suffixElement={(
+                  <TouchableOpacity style={styles.nameEditView}>
+                    <FontAwesome name="edit" size={25} style={styles.nameEdit} />
+                  </TouchableOpacity>
+                )}
+              >
+                {strings('Anonymous User')}
+              </ResponsiveText>
             </View>
           </ImageBackground>
           <View style={[styles.body]}>
@@ -369,7 +380,7 @@ class MineIndex extends Component {
             </View>
           </View>
           <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Join RSK's Community" />
+            <Loc style={[styles.sectionTitle]} text="Join RSK's community" />
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
