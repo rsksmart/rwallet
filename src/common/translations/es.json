@@ -154,5 +154,6 @@
   "Passcode not match, Try again": "La contraseña no coincide, intente nuevamente",
   "Type your passcode": "Escribe tu contraseña",
   "Passcode is incorrected": "El código de acceso está incorrecto",
-  "Failed": "Failed"
+  "Failed": "Failed",
+  "Anonymous User": "Usuario anónimo"
 }

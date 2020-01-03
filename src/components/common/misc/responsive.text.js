@@ -21,28 +21,17 @@ export default class ResponsiveText extends Component {
       adjustsStyle: {
         fontSize: 5,
       },
-      // If fontSize is adjusted, isAdjusted will be set to true, then layout will not be calculated again.
-      isAdjusted: false,
     };
-  }
-
-  componentWillReceiveProps() {
-    this.setState({ isAdjusted: false });
   }
 
   onLayout = (event) => {
     const { children, maxFontSize } = this.props;
-    const { isAdjusted } = this.state;
-    if (isAdjusted) {
-      return;
-    }
     const { width } = event.nativeEvent.layout;
     const fontSize = getFontSize(width, children.length, maxFontSize);
     this.setState({
       adjustsStyle: {
         fontSize,
       },
-      isAdjusted: true,
     });
   }
 
