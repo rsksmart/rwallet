@@ -95,6 +95,10 @@ const styles = StyleSheet.create({
   listRowTitle: {
     marginLeft: 5,
   },
+  warningText: {
+    color: '#DF5264',
+    fontWeight: '500',
+  },
 });
 
 const header = require('../../assets/images/misc/header.png');
@@ -182,16 +186,15 @@ class KeySettings extends Component {
       const { key } = navigation.state.params;
       const { coins, name } = key;
       const walletListData = KeySettings.createWalletListData(coins);
-      const advancedListData = this.createAdvancedListData(coins);
       this.key = key;
       this.setState({
         walletCount: coins.length,
         name,
         walletListData,
-        advancedListData,
       });
       this.onBackupPress = this.onBackupPress.bind(this);
       this.onKeyNamePress = this.onKeyNamePress.bind(this);
+      this.onDeletePress = this.onDeletePress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -246,28 +249,20 @@ class KeySettings extends Component {
       console.log('Delete, key: ', this.key);
     }
 
-    createAdvancedListData() {
+    onDeletePress() {
       const { addConfirmation } = this.props;
-      const listData = [
-        {
-          title: 'Delete',
-          onPress: () => {
-            const infoConfirmation = createInfoConfirmation(
-              'Warning!',
-              'Are you sure you want to delete all wallets using this key?',
-              this.onDeleteConfirm,
-            );
-            addConfirmation(infoConfirmation);
-          },
-        },
-      ];
-      return listData;
+      const infoConfirmation = createInfoConfirmation(
+        'Warning!',
+        'Are you sure you want to delete all wallets using this key?',
+        this.onDeleteConfirm,
+      );
+      addConfirmation(infoConfirmation);
     }
 
     render() {
       const { navigation } = this.props;
       const {
-        walletCount, name, walletListData, advancedListData,
+        walletCount, name, walletListData,
       } = this.state;
       return (
         <ScrollView style={[flex.flex1]}>
@@ -297,7 +292,9 @@ class KeySettings extends Component {
             </View>
             <View style={[styles.sectionContainer, { marginTop: 10, marginBottom: 10 }]}>
               <Loc style={[styles.sectionTitle]} text="Advanced" />
-              {KeySettings.renderAdvancedList(advancedListData)}
+              <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
+                <Loc style={[styles.listRowTitle, styles.warningText]} text="Delete" />
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
