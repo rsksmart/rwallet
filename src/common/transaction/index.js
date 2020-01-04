@@ -55,6 +55,18 @@ const createSendSignedTransactionParam = (symbol, signedTransaction, netType, ga
   }
 };
 
+const getTxHash = (symbol, txResult) => {
+  switch (symbol) {
+    case 'BTC':
+      return btc.getTxHash(txResult);
+    case 'RBTC':
+    case 'RIF':
+      return rbtc.getTxHash(txResult);
+    default:
+      return null;
+  }
+};
+
 class Transaction {
   constructor({
     symbol, type, privateKey, address,
@@ -69,6 +81,7 @@ class Transaction {
     this.data = data;
     this.rawTransaction = null;
     this.signedTransaction = null;
+    this.txHash = null;
   }
 
   async processRawTransaction() {
@@ -124,6 +137,7 @@ class Transaction {
       throw new Error('Transaction.processSignedTransaction err: this.signedTransaction is null');
     }
     console.log(`Transaction.processSignedTransaction finished, result: ${JSON.stringify(result)}`);
+    this.txHash = getTxHash(this.symbol, result);
     return result;
   }
 }

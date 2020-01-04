@@ -46,3 +46,5 @@ export const getSignedTransactionParam = (signedTransaction, netType, gasFee) =>
   preference: gasFee,
   memo: '',
 });
+
+export const getTxHash = (txResult) => txResult.tx.hash;
