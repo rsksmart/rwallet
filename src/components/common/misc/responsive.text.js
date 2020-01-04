@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, Platform } from 'react-native';
+import {
+  Text, View, Platform, StyleSheet,
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 // https://github.com/facebook/react-native/issues/20906
@@ -12,6 +14,13 @@ const getFontSize = (width, length, maxFontSize) => {
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
   return fontSize;
 };
+
+const styles = StyleSheet.create({
+  textView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
 
 // ResponsiveText, fontSize will calculate by text length again
 export default class ResponsiveText extends Component {
@@ -42,7 +51,6 @@ export default class ResponsiveText extends Component {
       adjustsStyle: {
         fontSize,
       },
-      isAdjusted: true,
     });
   }
 
@@ -67,10 +75,11 @@ export default class ResponsiveText extends Component {
   }
 
   render() {
-    const { style } = this.props;
+    const { style, suffixElement } = this.props;
     return (
-      <View onLayout={this.onLayout} style={style}>
+      <View onLayout={this.onLayout} style={[style, styles.textView]}>
         {this.renderTextElement()}
+        {suffixElement}
       </View>
     );
   }
@@ -81,9 +90,11 @@ ResponsiveText.propTypes = {
   fontStyle: PropTypes.arrayOf(PropTypes.object),
   children: PropTypes.string.isRequired,
   maxFontSize: PropTypes.number.isRequired,
+  suffixElement: PropTypes.element,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
   fontStyle: null,
+  suffixElement: null,
 };

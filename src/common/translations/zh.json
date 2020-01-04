@@ -154,5 +154,6 @@
   "Passcode not match, Try again": "密码不匹配，请重试",
   "Type your passcode": "输入密码",
   "Passcode is incorrected": "密码不正确",
-  "Failed": "失败"
+  "Failed": "失败",
+  "Anonymous User": "匿名用户"
 }

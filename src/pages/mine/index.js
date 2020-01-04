@@ -15,6 +15,10 @@ import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
 import RSKad from '../../components/common/rsk.ad';
+import presetStyles from '../../assets/styles/style';
+import ResponsiveText from '../../components/common/misc/responsive.text';
+
+const AVATAR_SIZE = 129;
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -34,6 +38,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     bottom: -40,
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
+    backgroundColor: '#FFFFFF',
   },
   row: {
     flexDirection: 'row',
@@ -71,21 +79,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     left: 160,
+    right: 15,
+    paddingRight: 30,
     bottom: 5,
   },
   name: {
-    fontSize: 20,
+    width: '100%',
+    paddingBottom: 6,
+  },
+  nameFont: {
     fontWeight: '900',
     letterSpacing: 0.39,
     color: '#FFFFFF',
-    paddingBottom: 6,
   },
   nameEditView: {
-    padding: 5,
+    marginLeft: 10,
+    marginBottom: -5,
   },
   nameEdit: {
     color: '#FFFFFF',
-    marginLeft: 10,
   },
   communityIcon: {
     marginLeft: -5.5,
@@ -118,7 +130,7 @@ const styles = StyleSheet.create({
   },
   createWalletButtonView: {
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -129,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 60,
+    marginBottom: 15,
   },
 });
 
@@ -333,10 +345,18 @@ class MineIndex extends Component {
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
             <Image source={avatar} style={styles.avatar} />
             <View style={styles.nameView}>
-              <Text style={styles.name}>Jean Payene</Text>
-              <TouchableOpacity style={styles.nameEditView}>
-                <FontAwesome name="edit" size={25} style={styles.nameEdit} />
-              </TouchableOpacity>
+              <ResponsiveText
+                style={[styles.name]}
+                fontStyle={[styles.nameFont]}
+                maxFontSize={20}
+                suffixElement={(
+                  <TouchableOpacity style={styles.nameEditView}>
+                    <FontAwesome name="edit" size={25} style={styles.nameEdit} />
+                  </TouchableOpacity>
+                )}
+              >
+                {strings('Anonymous User')}
+              </ResponsiveText>
             </View>
           </ImageBackground>
           <View style={[styles.body]}>
