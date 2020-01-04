@@ -24,8 +24,11 @@ const Confirmation = (props) => {
 
 Confirmation.propTypes = {
   isShowConfirmation: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  confirmation: PropTypes.object,
+  confirmation: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+  }),
   removeConfirmation: PropTypes.func.isRequired,
   confirmationCallback: PropTypes.func,
 };

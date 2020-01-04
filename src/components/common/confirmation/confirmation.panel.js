@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    color: '#00B520',
     textAlign: 'center',
     fontWeight: '900',
     fontSize: 16,
@@ -93,10 +92,10 @@ export default class ConfirmationPanel extends Component {
             <View style={styles.line} />
             <View style={styles.ButtonsView}>
               <TouchableOpacity onPress={onClosePress}>
-                <Loc style={[styles.button, styles.errorButtonText]} text={cancelText} />
+                <Loc style={[styles.button]} text={cancelText} />
               </TouchableOpacity>
               <TouchableOpacity onPress={this.onConfirmPress}>
-                <Loc style={[styles.button, styles.errorButtonText, { marginLeft: 70 }]} text={comfirmText} />
+                <Loc style={[styles.button, { marginLeft: 70 }]} text={comfirmText} />
               </TouchableOpacity>
             </View>
           </View>
