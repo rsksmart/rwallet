@@ -214,14 +214,6 @@ const header = require('../../assets/images/misc/header.png');
 // const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
 const address = require('../../assets/images/icon/address.png');
 
-
-const getTxHash = (symbol, result) => {
-  if (symbol === 'BTC') {
-    return result.tx.hash;
-  }
-  return result.hash;
-};
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -423,15 +415,15 @@ class Transfer extends Component {
       let transaction = new Transaction(coin, to, amount, '', feeParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
-      const result = await transaction.processSignedTransaction();
-      transaction = null;
+      await transaction.processSignedTransaction();
       this.setState({ loading: false });
       const completedParams = {
         symbol: coin.symbol,
         type: coin.type,
-        hash: getTxHash(coin.symbol, result),
+        hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
+      transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
