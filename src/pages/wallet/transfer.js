@@ -416,9 +416,14 @@ class Transfer extends Component {
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
-      transaction = null;
       this.setState({ loading: false });
-      navigation.navigate('TransferCompleted');
+      const completedParams = {
+        symbol: coin.symbol,
+        type: coin.type,
+        hash: transaction.txHash,
+      };
+      navigation.navigate('TransferCompleted', completedParams);
+      transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);

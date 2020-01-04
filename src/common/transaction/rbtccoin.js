@@ -31,3 +31,5 @@ export const getSignedTransactionParam = (signedTransaction, netType) => ({
   hash: signedTransaction.rawTransaction,
   type: netType,
 });
+
+export const getTxHash = (txResult) => txResult.hash;
