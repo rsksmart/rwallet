@@ -4,14 +4,13 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Image, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
-// import { Card, CardItem, Body } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import LinearGradient from 'react-native-linear-gradient';
 
+import RSKad from '../../components/common/rsk.ad';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
@@ -20,10 +19,9 @@ import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
-import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.png');
-const rsk = require('../../assets/images/mine/rsk.png');
+
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
@@ -418,13 +416,7 @@ class WalletList extends Component {
               </View>
             </View>
           </ScrollView>
-          <LinearGradient
-            colors={['transparent', '#ffffff']}
-            style={[flex.justifyEnd, styles.logoView]}
-          >
-            <Loc style={[styles.powerby]} text="Powered by" />
-            <Image style={presetStyles.rskIcon} source={rsk} />
-          </LinearGradient>
+          <RSKad />
         </View>
       );
     }
