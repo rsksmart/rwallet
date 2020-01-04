@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
-import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import { screen, DEVICE } from '../../common/info';
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: 20,
-    marginTop: 10,
+    marginTop: 15,
   },
   buttonView: {
     position: 'absolute',
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
   },
   title2: {
     color: '#000000',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '900',
     letterSpacing: 0.31,
     marginBottom: 10,
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
   },
   title3: {
     color: '#000000',
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: '900',
     letterSpacing: 0.23,
     marginBottom: 10,
@@ -189,6 +188,9 @@ const styles = StyleSheet.create({
   customFeeSlider: {
     width: '100%',
     height: 40,
+  },
+  customFeeSliderWrapper: {
+    height: 60,
   },
   customFeeText: {
     alignSelf: 'flex-end',
@@ -485,27 +487,29 @@ class Transfer extends Component {
       customFee, feeSymbol, customFeeValue, feeSliderValue,
     } = this.state;
     const { currency } = this.props;
-    if (!isCustomFee) {
-      return null;
-    }
     const currencySymbol = common.getCurrencySymbol(currency);
     return (
-      <View disabled={!isCustomFee}>
-        <Slider
-          value={feeSliderValue}
-          style={styles.customFeeSlider}
-          minimumValue={0}
-          maximumValue={1}
-          minimumTrackTintColor="#00B520"
-          maximumTrackTintColor="#D8D8D8"
-          thumbTintColor="#00B520"
-          onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
-          onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
-        />
-        <Text style={styles.customFeeText}>
-          {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
-        </Text>
+      <View style={[styles.customFeeSliderWrapper]}>
+        { isCustomFee && (
+          <View>
+            <Slider
+              value={feeSliderValue}
+              style={styles.customFeeSlider}
+              minimumValue={0}
+              maximumValue={1}
+              minimumTrackTintColor="#00B520"
+              maximumTrackTintColor="#D8D8D8"
+              thumbTintColor="#00B520"
+              onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
+              onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
+            />
+            <Text style={styles.customFeeText}>
+              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
+            </Text>
+          </View>
+        )}
       </View>
+
     );
   }
 
@@ -549,119 +553,115 @@ class Transfer extends Component {
 
     return (
       <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
-        <View style={styles.wapper}>
-          <View style={[flex.flex10]}>
-            <ImageBackground source={header} style={[{ height: headerHeight }]}>
-              <Text style={styles.headerTitle}>
-                <Loc text="Send" />
-                {` ${coin.defaultName}`}
-              </Text>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              >
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-            </ImageBackground>
-            <View style={styles.body}>
-              <View style={styles.sectionContainer}>
-                <Loc style={[styles.title1]} text="Sending" />
-                <View style={styles.textInputView}>
-                  <TextInput
-                    style={[styles.textInput]}
-                    placeholder="0.01"
-                    value={amount}
-                    keyboardType="numeric"
-                    onChangeText={this.inputAmount}
-                  />
-                </View>
-              </View>
-              <View style={styles.sectionContainer}>
-                <Loc style={[styles.title2]} text="To" />
-                <View style={styles.textInputView}>
-                  <TextInput
-                    style={[styles.textInput]}
-                    value={to}
-                    onChangeText={(text) => {
-                      this.setState({ to: text }, this.validateConfirmControl.bind(this));
-                    }}
-                  />
-                  <TouchableOpacity
-                    style={styles.textInputIcon}
-                    onPress={this.onQrcodeScanPress}
-                  >
-                    <Image source={address} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.sectionContainer}>
-                <Loc style={[styles.title3]} text="Memo" />
-                <View style={styles.textInputView}>
-                  <TextInput
-                    style={[styles.textInput, { textAlignVertical: 'top' }]}
-                    placeholder={strings('Enter a transaction memo')}
-                    multiline
-                    numberOfLines={4}
-                    value={memo}
-                    onChange={(text) => this.setState({ memo: text })}
-                  />
-                </View>
-              </View>
-              <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
-                <Loc style={[styles.title2]} text="Miner fee" />
-                <Loc style={[styles.question]} text="How fast you want this done?" />
-                {this.renderFeeOptions()}
-              </View>
-              <View style={[styles.sectionContainer]}>
-                <View style={[styles.customRow]}>
-                  <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
-                  <Switch
-                    value={isCustomFee}
-                    onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
-                  />
-                </View>
-                {this.renderCustomFee(isCustomFee)}
-              </View>
+        <ImageBackground source={header} style={[{ height: headerHeight }]}>
+          <Text style={styles.headerTitle}>
+            <Loc text="Send" />
+            {` ${coin.defaultName}`}
+          </Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+          </TouchableOpacity>
+        </ImageBackground>
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.title1]} text="Sending" />
+            <View style={styles.textInputView}>
+              <TextInput
+                style={[styles.textInput]}
+                placeholder="0.01"
+                value={amount}
+                keyboardType="numeric"
+                onChangeText={this.inputAmount}
+              />
             </View>
           </View>
-          <View
-            style={[flex.flex1, styles.sectionContainer, {
-              opacity: enableConfirm ? 1 : 0.5,
-              width: '100%',
-              justifyContent: 'center',
-            }]}
-            pointerEvents={enableConfirm ? 'auto' : 'none'}
-          >
-            <ConfirmSlider // All parameter should be adjusted for the real case
-              ref={(ref) => { this.confirmSlider = ref; }}
-              width={screen.width - 50}
-              buttonSize={30}
-              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
-              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={15}
-              okButton={{ visible: true, duration: 400 }}
-              // onVerified={this.onConfirmSliderVerified}
-              onVerified={async () => {
-                if (global.passcode) {
-                  showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
-                } else {
-                  await this.onConfirmSliderVerified();
-                }
-              }}
-              icon={(
-                <Image
-                  source={isConfirm ? circleCheckIcon : circleIcon}
-                  style={{ width: 32, height: 32 }}
-                />
-                )}
-            >
-              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}</Text>
-            </ConfirmSlider>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.title2]} text="To" />
+            <View style={styles.textInputView}>
+              <TextInput
+                style={[styles.textInput]}
+                value={to}
+                onChangeText={(text) => {
+                  this.setState({ to: text }, this.validateConfirmControl.bind(this));
+                }}
+              />
+              <TouchableOpacity
+                style={styles.textInputIcon}
+                onPress={this.onQrcodeScanPress}
+              >
+                <Image source={address} />
+              </TouchableOpacity>
+            </View>
           </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.title3]} text="Memo" />
+            <View style={styles.textInputView}>
+              <TextInput
+                style={[styles.textInput, { textAlignVertical: 'top' }]}
+                placeholder={strings('Enter a transaction memo')}
+                multiline
+                numberOfLines={8}
+                value={memo}
+                onChange={(text) => this.setState({ memo: text })}
+              />
+            </View>
+          </View>
+          <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
+            <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
+            <Loc style={[styles.question]} text="How fast you want this done?" />
+            {this.renderFeeOptions()}
+          </View>
+          <View style={[styles.sectionContainer]}>
+            <View style={[styles.customRow]}>
+              <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
+              <Switch
+                value={isCustomFee}
+                onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
+              />
+            </View>
+            {this.renderCustomFee(isCustomFee)}
+          </View>
+        </View>
+        <View
+          style={[styles.sectionContainer, {
+            opacity: enableConfirm ? 1 : 0.5,
+            width: '100%',
+            justifyContent: 'center',
+          }]}
+          pointerEvents={enableConfirm ? 'auto' : 'none'}
+        >
+          <ConfirmSlider // All parameter should be adjusted for the real case
+            ref={(ref) => { this.confirmSlider = ref; }}
+            width={screen.width - 50}
+            buttonSize={30}
+            buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+            backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+            textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
+            borderRadius={15}
+            okButton={{ visible: true, duration: 400 }}
+              // onVerified={this.onConfirmSliderVerified}
+            onVerified={async () => {
+              if (global.passcode) {
+                showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
+              } else {
+                await this.onConfirmSliderVerified();
+              }
+            }}
+            icon={(
+              <Image
+                source={isConfirm ? circleCheckIcon : circleIcon}
+                style={{ width: 32, height: 32 }}
+              />
+              )}
+          >
+            <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}</Text>
+          </ConfirmSlider>
         </View>
         <Loader loading={loading} />
       </ScrollView>
