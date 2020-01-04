@@ -94,6 +94,10 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+def getCurrentTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -146,6 +150,10 @@ android {
                 output.versionCodeOverride =
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
             }
+        }
+        variant.outputs.all {
+            def buildType = variant.buildType.name
+            outputFileName = "rWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
         }
     }
 }
