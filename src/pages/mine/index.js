@@ -14,6 +14,7 @@ import flex from '../../assets/styles/layout.flex';
 import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
+import RSKad from '../../components/common/rsk.ad';
 import presetStyles from '../../assets/styles/style';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 
@@ -146,7 +147,6 @@ const styles = StyleSheet.create({
 
 const header = require('../../assets/images/misc/header.png');
 const avatar = require('../../assets/images/mine/avatar.png');
-const rsk = require('../../assets/images/mine/rsk.png');
 
 function Item({ data, title }) {
   return (
@@ -388,10 +388,7 @@ class MineIndex extends Component {
             />
           </View>
         </ScrollView>
-        <View style={styles.logoView}>
-          <Loc style={[styles.powerby]} text="Powered by" />
-          <Image style={presetStyles.rskIcon} source={rsk} />
-        </View>
+        <RSKad />
       </View>
     );
   }
