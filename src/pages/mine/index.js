@@ -15,7 +15,6 @@ import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
 import RSKad from '../../components/common/rsk.ad';
-import presetStyles from '../../assets/styles/style';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 
 const AVATAR_SIZE = 129;

@@ -17,6 +17,9 @@ const mapStateToProps = (state) => ({
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   currency: state.App.get('currency'),
   prices: state.Wallet.get('prices'),
+  isShowConfirmation: state.App.get('isShowConfirmation'),
+  confirmation: state.App.get('confirmation'),
+  confirmationCallback: state.App.get('confirmationCallback'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -29,6 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
   removeNotification: () => dispatch(appActions.removeNotification()),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
