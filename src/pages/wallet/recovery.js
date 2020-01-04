@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
-    minHeight: 170,
+    minHeight: 120,
     paddingBottom: 10,
   },
   headerImage: {
