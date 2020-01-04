@@ -412,7 +412,7 @@ class Transfer extends Component {
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
-      const transaction = new Transaction(coin, to, amount, '', feeParams);
+      let transaction = new Transaction(coin, to, amount, '', feeParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -423,6 +423,7 @@ class Transfer extends Component {
         hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
+      transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
