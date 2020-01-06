@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -22,6 +22,9 @@ import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
+
+const MEMO_NUM_OF_LINES = 8;
+const MEMO_LINE_HEIGHT = 15;
 
 const styles = StyleSheet.create({
   headerTitle: {
@@ -545,6 +548,21 @@ class Transfer extends Component {
     );
   }
 
+  renderMemo(memo) {
+    const paddingBottom = 4;
+    return (
+      <TextInput
+        style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
+        placeholder={strings('Enter a transaction memo')}
+        multiline
+        numberOfLines={Platform.OS === 'ios' ? null : MEMO_NUM_OF_LINES}
+        minHeight={(Platform.OS === 'ios' && MEMO_NUM_OF_LINES) ? (MEMO_LINE_HEIGHT * MEMO_NUM_OF_LINES + paddingBottom) : null}
+        value={memo}
+        onChange={(event) => this.setState({ memo: event.nativeEvent.text })}
+      />
+    );
+  }
+
   render() {
     const {
       loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm,
@@ -606,14 +624,7 @@ class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
-              <TextInput
-                style={[styles.textInput, { textAlignVertical: 'top' }]}
-                placeholder={strings('Enter a transaction memo')}
-                multiline
-                numberOfLines={8}
-                value={memo}
-                onChange={(text) => this.setState({ memo: text })}
-              />
+              {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
