@@ -549,16 +549,14 @@ class Transfer extends Component {
   }
 
   renderMemo(memo) {
-    const numberOfLines = MEMO_NUM_OF_LINES;
-    const lineHeight = MEMO_LINE_HEIGHT;
     const paddingBottom = 4;
     return (
       <TextInput
         style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
         placeholder={strings('Enter a transaction memo')}
         multiline
-        numberOfLines={Platform.OS === 'ios' ? null : numberOfLines}
-        minHeight={(Platform.OS === 'ios' && numberOfLines) ? (lineHeight * numberOfLines + paddingBottom) : null}
+        numberOfLines={Platform.OS === 'ios' ? null : MEMO_NUM_OF_LINES}
+        minHeight={(Platform.OS === 'ios' && MEMO_NUM_OF_LINES) ? (MEMO_LINE_HEIGHT * MEMO_NUM_OF_LINES + paddingBottom) : null}
         value={memo}
         onChange={(event) => this.setState({ memo: event.nativeEvent.text })}
       />
