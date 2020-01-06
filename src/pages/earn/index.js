@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SpendIndex extends Component {
+export default class EarnIndex extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -59,7 +59,7 @@ export default class SpendIndex extends Component {
   }
 }
 
-SpendIndex.propTypes = {
+EarnIndex.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
