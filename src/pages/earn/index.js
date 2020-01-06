@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     marginHorizontal: 30,
-    marginBottom: 20,
+    marginBottom: 50,
     marginTop: headerBottomY,
   },
   title: {
