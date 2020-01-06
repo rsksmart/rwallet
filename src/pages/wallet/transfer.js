@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -545,6 +545,23 @@ class Transfer extends Component {
     );
   }
 
+  renderMemo(memo) {
+    const numberOfLines = 8;
+    const lineHeight = 15;
+    const paddingBottom = 4;
+    return (
+      <TextInput
+        style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
+        placeholder={strings('Enter a transaction memo')}
+        multiline
+        numberOfLines={Platform.OS === 'ios' ? null : numberOfLines}
+        minHeight={(Platform.OS === 'ios' && numberOfLines) ? (lineHeight * numberOfLines + paddingBottom) : null}
+        value={memo}
+        onChange={(event) => this.setState({ memo: event.nativeEvent.text })}
+      />
+    );
+  }
+
   render() {
     const {
       loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm,
@@ -606,14 +623,7 @@ class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.title3]} text="Memo" />
             <View style={styles.textInputView}>
-              <TextInput
-                style={[styles.textInput, { textAlignVertical: 'top' }]}
-                placeholder={strings('Enter a transaction memo')}
-                multiline
-                numberOfLines={8}
-                value={memo}
-                onChange={(text) => this.setState({ memo: text })}
-              />
+              {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
