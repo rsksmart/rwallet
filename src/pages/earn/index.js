@@ -8,7 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import RSKad from '../../components/common/rsk.ad';
 
-const headerImage = require('../../assets/images/misc/shaking.hands.png');
+const headerImage = require('../../assets/images/misc/title.image.earn.png');
 
 const styles = StyleSheet.create({
   body: {
