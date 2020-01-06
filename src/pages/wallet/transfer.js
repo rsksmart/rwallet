@@ -23,6 +23,9 @@ import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 
+const MEMO_NUM_OF_LINES = 8;
+const MEMO_LINE_HEIGHT = 15;
+
 const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
@@ -546,8 +549,8 @@ class Transfer extends Component {
   }
 
   renderMemo(memo) {
-    const numberOfLines = 8;
-    const lineHeight = 15;
+    const numberOfLines = MEMO_NUM_OF_LINES;
+    const lineHeight = MEMO_LINE_HEIGHT;
     const paddingBottom = 4;
     return (
       <TextInput
