@@ -41,7 +41,7 @@ export default class SpendIndex extends Component {
   render() {
     return (
       <ScrollView>
-        <EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} />
+        <EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />
         <View style={styles.body}>
           <Loc style={[styles.title]} text="Below features are coming soon to Spend…" />
           <View style={styles.greenLine} />

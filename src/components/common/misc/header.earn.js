@@ -49,18 +49,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     bottom: 90,
-    backgroundColor: '#61DABF',
     flexDirection: 'row',
     justifyContent: 'center',
   },
 });
 
-export default function EarnHeader({ title, imageSource }) {
+export default function EarnHeader({ title, imageSource, imageBgColor }) {
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
       <Loc style={[styles.headerTitle, styles.title]} text={title} />
-      <View style={styles.titleImageView}>
-        <Image style={[styles.titleImage]} source={imageSource} />
+      <View style={[styles.titleImageView, { backgroundColor: imageBgColor }]}>
+        <Image style={styles.titleImage} source={imageSource} />
       </View>
       <Loc style={[styles.coming]} text="Coming soon..." />
     </ImageBackground>
@@ -70,4 +69,5 @@ export default function EarnHeader({ title, imageSource }) {
 EarnHeader.propTypes = {
   title: PropTypes.string.isRequired,
   imageSource: PropTypes.number.isRequired,
+  imageBgColor: PropTypes.string.isRequired,
 };
