@@ -5,6 +5,8 @@ import {
 import PropTypes from 'prop-types';
 import EarnHeader, { headerBottomY } from '../../components/common/misc/header.earn';
 import Loc from '../../components/common/misc/loc';
+import flex from '../../assets/styles/layout.flex';
+import RSKad from '../../components/common/rsk.ad';
 
 const headerImage = require('../../assets/images/misc/financial.growth.png');
 
@@ -40,16 +42,19 @@ export default class SpendIndex extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />
-        <View style={styles.body}>
-          <Loc style={[styles.title]} text="Below features are coming soon to Spend…" />
-          <View style={styles.greenLine} />
-          <Loc style={[styles.listText]} text="- Buy 100+ Gift Cards with cryptocurrency" />
-          <Loc style={[styles.listText]} text="- Swap between any token in your wallet" />
-          <Loc style={[styles.listText]} text="- Multi-sign approval of transactions" />
-        </View>
-      </ScrollView>
+      <View style={[flex.flex1]}>
+        <ScrollView>
+          <EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />
+          <View style={styles.body}>
+            <Loc style={[styles.title]} text="Below features are coming soon to Spend…" />
+            <View style={styles.greenLine} />
+            <Loc style={[styles.listText]} text="- Buy 100+ Gift Cards with cryptocurrency" />
+            <Loc style={[styles.listText]} text="- Swap between any token in your wallet" />
+            <Loc style={[styles.listText]} text="- Multi-sign approval of transactions" />
+          </View>
+        </ScrollView>
+        <RSKad />
+      </View>
     );
   }
 }

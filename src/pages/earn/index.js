@@ -5,6 +5,8 @@ import {
 import PropTypes from 'prop-types';
 import EarnHeader, { headerBottomY } from '../../components/common/misc/header.earn';
 import Loc from '../../components/common/misc/loc';
+import flex from '../../assets/styles/layout.flex';
+import RSKad from '../../components/common/rsk.ad';
 
 const headerImage = require('../../assets/images/misc/shaking.hands.png');
 
@@ -40,16 +42,19 @@ export default class SpendIndex extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <EarnHeader title="Earn cryptocurrency with ease" imageSource={headerImage} imageBgColor="#A2C4F7" />
-        <View style={styles.body}>
-          <Loc style={[styles.title]} text="Below features are coming soon to Earn…" />
-          <View style={styles.greenLine} />
-          <Loc style={[styles.listText]} text="- Earn cryptocurrency by completing task" />
-          <Loc style={[styles.listText]} text="- Gain interests from a variety of Defi products" />
-          <Loc style={[styles.listText]} text="- Cash Back" />
-        </View>
-      </ScrollView>
+      <View style={[flex.flex1]}>
+        <ScrollView>
+          <EarnHeader title="Earn cryptocurrency with ease" imageSource={headerImage} imageBgColor="#A2C4F7" />
+          <View style={styles.body}>
+            <Loc style={[styles.title]} text="Below features are coming soon to Earn…" />
+            <View style={styles.greenLine} />
+            <Loc style={[styles.listText]} text="- Earn cryptocurrency by completing task" />
+            <Loc style={[styles.listText]} text="- Gain interests from a variety of Defi products" />
+            <Loc style={[styles.listText]} text="- Cash Back" />
+          </View>
+        </ScrollView>
+        <RSKad />
+      </View>
     );
   }
 }
