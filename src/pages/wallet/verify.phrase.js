@@ -7,7 +7,6 @@ import {
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-// import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
@@ -15,8 +14,8 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-
-// import appActions from '../../redux/app/actions';
+import flex from '../../assets/styles/layout.flex';
+import Button from '../../components/common/button/button';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -39,6 +38,30 @@ const styles = StyleSheet.create({
     letterSpacing: 0.29,
     alignSelf: 'center',
   },
+  confirmationView: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+  },
+  confirmationTitle: {
+    fontSize: 15,
+    fontWeight: '500',
+    marginTop: 20,
+  },
+  confirmationButton: {
+    marginTop: 20,
+  },
+  confirmationClearButton: {
+    marginTop: 20,
+  },
+  confirmationClearButtonText: {
+    color: '#00B520',
+    fontSize: 16,
+    fontWeight: '500',
+  },
 });
 
 class VerifyPhrase extends Component {
@@ -57,6 +80,8 @@ class VerifyPhrase extends Component {
     this.onTagsPressed = this.onTagsPressed.bind(this);
     this.onGobackPress = this.onGobackPress.bind(this);
     this.reset = this.reset.bind(this);
+    this.onConfirmPress = this.onConfirmPress.bind(this);
+    this.onClearPress = this.onClearPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -88,6 +113,11 @@ class VerifyPhrase extends Component {
   }
 
   onWordFieldPress(i) {
+    const { isShowConfirmation } = this.state;
+    // Avoid user press world field when confirmation
+    if (isShowConfirmation) {
+      return;
+    }
     this.revert(i);
   }
 
@@ -97,35 +127,41 @@ class VerifyPhrase extends Component {
     createKey(null, phrase, coins, walletManager);
   }
 
-  async onTagsPressed(index) {
+  onConfirmPress() {
     const { addNotification } = this.props;
     const { shuffleWords, selectedWordIndexs } = this.state;
+    const selectedWords = [];
+    selectedWordIndexs.forEach((selectedIndex) => {
+      selectedWords.push(shuffleWords[selectedIndex]);
+    });
+
+    const isEqual = _.isEqual(selectedWords, this.correctPhrases);
+
+    if (isEqual) {
+      this.onPhraseValid();
+    } else {
+      const notification = createErrorNotification(
+        'Incorrect backup phrase',
+        'verifyPhraseAlertTitle',
+        'START OVER',
+      );
+      addNotification(notification);
+    }
+  }
+
+  onClearPress() {
+    this.reset();
+  }
+
+  onTagsPressed(index) {
+    const { selectedWordIndexs } = this.state;
     selectedWordIndexs.push(index);
     this.setState({
       selectedWordIndexs,
     });
 
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
-      const selectedWords = [];
-      selectedWordIndexs.forEach((selectedIndex) => {
-        selectedWords.push(shuffleWords[selectedIndex]);
-      });
-
-      const isEqual = _.isEqual(selectedWords, this.correctPhrases);
-      console.log('selectedWords', selectedWords);
-      console.log('this.correctPhrases', this.correctPhrases);
-      console.log('isEqual', isEqual);
-
-      if (isEqual) {
-        this.onPhraseValid();
-      } else {
-        const notification = createErrorNotification(
-          'Incorrect backup phrase',
-          'verifyPhraseAlertTitle',
-          'START OVER',
-        );
-        addNotification(notification);
-      }
+      this.setState({ isShowConfirmation: true });
     }
   }
 
@@ -139,9 +175,11 @@ class VerifyPhrase extends Component {
       // Shuffle the 12-word here so user need to choose from a different order than the last time
       // We want to make sure they really write down the phrase
       const shuffleWords = _.shuffle(this.correctPhrases);
-      this.state = { selectedWordIndexs: [], shuffleWords, isLoading: false };
+      this.state = {
+        selectedWordIndexs: [], shuffleWords, isLoading: false, isShowConfirmation: false,
+      };
     } else {
-      this.setState({ selectedWordIndexs: [] });
+      this.setState({ selectedWordIndexs: [], isShowConfirmation: false });
     }
   }
 
@@ -185,13 +223,24 @@ class VerifyPhrase extends Component {
     return words;
   }
 
+  renderConfirmation() {
+    const { isShowConfirmation } = this.state;
+    return !isShowConfirmation ? null : (
+      <View style={styles.confirmationView}>
+        <Loc style={[styles.confirmationTitle]} text="Is this correct?" />
+        <Button style={[styles.confirmationButton]} text="Confirm" onPress={this.onConfirmPress} />
+        <TouchableOpacity style={styles.confirmationClearButton} onPress={this.onClearPress}><Loc style={[styles.confirmationClearButtonText]} text="Clear" /></TouchableOpacity>
+      </View>
+    );
+  }
+
   render() {
     const { shuffleWords, selectedWordIndexs, isLoading } = this.state;
     return (
-      <View>
+      <View style={flex.flex1}>
         <Loader loading={isLoading} />
         <Header title="Backup Phrase" goBack={this.onGobackPress} />
-        <View style={[screenHelper.styles.body]}>
+        <View style={[screenHelper.styles.body, flex.flex1]}>
           <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
           <Loc style={[styles.tip]} text="Tap each word in the correct order" />
           <Tags
@@ -201,6 +250,7 @@ class VerifyPhrase extends Component {
             onPress={this.onTagsPressed}
             disableIndexs={selectedWordIndexs}
           />
+          { this.renderConfirmation() }
         </View>
       </View>
     );

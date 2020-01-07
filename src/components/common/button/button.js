@@ -26,9 +26,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Button({ text, onPress, disabled }) {
+export default function Button({
+  text, onPress, disabled, style,
+}) {
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
       <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
         <Loc style={[styles.buttonText]} text={text} />
       </View>
@@ -40,8 +42,10 @@ Button.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  style: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 Button.defaultProps = {
   disabled: false,
+  style: null,
 };
