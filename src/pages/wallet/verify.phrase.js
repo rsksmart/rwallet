@@ -136,9 +136,6 @@ class VerifyPhrase extends Component {
     });
 
     const isEqual = _.isEqual(selectedWords, this.correctPhrases);
-    console.log('selectedWords', selectedWords);
-    console.log('this.correctPhrases', this.correctPhrases);
-    console.log('isEqual', isEqual);
 
     if (isEqual) {
       this.onPhraseValid();
