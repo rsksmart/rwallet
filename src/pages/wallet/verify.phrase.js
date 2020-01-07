@@ -7,7 +7,6 @@ import {
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-// import walletManager from '../../common/wallet/walletManager';
 import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
@@ -17,7 +16,6 @@ import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
-// import appActions from '../../redux/app/actions';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
