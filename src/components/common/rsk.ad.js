@@ -28,7 +28,10 @@ const styles = StyleSheet.create({
 
 const RSKAd = () => (
   <LinearGradient
-    colors={['transparent', '#ffffff']}
+    colors={['#ffffff00', '#ffffff']}
+    start={{ x: 0, y: 0 }}
+    // end.y param is gradient proportion in y axis. It is seted to 0.85 more comfortable.
+    end={{ x: 0, y: 0.85 }}
     style={[flex.justifyEnd, styles.logoView]}
   >
     <Loc style={[styles.powerby]} text="Powered by" />
