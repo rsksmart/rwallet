@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   confirmationView: {
     width: '100%',
     height: 200,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
   confirmationTitle: {
     fontSize: 15,
     fontWeight: '500',
+    marginTop: 20,
   },
   confirmationButton: {
     marginTop: 20,
