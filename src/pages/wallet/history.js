@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
@@ -290,6 +291,16 @@ class History extends Component {
     header: null,
   });
 
+  static getPendingBalance(transactions) {
+    let pendingBalance = new BigNumber(0);
+    _.each(transactions, (transaction) => {
+      if (transaction.state === 'Receiving' && transaction.amount) {
+        pendingBalance = pendingBalance.plus(transaction.amount);
+      }
+    });
+    return pendingBalance;
+  }
+
   static createListData(transactions, symbol, address) {
     if (!transactions) {
       return [];
@@ -298,12 +309,13 @@ class History extends Component {
     const items = [];
     transactions.forEach((transaction) => {
       let amountText = ' ';
+      let amount = null;
       let datetime = transaction.createdAt;
       let isComfirmed = true;
       let isSender = false;
       let state = 'Receiving';
       if (transaction.value) {
-        const amount = common.convertUnitToCoinAmount(symbol, transaction.value);
+        amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
       if (address === transaction.from) {
@@ -335,7 +347,9 @@ class History extends Component {
       } else {
         datetime = '';
       }
-      items.push({ state, datetime, amount: amountText });
+      items.push({
+        state, datetime, amountText, amount,
+      });
     });
     return items;
   }
@@ -353,7 +367,7 @@ class History extends Component {
         renderItem={({ item }) => (
           <Item
             title={item.state}
-            amount={item.amount}
+            amount={item.amountText}
             datetime={item.datetime}
           />
         )}
@@ -409,25 +423,28 @@ class History extends Component {
   }
 
   componentDidMount() {
-    const {
-      symbol, transactions, address,
-    } = this.state;
+    const { currency, prices } = this.props;
+    const { symbol, transactions, address } = this.state;
     const listData = History.createListData(transactions, symbol, address);
-    this.setState({ listData });
+    const pendingBalance = History.getPendingBalance(listData);
+    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
+    this.setState({ listData, pendingBalance, pendingBalanceValue });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      updateTimestamp, navigation,
+      updateTimestamp, navigation, currency, prices,
     } = nextProps;
-    const { updateTimestamp: lastUpdateTimestamp } = this.props;
+    const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
     const { symbol } = this.state;
     const { coin } = navigation.state.params;
-    if (updateTimestamp !== lastUpdateTimestamp && coin) {
+    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
       const {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
+        balance, balanceValue, transactions, address,
       } = coin;
       const listData = History.createListData(transactions, symbol, address);
+      const pendingBalance = History.getPendingBalance(listData);
+      const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
       const state = {
         balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, listData,
       };
@@ -528,7 +545,7 @@ class History extends Component {
     const currencySymbol = getCurrencySymbol(currency);
     const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
     const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
     const pendingAssetValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
     return (
       <ScrollView>
@@ -590,6 +607,7 @@ History.propTypes = {
   currency: PropTypes.string.isRequired,
   walletManager: PropTypes.shape({}),
   updateTimestamp: PropTypes.number.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 History.defaultProps = {
@@ -600,6 +618,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
+  prices: state.Wallet.get('prices'),
 });
 
 const mapDispatchToProps = () => ({
