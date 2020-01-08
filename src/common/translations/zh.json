@@ -16,7 +16,7 @@
   "Add Wallet": "创建钱包",
   "Select Wallet Currency": "选择钱包类型",
   "Recovery Phrase": "恢复助记词",
-  "Verify Your Phrase": "验证你的助记词",
+  "Verify Your Phrase": "验证助记词",
   "Verify Phrase Success": "验证助记词成功",
   "Verify Fingerprint": "验证指纹",
   "Verify Passcode": "验证密码",
@@ -165,5 +165,5 @@
   "Coming soon...": "即将推出...",
   "Is this correct?": "这是正确的助记词？",
   "Clear": "清除",
-  "START OVER": "重来"
+  "START OVER": "重新开始"
 }
