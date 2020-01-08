@@ -53,7 +53,7 @@
   "Sending": "发送中",
   "Received": "已接收",
   "To": "接收地址",
-  "Memo": "备注",
+  "Memo (optional)": "备注（可选）",
   "Miner fee": "费用",
   "Custom": "自定义",
   "Slow": "慢",

@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
   },
   customFeeSliderWrapper: {
     height: 60,
+    marginTop: 5,
   },
   customFeeText: {
     alignSelf: 'flex-end',
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   customTitle: {
     color: '#000000',
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '500',
     letterSpacing: 0.31,
     marginBottom: 10,
     marginTop: 10,
@@ -634,7 +635,7 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="Memo" />
+            <Loc style={[styles.title3]} text="Memo (optional)" />
             <View style={styles.textInputView}>
               {this.renderMemo(memo)}
             </View>
