@@ -9,6 +9,7 @@ import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -132,7 +133,7 @@ export default class TransferCompleted extends Component {
 
   render() {
     return (
-      <View style={[flex.flex1]}>
+      <SafeAreaView style={[flex.flex1]}>
         <Header
           title="Reset Passcode"
           goBack={this.onBackPress}
@@ -153,7 +154,7 @@ export default class TransferCompleted extends Component {
             />
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

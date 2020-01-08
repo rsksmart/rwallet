@@ -8,6 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 // eslint-disable-next-line import/no-unresolved
 const EventEmitter = require('EventEmitter');
@@ -67,7 +68,7 @@ class StartPage extends Component {
     const { navigation, isInitWithParseDone, wallets } = this.props;
     const { version } = this.state;
     return (
-      <View style={styles.page}>
+      <SafeAreaView style={[styles.page]}>
         <View style={styles.logo}>
           <Image source={logo} />
         </View>
@@ -82,7 +83,7 @@ class StartPage extends Component {
         </View>
         )}
         <Text style={styles.versionText}>{`version: ${version}`}</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 }

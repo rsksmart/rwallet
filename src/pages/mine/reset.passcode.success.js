@@ -9,6 +9,7 @@ import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 
 const completed = require('../../assets/images/icon/completed.png');
@@ -43,35 +44,37 @@ export default class ResetPasscodeSuccess extends Component {
     render() {
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
-          <Header
-            title="Reset Passcode"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={screenHelper.styles.body}>
-            <View style={styles.content}>
-              <Image style={styles.check} source={completed} />
-              <Loc style={[styles.title]} text="Reset completed!" />
-            </View>
-          </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="BACK TO SETTING"
-              onPress={async () => {
-                const resetAction = StackActions.reset({
-                  index: 1,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'MineIndex' }),
-                    NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
+        <SafeAreaView>
+          <View style={[flex.flex1]}>
+            <Header
+              title="Reset Passcode"
+              goBack={() => {
+                navigation.goBack();
               }}
             />
+            <View style={screenHelper.styles.body}>
+              <View style={styles.content}>
+                <Image style={styles.check} source={completed} />
+                <Loc style={[styles.title]} text="Reset completed!" />
+              </View>
+            </View>
+            <View style={styles.buttonView}>
+              <Button
+                text="BACK TO SETTING"
+                onPress={async () => {
+                  const resetAction = StackActions.reset({
+                    index: 1,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'MineIndex' }),
+                      NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
+                    ],
+                  });
+                  navigation.dispatch(resetAction);
+                }}
+              />
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
 }

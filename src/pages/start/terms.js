@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
 import TermRow from './term.row';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -49,35 +50,37 @@ export default class TermsPage extends Component {
 
   render() {
     return (
-      <View style={styles.page}>
-        <Image style={styles.logo} source={logo} />
-        <View style={styles.termsView}>
-          <View style={styles.termsView2}>
-            <TermRow
-              text="TermsLine1"
-              delay={0}
+      <SafeAreaView>
+        <View style={styles.page}>
+          <Image style={styles.logo} source={logo} />
+          <View style={styles.termsView}>
+            <View style={styles.termsView2}>
+              <TermRow
+                text="TermsLine1"
+                delay={0}
+              />
+              <TermRow
+                text="TermsLine2"
+                delay={0.5}
+              />
+              <TermRow text="TermsLine3" delay={1} />
+            </View>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableOpacity style={styles.completeTerms}>
+              <Loc style={[styles.completeTermsText]} text="View Complete Terms Of Use" />
+            </TouchableOpacity>
+            <Button
+              style={styles.button}
+              text="COMFIRM & FINISH"
+              onPress={() => {
+                const { navigation } = this.props;
+                navigation.navigate('PrimaryTabNavigator');
+              }}
             />
-            <TermRow
-              text="TermsLine2"
-              delay={0.5}
-            />
-            <TermRow text="TermsLine3" delay={1} />
           </View>
         </View>
-        <View style={styles.buttonView}>
-          <TouchableOpacity style={styles.completeTerms}>
-            <Loc style={[styles.completeTermsText]} text="View Complete Terms Of Use" />
-          </TouchableOpacity>
-          <Button
-            style={styles.button}
-            text="COMFIRM & FINISH"
-            onPress={() => {
-              const { navigation } = this.props;
-              navigation.navigate('PrimaryTabNavigator');
-            }}
-          />
-        </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

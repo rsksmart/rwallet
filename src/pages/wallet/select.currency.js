@@ -15,6 +15,7 @@ import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import flex from '../../assets/styles/layout.flex';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -136,7 +137,7 @@ class WalletSelectCurrency extends Component {
       const { isLoading } = this.state;
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
+        <SafeAreaView style={[flex.flex1]}>
           <ScrollView>
             <Header title="Select Wallet Currency" goBack={() => navigation.goBack()} />
             <View style={[screenHelper.styles.body]}>
@@ -154,7 +155,7 @@ class WalletSelectCurrency extends Component {
           <View style={[styles.buttonView]}>
             <Button text="CREATE" onPress={this.onCreateButtonPress} />
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
 }

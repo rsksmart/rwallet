@@ -12,6 +12,7 @@ import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -89,7 +90,7 @@ class RecoveryPhrase extends Component {
       const { phrases } = this.state;
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
+        <SafeAreaView style={[flex.flex1]}>
           <Header title="Recovery Phrase" goBack={() => navigation.goBack()} />
           <View style={[screenHelper.styles.body, flex.flex1]}>
             <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
@@ -105,7 +106,7 @@ class RecoveryPhrase extends Component {
               <Button text="NEXT" onPress={this.onNextPress} />
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
 }

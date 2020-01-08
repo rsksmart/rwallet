@@ -17,6 +17,7 @@ import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import { screen } from '../../common/info';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -186,57 +187,59 @@ class WalletRecovery extends Component {
       const { phrase, phrases, isCanSubmit } = this.state;
       const { navigation } = this.props;
       return (
-        <ScrollView style={{ flex: 1 }}>
-          <View style={styles.wapper}>
-            <View style={[flex.flex10]}>
-              <Header
-                title="Recovery Phrase"
-                goBack={() => {
-                  navigation.goBack();
-                }}
-              />
-              <View style={[screenHelper.styles.body, flex.flex1, { paddingHorizontal: 20, marginTop: screenHelper.bodyMarginTop + 10 }]}>
-                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-                <View style={styles.phraseView}>
-                  <TextInput
-                    autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                    // This code uses a ref to store a reference to a DOM node
-                                    // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                    ref={(ref) => {
-                      this.phraseInput = ref;
-                    }}
-                                    // set blurOnSubmit to false, to prevent keyboard flickering.
-                    blurOnSubmit={false}
-                    style={[presetStyles.textInput, styles.input]}
-                    onChangeText={this.onChangeText}
-                    onSubmitEditing={this.onSubmitEditing}
-                    value={phrase}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                    <Tags
-                      style={[{ flex: 1 }]}
-                      data={phrases}
-                      onPress={this.onTagsPress}
+        <SafeAreaView>
+          <ScrollView style={{ flex: 1 }}>
+            <View style={styles.wapper}>
+              <View style={[flex.flex10]}>
+                <Header
+                  title="Recovery Phrase"
+                  goBack={() => {
+                    navigation.goBack();
+                  }}
+                />
+                <View style={[screenHelper.styles.body, flex.flex1, { paddingHorizontal: 20, marginTop: screenHelper.bodyMarginTop + 10 }]}>
+                  <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+                  <View style={styles.phraseView}>
+                    <TextInput
+                      autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                      // This code uses a ref to store a reference to a DOM node
+                                      // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                      ref={(ref) => {
+                        this.phraseInput = ref;
+                      }}
+                                      // set blurOnSubmit to false, to prevent keyboard flickering.
+                      blurOnSubmit={false}
+                      style={[presetStyles.textInput, styles.input]}
+                      onChangeText={this.onChangeText}
+                      onSubmitEditing={this.onSubmitEditing}
+                      value={phrase}
+                      autoCapitalize="none"
+                      autoCorrect={false}
                     />
+                    <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                      <Tags
+                        style={[{ flex: 1 }]}
+                        data={phrases}
+                        onPress={this.onTagsPress}
+                      />
+                    </View>
+                  </View>
+                  <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                    <Loc style={[styles.sectionTitle]} text="Advanced Options" />
+                    <SwitchListItem title={strings('Specify derivation path')} value={false} />
                   </View>
                 </View>
-                <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Loc style={[styles.sectionTitle]} text="Advanced Options" />
-                  <SwitchListItem title={strings('Specify derivation path')} value={false} />
-                </View>
+              </View>
+              <View style={[flex.flex1, styles.sectionContainer, { width: '100%', justifyContent: 'center', alignItems: 'center' }]}>
+                <Button
+                  text="IMPORT"
+                  onPress={this.onImportPress}
+                  disabled={!isCanSubmit}
+                />
               </View>
             </View>
-            <View style={[flex.flex1, styles.sectionContainer, { width: '100%', justifyContent: 'center', alignItems: 'center' }]}>
-              <Button
-                text="IMPORT"
-                onPress={this.onImportPress}
-                disabled={!isCanSubmit}
-              />
-            </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </SafeAreaView>
       );
     }
 }
