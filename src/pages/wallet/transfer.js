@@ -234,6 +234,7 @@ const DEFAULT_BTC_MIN_FEE = 60000;
 const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const MAX_FEE_TIMES = 2;
+const PLACEHODLER_AMOUNT = 0.001;
 
 const header = require('../../assets/images/misc/header.png');
 // const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
@@ -243,6 +244,18 @@ class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
   });
+
+  static generateAmountPlaceholderText(symbol, currency, prices) {
+    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
+    let amountPlaceholderText = `${amountText} ${symbol}`;
+    if (prices) {
+      const currencySymbol = common.getCurrencySymbol(currency);
+      const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
+      const amountValueText = common.getAssetValueString(amountValue, amountValue);
+      amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+    }
+    return amountPlaceholderText;
+  }
 
   constructor(props) {
     super(props);
@@ -260,6 +273,7 @@ class Transfer extends Component {
       customFeeValue: new BigNumber(0),
       feeSymbol: null,
       feeSliderValue: 0,
+      amountPlaceholderText: '',
     };
 
     this.confirm = this.confirm.bind(this);
@@ -278,13 +292,15 @@ class Transfer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { prices, currency } = nextProps;
+    const { prices, currency, navigation } = nextProps;
     const { prices: curPrices } = this.props;
+    const { coin } = navigation.state.params;
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      this.setState({ customFeeValue });
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+      this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
 
@@ -447,7 +463,8 @@ class Transfer extends Component {
       feeData.push(item);
     }
     this.mediumFee = feeData[1].coin;
-    this.setState({ feeData, feeSymbol });
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+    this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
   async confirm() {
@@ -611,7 +628,7 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm,
+      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm, amountPlaceholderText,
     } = this.state;
     const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
@@ -644,6 +661,7 @@ class Transfer extends Component {
             </View>
             <View style={styles.textInputView}>
               <TextInput
+                placeholder={amountPlaceholderText}
                 style={[styles.textInput]}
                 value={amount}
                 keyboardType="numeric"
