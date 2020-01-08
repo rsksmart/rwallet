@@ -388,7 +388,7 @@ class Transfer extends Component {
       }
       const amount = coin.balance.minus(fee);
       const amountText = common.getBalanceString(coin.symbol, amount);
-      this.setState({ amount: amountText });
+      this.inputAmount(amountText);
     }
   }
 
