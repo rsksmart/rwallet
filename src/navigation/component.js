@@ -127,15 +127,18 @@ class RootComponent extends Component {
     } = this.props;
 
     return (
-      <View style={[flex.flex1]}>
-        <Root>
-          <SwitchNavi uriPrefix={uriPrefix} />
-          {false && <UpdateModal showUpdate mandatory={false} />}
-          <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
-          <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
-          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
-          <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
-        </Root>
+      <View style={flex.flex1}>
+        <View style={[flex.flex1]}>
+          <Root>
+            <SwitchNavi uriPrefix={uriPrefix} />
+            {false && <UpdateModal showUpdate mandatory={false} />}
+            <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
+            <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
+            <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
+            <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
+          </Root>
+        </View>
+        <View style={{ height: 22, backgroundColor: 'black' }} />
       </View>
     );
   }
