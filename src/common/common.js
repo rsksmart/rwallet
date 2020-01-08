@@ -81,14 +81,14 @@ const common = {
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
    */
-  getBalanceString(symbol, balance) {
+  getBalanceString(symbol, balance, mode) {
     const decimalPlaces = config.symbolDecimalPlaces[symbol];
     if (balance) {
       let balanceBigNumber = balance;
       if (typeof balance === 'number' || typeof value === 'string') {
         balanceBigNumber = new BigNumber(balance);
       }
-      return balanceBigNumber.decimalPlaces(decimalPlaces).toFixed();
+      return balanceBigNumber.decimalPlaces(decimalPlaces, mode).toFixed();
     }
     return null;
   },

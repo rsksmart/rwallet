@@ -387,7 +387,7 @@ class Transfer extends Component {
         fee = customFee;
       }
       const amount = coin.balance.minus(fee);
-      const amountText = common.getBalanceString(coin.symbol, amount);
+      const amountText = common.getBalanceString(coin.symbol, amount, BigNumber.ROUND_DOWN);
       this.inputAmount(amountText);
     }
   }
