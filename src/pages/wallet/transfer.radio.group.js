@@ -134,16 +134,22 @@ const styles = StyleSheet.create({
     width: '33%',
   },
   radioItemLeft: {},
-  radioItemText1: {
+  radioItemTitle: {
     color: '#000000',
     fontSize: 16,
     letterSpacing: 0.31,
+    fontWeight: '500',
+    marginBottom: 1,
   },
-  radioItemText2: {
+  radioItemTitleSelected: {
+    fontWeight: '700',
+  },
+  radioItemText: {
     color: '#4A4A4A',
     fontSize: 10,
     fontWeight: '300',
     letterSpacing: 0.23,
+    marginTop: 2,
   },
   radioCheck: {
     fontSize: 20,
@@ -179,11 +185,11 @@ const styles = StyleSheet.create({
 });
 
 function Item({
-  name, coin, value, selectIndex, onPress,
+  name, coin, value, isSelected, onPress,
 }) {
   const check = (
     <View style={styles.circle}>
-      {selectIndex && <View style={styles.checkedCircle} />}
+      {isSelected && <View style={styles.checkedCircle} />}
     </View>
   );
   return (
@@ -192,9 +198,9 @@ function Item({
         {check}
       </View>
       <View style={styles.radioItemRight}>
-        <Loc style={[styles.radioItemText1]} text={name} />
-        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{coin}</ResponsiveText>
-        <ResponsiveText fontStyle={[styles.radioItemText2]} maxFontSize={12}>{value}</ResponsiveText>
+        <Loc style={isSelected ? [styles.radioItemTitle, styles.radioItemTitleSelected] : [styles.radioItemTitle]} text={name} />
+        <ResponsiveText fontStyle={[styles.radioItemText]} maxFontSize={12}>{coin}</ResponsiveText>
+        <ResponsiveText fontStyle={[styles.radioItemText]} maxFontSize={12}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );
@@ -204,7 +210,7 @@ Item.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   coin: PropTypes.string.isRequired,
-  selectIndex: PropTypes.bool.isRequired,
+  isSelected: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired,
 };
 
@@ -234,7 +240,7 @@ export default class RadioGroup extends Component {
             coin={item.coin}
             value={item.value}
             key={i.toString()}
-            selectIndex={selectIndex === i}
+            isSelected={selectIndex === i}
             onPress={() => onPress(i)}
           />,
         );
@@ -245,11 +251,7 @@ export default class RadioGroup extends Component {
 
   constructor(props) {
     super(props);
-    const { selectIndex } = this.props;
-    this.state = {
-      selectIndex,
-      listData: [],
-    };
+    this.state = { listData: [] };
     this.onPress = this.onPress.bind(this);
   }
 
@@ -271,12 +273,12 @@ export default class RadioGroup extends Component {
 
   onPress(i) {
     const { onChange } = this.props;
-    this.setState({ selectIndex: i });
     onChange(i);
   }
 
   render() {
-    const { selectIndex, listData } = this.state;
+    const { selectIndex } = this.props;
+    const { listData } = this.state;
     return (
       <View style={styles.RadioGroup}>
         {RadioGroup.renderItems(listData, selectIndex, this.onPress)}

@@ -202,6 +202,14 @@ const styles = StyleSheet.create({
   wapper: {
     height: screen.height - 25,
   },
+  customTitle: {
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: '400',
+    letterSpacing: 0.31,
+    marginBottom: 10,
+    marginTop: 10,
+  },
 });
 
 
@@ -270,7 +278,7 @@ class Transfer extends Component {
   onGroupSelect(index) {
     const preferences = ['low', 'medium', 'high'];
     const preference = preferences[index];
-    this.setState({ preference });
+    this.setState({ preference, feeLevel: index, isCustomFee: false });
   }
 
   onQrcodeScanPress() {
@@ -523,7 +531,7 @@ class Transfer extends Component {
 
   renderFeeOptions() {
     const {
-      feeSymbol, feeData, feeLevel, currency,
+      feeSymbol, feeData, feeLevel, currency, isCustomFee,
     } = this.state;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
@@ -539,10 +547,15 @@ class Transfer extends Component {
       item.value = `${currencySymbol}${coinValue}`;
       items.push(item);
     }
+    let selectIndex = null;
+    if (!isCustomFee) {
+      selectIndex = feeLevel;
+    }
     return (
       <RadioGroup
+        isDisabled={isCustomFee}
         data={items}
-        selectIndex={feeLevel}
+        selectIndex={selectIndex}
         onChange={(i) => this.onGroupSelect(i)}
       />
     );
@@ -596,7 +609,6 @@ class Transfer extends Component {
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
-                placeholder="0.01"
                 value={amount}
                 keyboardType="numeric"
                 onChangeText={this.inputAmount}
@@ -634,7 +646,7 @@ class Transfer extends Component {
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
               <Switch
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
