@@ -292,27 +292,21 @@ class History extends Component {
   });
 
   /**
-  * Returns sum of pending balance in transactions list
-  * @param {array} array of transactions, each transaction is {state, amount}
-  * @returns {BigNumber} sum of pending balance
+  * Returns transactions, pendingBalance, pendingBalanceValue
+  * @param {array} rawTransactions
+  * @param {string} address
+  * @param {string} symbol
+  * @param {string} currency
+  * @param {array} prices
+  * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static getPendingBalance(transactions) {
-    let pendingBalance = new BigNumber(0);
-    _.each(transactions, (transaction) => {
-      if (transaction.state === 'Receiving' && transaction.amount) {
-        pendingBalance = pendingBalance.plus(transaction.amount);
-      }
-    });
-    return pendingBalance;
-  }
-
-  static createListData(transactions, symbol, address) {
-    if (!transactions) {
-      return [];
+  static processRawTransactions(rawTransactions, address, symbol, currency, prices) {
+    if (_.isEmpty(rawTransactions)) {
+      return { transactions: [], pendingBalance: null, pendingBalanceValue: null };
     }
-
-    const items = [];
-    transactions.forEach((transaction) => {
+    let pendingBalance = new BigNumber(0);
+    const transactions = [];
+    _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
       let datetime = transaction.createdAt;
@@ -352,11 +346,13 @@ class History extends Component {
       } else {
         datetime = '';
       }
-      items.push({
-        state, datetime, amountText, amount,
-      });
+      transactions.push({ state, datetime, amountText });
+      if (state === 'Receiving' && amount) {
+        pendingBalance = amount ? pendingBalance.plus(amount) : pendingBalance;
+      }
     });
-    return items;
+    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
+    return { transactions, pendingBalance, pendingBalanceValue };
   }
 
   static listView(listData) {
@@ -383,18 +379,15 @@ class History extends Component {
 
   constructor(props) {
     super(props);
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
 
     this.state = {
       isRefreshing: false,
       isLoadMore: false,
-      symbol: coin && coin.symbol,
-      balance: coin && coin.balance,
-      balanceValue: coin && coin.balanceValue,
-      transactions: coin && coin.transactions,
-      address: coin && coin.address,
       listData: null,
+      balanceText: null,
+      balanceValueText: null,
+      pendingBalanceText: null,
+      pendingBalanceValueText: null,
     };
 
     this.page = 1;
@@ -427,13 +420,26 @@ class History extends Component {
     return assetValueText;
   }
 
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+    const currencySymbol = getCurrencySymbol(currency);
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
+    const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
+    return {
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
+    };
+  }
+
   componentDidMount() {
-    const { currency, prices } = this.props;
-    const { symbol, transactions, address } = this.state;
-    const listData = History.createListData(transactions, symbol, address);
-    const pendingBalance = History.getPendingBalance(listData);
-    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
-    this.setState({ listData, pendingBalance, pendingBalanceValue });
+    const { currency, prices, navigation } = this.props;
+    const { coin } = navigation.state.params;
+    const {
+      balance, balanceValue, transactions, address, symbol,
+    } = coin;
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+    this.setState({ listData, ...balanceTexts });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -441,19 +447,14 @@ class History extends Component {
       updateTimestamp, navigation, currency, prices,
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
-    const { symbol } = this.state;
     const { coin } = navigation.state.params;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
       const {
-        balance, balanceValue, transactions, address,
+        balance, balanceValue, transactions, address, symbol,
       } = coin;
-      const listData = History.createListData(transactions, symbol, address);
-      const pendingBalance = History.getPendingBalance(listData);
-      const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
-      const state = {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, listData,
-      };
-      this.setState(state);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+      this.setState({ listData, ...balanceTexts });
     }
   }
 
@@ -538,20 +539,14 @@ class History extends Component {
 
   render() {
     const {
-      balance, balanceValue, pendingBalance, pendingBalanceValue, listData,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData,
     } = this.state;
-    const { navigation, currency } = this.props;
+    const { navigation } = this.props;
     const { coin } = navigation.state.params;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
 
-    // generate balance, value texts
-    const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
-    const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
-    const pendingAssetValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
@@ -570,8 +565,8 @@ class History extends Component {
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
-            <Text style={styles.assetsValue}>{assetValueText}</Text>
-            {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
+            <Text style={styles.assetsValue}>{balanceValueText}</Text>
+            {History.renderPendingBalance(pendingBalanceText, pendingBalanceValueText)}
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
