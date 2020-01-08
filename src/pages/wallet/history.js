@@ -291,6 +291,11 @@ class History extends Component {
     header: null,
   });
 
+  /**
+  * Returns sum of pending balance in transactions list
+  * @param {array} array of transactions, each transaction is {state, amount}
+  * @returns {BigNumber} sum of pending balance
+  */
   static getPendingBalance(transactions) {
     let pendingBalance = new BigNumber(0);
     _.each(transactions, (transaction) => {
