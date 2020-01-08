@@ -211,6 +211,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
+  sendingRow: {
+    flexDirection: 'row',
+  },
+  sendAll: {
+    position: 'absolute',
+    right: 10,
+    bottom: 15,
+  },
+  sendAllText: {
+    color: '#00B520',
+  },
 });
 
 
@@ -259,6 +270,7 @@ class Transfer extends Component {
     this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
+    this.onSendAllPress = this.onSendAllPress.bind(this);
   }
 
   componentDidMount() {
@@ -342,6 +354,26 @@ class Transfer extends Component {
 
   onCustomFeeSlidingComplete(value) {
     this.setState({ feeSliderValue: value });
+  }
+
+  onSendAllPress() {
+    const {
+      isCustomFee, customFee, feeLevel, feeData,
+    } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+    if (coin.symbol === 'RIF') {
+      const amount = common.getBalanceString(coin.symbol, coin.balance);
+      this.setState({ amount });
+    } else {
+      let fee = feeData[feeLevel].coin;
+      if (isCustomFee) {
+        fee = customFee;
+      }
+      const amount = coin.balance.minus(fee);
+      const amountText = common.getBalanceString(coin.symbol, amount);
+      this.setState({ amount: amountText });
+    }
   }
 
   getFeeParams() {
@@ -606,7 +638,10 @@ class Transfer extends Component {
         </ImageBackground>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title1]} text="Sending" />
+            <View style={styles.sendingRow}>
+              <Loc style={[styles.title1]} text="Sending" />
+              <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
+            </View>
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
