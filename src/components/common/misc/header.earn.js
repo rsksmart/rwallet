@@ -1,29 +1,24 @@
 import React from 'react';
 import {
-  StyleSheet, ImageBackground, Image, View,
+  StyleSheet, Image, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from './loc';
-import { DEVICE } from '../../../common/info';
-import screenHelper from '../../../common/screenHelper';
+import FullWidthImage from './full.width.image';
 
 
 const header = require('../../../assets/images/misc/header.earn.png');
-
-const headerHeight = 585;
-const headerMarginTop = DEVICE.isIphoneX ? -100 + screenHelper.iphoneXTopHeight : -100;
-export const headerBottomY = headerHeight + headerMarginTop;
 
 const styles = StyleSheet.create({
   headerImage: {
     position: 'absolute',
     width: '100%',
-    height: headerHeight,
-    marginTop: headerMarginTop,
   },
   headerTitle: {
+    fontFamily: 'Avenir-Black',
     fontSize: 32,
     fontWeight: '900',
+    letterSpacing: -0.7,
     position: 'absolute',
     left: 24,
     right: 50,
@@ -33,8 +28,10 @@ const styles = StyleSheet.create({
     bottom: 350,
   },
   coming: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 20,
     fontWeight: '900',
+    letterSpacing: -0.44,
     color: '#FFF',
     position: 'absolute',
     left: 24,
@@ -56,13 +53,14 @@ const styles = StyleSheet.create({
 
 export default function EarnHeader({ title, imageSource, imageBgColor }) {
   return (
-    <ImageBackground source={header} style={[styles.headerImage]}>
+    <View>
+      <FullWidthImage source={header} style={[styles.headerImage]} />
       <Loc style={[styles.headerTitle, styles.title]} text={title} />
       <View style={[styles.titleImageView, { backgroundColor: imageBgColor }]}>
         <Image style={styles.titleImage} source={imageSource} />
       </View>
       <Loc style={[styles.coming]} text="Coming soon..." />
-    </ImageBackground>
+    </View>
   );
 }
 

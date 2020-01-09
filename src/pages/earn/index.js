@@ -3,7 +3,7 @@ import {
   View, StyleSheet, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import EarnHeader, { headerBottomY } from '../../components/common/misc/header.earn';
+import EarnHeader from '../../components/common/misc/header.earn';
 import Loc from '../../components/common/misc/loc';
 import flex from '../../assets/styles/layout.flex';
 import RSKad from '../../components/common/rsk.ad';
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 30,
     marginBottom: 50,
-    marginTop: headerBottomY,
   },
   title: {
     fontSize: 14,
