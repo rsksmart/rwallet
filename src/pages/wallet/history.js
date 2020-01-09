@@ -488,18 +488,6 @@ class History extends Component {
     }
   }
 
-  static renderPendingBalance(pendingBalanceText, pendingBalanceValueText) {
-    if (_.isEmpty(pendingBalanceText)) {
-      return null;
-    }
-    return (
-      <View style={styles.sendingView}>
-        <Image style={styles.sendingIcon} source={sending} />
-        <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
-      </View>
-    );
-  }
-
   onMomentumScrollEnd(e) {
     // console.log('ScrollView onMomentumScrollEnd');
     const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
