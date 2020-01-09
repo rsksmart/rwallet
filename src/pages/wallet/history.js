@@ -424,8 +424,8 @@ class History extends Component {
     const currencySymbol = getCurrencySymbol(currency);
     const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
-    const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : null;
+    const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
     return {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
     };
@@ -566,7 +566,14 @@ class History extends Component {
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
-            {History.renderPendingBalance(pendingBalanceText, pendingBalanceValueText)}
+            {
+              pendingBalanceText && (
+                <View style={styles.sendingView}>
+                  <Image style={styles.sendingIcon} source={sending} />
+                  <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+                </View>
+              )
+            }
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
