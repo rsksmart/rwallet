@@ -334,7 +334,7 @@ class MineIndex extends Component {
   render() {
     let headerHeight = 160;
     if (DEVICE.isIphoneX) {
-      headerHeight += ScreenHelper.iphoneXExtendedHeight;
+      headerHeight += ScreenHelper.iphoneXTopHeight;
     }
     const { language, navigation } = this.props;
     const { keyListData, settings, joins } = this.state;

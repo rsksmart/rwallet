@@ -117,7 +117,7 @@ class WalletReceive extends Component {
 
       let headerHeight = 100;
       if (DEVICE.isIphoneX) {
-        headerHeight += ScreenHelper.iphoneXExtendedHeight;
+        headerHeight += ScreenHelper.iphoneXTopHeight;
       }
 
       const titleText = ` ${symbol} ${type === 'Testnet' ? type : ''}`;

@@ -11,7 +11,7 @@ import screenHelper from '../../../common/screenHelper';
 const header = require('../../../assets/images/misc/header.earn.png');
 
 const headerHeight = 585;
-const headerMarginTop = DEVICE.isIphoneX ? -100 + screenHelper.iphoneXExtendedHeight : -100;
+const headerMarginTop = DEVICE.isIphoneX ? -100 + screenHelper.iphoneXTopHeight : -100;
 export const headerBottomY = headerHeight + headerMarginTop;
 
 const styles = StyleSheet.create({

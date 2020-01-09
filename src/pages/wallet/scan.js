@@ -210,7 +210,7 @@ export default class Scan extends Component {
       const barcodeMask = (<BarcodeMask width={240} height={240} edgeBorderWidth={1} showAnimatedLine={false} />);
       let headerHeight = 100;
       if (DEVICE.isIphoneX) {
-        headerHeight += ScreenHelper.iphoneXExtendedHeight;
+        headerHeight += ScreenHelper.iphoneXTopHeight;
       }
       const scanner = (
         <RNCamera

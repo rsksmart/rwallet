@@ -572,7 +572,7 @@ class Transfer extends Component {
     const { coin } = navigation.state.params;
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
-      headerHeight += ScreenHelper.iphoneXExtendedHeight;
+      headerHeight += ScreenHelper.iphoneXTopHeight;
     }
 
     return (
