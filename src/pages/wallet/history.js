@@ -347,8 +347,8 @@ class History extends Component {
         datetime = '';
       }
       transactions.push({ state, datetime, amountText });
-      if (state === 'Receiving' && amount) {
-        pendingBalance = amount ? pendingBalance.plus(amount) : pendingBalance;
+      if (state === 'Receiving' && !_.isNull(amount)) {
+        pendingBalance = pendingBalance.plus(amount);
       }
     });
     const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
@@ -489,7 +489,7 @@ class History extends Component {
   }
 
   static renderPendingBalance(pendingBalanceText, pendingBalanceValueText) {
-    if (pendingBalanceText === '') {
+    if (_.isEmpty(pendingBalanceText)) {
       return null;
     }
     return (
