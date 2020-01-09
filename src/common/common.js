@@ -97,7 +97,7 @@ const common = {
    * @param {BigNumber | number | string} value
    */
   getAssetValueString(value) {
-    if (value) {
+    if (!_.isNull(value)) {
       let valueBigNumber = value;
       if (typeof value === 'number' || typeof value === 'string') {
         valueBigNumber = new BigNumber(value);
