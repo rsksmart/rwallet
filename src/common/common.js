@@ -83,7 +83,7 @@ const common = {
    */
   getBalanceString(symbol, balance, roundMode) {
     const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (balance) {
+    if (!_.isNull(balance)) {
       let balanceBigNumber = balance;
       if (typeof balance === 'number' || typeof value === 'string') {
         balanceBigNumber = new BigNumber(balance);

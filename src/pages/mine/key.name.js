@@ -11,6 +11,7 @@ import Loc from '../../components/common/misc/loc';
 import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -132,30 +133,32 @@ class KeyName extends Component {
       const { navigation } = this.props;
       const { name } = this.state;
       return (
-        <View style={[flex.flex1]}>
-          <ScrollView style={[flex.flex1]}>
-            <Header goBack={() => navigation.goBack()} title="Key Name" />
-            <View style={[screenHelper.styles.body, { paddingHorizontal: 25 }]}>
-              <Loc style={[styles.title]} text="What do you call this key?" />
-              <Loc text="You can change the name displayed on the device below" />
-              <Loc style={[styles.title, styles.name]} text="Name" />
-              <TextInput
-                ref={(ref) => { this.nameInput = ref; }}
-                style={[presetStyle.textInput, styles.nameInput]}
-                value={name}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
-              <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+        <SafeAreaView>
+          <View style={[flex.flex1]}>
+            <ScrollView style={[flex.flex1]}>
+              <Header goBack={() => navigation.goBack()} title="Key Name" />
+              <View style={[screenHelper.styles.body, { paddingHorizontal: 25 }]}>
+                <Loc style={[styles.title]} text="What do you call this key?" />
+                <Loc text="You can change the name displayed on the device below" />
+                <Loc style={[styles.title, styles.name]} text="Name" />
+                <TextInput
+                  ref={(ref) => { this.nameInput = ref; }}
+                  style={[presetStyle.textInput, styles.nameInput]}
+                  value={name}
+                  onChangeText={this.onChangeText}
+                  onSubmitEditing={this.onSubmitEditing}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+              </View>
+            </ScrollView>
+            <View style={styles.buttonView}>
+              <Button text="SAVE" onPress={this.onPress} />
             </View>
-          </ScrollView>
-          <View style={styles.buttonView}>
-            <Button text="SAVE" onPress={this.onPress} />
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
 }

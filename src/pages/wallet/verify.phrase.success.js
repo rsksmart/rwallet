@@ -9,6 +9,7 @@ import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
 import screenHelper from '../../common/screenHelper';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -71,7 +72,7 @@ export default class VerifyPhraseSuccess extends Component {
 
     render() {
       return (
-        <View style={[flex.flex1]}>
+        <SafeAreaView style={[flex.flex1]}>
           <Header
             title="Verify Phrase Success"
             goBack={this.onBackPress}
@@ -89,7 +90,7 @@ export default class VerifyPhraseSuccess extends Component {
               onPress={this.onBackPress}
             />
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
 }
