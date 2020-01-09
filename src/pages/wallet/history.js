@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import screenHelper from '../../common/screenHelper';
@@ -290,20 +291,30 @@ class History extends Component {
     header: null,
   });
 
-  static createListData(transactions, symbol, address) {
-    if (!transactions) {
-      return [];
+  /**
+  * Returns transactions, pendingBalance, pendingBalanceValue
+  * @param {array} rawTransactions
+  * @param {string} address
+  * @param {string} symbol
+  * @param {string} currency
+  * @param {array} prices
+  * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
+  */
+  static processRawTransactions(rawTransactions, address, symbol, currency, prices) {
+    if (_.isEmpty(rawTransactions)) {
+      return { transactions: [], pendingBalance: null, pendingBalanceValue: null };
     }
-
-    const items = [];
-    transactions.forEach((transaction) => {
+    let pendingBalance = new BigNumber(0);
+    const transactions = [];
+    _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
+      let amount = null;
       let datetime = transaction.createdAt;
       let isComfirmed = true;
       let isSender = false;
       let state = 'Receiving';
       if (transaction.value) {
-        const amount = common.convertUnitToCoinAmount(symbol, transaction.value);
+        amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
       if (address === transaction.from) {
@@ -335,9 +346,13 @@ class History extends Component {
       } else {
         datetime = '';
       }
-      items.push({ state, datetime, amount: amountText });
+      transactions.push({ state, datetime, amountText });
+      if (state === 'Receiving' && !_.isNull(amount)) {
+        pendingBalance = pendingBalance.plus(amount);
+      }
     });
-    return items;
+    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
+    return { transactions, pendingBalance, pendingBalanceValue };
   }
 
   static listView(listData) {
@@ -353,7 +368,7 @@ class History extends Component {
         renderItem={({ item }) => (
           <Item
             title={item.state}
-            amount={item.amount}
+            amount={item.amountText}
             datetime={item.datetime}
           />
         )}
@@ -364,18 +379,15 @@ class History extends Component {
 
   constructor(props) {
     super(props);
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
 
     this.state = {
       isRefreshing: false,
       isLoadMore: false,
-      symbol: coin && coin.symbol,
-      balance: coin && coin.balance,
-      balanceValue: coin && coin.balanceValue,
-      transactions: coin && coin.transactions,
-      address: coin && coin.address,
       listData: null,
+      balanceText: null,
+      balanceValueText: null,
+      pendingBalanceText: null,
+      pendingBalanceValueText: null,
     };
 
     this.page = 1;
@@ -408,30 +420,41 @@ class History extends Component {
     return assetValueText;
   }
 
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+    const currencySymbol = getCurrencySymbol(currency);
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : null;
+    const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
+    return {
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
+    };
+  }
+
   componentDidMount() {
+    const { currency, prices, navigation } = this.props;
+    const { coin } = navigation.state.params;
     const {
-      symbol, transactions, address,
-    } = this.state;
-    const listData = History.createListData(transactions, symbol, address);
-    this.setState({ listData });
+      balance, balanceValue, transactions, address, symbol,
+    } = coin;
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+    this.setState({ listData, ...balanceTexts });
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      updateTimestamp, navigation,
+      updateTimestamp, navigation, currency, prices,
     } = nextProps;
-    const { updateTimestamp: lastUpdateTimestamp } = this.props;
-    const { symbol } = this.state;
+    const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
     const { coin } = navigation.state.params;
-    if (updateTimestamp !== lastUpdateTimestamp && coin) {
+    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
       const {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, address,
+        balance, balanceValue, transactions, address, symbol,
       } = coin;
-      const listData = History.createListData(transactions, symbol, address);
-      const state = {
-        balance, balanceValue, pendingBalance, pendingBalanceValue, transactions, listData,
-      };
-      this.setState(state);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+      this.setState({ listData, ...balanceTexts });
     }
   }
 
@@ -463,18 +486,6 @@ class History extends Component {
     if (isCloseToBottom(nativeEvent)) {
       // console.log('ScrollView isCloseToBottom');
     }
-  }
-
-  static renderPendingBalance(pendingBalanceText, pendingBalanceValueText) {
-    if (pendingBalanceText === '') {
-      return null;
-    }
-    return (
-      <View style={styles.sendingView}>
-        <Image style={styles.sendingIcon} source={sending} />
-        <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
-      </View>
-    );
   }
 
   onMomentumScrollEnd(e) {
@@ -516,20 +527,14 @@ class History extends Component {
 
   render() {
     const {
-      balance, balanceValue, pendingBalance, pendingBalanceValue, listData,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData,
     } = this.state;
-    const { navigation, currency } = this.props;
+    const { navigation } = this.props;
     const { coin } = navigation.state.params;
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
 
-    // generate balance, value texts
-    const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
-    const assetValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : '';
-    const pendingAssetValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : '';
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
@@ -548,8 +553,15 @@ class History extends Component {
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
-            <Text style={styles.assetsValue}>{assetValueText}</Text>
-            {History.renderPendingBalance(pendingBalanceText, pendingAssetValueText)}
+            <Text style={styles.assetsValue}>{balanceValueText}</Text>
+            {
+              pendingBalanceText && (
+                <View style={styles.sendingView}>
+                  <Image style={styles.sendingIcon} source={sending} />
+                  <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+                </View>
+              )
+            }
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
@@ -590,6 +602,7 @@ History.propTypes = {
   currency: PropTypes.string.isRequired,
   walletManager: PropTypes.shape({}),
   updateTimestamp: PropTypes.number.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 History.defaultProps = {
@@ -600,6 +613,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
+  prices: state.Wallet.get('prices'),
 });
 
 const mapDispatchToProps = () => ({
