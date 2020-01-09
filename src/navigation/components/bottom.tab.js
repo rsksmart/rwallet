@@ -5,6 +5,7 @@ import {
 
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
+import screenHelper from '../../common/screenHelper';
 
 const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
@@ -26,11 +27,12 @@ const Scaler = posed.View({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 70,
+    height: 70 + screenHelper.bottomHeight,
     elevation: 2,
     backgroundColor: 'black',
     borderTopRightRadius: 26,
     borderTopLeftRadius: 26,
+    paddingBottom: screenHelper.bottomHeight,
   },
   tabButton: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   spotLight: {
