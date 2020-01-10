@@ -389,7 +389,7 @@ class Transfer extends Component {
       }
       let balance = coin.balance.minus(fee);
       balance = balance.gt(0) ? balance : 0;
-      const amountText = common.getBalanceString(coin.symbol, balance, BigNumber.ROUND_DOWN);
+      const amountText = common.getBalanceString(coin.symbol, balance);
       this.inputAmount(amountText);
     }
   }

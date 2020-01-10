@@ -78,17 +78,20 @@ const common = {
   },
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The balance will be round down by default.
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
+   * @roundMode {number} BigNumber.ROUND_DOWN, ROUND_UP ...., see https://mikemcl.github.io/bignumber.js/
    */
   getBalanceString(symbol, balance, roundMode) {
+    const balanceRoundMode = roundMode || BigNumber.ROUND_DOWN;
     const decimalPlaces = config.symbolDecimalPlaces[symbol];
     if (!_.isNull(balance)) {
       let balanceBigNumber = balance;
       if (typeof balance === 'number' || typeof value === 'string') {
         balanceBigNumber = new BigNumber(balance);
       }
-      return balanceBigNumber.decimalPlaces(decimalPlaces, roundMode).toFixed();
+      return balanceBigNumber.decimalPlaces(decimalPlaces, balanceRoundMode).toFixed();
     }
     return null;
   },
