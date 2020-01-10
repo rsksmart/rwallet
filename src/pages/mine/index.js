@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   createWalletButtonView: {
-    marginBottom: 5,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
