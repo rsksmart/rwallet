@@ -33,14 +33,23 @@ const styles = StyleSheet.create({
   body: {
     paddingTop: 65,
   },
-  avatar: {
-    position: 'absolute',
+  avatarView: {
     left: 20,
     bottom: -40,
+    position: 'absolute',
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    borderRadius: AVATAR_SIZE / 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  avatar: {
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    backgroundColor: '#FFFFFF',
   },
   row: {
     flexDirection: 'row',
@@ -342,7 +351,7 @@ class MineIndex extends Component {
       <View style={flex.flex1}>
         <ScrollView style={[flex.flex1]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Image source={avatar} style={styles.avatar} />
+            <View style={styles.avatarView}><Image source={avatar} style={styles.avatar} /></View>
             <View style={styles.nameView}>
               <ResponsiveText
                 style={[styles.name]}
