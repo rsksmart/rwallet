@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
@@ -379,6 +380,9 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+    if (_.isNil(coin.balance)) {
+      return;
+    }
     if (coin.symbol === 'RIF') {
       const amount = common.getBalanceString(coin.symbol, coin.balance);
       this.setState({ amount });
