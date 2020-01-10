@@ -53,7 +53,7 @@
   "Sending": "Sending",
   "Received": "Received",
   "To": "To",
-  "Memo": "Memo",
+  "Memo (optional)": "Memo (optional)",
   "Miner fee": "Miner fee",
   "Custom": "Custom",
   "Slow": "Slow",
@@ -165,5 +165,6 @@
   "Coming soon...": "Coming soon...",
   "Is this correct?": "Is this correct?",
   "Clear": "Clear",
-  "START OVER": "START OVER"
+  "START OVER": "START OVER",
+  "Send All": "Send All"
 }

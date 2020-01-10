@@ -78,17 +78,18 @@ const common = {
   },
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The balance will be round down by default.
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
    */
   getBalanceString(symbol, balance) {
     const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (balance) {
+    if (!_.isNull(balance)) {
       let balanceBigNumber = balance;
       if (typeof balance === 'number' || typeof value === 'string') {
         balanceBigNumber = new BigNumber(balance);
       }
-      return balanceBigNumber.decimalPlaces(decimalPlaces).toFixed();
+      return balanceBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toFixed();
     }
     return null;
   },
@@ -97,7 +98,7 @@ const common = {
    * @param {BigNumber | number | string} value
    */
   getAssetValueString(value) {
-    if (value) {
+    if (!_.isNull(value)) {
       let valueBigNumber = value;
       if (typeof value === 'number' || typeof value === 'string') {
         valueBigNumber = new BigNumber(value);

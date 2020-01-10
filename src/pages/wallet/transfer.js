@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
   },
   customFeeSliderWrapper: {
     height: 60,
+    marginTop: 5,
   },
   customFeeText: {
     alignSelf: 'flex-end',
@@ -202,6 +203,25 @@ const styles = StyleSheet.create({
   },
   wapper: {
     height: screen.height - 25,
+  },
+  customTitle: {
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: '500',
+    letterSpacing: 0.31,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  sendingRow: {
+    flexDirection: 'row',
+  },
+  sendAll: {
+    position: 'absolute',
+    right: 10,
+    bottom: 15,
+  },
+  sendAllText: {
+    color: '#00B520',
   },
 });
 
@@ -215,6 +235,7 @@ const DEFAULT_BTC_MIN_FEE = 60000;
 const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const MAX_FEE_TIMES = 2;
+const PLACEHODLER_AMOUNT = 0.001;
 
 const header = require('../../assets/images/misc/header.png');
 // const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
@@ -224,6 +245,18 @@ class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
   });
+
+  static generateAmountPlaceholderText(symbol, currency, prices) {
+    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
+    let amountPlaceholderText = `${amountText} ${symbol}`;
+    if (prices) {
+      const currencySymbol = common.getCurrencySymbol(currency);
+      const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
+      const amountValueText = common.getAssetValueString(amountValue, amountValue);
+      amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+    }
+    return amountPlaceholderText;
+  }
 
   constructor(props) {
     super(props);
@@ -241,6 +274,7 @@ class Transfer extends Component {
       customFeeValue: new BigNumber(0),
       feeSymbol: null,
       feeSliderValue: 0,
+      amountPlaceholderText: '',
     };
 
     this.confirm = this.confirm.bind(this);
@@ -251,6 +285,7 @@ class Transfer extends Component {
     this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
+    this.onSendAllPress = this.onSendAllPress.bind(this);
   }
 
   componentDidMount() {
@@ -258,20 +293,22 @@ class Transfer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { prices, currency } = nextProps;
+    const { prices, currency, navigation } = nextProps;
     const { prices: curPrices } = this.props;
+    const { coin } = navigation.state.params;
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      this.setState({ customFeeValue });
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+      this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
 
   onGroupSelect(index) {
     const preferences = ['low', 'medium', 'high'];
     const preference = preferences[index];
-    this.setState({ preference });
+    this.setState({ preference, feeLevel: index, isCustomFee: false });
   }
 
   onQrcodeScanPress() {
@@ -334,6 +371,27 @@ class Transfer extends Component {
 
   onCustomFeeSlidingComplete(value) {
     this.setState({ feeSliderValue: value });
+  }
+
+  onSendAllPress() {
+    const {
+      isCustomFee, customFee, feeLevel, feeData,
+    } = this.state;
+    const { navigation } = this.props;
+    const { coin } = navigation.state.params;
+    if (coin.symbol === 'RIF') {
+      const amount = common.getBalanceString(coin.symbol, coin.balance);
+      this.setState({ amount });
+    } else {
+      let fee = feeData[feeLevel].coin;
+      if (isCustomFee) {
+        fee = customFee;
+      }
+      let balance = coin.balance.minus(fee);
+      balance = balance.gt(0) ? balance : 0;
+      const amountText = common.getBalanceString(coin.symbol, balance);
+      this.inputAmount(amountText);
+    }
   }
 
   getFeeParams() {
@@ -407,7 +465,8 @@ class Transfer extends Component {
       feeData.push(item);
     }
     this.mediumFee = feeData[1].coin;
-    this.setState({ feeData, feeSymbol });
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+    this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
   async confirm() {
@@ -524,7 +583,7 @@ class Transfer extends Component {
 
   renderFeeOptions() {
     const {
-      feeSymbol, feeData, feeLevel, currency,
+      feeSymbol, feeData, feeLevel, currency, isCustomFee,
     } = this.state;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
@@ -540,10 +599,15 @@ class Transfer extends Component {
       item.value = `${currencySymbol}${coinValue}`;
       items.push(item);
     }
+    let selectIndex = null;
+    if (!isCustomFee) {
+      selectIndex = feeLevel;
+    }
     return (
       <RadioGroup
+        isDisabled={isCustomFee}
         data={items}
-        selectIndex={feeLevel}
+        selectIndex={selectIndex}
         onChange={(i) => this.onGroupSelect(i)}
       />
     );
@@ -566,7 +630,7 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm,
+      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm, amountPlaceholderText,
     } = this.state;
     const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
@@ -594,11 +658,14 @@ class Transfer extends Component {
           </ImageBackground>
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Loc style={[styles.title1]} text="Sending" />
+              <View style={styles.sendingRow}>
+                <Loc style={[styles.title1]} text="Sending" />
+                <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
+              </View>
               <View style={styles.textInputView}>
                 <TextInput
+                  placeholder={amountPlaceholderText}
                   style={[styles.textInput]}
-                  placeholder="0.01"
                   value={amount}
                   keyboardType="numeric"
                   onChangeText={this.inputAmount}
@@ -624,7 +691,7 @@ class Transfer extends Component {
               </View>
             </View>
             <View style={styles.sectionContainer}>
-              <Loc style={[styles.title3]} text="Memo" />
+              <Loc style={[styles.title3]} text="Memo (optional)" />
               <View style={styles.textInputView}>
                 {this.renderMemo(memo)}
               </View>
@@ -636,7 +703,7 @@ class Transfer extends Component {
             </View>
             <View style={[styles.sectionContainer]}>
               <View style={[styles.customRow]}>
-                <Loc style={[styles.title2, { flex: 1 }]} text="Custom" />
+                <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
                 <Switch
                   value={isCustomFee}
                   onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
