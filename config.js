@@ -25,10 +25,10 @@ const config = {
     ],
     currencies: [
       { name: 'USD', fullName: 'US Dollar', symbol: '$' },
-      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
       { name: 'ARS', fullName: 'Argentine Peso', symbol: 'ARS$' },
-      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
       { name: 'JPY', fullName: 'Japanese Yen', symbol: '￥' },
+      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
+      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
       { name: 'GBP', fullName: 'Pound sterling', symbol: '£' },
     ],
   },
