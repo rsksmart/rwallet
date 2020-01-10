@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList, ImageBackground, Linking,
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
   },
   keyListView: {
     marginLeft: 10,
+    marginBottom: 20,
   },
   keyListRow: {
     flexDirection: 'row',
@@ -137,8 +139,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   createWalletButtonView: {
-    marginTop: 20,
-    marginBottom: 5,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -209,6 +210,9 @@ class MineIndex extends Component {
   }
 
   static renderKeyListView(listData, navigation) {
+    if (_.isEmpty(listData)) {
+      return null;
+    }
     return (
       <FlatList
         style={styles.keyListView}
