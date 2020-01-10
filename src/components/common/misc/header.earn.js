@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontFamily: 'Avenir-Black',
     fontSize: 32,
-    fontWeight: '900',
     letterSpacing: -0.7,
     position: 'absolute',
     left: 24,
@@ -28,9 +27,8 @@ const styles = StyleSheet.create({
     bottom: 350,
   },
   coming: {
-    fontFamily: 'PingFangSC-Regular',
+    fontFamily: 'Avenir-Black',
     fontSize: 20,
-    fontWeight: '900',
     letterSpacing: -0.44,
     color: '#FFF',
     position: 'absolute',
