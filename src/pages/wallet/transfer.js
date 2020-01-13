@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
@@ -225,7 +226,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const FEE_LEVEL_ADJUSTMENT = 0.25;
 const DEFAULT_RBTC_MIN_GAS = 21000;
 const DEFAULT_RIF_MIN_GAS = 23064;
@@ -238,8 +238,7 @@ const MAX_FEE_TIMES = 2;
 const PLACEHODLER_AMOUNT = 0.001;
 
 const header = require('../../assets/images/misc/header.png');
-// const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
-const address = require('../../assets/images/icon/address.png');
+const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -469,11 +468,46 @@ class Transfer extends Component {
     this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
+  resetConfirm() {
+    this.setState({ isConfirm: false });
+    this.confirmSlider.reset();
+  }
+
+  isFormDataValid(amount, address, symbol, type) {
+    const { addNotification } = this.props;
+    this.a = 1;
+    const isAmountNumber = !_.isNil(Number(amount));
+    if (!isAmountNumber) {
+      const notification = createErrorNotification(
+        'Invalid amount',
+        'Amount is not valid',
+      );
+      addNotification(notification);
+      this.resetConfirm();
+      return false;
+    }
+    const isAddress = common.isWalletAddress(address, symbol, type);
+    if (!isAddress) {
+      const notification = createErrorNotification(
+        'Invalid address',
+        'Address is not valid',
+      );
+      addNotification(notification);
+      this.resetConfirm();
+      return false;
+    }
+    return true;
+  }
+
   async confirm() {
     const { navigation, navigation: { state }, addNotification } = this.props;
     const { params } = state;
     const { coin } = params;
-    const { amount, to } = this.state;
+    let { amount, to } = this.state;
+    amount = amount.trim();
+    to = to.trim();
+    // validate form data
+    if (!this.isFormDataValid(amount, to, coin.symbol, coin.type)) return;
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
@@ -532,9 +566,7 @@ class Transfer extends Component {
         );
       }
       addNotification(notification);
-      // Reset confirmSlider
-      this.setState({ isConfirm: false });
-      this.confirmSlider.reset();
+      this.resetConfirm();
     }
   }
 
@@ -686,7 +718,7 @@ class Transfer extends Component {
                   style={styles.textInputIcon}
                   onPress={this.onQrcodeScanPress}
                 >
-                  <Image source={address} />
+                  <Image source={addressIcon} />
                 </TouchableOpacity>
               </View>
             </View>

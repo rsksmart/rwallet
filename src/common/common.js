@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
+import * as bitcoin from 'bitcoinjs-lib';
+import rsk3 from 'rsk3';
 import config from '../../config';
 import store from './storage';
 
@@ -159,6 +161,42 @@ const common = {
       global.passcode = passcode = await store.getPasscode();
     }
     return passcode;
+  },
+
+  /**
+   * Validate btc address
+   * @param {string} address
+   * @param {string} type, MainTest or Testnet
+   */
+  isBtcAddress(address, type) {
+    // https://github.com/bitcoinjs/bitcoinjs-lib/issues/890
+    // https://bitcoin.stackexchange.com/questions/52740/how-do-you-validate-a-bitcoin-address-using-bitcoinjs-library-in-javascript
+    try {
+      let network = null;
+      if (type === 'Testnet') {
+        network = bitcoin.networks.testnet;
+      }
+      bitcoin.address.toOutputScript(address, network);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  /**
+   * Validate wallet address
+   * @param {string} address
+   * @param {string} symbol, BTC, RBTC, RIF
+   * @param {string} type, MainTest or Testnet
+   */
+  isWalletAddress(address, symbol, type) {
+    let isAdress = false;
+    if (symbol === 'BTC') {
+      isAdress = this.isBtcAddress(address, type);
+    } else {
+      isAdress = rsk3.utils.isAddress(address);
+    }
+    return isAdress;
   },
 };
 

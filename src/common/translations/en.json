@@ -166,5 +166,9 @@
   "Is this correct?": "Is this correct?",
   "Clear": "Clear",
   "START OVER": "START OVER",
-  "Send All": "Send All"
+  "Send All": "Send All",
+  "Invalid amount": "Invalid amount",
+  "Amount is not valid": "Amount is not valid",
+  "Invalid address": "Invalid address",
+  "Address is not valid": "Address is not valid"
 }
