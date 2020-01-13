@@ -166,5 +166,14 @@
   "Is this correct?": "这是正确的助记词？",
   "Clear": "清除",
   "START OVER": "重新开始",
-  "Send All": "全部发送"
+  "Send All": "全部发送",
+  "Sent Funds": "已发送资金",
+  "Received Funds": "已接收资金",
+  "Sending Funds": "发送中资金",
+  "Receiving Funds": "接收中资金",
+  "Date": "日期",
+  "Confirmations": "确认",
+  "Memo": "备注",
+  "Transaction ID": "交易ID",
+  "No memo": "无备注"
 }

@@ -166,5 +166,14 @@
   "Is this correct?": "Isso está correto?",
   "Clear": "Claro",
   "START OVER": "RECOMEÇAR",
-  "Send All": "Envie todos"
+  "Send All": "Envie todos",
+  "Sent Funds": "Fundos enviados",
+  "Received Funds": "Fundos Recebidos",
+  "Sending Funds": "Envio de fundos",
+  "Receiving Funds": "Recebimento de fundos",
+  "Date": "Encontro",
+  "Confirmations": "Confirmações",
+  "Memo": "Memorando",
+  "Transaction ID": "ID da transação",
+  "No memo": "Nenhuma nota"
 }

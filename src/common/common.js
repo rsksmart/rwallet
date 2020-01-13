@@ -7,6 +7,21 @@ import store from './storage';
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = '$';
 
+const urls = {
+  BTC: {
+    Mainnet: 'https://live.blockcypher.com/btc/tx',
+    Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
+  },
+  RBTC: {
+    Mainnet: 'https://explorer.rsk.co/tx',
+    Testnet: 'https://explorer.testnet.rsk.co/tx',
+  },
+  RIF: {
+    Mainnet: 'https://explorer.rsk.co/tx/',
+    Testnet: 'https://explorer.testnet.rsk.co/tx',
+  },
+};
+
 // Extract currency symbols from config
 // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
 const currencySymbols = _.reduce(currencies, (obj, row) => {
@@ -159,6 +174,12 @@ const common = {
       global.passcode = passcode = await store.getPasscode();
     }
     return passcode;
+  },
+
+  getExplorerUrl(symbol, type, hash) {
+    let url = urls[symbol][type];
+    url = `${url}/${hash}/`;
+    return url;
   },
 };
 

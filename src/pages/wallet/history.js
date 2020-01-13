@@ -256,11 +256,11 @@ const getStateIcon = (state) => {
 };
 
 function Item({
-  title, amount, datetime,
+  title, amount, datetime, onPress,
 }) {
   const icon = getStateIcon(title);
   return (
-    <View style={[styles.row]}>
+    <TouchableOpacity style={[styles.row]} onPress={onPress}>
       {icon}
       <View style={styles.rowRight}>
         <View style={[styles.rowRightR1]}>
@@ -271,7 +271,7 @@ function Item({
           <Text style={styles.datetime}>{datetime}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -279,6 +279,7 @@ Item.propTypes = {
   title: PropTypes.string.isRequired,
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 const isFailedTransaction = (createdAt) => {
@@ -341,12 +342,17 @@ class History extends Component {
         const isFailed = isFailedTransaction(transaction.createdAt);
         state = isFailed ? 'Failed' : state;
       }
+      let datetimeText = '';
       if (datetime) {
-        datetime = moment(datetime).format('MMM D. YYYY');
-      } else {
-        datetime = '';
+        datetimeText = moment(datetime).format('MMM D. YYYY');
       }
-      transactions.push({ state, datetime, amountText });
+      transactions.push({
+        state,
+        datetime,
+        datetimeText,
+        amountText,
+        rawTransaction: transaction,
+      });
       if (state === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
       }
@@ -355,7 +361,7 @@ class History extends Component {
     return { transactions, pendingBalance, pendingBalanceValue };
   }
 
-  static listView(listData) {
+  static listView(listData, onPress) {
     if (!listData) {
       return <ActivityIndicator size="small" color="#00ff00" />;
     }
@@ -365,11 +371,12 @@ class History extends Component {
     return (
       <FlatList
         data={listData}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Item
             title={item.state}
             amount={item.amountText}
-            datetime={item.datetime}
+            datetime={item.datetimeText}
+            onPress={() => { onPress(index); }}
           />
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -398,6 +405,7 @@ class History extends Component {
     this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
     this.onbackClick = this.onbackClick.bind(this);
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
+    this.onListItemPress = this.onListItemPress.bind(this);
   }
 
   static getBalanceText(symbol, balance) {
@@ -503,6 +511,13 @@ class History extends Component {
     navigation.goBack();
   }
 
+  onListItemPress(index) {
+    const { listData } = this.state;
+    const { navigation } = this.props;
+    const item = listData[index];
+    navigation.navigate('Transaction', item);
+  }
+
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -584,7 +599,7 @@ class History extends Component {
           <Loc style={[styles.recent]} text="Recent" />
         </View>
         <View style={styles.sectionContainer}>
-          {History.listView(listData)}
+          {History.listView(listData, this.onListItemPress)}
         </View>
         {this.renderfooter()}
       </ScrollView>

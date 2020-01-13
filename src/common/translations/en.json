@@ -166,5 +166,14 @@
   "Is this correct?": "Is this correct?",
   "Clear": "Clear",
   "START OVER": "START OVER",
-  "Send All": "Send All"
+  "Send All": "Send All",
+  "Sent Funds": "Sent Funds",
+  "Received Funds": "Received Funds",
+  "Sending Funds": "Sending Funds",
+  "Receiving Funds": "Receving Funds",
+  "Date": "Date",
+  "Confirmations": "Confirmations",
+  "Memo": "Memo",
+  "Transaction ID": "Transaction ID",
+  "No memo": "No memo"
 }
