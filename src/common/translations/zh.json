@@ -166,5 +166,7 @@
   "Is this correct?": "这是正确的助记词？",
   "Clear": "清除",
   "START OVER": "重新开始",
-  "Send All": "全部发送"
+  "Send All": "全部发送",
+  "You need more RBTC balance to complete the transfer": "您需要更多RBTC余额才能完成转帐",
+  "You need more RIF balance to complete the transfer": "您需要更多RIF余额才能完成转帐"
 }

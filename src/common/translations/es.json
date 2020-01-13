@@ -166,5 +166,7 @@
   "Is this correct?": "¿Es esto correcto?",
   "Clear": "Claro",
   "START OVER": "COMENZAR DE NUEVO",
-  "Send All": "Envia todo"
+  "Send All": "Envia todo",
+  "You need more RBTC balance to complete the transfer": "Necesita más saldo RBTC para completar la transferencia",
+  "You need more RIF balance to complete the transfer": "Necesita más saldo RIF para completar la transferencia"
 }
