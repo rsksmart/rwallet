@@ -630,7 +630,7 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm, amountPlaceholderText,
+      loading, to, amount, memo, isConfirm, isCustomFee, amountPlaceholderText, enableConfirm,
     } = this.state;
     const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
@@ -744,9 +744,8 @@ class Transfer extends Component {
                   style={{ width: 32, height: 32 }}
                 />
                 )}
-            >
-              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}</Text>
-            </ConfirmSlider>
+              label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+            />
           </View>
           <Loader loading={loading} />
         </ScrollView>
