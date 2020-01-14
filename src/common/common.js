@@ -5,22 +5,7 @@ import config from '../../config';
 import store from './storage';
 
 const { consts: { currencies } } = config;
-const DEFAULT_CURRENCY_SYMBOL = '$';
-
-const urls = {
-  BTC: {
-    Mainnet: 'https://live.blockcypher.com/btc/tx',
-    Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
-  },
-  RBTC: {
-    Mainnet: 'https://explorer.rsk.co/tx',
-    Testnet: 'https://explorer.testnet.rsk.co/tx',
-  },
-  RIF: {
-    Mainnet: 'https://explorer.rsk.co/tx/',
-    Testnet: 'https://explorer.testnet.rsk.co/tx',
-  },
-};
+const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
 
 // Extract currency symbols from config
 // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
@@ -176,8 +161,14 @@ const common = {
     return passcode;
   },
 
-  getExplorerUrl(symbol, type, hash) {
-    let url = urls[symbol][type];
+  /**
+   * getTransactionUrl, returns transaction url
+   * @param {*} symbol, coin symbol
+   * @param {*} type, coin network type
+   * @param {*} hash, transaction hash
+   */
+  getTransactionUrl(symbol, type, hash) {
+    let url = config.transactionUrls[symbol][type];
     url = `${url}/${hash}/`;
     return url;
   },

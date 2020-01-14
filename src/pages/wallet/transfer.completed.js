@@ -10,6 +10,7 @@ import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
 import screenHelper from '../../common/screenHelper';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
+import common from '../../common/common';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -85,28 +86,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const urls = {
-  BTC: {
-    Mainnet: 'https://live.blockcypher.com/btc/tx',
-    Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
-  },
-  RBTC: {
-    Mainnet: 'https://explorer.rsk.co/tx',
-    Testnet: 'https://explorer.testnet.rsk.co/tx',
-  },
-  RIF: {
-    Mainnet: 'https://explorer.rsk.co/tx/',
-    Testnet: 'https://explorer.testnet.rsk.co/tx',
-  },
-};
-
-
-const getExplorerUrl = (symbol, type, hash) => {
-  let url = urls[symbol][type];
-  url = `${url}/${hash}/`;
-  return url;
-};
-
 export default class TransferCompleted extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -127,7 +106,7 @@ export default class TransferCompleted extends Component {
   onExplorePress() {
     const { navigation } = this.props;
     const { symbol, type, hash } = navigation.state.params;
-    const url = getExplorerUrl(symbol, type, hash);
+    const url = common.getTransactionUrl(symbol, type, hash);
     Linking.openURL(url);
   }
 

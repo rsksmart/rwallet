@@ -15,6 +15,7 @@ import flex from '../../assets/styles/layout.flex';
 import Loc from '../../components/common/misc/loc';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -50,7 +51,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   amount: {
-    fontSize: 40,
+    flex: 1,
+    marginRight: 75,
+  },
+  amountText: {
     fontWeight: '400',
   },
   amountView: {
@@ -68,20 +72,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const getStateIcon = (state) => {
-  let icon = null;
-  if (state === 'Sent') {
-    icon = <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: '#6875B7' }]} />;
-  } else if (state === 'Received') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />;
-  } else if (state === 'Receiving') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />;
-  } else if (state === 'Sending') {
-    icon = <Image source={sending} style={{ width: 37, height: 37 }} />;
-  } else if (state === 'Failed') {
-    icon = <MaterialIcons name="error-outline" size={50} style={[{ color: '#E73934' }]} />;
-  }
-  return icon;
+const stateIcons = {
+  Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: '#6875B7' }]} />,
+  Sending: <Image source={sending} style={{ width: 37, height: 37 }} />,
+  Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
+  Receiving: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
+  Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: '#E73934' }]} />,
 };
 
 class Transaction extends Component {
@@ -90,24 +86,21 @@ class Transaction extends Component {
   });
 
   static processViewData(transation) {
-    console.log('transation: ', transation);
     const { rawTransaction } = transation;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = common.getBalanceString(rawTransaction.symbol, amount);
+      amountText = `${common.getBalanceString(rawTransaction.symbol, amount)} ${rawTransaction.symbol}`;
     }
     let datetimeText = null;
     if (!_.isNil(transation.datetime)) {
       datetimeText = moment(transation.datetime).format('DD/MM/YYYY hh:mm a');
     }
-    const stateIcon = getStateIcon(transation.state);
     return {
       transactionState: transation.state,
       transactionId: rawTransaction.hash,
       amount: amountText,
-      symbol: rawTransaction.symbol,
-      stateIcon,
+      stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations: '0',
       memo: strings('No memo'),
@@ -133,14 +126,14 @@ class Transaction extends Component {
     const { navigation } = this.props;
     const transation = navigation.state.params;
     const { rawTransaction } = transation;
-    const url = common.getExplorerUrl(rawTransaction.symbol, rawTransaction.type, rawTransaction.hash);
+    const url = common.getTransactionUrl(rawTransaction.symbol, rawTransaction.type, rawTransaction.hash);
     Linking.openURL(url);
   }
 
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, symbol, datetime, memo, confirmations, title, stateIcon,
+      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon,
     } = this.state;
     return (
       <View style={[flex.flex1]}>
@@ -150,8 +143,7 @@ class Transaction extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
               <View style={styles.amountView}>
-                <Text style={styles.amount}>{amount}</Text>
-                <Text style={styles.symbol}>{symbol}</Text>
+                <ResponsiveText style={[styles.amount]} fontStyle={[styles.amountText]} maxFontSize={40}>{amount}</ResponsiveText>
                 <View style={styles.stateIcon}>{stateIcon}</View>
               </View>
             </View>
