@@ -673,7 +673,8 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, amountPlaceholderText, enableConfirm,
+      loading, to, amount, memo, isConfirm, isCustomFee, amountPlaceholderText,
+      enableConfirm,
     } = this.state;
     const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
@@ -766,12 +767,12 @@ class Transfer extends Component {
             <ConfirmSlider // All parameter should be adjusted for the real case
               ref={(ref) => { this.confirmSlider = ref; }}
               width={screen.width - 50}
-              buttonSize={30}
+              buttonSize={(screen.width - 50) / 8}
               buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
               borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
               backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
               textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={15}
+              borderRadius={(screen.width - 50) / 16}
               okButton={{ visible: true, duration: 400 }}
                 // onVerified={this.onConfirmSliderVerified}
               onVerified={async () => {

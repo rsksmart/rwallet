@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
+    width: 320,
   },
   cancelButton: {
     position: 'absolute',
@@ -159,7 +160,7 @@ class PasscodeModalBase extends PureComponent {
         transparent
       >
         <TouchableHighlight style={[styles.background, styles.container]}>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Loc style={[styles.title]} text={title} />
             <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
               {this.renderDots()}
