@@ -198,6 +198,15 @@ const common = {
     }
     return isAdress;
   },
+
+  /**
+   * Validate amount
+   * @param {string} str
+   */
+  isAmount(str) {
+    const regex = /^\d*\.{0,1}\d+$/g;
+    return regex.test(str);
+  },
 };
 
 export default common;
