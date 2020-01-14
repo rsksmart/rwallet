@@ -3,10 +3,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import RootSwitchNavigator from './src/navigation/container';
-import fixCutOffText from './src/common/fixCutOffText';
+import common from './src/common/common';
 
 // Fix cut-off text on some android device
-fixCutOffText();
+common.setDefaultFontFamily();
 
 export default function App() {
   return (
