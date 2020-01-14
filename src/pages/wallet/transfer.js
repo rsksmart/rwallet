@@ -497,14 +497,14 @@ class Transfer extends Component {
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
-          case 'err.notenoughbalance:rbtc':
+          case 'err.notenoughbalance.rbtc':
             notification = createErrorNotification(
               'Transfer is failed',
               'You need more RBTC balance to complete the transfer',
               buttonText,
             );
             break;
-          case 'err.notenoughbalance:rif':
+          case 'err.notenoughbalance.rif':
             notification = createErrorNotification(
               'Transfer is failed',
               'You need more RIF balance to complete the transfer',
