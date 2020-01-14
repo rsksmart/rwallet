@@ -168,7 +168,10 @@ const common = {
    * @param {*} hash, transaction hash
    */
   getTransactionUrl(symbol, type, hash) {
-    let url = config.transactionUrls[symbol][type];
+    let url = '';
+    if (!_.isNil(config.transactionUrls[symbol]) && !_.isNil(config.transactionUrls[symbol][type])) {
+      url = config.transactionUrls[symbol][type];
+    }
     url = `${url}/${hash}/`;
     return url;
   },
