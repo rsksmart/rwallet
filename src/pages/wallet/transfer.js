@@ -239,9 +239,6 @@ const PLACEHODLER_AMOUNT = 0.001;
 const header = require('../../assets/images/misc/header.png');
 const addressIcon = require('../../assets/images/icon/address.png');
 
-const INVALID_AMOUNT_ERROR_MESSAGE = 'err.invalidamount';
-const INVALID_ADDRESS_ERROR_MESSAGE = 'err.invalidaddress';
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -257,18 +254,6 @@ class Transfer extends Component {
       amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
     }
     return amountPlaceholderText;
-  }
-
-  static validateFormData(amount, address, symbol, type) {
-    const isAmountNumber = common.isAmount(amount);
-    if (!isAmountNumber) {
-      throw new Error(INVALID_AMOUNT_ERROR_MESSAGE);
-    }
-    const isAddress = common.isWalletAddress(address, symbol, type);
-    if (!isAddress) {
-      throw new Error(INVALID_ADDRESS_ERROR_MESSAGE);
-    }
-    return true;
   }
 
   constructor(props) {
@@ -487,6 +472,38 @@ class Transfer extends Component {
     this.confirmSlider.reset();
   }
 
+  /**
+   * validateFormData, return true/false, indicates whether the form datas are valid.
+   * @param {string} amount, coin amount
+   * @param {string} address, wallet address
+   * @param {string} symbol, coin symbol
+   * @param {string} type, coin network type
+   */
+  validateFormData(amount, address, symbol, type) {
+    const { addNotification } = this.props;
+    const isAmountNumber = common.isAmount(amount);
+    if (!isAmountNumber) {
+      const notification = createErrorNotification(
+        'Invalid amount',
+        'Amount is not valid',
+      );
+      addNotification(notification);
+      this.resetConfirm();
+      return false;
+    }
+    const isAddress = common.isWalletAddress(address, symbol, type);
+    if (!isAddress) {
+      const notification = createErrorNotification(
+        'Invalid address',
+        'Address is not valid',
+      );
+      addNotification(notification);
+      this.resetConfirm();
+      return false;
+    }
+    return true;
+  }
+
   async confirm() {
     const { navigation, navigation: { state }, addNotification } = this.props;
     const { params } = state;
@@ -494,10 +511,10 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
+    // validate form data
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) return;
     try {
       this.setState({ loading: true });
-      // validate form data
-      Transfer.validateFormData(amount, to, coin.symbol, coin.type);
       const feeParams = this.getFeeParams();
       let transaction = new Transaction(coin, to, amount, '', feeParams);
       await transaction.processRawTransaction();
@@ -543,23 +560,6 @@ class Transfer extends Component {
             break;
           default:
             break;
-        }
-      } else {
-        const { message } = error;
-        switch (message) {
-          case INVALID_AMOUNT_ERROR_MESSAGE:
-            notification = createErrorNotification(
-              'Invalid amount',
-              'Amount is not valid',
-            );
-            break;
-          case INVALID_ADDRESS_ERROR_MESSAGE:
-            notification = createErrorNotification(
-              'Invalid address',
-              'Address is not valid',
-            );
-            break;
-          default:
         }
       }
       // Default error notification
