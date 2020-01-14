@@ -488,7 +488,6 @@ class Transfer extends Component {
         'Amount is not valid',
       );
       addNotification(notification);
-      this.resetConfirm();
       return false;
     }
     const isAddress = common.isWalletAddress(address, symbol, type);
@@ -498,7 +497,6 @@ class Transfer extends Component {
         'Address is not valid',
       );
       addNotification(notification);
-      this.resetConfirm();
       return false;
     }
     return true;
@@ -512,7 +510,10 @@ class Transfer extends Component {
     amount = amount.trim();
     to = to.trim();
     // validate form data
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) return;
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
+      this.resetConfirm();
+      return;
+    }
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
