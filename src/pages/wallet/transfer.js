@@ -380,6 +380,7 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+    // If balance data have not received from server (user enter this page quickly), return without setState.
     if (_.isNil(coin.balance)) {
       return;
     }
