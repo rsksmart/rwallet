@@ -166,5 +166,9 @@
   "Is this correct?": "这是正确的助记词？",
   "Clear": "清除",
   "START OVER": "重新开始",
-  "Send All": "全部发送"
+  "Send All": "全部发送",
+  "Invalid amount": "不合法的数额",
+  "Amount is not valid": "数额不合法",
+  "Invalid address": "不合法的地址",
+  "Address is not valid": "地址不合法"
 }
