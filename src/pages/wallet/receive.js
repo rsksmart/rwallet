@@ -102,8 +102,25 @@ class WalletReceive extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onCopyPress = this.onCopyPress.bind(this);
+    }
+
+    onCopyPress() {
       const { navigation, addNotification } = this.props;
+      const { coin } = navigation.state.params;
+      const address = coin && coin.address;
+      Clipboard.setString(address);
+      const notification = createInfoNotification(
+        'Copied',
+        'The address has been copied to clipboard',
+      );
+      addNotification(notification);
+    }
+
+    render() {
+      const { navigation } = this.props;
       const { coin } = navigation.state.params;
       const logo = navigation.state.params.icon;
       const qrSize = 270;
@@ -142,18 +159,10 @@ class WalletReceive extends Component {
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Loc style={[styles.sectionTitle]} text="Address" />
               <View style={styles.address}>
-                <TouchableOpacity onPress={() => {
-                  Clipboard.setString(address);
-                  const notification = createInfoNotification(
-                    'Copied',
-                    'The address has been copied to clipboard',
-                  );
-                  addNotification(notification);
-                }}
-                >
+                <TouchableOpacity onPress={this.onCopyPress}>
                   <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
-                <Text style={styles.addressText} ellipsizeMode="tail" numberOfLines={1}>{address}</Text>
+                <Text style={styles.addressText}>{address}</Text>
                 {/* TODO: we hide the refresh icon for now
                 Coin should have a isChangable member to decide whether it could generate more addresses
                 Only BTC is allowed to do that.
