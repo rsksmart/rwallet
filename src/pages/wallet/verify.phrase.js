@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   wordFieldView: {
     height: 150,
     marginTop: 15,
+    overflow: 'hidden',
   },
   tags: {
     justifyContent: 'center',
