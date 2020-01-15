@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, Clipboard,
@@ -111,6 +112,9 @@ class WalletReceive extends Component {
       const { navigation, addNotification } = this.props;
       const { coin } = navigation.state.params;
       const address = coin && coin.address;
+      if (_.isNil(address)) {
+        return;
+      }
       Clipboard.setString(address);
       const notification = createInfoNotification(
         'Copied',
