@@ -282,7 +282,7 @@ class MineIndex extends Component {
     },
     {
       title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#6FC062' }]} />,
+      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#3B9DD8' }]} />,
       onPress: () => {
         Linking.openURL('https://t.me/rskofficialcommunity');
       },
