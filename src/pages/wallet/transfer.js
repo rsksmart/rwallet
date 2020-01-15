@@ -243,6 +243,7 @@ const addressIcon = require('../../assets/images/icon/address.png');
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
+    gesturesEnabled: false,
   });
 
   static generateAmountPlaceholderText(symbol, currency, prices) {
