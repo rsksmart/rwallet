@@ -1,3 +1,5 @@
+import React from 'react';
+import { Text, Platform } from 'react-native';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
@@ -5,6 +7,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import rsk3 from 'rsk3';
 import config from '../../config';
 import store from './storage';
+
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = '$';
@@ -206,6 +209,26 @@ const common = {
   isAmount(str) {
     const regex = /^\d*\.{0,1}\d+$/g;
     return regex.test(str);
+  },
+
+  /**
+   * Set default font family for android, solve cut-off problem for some android device
+   * Oppo A77 - Some texts gets cut-off
+   * solution: Set app default font family, instead of system font
+   * see https://github.com/facebook/react-native/issues/15114
+   */
+  setDefaultFontFamily() {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+
+    const oldRender = Text.render;
+    Text.render = (...args) => {
+      const origin = oldRender.call(this, ...args);
+      return React.cloneElement(origin, {
+        style: [{ fontFamily: config.defaultFontFamily }, origin.props.style],
+      });
+    };
   },
 };
 
