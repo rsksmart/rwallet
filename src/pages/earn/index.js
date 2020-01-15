@@ -47,7 +47,7 @@ export default class EarnIndex extends Component {
           <View style={styles.body}>
             <Loc style={[styles.title]} text="Below features are coming soon to Earn…" />
             <View style={styles.greenLine} />
-            <Loc style={[styles.listText]} text="- Earn cryptocurrency by completing task" />
+            <Loc style={[styles.listText]} text="- Earn cryptocurrency by completing tasks" />
             <Loc style={[styles.listText]} text="- Gain interests from a variety of Defi products" />
             <Loc style={[styles.listText]} text="- Cash Back" />
           </View>

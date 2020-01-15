@@ -159,12 +159,16 @@
   "- Multi-sign approval of transactions": "- Multi-sign approval of transactions",
   "Earn cryptocurrency with ease": "Earn cryptocurrency with ease",
   "Below features are coming soon to Earn…": "Below features are coming soon to Earn…",
-  "- Earn cryptocurrency by completing task": "- Earn cryptocurrency by completing task",
+  "- Earn cryptocurrency by completing tasks": "- Earn cryptocurrency by completing tasks",
   "- Gain interests from a variety of Defi products": "- Gain interests from a variety of Defi products",
   "- Cash Back": "- \"Cash Back\" on purchases with cryptocurrency",
   "Coming soon...": "Coming soon...",
   "Is this correct?": "Is this correct?",
   "Clear": "Clear",
   "START OVER": "START OVER",
-  "Send All": "Send All"
+  "Send All": "Send All",
+  "Invalid amount": "Invalid amount",
+  "Amount is not valid": "Amount is not valid",
+  "Invalid address": "Invalid address",
+  "Address is not valid": "Address is not valid"
 }
