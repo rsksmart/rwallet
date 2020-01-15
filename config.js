@@ -15,6 +15,9 @@ const config = {
     currency: 'USD',
     fingerprint: false,
   },
+  defaultUser: {
+    name: 'Anonymous User',
+  },
   consts: {
     supportedTokens: ['BTC', 'RBTC', 'RIF'],
     locales: [

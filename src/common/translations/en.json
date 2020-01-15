@@ -136,6 +136,7 @@
   "Key name is too short.": "Key name is too short.",
   "Key name is too long.": "Key name is too long.",
   "Key name contains invalid characters.": "Key name contains invalid characters.",
+  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space",
   "Create or Import a Key": "Create or Import a Key",
   "English": "English",
   "Spanish": "Spanish",
@@ -170,5 +171,11 @@
   "Invalid amount": "Invalid amount",
   "Amount is not valid": "Amount is not valid",
   "Invalid address": "Invalid address",
-  "Address is not valid": "Address is not valid"
+  "Address is not valid": "Address is not valid",
+  "Name is too short.": "Name is too short.",
+  "Name is too long.": "Name is too long.",
+  "Name contains invalid characters.": "Name contains invalid characters.",
+  "Your Name": "Your Name",
+  "What's your name?": "What's your name?",
+  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space",
 }

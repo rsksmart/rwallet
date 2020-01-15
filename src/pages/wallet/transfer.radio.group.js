@@ -216,7 +216,6 @@ Item.propTypes = {
 
 export default class RadioGroup extends Component {
   static createListData(data) {
-    this.a = 1;
     const listData = [
       { name: 'Slow' },
       { name: 'Average' },
