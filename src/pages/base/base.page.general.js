@@ -21,12 +21,12 @@ const styles = StyleSheet.create({
 
 const BasePageGereral = (props) => {
   const {
-    children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory,
+    children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, customizedHeaderRightBtn, headerStyle,
   } = props;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
       <ScrollView>
-        <Header title={title} goBack={goBack || (() => navigation.goBack())} />
+        <Header title={title} goBack={goBack || (() => navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle} />
         <View style={[screenHelper.styles.body]}>
           {children}
         </View>
@@ -61,6 +61,10 @@ BasePageGereral.propTypes = {
   goBack: PropTypes.func,
   bottomBtnText: PropTypes.string,
   isLoading: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  customizedHeaderRightBtn: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  headerStyle: PropTypes.object,
 };
 
 BasePageGereral.defaultProps = {
@@ -70,6 +74,8 @@ BasePageGereral.defaultProps = {
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
+  customizedHeaderRightBtn: null,
+  headerStyle: null,
 };
 
 
