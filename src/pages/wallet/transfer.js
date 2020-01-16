@@ -664,8 +664,9 @@ class Transfer extends Component {
   }
 
   renderFeeOptions() {
+    const { currency } = this.props;
     const {
-      feeSymbol, feeData, feeLevel, currency, isCustomFee,
+      feeSymbol, feeData, feeLevel, isCustomFee,
     } = this.state;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
