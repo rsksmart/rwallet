@@ -517,10 +517,12 @@ class Transfer extends Component {
   validateFormData(amount, address, symbol, type) {
     const { addNotification } = this.props;
     const isAmountNumber = common.isAmount(amount);
+    const buttonText = 'RETRY';
     if (!isAmountNumber) {
       const notification = createErrorNotification(
         'Invalid amount',
         'Amount is not valid',
+        buttonText,
       );
       addNotification(notification);
       return false;
@@ -529,17 +531,17 @@ class Transfer extends Component {
       const notification = createErrorNotification(
         'Invalid amount',
         'Amount should be greater then 0',
+        buttonText,
       );
       addNotification(notification);
       return false;
     }
-
-
     const isAddress = common.isWalletAddress(address, symbol, type);
     if (!isAddress) {
       const notification = createErrorNotification(
         'Invalid address',
         'Address is not valid',
+        buttonText,
       );
       addNotification(notification);
       return false;
