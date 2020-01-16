@@ -15,15 +15,13 @@ import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 
 import ScreenHelper from '../../common/screenHelper';
-import ConfirmSlider from '../../components/wallet/confirm.slider';
-import circleCheckIcon from '../../assets/images/misc/circle.check.png';
-import circleIcon from '../../assets/images/misc/circle.png';
 import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
+import Button from '../../components/common/button/button';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -224,6 +222,12 @@ const styles = StyleSheet.create({
   sendAllText: {
     color: '#00B520',
   },
+  lastBlockMarginBottom: {
+    marginBottom: 15,
+  },
+  confirmButton: {
+    alignSelf: 'center',
+  },
 });
 
 const FEE_LEVEL_ADJUSTMENT = 0.25;
@@ -243,7 +247,7 @@ const addressIcon = require('../../assets/images/icon/address.png');
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
-    gesturesEnabled: false,
+    // gesturesEnabled: false,
   });
 
   static generateAmountPlaceholderText(symbol, currency, prices) {
@@ -267,6 +271,7 @@ class Transfer extends Component {
       memo: null,
       feeLevel: 1,
       preference: 'medium',
+      // eslint-disable-next-line react/no-unused-state
       isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
@@ -286,6 +291,7 @@ class Transfer extends Component {
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
     this.onSendAllPress = this.onSendAllPress.bind(this);
+    this.onConfirmPress = this.onConfirmPress.bind(this);
   }
 
   componentDidMount() {
@@ -326,6 +332,7 @@ class Transfer extends Component {
   }
 
   async onConfirmSliderVerified() {
+    // eslint-disable-next-line react/no-unused-state
     this.setState({ isConfirm: true });
     await this.confirm();
   }
@@ -395,6 +402,25 @@ class Transfer extends Component {
       balance = balance.gt(0) ? balance : 0;
       const amountText = common.getBalanceString(coin.symbol, balance);
       this.inputAmount(amountText);
+    }
+  }
+
+  async onConfirmPress() {
+    const { navigation: { state } } = this.props;
+    const { params } = state;
+    const { coin } = params;
+    let { amount, to } = this.state;
+    amount = amount.trim();
+    to = to.trim();
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
+      this.resetConfirm();
+      return;
+    }
+    const { showPasscode } = this.props;
+    if (global.passcode) {
+      showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
+    } else {
+      await this.onConfirmSliderVerified();
     }
   }
 
@@ -474,8 +500,9 @@ class Transfer extends Component {
   }
 
   resetConfirm() {
+    // eslint-disable-next-line react/no-unused-state
     this.setState({ isConfirm: false });
-    this.confirmSlider.reset();
+    // this.confirmSlider.reset();
   }
 
   /**
@@ -515,11 +542,6 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
-    // validate form data
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
-      this.resetConfirm();
-      return;
-    }
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
@@ -674,10 +696,10 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, amountPlaceholderText,
+      loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
       enableConfirm,
     } = this.state;
-    const { navigation, showPasscode } = this.props;
+    const { navigation } = this.props;
     const { coin } = navigation.state.params;
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
@@ -762,10 +784,12 @@ class Transfer extends Component {
               opacity: enableConfirm ? 1 : 0.5,
               width: '100%',
               justifyContent: 'center',
-            }]}
+            }, styles.lastBlockMarginBottom]}
             pointerEvents={enableConfirm ? 'auto' : 'none'}
           >
-            <ConfirmSlider // All parameter should be adjusted for the real case
+            {/*
+              // Replace ConfirmSlider with Button component temporaryly.
+              <ConfirmSlider // All parameter should be adjusted for the real case
               ref={(ref) => { this.confirmSlider = ref; }}
               width={screen.width - 50}
               buttonSize={(screen.width - 50) / 8}
@@ -790,7 +814,8 @@ class Transfer extends Component {
                 />
                 )}
               label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
-            />
+            /> */}
+            <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
           </View>
           <Loader loading={loading} />
         </ScrollView>
