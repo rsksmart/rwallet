@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
   startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
   startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
   startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
+  startFetchLatestBlockHeightTimer: () => dispatch(walletActions.startFetchLatestBlockHeightTimer()),
   resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
   removeNotification: () => dispatch(appActions.removeNotification()),

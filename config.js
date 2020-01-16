@@ -40,6 +40,7 @@ const config = {
     fetchPrice: 8000,
     fetchBalance: 8000,
     fetchTransaction: 8000,
+    fetchLatestBlockHeight: 8000,
   },
   symbolDecimalPlaces: {
     BTC: 6,
@@ -47,6 +48,21 @@ const config = {
     RIF: 3,
   },
   assetValueDecimalPlaces: 2,
+  transactionUrls: {
+    BTC: {
+      Mainnet: 'https://live.blockcypher.com/btc/tx',
+      Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
+    },
+    RBTC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    RIF: {
+      Mainnet: 'https://explorer.rsk.co/tx/',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+  },
+  defaultFontFamily: 'Roboto', // defaultFontFamily, for android
 };
 
 export default config;

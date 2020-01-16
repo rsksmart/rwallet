@@ -86,8 +86,8 @@ export default class ResponsiveText extends Component {
 }
 
 ResponsiveText.propTypes = {
-  style: PropTypes.arrayOf(PropTypes.object),
-  fontStyle: PropTypes.arrayOf(PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  fontStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   children: PropTypes.string,
   maxFontSize: PropTypes.number.isRequired,
   suffixElement: PropTypes.element,

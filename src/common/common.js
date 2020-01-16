@@ -10,7 +10,7 @@ import store from './storage';
 
 
 const { consts: { currencies } } = config;
-const DEFAULT_CURRENCY_SYMBOL = '$';
+const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
 
 // Extract currency symbols from config
 // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
@@ -164,6 +164,35 @@ const common = {
       global.passcode = passcode = await store.getPasscode();
     }
     return passcode;
+  },
+
+  /**
+   * getTransactionUrl, returns transaction url
+   * @param {*} symbol, coin symbol
+   * @param {*} type, coin network type
+   * @param {*} hash, transaction hash
+   */
+  getTransactionUrl(symbol, type, hash) {
+    let url = '';
+    if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
+      url = config.transactionUrls[symbol][type];
+    }
+    url = `${url}/${hash}/`;
+    return url;
+  },
+
+  /**
+   * getLatestBlockHeight, return latestBlockHeight. If it's not found, return null.
+   * @param {array} latestBlockHeights
+   * @param {string} chain
+   * @param {string} type, network type
+   */
+  getLatestBlockHeight(latestBlockHeights, chain, type) {
+    const latestBlockHeight = _.find(latestBlockHeights, { chain, type });
+    if (latestBlockHeight && latestBlockHeight.blockHeight) {
+      return latestBlockHeight.blockHeight;
+    }
+    return null;
   },
 
   /**

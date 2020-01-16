@@ -21,6 +21,7 @@ import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import Scan from '../pages/wallet/scan';
+import Transaction from '../pages/wallet/transaction';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -172,6 +173,13 @@ const routeConfigMap = {
       path: 'Scan',
       navigationOptions: () => ({
         headerTitle: 'Scan',
+      }),
+    },
+    Transaction: {
+      screen: Transaction,
+      path: 'Transaction',
+      navigationOptions: () => ({
+        headerTitle: 'Transaction',
       }),
     },
   },

@@ -304,6 +304,10 @@ class ParseHelper {
 
     return Promise.all(promises);
   }
+
+  static fetchLatestBlockHeight() {
+    return Parse.Cloud.run('getLatestBlockHeight');
+  }
 }
 
 export default ParseHelper;
