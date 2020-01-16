@@ -34,6 +34,7 @@ import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
+import Rename from '../pages/mine/rename';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -248,6 +249,13 @@ const routeConfigMap = {
       path: 'KeyName',
       navigationOptions: () => ({
         headerTitle: 'KeyName',
+      }),
+    },
+    Rename: {
+      screen: Rename,
+      path: 'Rename',
+      navigationOptions: () => ({
+        headerTitle: 'Rename',
       }),
     },
   },
