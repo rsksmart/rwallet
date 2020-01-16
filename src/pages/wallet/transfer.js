@@ -31,17 +31,11 @@ const MEMO_LINE_HEIGHT = 15;
 
 const styles = StyleSheet.create({
   headerTitle: {
+    color: '#FFF',
     fontSize: 20,
     fontWeight: '900',
-    position: 'absolute',
-    bottom: 25,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 8,
+    marginLeft: -2,
+    marginBottom: 2,
   },
   chevron: {
     color: '#FFF',
@@ -230,6 +224,13 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     alignSelf: 'center',
+  },
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    alignItems: 'center',
   },
 });
 
@@ -726,18 +727,15 @@ class Transfer extends Component {
       <SafeAreaView>
         <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Send" />
-              {` ${coin.defaultName}`}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
+            <View style={styles.titleView}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>
+                <Loc text="Send" />
+                {` ${coin.defaultName}`}
+              </Text>
+            </View>
           </ImageBackground>
           <View style={styles.body}>
             <View style={styles.sectionContainer}>

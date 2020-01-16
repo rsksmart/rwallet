@@ -46,11 +46,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 101,
-  },
   headerView: {
     position: 'absolute',
     width: '100%',
@@ -58,10 +53,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '900',
-    position: 'absolute',
-    bottom: 120,
-    left: 54,
     color: '#FFF',
+    marginLeft: -2,
+    marginBottom: 2,
   },
   headerBoard: {
     width: '85%',
@@ -225,6 +219,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 105,
+    left: 10,
+    alignItems: 'center',
   },
 });
 
@@ -553,17 +554,16 @@ class History extends Component {
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
-          <Text style={[styles.headerTitle]}>
-            {symbol}
-            {' '}
-            {type === 'Testnet' ? type : ''}
-          </Text>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={this.onbackClick}
-          >
-            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-          </TouchableOpacity>
+          <View style={styles.titleView}>
+            <TouchableOpacity onPress={this.onbackClick}>
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+            <Text style={[styles.headerTitle]}>
+              {symbol}
+              {' '}
+              {type === 'Testnet' ? type : ''}
+            </Text>
+          </View>
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
