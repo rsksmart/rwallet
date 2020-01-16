@@ -274,8 +274,7 @@ class Transfer extends Component {
       memo: null,
       feeLevel: 1,
       preference: 'medium',
-      // eslint-disable-next-line react/no-unused-state
-      isConfirm: false,
+      // isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
       customFee: null,
@@ -290,7 +289,7 @@ class Transfer extends Component {
     this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
     this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
-    this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
+    // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
     this.onSendAllPress = this.onSendAllPress.bind(this);
@@ -334,11 +333,10 @@ class Transfer extends Component {
     });
   }
 
-  async onConfirmSliderVerified() {
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ isConfirm: true });
-    await this.confirm();
-  }
+  // async onConfirmSliderVerified() {
+  //   this.setState({ isConfirm: true });
+  //   await this.confirm();
+  // }
 
   onCustomFeeSwitchValueChange(value) {
     const { customFee } = this.state;
@@ -416,14 +414,16 @@ class Transfer extends Component {
     amount = amount.trim();
     to = to.trim();
     if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
-      this.resetConfirm();
+      // this.resetConfirm();
       return;
     }
     const { showPasscode } = this.props;
     if (global.passcode) {
-      showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
+      // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
+      showPasscode('verify', this.confirm, () => {});
     } else {
-      await this.onConfirmSliderVerified();
+      // await this.onConfirmSliderVerified();
+      await this.confirm();
     }
   }
 
@@ -502,11 +502,10 @@ class Transfer extends Component {
     this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
-  resetConfirm() {
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ isConfirm: false });
-    // this.confirmSlider.reset();
-  }
+  // resetConfirm() {
+  //   this.setState({ isConfirm: false });
+  //   this.confirmSlider.reset();
+  // }
 
   /**
    * validateFormData, return true/false, indicates whether the form datas are valid.
@@ -603,7 +602,7 @@ class Transfer extends Component {
         );
       }
       addNotification(notification);
-      this.resetConfirm();
+      // this.resetConfirm();
     }
   }
 
