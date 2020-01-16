@@ -85,10 +85,10 @@ class Transaction extends Component {
     header: null,
   });
 
-  static processViewData(transation, lastBlockHeights) {
+  static processViewData(transation, latestBlockHeights) {
     const { rawTransaction } = transation;
-    let lastBlockHeight = common.getLastBlockHeight(lastBlockHeights, rawTransaction.chain, rawTransaction.type);
-    lastBlockHeight = _.isNil(lastBlockHeight) ? 0 : lastBlockHeight;
+    let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
+    latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
@@ -98,7 +98,7 @@ class Transaction extends Component {
     if (!_.isNil(transation.datetime)) {
       datetimeText = moment(transation.datetime).format('DD/MM/YYYY hh:mm a');
     }
-    let confirmations = lastBlockHeight - rawTransaction.blockHeight;
+    let confirmations = latestBlockHeight - rawTransaction.blockHeight;
     confirmations = confirmations < 0 ? 0 : confirmations;
     confirmations = confirmations >= 6 ? '6+' : confirmations;
     return {
@@ -115,16 +115,16 @@ class Transaction extends Component {
 
   constructor(props) {
     super(props);
-    const { navigation, lastBlockHeights } = this.props;
+    const { navigation, latestBlockHeights } = this.props;
     const transation = navigation.state.params;
-    this.state = Transaction.processViewData(transation, lastBlockHeights);
+    this.state = Transaction.processViewData(transation, latestBlockHeights);
     this.onLinkPress = this.onLinkPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { navigation, lastBlockHeights } = nextProps;
+    const { navigation, latestBlockHeights } = nextProps;
     const transation = navigation.state.params;
-    this.setState(Transaction.processViewData(transation, lastBlockHeights));
+    this.setState(Transaction.processViewData(transation, latestBlockHeights));
   }
 
   onLinkPress() {
@@ -187,12 +187,12 @@ Transaction.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  lastBlockHeights: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  latestBlockHeights: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
-  lastBlockHeights: state.Wallet.get('lastBlockHeights'),
+  latestBlockHeights: state.Wallet.get('latestBlockHeights'),
   currentLocale: state.App.get('language'),
 });
 

@@ -182,15 +182,15 @@ const common = {
   },
 
   /**
-   * getLastBlockHeight, return latestBlockHeight. If it's not found, return null.
-   * @param {array} lastBlockHeights
+   * getLatestBlockHeight, return latestBlockHeight. If it's not found, return null.
+   * @param {array} latestBlockHeights
    * @param {string} chain
    * @param {string} type, network type
    */
-  getLastBlockHeight(lastBlockHeights, chain, type) {
-    const lastBlockHeight = _.find(lastBlockHeights, { name: chain, type });
-    if (!_.isNil(lastBlockHeight) && _.isNil(lastBlockHeight.latestBlockHeight)) {
-      return lastBlockHeight.latestBlockHeight;
+  getLatestBlockHeight(latestBlockHeights, chain, type) {
+    const latestBlockHeight = _.find(latestBlockHeights, { chain, type });
+    if (!_.isNil(latestBlockHeight) && !_.isNil(latestBlockHeight.blockHeight)) {
+      return latestBlockHeight.blockHeight;
     }
     return null;
   },

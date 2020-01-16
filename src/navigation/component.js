@@ -71,7 +71,7 @@ class RootComponent extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
-      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLastBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
+      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
     } = nextProps;
 
     const {
@@ -113,7 +113,7 @@ class RootComponent extends Component {
         startFetchPriceTimer();
         startFetchBalanceTimer(walletManager);
         startFetchTransactionTimer(walletManager);
-        startFetchLastBlockHeightTimer();
+        startFetchLatestBlockHeightTimer();
 
         newState.isParseWritten = true;
       }
@@ -147,7 +147,7 @@ RootComponent.propTypes = {
   initializeWithParse: PropTypes.func.isRequired,
   startFetchBalanceTimer: PropTypes.func.isRequired,
   startFetchTransactionTimer: PropTypes.func.isRequired,
-  startFetchLastBlockHeightTimer: PropTypes.func.isRequired,
+  startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}),

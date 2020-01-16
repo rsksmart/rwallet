@@ -39,7 +39,7 @@ const config = {
     fetchPrice: 8000,
     fetchBalance: 8000,
     fetchTransaction: 8000,
-    fetchLastBlockHeight: 8000,
+    fetchLatestBlockHeight: 8000,
   },
   symbolDecimalPlaces: {
     BTC: 6,

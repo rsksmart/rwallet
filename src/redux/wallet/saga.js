@@ -20,7 +20,7 @@ const {
     fetchPrice: FETCH_PRICE_INTERVAL,
     fetchBalance: FETCH_BALANCE_INTERVAL,
     fetchTransaction: FETCH_TRANSACTION_INTERVAL,
-    fetchLastBlockHeight: FETCH_LAST_BLOCK_HEIGHT_INTERVAL,
+    fetchLatestBlockHeight: FETCH_LATEST_BLOCK_HEIGHT_INTERVAL,
   },
 } = config;
 
@@ -130,26 +130,26 @@ export function* startFetchTransactionTimerRequest(action) {
 }
 
 /**
- * Start the timer to call actions.FETCH_LAST_BLOCK_HEIGHT periodically
+ * Start the timer to call actions.FETCH_LATEST_BLOCK_HEIGHT periodically
  */
-export function* startFetchLastBlockHeightTimerRequest() {
-  // Call actions.FETCH_LAST_BLOCK_HEIGHT once to start off
+export function* startFetchLatestBlockHeightTimerRequest() {
+  // Call actions.FETCH_LATEST_BLOCK_HEIGHT once to start off
   yield put({
-    type: actions.FETCH_LAST_BLOCK_HEIGHT,
+    type: actions.FETCH_LATEST_BLOCK_HEIGHT,
   });
 
-  const chan = yield call(createTimer, FETCH_LAST_BLOCK_HEIGHT_INTERVAL);
+  const chan = yield call(createTimer, FETCH_LATEST_BLOCK_HEIGHT_INTERVAL);
 
   try {
     while (true) {
       // take(END) will cause the saga to terminate by jumping to the finally block
       yield take(chan);
       yield put({
-        type: actions.FETCH_LAST_BLOCK_HEIGHT,
+        type: actions.FETCH_LATEST_BLOCK_HEIGHT,
       });
     }
   } finally {
-    console.log('fetchLastBlockHeight Channel closed.');
+    console.log('fetchLatestBlockHeight Channel closed.');
   }
 }
 
@@ -202,11 +202,11 @@ function* fetchTransactionRequest(action) {
   }
 }
 
-function* fetchLastBlockHeight() {
+function* fetchLatestBlockHeight() {
   try {
-    const response = yield call(ParseHelper.fetchLastBlockHeight);
+    const response = yield call(ParseHelper.fetchLatestBlockHeight);
     yield put({
-      type: actions.FETCH_LAST_BLOCK_HEIGHT_RESULT,
+      type: actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT,
       value: response,
     });
   } catch (err) {
@@ -260,12 +260,12 @@ export default function* () {
     takeEvery(actions.GET_PRICE, getPriceRequest),
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
-    takeEvery(actions.FETCH_LAST_BLOCK_HEIGHT, fetchLastBlockHeight),
+    takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchLatestBlockHeight),
 
     takeEvery(actions.START_FETCH_PRICE_TIMER, startFetchPriceTimerRequest),
     takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
     takeEvery(actions.START_FETCH_TRANSACTION_TIMER, startFetchTransactionTimerRequest),
-    takeEvery(actions.START_FETCH_LAST_BLOCK_HEIGHT_TIMER, startFetchLastBlockHeightTimerRequest),
+    takeEvery(actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER, startFetchLatestBlockHeightTimerRequest),
 
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
