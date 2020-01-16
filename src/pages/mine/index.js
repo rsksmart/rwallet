@@ -17,6 +17,7 @@ import { strings } from '../../common/i18n';
 import ScreenHelper from '../../common/screenHelper';
 import RSKad from '../../components/common/rsk.ad';
 import ResponsiveText from '../../components/common/misc/responsive.text';
+import config from '../../../config';
 
 const AVATAR_SIZE = 129;
 
@@ -282,7 +283,7 @@ class MineIndex extends Component {
     },
     {
       title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#6FC062' }]} />,
+      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#3B9DD8' }]} />,
       onPress: () => {
         Linking.openURL('https://t.me/rskofficialcommunity');
       },
@@ -324,6 +325,7 @@ class MineIndex extends Component {
       settings: [],
       joins: [],
     };
+    this.onEditNamePress = this.onEditNamePress.bind(this);
   }
 
   componentWillMount() {
@@ -344,13 +346,21 @@ class MineIndex extends Component {
     }
   }
 
+  onEditNamePress() {
+    const { navigation } = this.props;
+    navigation.navigate('Rename');
+  }
+
   render() {
     let headerHeight = 160;
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXTopHeight;
     }
-    const { language, navigation } = this.props;
+    const { language, navigation, username } = this.props;
     const { keyListData, settings, joins } = this.state;
+    const { defaultSettings: { username: defaultUsername } } = config;
+    // Translate If username is default user name
+    const usernameText = username === defaultUsername ? strings(defaultUsername) : username;
     return (
       <View style={flex.flex1}>
         <ScrollView style={[flex.flex1]}>
@@ -362,12 +372,12 @@ class MineIndex extends Component {
                 fontStyle={[styles.nameFont]}
                 maxFontSize={20}
                 suffixElement={(
-                  <TouchableOpacity style={styles.nameEditView}>
+                  <TouchableOpacity style={styles.nameEditView} onPress={this.onEditNamePress}>
                     <FontAwesome name="edit" size={25} style={styles.nameEdit} />
                   </TouchableOpacity>
                 )}
               >
-                {strings('Anonymous User')}
+                {usernameText}
               </ResponsiveText>
             </View>
           </ImageBackground>
@@ -417,6 +427,7 @@ MineIndex.propTypes = {
   isWalletNameUpdated: PropTypes.bool.isRequired,
   language: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
+  username: PropTypes.string.isRequired,
 };
 
 MineIndex.defaultProps = {
@@ -428,6 +439,7 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
+  username: state.App.get('username'),
 });
 
 export default connect(mapStateToProps)(MineIndex);

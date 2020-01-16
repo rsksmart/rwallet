@@ -136,6 +136,7 @@
   "Key name is too short.": "O nome da chave é muito curto.",
   "Key name is too long.": "O nome da chave é muito longo.",
   "Key name contains invalid characters.": "O nome da chave contém caracteres inválidos.",
+  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço",
   "Create or Import a Key": "Criar ou importar uma chave",
   "English": "Inglês",
   "Spanish": "Espanhol",
@@ -159,7 +160,7 @@
   "- Multi-sign approval of transactions": "- Aprovação de transações com vários sinais",
   "Earn cryptocurrency with ease": "Ganhe criptomoeda com facilidade",
   "Below features are coming soon to Earn…": "Os recursos abaixo estão chegando em breve.",
-  "- Earn cryptocurrency by completing task": "- Ganhe criptomoeda concluindo a tarefa",
+  "- Earn cryptocurrency by completing tasks": "- Ganhe criptomoeda concluindo tarefas",
   "- Gain interests from a variety of Defi products": "- Obter interesses de uma variedade de produtos Defi",
   "- Cash Back": "- \"Cash Back\" em compras com criptomoeda",
   "Coming soon...": "Em breve...",
@@ -168,5 +169,15 @@
   "START OVER": "RECOMEÇAR",
   "Send All": "Envie todos",
   "You need more RBTC balance to complete the transfer": "Você precisa de mais saldo RBTC para concluir a transferência",
-  "You need more RIF balance to complete the transfer": "Você precisa de mais saldo RIF para concluir a transferência"
+  "You need more RIF balance to complete the transfer": "Você precisa de mais saldo RIF para concluir a transferência",
+  "Invalid amount": "Montante inválido",
+  "Amount is not valid": "Valor inválido",
+  "Invalid address": "Endereço inválido",
+  "Address is not valid": "Endereço inválido",
+  "Name is too short.": "Nome muito curto.",
+  "Name is too long.": "O nome é muito longo.",
+  "Name contains invalid characters.": "O nome contém caracteres inválidos.",
+  "Your Name": "Seu nome",
+  "What's your name?": "Qual o seu nome?",
+  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
 }

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
@@ -225,7 +226,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const FEE_LEVEL_ADJUSTMENT = 0.25;
 const DEFAULT_RBTC_MIN_GAS = 21000;
 const DEFAULT_RIF_MIN_GAS = 23064;
@@ -238,12 +238,12 @@ const MAX_FEE_TIMES = 2;
 const PLACEHODLER_AMOUNT = 0.001;
 
 const header = require('../../assets/images/misc/header.png');
-// const currencyExchange = require('../../assets/images/icon/currencyExchange.png');
-const address = require('../../assets/images/icon/address.png');
+const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
+    gesturesEnabled: false,
   });
 
   static generateAmountPlaceholderText(symbol, currency, prices) {
@@ -379,6 +379,10 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
+    // If balance data have not received from server (user enter this page quickly), return without setState.
+    if (_.isNil(coin.balance)) {
+      return;
+    }
     if (coin.symbol === 'RIF') {
       const amount = common.getBalanceString(coin.symbol, coin.balance);
       this.setState({ amount });
@@ -469,11 +473,53 @@ class Transfer extends Component {
     this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
+  resetConfirm() {
+    this.setState({ isConfirm: false });
+    this.confirmSlider.reset();
+  }
+
+  /**
+   * validateFormData, return true/false, indicates whether the form datas are valid.
+   * @param {string} amount, coin amount
+   * @param {string} address, wallet address
+   * @param {string} symbol, coin symbol
+   * @param {string} type, coin network type
+   */
+  validateFormData(amount, address, symbol, type) {
+    const { addNotification } = this.props;
+    const isAmountNumber = common.isAmount(amount);
+    if (!isAmountNumber) {
+      const notification = createErrorNotification(
+        'Invalid amount',
+        'Amount is not valid',
+      );
+      addNotification(notification);
+      return false;
+    }
+    const isAddress = common.isWalletAddress(address, symbol, type);
+    if (!isAddress) {
+      const notification = createErrorNotification(
+        'Invalid address',
+        'Address is not valid',
+      );
+      addNotification(notification);
+      return false;
+    }
+    return true;
+  }
+
   async confirm() {
     const { navigation, navigation: { state }, addNotification } = this.props;
     const { params } = state;
     const { coin } = params;
-    const { amount, to } = this.state;
+    let { amount, to } = this.state;
+    amount = amount.trim();
+    to = to.trim();
+    // validate form data
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
+      this.resetConfirm();
+      return;
+    }
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
@@ -546,9 +592,7 @@ class Transfer extends Component {
         );
       }
       addNotification(notification);
-      // Reset confirmSlider
-      this.setState({ isConfirm: false });
-      this.confirmSlider.reset();
+      this.resetConfirm();
     }
   }
 
@@ -644,7 +688,8 @@ class Transfer extends Component {
 
   render() {
     const {
-      loading, to, amount, memo, isConfirm, isCustomFee, enableConfirm, amountPlaceholderText,
+      loading, to, amount, memo, isConfirm, isCustomFee, amountPlaceholderText,
+      enableConfirm,
     } = this.state;
     const { navigation, showPasscode } = this.props;
     const { coin } = navigation.state.params;
@@ -700,7 +745,7 @@ class Transfer extends Component {
                   style={styles.textInputIcon}
                   onPress={this.onQrcodeScanPress}
                 >
-                  <Image source={address} />
+                  <Image source={addressIcon} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -737,12 +782,12 @@ class Transfer extends Component {
             <ConfirmSlider // All parameter should be adjusted for the real case
               ref={(ref) => { this.confirmSlider = ref; }}
               width={screen.width - 50}
-              buttonSize={30}
+              buttonSize={(screen.width - 50) / 8}
               buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
               borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
               backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
               textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={15}
+              borderRadius={(screen.width - 50) / 16}
               okButton={{ visible: true, duration: 400 }}
                 // onVerified={this.onConfirmSliderVerified}
               onVerified={async () => {
@@ -758,9 +803,8 @@ class Transfer extends Component {
                   style={{ width: 32, height: 32 }}
                 />
                 )}
-            >
-              <Text style={[{ fontWeight: 'bold', color: 'black', fontSize: 15 }]}>{isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}</Text>
-            </ConfirmSlider>
+              label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+            />
           </View>
           <Loader loading={loading} />
         </ScrollView>

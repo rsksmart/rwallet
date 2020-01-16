@@ -88,26 +88,32 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   icon: {
-    marginRight: 20,
+    marginRight: 10,
     marginLeft: 5,
   },
   title: {
     color: color.component.swipableButtonList.title.color,
     fontSize: 16,
-    fontWeight: '900',
+    fontFamily: 'Avenir-Heavy',
+    letterSpacing: 0.4,
   },
   text: {
     color: color.component.swipableButtonList.text.color,
+    fontFamily: 'Avenir-Roman',
     fontSize: 13,
+    letterSpacing: 0.27,
   },
   worth: {
     color: color.component.swipableButtonList.worth.color,
-    fontWeight: '900',
+    fontFamily: 'Avenir-Heavy',
     fontSize: 16,
+    letterSpacing: 1,
   },
   amount: {
     color: color.component.swipableButtonList.amount.color,
-    fontSize: 13,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 12,
+    letterSpacing: 1,
   },
 });
 

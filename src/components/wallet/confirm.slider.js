@@ -13,16 +13,19 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
   constructor(props) {
     super(props);
     this.reset = this.reset.bind(this);
+    const { buttonSize } = this.props;
 
     this.state = {
       drag: new Animated.ValueXY(),
       buttonOpacity: new Animated.Value(1),
+      progressWidth: new Animated.Value(buttonSize),
+      animatedTextValue: new Animated.Value(0),
       confirm: false,
       percent: 0,
       dimensions: { width: 0, height: 0 },
     };
 
-    const { drag } = this.state;
+    const { drag, progressWidth, animatedTextValue } = this.state;
     this.panResponder = PanResponder.create({
 
       onStartShouldSetPanResponder: () => true,
@@ -35,7 +38,6 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
       onPanResponderMove: Animated.event([null, { dx: drag.x }], {
         // limit sliding out of box
         listener: (event, gestureState) => {
-          const { buttonSize } = this.props;
           const {
             confirm,
             dimensions: { width },
@@ -46,13 +48,15 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
 
           if (toX < 0) toX = 0;
           if (toX > maxMoving) toX = maxMoving;
-          const percent = ((toX * 100) / maxMoving).toFixed();
+          const percent = Math.round(((toX * 100) / maxMoving).toFixed());
           this.setState({ percent });
 
           if (confirm) {
             drag.setValue({ x: 0, y: 0 });
             return;
           }
+          animatedTextValue.setValue(percent);
+          progressWidth.setValue(buttonSize + toX);
           drag.setValue({ x: toX, y: 0 });
         },
       }),
@@ -78,13 +82,25 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
   }
 
   reset() {
-    const { drag } = this.state;
-    const { okButton } = this.props;
+    const { drag, progressWidth, animatedTextValue } = this.state;
+    const { okButton, buttonSize } = this.props;
     drag.setOffset({ x: 0, y: 0 });
-    Animated.timing(drag, {
-      toValue: { x: 0, y: 0 },
-      duration: 800,
-    }).start();
+
+    Animated.parallel([
+      Animated.timing(drag, {
+        toValue: { x: 0, y: 0 },
+        duration: 800,
+      }),
+      Animated.timing(progressWidth, {
+        toValue: buttonSize,
+        duration: 800,
+      }),
+      Animated.timing(animatedTextValue, {
+        toValue: 0,
+        duration: 800,
+      }),
+    ]).start();
+
     this.toggleShowAnimation(true, okButton.duration);
     this.toggleShowAnimation(true, okButton.duration);
     this.setState({ confirm: false, percent: 0 });
@@ -107,12 +123,13 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
       buttonSize,
       borderColor,
       backgroundColor,
-      icon,
+      // icon,
       borderRadius,
-      children,
+      label,
     } = this.props;
-    const { buttonOpacity, drag } = this.state;
-
+    const {
+      buttonOpacity, drag, progressWidth, dimensions, animatedTextValue,
+    } = this.state;
     const position = { transform: drag.getTranslateTransform() };
 
     return (
@@ -137,16 +154,34 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
             height: buttonSize,
             borderRadius,
             justifyContent: 'center',
+            overflow: 'hidden',
           }}
         >
-          {children && (
+          <Animated.View style={[{
+            position: 'absolute', height: dimensions.height, width: progressWidth, backgroundColor: '#7BCC70', borderRadius,
+          }]}
+          />
+
+          {label && (
           <View style={[{ position: 'absolute', alignSelf: 'center' }]}>
-            {children}
+            <Animated.Text style={[{
+              fontWeight: 'bold',
+              fontSize: 15,
+              color: animatedTextValue.interpolate(
+                {
+                  inputRange: [0, 100],
+                  outputRange: ['black', 'white'],
+                },
+              ),
+            }]}
+            >
+              {label}
+            </Animated.Text>
           </View>
           )}
 
           <Animated.View
-                        // eslint-disable-next-line react/jsx-props-no-spreading
+            // eslint-disable-next-line react/jsx-props-no-spreading
             {...this.panResponder.panHandlers}
             style={[position, {
               width: buttonSize,
@@ -159,7 +194,7 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
             },
             ]}
           >
-            {icon}
+            {/* {icon} */}
           </Animated.View>
         </View>
       </View>
@@ -177,7 +212,7 @@ ConfirmSlider.propTypes = {
   icon: PropTypes.object.isRequired,
   borderRadius: PropTypes.number.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
   onVerified: PropTypes.func.isRequired,
   okButton: PropTypes.shape({
     duration: PropTypes.number.isRequired,
