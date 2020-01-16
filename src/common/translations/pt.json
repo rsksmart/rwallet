@@ -159,7 +159,7 @@
   "- Multi-sign approval of transactions": "- Aprovação de transações com vários sinais",
   "Earn cryptocurrency with ease": "Ganhe criptomoeda com facilidade",
   "Below features are coming soon to Earn…": "Os recursos abaixo estão chegando em breve.",
-  "- Earn cryptocurrency by completing task": "- Ganhe criptomoeda concluindo a tarefa",
+  "- Earn cryptocurrency by completing tasks": "- Ganhe criptomoeda concluindo tarefas",
   "- Gain interests from a variety of Defi products": "- Obter interesses de uma variedade de produtos Defi",
   "- Cash Back": "- \"Cash Back\" em compras com criptomoeda",
   "Coming soon...": "Em breve...",
@@ -175,5 +175,9 @@
   "Confirmations": "Confirmações",
   "Memo": "Memorando",
   "Transaction ID": "ID da transação",
-  "No memo": "Nenhuma nota"
+  "No memo": "Nenhuma nota",
+  "Invalid amount": "Montante inválido",
+  "Amount is not valid": "Valor inválido",
+  "Invalid address": "Endereço inválido",
+  "Address is not valid": "Endereço inválido"
 }

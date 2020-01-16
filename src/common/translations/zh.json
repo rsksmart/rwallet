@@ -159,7 +159,7 @@
   "- Multi-sign approval of transactions": "- 交易的多签名批准",
   "Earn cryptocurrency with ease": "轻松赚取加密货币",
   "Below features are coming soon to Earn…": "以下赚钱功能即将推出：",
-  "- Earn cryptocurrency by completing task": "- 通过完成任务来赚取加密货币",
+  "- Earn cryptocurrency by completing tasks": "- 通过完成任务来赚取加密货币",
   "- Gain interests from a variety of Defi products": "- 从各种Defi产品中获得收益",
   "- Cash Back": "- 使用加密货币购买, “现金返还”",
   "Coming soon...": "即将推出...",
@@ -175,5 +175,9 @@
   "Confirmations": "确认",
   "Memo": "备注",
   "Transaction ID": "交易ID",
-  "No memo": "无备注"
+  "No memo": "无备注",
+  "Invalid amount": "不合法的数额",
+  "Amount is not valid": "数额不合法",
+  "Invalid address": "不合法的地址",
+  "Address is not valid": "地址不合法"
 }
