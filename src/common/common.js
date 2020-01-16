@@ -175,6 +175,20 @@ const common = {
     url = `${url}/${hash}/`;
     return url;
   },
+
+  /**
+   * getLastBlockHeight, return latestBlockHeight. If it's not found, return null.
+   * @param {array} lastBlockHeights
+   * @param {string} chain
+   * @param {string} type, network type
+   */
+  getLastBlockHeight(lastBlockHeights, chain, type) {
+    const lastBlockHeight = _.find(lastBlockHeights, { name: chain, type });
+    if (lastBlockHeight) {
+      return lastBlockHeight.latestBlockHeight;
+    }
+    return null;
+  },
 };
 
 export default common;

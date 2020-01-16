@@ -85,8 +85,10 @@ class Transaction extends Component {
     header: null,
   });
 
-  static processViewData(transation) {
+  static processViewData(transation, lastBlockHeights) {
     const { rawTransaction } = transation;
+    let lastBlockHeight = common.getLastBlockHeight(lastBlockHeights, rawTransaction.chain, rawTransaction.type);
+    lastBlockHeight = _.isNil(lastBlockHeight) ? 0 : lastBlockHeight;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
@@ -96,13 +98,16 @@ class Transaction extends Component {
     if (!_.isNil(transation.datetime)) {
       datetimeText = moment(transation.datetime).format('DD/MM/YYYY hh:mm a');
     }
+    let confirmations = lastBlockHeight - rawTransaction.blockHeight;
+    confirmations = confirmations < 0 ? 0 : confirmations;
+    confirmations = confirmations >= 6 ? '6+' : confirmations;
     return {
       transactionState: transation.state,
       transactionId: rawTransaction.hash,
       amount: amountText,
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
-      confirmations: '0',
+      confirmations,
       memo: strings('No memo'),
       title: `${transation.state} Funds`,
     };
@@ -110,16 +115,16 @@ class Transaction extends Component {
 
   constructor(props) {
     super(props);
-    const { navigation } = this.props;
+    const { navigation, lastBlockHeights } = this.props;
     const transation = navigation.state.params;
-    this.state = Transaction.processViewData(transation);
+    this.state = Transaction.processViewData(transation, lastBlockHeights);
     this.onLinkPress = this.onLinkPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { navigation } = nextProps;
+    const { navigation, lastBlockHeights } = nextProps;
     const transation = navigation.state.params;
-    this.setState(Transaction.processViewData(transation));
+    this.setState(Transaction.processViewData(transation, lastBlockHeights));
   }
 
   onLinkPress() {
@@ -182,10 +187,12 @@ Transaction.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  lastBlockHeights: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
+  lastBlockHeights: state.Wallet.get('lastBlockHeights'),
   currentLocale: state.App.get('language'),
 });
 

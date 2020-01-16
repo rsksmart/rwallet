@@ -4,6 +4,7 @@ import actions from './actions';
 const initState = new Map({
   wallets: [],
   prices: [],
+  lastBlockHeights: [],
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
   isBalanceUpdated: false,
@@ -49,6 +50,9 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.FETCH_TRANSACTION_RESULT: {
       return state.set('updateTimestamp', getUpdateTimestamp());
+    }
+    case actions.FETCH_LAST_BLOCK_HEIGHT_RESULT: {
+      return state.set('lastBlockHeights', action.value);
     }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
