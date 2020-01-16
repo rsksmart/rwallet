@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
 
 const FEE_LEVEL_ADJUSTMENT = 0.25;
 const DEFAULT_RBTC_MIN_GAS = 21000;
-const DEFAULT_RIF_MIN_GAS = 23064;
+const DEFAULT_RIF_MIN_GAS = 51000;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_BTC_MIN_FEE = 60000;
@@ -525,6 +525,16 @@ class Transfer extends Component {
       addNotification(notification);
       return false;
     }
+    if (Number(amount) <= 0) {
+      const notification = createErrorNotification(
+        'Invalid amount',
+        'Amount should be greater then 0',
+      );
+      addNotification(notification);
+      return false;
+    }
+
+
     const isAddress = common.isWalletAddress(address, symbol, type);
     if (!isAddress) {
       const notification = createErrorNotification(
