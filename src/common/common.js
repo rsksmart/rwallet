@@ -174,7 +174,7 @@ const common = {
    */
   getTransactionUrl(symbol, type, hash) {
     let url = '';
-    if (!_.isNil(config.transactionUrls[symbol]) && !_.isNil(config.transactionUrls[symbol][type])) {
+    if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
       url = config.transactionUrls[symbol][type];
     }
     url = `${url}/${hash}/`;
@@ -189,7 +189,7 @@ const common = {
    */
   getLatestBlockHeight(latestBlockHeights, chain, type) {
     const latestBlockHeight = _.find(latestBlockHeights, { chain, type });
-    if (!_.isNil(latestBlockHeight) && !_.isNil(latestBlockHeight.blockHeight)) {
+    if (latestBlockHeight && latestBlockHeight.blockHeight) {
       return latestBlockHeight.blockHeight;
     }
     return null;
