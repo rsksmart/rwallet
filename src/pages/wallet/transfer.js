@@ -15,6 +15,9 @@ import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 
 import ScreenHelper from '../../common/screenHelper';
+// import ConfirmSlider from '../../components/wallet/confirm.slider';
+// import circleCheckIcon from '../../assets/images/misc/circle.check.png';
+// import circleIcon from '../../assets/images/misc/circle.png';
 import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
