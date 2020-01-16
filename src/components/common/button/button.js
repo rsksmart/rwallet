@@ -42,7 +42,7 @@ Button.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  style: PropTypes.arrayOf(PropTypes.shape({})),
+  style: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
 };
 
 Button.defaultProps = {

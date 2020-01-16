@@ -10,6 +10,7 @@ const initState = new Map({
 
   application: undefined,
   settings: undefined, // Settings instance
+  user: undefined, // user instance
 
   isPageLoading: false,
   serverVersion: undefined,
@@ -24,8 +25,10 @@ const initState = new Map({
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
+  username: defaultSettings.username,
   isShowConfirmation: false,
   confirmation: null,
+  isUsernameUpdated: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -93,8 +96,13 @@ export default function appReducer(state = initState, action) {
       return state.set('settings', settings)
         .set('currency', settings && settings.get('currency'))
         .set('language', settings && settings.get('language'))
-        .set('fingerprint', settings && settings.get('fingerprint'));
+        .set('fingerprint', settings && settings.get('fingerprint'))
+        .set('username', settings && settings.get('username'));
     }
+    case actions.USER_NAME_UPDATED:
+      return state.set('isUsernameUpdated', true);
+    case actions.RESET_USER_NAME_UPDATED:
+      return state.set('isUsernameUpdated', false);
     default:
       return state;
   }

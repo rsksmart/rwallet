@@ -28,6 +28,10 @@ const actions = {
   CHANGE_LANGUAGE: 'CHANGE_LANGUAGE',
   ADD_CONFIRMATION: 'ADD_CONFIRMATION',
   REMOVE_CONFIRMATION: 'REMOVE_CONFIRMATION',
+  SET_USER: 'SET_USER',
+  RENAME: 'RENAME',
+  USER_NAME_UPDATED: 'USER_NAME_UPDATED',
+  RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -87,6 +91,13 @@ const actions = {
   }),
   removeConfirmation: () => ({
     type: actions.REMOVE_CONFIRMATION,
+  }),
+  rename: (name) => ({
+    type: actions.RENAME,
+    name,
+  }),
+  resetUsernameUpdated: () => ({
+    type: actions.RESET_USER_NAME_UPDATED,
   }),
 };
 

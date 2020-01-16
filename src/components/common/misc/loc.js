@@ -11,7 +11,7 @@ const Loc = ({ text, style }) => {
 
 Loc.propTypes = {
   text: PropTypes.string.isRequired,
-  style: PropTypes.arrayOf(PropTypes.shape({})),
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 Loc.defaultProps = {

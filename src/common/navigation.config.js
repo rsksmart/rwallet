@@ -21,6 +21,7 @@ import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import Scan from '../pages/wallet/scan';
+import Transaction from '../pages/wallet/transaction';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -33,6 +34,7 @@ import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
+import Rename from '../pages/mine/rename';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -173,6 +175,13 @@ const routeConfigMap = {
         headerTitle: 'Scan',
       }),
     },
+    Transaction: {
+      screen: Transaction,
+      path: 'Transaction',
+      navigationOptions: () => ({
+        headerTitle: 'Transaction',
+      }),
+    },
   },
   spend: {
     SpendIndex: {
@@ -240,6 +249,13 @@ const routeConfigMap = {
       path: 'KeyName',
       navigationOptions: () => ({
         headerTitle: 'KeyName',
+      }),
+    },
+    Rename: {
+      screen: Rename,
+      path: 'Rename',
+      navigationOptions: () => ({
+        headerTitle: 'Rename',
       }),
     },
   },
