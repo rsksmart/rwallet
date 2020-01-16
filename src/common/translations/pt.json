@@ -168,6 +168,8 @@
   "Clear": "Claro",
   "START OVER": "RECOMEÇAR",
   "Send All": "Envie todos",
+  "You need more RBTC balance to complete the transfer": "Você precisa de mais saldo RBTC para concluir a transferência",
+  "You need more RIF balance to complete the transfer": "Você precisa de mais saldo RIF para concluir a transferência",
   "Invalid amount": "Montante inválido",
   "Amount is not valid": "Valor inválido",
   "Invalid address": "Endereço inválido",

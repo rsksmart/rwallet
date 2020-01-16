@@ -168,6 +168,8 @@
   "Clear": "Clear",
   "START OVER": "START OVER",
   "Send All": "Send All",
+  "You need more RBTC balance to complete the transfer": "You need more RBTC balance to complete the transfer",
+  "You need more RIF balance to complete the transfer": "You need more RIF balance to complete the transfer",
   "Invalid amount": "Invalid amount",
   "Amount is not valid": "Amount is not valid",
   "Invalid address": "Invalid address",
@@ -177,5 +179,5 @@
   "Name contains invalid characters.": "Name contains invalid characters.",
   "Your Name": "Your Name",
   "What's your name?": "What's your name?",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space",
+  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space"
 }
