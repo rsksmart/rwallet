@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import actions from './actions';
 import config from '../../../config';
 
-const { defaultSettings, defaultUser } = config;
+const { defaultSettings } = config;
 
 const initState = new Map({
   isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
@@ -25,7 +25,7 @@ const initState = new Map({
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
-  username: defaultUser.name,
+  username: defaultSettings.username,
   isShowConfirmation: false,
   confirmation: null,
   isUsernameUpdated: false,
@@ -96,13 +96,8 @@ export default function appReducer(state = initState, action) {
       return state.set('settings', settings)
         .set('currency', settings && settings.get('currency'))
         .set('language', settings && settings.get('language'))
-        .set('fingerprint', settings && settings.get('fingerprint'));
-    }
-    case actions.SET_USER:
-    {
-      const user = action.value;
-      return state.set('user', user)
-        .set('username', user && user.get('name'));
+        .set('fingerprint', settings && settings.get('fingerprint'))
+        .set('username', settings && settings.get('username'));
     }
     case actions.USER_NAME_UPDATED:
       return state.set('isUsernameUpdated', true);

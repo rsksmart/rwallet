@@ -11,12 +11,10 @@ const config = {
     serverURL: 'http://10.0.2.2:1338/parse',
   },
   defaultSettings: {
+    username: 'Anonymous User',
     language: 'en',
     currency: 'USD',
     fingerprint: false,
-  },
-  defaultUser: {
-    name: 'Anonymous User',
   },
   consts: {
     supportedTokens: ['BTC', 'RBTC', 'RIF'],

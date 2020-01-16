@@ -9,7 +9,6 @@ import actions from './actions';
 import walletActions from '../wallet/actions';
 
 import application from '../../common/application';
-import user from '../../common/user';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import I18n from '../../common/i18n';
@@ -48,15 +47,7 @@ function* initFromStorageRequest() {
   try {
     // yield call(storage.remove, 'wallets');
 
-    // 1. Deserialize user from permenate storage
-    yield call(user.deserialize);
-    // Sets state in reducer for success
-    yield put({
-      type: actions.SET_USER,
-      value: user,
-    });
-
-    // 2. Deserialize Settings from permenate storage
+    // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
     // set I18n.locale
@@ -68,7 +59,7 @@ function* initFromStorageRequest() {
       value: settings,
     });
 
-    // 3. Deserialize Wallets from permenate storage
+    // 2. Deserialize Wallets from permenate storage
     yield call(walletManager.deserialize);
 
     // Sets state in reducer for success
@@ -196,11 +187,24 @@ function* renameRequest(action) {
   const { name } = action;
   console.log('saga::renameRequest is triggered, name: ', name);
   try {
-    yield call(user.rename, name);
-    yield put({ type: actions.SET_USER, value: user });
+    settings.rename(name);
+    yield put(actions.setSingleSettings('username', name));
     yield put({ type: actions.USER_NAME_UPDATED });
   } catch (err) {
-    const notification = createErrorNotification('Incorrect name', err.message);
+    let notification = null;
+    switch (err.message) {
+      case 'err.nametooshort':
+        notification = createErrorNotification('Incorrect name', 'Name is too short.');
+        break;
+      case 'err.nametoolong':
+        notification = createErrorNotification('Incorrect name', 'Name is too long.');
+        break;
+      case 'err.nameinvalid':
+        notification = createErrorNotification('Incorrect name', 'Name contains invalid characters.');
+        break;
+      default:
+        notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    }
     yield put(actions.addNotification(notification));
   }
 }

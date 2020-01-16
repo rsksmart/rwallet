@@ -358,9 +358,9 @@ class MineIndex extends Component {
     }
     const { language, navigation, username } = this.props;
     const { keyListData, settings, joins } = this.state;
-    const { defaultUser: { name } } = config;
+    const { defaultSettings: { username: defaultUsername } } = config;
     // Translate If username is default user name
-    const usernameText = username === name ? strings(name) : username;
+    const usernameText = username === defaultUsername ? strings(defaultUsername) : username;
     return (
       <View style={flex.flex1}>
         <ScrollView style={[flex.flex1]}>
