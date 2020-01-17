@@ -724,7 +724,7 @@ class Transfer extends Component {
     }
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
-    const symbolName = `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+    const symbolName = common.getSymbolFullName(symbol, type);
 
     return (
       <SafeAreaView>

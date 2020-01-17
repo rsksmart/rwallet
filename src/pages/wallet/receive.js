@@ -15,6 +15,7 @@ import { DEVICE } from '../../common/info';
 import ScreenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -133,7 +134,7 @@ class WalletReceive extends Component {
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
       const type = coin && coin.type;
-      const symbolName = `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+      const symbolName = common.getSymbolFullName(symbol, type);
       const qrText = address;
 
       let headerHeight = 100;
