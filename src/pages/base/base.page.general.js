@@ -26,7 +26,7 @@ const BasePageGereral = (props) => {
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
       <ScrollView>
-        <Header title={title} goBack={goBack || (() => navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle} />
+        <Header title={title} goBack={goBack || (() => navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle || {}} />
         <View style={[screenHelper.styles.body]}>
           {children}
         </View>
