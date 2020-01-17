@@ -75,7 +75,7 @@ const TabBar = (props) => {
             style={styles.tabButton}
             onPress={() => {
               if (route.key === 'Home' && route.index === 0) {
-                global.eventEmitter.emit('INVOKE_PASSCODE', {});
+                // global.eventEmitter.emit('INVOKE_PASSCODE', {});
               }
               onTabPress({ route });
             }}
