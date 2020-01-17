@@ -550,6 +550,7 @@ class History extends Component {
 
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
+    const symbolName = `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
 
     return (
       <ScrollView>
@@ -559,9 +560,7 @@ class History extends Component {
               <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
             </TouchableOpacity>
             <Text style={[styles.headerTitle]}>
-              {symbol}
-              {' '}
-              {type === 'Testnet' ? type : ''}
+              {symbolName}
             </Text>
           </View>
         </ImageBackground>
