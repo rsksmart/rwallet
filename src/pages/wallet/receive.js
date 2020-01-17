@@ -131,8 +131,9 @@ class WalletReceive extends Component {
       const qrLogoSize = qrSize * 0.2;
 
       const address = coin && coin.address;
-      const symbolFullName = coin && coin.symbolFullName;
-
+      const symbol = coin && coin.symbol;
+      const type = coin && coin.type;
+      const symbolName = `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
       const qrText = address;
 
       let headerHeight = 100;
@@ -149,7 +150,7 @@ class WalletReceive extends Component {
               </TouchableOpacity>
               <Text style={styles.headerTitle}>
                 <Loc text="Receive" />
-                {` ${symbolFullName}`}
+                {` ${symbolName}`}
               </Text>
             </View>
           </ImageBackground>

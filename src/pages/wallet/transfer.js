@@ -719,12 +719,13 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-    const symbolFullName = coin && coin.symbolFullName;
-
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXTopHeight;
     }
+    const symbol = coin && coin.symbol;
+    const type = coin && coin.type;
+    const symbolName = `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
 
     return (
       <SafeAreaView>
@@ -736,7 +737,7 @@ class Transfer extends Component {
               </TouchableOpacity>
               <Text style={styles.headerTitle}>
                 <Loc text="Send" />
-                {` ${symbolFullName}`}
+                {` ${symbolName}`}
               </Text>
             </View>
           </ImageBackground>
