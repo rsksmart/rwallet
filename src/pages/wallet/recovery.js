@@ -77,6 +77,13 @@ const styles = StyleSheet.create({
   wapper: {
     height: screen.height - 25,
   },
+  button: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 15,
+  },
 });
 
 class WalletRecovery extends Component {
@@ -230,7 +237,7 @@ class WalletRecovery extends Component {
                   </View>
                 </View>
               </View>
-              <View style={[flex.flex1, styles.sectionContainer, { width: '100%', justifyContent: 'center', alignItems: 'center' }]}>
+              <View style={[flex.flex1, styles.sectionContainer, styles.button]}>
                 <Button
                   text="IMPORT"
                   onPress={this.onImportPress}
