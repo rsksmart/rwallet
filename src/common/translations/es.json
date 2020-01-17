@@ -189,5 +189,5 @@
   "Your Name": "Tu nombre",
   "What's your name?": "¿Cuál es tu nombre?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio",
-  "Amount should be greater then 0": "La cantidad debe ser mayor que 0"
+  "Amount should be greater than 0": "La cantidad debe ser mayor que 0"
 }

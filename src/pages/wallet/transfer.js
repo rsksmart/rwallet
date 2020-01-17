@@ -530,7 +530,7 @@ class Transfer extends Component {
     if (Number(amount) <= 0) {
       const notification = createErrorNotification(
         'Invalid amount',
-        'Amount should be greater then 0',
+        'Amount should be greater than 0',
         buttonText,
       );
       addNotification(notification);
