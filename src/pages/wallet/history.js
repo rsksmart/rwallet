@@ -547,7 +547,9 @@ class History extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-    const symbolFullName = coin && coin.symbolFullName;
+
+    const symbol = coin && coin.symbol;
+    const type = coin && coin.type;
 
     return (
       <ScrollView>
@@ -556,7 +558,11 @@ class History extends Component {
             <TouchableOpacity onPress={this.onbackClick}>
               <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
             </TouchableOpacity>
-            <Text style={[styles.headerTitle]}>{symbolFullName}</Text>
+            <Text style={[styles.headerTitle]}>
+              {symbol}
+              {' '}
+              {type === 'Testnet' ? type : ''}
+            </Text>
           </View>
         </ImageBackground>
         <View style={styles.headerBoardView}>

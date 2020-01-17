@@ -52,7 +52,6 @@ export default class RBTCCoin {
     this.chain = this.metadata.chain;
     this.type = this.metadata.type;
     this.symbol = this.metadata.symbol;
-    this.symbolFullName = this.metadata.symbolFullName;
   }
 
   derive(seed) {

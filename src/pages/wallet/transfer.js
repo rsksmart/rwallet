@@ -718,8 +718,6 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-    const symbolFullName = coin && coin.symbolFullName;
-
     let headerHeight = 100;
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXTopHeight;
@@ -735,7 +733,7 @@ class Transfer extends Component {
               </TouchableOpacity>
               <Text style={styles.headerTitle}>
                 <Loc text="Send" />
-                {` ${symbolFullName}`}
+                {` ${coin.defaultName}`}
               </Text>
             </View>
           </ImageBackground>
