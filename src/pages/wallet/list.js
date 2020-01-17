@@ -236,13 +236,12 @@ class WalletList extends Component {
         const wal = { name: wallet.name, coins: [] };
         // Create element for each Token (e.g. BTC, RBTC, RIF)
         wallet.coins.forEach((coin, index) => {
-          const coinType = `${coin.type === 'Testnet' ? 'Test' : ''} ${coin.symbol}`;
           const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
           const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : '';
           const item = {
             key: `${index}`,
             title: coin.defaultName,
-            text: coinType,
+            text: coin.symbolFullName,
             worth: worthText,
             amount: amountText,
             icon: coin.icon,
@@ -250,7 +249,7 @@ class WalletList extends Component {
               navigation.navigate('Transfer', { wallet, coin });
             },
             r2Press: () => {
-              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
+              navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin });
             },
             onPress: () => {
               navigation.navigate('WalletHistory', { wallet, coin });
