@@ -33,17 +33,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   headerTitle: {
+    color: '#FFF',
     fontSize: 20,
     fontWeight: '900',
-    position: 'absolute',
-    bottom: 25,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 8,
+    marginLeft: -2,
+    marginBottom: 2,
   },
   chevron: {
     color: '#FFF',
@@ -91,7 +85,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    alignItems: 'center',
+  },
 });
 
 const header = require('../../assets/images/misc/header.png');
@@ -131,8 +131,7 @@ class WalletReceive extends Component {
       const qrLogoSize = qrSize * 0.2;
 
       const address = coin && coin.address;
-      const symbol = coin && coin.symbol;
-      const type = coin && coin.type;
+      const symbolFullName = coin && coin.symbolFullName;
 
       const qrText = address;
 
@@ -141,23 +140,18 @@ class WalletReceive extends Component {
         headerHeight += ScreenHelper.iphoneXTopHeight;
       }
 
-      const titleText = ` ${symbol} ${type === 'Testnet' ? type : ''}`;
-
       return (
         <View style={[flex.flex1]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Receive" />
-              {titleText}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
+            <View style={styles.titleView}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>
+                <Loc text="Receive" />
+                {` ${symbolFullName}`}
+              </Text>
+            </View>
           </ImageBackground>
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>

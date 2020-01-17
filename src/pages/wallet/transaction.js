@@ -76,7 +76,7 @@ const stateIcons = {
   Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: '#6875B7' }]} />,
   Sending: <Image source={sending} style={{ width: 37, height: 37 }} />,
   Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
-  Receiving: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
+  Receiving: <Image source={sending} style={{ width: 37, height: 37 }} />,
   Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: '#E73934' }]} />,
 };
 

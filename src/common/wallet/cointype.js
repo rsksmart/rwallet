@@ -15,6 +15,7 @@ const coinType = {
     chain: 'Bitcoin',
     type: 'Mainnet',
     symbol: 'BTC',
+    symbolFullName: 'BTC',
   },
   RBTC: {
     networkId: 137,
@@ -24,6 +25,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RBTC',
+    symbolFullName: 'RBTC',
   },
   RIF: {
     networkId: 137,
@@ -33,6 +35,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RIF',
+    symbolFullName: 'RIF',
   },
   BTCTestnet: {
     networkId: 1,
@@ -43,6 +46,7 @@ const coinType = {
     chain: 'Bitcoin',
     type: 'Testnet',
     symbol: 'BTC',
+    symbolFullName: 'Test BTC',
   },
   RBTCTestnet: {
     networkId: 37310,
@@ -52,6 +56,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RBTC',
+    symbolFullName: 'Test RBTC',
   },
   RIFTestnet: {
     networkId: 37310,
@@ -61,6 +66,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RIF',
+    symbolFullName: 'Test RIF',
   },
 };
 

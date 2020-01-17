@@ -46,22 +46,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 101,
-  },
   headerView: {
     position: 'absolute',
     width: '100%',
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 120,
-    left: 54,
-    color: '#FFF',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
+    letterSpacing: 0.39,
+    marginLeft: -2,
+    marginBottom: 2,
   },
   headerBoard: {
     width: '85%',
@@ -89,8 +84,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   myAssetsFontStyle: {
-    fontWeight: '900',
     color: '#000000',
+    fontFamily: 'Avenir-Black',
+    letterSpacing: 2.92,
   },
   assetsValue: {
     marginTop: 10,
@@ -226,6 +222,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 105,
+    left: 10,
+    alignItems: 'center',
+  },
 });
 
 const TRANSACTION_TIMEOUT_MINUTES = 15;
@@ -236,29 +239,18 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     >= contentSize.height - paddingToBottom;
 };
 
-const getStateIcon = (state) => {
-  let icon = null;
-  if (state === 'Sent') {
-    icon = <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />;
-  } else if (state === 'Received') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />;
-  } else if (state === 'Receiving') {
-    icon = <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />;
-  } else if (state === 'Sending') {
-    icon = <Image source={sending} />;
-  } else if (state === 'Failed') {
-    icon = <MaterialIcons name="error-outline" size={36} style={[{ color: '#E73934' }]} />;
-  }
-  const item = (
-    <View style={[styles.stateIcon]}>{icon}</View>
-  );
-  return item;
+const stateIcons = {
+  Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />,
+  Sending: <Image source={sending} />,
+  Received: <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />,
+  Receiving: <Image source={sending} />,
+  Failed: <MaterialIcons name="error-outline" size={36} style={[{ color: '#E73934' }]} />,
 };
 
 function Item({
   title, amount, datetime, onPress,
 }) {
-  const icon = getStateIcon(title);
+  const icon = stateIcons[title];
   return (
     <TouchableOpacity style={[styles.row]} onPress={onPress}>
       {icon}
@@ -546,24 +538,17 @@ class History extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-
-    const symbol = coin && coin.symbol;
-    const type = coin && coin.type;
+    const symbolFullName = coin && coin.symbolFullName;
 
     return (
       <ScrollView>
         <ImageBackground source={header} style={[styles.headerImage]}>
-          <Text style={[styles.headerTitle]}>
-            {symbol}
-            {' '}
-            {type === 'Testnet' ? type : ''}
-          </Text>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={this.onbackClick}
-          >
-            <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-          </TouchableOpacity>
+          <View style={styles.titleView}>
+            <TouchableOpacity onPress={this.onbackClick}>
+              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+            </TouchableOpacity>
+            <Text style={[styles.headerTitle]}>{symbolFullName}</Text>
+          </View>
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
