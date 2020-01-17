@@ -5,8 +5,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
 
@@ -21,7 +19,8 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 
 const header = require('../../assets/images/misc/header.png');
-
+const send = require('../../assets/images/icon/send.png');
+const receive = require('../../assets/images/icon/receive.png');
 const swap = require('../../assets/images/icon/swap.png');
 const scan = require('../../assets/images/icon/scan.png');
 
@@ -59,12 +58,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerTitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Heavy',
     fontSize: 20,
-    fontWeight: '900',
+    letterSpacing: 0.39,
+    lineHeight: 28,
     position: 'absolute',
     bottom: 120,
     left: 24,
-    color: '#FFF',
   },
   scanView: {
     position: 'absolute',
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 25,
     left: 30,
-    fontWeight: 'bold',
+    fontWeight: '500',
     fontSize: 15,
     color: '#000000',
   },
@@ -109,8 +110,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   myAssetsFontStyle: {
-    fontWeight: 'bold',
     color: '#000000',
+    fontFamily: 'Avenir-Black',
+    letterSpacing: 0.34,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -121,10 +123,6 @@ const styles = StyleSheet.create({
   },
   ButtonView: {
     flexDirection: 'row',
-    borderRightWidth: 1,
-    borderColor: '#D1D1D1',
-    marginLeft: 10,
-    paddingRight: 10,
   },
   sendIcon: {
     color: '#6875B7',
@@ -137,24 +135,24 @@ const styles = StyleSheet.create({
   },
   sendText: {
     color: '#6875B7',
-    marginLeft: 10,
+    fontFamily: 'Avenir-Medium',
     fontSize: 13,
-    fontWeight: '500',
     letterSpacing: 0.25,
+    marginLeft: 10,
   },
   receiveText: {
     color: '#6FC062',
-    marginLeft: 10,
+    fontFamily: 'Avenir-Medium',
     fontSize: 13,
-    fontWeight: '500',
     letterSpacing: 0.25,
+    marginLeft: 10,
   },
   swapText: {
     color: '#656667',
-    marginLeft: 10,
+    fontFamily: 'Avenir-Medium',
     fontSize: 13,
-    fontWeight: '500',
     letterSpacing: 0.25,
+    marginLeft: 10,
   },
   headerImage: {
     position: 'absolute',
@@ -180,7 +178,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginTop: 5,
   },
-  linearGradient: {
+  spliteLine: {
+    borderRightWidth: 1,
+    borderColor: '#D1D1D1',
+    height: 15,
+    marginBottom: 2,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });
 
@@ -374,21 +378,23 @@ class WalletList extends Component {
                     style={styles.ButtonView}
                     onPress={() => {}}
                   >
-                    <Entypo name="swap" size={20} style={styles.sendIcon} />
+                    <Image source={send} />
                     <Loc style={[styles.sendText]} text="Send" />
                   </TouchableOpacity>
+                  <View style={styles.spliteLine} />
                   <TouchableOpacity
                     style={styles.ButtonView}
                     onPress={() => {}}
                   >
-                    <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
+                    <Image source={receive} />
                     <Loc style={[styles.receiveText]} text="Receive" />
                   </TouchableOpacity>
+                  <View style={styles.spliteLine} />
                   <TouchableOpacity
                     style={[styles.ButtonView, { borderRightWidth: 0 }]}
                     onPress={() => {}}
                   >
-                    <Image source={swap} style={{ width: 17, height: 17 }} />
+                    <Image source={swap} />
                     <Loc style={[styles.swapText]} text="Swap" />
                   </TouchableOpacity>
                 </View>

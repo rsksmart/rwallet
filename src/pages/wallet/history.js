@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -23,7 +22,8 @@ const { getCurrencySymbol } = common;
 
 const header = require('../../assets/images/misc/header.png');
 const sending = require('../../assets/images/icon/sending.png');
-
+const send = require('../../assets/images/icon/send.png');
+const receive = require('../../assets/images/icon/receive.png');
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -46,14 +46,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
   headerTitle: {
-    fontSize: 20,
     color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'Avenir-Medium',
+    fontSize: 20,
     letterSpacing: 0.39,
     marginLeft: -2,
     marginBottom: 2,
@@ -89,54 +85,48 @@ const styles = StyleSheet.create({
     letterSpacing: 2.92,
   },
   assetsValue: {
-    marginTop: 10,
-    marginLeft: 25,
     color: '#000000',
+    fontFamily: 'Avenir-Roman',
     fontSize: 15,
     letterSpacing: 0.94,
+    marginTop: 4,
+    marginLeft: 25,
   },
   sending: {
-    marginLeft: 5,
     color: '#000000',
+    fontFamily: 'Avenir-Roman',
     fontSize: 15,
     letterSpacing: 0.94,
+    marginLeft: 5,
   },
   myAssetsButtonsView: {
     width: '100%',
     flexDirection: 'row',
+    alignItems: 'center',
     position: 'absolute',
-    left: 15,
-    bottom: 15,
+    left: 30,
+    bottom: 17,
   },
   ButtonView: {
     flexDirection: 'row',
-    borderRightWidth: 1,
-    borderColor: '#D1D1D1',
-    marginLeft: 10,
-    paddingRight: 10,
-  },
-  sendIcon: {
-    color: '#6875B7',
-  },
-  receiveIcon: {
-    color: '#6FC062',
+    alignItems: 'center',
   },
   swapIcon: {
     color: '#656667',
   },
   sendText: {
     color: '#6875B7',
-    marginLeft: 10,
+    fontFamily: 'Avenir-Medium',
     fontSize: 13,
-    fontWeight: '500',
     letterSpacing: 0.25,
+    marginLeft: 10,
   },
   receiveText: {
     color: '#6FC062',
-    marginLeft: 10,
+    fontFamily: 'Avenir-Medium',
     fontSize: 13,
-    fontWeight: '500',
     letterSpacing: 0.25,
+    marginLeft: 10,
   },
   swapText: {
     color: '#656667',
@@ -153,11 +143,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#D8D8D8',
     marginLeft: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-    paddingBottom: 13,
-    paddingTop: 10,
+    paddingBottom: 9,
+    paddingTop: 11,
   },
   rowRightR1: {
     flexDirection: 'row',
@@ -165,24 +155,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rowRightR2: {
-    position: 'absolute',
     right: 0,
+    flexDirection: 'column',
   },
   title: {
+    color: '#000000',
+    fontFamily: 'Avenir-Roman',
     fontSize: 16,
     letterSpacing: 0.33,
-    color: '#000000',
   },
   amount: {
-    alignSelf: 'flex-end',
     color: '#000000',
-    fontWeight: '900',
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 16,
     letterSpacing: 1,
+    alignSelf: 'flex-end',
   },
   datetime: {
     color: '#939393',
+    fontFamily: 'Avenir-Roman',
     fontSize: 12,
+    letterSpacing: 0,
     alignSelf: 'flex-end',
+    marginTop: 4,
   },
   headerImage: {
     position: 'absolute',
@@ -201,11 +196,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 25,
-    marginTop: 7,
+    marginTop: 4,
   },
   sendingIcon: {
-    width: 15,
-    height: 15,
+    width: 14,
+    height: 14,
   },
   refreshControl: {
     zIndex: 10000,
@@ -228,6 +223,19 @@ const styles = StyleSheet.create({
     bottom: 105,
     left: 10,
     alignItems: 'center',
+  },
+  iconView: {
+    alignItems: 'center',
+    width: 34,
+    marginTop: 6,
+  },
+  spliteLine: {
+    borderRightWidth: 1,
+    borderColor: '#D1D1D1',
+    height: 15,
+    marginBottom: 2,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });
 
@@ -253,7 +261,7 @@ function Item({
   const icon = stateIcons[title];
   return (
     <TouchableOpacity style={[styles.row]} onPress={onPress}>
-      {icon}
+      <View style={styles.iconView}>{icon}</View>
       <View style={styles.rowRight}>
         <View style={[styles.rowRightR1]}>
           <Loc style={[styles.title]} text={title} />
@@ -567,15 +575,16 @@ class History extends Component {
                 style={styles.ButtonView}
                 onPress={this.onSendButtonClick}
               >
-                <Entypo name="swap" size={20} style={styles.sendIcon} />
+                <Image source={send} />
                 <Loc style={[styles.sendText]} text="Send" />
               </TouchableOpacity>
+              <View style={styles.spliteLine} />
               <TouchableOpacity
-                style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                style={[styles.ButtonView]}
                 onPress={this.onReceiveButtonClick}
               >
-                <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} style={styles.receiveIcon} />
-                <Loc style={[styles.sendText]} text="Receive" />
+                <Image source={receive} />
+                <Loc style={[styles.receiveText]} text="Receive" />
               </TouchableOpacity>
             </View>
           </View>
