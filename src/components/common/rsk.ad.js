@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
 const RSKAd = () => (
   <LinearGradient
-    colors={['#ffffff00', '#ffffff']}
+    colors={['rgba(255, 255, 255, 0.25)', 'rgb(255, 255, 255)']}
     start={{ x: 0, y: 0 }}
     // end.y param is gradient proportion in y axis. It is seted to 0.85 more comfortable.
     end={{ x: 0, y: 0.85 }}
