@@ -42,7 +42,10 @@ const styles = StyleSheet.create({
 export default function Header({
   title, goBack, customRightBtn, headerStyle,
 }) {
-  const { customStyleHeaderTitle } = headerStyle;
+  let customStyleHeaderTitle = null;
+  if (headerStyle && headerStyle.customStyleHeaderTitle) {
+    customStyleHeaderTitle = headerStyle.customStyleHeaderTitle;
+  }
   let backButton = null;
   let titleStyle = null;
 
