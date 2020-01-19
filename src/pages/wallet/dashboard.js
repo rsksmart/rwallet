@@ -15,11 +15,21 @@ class Dashboard extends Component {
     constructor(props) {
       super(props);
       this.callPasscodeInput = this.callPasscodeInput.bind(this);
+      this.willFocusSubscription = null;
     }
 
     async componentDidMount() {
-      this.callPasscodeInput();
-      global.eventEmitter.on('INVOKE_PASSCODE', this.callPasscodeInput);
+      const { navigation } = this.props;
+      this.willFocusSubscription = navigation.addListener(
+        'willFocus',
+        () => {
+          this.callPasscodeInput();
+        },
+      );
+    }
+
+    componentWillUnmount(): void {
+      this.willFocusSubscription.remove();
     }
 
     callPasscodeInput() {
@@ -42,6 +52,7 @@ Dashboard.propTypes = {
     goBack: PropTypes.func.isRequired,
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
   showPasscode: PropTypes.func.isRequired,
