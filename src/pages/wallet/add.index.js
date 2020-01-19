@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import {
-  View,
-} from 'react-native';
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
-import flex from '../../assets/styles/layout.flex';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import BasePageGereral from '../base/base.page.general';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -50,17 +45,15 @@ class WalletAddIndex extends Component {
     render() {
       const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
-          <Header
-            title="Add Wallet"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={[screenHelper.styles.body]}>
-            <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
-          </View>
-        </View>
+        <BasePageGereral
+          isSafeView={false}
+          title="Add Wallet"
+          navigation={navigation}
+          hasBottomBtn={false}
+          hasLoader={false}
+        >
+          <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
+        </BasePageGereral>
       );
     }
 }

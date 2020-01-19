@@ -4,15 +4,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import flex from '../../assets/styles/layout.flex';
 import Tags from '../../components/common/misc/tags';
-import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
+import BasePageGereral from '../base/base.page.general';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -34,13 +30,6 @@ const styles = StyleSheet.create({
   tagsView: {
     marginTop: 15,
     marginHorizontal: 20,
-  },
-  buttonView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 10,
-    width: '100%',
   },
 });
 
@@ -90,23 +79,25 @@ class RecoveryPhrase extends Component {
       const { phrases } = this.state;
       const { navigation } = this.props;
       return (
-        <SafeAreaView style={[flex.flex1]}>
-          <Header title="Recovery Phrase" goBack={() => navigation.goBack()} />
-          <View style={[screenHelper.styles.body, flex.flex1]}>
-            <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
-            <Loc style={[styles.note]} text="in the right order and save them" />
-            <Loc style={[styles.note]} text="somewhere safe" />
-            <View style={styles.tagsView}>
-              <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
-            </View>
-            <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPress}>
-              <Loc style={[styles.copy]} text="Copy" />
-            </TouchableOpacity>
-            <View style={styles.buttonView}>
-              <Button text="NEXT" onPress={this.onNextPress} />
-            </View>
+        <BasePageGereral
+          isSafeView
+          title="Recovery Phrase"
+          navigation={navigation}
+          hasBottomBtn
+          bottomBtnText="NEXT"
+          bottomBtnOnPress={this.onNextPress}
+          hasLoader={false}
+        >
+          <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
+          <Loc style={[styles.note]} text="in the right order and save them" />
+          <Loc style={[styles.note]} text="somewhere safe" />
+          <View style={styles.tagsView}>
+            <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
           </View>
-        </SafeAreaView>
+          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPress}>
+            <Loc style={[styles.copy]} text="Copy" />
+          </TouchableOpacity>
+        </BasePageGereral>
       );
     }
 }
