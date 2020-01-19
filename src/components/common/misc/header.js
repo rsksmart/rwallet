@@ -17,12 +17,13 @@ const styles = StyleSheet.create({
     marginTop: screenHelper.headerMarginTop,
   },
   headerTitle: {
-    fontSize: 25,
-    fontWeight: '900',
+    color: '#FFFFFF',
+    fontFamily: 'Avenir-Black',
+    fontSize: 32,
+    letterSpacing: 0,
     position: 'absolute',
     bottom: 50,
     left: 24,
-    color: '#FFF',
   },
   backButton: {
     position: 'absolute',
@@ -41,7 +42,10 @@ const styles = StyleSheet.create({
 export default function Header({
   title, goBack, customRightBtn, headerStyle,
 }) {
-  const { customStyleHeaderTitle } = headerStyle;
+  let customStyleHeaderTitle = null;
+  if (headerStyle && headerStyle.customStyleHeaderTitle) {
+    customStyleHeaderTitle = headerStyle.customStyleHeaderTitle;
+  }
   let backButton = null;
   let titleStyle = null;
 

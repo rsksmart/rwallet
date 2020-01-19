@@ -31,17 +31,11 @@ const MEMO_LINE_HEIGHT = 15;
 
 const styles = StyleSheet.create({
   headerTitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
     fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 25,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 8,
+    marginLeft: -2,
+    marginBottom: 2,
   },
   chevron: {
     color: '#FFF',
@@ -231,11 +225,18 @@ const styles = StyleSheet.create({
   confirmButton: {
     alignSelf: 'center',
   },
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    alignItems: 'center',
+  },
 });
 
 const FEE_LEVEL_ADJUSTMENT = 0.25;
 const DEFAULT_RBTC_MIN_GAS = 21000;
-const DEFAULT_RIF_MIN_GAS = 51000;
+const DEFAULT_RIF_MIN_GAS = 23064;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_BTC_MIN_FEE = 60000;
@@ -517,21 +518,10 @@ class Transfer extends Component {
   validateFormData(amount, address, symbol, type) {
     const { addNotification } = this.props;
     const isAmountNumber = common.isAmount(amount);
-    const buttonText = 'RETRY';
     if (!isAmountNumber) {
       const notification = createErrorNotification(
         'Invalid amount',
         'Amount is not valid',
-        buttonText,
-      );
-      addNotification(notification);
-      return false;
-    }
-    if (Number(amount) <= 0) {
-      const notification = createErrorNotification(
-        'Invalid amount',
-        'Amount should be greater than 0',
-        buttonText,
       );
       addNotification(notification);
       return false;
@@ -541,7 +531,6 @@ class Transfer extends Component {
       const notification = createErrorNotification(
         'Invalid address',
         'Address is not valid',
-        buttonText,
       );
       addNotification(notification);
       return false;
@@ -734,23 +723,23 @@ class Transfer extends Component {
     if (DEVICE.isIphoneX) {
       headerHeight += ScreenHelper.iphoneXTopHeight;
     }
+    const symbol = coin && coin.symbol;
+    const type = coin && coin.type;
+    const symbolName = common.getSymbolFullName(symbol, type);
 
     return (
       <SafeAreaView>
         <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Send" />
-              {` ${coin.defaultName}`}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
+            <View style={styles.titleView}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>
+                <Loc text="Send" />
+                {` ${symbolName}`}
+              </Text>
+            </View>
           </ImageBackground>
           <View style={styles.body}>
             <View style={styles.sectionContainer}>

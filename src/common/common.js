@@ -259,6 +259,15 @@ const common = {
       });
     };
   },
+
+  /**
+   * getSymbolFullName
+   * @param {string} symbol, BTC, RBTC, RIF
+   * @param {string} type, MainTest or Testnet
+   */
+  getSymbolFullName(symbol, type) {
+    return `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+  },
 };
 
 export default common;
