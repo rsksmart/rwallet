@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
     height: 50,
   },
   headerTitle: {
-    color: '#FFF',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
     fontSize: 20,
-    fontWeight: '900',
     marginLeft: -2,
     marginBottom: 2,
   },
