@@ -26,7 +26,6 @@ class Dashboard extends Component {
           this.callPasscodeInput();
         },
       );
-      // global.eventEmitter.on('INVOKE_PASSCODE', this.callPasscodeInput);
     }
 
     componentWillUnmount(): void {
