@@ -38,10 +38,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Header({ title, goBack }) {
+export default function Header({
+  title, goBack, customRightBtn, headerStyle,
+}) {
+  const { customStyleHeaderTitle } = headerStyle;
   let backButton = null;
   let titleStyle = null;
-  if (goBack) {
+
+  if (customRightBtn) {
+    backButton = (
+      customRightBtn
+    );
+  } else if (goBack) {
     backButton = (
       <TouchableOpacity
         style={styles.backButton}
@@ -55,7 +63,7 @@ export default function Header({ title, goBack }) {
   }
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <Loc style={[styles.headerTitle, titleStyle]} text={title} />
+      <Loc style={[customStyleHeaderTitle || styles.headerTitle, titleStyle]} text={title} />
       { backButton }
     </ImageBackground>
   );
@@ -64,8 +72,14 @@ export default function Header({ title, goBack }) {
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   goBack: PropTypes.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  customRightBtn: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  headerStyle: PropTypes.object,
 };
 
 Header.defaultProps = {
   goBack: null,
+  customRightBtn: null,
+  headerStyle: null,
 };

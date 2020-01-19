@@ -7,15 +7,12 @@ import {
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import WordField from '../../components/common/misc/wordField';
-import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import flex from '../../assets/styles/layout.flex';
 import Button from '../../components/common/button/button';
+import BasePageGereral from '../base/base.page.general';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -79,10 +76,10 @@ class VerifyPhrase extends Component {
 
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
     this.onTagsPressed = this.onTagsPressed.bind(this);
-    this.onGobackPress = this.onGobackPress.bind(this);
     this.reset = this.reset.bind(this);
     this.onConfirmPress = this.onConfirmPress.bind(this);
     this.onClearPress = this.onClearPress.bind(this);
+    this.renderConfirmation = this.renderConfirmation.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -166,11 +163,6 @@ class VerifyPhrase extends Component {
     }
   }
 
-  onGobackPress() {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   reset(isInitialize = false) {
     if (isInitialize) {
       // Shuffle the 12-word here so user need to choose from a different order than the last time
@@ -236,24 +228,28 @@ class VerifyPhrase extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
     const { shuffleWords, selectedWordIndexs, isLoading } = this.state;
     return (
-      <View style={flex.flex1}>
-        <Loader loading={isLoading} />
-        <Header title="Backup Phrase" goBack={this.onGobackPress} />
-        <View style={[screenHelper.styles.body, flex.flex1]}>
-          <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
-          <Loc style={[styles.tip]} text="Tap each word in the correct order" />
-          <Tags
-            data={shuffleWords}
-            style={[styles.tags]}
-            showNumber={false}
-            onPress={this.onTagsPressed}
-            disableIndexs={selectedWordIndexs}
-          />
-          { this.renderConfirmation() }
-        </View>
-      </View>
+      <BasePageGereral
+        isSafeView
+        title="Backup Phrase"
+        navigation={navigation}
+        hasBottomBtn={false}
+        hasLoader
+        isLoading={isLoading}
+        renderAccessory={this.renderConfirmation}
+      >
+        <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
+        <Loc style={[styles.tip]} text="Tap each word in the correct order" />
+        <Tags
+          data={shuffleWords}
+          style={[styles.tags]}
+          showNumber={false}
+          onPress={this.onTagsPressed}
+          disableIndexs={selectedWordIndexs}
+        />
+      </BasePageGereral>
     );
   }
 }

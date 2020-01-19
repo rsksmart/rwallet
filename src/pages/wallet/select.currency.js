@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { StackActions } from 'react-navigation';
 import CoinTypeList from '../../components/wallet/coin.type.list';
-import Button from '../../components/common/button/button';
-import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import flex from '../../assets/styles/layout.flex';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -27,10 +22,6 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: 10,
-  },
-  buttonView: {
-    alignSelf: 'center',
-    paddingVertical: 15,
   },
 });
 
@@ -137,25 +128,25 @@ class WalletSelectCurrency extends Component {
       const { isLoading } = this.state;
       const { navigation } = this.props;
       return (
-        <SafeAreaView style={[flex.flex1]}>
-          <ScrollView>
-            <Header title="Select Wallet Currency" goBack={() => navigation.goBack()} />
-            <View style={[screenHelper.styles.body]}>
-              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
-                <Loc style={[styles.sectionTitle]} text="Mainnet" />
-                <CoinTypeList data={this.mainnet} />
-              </View>
-              <View style={[styles.sectionContainer, { marginTop: 15 }]}>
-                <Loc style={[styles.sectionTitle]} text="Testnet" />
-                <CoinTypeList data={this.testnet} />
-              </View>
-              <Loader loading={isLoading} />
-            </View>
-          </ScrollView>
-          <View style={[styles.buttonView]}>
-            <Button text="CREATE" onPress={this.onCreateButtonPress} />
+        <BasePageGereral
+          isSafeView
+          title="Select Wallet Currency"
+          navigation={navigation}
+          hasBottomBtn
+          bottomBtnText="CREATE"
+          bottomBtnOnPress={this.onCreateButtonPress}
+          hasLoader
+          isLoading={isLoading}
+        >
+          <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+            <Loc style={[styles.sectionTitle]} text="Mainnet" />
+            <CoinTypeList data={this.mainnet} />
           </View>
-        </SafeAreaView>
+          <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+            <Loc style={[styles.sectionTitle]} text="Testnet" />
+            <CoinTypeList data={this.testnet} />
+          </View>
+        </BasePageGereral>
       );
     }
 }
