@@ -1,6 +1,6 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  take, call, all, takeEvery, put,
+  take, call, all, takeEvery, put, delay,
 } from 'redux-saga/effects';
 
 import _ from 'lodash';
@@ -220,6 +220,9 @@ function* createKeyRequest(action) {
     name, phrase, coinIds, walletManager,
   } = action.payload;
   try {
+    // walletManager.createWallet cost time, it will block ui.
+    // So we delay 100ms, loading ui can present first.
+    yield delay(100);
     yield call(walletManager.createWallet, name, phrase, coinIds);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
