@@ -20,6 +20,11 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * BasePageGereral
+ * customHeaderComponent, render a custom header component in the page.
+ * customBodyMarginTop, means the height between content body and page top. Generlly, it use with customHeaderComponent.
+ */
 const BasePageGereral = (props) => {
   const {
     children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, customizedHeaderRightBtn, headerStyle, customHeaderComponent, customBodyMarginTop,
