@@ -101,18 +101,6 @@ export default class ResponsiveText extends Component {
     };
   }
 
-
-  componentDidMount() {
-    const { style } = this.props;
-    const { fontStyle, layoutStyle, maxFontSize } = ResponsiveText.calculateStyles(style);
-    this.setState({
-      isAdjusted: false,
-      fontStyle,
-      layoutStyle,
-      maxFontSize,
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
     const { style, children, suffixElementWidth } = nextProps;
     const {
@@ -137,9 +125,10 @@ export default class ResponsiveText extends Component {
     if (isAdjusted) {
       return;
     }
-    const { width } = event.nativeEvent.layout;
-    const fontSize = getFontSize(width - suffixElementWidth, children.length, maxFontSize, letterSpacing);
-    this.setState({ fontSize, layoutWidth: width });
+    const { width: layoutWidth } = event.nativeEvent.layout;
+    // layoutWidth - suffixElementWidth is the width text component can use actually
+    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize, letterSpacing);
+    this.setState({ fontSize, layoutWidth });
   }
 
   renderTextElement() {
@@ -181,13 +170,15 @@ export default class ResponsiveText extends Component {
 ResponsiveText.propTypes = {
   style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   children: PropTypes.string,
+  // suffixElement, the element after text component
   suffixElement: PropTypes.element,
+  // the width suffixElement occupy
   suffixElementWidth: PropTypes.number,
 };
 
 ResponsiveText.defaultProps = {
   style: null,
-  suffixElement: null,
   children: null,
+  suffixElement: null,
   suffixElementWidth: 0,
 };
