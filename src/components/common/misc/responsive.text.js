@@ -15,14 +15,9 @@ const DEFAULT_MAX_FONT_SIZE = 35;
  * @param {*} width, limited width
  * @param {*} length, text length
  * @param {*} maxFontSize
- * @param {*} letterSpacing
  */
-const getFontSize = (width, length, maxFontSize, letterSpacing) => {
-  let restWidth = width;
-  if (_.isNumber(letterSpacing)) {
-    restWidth -= letterSpacing;
-  }
-  let fontSize = Math.floor(restWidth / length);
+const getFontSize = (width, length, maxFontSize) => {
+  let fontSize = Math.floor(width / length);
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
   return fontSize;
 };
@@ -38,8 +33,9 @@ const styles = StyleSheet.create({
 });
 
 // ResponsiveText, fontSize will calculate by text length again
+// The letterSpacing style will be ommited, because fixed letterSpacing apply to varible font size is not suitable.
 export default class ResponsiveText extends Component {
-  // calculate fontStyle, layoutStyle, maxFontSize, letterSpacing with style param
+  // calculate fontStyle, layoutStyle, maxFontSize with style param
   static calculateStyles(style) {
     if (!(_.isArray(style) || _.isObject(style))) {
       return { fontStyle: null, layoutStyle: null, maxFontSize: DEFAULT_MAX_FONT_SIZE };
@@ -56,11 +52,12 @@ export default class ResponsiveText extends Component {
     const keys = Object.keys(mergedStyle);
     const fontStyle = {};
     const layoutStyle = {};
+    // ommit letterSpacing, because fixed letterSpacing apply to varible font size is not suitable.
     _.each(keys, (key) => {
       switch (key) {
         case 'fontSize':
-          break;
         case 'letterSpacing':
+          break;
         case 'color':
         case 'fontFamily':
         case 'fontWeight':
@@ -75,25 +72,20 @@ export default class ResponsiveText extends Component {
     if (mergedStyle.fontSize) {
       maxFontSize = mergedStyle.fontSize;
     }
-    let letterSpacing = 0;
-    if (mergedStyle.letterSpacing) {
-      letterSpacing = mergedStyle.letterSpacing;
-    }
     return {
-      fontStyle, layoutStyle, maxFontSize, letterSpacing,
+      fontStyle, layoutStyle, maxFontSize,
     };
   }
 
   constructor(props) {
     super(props);
     const {
-      fontStyle, layoutStyle, maxFontSize, letterSpacing,
+      fontStyle, layoutStyle, maxFontSize,
     } = ResponsiveText.calculateStyles(props.style);
     this.state = {
       fontStyle,
       layoutStyle,
       maxFontSize,
-      letterSpacing,
       fontSize: 0,
       // If fontSize is adjusted, isAdjusted will be set to true, then layout will not be calculated again.
       isAdjusted: false,
@@ -104,12 +96,12 @@ export default class ResponsiveText extends Component {
   componentWillReceiveProps(nextProps) {
     const { style, children, suffixElementWidth } = nextProps;
     const {
-      fontStyle, layoutStyle, maxFontSize, letterSpacing,
+      fontStyle, layoutStyle, maxFontSize,
     } = ResponsiveText.calculateStyles(style);
 
     const { layoutWidth } = this.state;
     // If layout isn't change, but children or style is change, calculate font size again.
-    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize, letterSpacing);
+    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
     this.setState({
       isAdjusted: false,
       fontStyle,
@@ -121,13 +113,13 @@ export default class ResponsiveText extends Component {
 
   onLayout = (event) => {
     const { children, suffixElementWidth } = this.props;
-    const { isAdjusted, maxFontSize, letterSpacing } = this.state;
+    const { isAdjusted, maxFontSize } = this.state;
     if (isAdjusted) {
       return;
     }
     const { width: layoutWidth } = event.nativeEvent.layout;
     // layoutWidth - suffixElementWidth is the width text component can use actually
-    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize, letterSpacing);
+    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
     this.setState({ fontSize, layoutWidth });
   }
 
