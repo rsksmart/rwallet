@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -21,13 +22,16 @@ const styles = StyleSheet.create({
 
 const BasePageGereral = (props) => {
   const {
-    children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, customizedHeaderRightBtn, headerStyle,
+    children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, customizedHeaderRightBtn, headerStyle, customHeaderComponent, customBodyMarginTop,
   } = props;
+  const bodyMarginTopStyle = _.isNumber(customBodyMarginTop) ? { marginTop: customBodyMarginTop } : screenHelper.styles.body;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
       <ScrollView>
-        <Header title={title} goBack={goBack || (() => navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle || {}} />
-        <View style={[screenHelper.styles.body]}>
+        { customHeaderComponent || (
+          <Header title={title} goBack={goBack || (() => navigation && navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle || {}} />
+        ) }
+        <View style={bodyMarginTopStyle}>
           {children}
         </View>
       </ScrollView>
@@ -43,39 +47,45 @@ const BasePageGereral = (props) => {
 };
 
 BasePageGereral.propTypes = {
-  isSafeView: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
+  isSafeView: PropTypes.bool,
+  title: PropTypes.string,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
-  }).isRequired,
-  hasBottomBtn: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
+  }),
+  hasBottomBtn: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   hasLoader: PropTypes.bool,
   renderAccessory: PropTypes.func,
   bottomBtnOnPress: PropTypes.func,
   goBack: PropTypes.func,
   bottomBtnText: PropTypes.string,
   isLoading: PropTypes.bool,
-  // eslint-disable-next-line react/forbid-prop-types
-  customizedHeaderRightBtn: PropTypes.object,
-  // eslint-disable-next-line react/forbid-prop-types
-  headerStyle: PropTypes.object,
+  customizedHeaderRightBtn: PropTypes.element,
+  headerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  customHeaderComponent: PropTypes.element,
+  customBodyMarginTop: PropTypes.number,
 };
 
 BasePageGereral.defaultProps = {
   goBack: null,
   bottomBtnOnPress: null,
   bottomBtnText: '',
+  isSafeView: false,
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
+  hasBottomBtn: false,
+  title: '',
   customizedHeaderRightBtn: null,
   headerStyle: null,
+  children: null,
+  navigation: null,
+  customHeaderComponent: null,
+  customBodyMarginTop: null,
 };
 
 
