@@ -90,17 +90,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 160,
     right: 15,
-    paddingRight: 30,
     bottom: 5,
   },
   name: {
-    width: '100%',
-    paddingBottom: 6,
-  },
-  nameFont: {
+    fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.39,
     color: '#FFFFFF',
+    width: '100%',
+    paddingBottom: 6,
   },
   nameEditView: {
     marginLeft: 10,
@@ -369,13 +367,12 @@ class MineIndex extends Component {
             <View style={styles.nameView}>
               <ResponsiveText
                 style={[styles.name]}
-                fontStyle={[styles.nameFont]}
-                maxFontSize={20}
                 suffixElement={(
                   <TouchableOpacity style={styles.nameEditView} onPress={this.onEditNamePress}>
                     <FontAwesome name="edit" size={25} style={styles.nameEdit} />
                   </TouchableOpacity>
                 )}
+                suffixElementWidth={35}
               >
                 {usernameText}
               </ResponsiveText>

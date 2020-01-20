@@ -53,8 +53,7 @@ BasePageGereral.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   hasBottomBtn: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   hasLoader: PropTypes.bool,
   renderAccessory: PropTypes.func,
   bottomBtnOnPress: PropTypes.func,
@@ -76,6 +75,7 @@ BasePageGereral.defaultProps = {
   hasLoader: false,
   customizedHeaderRightBtn: null,
   headerStyle: null,
+  children: null,
 };
 
 

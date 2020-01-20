@@ -76,13 +76,12 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   myAssets: {
-    marginTop: 17,
-    marginHorizontal: 25,
-  },
-  myAssetsFontStyle: {
     color: '#000000',
     fontFamily: 'Avenir-Black',
     letterSpacing: 2.92,
+    fontSize: 35,
+    marginTop: 17,
+    marginHorizontal: 25,
   },
   assetsValue: {
     color: '#000000',
@@ -565,7 +564,7 @@ class History extends Component {
         </ImageBackground>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText style={styles.myAssets} maxFontSize={35}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
             {
               pendingBalanceText && (
