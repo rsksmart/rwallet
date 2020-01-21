@@ -15,7 +15,7 @@ import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
 import config from '../../../config';
 import BasePageGereral from '../base/base.page.general';
-import HeaderMineIndex from './header.mineindex';
+import HeaderMineIndex from '../../components/headers/header.mineindex';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 

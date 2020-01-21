@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { StackActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
 

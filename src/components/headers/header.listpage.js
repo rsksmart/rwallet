@@ -4,10 +4,10 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import screenHelper from '../../../common/screenHelper';
-import Loc from './loc';
+import screenHelper from '../../common/screenHelper';
+import Loc from '../common/misc/loc';
 
-const header = require('../../../assets/images/misc/header.png');
+const header = require('../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerTopOffset = -150;

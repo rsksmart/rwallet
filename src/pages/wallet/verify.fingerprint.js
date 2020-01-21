@@ -5,7 +5,8 @@ import {
 import PropTypes from 'prop-types';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
+
 import flex from '../../assets/styles/layout.flex';
 import TouchSensorModal from '../../components/common/modal/touchSensorModal';
 

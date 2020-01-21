@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 
 

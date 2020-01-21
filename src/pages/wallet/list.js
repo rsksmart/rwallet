@@ -14,7 +14,7 @@ import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
-import ListPageHeader from '../../components/common/misc/header.listpage';
+import ListPageHeader from '../../components/headers/header.listpage';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');

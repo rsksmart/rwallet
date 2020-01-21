@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectionList from '../../components/common/list/selectionList';
 import appActions from '../../redux/app/actions';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 import config from '../../../config';
 

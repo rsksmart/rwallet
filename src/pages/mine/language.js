@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/app/actions';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import { strings } from '../../common/i18n';
 import BasePageGereral from '../base/base.page.general';
 

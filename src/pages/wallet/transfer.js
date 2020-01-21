@@ -20,7 +20,7 @@ import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
-import OperationHeader from './header.operation';
+import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
 
 const MEMO_NUM_OF_LINES = 8;

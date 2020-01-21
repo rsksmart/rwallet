@@ -5,11 +5,11 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import screenHelper from '../../../common/screenHelper';
-import ResponsiveText from './responsive.text';
-import { strings } from '../../../common/i18n';
+import screenHelper from '../../common/screenHelper';
+import ResponsiveText from '../common/misc/responsive.text';
+import { strings } from '../../common/i18n';
 
-const header = require('../../../assets/images/misc/header.png');
+const header = require('../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerMarginTop = -150 + screenHelper.topHeight;

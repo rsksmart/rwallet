@@ -15,7 +15,7 @@ import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
-import HistoryHeader from './header.history';
+import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
 
 const { getCurrencySymbol } = common;

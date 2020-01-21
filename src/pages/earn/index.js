@@ -3,7 +3,7 @@ import {
   View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import EarnHeader from '../../components/common/misc/header.earn';
+import EarnHeader from '../../components/headers/header.earn';
 import Loc from '../../components/common/misc/loc';
 import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';

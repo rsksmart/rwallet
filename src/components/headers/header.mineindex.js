@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import screenHelper from '../../common/screenHelper';
-import ResponsiveText from '../../components/common/misc/responsive.text';
+import ResponsiveText from '../common/misc/responsive.text';
 
 const header = require('../../assets/images/misc/header.png');
 

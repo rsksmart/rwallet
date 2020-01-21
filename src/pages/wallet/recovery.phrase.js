@@ -9,7 +9,7 @@ import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 
 const Mnemonic = require('bitcore-mnemonic');
 

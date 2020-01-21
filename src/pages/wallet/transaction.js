@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';

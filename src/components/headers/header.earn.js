@@ -3,11 +3,11 @@ import {
   StyleSheet, Image, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Loc from './loc';
-import FullWidthImage from './full.width.image';
+import Loc from '../common/misc/loc';
+import FullWidthImage from '../common/misc/full.width.image';
 
 
-const header = require('../../../assets/images/misc/header.earn.png');
+const header = require('../../assets/images/misc/header.earn.png');
 
 const styles = StyleSheet.create({
   headerImage: {

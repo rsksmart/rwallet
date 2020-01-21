@@ -8,7 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
 import createInfoConfirmation from '../../common/confirmation.controller';
-import KeysettingsHeader from './header.keysettings';
+import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({

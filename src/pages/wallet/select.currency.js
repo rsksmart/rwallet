@@ -11,7 +11,7 @@ import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 
 const styles = StyleSheet.create({
   sectionTitle: {

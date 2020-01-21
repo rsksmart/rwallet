@@ -13,7 +13,7 @@ import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 

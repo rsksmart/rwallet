@@ -12,7 +12,7 @@ import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
-import OperationHeader from './header.operation';
+import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({

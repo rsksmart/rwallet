@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SwitchListItem from '../../components/common/list/switchListItem';
 import Tags from '../../components/common/misc/tags';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import { strings } from '../../common/i18n';

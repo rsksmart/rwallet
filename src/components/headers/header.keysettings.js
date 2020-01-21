@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
-import Loc from '../../components/common/misc/loc';
+import Loc from '../common/misc/loc';
 
 const header = require('../../assets/images/misc/header.png');
 
