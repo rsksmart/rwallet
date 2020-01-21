@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 
 const BasePageGereral = (props) => {
   const {
-    children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent, isBottomBtnDisabled,
+    children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
   } = props;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
@@ -31,7 +31,7 @@ const BasePageGereral = (props) => {
       </ScrollView>
       {hasBottomBtn && (
       <View style={[styles.buttonView]}>
-        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} disabled={isBottomBtnDisabled} />
+        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
       </View>
       ) }
       {hasLoader && <Loader loading={isLoading} />}
@@ -48,7 +48,6 @@ BasePageGereral.propTypes = {
   renderAccessory: PropTypes.func,
   bottomBtnOnPress: PropTypes.func,
   bottomBtnText: PropTypes.string,
-  isBottomBtnDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
   headerComponent: PropTypes.element.isRequired,
 };
@@ -56,7 +55,6 @@ BasePageGereral.propTypes = {
 BasePageGereral.defaultProps = {
   bottomBtnOnPress: null,
   bottomBtnText: '',
-  isBottomBtnDisabled: false,
   isSafeView: false,
   isLoading: false,
   renderAccessory: null,
