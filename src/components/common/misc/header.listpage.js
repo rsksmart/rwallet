@@ -6,18 +6,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import screenHelper from '../../../common/screenHelper';
 import Loc from './loc';
-import { DEVICE } from '../../../common/info';
 
 const header = require('../../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerTopOffset = -150;
-const headerMarginTop = DEVICE.isIphoneX ? headerTopOffset + screenHelper.iphoneXTopHeight : headerTopOffset;
-export const bodyMarginTop = screenHelper.headerHeight + headerMarginTop;
+const headerMarginTop = headerTopOffset + screenHelper.topHeight;
 
 const styles = StyleSheet.create({
   headerImage: {
-    position: 'absolute',
     width: '100%',
     height: headerHeight,
     marginTop: headerMarginTop,
@@ -45,7 +42,7 @@ function ListPageHeader({ title, customRightButton }) {
 
 ListPageHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  customRightButton: PropTypes.string,
+  customRightButton: PropTypes.element,
 };
 
 ListPageHeader.defaultProps = {

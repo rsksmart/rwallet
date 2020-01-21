@@ -11,22 +11,24 @@ import { strings } from '../../../common/i18n';
 
 const header = require('../../../assets/images/misc/header.png');
 
+const headerHeight = 350;
+const headerMarginTop = -150 + screenHelper.topHeight;
+
 const styles = StyleSheet.create({
   headerImage: {
-    position: 'absolute',
     width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
+    height: headerHeight,
+    marginTop: headerMarginTop,
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontFamily: 'Avenir-Black',
-    fontSize: 32,
-    letterSpacing: 0,
     position: 'absolute',
     bottom: 50,
     left: 24,
     right: 24,
+  },
+  headerTitleText: {
+    color: '#FFFFFF',
+    fontFamily: 'Avenir-Black',
   },
   backButton: {
     position: 'absolute',
@@ -42,21 +44,12 @@ const styles = StyleSheet.create({
   },
 });
 
-function Header({
-  title, goBack, customRightBtn, headerStyle,
-}) {
-  let customStyleHeaderTitle = null;
-  if (headerStyle && headerStyle.customStyleHeaderTitle) {
-    customStyleHeaderTitle = headerStyle.customStyleHeaderTitle;
-  }
+function Header({ title, onBackButtonPress }) {
   let backButton = null;
   let titleStyle = null;
-
-  if (customRightBtn) {
-    backButton = customRightBtn;
-  } else if (goBack) {
+  if (onBackButtonPress) {
     backButton = (
-      <TouchableOpacity style={styles.backButton} onPress={goBack}>
+      <TouchableOpacity style={styles.backButton} onPress={onBackButtonPress}>
         <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
       </TouchableOpacity>
     );
@@ -65,7 +58,7 @@ function Header({
   }
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <ResponsiveText style={[customStyleHeaderTitle || styles.headerTitle, titleStyle]}>{strings(title)}</ResponsiveText>
+      <ResponsiveText layoutStyle={[styles.headerTitle, titleStyle]} fontStyle={styles.headerTitleText} maxFontSize={32}>{strings(title)}</ResponsiveText>
       { backButton }
     </ImageBackground>
   );
@@ -73,15 +66,11 @@ function Header({
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  goBack: PropTypes.func,
-  customRightBtn: PropTypes.shape({}),
-  headerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onBackButtonPress: PropTypes.func,
 };
 
 Header.defaultProps = {
-  goBack: null,
-  customRightBtn: null,
-  headerStyle: null,
+  onBackButtonPress: null,
 };
 
 const mapStateToProps = (state) => ({

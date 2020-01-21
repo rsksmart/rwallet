@@ -42,9 +42,11 @@ export default class SpendIndex extends Component {
   render() {
     return (
       <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
         renderAccessory={() => <RSKad />}
-        customHeaderComponent={<EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />}
-        customBodyMarginTop={0}
+        headerComponent={<EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />}
       >
         <View style={styles.body}>
           <Loc style={[styles.title]} text="Below features are coming soon to Spend…" />

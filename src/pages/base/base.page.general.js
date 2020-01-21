@@ -7,7 +7,6 @@ import screenHelper from '../../common/screenHelper';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
 
-
 const styles = StyleSheet.create({
   safeView: {
     paddingBottom: screenHelper.bottomHeight,
@@ -18,26 +17,21 @@ const styles = StyleSheet.create({
   },
 });
 
-/**
- * BasePageGereral
- * headerComponent, render a custom header component in the page.
- * bodyMarginTop, means the height between content body and page top. Generlly, it use with customHeaderComponent.
- */
 const BasePageGereral = (props) => {
   const {
-    children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
+    children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent, isBottomBtnDisabled,
   } = props;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
       <ScrollView>
         {headerComponent}
-        <View style={{ marginTop: screenHelper.topHeight }}>
+        <View pointerEvents="box-none">
           {children}
         </View>
       </ScrollView>
       {hasBottomBtn && (
       <View style={[styles.buttonView]}>
-        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
+        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} disabled={isBottomBtnDisabled} />
       </View>
       ) }
       {hasLoader && <Loader loading={isLoading} />}
@@ -49,24 +43,24 @@ const BasePageGereral = (props) => {
 BasePageGereral.propTypes = {
   isSafeView: PropTypes.bool,
   hasBottomBtn: PropTypes.bool.isRequired,
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   hasLoader: PropTypes.bool,
   renderAccessory: PropTypes.func,
   bottomBtnOnPress: PropTypes.func,
   bottomBtnText: PropTypes.string,
+  isBottomBtnDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
-  headerComponent: PropTypes.element,
+  headerComponent: PropTypes.element.isRequired,
 };
 
 BasePageGereral.defaultProps = {
   bottomBtnOnPress: null,
   bottomBtnText: '',
+  isBottomBtnDisabled: false,
   isSafeView: false,
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
-  children: null,
-  headerComponent: null,
 };
 
 

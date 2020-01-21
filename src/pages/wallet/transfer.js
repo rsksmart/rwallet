@@ -1,20 +1,16 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ImageBackground, ScrollView, Switch, Platform,
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
-import Entypo from 'react-native-vector-icons/Entypo';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
-import { screen, DEVICE } from '../../common/info';
-import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 
-import ScreenHelper from '../../common/screenHelper';
 // import ConfirmSlider from '../../components/wallet/confirm.slider';
 // import circleCheckIcon from '../../assets/images/misc/circle.check.png';
 // import circleIcon from '../../assets/images/misc/circle.png';
@@ -23,8 +19,9 @@ import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
 import Button from '../../components/common/button/button';
+import OperationHeader from './header.operation';
+import BasePageGereral from '../base/base.page.general';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -197,9 +194,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     fontSize: 13,
   },
-  wapper: {
-    height: screen.height - 25,
-  },
   customTitle: {
     color: '#000000',
     fontSize: 15,
@@ -245,7 +239,6 @@ const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const MAX_FEE_TIMES = 2;
 const PLACEHODLER_AMOUNT = 0.001;
 
-const header = require('../../assets/images/misc/header.png');
 const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
@@ -719,93 +712,20 @@ class Transfer extends Component {
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
-    let headerHeight = 100;
-    if (DEVICE.isIphoneX) {
-      headerHeight += ScreenHelper.iphoneXTopHeight;
-    }
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolFullName(symbol, type);
 
-    return (
-      <SafeAreaView>
-        <ScrollView style={{ paddingBottom: 0, marginBottom: 0 }}>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <View style={styles.titleView}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>
-                <Loc text="Send" />
-                {` ${symbolName}`}
-              </Text>
-            </View>
-          </ImageBackground>
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <View style={styles.sendingRow}>
-                <Loc style={[styles.title1]} text="Sending" />
-                <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
-              </View>
-              <View style={styles.textInputView}>
-                <TextInput
-                  placeholder={amountPlaceholderText}
-                  style={[styles.textInput]}
-                  value={amount}
-                  keyboardType="numeric"
-                  onChangeText={this.inputAmount}
-                />
-              </View>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title2]} text="To" />
-              <View style={styles.textInputView}>
-                <TextInput
-                  style={[styles.textInput]}
-                  value={to}
-                  onChangeText={(text) => {
-                    this.setState({ to: text }, this.validateConfirmControl.bind(this));
-                  }}
-                />
-                <TouchableOpacity
-                  style={styles.textInputIcon}
-                  onPress={this.onQrcodeScanPress}
-                >
-                  <Image source={addressIcon} />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title3]} text="Memo (optional)" />
-              <View style={styles.textInputView}>
-                {this.renderMemo(memo)}
-              </View>
-            </View>
-            <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
-              <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
-              <Loc style={[styles.question]} text="How fast you want this done?" />
-              {this.renderFeeOptions()}
-            </View>
-            <View style={[styles.sectionContainer]}>
-              <View style={[styles.customRow]}>
-                <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
-                <Switch
-                  value={isCustomFee}
-                  onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
-                />
-              </View>
-              {this.renderCustomFee(isCustomFee)}
-            </View>
-          </View>
-          <View
-            style={[styles.sectionContainer, {
-              opacity: enableConfirm ? 1 : 0.5,
-              width: '100%',
-              justifyContent: 'center',
-            }, styles.lastBlockMarginBottom]}
-            pointerEvents={enableConfirm ? 'auto' : 'none'}
-          >
-            {/*
+    const confirmationComponent = (
+      <View
+        style={[styles.sectionContainer, {
+          opacity: enableConfirm ? 1 : 0.5,
+          width: '100%',
+          justifyContent: 'center',
+        }, styles.lastBlockMarginBottom]}
+        pointerEvents={enableConfirm ? 'auto' : 'none'}
+      >
+        {/*
               // Replace ConfirmSlider with Button component temporaryly.
               <ConfirmSlider // All parameter should be adjusted for the real case
               ref={(ref) => { this.confirmSlider = ref; }}
@@ -833,11 +753,76 @@ class Transfer extends Component {
                 )}
               label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
             /> */}
-            <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
+        <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
+      </View>
+    );
+
+    return (
+      <BasePageGereral
+        isSafeView
+        hasBottomBtn={false}
+        hasLoader
+        isLoading={loading}
+        renderAccessory={() => confirmationComponent}
+        headerComponent={<OperationHeader operation="Send" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+      >
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <View style={styles.sendingRow}>
+              <Loc style={[styles.title1]} text="Sending" />
+              <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
+            </View>
+            <View style={styles.textInputView}>
+              <TextInput
+                placeholder={amountPlaceholderText}
+                style={[styles.textInput]}
+                value={amount}
+                keyboardType="numeric"
+                onChangeText={this.inputAmount}
+              />
+            </View>
           </View>
-          <Loader loading={loading} />
-        </ScrollView>
-      </SafeAreaView>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.title2]} text="To" />
+            <View style={styles.textInputView}>
+              <TextInput
+                style={[styles.textInput]}
+                value={to}
+                onChangeText={(text) => {
+                  this.setState({ to: text }, this.validateConfirmControl.bind(this));
+                }}
+              />
+              <TouchableOpacity
+                style={styles.textInputIcon}
+                onPress={this.onQrcodeScanPress}
+              >
+                <Image source={addressIcon} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.title3]} text="Memo (optional)" />
+            <View style={styles.textInputView}>
+              {this.renderMemo(memo)}
+            </View>
+          </View>
+          <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
+            <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
+            <Loc style={[styles.question]} text="How fast you want this done?" />
+            {this.renderFeeOptions()}
+          </View>
+          <View style={[styles.sectionContainer]}>
+            <View style={[styles.customRow]}>
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
+              <Switch
+                value={isCustomFee}
+                onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
+              />
+            </View>
+            {this.renderCustomFee(isCustomFee)}
+          </View>
+        </View>
+      </BasePageGereral>
     );
   }
 }

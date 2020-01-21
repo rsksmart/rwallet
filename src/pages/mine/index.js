@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList, ImageBackground, Linking,
+  View, Text, StyleSheet, TouchableOpacity, FlatList, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -11,15 +11,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Loc from '../../components/common/misc/loc';
-import flex from '../../assets/styles/layout.flex';
-import { DEVICE } from '../../common/info';
 import { strings } from '../../common/i18n';
-import ScreenHelper from '../../common/screenHelper';
 import RSKad from '../../components/common/rsk.ad';
-import ResponsiveText from '../../components/common/misc/responsive.text';
 import config from '../../../config';
+import BasePageGereral from '../base/base.page.general';
+import HeaderMineIndex from './header.mineindex';
 
-const AVATAR_SIZE = 129;
+const avatar = require('../../assets/images/mine/avatar.png');
+
+const ICON_SIZE = 20;
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -33,25 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   body: {
-    paddingTop: 65,
-  },
-  avatarView: {
-    left: 20,
-    bottom: -40,
-    position: 'absolute',
-    borderColor: '#ddd',
-    borderBottomWidth: 0,
-    borderRadius: AVATAR_SIZE / 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 10,
-    backgroundColor: '#FFFFFF',
-  },
-  avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
+    marginTop: 60,
   },
   row: {
     flexDirection: 'row',
@@ -71,42 +53,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     flex: 1,
   },
-  logoView: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-  },
-  powerby: {
-    color: '#727372',
-    fontSize: 17,
-    fontWeight: '900',
-    marginTop: 5,
-  },
-  nameView: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    position: 'absolute',
-    left: 160,
-    right: 15,
-    bottom: 5,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: 0.39,
-    color: '#FFFFFF',
-    width: '100%',
-    paddingBottom: 6,
-  },
-  nameEditView: {
-    marginLeft: 10,
-    marginBottom: -5,
-  },
-  nameEdit: {
-    color: '#FFFFFF',
-  },
   communityIcon: {
     marginLeft: -5.5,
     width: 30,
@@ -120,14 +66,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  keyListRowRight: {
-    alignItems: 'center',
-  },
   keyIcon: {
     color: '#4A4A4A', transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
-  },
-  keyTitle: {
-    marginLeft: 10,
   },
   keyWallets: {
     backgroundColor: '#F3F3F3',
@@ -152,9 +92,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 });
-
-const header = require('../../assets/images/misc/header.png');
-const avatar = require('../../assets/images/mine/avatar.png');
 
 function Item({ data, title }) {
   return (
@@ -186,9 +123,6 @@ Item.propTypes = {
 Item.defaultProps = {
   data: { onPress: null },
 };
-
-
-const ICON_SIZE = 20;
 
 class MineIndex extends Component {
   static navigationOptions = () => ({
@@ -350,44 +284,29 @@ class MineIndex extends Component {
   }
 
   render() {
-    let headerHeight = 160;
-    if (DEVICE.isIphoneX) {
-      headerHeight += ScreenHelper.iphoneXTopHeight;
-    }
     const { language, navigation, username } = this.props;
     const { keyListData, settings, joins } = this.state;
     const { defaultSettings: { username: defaultUsername } } = config;
     // Translate If username is default user name
     const usernameText = username === defaultUsername ? strings(defaultUsername) : username;
+
     return (
-      <View style={flex.flex1}>
-        <ScrollView style={[flex.flex1]}>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <View style={styles.avatarView}><Image source={avatar} style={styles.avatar} /></View>
-            <View style={styles.nameView}>
-              <ResponsiveText
-                style={[styles.name]}
-                suffixElement={(
-                  <TouchableOpacity style={styles.nameEditView} onPress={this.onEditNamePress}>
-                    <FontAwesome name="edit" size={25} style={styles.nameEdit} />
-                  </TouchableOpacity>
-                )}
-                suffixElementWidth={35}
-              >
-                {usernameText}
-              </ResponsiveText>
-            </View>
-          </ImageBackground>
-          <View style={[styles.body]}>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle]} text="Settings" />
-              <FlatList
-                data={settings}
-                extraData={language}
-                renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
-                keyExtractor={(item, index) => index.toString()}
-              />
-            </View>
+      <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
+        renderAccessory={() => <RSKad />}
+        headerComponent={<HeaderMineIndex avatar={avatar} usernameText={usernameText} onEditNamePress={this.onEditNamePress} />}
+      >
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="Settings" />
+            <FlatList
+              data={settings}
+              extraData={language}
+              renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="Keys" />
@@ -406,9 +325,8 @@ class MineIndex extends Component {
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
-        </ScrollView>
-        <RSKad />
-      </View>
+        </View>
+      </BasePageGereral>
     );
   }
 }

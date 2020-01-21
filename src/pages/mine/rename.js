@@ -1,49 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView, TextInput,
+  View, StyleSheet, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import flex from '../../assets/styles/layout.flex';
-import screenHelper from '../../common/screenHelper';
 import Header from '../../components/common/misc/header';
 import Loc from '../../components/common/misc/loc';
-import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import appActions from '../../redux/app/actions';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
-  },
-  headerTitle: {
-    fontSize: 25,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 65,
-    left: 24,
-    color: '#FFF',
-  },
-  headerText: {
-    fontSize: 15,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 45,
-    left: 24,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 9,
-    bottom: 97,
-  },
-  chevron: {
-    color: '#FFF',
-  },
   sectionContainer: {
     paddingHorizontal: 30,
   },
@@ -74,6 +41,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#DF5264',
     marginHorizontal: 5,
+  },
+  body: {
+    marginHorizontal: 25,
   },
 });
 
@@ -124,30 +94,29 @@ class Rename extends Component {
       const { navigation } = this.props;
       const { name } = this.state;
       return (
-        <SafeAreaView>
-          <View style={[flex.flex1]}>
-            <ScrollView style={[flex.flex1]}>
-              <Header goBack={() => navigation.goBack()} title="Your Name" />
-              <View style={[screenHelper.styles.body, { paddingHorizontal: 25 }]}>
-                <Loc style={[styles.title]} text="What's your name?" />
-                <TextInput
-                  ref={(ref) => { this.nameInput = ref; }}
-                  style={[presetStyle.textInput, styles.nameInput]}
-                  value={name}
-                  onChangeText={this.onChangeText}
-                  onSubmitEditing={this.onSubmitEditing}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  blurOnSubmit={false}
-                />
-                <Loc style={[styles.notice]} text="* Name can contain 1-32 letters (a-z), numbers (0-9), and space" />
-              </View>
-            </ScrollView>
-            <View style={styles.buttonView}>
-              <Button text="SAVE" onPress={this.onPress} />
-            </View>
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          hasLoader={false}
+          bottomBtnText="SAVE"
+          bottomBtnOnPress={this.onPress}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Your Name" />}
+        >
+          <View style={styles.body}>
+            <Loc style={[styles.title]} text="What's your name?" />
+            <TextInput
+              ref={(ref) => { this.nameInput = ref; }}
+              style={[presetStyle.textInput, styles.nameInput]}
+              value={name}
+              onChangeText={this.onChangeText}
+              onSubmitEditing={this.onSubmitEditing}
+              autoCapitalize="none"
+              autoCorrect={false}
+              blurOnSubmit={false}
+            />
+            <Loc style={[styles.notice]} text="* Name can contain 1-32 letters (a-z), numbers (0-9), and space" />
           </View>
-        </SafeAreaView>
+        </BasePageGereral>
       );
     }
 }

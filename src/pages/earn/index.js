@@ -42,9 +42,11 @@ export default class EarnIndex extends Component {
   render() {
     return (
       <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
         renderAccessory={() => <RSKad />}
-        customHeaderComponent={<EarnHeader title="Earn cryptocurrency with ease" imageSource={headerImage} imageBgColor="#A2C4F7" />}
-        customBodyMarginTop={0}
+        headerComponent={<EarnHeader title="Earn cryptocurrency with ease" imageSource={headerImage} imageBgColor="#A2C4F7" />}
       >
         <View style={styles.body}>
           <Loc style={[styles.title]} text="Below features are coming soon to Earn…" />

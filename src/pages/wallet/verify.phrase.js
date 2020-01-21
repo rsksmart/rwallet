@@ -13,6 +13,7 @@ import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
+import Header from '../../components/common/misc/header';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -239,6 +240,7 @@ class VerifyPhrase extends Component {
         hasLoader
         isLoading={isLoading}
         renderAccessory={this.renderConfirmation}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Select Wallet Currency" />}
       >
         <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
         <Loc style={[styles.tip]} text="Tap each word in the correct order" />

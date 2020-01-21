@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity, ScrollView,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import flex from '../../assets/styles/layout.flex';
-import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
   body: {
@@ -41,46 +39,40 @@ class TwoFactorAuth extends Component {
     constructor(props) {
       super(props);
 
-      this.goBack = this.goBack.bind(this);
+      this.onResetPasscodePress = this.onResetPasscodePress.bind(this);
       this.setSingleSettings = this.setSingleSettings.bind(this);
+    }
+
+    onResetPasscodePress() {
+      const { showPasscode, navigation } = this.props;
+      if (global.passcode) {
+        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
+      } else {
+        showPasscode('create');
+      }
     }
 
     setSingleSettings(value) {
       const { setSingleSettings } = this.props;
-
       setSingleSettings('fingerprint', value);
     }
 
-    goBack() {
-      const { navigation } = this.props;
-      navigation.goBack();
-    }
-
     render() {
-      const { loading, showPasscode, navigation } = this.props;
+      const { navigation } = this.props;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header
-            title="Two-Factor Authentication"
-            goBack={this.goBack}
-          />
-          <View style={[screenHelper.styles.body, styles.body]}>
-            <Loader loading={loading} />
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => {
-                if (global.passcode) {
-                  showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
-                } else {
-                  showPasscode('create');
-                }
-              }}
-            >
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Two-Factor Authentication" />}
+        >
+          <View style={styles.body}>
+            <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
               <Loc style={[styles.title]} text="Reset Passcode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }
@@ -93,18 +85,15 @@ TwoFactorAuth.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   setSingleSettings: PropTypes.func,
-  loading: PropTypes.bool,
   showPasscode: PropTypes.func.isRequired,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
-  loading: false,
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.App.get('isPageLoading'),
   fingerprint: state.App.get('fingerprint'),
 });
 

@@ -145,8 +145,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   radioItemText: {
+    marginTop: 2,
+  },
+  radioItemTextFont: {
     color: '#4A4A4A',
-    fontSize: 12,
     fontWeight: '300',
     letterSpacing: 0.23,
     marginTop: 2,
@@ -199,8 +201,8 @@ function Item({
       </View>
       <View style={styles.radioItemRight}>
         <Loc style={isSelected ? [styles.radioItemTitle, styles.radioItemTitleSelected] : [styles.radioItemTitle]} text={name} />
-        <ResponsiveText style={styles.radioItemText}>{coin}</ResponsiveText>
-        <ResponsiveText style={styles.radioItemText}>{value}</ResponsiveText>
+        <ResponsiveText layoutStyle={styles.radioItemText} fontStyle={styles.radioItemTextFont} maxFontSize={12}>{coin}</ResponsiveText>
+        <ResponsiveText layoutStyle={styles.radioItemText} fontStyle={styles.radioItemTextFont} maxFontSize={12}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );

@@ -4,12 +4,9 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
-import flex from '../../assets/styles/layout.flex';
-import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
+import BasePageGereral from '../base/base.page.general';
 
 
 const completed = require('../../assets/images/icon/completed.png');
@@ -41,40 +38,38 @@ export default class ResetPasscodeSuccess extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onBackButtonPress = this.onBackButtonPress.bind(this);
+    }
+
+    onBackButtonPress() {
       const { navigation } = this.props;
+      const resetAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: 'MineIndex' }),
+          NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
+    }
+
+    render() {
       return (
-        <SafeAreaView>
-          <View style={[flex.flex1]}>
-            <Header
-              title="Reset Passcode"
-              goBack={() => {
-                navigation.goBack();
-              }}
-            />
-            <View style={screenHelper.styles.body}>
-              <View style={styles.content}>
-                <Image style={styles.check} source={completed} />
-                <Loc style={[styles.title]} text="Reset completed!" />
-              </View>
-            </View>
-            <View style={styles.buttonView}>
-              <Button
-                text="BACK TO SETTING"
-                onPress={async () => {
-                  const resetAction = StackActions.reset({
-                    index: 1,
-                    actions: [
-                      NavigationActions.navigate({ routeName: 'MineIndex' }),
-                      NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
-                    ],
-                  });
-                  navigation.dispatch(resetAction);
-                }}
-              />
-            </View>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn
+          hasLoader={false}
+          bottomBtnText="BACK TO SETTING"
+          bottomBtnOnPress={this.onBackButtonPress}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="Your Name" />}
+        >
+          <View style={styles.content}>
+            <Image style={styles.check} source={completed} />
+            <Loc style={[styles.title]} text="Reset completed!" />
           </View>
-        </SafeAreaView>
+        </BasePageGereral>
       );
     }
 }
