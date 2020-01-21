@@ -103,13 +103,12 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   myAssets: {
-    marginTop: 63,
-    marginHorizontal: 30,
-  },
-  myAssetsFontStyle: {
     color: '#000000',
     fontFamily: 'Avenir-Black',
+    fontSize: 35,
     letterSpacing: 0.34,
+    marginTop: 57,
+    marginHorizontal: 30,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -363,7 +362,7 @@ class WalletList extends Component {
               <Loc text="My Assets" />
               {` (${currencySymbol})`}
             </Text>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
+            <ResponsiveText style={[styles.myAssets]}>{totalAssetValueText}</ResponsiveText>
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}

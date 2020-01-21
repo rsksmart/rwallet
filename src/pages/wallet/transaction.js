@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
   amount: {
     flex: 1,
     marginRight: 75,
-  },
-  amountText: {
+    fontSize: 40,
     fontWeight: '400',
   },
   amountView: {
@@ -148,7 +147,7 @@ class Transaction extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
               <View style={styles.amountView}>
-                <ResponsiveText style={[styles.amount]} fontStyle={[styles.amountText]} maxFontSize={40}>{amount}</ResponsiveText>
+                <ResponsiveText style={[styles.amount]}>{amount}</ResponsiveText>
                 <View style={styles.stateIcon}>{stateIcon}</View>
               </View>
             </View>

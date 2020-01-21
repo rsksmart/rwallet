@@ -3,9 +3,11 @@ import {
   StyleSheet, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Loc from './loc';
 import screenHelper from '../../../common/screenHelper';
+import ResponsiveText from './responsive.text';
+import { strings } from '../../../common/i18n';
 
 const header = require('../../../assets/images/misc/header.png');
 
@@ -24,6 +26,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     left: 24,
+    right: 24,
   },
   backButton: {
     position: 'absolute',
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Header({
+function Header({
   title, goBack, customRightBtn, headerStyle,
 }) {
   let customStyleHeaderTitle = null;
@@ -50,15 +53,10 @@ export default function Header({
   let titleStyle = null;
 
   if (customRightBtn) {
-    backButton = (
-      customRightBtn
-    );
+    backButton = customRightBtn;
   } else if (goBack) {
     backButton = (
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={goBack}
-      >
+      <TouchableOpacity style={styles.backButton} onPress={goBack}>
         <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
       </TouchableOpacity>
     );
@@ -67,7 +65,7 @@ export default function Header({
   }
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <Loc style={[customStyleHeaderTitle || styles.headerTitle, titleStyle]} text={title} />
+      <ResponsiveText style={[customStyleHeaderTitle || styles.headerTitle, titleStyle]}>{strings(title)}</ResponsiveText>
       { backButton }
     </ImageBackground>
   );
@@ -76,10 +74,8 @@ export default function Header({
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   goBack: PropTypes.func,
-  // eslint-disable-next-line react/forbid-prop-types
-  customRightBtn: PropTypes.object,
-  // eslint-disable-next-line react/forbid-prop-types
-  headerStyle: PropTypes.object,
+  customRightBtn: PropTypes.shape({}),
+  headerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Header.defaultProps = {
@@ -87,3 +83,9 @@ Header.defaultProps = {
   customRightBtn: null,
   headerStyle: null,
 };
+
+const mapStateToProps = (state) => ({
+  currentLocale: state.App.get('language'),
+});
+
+export default connect(mapStateToProps)(Header);
