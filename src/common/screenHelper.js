@@ -11,9 +11,11 @@ const screenHelper = {
   headerHeight: 350,
 };
 
-screenHelper.headerMarginTop = DEVICE.isIphoneX ? -150 + screenHelper.iphoneXTopHeight : -150;
-screenHelper.bodyMarginTop = screenHelper.headerHeight + screenHelper.headerMarginTop;
+screenHelper.topHeight = DEVICE.isIphoneX ? screenHelper.iphoneXTopHeight : 0;
 screenHelper.bottomHeight = DEVICE.isIphoneX ? screenHelper.iphoneXBottomHeight : 0;
+screenHelper.headerMarginTop = -150 + screenHelper.topHeight;
+screenHelper.bodyMarginTop = screenHelper.headerHeight + screenHelper.headerMarginTop;
+
 screenHelper.styles = StyleSheet.create({
   body: {
     marginTop: screenHelper.bodyMarginTop,

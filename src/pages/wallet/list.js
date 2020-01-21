@@ -15,6 +15,7 @@ import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
+import ListPageHeader from '../../components/common/misc/header.listpage';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: -90,
+    marginTop: 115,
   },
   chevron: {
     color: '#FFF',
@@ -330,6 +331,15 @@ class WalletList extends Component {
     this.setState(newState);
   }
 
+  scanButon() {
+    const { navigation } = this.props;
+    return (
+      <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')}>
+        <Image style={[styles.scan]} source={scan} />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { navigation } = this.props;
     const {
@@ -338,23 +348,10 @@ class WalletList extends Component {
     return (
       <BasePageGereral
         isSafeView={false}
-        title="Your Wallet"
-        navigation={navigation}
-        goBack={null}
         hasBottomBtn={false}
         hasLoader={false}
         renderAccessory={() => <RSKad />}
-        headerStyle={{ customStyleHeaderTitle: styles.headerTitle }}
-        customizedHeaderRightBtn={(
-          <TouchableOpacity
-            style={styles.scanView}
-            onPress={() => {
-              navigation.navigate('Scan');
-            }}
-          >
-            <Image style={[styles.scan]} source={scan} />
-          </TouchableOpacity>
-)}
+        headerComponent={<ListPageHeader title="Your Wallet" customRightButton={this.scanButon()} />}
       >
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
