@@ -234,13 +234,11 @@ class VerifyPhrase extends Component {
     return (
       <BasePageGereral
         isSafeView
-        title="Backup Phrase"
-        navigation={navigation}
         hasBottomBtn={false}
         hasLoader
         isLoading={isLoading}
         renderAccessory={this.renderConfirmation}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Select Wallet Currency" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Backup Phrase" />}
       >
         <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
         <Loc style={[styles.tip]} text="Tap each word in the correct order" />
