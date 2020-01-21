@@ -82,10 +82,8 @@ ResponsiveText.propTypes = {
   maxFontSize: PropTypes.number.isRequired,
   layoutStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   fontStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  // suffixElement, the element after text component
-  suffixElement: PropTypes.element,
-  // the width suffixElement occupy
-  suffixElementWidth: PropTypes.number,
+  suffixElement: PropTypes.element, // suffixElement, the element after text component
+  suffixElementWidth: PropTypes.number, // the width suffixElement occupy
 };
 
 ResponsiveText.defaultProps = {
