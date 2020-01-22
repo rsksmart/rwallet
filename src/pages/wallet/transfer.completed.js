@@ -4,13 +4,10 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions } from 'react-navigation';
-import flex from '../../assets/styles/layout.flex';
-import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
-import SafeAreaView from '../../components/common/misc/safe.area.view';
+import Header from '../../components/headers/header';
 import common from '../../common/common';
+import BasePageGereral from '../base/base.page.general';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -112,28 +109,23 @@ export default class TransferCompleted extends Component {
 
   render() {
     return (
-      <SafeAreaView style={[flex.flex1]}>
-        <Header
-          title="Reset Passcode"
-          goBack={this.onBackPress}
-        />
-        <View style={[screenHelper.styles.body, styles.body]}>
-          <View style={styles.content}>
-            <Image style={styles.check} source={completed} />
-            <Loc style={[styles.title]} text="Transfer Completed!" />
-            <Loc style={[styles.text]} text="TransferText" />
-            <TouchableOpacity onPress={this.onExplorePress}>
-              <Loc style={[styles.text, styles.link]} text="Click to view in explorer" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="BACK TO WALLET"
-              onPress={this.onBackPress}
-            />
-          </View>
+      <BasePageGereral
+        isSafeView
+        hasBottomBtn
+        bottomBtnText="GO TO WALLET"
+        bottomBtnOnPress={this.onBackPress}
+        hasLoader={false}
+        headerComponent={<Header title="Send" onBackButtonPress={this.onBackPress} />}
+      >
+        <View style={styles.content}>
+          <Image style={styles.check} source={completed} />
+          <Loc style={[styles.title]} text="Transfer Completed!" />
+          <Loc style={[styles.text]} text="TransferText" />
+          <TouchableOpacity onPress={this.onExplorePress}>
+            <Loc style={[styles.text, styles.link]} text="Click to view in explorer" />
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </BasePageGereral>
     );
   }
 }

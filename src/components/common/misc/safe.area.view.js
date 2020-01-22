@@ -6,6 +6,7 @@ import flex from '../../../assets/styles/layout.flex';
 
 const styles = StyleSheet.create({
   view: {
+    paddingTop: screenHelper.TopHeight,
     paddingBottom: screenHelper.bottomHeight,
   },
 });

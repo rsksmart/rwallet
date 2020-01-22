@@ -5,6 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../components/wallet/wallet.type.list';
 import BasePageGereral from '../base/base.page.general';
+import Header from '../../components/headers/header';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -47,10 +48,9 @@ class WalletAddIndex extends Component {
       return (
         <BasePageGereral
           isSafeView={false}
-          title="Add Wallet"
-          navigation={navigation}
           hasBottomBtn={false}
           hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Add Wallet" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>

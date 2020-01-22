@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import appActions from '../../redux/app/actions';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import Header from '../../components/headers/header';
+import BasePageGereral from '../base/base.page.general';
 import config from '../../../config';
 
 const styles = StyleSheet.create({
@@ -95,19 +94,16 @@ class Currency extends Component {
       const { currencyIndex } = this.state;
 
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header
-            title="Currency"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={screenHelper.styles.body}>
-            <View style={styles.listView}>
-              <SelectionList data={this.listData} onChange={this.onChange} selected={currencyIndex} />
-            </View>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Currency" />}
+        >
+          <View style={styles.listView}>
+            <SelectionList data={this.listData} onChange={this.onChange} selected={currencyIndex} />
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }

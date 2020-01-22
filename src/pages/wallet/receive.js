@@ -1,21 +1,19 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, Clipboard,
+  View, Text, TouchableOpacity, StyleSheet, Image, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
-import Entypo from 'react-native-vector-icons/Entypo';
-import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 // import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
-import ScreenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
+import OperationHeader from '../../components/headers/header.operation';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -95,7 +93,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const header = require('../../assets/images/misc/header.png');
 const copyIcon = require('../../assets/images/icon/copy.png');
 // const refreshIcon = require('../../assets/images/icon/refresh.png');
 
@@ -137,24 +134,13 @@ class WalletReceive extends Component {
       const symbolName = common.getSymbolFullName(symbol, type);
       const qrText = address;
 
-      let headerHeight = 100;
-      if (DEVICE.isIphoneX) {
-        headerHeight += ScreenHelper.iphoneXTopHeight;
-      }
-
       return (
-        <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <View style={styles.titleView}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>
-                <Loc text="Receive" />
-                {` ${symbolName}`}
-              </Text>
-            </View>
-          </ImageBackground>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<OperationHeader operation="Receive" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+        >
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Loc style={[styles.sectionTitle]} text="Address" />
@@ -181,7 +167,7 @@ class WalletReceive extends Component {
               />
             </View>
           </View>
-        </View>
+        </BasePageGereral>
       );
     }
 }

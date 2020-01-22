@@ -2,25 +2,24 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, FlatList, RefreshControl, ActivityIndicator, ImageBackground,
+  FlatList, RefreshControl, ActivityIndicator,
   Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
-import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
+import HistoryHeader from '../../components/headers/header.history';
+import BasePageGereral from '../base/base.page.general';
 
 const { getCurrencySymbol } = common;
 
-const header = require('../../assets/images/misc/header.png');
 const sending = require('../../assets/images/icon/sending.png');
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -46,14 +45,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Avenir-Medium',
-    fontSize: 20,
-    letterSpacing: 0.39,
-    marginLeft: -2,
-    marginBottom: 2,
-  },
   headerBoard: {
     width: '85%',
     height: 166,
@@ -72,17 +63,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
   },
-  chevron: {
-    color: '#FFF',
-  },
   myAssets: {
     marginTop: 17,
     marginHorizontal: 25,
   },
-  myAssetsFontStyle: {
+  myAssetsText: {
     color: '#000000',
     fontFamily: 'Avenir-Black',
-    letterSpacing: 2.92,
   },
   assetsValue: {
     color: '#000000',
@@ -179,12 +166,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 4,
   },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
-  },
   recent: {
     color: '#000000',
     fontSize: 13,
@@ -216,13 +197,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-  },
-  titleView: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 105,
-    left: 10,
-    alignItems: 'center',
   },
   iconView: {
     alignItems: 'center',
@@ -552,20 +526,15 @@ class History extends Component {
     const symbolName = common.getSymbolFullName(symbol, type);
 
     return (
-      <ScrollView>
-        <ImageBackground source={header} style={[styles.headerImage]}>
-          <View style={styles.titleView}>
-            <TouchableOpacity onPress={this.onbackClick}>
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-            <Text style={[styles.headerTitle]}>
-              {symbolName}
-            </Text>
-          </View>
-        </ImageBackground>
+      <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
+        headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+      >
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
             {
               pendingBalanceText && (
@@ -601,7 +570,7 @@ class History extends Component {
           {History.listView(listData, this.onListItemPress)}
         </View>
         {this.renderfooter()}
-      </ScrollView>
+      </BasePageGereral>
     );
   }
 }

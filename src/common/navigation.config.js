@@ -9,7 +9,6 @@ import BackBtn from '../components/common/buttons/back.btn.stateless';
 import WalletAddIndex from '../pages/wallet/add.index';
 import Dashboard from '../pages/wallet/dashboard';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
-import WalletCreate from '../pages/wallet/create';
 import WalletRecovery from '../pages/wallet/recovery';
 import RecoveryPhrase from '../pages/wallet/recovery.phrase';
 import WalletList from '../pages/wallet/list';
@@ -74,13 +73,6 @@ const routeConfigMap = {
       path: 'WalletSelectCurrency',
       navigationOptions: () => ({
         headerTitle: 'Select Wallet Currency',
-      }),
-    },
-    WalletCreate: {
-      screen: WalletCreate,
-      path: 'WalletCreate',
-      navigationOptions: () => ({
-        headerTitle: 'Create Wallet',
       }),
     },
     WalletRecovery: {

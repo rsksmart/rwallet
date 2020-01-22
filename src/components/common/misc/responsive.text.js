@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, Platform, StyleSheet,
+  Text, View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -8,7 +8,12 @@ import PropTypes from 'prop-types';
 // magic number, estimated value, fontSize = fontWidth * FONT_SIZE_TIMES;
 const FONT_SIZE_TIMES = 1.7;
 
-
+/**
+ * getFontSize, calculate fit font size in limited width
+ * @param {*} width, limited width
+ * @param {*} length, text length
+ * @param {*} maxFontSize
+ */
 const getFontSize = (width, length, maxFontSize) => {
   let fontSize = Math.floor(width / length);
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
@@ -20,65 +25,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  text: {
+    includeFontPadding: false,
+  },
 });
 
 // ResponsiveText, fontSize will calculate by text length again
+// The letterSpacing style will be ommited, because fixed letterSpacing apply to varible font size is not suitable.
 export default class ResponsiveText extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      adjustsStyle: {
-        fontSize: 5,
-      },
+      fontSize: 0,
       // If fontSize is adjusted, isAdjusted will be set to true, then layout will not be calculated again.
-      isAdjusted: false,
+      layoutWidth: 0,
     };
   }
 
-  componentWillReceiveProps() {
-    this.setState({ isAdjusted: false });
+  componentWillReceiveProps(nextProps) {
+    const { children, maxFontSize, suffixElementWidth } = nextProps;
+    const { layoutWidth } = this.state;
+    // If layout isn't change, but children or style is change, calculate font size again.
+    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
+    this.setState({ fontSize });
   }
 
   onLayout = (event) => {
-    const { children, maxFontSize } = this.props;
-    const { isAdjusted } = this.state;
-    if (isAdjusted) {
-      return;
-    }
-    const { width } = event.nativeEvent.layout;
-    const fontSize = getFontSize(width, children.length, maxFontSize);
-    this.setState({
-      adjustsStyle: {
-        fontSize,
-      },
-    });
-  }
-
-  renderTextElement() {
-    const { children, fontStyle, maxFontSize } = this.props;
-    const { adjustsStyle } = this.state;
-    let textElement = null;
-    if (Platform.OS === 'ios') {
-      textElement = (
-        <Text style={[fontStyle, { fontSize: maxFontSize }]} adjustsFontSizeToFit numberOfLines={1}>
-          {children}
-        </Text>
-      );
-    } else {
-      textElement = (
-        <Text style={[fontStyle, adjustsStyle]}>
-          {children}
-        </Text>
-      );
-    }
-    return textElement;
+    const { children, suffixElementWidth, maxFontSize } = this.props;
+    const { width: layoutWidth } = event.nativeEvent.layout;
+    // layoutWidth - suffixElementWidth is the width text component can use actually
+    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
+    this.setState({ fontSize, layoutWidth });
   }
 
   render() {
-    const { style, suffixElement } = this.props;
+    const {
+      children, layoutStyle, fontStyle, suffixElement,
+    } = this.props;
+    const { fontSize } = this.state;
+    const text = fontSize === 0 ? null : (
+      <Text style={[styles.text, fontStyle, { fontSize }]}>
+        {children}
+      </Text>
+    );
     return (
-      <View onLayout={this.onLayout} style={[style, styles.textView]}>
-        {this.renderTextElement()}
+      <View onLayout={this.onLayout} style={[layoutStyle, styles.textView]}>
+        {text}
         {suffixElement}
       </View>
     );
@@ -86,16 +78,18 @@ export default class ResponsiveText extends Component {
 }
 
 ResponsiveText.propTypes = {
-  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  fontStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   children: PropTypes.string,
   maxFontSize: PropTypes.number.isRequired,
-  suffixElement: PropTypes.element,
+  layoutStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  fontStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  suffixElement: PropTypes.element, // suffixElement, the element after text component
+  suffixElementWidth: PropTypes.number, // the width suffixElement occupy
 };
 
 ResponsiveText.defaultProps = {
-  style: null,
+  children: null,
+  layoutStyle: null,
   fontStyle: null,
   suffixElement: null,
-  children: null,
+  suffixElementWidth: 0,
 };

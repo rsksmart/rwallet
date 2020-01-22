@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    top: '10%',
+    top: '18%',
   },
   buttonView: {
     position: 'absolute',

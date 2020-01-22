@@ -11,6 +11,7 @@ import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
+import Header from '../../components/headers/header';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: 10,
+    marginTop: 15,
   },
 });
 
@@ -130,19 +132,18 @@ class WalletSelectCurrency extends Component {
       return (
         <BasePageGereral
           isSafeView
-          title="Select Wallet Currency"
-          navigation={navigation}
           hasBottomBtn
           bottomBtnText="CREATE"
           bottomBtnOnPress={this.onCreateButtonPress}
           hasLoader
           isLoading={isLoading}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Select Wallet Currency" />}
         >
-          <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+          <View style={[styles.sectionContainer]}>
             <Loc style={[styles.sectionTitle]} text="Mainnet" />
             <CoinTypeList data={this.mainnet} />
           </View>
-          <View style={[styles.sectionContainer, { marginTop: 15 }]}>
+          <View style={[styles.sectionContainer]}>
             <Loc style={[styles.sectionTitle]} text="Testnet" />
             <CoinTypeList data={this.testnet} />
           </View>

@@ -11,10 +11,10 @@ import BigNumber from 'bignumber.js';
 import RSKad from '../../components/common/rsk.ad';
 import SwipableButtonList from '../../components/common/misc/swipableButtonList';
 import Loc from '../../components/common/misc/loc';
-import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
+import ListPageHeader from '../../components/headers/header.listpage';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: -90,
+    marginTop: -95,
   },
   chevron: {
     color: '#FFF',
@@ -103,13 +103,13 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   myAssets: {
-    marginTop: 63,
+    marginTop: 57,
     marginHorizontal: 30,
   },
-  myAssetsFontStyle: {
+  myAssetsText: {
     color: '#000000',
     fontFamily: 'Avenir-Black',
-    letterSpacing: 0.34,
+    fontSize: 35,
   },
   myAssetsButtonsView: {
     position: 'absolute',
@@ -150,12 +150,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
   },
   assetsTitle: {
     color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
@@ -336,26 +330,18 @@ class WalletList extends Component {
     const {
       listData, currencySymbol, totalAssetValueText,
     } = this.state;
+    const scanButton = (
+      <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')}>
+        <Image style={[styles.scan]} source={scan} />
+      </TouchableOpacity>
+    );
     return (
       <BasePageGereral
         isSafeView={false}
-        title="Your Wallet"
-        navigation={navigation}
-        goBack={null}
         hasBottomBtn={false}
         hasLoader={false}
         renderAccessory={() => <RSKad />}
-        headerStyle={{ customStyleHeaderTitle: styles.headerTitle }}
-        customizedHeaderRightBtn={(
-          <TouchableOpacity
-            style={styles.scanView}
-            onPress={() => {
-              navigation.navigate('Scan');
-            }}
-          >
-            <Image style={[styles.scan]} source={scan} />
-          </TouchableOpacity>
-)}
+        headerComponent={<ListPageHeader title="Your Wallet" customRightButton={scanButton} />}
       >
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
@@ -363,7 +349,7 @@ class WalletList extends Component {
               <Loc text="My Assets" />
               {` (${currencySymbol})`}
             </Text>
-            <ResponsiveText style={[styles.myAssets]} fontStyle={[styles.myAssetsFontStyle]} maxFontSize={35}>{`${totalAssetValueText}`}</ResponsiveText>
+            <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{totalAssetValueText}</ResponsiveText>
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}

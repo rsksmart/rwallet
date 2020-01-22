@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView, Text, Linking, Image,
+  View, StyleSheet, Text, Linking, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -9,13 +9,12 @@ import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
-import flex from '../../assets/styles/layout.flex';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
+import BasePageGereral from '../base/base.page.general';
 
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -141,41 +140,43 @@ class Transaction extends Component {
       transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon,
     } = this.state;
     return (
-      <View style={[flex.flex1]}>
-        <ScrollView>
-          <Header title={title} goBack={() => { navigation.goBack(); }} />
-          <View style={[screenHelper.styles.body, styles.body]}>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
-              <View style={styles.amountView}>
-                <ResponsiveText style={[styles.amount]} fontStyle={[styles.amountText]} maxFontSize={40}>{amount}</ResponsiveText>
-                <View style={styles.stateIcon}>{stateIcon}</View>
-              </View>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle]} text="Date" />
-              <Text>{datetime}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle]} text="Confirmations" />
-              <Text>{confirmations}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle, memo]} text="Memo" />
-              <Text>{memo}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.sectionTitle]} text="Transaction ID" />
-              <Text numberOfLines={1}>{transactionId}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
-                <Loc style={styles.link} text="View on blockchain" />
-              </TouchableOpacity>
+      <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
+        headerComponent={<Header title={title} onBackButtonPress={() => navigation.goBack()} />}
+      >
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
+            <View style={styles.amountView}>
+              <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amount}</ResponsiveText>
+              <View style={styles.stateIcon}>{stateIcon}</View>
             </View>
           </View>
-        </ScrollView>
-      </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="Date" />
+            <Text>{datetime}</Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="Confirmations" />
+            <Text>{confirmations}</Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle, memo]} text="Memo" />
+            <Text>{memo}</Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="Transaction ID" />
+            <Text numberOfLines={1}>{transactionId}</Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
+              <Loc style={styles.link} text="View on blockchain" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </BasePageGereral>
     );
   }
 }

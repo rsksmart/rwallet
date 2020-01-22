@@ -4,10 +4,8 @@ import PropTypes from 'prop-types';
 
 import flex from '../../assets/styles/layout.flex';
 import screenHelper from '../../common/screenHelper';
-import Header from '../../components/common/misc/header';
 import Button from '../../components/common/button/button';
 import Loader from '../../components/common/misc/loader';
-
 
 const styles = StyleSheet.create({
   safeView: {
@@ -21,13 +19,13 @@ const styles = StyleSheet.create({
 
 const BasePageGereral = (props) => {
   const {
-    children, isSafeView, title, goBack, navigation, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, customizedHeaderRightBtn, headerStyle,
+    children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
   } = props;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
       <ScrollView>
-        <Header title={title} goBack={goBack || (() => navigation.goBack())} customRightBtn={customizedHeaderRightBtn} headerStyle={headerStyle || {}} />
-        <View style={[screenHelper.styles.body]}>
+        {headerComponent}
+        <View pointerEvents="box-none">
           {children}
         </View>
       </ScrollView>
@@ -43,39 +41,24 @@ const BasePageGereral = (props) => {
 };
 
 BasePageGereral.propTypes = {
-  isSafeView: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-    pop: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
-  }).isRequired,
+  isSafeView: PropTypes.bool,
   hasBottomBtn: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   hasLoader: PropTypes.bool,
   renderAccessory: PropTypes.func,
   bottomBtnOnPress: PropTypes.func,
-  goBack: PropTypes.func,
   bottomBtnText: PropTypes.string,
   isLoading: PropTypes.bool,
-  // eslint-disable-next-line react/forbid-prop-types
-  customizedHeaderRightBtn: PropTypes.object,
-  // eslint-disable-next-line react/forbid-prop-types
-  headerStyle: PropTypes.object,
+  headerComponent: PropTypes.element.isRequired,
 };
 
 BasePageGereral.defaultProps = {
-  goBack: null,
   bottomBtnOnPress: null,
   bottomBtnText: '',
+  isSafeView: false,
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
-  customizedHeaderRightBtn: null,
-  headerStyle: null,
 };
 
 

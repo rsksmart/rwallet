@@ -4,14 +4,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ScrollView } from 'react-native-gesture-handler';
 import _ from 'lodash';
-import flex from '../../assets/styles/layout.flex';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/app/actions';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import Header from '../../components/headers/header';
 import { strings } from '../../common/i18n';
+import BasePageGereral from '../base/base.page.general';
 
 import config from '../../../config';
 
@@ -71,14 +69,16 @@ class Language extends Component {
       selectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
 
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header title="Language" goBack={() => navigation.goBack()} />
-          <View style={screenHelper.styles.body}>
-            <View style={styles.listView}>
-              <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />
-            </View>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Language" />}
+        >
+          <View style={styles.listView}>
+            <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }

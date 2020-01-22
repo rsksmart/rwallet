@@ -9,6 +9,7 @@ import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
+import Header from '../../components/headers/header';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -81,12 +82,11 @@ class RecoveryPhrase extends Component {
       return (
         <BasePageGereral
           isSafeView
-          title="Recovery Phrase"
-          navigation={navigation}
           hasBottomBtn
           bottomBtnText="NEXT"
           bottomBtnOnPress={this.onNextPress}
           hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />}
         >
           <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
           <Loc style={[styles.note]} text="in the right order and save them" />
