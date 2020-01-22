@@ -3,7 +3,6 @@ import { DEVICE } from './info';
 const screenHelper = {
   iphoneXTopHeight: 24,
   iphoneXBottomHeight: 22,
-  headerHeight: 350,
 };
 
 screenHelper.topHeight = DEVICE.isIphoneX ? screenHelper.iphoneXTopHeight : 0;
