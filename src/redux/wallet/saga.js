@@ -220,8 +220,6 @@ function* createKeyRequest(action) {
     name, phrase, coinIds, walletManager,
   } = action.payload;
   try {
-    // walletManager.createWallet cost time, it will block ui.
-    // So we delay 100ms, loading ui can present first.
     yield call(walletManager.createWallet, name, phrase, coinIds);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
