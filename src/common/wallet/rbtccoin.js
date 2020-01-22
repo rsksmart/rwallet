@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Buffer } from 'buffer';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 

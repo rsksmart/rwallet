@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import './shim';
+import './shim'; // provide node types for packages
 import RootSwitchNavigator from './src/navigation/container';
 import store from './src/redux/store';
 import common from './src/common/common';

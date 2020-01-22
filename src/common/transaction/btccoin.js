@@ -1,5 +1,5 @@
 import _ from 'lodash';
-
+import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
 
 export const getRawTransactionParam = ({
