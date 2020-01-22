@@ -122,8 +122,11 @@ class VerifyPhrase extends Component {
   onPhraseValid() {
     const { navigation, createKey, walletManager } = this.props;
     const { phrase, coins } = navigation.state.params;
-    this.setState({ isLoading: true });
-    createKey(null, phrase, coins, walletManager);
+    this.setState({ isLoading: true }, () => {
+      setTimeout(() => {
+        createKey(null, phrase, coins, walletManager);
+      }, 0);
+    });
   }
 
   onConfirmPress() {
