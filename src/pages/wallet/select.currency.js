@@ -116,8 +116,11 @@ class WalletSelectCurrency extends Component {
         }
       }
       if (this.isImportWallet) {
-        this.setState({ isLoading: true });
-        createKey(null, this.phrase, coins, walletManager);
+        this.setState({ isLoading: true }, () => {
+          setTimeout(() => {
+            createKey(null, this.phrase, coins, walletManager);
+          }, 0);
+        });
       } else {
         navigation.navigate('RecoveryPhrase', { coins });
       }
