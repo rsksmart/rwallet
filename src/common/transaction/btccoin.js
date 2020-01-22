@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
-const buffer = require('buffer');
-const bitcoin = require('bitcoinjs-lib');
+import * as bitcoin from 'bitcoinjs-lib';
 
 export const getRawTransactionParam = ({
   netType, sender, receiver, value, data, gasFee,
@@ -29,7 +28,7 @@ export const signTransaction = async (transaction, privateKey) => {
   rawTransaction.pubkeys = [];
   rawTransaction.signatures = rawTransaction.tosign.map((tosign) => {
     rawTransaction.pubkeys.push(keys.publicKey.toString('hex'));
-    const signature = keys.sign(new buffer.Buffer(tosign, 'hex'));
+    const signature = keys.sign(Buffer.from(tosign, 'hex'));
     const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
     let hexStr = encodedSignature.toString('hex');
     hexStr = hexStr.substr(0, hexStr.length - 2);

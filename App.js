@@ -1,8 +1,8 @@
-import './shim';
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from './src/redux/store';
+import './shim';
 import RootSwitchNavigator from './src/navigation/container';
+import store from './src/redux/store';
 import common from './src/common/common';
 
 // Fix cut-off text on some android device
