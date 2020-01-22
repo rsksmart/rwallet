@@ -43,13 +43,13 @@ const convertTransferValue = (symbol, value) => {
   }
 };
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, gasFee) => {
+const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo) => {
   switch (symbol) {
     case 'BTC':
-      return btc.getSignedTransactionParam(signedTransaction, netType, gasFee);
+      return btc.getSignedTransactionParam(signedTransaction, netType, memo);
     case 'RBTC':
     case 'RIF':
-      return rbtc.getSignedTransactionParam(signedTransaction, netType);
+      return rbtc.getSignedTransactionParam(signedTransaction, netType, memo);
     default:
       return null;
   }
@@ -70,7 +70,7 @@ const getTxHash = (symbol, txResult) => {
 class Transaction {
   constructor({
     symbol, type, privateKey, address,
-  }, receiver, value, data, gasFee) {
+  }, receiver, value, data, memo, gasFee) {
     this.symbol = symbol;
     this.netType = type;
     this.sender = address;
@@ -79,6 +79,7 @@ class Transaction {
     this.gasFee = gasFee;
     this.privateKey = privateKey;
     this.data = data;
+    this.memo = memo;
     this.rawTransaction = null;
     this.signedTransaction = null;
     this.txHash = null;
@@ -88,11 +89,11 @@ class Transaction {
     console.log('Transaction.processRawTransaction start');
     let result = null;
     const {
-      symbol, netType, sender, receiver, value, data, gasFee,
+      symbol, netType, sender, receiver, value, data, memo, gasFee,
     } = this;
     try {
       const param = createRawTransactionParam({
-        symbol, netType, sender, receiver, value, data, gasFee,
+        symbol, netType, sender, receiver, value, data, memo, gasFee,
       });
       console.log(`Transaction.processRawTransaction, rawTransactionParams: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawTransaction', param);
@@ -127,7 +128,7 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.gasFee);
+        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);

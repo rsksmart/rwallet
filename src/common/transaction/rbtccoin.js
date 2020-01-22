@@ -1,10 +1,11 @@
 import Rsk3 from 'rsk3';
+import _ from 'lodash';
 
 export const getRawTransactionParam = ({
-  symbol, netType, sender, receiver, value, data, gasFee,
+  symbol, netType, sender, receiver, value, data, memo, gasFee,
 }) => {
   const { gasPrice, gas } = gasFee;
-  return {
+  const param = {
     symbol,
     type: netType,
     sender,
@@ -14,6 +15,10 @@ export const getRawTransactionParam = ({
     gasPrice,
     gas,
   };
+  if (!_.isEmpty(memo)) {
+    param.memo = memo;
+  }
+  return param;
 };
 
 export const signTransaction = async (rawTransaction, privateKey) => {
@@ -26,10 +31,16 @@ export const signTransaction = async (rawTransaction, privateKey) => {
   return signedTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType) => ({
-  name: 'Rootstock',
-  hash: signedTransaction.rawTransaction,
-  type: netType,
-});
+export const getSignedTransactionParam = (signedTransaction, netType, memo) => {
+  const param = {
+    name: 'Rootstock',
+    hash: signedTransaction.rawTransaction,
+    type: netType,
+  };
+  if (!_.isEmpty(memo)) {
+    param.memo = memo;
+  }
+  return param;
+};
 
 export const getTxHash = (txResult) => txResult.hash;
