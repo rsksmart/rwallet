@@ -3,7 +3,7 @@ import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
 import storage from '../storage';
 
-const Mnemonic = require('bitcore-mnemonic');
+const bip39 = require('bip39');
 
 const WALLET_NAME_PREFIX = 'Key ';
 
@@ -20,7 +20,8 @@ export default class Wallet {
 
     // Create coins based on ids
     this.coins = [];
-    const seed = this.mnemonic.toSeed();
+
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
@@ -54,7 +55,7 @@ export default class Wallet {
    * @param {object} param0
    * @param {string} param0.id id of this wallet instance
    * @param {string} param0.name Name of wallet
-   * @param {string} param0.phrase 12-word mnemonic phrase
+   * @param {string} param0.phrase 12-word phrase
    * @param {array} param0.coins Array of coin JSON
    *
    */
@@ -63,7 +64,10 @@ export default class Wallet {
   }) {
     // If phrase is defined we will create mnemonic with phrase
     // Otherwise this line will generate a random mnemonic
-    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
+    let mnemonic = phrase;
+    if (_.isEmpty(mnemonic)) {
+      mnemonic = bip39.generateMnemonic();
+    }
 
     const wallet = new Wallet({
       id, name, mnemonic, coins,
@@ -71,7 +75,7 @@ export default class Wallet {
 
     // We need to save the phrase to secure storage after generation
     // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
-    Wallet.savePhrase(wallet.id, wallet.mnemonic.toString());
+    Wallet.savePhrase(wallet.id, wallet.mnemonic);
 
     return wallet;
   }
@@ -143,10 +147,8 @@ export default class Wallet {
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
-    const mnemonic = new Mnemonic(phrase, Mnemonic.Words.ENGLISH);
-
     const wallet = new Wallet({
-      id, name, mnemonic, coins,
+      id, name, phrase, coins,
     });
 
     return wallet;

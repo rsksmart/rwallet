@@ -11,7 +11,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 
-const Mnemonic = require('bitcore-mnemonic');
+const bip39 = require('bip39');
 
 const styles = StyleSheet.create({
   text: {},
@@ -41,7 +41,7 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      this.phrase = new Mnemonic('', Mnemonic.Words.ENGLISH).toString();
+      this.phrase = bip39.generateMnemonic();
       const phrases = this.phrase.split(' ');
       this.state = {
         phrases,
