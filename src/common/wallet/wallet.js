@@ -9,11 +9,11 @@ const WALLET_NAME_PREFIX = 'Key ';
 
 export default class Wallet {
   constructor({
-    id, name, phrase, coins,
+    id, name, mnemonic, coins,
   }) {
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
-    this.mnemonic = phrase;
+    this.mnemonic = mnemonic;
     // this.createdAt = new Date();
 
     // console.log('Wallet.create.coins', coins);
@@ -21,7 +21,7 @@ export default class Wallet {
     // Create coins based on ids
     this.coins = [];
 
-    const seed = bip39.mnemonicToSeedSync(phrase);
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
@@ -148,7 +148,7 @@ export default class Wallet {
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
     const wallet = new Wallet({
-      id, name, phrase, coins,
+      id, name, mnemonic: phrase, coins,
     });
 
     return wallet;
