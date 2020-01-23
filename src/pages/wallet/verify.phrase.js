@@ -122,7 +122,11 @@ class VerifyPhrase extends Component {
 
   onPhraseValid() {
     const { navigation, createKey, walletManager } = this.props;
-    const { phrase, coins } = navigation.state.params;
+    const { isBackup, phrase, coins } = navigation.state.params;
+    if (isBackup) {
+      navigation.navigate('VerifyPhraseSuccess');
+      return;
+    }
     // createKey cost time, it will block ui.
     // So we let run at next tick, loading ui can present first.
     this.setState({ isLoading: true }, () => {

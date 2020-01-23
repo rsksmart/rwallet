@@ -191,7 +191,7 @@ class KeySettings extends Component {
 
     onBackupPress() {
       const { navigation } = this.props;
-      navigation.navigate('RecoveryPhrase', { wallet: this.key });
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, isBackup: true });
     }
 
     onKeyNamePress() {

@@ -41,7 +41,12 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      this.phrase = bip39.generateMnemonic();
+      const { navigation } = props;
+      if (navigation.state.params && navigation.state.params.isBackup) {
+        this.phrase = navigation.state.params.phrase;
+      } else {
+        this.phrase = bip39.generateMnemonic();
+      }
       const phrases = this.phrase.split(' ');
       this.state = {
         phrases,
