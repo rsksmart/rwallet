@@ -118,8 +118,13 @@ class WalletSelectCurrency extends Component {
         }
       }
       if (this.isImportWallet) {
-        this.setState({ isLoading: true });
-        createKey(null, this.phrase, coins, walletManager);
+        // createKey cost time, it will block ui.
+        // So we let run at next tick, loading ui can present first.
+        this.setState({ isLoading: true }, () => {
+          setTimeout(() => {
+            createKey(null, this.phrase, coins, walletManager);
+          }, 0);
+        });
       } else {
         navigation.navigate('RecoveryPhrase', { coins });
       }
