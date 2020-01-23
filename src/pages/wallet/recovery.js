@@ -15,6 +15,7 @@ import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
+import flex from '../../assets/styles/layout.flex';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -38,7 +39,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   buttonView: {
-    alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    alignItems: 'center',
     paddingVertical: 15,
   },
   bottomBorder: {
@@ -185,49 +188,50 @@ class WalletRecovery extends Component {
     render() {
       const { phrase, phrases, isCanSubmit } = this.state;
       const { navigation } = this.props;
-      const importButton = (
-        <View style={[styles.buttonView]}>
-          <Button text="IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
-        </View>
-      );
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn={false}
           hasLoader={false}
-          renderAccessory={() => importButton}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />}
         >
-          <View style={styles.body}>
-            <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
-            <View style={styles.phraseView}>
-              <TextInput
-                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                      // This code uses a ref to store a reference to a DOM node
-                                      // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                ref={(ref) => {
-                  this.phraseInput = ref;
-                }}
-                                      // set blurOnSubmit to false, to prevent keyboard flickering.
-                blurOnSubmit={false}
-                style={[presetStyles.textInput, styles.input]}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-                value={phrase}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                <Tags
-                  style={[{ flex: 1 }]}
-                  data={phrases}
-                  onPress={this.onTagsPress}
-                />
+          <View style={styles.wapper}>
+            <View style={[flex.flex10]}>
+              <View style={styles.body}>
+                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+                <View style={styles.phraseView}>
+                  <TextInput
+                    autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                            // This code uses a ref to store a reference to a DOM node
+                                            // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                    ref={(ref) => {
+                      this.phraseInput = ref;
+                    }}
+                                            // set blurOnSubmit to false, to prevent keyboard flickering.
+                    blurOnSubmit={false}
+                    style={[presetStyles.textInput, styles.input]}
+                    onChangeText={this.onChangeText}
+                    onSubmitEditing={this.onSubmitEditing}
+                    value={phrase}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                    <Tags
+                      style={[{ flex: 1 }]}
+                      data={phrases}
+                      onPress={this.onTagsPress}
+                    />
+                  </View>
+                </View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Loc style={[styles.sectionTitle]} text="Advanced Options" />
+                  <SwitchListItem title={strings('Specify derivation path')} value={false} />
+                </View>
               </View>
             </View>
-            <View style={[styles.sectionContainer, styles.bottomBorder]}>
-              <Loc style={[styles.sectionTitle]} text="Advanced Options" />
-              <SwitchListItem title={strings('Specify derivation path')} value={false} />
+            <View style={[styles.buttonView]}>
+              <Button text="IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
             </View>
           </View>
         </BasePageGereral>

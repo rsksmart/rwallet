@@ -716,54 +716,12 @@ class Transfer extends Component {
     const type = coin && coin.type;
     const symbolName = common.getSymbolFullName(symbol, type);
 
-    const confirmationComponent = (
-      <View
-        style={[styles.sectionContainer, {
-          opacity: enableConfirm ? 1 : 0.5,
-          width: '100%',
-          justifyContent: 'center',
-        }, styles.lastBlockMarginBottom]}
-        pointerEvents={enableConfirm ? 'auto' : 'none'}
-      >
-        {/*
-              // Replace ConfirmSlider with Button component temporaryly.
-              <ConfirmSlider // All parameter should be adjusted for the real case
-              ref={(ref) => { this.confirmSlider = ref; }}
-              width={screen.width - 50}
-              buttonSize={(screen.width - 50) / 8}
-              buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
-              backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
-              textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
-              borderRadius={(screen.width - 50) / 16}
-              okButton={{ visible: true, duration: 400 }}
-                // onVerified={this.onConfirmSliderVerified}
-              onVerified={async () => {
-                if (global.passcode) {
-                  showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
-                } else {
-                  await this.onConfirmSliderVerified();
-                }
-              }}
-              icon={(
-                <Image
-                  source={isConfirm ? circleCheckIcon : circleIcon}
-                  style={{ width: 32, height: 32 }}
-                />
-                )}
-              label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
-            /> */}
-        <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
-      </View>
-    );
-
     return (
       <BasePageGereral
         isSafeView
         hasBottomBtn={false}
         hasLoader
         isLoading={loading}
-        renderAccessory={() => confirmationComponent}
         headerComponent={<OperationHeader operation="Send" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
@@ -821,6 +779,44 @@ class Transfer extends Component {
             </View>
             {this.renderCustomFee(isCustomFee)}
           </View>
+        </View>
+        <View
+          style={[styles.sectionContainer, {
+            opacity: enableConfirm ? 1 : 0.5,
+            width: '100%',
+            justifyContent: 'center',
+          }, styles.lastBlockMarginBottom]}
+          pointerEvents={enableConfirm ? 'auto' : 'none'}
+        >
+          {/*
+                // Replace ConfirmSlider with Button component temporaryly.
+                <ConfirmSlider // All parameter should be adjusted for the real case
+                ref={(ref) => { this.confirmSlider = ref; }}
+                width={screen.width - 50}
+                buttonSize={(screen.width - 50) / 8}
+                buttonColor="transparent" // color for testing purpose, make sure use proper color afterwards
+                borderColor="transparent" // color for testing purpose, make sure use proper color afterwards
+                backgroundColor="#f3f3f3" // color for testing purpose, make sure use proper color afterwards
+                textColor="#37474F" // color for testing purpose, make sure use proper color afterwards
+                borderRadius={(screen.width - 50) / 16}
+                okButton={{ visible: true, duration: 400 }}
+                  // onVerified={this.onConfirmSliderVerified}
+                onVerified={async () => {
+                  if (global.passcode) {
+                    showPasscode('verify', this.onConfirmSliderVerified, this.confirmSlider.reset);
+                  } else {
+                    await this.onConfirmSliderVerified();
+                  }
+                }}
+                icon={(
+                  <Image
+                    source={isConfirm ? circleCheckIcon : circleIcon}
+                    style={{ width: 32, height: 32 }}
+                  />
+                  )}
+                label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+              /> */}
+          <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );
