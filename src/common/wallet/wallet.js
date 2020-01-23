@@ -9,11 +9,11 @@ const WALLET_NAME_PREFIX = 'Key ';
 
 export default class Wallet {
   constructor({
-    id, name, mnemonic, coins,
+    id, name, phrase, coins,
   }) {
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
-    this.mnemonic = mnemonic;
+    this.mnemonic = phrase;
     // this.createdAt = new Date();
 
     // console.log('Wallet.create.coins', coins);
@@ -21,7 +21,7 @@ export default class Wallet {
     // Create coins based on ids
     this.coins = [];
 
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const seed = bip39.mnemonicToSeedSync(phrase);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
