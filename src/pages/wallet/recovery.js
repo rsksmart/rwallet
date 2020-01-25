@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput,
+  View, StyleSheet, TextInput, ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -15,7 +15,7 @@ import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
-import flex from '../../assets/styles/layout.flex';
+import { screen } from '../../common/info';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -73,6 +73,9 @@ const styles = StyleSheet.create({
     borderColor: color.component.input.borderColor,
     borderRadius: 4,
     borderStyle: 'solid',
+  },
+  wapper: {
+    height: screen.height - 25,
   },
   body: {
     flex: 1,
@@ -193,10 +196,11 @@ class WalletRecovery extends Component {
           isSafeView
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />}
+          headerComponent={<View />}
         >
           <View style={styles.wapper}>
-            <View style={[flex.flex10]}>
+            <ScrollView>
+              <Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />
               <View style={styles.body}>
                 <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
                 <View style={styles.phraseView}>
@@ -229,7 +233,7 @@ class WalletRecovery extends Component {
                   <SwitchListItem title={strings('Specify derivation path')} value={false} />
                 </View>
               </View>
-            </View>
+            </ScrollView>
             <View style={[styles.buttonView]}>
               <Button text="IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
             </View>
