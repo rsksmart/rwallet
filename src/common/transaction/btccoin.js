@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
 
 export const getRawTransactionParam = ({
-  netType, sender, receiver, value, data, gasFee,
+  netType, sender, receiver, value, data, memo, gasFee,
 }) => {
   const param = {
     symbol: 'BTC',
@@ -13,6 +13,9 @@ export const getRawTransactionParam = ({
     value,
     data,
   };
+  if (!_.isEmpty(memo)) {
+    param.memo = memo;
+  }
   if (gasFee.preference) {
     param.preference = gasFee.preference;
   } else {
@@ -38,12 +41,16 @@ export const signTransaction = async (transaction, privateKey) => {
   return rawTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, gasFee) => ({
-  name: 'Bitcoin',
-  hash: signedTransaction,
-  type: netType,
-  preference: gasFee,
-  memo: '',
-});
+export const getSignedTransactionParam = (signedTransaction, netType, memo) => {
+  const param = {
+    name: 'Bitcoin',
+    hash: signedTransaction,
+    type: netType,
+  };
+  if (!_.isEmpty(memo)) {
+    param.memo = memo;
+  }
+  return param;
+};
 
 export const getTxHash = (txResult) => txResult.tx.hash;

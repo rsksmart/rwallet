@@ -535,13 +535,14 @@ class Transfer extends Component {
     const { navigation, navigation: { state }, addNotification } = this.props;
     const { params } = state;
     const { coin } = params;
+    const { memo } = this.state;
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
-      let transaction = new Transaction(coin, to, amount, '', feeParams);
+      let transaction = new Transaction(coin, to, amount, '', memo, feeParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
