@@ -45,7 +45,7 @@ class RecoveryPhrase extends Component {
       const { navigation } = props;
       const { shouldCreatePhrase, phrase } = navigation.state.params;
       if (_.isNil(shouldCreatePhrase)) {
-        throw new Error('shouldCreatePhrase is not found');
+        throw new Error('shouldCreatePhrase is undefined or null.');
       }
       // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
       if (shouldCreatePhrase) {
