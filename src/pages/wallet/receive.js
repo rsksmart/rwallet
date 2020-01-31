@@ -124,7 +124,6 @@ class WalletReceive extends Component {
     render() {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
-      const logo = navigation.state.params.icon;
       const qrSize = 270;
       const qrLogoSize = qrSize * 0.2;
 
@@ -160,7 +159,7 @@ class WalletReceive extends Component {
             <View style={[styles.sectionContainer, styles.qrView]}>
               <QRCode
                 value={qrText}
-                logo={logo}
+                logo={coin.icon}
                 logoMargin={5}
                 size={qrSize}
                 logoSize={qrLogoSize}

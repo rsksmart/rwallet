@@ -353,7 +353,7 @@ class WalletList extends Component {
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
-                onPress={() => {}}
+                onPress={() => navigation.navigate('SelectWallet', { operation: 'send' })}
               >
                 <Image source={send} />
                 <Loc style={[styles.sendText]} text="Send" />
@@ -361,7 +361,7 @@ class WalletList extends Component {
               <View style={styles.spliteLine} />
               <TouchableOpacity
                 style={styles.ButtonView}
-                onPress={() => {}}
+                onPress={() => navigation.navigate('SelectWallet', { operation: 'receive' })}
               >
                 <Image source={receive} />
                 <Loc style={[styles.receiveText]} text="Receive" />
