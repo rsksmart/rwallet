@@ -122,7 +122,15 @@ class VerifyPhrase extends Component {
 
   onPhraseValid() {
     const { navigation, createKey, walletManager } = this.props;
-    const { phrase, coins } = navigation.state.params;
+    const { shouldCreateWallet, phrase, coins } = navigation.state.params;
+    if (_.isNil(shouldCreateWallet)) {
+      throw new Error('shouldCreateWallet is undefined or null.');
+    }
+    // the page will skip wallet creation if navigation.state.params.shouldCreateWallet is false explicitly.
+    if (!shouldCreateWallet) {
+      navigation.navigate('VerifyPhraseSuccess');
+      return;
+    }
     // createKey cost time, it will block ui.
     // So we let run at next tick, loading ui can present first.
     this.setState({ isLoading: true }, () => {

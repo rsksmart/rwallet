@@ -126,7 +126,7 @@ class WalletSelectCurrency extends Component {
           }, 0);
         });
       } else {
-        navigation.navigate('RecoveryPhrase', { coins });
+        navigation.navigate('RecoveryPhrase', { coins, shouldCreatePhrase: true, shouldCreateWallet: true });
       }
     }
 

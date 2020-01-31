@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, TouchableOpacity, StyleSheet, Clipboard,
@@ -41,7 +42,17 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      this.phrase = bip39.generateMnemonic();
+      const { navigation } = props;
+      const { shouldCreatePhrase, phrase } = navigation.state.params;
+      if (_.isNil(shouldCreatePhrase)) {
+        throw new Error('shouldCreatePhrase is undefined or null.');
+      }
+      // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
+      if (shouldCreatePhrase) {
+        this.phrase = bip39.generateMnemonic();
+      } else {
+        this.phrase = phrase;
+      }
       const phrases = this.phrase.split(' ');
       this.state = {
         phrases,
