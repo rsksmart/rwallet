@@ -122,8 +122,9 @@ class VerifyPhrase extends Component {
 
   onPhraseValid() {
     const { navigation, createKey, walletManager } = this.props;
-    const { isBackup, phrase, coins } = navigation.state.params;
-    if (isBackup) {
+    const { shouldCreateWallet, phrase, coins } = navigation.state.params;
+    // the page will skip wallet creation if navigation.state.params.shouldCreateWallet is false explicitly.
+    if (shouldCreateWallet === false) {
       navigation.navigate('VerifyPhraseSuccess');
       return;
     }

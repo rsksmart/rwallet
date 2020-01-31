@@ -42,7 +42,8 @@ class RecoveryPhrase extends Component {
     constructor(props) {
       super(props);
       const { navigation } = props;
-      if (navigation.state.params && navigation.state.params.isBackup) {
+      // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
+      if (navigation.state.params && navigation.state.params.shouldCreatePhrase === false) {
         this.phrase = navigation.state.params.phrase;
       } else {
         this.phrase = bip39.generateMnemonic();
