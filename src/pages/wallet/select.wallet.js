@@ -67,7 +67,6 @@ class SelectWallet extends Component {
   });
 
   static renderWalletList(listData) {
-    console.log('renderWalletList, listData: ', listData);
     return (
       <FlatList
         data={listData}
@@ -94,7 +93,6 @@ class SelectWallet extends Component {
 
   static createListData(wallets, navigation) {
     const { operation } = navigation.state.params;
-    console.log('select wallet, wallets', wallets);
     if (!_.isArray(wallets)) {
       return [];
     }

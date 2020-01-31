@@ -188,5 +188,6 @@
   "Name contains invalid characters.": "名字包含不合法字符。",
   "Your Name": "名字",
   "What's your name?": "名字是什么？",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格",
+  "Select Wallet": "选择钱包"
 }
