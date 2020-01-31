@@ -127,7 +127,7 @@ class VerifyPhrase extends Component {
       throw new Error('shouldCreateWallet is not found');
     }
     // the page will skip wallet creation if navigation.state.params.shouldCreateWallet is false explicitly.
-    if (shouldCreateWallet === false) {
+    if (!shouldCreateWallet) {
       navigation.navigate('VerifyPhraseSuccess');
       return;
     }
