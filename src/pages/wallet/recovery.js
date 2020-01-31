@@ -16,7 +16,7 @@ import presetStyles from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 
-const Mnemonic = require('bitcore-mnemonic');
+const bip39 = require('bip39');
 
 const styles = StyleSheet.create({
   input: {
@@ -131,7 +131,7 @@ class WalletRecovery extends Component {
         inputPhrases += phrases[i];
       }
       // validate phrase
-      const isValid = Mnemonic.isValid(inputPhrases);
+      const isValid = bip39.validateMnemonic(inputPhrases);
       console.log(`isValid: ${isValid}`);
       if (!isValid) {
         const notification = createErrorNotification(
