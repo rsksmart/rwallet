@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
+import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
@@ -63,7 +64,7 @@ export default class RBTCCoin {
       const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
-      this.address = RBTCCoin.getAddress(addressNode);
+      this.address = RBTCCoin.getAddress(addressNode, networkId);
       this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
     } catch (ex) {
       console.error(ex);
@@ -126,11 +127,11 @@ export default class RBTCCoin {
     return serializePublic(deserialized.deriveChild(index));
   }
 
-  static getAddress(addressNode) {
+  static getAddress(addressNode, networkId) {
     const publicKey = JSON.parse(addressNode.public_key).puk;
     const addressBin = ethereumjsUtil.pubToAddress(Buffer.from(publicKey, 'hex'), true);
     const address = Buffer.from(addressBin).toString('hex');
-    return ethereumjsUtil.toChecksumAddress(address);
+    return rsk3.utils.toChecksumAddress(address, networkId);
   }
 
   /**
