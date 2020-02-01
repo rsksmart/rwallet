@@ -68,9 +68,11 @@ const getTxHash = (symbol, txResult) => {
 };
 
 class Transaction {
-  constructor({
-    symbol, type, privateKey, address,
-  }, receiver, value, data, memo, gasFee) {
+  constructor(coin, receiver, value, extraParams) {
+    const {
+      symbol, type, privateKey, address,
+    } = coin;
+    const { data, memo, gasFee } = extraParams;
     this.symbol = symbol;
     this.netType = type;
     this.sender = address;
@@ -78,7 +80,7 @@ class Transaction {
     this.value = convertTransferValue(symbol, value);
     this.gasFee = gasFee;
     this.privateKey = privateKey;
-    this.data = data;
+    this.data = data || '';
     this.memo = memo;
     this.rawTransaction = null;
     this.signedTransaction = null;
