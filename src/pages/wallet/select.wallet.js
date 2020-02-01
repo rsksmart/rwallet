@@ -8,54 +8,10 @@ import _ from 'lodash';
 
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
-import color from '../../assets/styles/color.ts';
 import common from '../../common/common';
+import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 
 const styles = StyleSheet.create({
-  sectionTitle: {
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000',
-    paddingHorizontal: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    backgroundColor: color.component.swipableButtonList.rowFront.backgroundColor,
-    alignItems: 'center',
-  },
-  right: {
-    flex: 1,
-    borderBottomColor: color.component.swipableButtonList.right.borderBottomColor,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  right1: {
-    flex: 1,
-  },
-  right2: {
-    alignItems: 'flex-end',
-    right: 5,
-    position: 'absolute',
-  },
-  title: {
-    color: color.component.swipableButtonList.title.color,
-    fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
-    letterSpacing: 0.4,
-  },
-  text: {
-    color: color.component.swipableButtonList.text.color,
-    fontFamily: 'Avenir-Roman',
-    fontSize: 13,
-    letterSpacing: 0.27,
-  },
-  icon: {
-    marginRight: 10,
-    marginLeft: 5,
-  },
   body: {
     marginHorizontal: 18,
   },
@@ -72,16 +28,12 @@ class SelectWallet extends Component {
         data={listData}
         extraData={listData}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.row}
-            activeOpacity={1.0}
-            onPress={() => item.onPress()}
-          >
-            <Image style={styles.icon} source={item.icon} />
-            <View style={styles.right}>
-              <View style={styles.right1}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.text}>{item.text}</Text>
+          <TouchableOpacity style={coinListItemStyles.row} onPress={() => item.onPress()}>
+            <Image style={coinListItemStyles.icon} source={item.icon} />
+            <View style={coinListItemStyles.rowRightView}>
+              <View style={coinListItemStyles.rowTitleView}>
+                <Text style={coinListItemStyles.title}>{item.title}</Text>
+                <Text style={coinListItemStyles.text}>{item.text}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -152,7 +104,7 @@ class SelectWallet extends Component {
             data={listData}
             renderItem={({ item }) => (
               <View>
-                <Text style={[styles.sectionTitle]}>{item.name}</Text>
+                <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
                 {SelectWallet.renderWalletList(item.coins)}
               </View>
             )}

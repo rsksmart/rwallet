@@ -5,16 +5,12 @@ import {
 import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import color from '../../../assets/styles/color.ts';
+import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import Loc from './loc';
 
 const styles = StyleSheet.create({
   backText: {
     color: color.component.swipableButtonList.backText.color,
-  },
-  rowFront: {
-    flexDirection: 'row',
-    backgroundColor: color.component.swipableButtonList.rowFront.backgroundColor,
-    alignItems: 'center',
   },
   rowBack: {
     alignItems: 'center',
@@ -71,50 +67,6 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
   },
-  right: {
-    flex: 1,
-    borderBottomColor: color.component.swipableButtonList.right.borderBottomColor,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  right1: {
-    flex: 1,
-  },
-  right2: {
-    alignItems: 'flex-end',
-    right: 5,
-    position: 'absolute',
-  },
-  icon: {
-    marginRight: 10,
-    marginLeft: 5,
-  },
-  title: {
-    color: color.component.swipableButtonList.title.color,
-    fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
-    letterSpacing: 0.4,
-  },
-  text: {
-    color: color.component.swipableButtonList.text.color,
-    fontFamily: 'Avenir-Roman',
-    fontSize: 13,
-    letterSpacing: 0.27,
-  },
-  worth: {
-    color: color.component.swipableButtonList.worth.color,
-    fontFamily: 'Avenir-Heavy',
-    fontSize: 16,
-    letterSpacing: 1,
-  },
-  amount: {
-    color: color.component.swipableButtonList.amount.color,
-    fontFamily: 'Avenir-Roman',
-    fontSize: 12,
-    letterSpacing: 1,
-  },
 });
 
 export default class SwipableButtonList extends Component {
@@ -126,7 +78,7 @@ export default class SwipableButtonList extends Component {
         data={data}
         renderItem={(rowData) => (
           <TouchableOpacity
-            style={styles.rowFront}
+            style={coinListItemStyles.row}
             activeOpacity={1.0}
             onPress={() => {
               this.listView.safeCloseOpenRow();
@@ -135,15 +87,15 @@ export default class SwipableButtonList extends Component {
               }
             }}
           >
-            <Image style={styles.icon} source={rowData.item.icon} />
-            <View style={styles.right}>
-              <View style={styles.right1}>
-                <Text style={styles.title}>{rowData.item.title}</Text>
-                <Text style={styles.text}>{rowData.item.text}</Text>
+            <Image style={coinListItemStyles.icon} source={rowData.item.icon} />
+            <View style={coinListItemStyles.rowRightView}>
+              <View style={coinListItemStyles.rowTitleView}>
+                <Text style={coinListItemStyles.title}>{rowData.item.title}</Text>
+                <Text style={coinListItemStyles.text}>{rowData.item.text}</Text>
               </View>
-              <View style={styles.right2}>
-                <Text style={styles.worth}>{rowData.item.worth}</Text>
-                <Text style={styles.amount}>{rowData.item.amount}</Text>
+              <View style={coinListItemStyles.rowAmountView}>
+                <Text style={coinListItemStyles.worth}>{rowData.item.worth}</Text>
+                <Text style={coinListItemStyles.amount}>{rowData.item.amount}</Text>
               </View>
             </View>
           </TouchableOpacity>
