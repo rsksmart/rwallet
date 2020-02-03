@@ -189,5 +189,7 @@
   "Your Name": "名字",
   "What's your name?": "名字是什么？",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格",
-  "Select Wallet": "选择钱包"
+  "Select Wallet": "选择钱包",
+  "Existed wallet": "已存在钱包",
+  "The wallet is already in the app": "钱包已经存在了"
 }

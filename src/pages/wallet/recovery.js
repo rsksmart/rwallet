@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, StyleSheet, TextInput, ScrollView,
@@ -127,7 +128,7 @@ class WalletRecovery extends Component {
     }
 
     onImportPress() {
-      const { navigation, addNotification } = this.props;
+      const { navigation, addNotification, walletManager } = this.props;
       const { phrases } = this.state;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
@@ -143,6 +144,18 @@ class WalletRecovery extends Component {
         const notification = createErrorNotification(
           'Unable to recover',
           'Unable to recover Body',
+          'GOT IT',
+        );
+        addNotification(notification);
+        return;
+      }
+      // If phrases is already in the app, notify user
+      const { wallets } = walletManager;
+      const wallet = _.find(wallets, { mnemonic: inputPhrases });
+      if (wallet) {
+        const notification = createErrorNotification(
+          'Existed wallet',
+          'The wallet is already in the app',
           'GOT IT',
         );
         addNotification(notification);
@@ -251,10 +264,18 @@ WalletRecovery.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array.isRequired,
+  }),
+};
+
+WalletRecovery.defaultProps = {
+  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
+  walletManager: state.Wallet.get('walletManager'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

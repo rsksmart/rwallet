@@ -189,5 +189,7 @@
   "Your Name": "Seu nome",
   "What's your name?": "Qual o seu nome?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço",
-  "Select Wallet": "Selecionar carteira"
+  "Select Wallet": "Selecionar carteira",
+  "Existed wallet": "Carteira existente",
+  "The wallet is already in the app": "A carteira já está no aplicativo"
 }
