@@ -130,9 +130,11 @@ class WalletManager {
         // Find Coin instances by symbol
         const coins = getTokens({ symbol: tokenSymbol });
 
-        coins.forEach((coin) => {
-          if (coin.balance) {
-            // eslint-disable-next-line no-param-reassign
+        coins.forEach((coinItem) => {
+          const coin = coinItem;
+          if (coin.type === 'Testnet') {
+            coin.balanceValue = new BigNumber(0);
+          } else if (coin.balance) {
             coin.balanceValue = coin.balance.times(tokenPrice);
             value = value.plus(coin.balanceValue);
           }
@@ -165,8 +167,8 @@ class WalletManager {
         try {
           // Try to convert hex string to BigNumber
           const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
-
-          if (!newBalance.isEqualTo(newToken.balance)) {
+          // Update if it fetched new balance vlue
+          if ((!newBalance && newToken.balance) || (newBalance && !newBalance.isEqualTo(newToken.balance))) {
             newToken.balance = newBalance;
             isDirty = true;
           }
