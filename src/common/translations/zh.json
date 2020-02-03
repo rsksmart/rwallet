@@ -189,5 +189,7 @@
   "Your Name": "名字",
   "What's your name?": "名字是什么？",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格",
-  "Select Wallet": "选择钱包"
+  "Select Wallet": "选择钱包",
+  "Would you like to protect this wallet with a password?": "您想用密码保护这个钱包吗？",
+  "Encryption can protect your funds if this device is stolen or compromised by malicious software.": "如果此设备被恶意软件窃取或破坏，加密可以保护您的资金。"
 }

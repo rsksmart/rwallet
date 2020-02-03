@@ -189,5 +189,7 @@
   "Your Name": "Your Name",
   "What's your name?": "What's your name?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space",
-  "Select Wallet": "Select Wallet"
+  "Select Wallet": "Select Wallet",
+  "Would you like to protect this wallet with a password?": "Would you like to protect this wallet with a password",
+  "Encryption can protect your funds if this device is stolen or compromised by malicious software.": "Encryption can protect your funds if this device is stolen or compromised by malicious software."
 }

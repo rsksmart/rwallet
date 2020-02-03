@@ -14,6 +14,7 @@ import { createErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import createInfoConfirmation from '../../common/confirmation.controller';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -84,16 +85,15 @@ class VerifyPhrase extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      navigation, isWalletsUpdated,
-    } = nextProps;
+    const { navigation, isWalletsUpdated } = nextProps;
+    const { isLoading } = this.state;
     const { notification } = nextProps;
     const { notification: curNotification } = this.props;
     if (notification !== curNotification && notification === null) {
       this.onNotificationRemoved();
     }
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
-    if (isWalletsUpdated) {
+    if (isWalletsUpdated && isLoading) {
       this.setState({ isLoading: false });
       navigation.navigate('VerifyPhraseSuccess');
     }
@@ -121,7 +121,7 @@ class VerifyPhrase extends Component {
   }
 
   onPhraseValid() {
-    const { navigation, createKey, walletManager } = this.props;
+    const { navigation } = this.props;
     const { shouldCreateWallet, phrase, coins } = navigation.state.params;
     if (_.isNil(shouldCreateWallet)) {
       throw new Error('shouldCreateWallet is undefined or null.');
@@ -131,13 +131,7 @@ class VerifyPhrase extends Component {
       navigation.navigate('VerifyPhraseSuccess');
       return;
     }
-    // createKey cost time, it will block ui.
-    // So we let run at next tick, loading ui can present first.
-    this.setState({ isLoading: true }, () => {
-      setTimeout(() => {
-        createKey(null, phrase, coins, walletManager);
-      }, 0);
-    });
+    this.requestCreateWallet(phrase, coins);
   }
 
   onConfirmPress() {
@@ -176,6 +170,32 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       this.setState({ isShowConfirmation: true });
     }
+  }
+
+  requestCreateWallet(phrase, coins) {
+    const { addConfirmation, showPasscode } = this.props;
+    if (global.passcode) {
+      this.createWallet(phrase, coins);
+    } else {
+      const infoConfirmation = createInfoConfirmation(
+        'Would you like to protect this wallet with a password?',
+        'Encryption can protect your funds if this device is stolen or compromised by malicious software.',
+        () => showPasscode('create', () => this.createWallet(phrase, coins)),
+        () => this.createWallet(phrase, coins),
+      );
+      addConfirmation(infoConfirmation);
+    }
+  }
+
+  createWallet(phrase, coins) {
+    // createKey cost time, it will block ui.
+    // So we let run at next tick, loading ui can present first.
+    const { createKey, walletManager } = this.props;
+    this.setState({ isLoading: true }, () => {
+      setTimeout(() => {
+        createKey(null, phrase, coins, walletManager);
+      }, 0);
+    });
   }
 
   reset(isInitialize = false) {
@@ -281,6 +301,8 @@ VerifyPhrase.propTypes = {
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
@@ -298,6 +320,8 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

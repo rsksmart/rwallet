@@ -29,6 +29,7 @@ const initState = new Map({
   isShowConfirmation: false,
   confirmation: null,
   isUsernameUpdated: false,
+  confirmationCallback: null,
 });
 
 export default function appReducer(state = initState, action) {
@@ -70,12 +71,14 @@ export default function appReducer(state = initState, action) {
       return state
         .set('isShowConfirmation', true)
         .set('confirmation', action.confirmation)
-        .set('confirmationCallback', action.confirmation.confirmationCallback);
+        .set('confirmationCallback', action.confirmation.confirmationCallback)
+        .set('confirmationCancelCallback', action.confirmation.confirmationCancelCallback);
     case actions.REMOVE_CONFIRMATION:
       return state
         .set('isShowConfirmation', false)
         .set('confirmation', null)
-        .set('confirmationCallback', null);
+        .set('confirmationCallback', null)
+        .set('confirmationCancelCallback', null);
     case actions.SHOW_PASSCODE:
       return state
         .set('showPasscode', true)

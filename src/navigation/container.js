@@ -20,6 +20,7 @@ const mapStateToProps = (state) => ({
   isShowConfirmation: state.App.get('isShowConfirmation'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
+  confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

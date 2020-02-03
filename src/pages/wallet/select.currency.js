@@ -12,6 +12,7 @@ import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import createInfoConfirmation from '../../common/confirmation.controller';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -84,11 +85,10 @@ class WalletSelectCurrency extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      const {
-        navigation, isWalletsUpdated,
-      } = nextProps;
+      const { navigation, isWalletsUpdated } = nextProps;
+      const { isLoading } = this.state;
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
-      if (isWalletsUpdated) {
+      if (isWalletsUpdated && isLoading) {
         this.setState({ isLoading: false });
         const statckActions = StackActions.popToTop();
         navigation.dispatch(statckActions);
@@ -104,7 +104,7 @@ class WalletSelectCurrency extends Component {
     }
 
     async onCreateButtonPress() {
-      const { navigation, createKey, walletManager } = this.props;
+      const { navigation } = this.props;
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
         if (this.mainnet[i].selected) {
@@ -118,18 +118,37 @@ class WalletSelectCurrency extends Component {
         }
       }
       if (this.isImportWallet) {
-        // createKey cost time, it will block ui.
-        // So we let run at next tick, loading ui can present first.
-        this.setState({ isLoading: true }, () => {
-          setTimeout(() => {
-            createKey(null, this.phrase, coins, walletManager);
-          }, 0);
-        });
+        this.requestCreateWallet(this.phrase, coins);
       } else {
         navigation.navigate('RecoveryPhrase', { coins, shouldCreatePhrase: true, shouldCreateWallet: true });
       }
     }
 
+    requestCreateWallet(phrase, coins) {
+      const { addConfirmation, showPasscode } = this.props;
+      if (global.passcode) {
+        this.createWallet(phrase, coins);
+      } else {
+        const infoConfirmation = createInfoConfirmation(
+          'Would you like to protect this wallet with a password?',
+          'Encryption can protect your funds if this device is stolen or compromised by malicious software.',
+          () => showPasscode('create', () => this.createWallet(phrase, coins)),
+          () => this.createWallet(phrase, coins),
+        );
+        addConfirmation(infoConfirmation);
+      }
+    }
+
+    createWallet(phrase, coins) {
+      // createKey cost time, it will block ui.
+      // So we let run at next tick, loading ui can present first.
+      const { createKey, walletManager } = this.props;
+      this.setState({ isLoading: true }, () => {
+        setTimeout(() => {
+          createKey(null, phrase, coins, walletManager);
+        }, 0);
+      });
+    }
 
     render() {
       const { isLoading } = this.state;
@@ -168,6 +187,8 @@ WalletSelectCurrency.propTypes = {
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 WalletSelectCurrency.defaultProps = {
@@ -183,6 +204,8 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);

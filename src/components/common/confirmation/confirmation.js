@@ -5,7 +5,7 @@ import ConfirmationPanel from './confirmation.panel';
 
 const Confirmation = (props) => {
   const {
-    isShowConfirmation, confirmation, removeConfirmation, confirmationCallback,
+    isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
   } = props;
   return (
     <View>
@@ -16,6 +16,7 @@ const Confirmation = (props) => {
         message={confirmation.message}
         onClosePress={removeConfirmation}
         confirmationCallback={confirmationCallback}
+        confirmationCancelCallback={confirmationCancelCallback}
       />
       )}
     </View>
@@ -31,12 +32,14 @@ Confirmation.propTypes = {
   }),
   removeConfirmation: PropTypes.func.isRequired,
   confirmationCallback: PropTypes.func,
+  confirmationCancelCallback: PropTypes.func,
 };
 
 Confirmation.defaultProps = {
   // eslint-disable-next-line react/forbid-prop-types
   confirmation: null,
   confirmationCallback: null,
+  confirmationCancelCallback: null,
 };
 
 export default Confirmation;

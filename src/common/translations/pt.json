@@ -189,5 +189,7 @@
   "Your Name": "Seu nome",
   "What's your name?": "Qual o seu nome?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço",
-  "Select Wallet": "Selecionar carteira"
+  "Select Wallet": "Selecionar carteira",
+  "Would you like to protect this wallet with a password?": "Deseja proteger esta carteira com uma senha?",
+  "Encryption can protect your funds if this device is stolen or compromised by malicious software.": "A criptografia pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
 }
