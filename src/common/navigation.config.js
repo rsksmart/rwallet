@@ -19,6 +19,7 @@ import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
+import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
 import Transaction from '../pages/wallet/transaction';
 import StartPage from '../pages/start/start';
@@ -94,6 +95,13 @@ const routeConfigMap = {
       path: 'WalletList',
       navigationOptions: () => ({
         headerTitle: 'Wallet List',
+      }),
+    },
+    SelectWallet: {
+      screen: SelectWallet,
+      path: 'SelectWallet',
+      navigationOptions: () => ({
+        headerTitle: 'Select Wallet',
       }),
     },
     StartPage: {

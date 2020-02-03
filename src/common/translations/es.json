@@ -188,5 +188,6 @@
   "Name contains invalid characters.": "Nombre contiene caracteres inválidos.",
   "Your Name": "Tu nombre",
   "What's your name?": "¿Cuál es tu nombre?",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio",
+  "Select Wallet": "Seleccionar billetera"
 }
