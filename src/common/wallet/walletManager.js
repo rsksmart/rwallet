@@ -132,6 +132,7 @@ class WalletManager {
 
         coins.forEach((coinItem) => {
           const coin = coinItem;
+          // if coin.type is Testnet, set balanceValue 0
           if (coin.type === 'Testnet') {
             coin.balanceValue = new BigNumber(0);
           } else if (coin.balance) {
