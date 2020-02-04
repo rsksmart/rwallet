@@ -226,7 +226,8 @@ const common = {
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
-      isAdress = rsk3.utils.isAddress(address);
+      const checksumAddress = rsk3.utils.toChecksumAddress(address);
+      isAdress = rsk3.utils.isAddress(checksumAddress);
     }
     return isAdress;
   },
