@@ -10,11 +10,11 @@ import WordField from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
-import createInfoConfirmation from '../../common/confirmation.controller';
+
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -73,6 +73,7 @@ class VerifyPhrase extends Component {
     super(props);
     const { navigation } = this.props;
     const { phrase } = navigation.state.params;
+    this.notificationReason = null;
     this.correctPhrases = phrase.split(' ');
     this.reset(true);
 
@@ -87,11 +88,6 @@ class VerifyPhrase extends Component {
   componentWillReceiveProps(nextProps) {
     const { navigation, isWalletsUpdated } = nextProps;
     const { isLoading } = this.state;
-    const { notification } = nextProps;
-    const { notification: curNotification } = this.props;
-    if (notification !== curNotification && notification === null) {
-      this.onNotificationRemoved();
-    }
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
     if (isWalletsUpdated && isLoading) {
       this.setState({ isLoading: false });
@@ -105,10 +101,6 @@ class VerifyPhrase extends Component {
     if (isWalletsUpdated) {
       resetWalletsUpdated();
     }
-  }
-
-  onNotificationRemoved() {
-    this.reset();
   }
 
   onWordFieldPress(i) {
@@ -147,10 +139,12 @@ class VerifyPhrase extends Component {
     if (isEqual) {
       this.onPhraseValid();
     } else {
+      this.notificationReason = 'incorrectPhrase';
       const notification = createErrorNotification(
         'Incorrect backup phrase',
         'verifyPhraseAlertTitle',
         'START OVER',
+        () => this.reset(),
       );
       addNotification(notification);
     }
@@ -173,17 +167,18 @@ class VerifyPhrase extends Component {
   }
 
   requestCreateWallet(phrase, coins) {
-    const { addConfirmation, showPasscode } = this.props;
+    const { addNotification, showPasscode } = this.props;
     if (global.passcode) {
       this.createWallet(phrase, coins);
     } else {
-      const infoConfirmation = createInfoConfirmation(
-        'Would you like to protect this wallet with a password?',
-        'Encryption can protect your funds if this device is stolen or compromised by malicious software.',
+      this.notificationReason = 'createPassword';
+      const notification = createInfoNotification(
+        'Please set a password',
+        'Password can protect your funds if this device is stolen or compromised by malicious software.',
+        null,
         () => showPasscode('create', () => this.createWallet(phrase, coins)),
-        () => this.createWallet(phrase, coins),
       );
-      addConfirmation(infoConfirmation);
+      addNotification(notification);
     }
   }
 
@@ -297,23 +292,19 @@ VerifyPhrase.propTypes = {
   }).isRequired,
   walletManager: PropTypes.shape({}),
   addNotification: PropTypes.func.isRequired,
-  notification: PropTypes.shape({}),
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
-  addConfirmation: PropTypes.func.isRequired,
   showPasscode: PropTypes.func.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
   walletManager: undefined,
-  notification: null,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
-  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

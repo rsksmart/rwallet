@@ -16,14 +16,18 @@ class CreatePasscodeModal extends PureComponent {
     this.flowIndex = 0;
     this.tempPasscode = '';
     this.title = this.flows[0].title;
-    const { closePasscodeModal, passcodeCallback } = this.props;
+    const { closePasscodeModal, passcodeCallback, passcodeFallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
+    this.passcodeFallback = passcodeFallback;
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
 
   cancelBtnOnPress = () => {
+    if (this.passcodeFallback) {
+      this.passcodeFallback();
+    }
     this.closePasscodeModal();
   };
 
@@ -59,6 +63,7 @@ class CreatePasscodeModal extends PureComponent {
           ref={(ref) => { this.baseModal = ref; }}
           passcodeOnFill={this.passcodeOnFill}
           cancelBtnOnPress={this.cancelBtnOnPress}
+          showCancel={!!this.passcodeFallback}
           title={this.title}
         />
       );
@@ -68,10 +73,12 @@ class CreatePasscodeModal extends PureComponent {
 CreatePasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
+  passcodeFallback: PropTypes.func,
 };
 
 CreatePasscodeModal.defaultProps = {
   passcodeCallback: null,
+  passcodeFallback: null,
 };
 
 export default CreatePasscodeModal;

@@ -12,7 +12,7 @@ import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
-import createInfoConfirmation from '../../common/confirmation.controller';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -79,6 +79,8 @@ class WalletSelectCurrency extends Component {
       this.state = {
         isLoading: false,
       };
+      this.isShowNotification = false;
+      this.selectedCoins = null;
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
@@ -117,25 +119,26 @@ class WalletSelectCurrency extends Component {
           coins.push(coinId);
         }
       }
+      this.selectedCoins = coins;
       if (this.isImportWallet) {
-        this.requestCreateWallet(this.phrase, coins);
+        this.requestCreateWallet(this.phrase, this.selectedCoins);
       } else {
-        navigation.navigate('RecoveryPhrase', { coins, shouldCreatePhrase: true, shouldCreateWallet: true });
+        navigation.navigate('RecoveryPhrase', { coins: this.selectedCoins, shouldCreatePhrase: true, shouldCreateWallet: true });
       }
     }
 
     requestCreateWallet(phrase, coins) {
-      const { addConfirmation, showPasscode } = this.props;
+      const { addNotification, showPasscode } = this.props;
       if (global.passcode) {
         this.createWallet(phrase, coins);
       } else {
-        const infoConfirmation = createInfoConfirmation(
-          'Would you like to protect this wallet with a password?',
-          'Encryption can protect your funds if this device is stolen or compromised by malicious software.',
+        const notification = createInfoNotification(
+          'Please set a password',
+          'Password can protect your funds if this device is stolen or compromised by malicious software.',
+          null,
           () => showPasscode('create', () => this.createWallet(phrase, coins)),
-          () => this.createWallet(phrase, coins),
         );
-        addConfirmation(infoConfirmation);
+        addNotification(notification);
       }
     }
 
@@ -187,7 +190,7 @@ WalletSelectCurrency.propTypes = {
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
-  addConfirmation: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
   showPasscode: PropTypes.func.isRequired,
 };
 
@@ -198,13 +201,14 @@ WalletSelectCurrency.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isShowNotification: state.App.get('showNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
-  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 

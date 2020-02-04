@@ -18,6 +18,7 @@ const initState = new Map({
   transactions: undefined,
   showNotification: false,
   notification: null,
+  confirmationCancelCallback: null,
   showPasscode: false,
   passcodeType: null,
   passcodeCallback: null,
@@ -62,11 +63,13 @@ export default function appReducer(state = initState, action) {
     case actions.ADD_NOTIFICATION:
       return state
         .set('showNotification', true)
-        .set('notification', action.notification);
+        .set('notification', action.notification)
+        .set('notificationCloseCallback', action.notification.notificationCloseCallback);
     case actions.REMOVE_NOTIFICATION:
       return state
         .set('showNotification', false)
-        .set('notification', null);
+        .set('notification', null)
+        .set('notificationCloseCallback', null);
     case actions.ADD_CONFIRMATION:
       return state
         .set('isShowConfirmation', true)

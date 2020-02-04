@@ -6,6 +6,7 @@ import walletActions from '../redux/wallet/actions';
 const mapStateToProps = (state) => ({
   showNotification: state.App.get('showNotification'),
   notification: state.App.get('notification'),
+  notificationCloseCallback: state.App.get('notificationCloseCallback'),
   showPasscode: state.App.get('showPasscode'),
   passcodeType: state.App.get('passcodeType'),
   passcodeCallback: state.App.get('passcodeCallback'),
