@@ -18,6 +18,14 @@
         "button": "CONFIRMAR E ACABAR"
       }
     },
+    "wallet": {
+      "add": {
+        "createWallet": "Criar carteira básica",
+        "createWalletNote": "Recomendado para usuários iniciantes",
+        "importWallet": "Importar carteira existente",
+        "importWalletNote": "Recupere sua carteira usando sua senha"
+      }
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Junte-se à comunidade de RSK",
@@ -121,10 +129,6 @@
   "My Assets": "Meus ativos",
   "All Assets": "Todos os ativos",
   "Add Asset": "Adicionar ativo",
-  "Create Basic Wallet": "Criar carteira básica",
-  "Recommended for first-time users": "Recomendado para usuários iniciantes",
-  "Import existing Wallet": "Importar carteira existente",
-  "Recover your wallet using your passphrase": "Recupere sua carteira usando sua senha",
   "Mainnet": "Mainnet",
   "Testnet": "Testnet",
   "Two-Factor Authentication": "Autenticação de dois fatores",

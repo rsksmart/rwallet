@@ -18,6 +18,14 @@
         "button": "COMFIRM & FINISH"
       }
     },
+    "wallet": {
+      "add": {
+        "createWallet": "Create Basic Wallet",
+        "createWalletNote": "Recommended for first-time users",
+        "importWallet": "Import existing Wallet",
+        "importWalletNote": "Recover your wallet using your passphrase"
+      }
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Join RSK's Community",
@@ -122,10 +130,6 @@
   "My Assets": "My Assets",
   "All Assets": "All Assets",
   "Add Asset": "Add Asset",
-  "Create Basic Wallet": "Create Basic Wallet",
-  "Recommended for first-time users": "Recommended for first-time users",
-  "Import existing Wallet": "Import existing Wallet",
-  "Recover your wallet using your passphrase": "Recover your wallet using your passphrase",
   "Mainnet": "Mainnet",
   "Testnet": "Testnet",
   "Use Fingerprint": "Use Fingerprint",
