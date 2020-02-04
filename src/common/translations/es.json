@@ -189,5 +189,7 @@
   "Your Name": "Tu nombre",
   "What's your name?": "¿Cuál es tu nombre?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio",
-  "Select Wallet": "Seleccionar billetera"
+  "Select Wallet": "Seleccionar billetera",
+  "Duplicate Phrase": "Frase duplicada",
+  "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
 }

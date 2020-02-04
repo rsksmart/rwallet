@@ -189,5 +189,7 @@
   "Your Name": "名字",
   "What's your name?": "名字是什么？",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格",
-  "Select Wallet": "选择钱包"
+  "Select Wallet": "选择钱包",
+  "Duplicate Phrase": "重复的助记词",
+  "This phrase is already imported in the app. Please try with a different phrase.": "此助记词已导入到应用程序中，请尝试使用其他短语。"
 }
