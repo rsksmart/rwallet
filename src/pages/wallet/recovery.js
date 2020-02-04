@@ -154,8 +154,8 @@ class WalletRecovery extends Component {
       const wallet = _.find(wallets, { mnemonic: inputPhrases });
       if (wallet) {
         const notification = createErrorNotification(
-          'Existed wallet',
-          'The wallet is already in the app',
+          'Duplicate Phrase',
+          'This phrase is already imported in the app. Please try with a different phrase.',
           'GOT IT',
         );
         addNotification(notification);

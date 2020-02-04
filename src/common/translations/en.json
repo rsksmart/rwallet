@@ -190,6 +190,6 @@
   "What's your name?": "What's your name?",
   "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space",
   "Select Wallet": "Select Wallet",
-  "Existed wallet": "Existed wallet",
-  "The wallet is already in the app": "The wallet is already in the app"
+  "Duplicate Phrase": "Duplicate Phrase",
+  "This phrase is already imported in the app. Please try with a different phrase.": "This phrase is already imported in the app. Please try with a different phrase."
 }
