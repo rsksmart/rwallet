@@ -232,7 +232,7 @@ class WalletList extends Component {
       // Create element for each Token (e.g. BTC, RBTC, RIF)
       wallet.coins.forEach((coin, index) => {
         const coinType = common.getSymbolFullName(coin.symbol, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : ' ';
+        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
         const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
         const item = {
           key: `${index}`,

@@ -168,8 +168,8 @@ class WalletManager {
         try {
           // Try to convert hex string to BigNumber
           const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
-          // Update if it fetched new balance vlue
-          if ((!newBalance && newToken.balance) || (newBalance && !newBalance.isEqualTo(newToken.balance))) {
+          // Update if it fetched new balance value
+          if (newBalance && !newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;
             isDirty = true;
           }
