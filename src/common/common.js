@@ -65,8 +65,16 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
+  /**
+   * convertUnitToCoinAmount, if unitNumber is nil, return null
+   * @param {*} symbol
+   * @param {*} unitNumber
+   */
   convertUnitToCoinAmount(symbol, unitNumber) {
     let amount = null;
+    if (_.isNil(unitNumber)) {
+      return null;
+    }
     switch (symbol) {
       case 'BTC':
         amount = common.satoshiToBtc(unitNumber);
