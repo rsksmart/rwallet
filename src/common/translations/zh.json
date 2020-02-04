@@ -192,4 +192,6 @@
   "Select Wallet": "选择钱包",
   "Would you like to protect this wallet with a password?": "您想用密码保护这个钱包吗？",
   "Encryption can protect your funds if this device is stolen or compromised by malicious software.": "如果此设备被恶意软件窃取或破坏，加密可以保护您的资金。"
+  "Duplicate Phrase": "重复的助记词",
+  "This phrase is already imported in the app. Please try with a different phrase.": "此助记词已导入到应用程序中，请尝试使用其他短语。"
 }

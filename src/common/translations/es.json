@@ -192,4 +192,6 @@
   "Select Wallet": "Seleccionar billetera",
   "Would you like to protect this wallet with a password?": "¿Desea proteger esta billetera con una contraseña?",
   "Encryption can protect your funds if this device is stolen or compromised by malicious software.": "El cifrado puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
+  "Duplicate Phrase": "Frase duplicada",
+  "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
 }
