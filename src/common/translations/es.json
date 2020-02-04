@@ -1,18 +1,114 @@
 {
   "root": {
-    "Wallet": "Wallet",
+    "Wallet": "Billetera",
     "Spend": "Gastar",
     "Earn": "Ganar",
     "Me": "Yo"
   },
-  "test3": {
-    "text": "Esta es la página de prueba 3",
-    "button": "Ir a configuración"
+  "page": {
+    "start": {
+      "start": {
+        "button": "Empezar"
+      },
+      "terms": {
+        "term1": "Entiendo que mis fondos se mantienen de forma segura en este dispositivo, no por una empresa.",
+        "term2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mi Bitcoin solo se puede recuperar con la frase de recuperación.",
+        "term3": "He leído, comprendido y acepto los términos de uso.",
+        "viewTerms": "Ver términos de uso completos",
+        "button": "CONFIRMAR Y ACABAR"
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "Únete a la comunidad de RSK",
+        "settings": "Configuraciones",
+        "createKey": "Crear o importar una clave",
+        "keys": "Llaves",
+        "anonymousUser": "Usuario anónimo",
+        "wallets": "Carteras"
+      },
+      "language": {
+        "title": "Idioma"
+      },
+      "currency": {
+        "title": "Moneda"
+      },
+      "2fa": {
+        "title": "Autenticación de dos factores",
+        "resetPasscode": "Restablecer contraseña"
+      },
+      "resetPasscodeSuccess" :{
+        "title": "Contraseña restablecida exitosamente"
+      },
+      "keySettings": {
+        "title": "Configuraciones clave",
+        "keyContains": "Esta clave contiene",
+        "wallets": "billeteras",
+        "security": "Seguridad",
+        "advanced": "Avanzado",
+        "Wallets": "Carteras",
+        "keyName": "Nombre clave",
+        "delete": "Eliminar",
+        "backup": "Respaldo"
+      },
+      "keyName": {
+        "title": "Nombre clave",
+        "question": "¿Cómo llamas a esta llave?",
+        "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
+        "name": "Nombre",
+        "comment": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio"
+      },
+      "rename": {
+        "title": "Tu nombre",
+        "question": "¿Cuál es tu nombre?",
+        "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "Gana criptomonedas con facilidad",
+        "comingSoon": "Próximamente...",
+        "featuresTitle": "Las siguientes características estarán disponibles pronto para ganar ...",
+        "feature1": "- Gana criptomonedas completando tareas",
+        "feature2": "- Obtenga intereses de una variedad de productos Defi",
+        "feature3": "- \"Devolución de efectivo\" en compras con criptomoneda"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "estión de activos a su alcance",
+        "featuresTitle": "Las siguientes características estarán disponibles pronto para gastar ...",
+        "feature1": "- Compre más de 100 tarjetas de regalo con criptomoneda",
+        "feature2": "- Cambia entre cualquier ficha en tu billetera",
+        "feature3": "- Aprobación de transacciones con múltiples signos"
+      }
+    }
   },
-  "Language": "Idioma",
-  "2FA": "2FA, AUTENTICACIÓN DE DOS FACTORES",
-  "Reset Passcode": "Restablecer contraseña",
-  "Reset Passcode Success": "Contraseña restablecida exitosamente",
+  "language": {
+    "English": "Inglés",
+    "Spanish": "Español",
+    "Portuguese": "Portugués",
+    "Chinese": "Chino"
+  },
+  "button": {
+    "save": "GUARDAR",
+    "next": "SIGUIENTE",
+    "gotIt": "ENTENDIDO",
+    "CREATE": "CREAR",
+    "CONFIRM": "CONFIRMAR",
+    "RETRY": "INTENTA DE NUEVO",
+    "IMPORT": "IMPORTAR",
+    "cancel": "Cancelar",
+    "Clear": "Claro",
+    "START OVER": "COMENZAR DE NUEVO",
+    "Copy": "Copiar",
+    "Swap": "Intercambiar",
+    "confirm": "Confirmar",
+    "Send All": "Envia todo",
+    "goToWallet": "IR A LA WALLET",
+    "backToWallet": "VOLVER A LA WALLET"
+  },
+
   "Add Wallet": "Agregar Wallet",
   "Select Wallet Currency": "Seleccionar moneda de Wallet",
   "Recovery Phrase": "Frase de recuperación",
@@ -31,24 +127,16 @@
   "Recover your wallet using your passphrase": "Recupere su Wallet usando su frase de contraseña",
   "Mainnet": "Mainnet",
   "Testnet": "Testnet",
-  "CREATE": "CREAR",
-  "Two-Factor Authentication": "Autenticación de dos factores",
-  "Currency": "Moneda",
-  "Settings": "Configuraciones",
   "Use Fingerprint": "Usar huella digital",
   "Enter Old Passcode": "Ingrese su contraseña antigua",
   "Enter New Passcode": "Ingrese su contraseña nueva",
   "Confirm Passcode": "Confirmar contraseña",
-  "Cancel": "Cancelar",
   "BACK TO SETTING": "VOLVER A LA CONFIGURACIÓN",
   "Reset completed!": "¡Reinicio completado!",
-  "COMFIRM": "CONFIRMAR",
   "Address": "Dirección",
   "Receive": "Recibir",
   "Receiving": "Recibiendo",
   "Send": "Enviar",
-  "Get Started": "Empezar",
-  "COMFIRM & FINISH": "CONFIRMAR Y ACABAR",
   "Sent": "Enviado",
   "Sending": "Enviando",
   "Received": "Recibido",
@@ -60,8 +148,6 @@
   "Average": "Promedio",
   "Fast": "Rápido",
   "How fast you want this done?": "¿Qué tan rápido quieres su transacción?",
-  "NEXT": "SIGUIENTE",
-  "GOT IT": "ENTENDIDO",
   "Safeguard your recovery phrase": "Resguarde su frase de recuperación",
   "Safeguard your recovery phrase Text": "Su frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen.",
   "Write down or copy these words": "Escriba o copie estas palabras",
@@ -69,18 +155,12 @@
   "somewhere safe": "un lugar seguro",
   "verifyPhraseAlertTitle": "Es indispensable que escriba su frase de recuperación correctamente. Si algo le sucede a su wallet, la necesitará para recuperar su dinero. Por favor revise e intente nuevamente.",
   "Tap each word in the correct order": "Toca cada palabra en el orden correcto",
-  "GO TO WALLET": "IR A LA WALLET",
-  "BACK TO WALLET": "VOLVER A LA WALLET",
   "Your recovery phrase is verified": "Tu frase de recuperación está verificada",
   "Be sure to store your recovery phrase in a safe and secure place": "Asegúrese de guardar su frase de recuperación en un muy lugar seguro",
   "tip": "propina",
   "Enter Passcode": "Introduce un código de acceso",
   "Transfer Completed!": "¡Transferencia completada!",
   "TransferText": "Su transacción está en proceso.",
-  "View Complete Terms Of Use": "Ver términos de uso completos",
-  "TermsLine1": "Entiendo que mis fondos se mantienen de forma segura en este dispositivo, no por una empresa.",
-  "TermsLine2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mi Bitcoin solo se puede recuperar con la frase de recuperación.",
-  "TermsLine3": "He leído, comprendido y acepto los términos de uso.",
   "Use passcode": "Usar contraseña",
   "Touch Sensor": "Sensor tátil",
   "No match": "No coincide",
@@ -88,35 +168,18 @@
   "The recovery phrase has been copied to clipboard": "La frase de recuperación se ha copiado al portapapeles.",
   "The address has been copied to clipboard": "La dirección ha sido copiada al portapapeles.",
   "Type the recovery phrase(usually 12 words)": "Escriba la frase de recuperación (generalmente 12 palabras)",
-  "IMPORT": "IMPORTAR",
   "Too Many Words": "Demasiadas palabras",
   "The recovery phrase has to be 12 words": "La frase de recuperación tiene que ser exactamente de 12 palabras.",
   "Advanced Options": "Opciones avanzadas",
   "Specify derivation path": "Especificar ruta de derivación",
   "Passcode Mismatch": "La contraseña no coincide",
   "Passcode Mismatch Body": "Los dos códigos de acceso ingresados son diferentes. Inténtalo de nuevo.",
-  "RETRY": "INTENTA DE NUEVO",
   "Old Password": "Contraseña anterior",
   "Old Password is wrong": "La contraseña anterior es incorrecta",
   "Backup Phrase": "Frase de respaldo",
   "Incorrect backup phrase": "Frase de respaldo incorrecta",
   "Unable to recover": "Incapaz de recuperarse",
   "Unable to recover Body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta.",
-  "Key Settings": "Configuraciones clave",
-  "SAVE": "GUARDAR",
-  "What do you call this key?": "¿Cómo llamas a esta llave?",
-  "You can change the name displayed on the device below": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
-  "Name": "Nombre",
-  "Security": "Seguridad",
-  "Advanced": "Avanzado",
-  "Wallets": "Wallets",
-  "wallets": "wallet",
-  "Key Name": "Nombre clave",
-  "Delete": "Eliminar",
-  "Backup": "Respaldo",
-  "Keys": "Llaves",
-  "Join RSK's Community": "Únete a la comunidad de RSK",
-  "This key contains": "Esta clave contiene",
   "There is no transaction found in this wallet": "No se encontró ninguna transacción en esta wallet.",
   "Internal server error": "Error de servidor interno",
   "Please contact customer support": "Por favor, póngase en contacto con atención al cliente.",
@@ -128,20 +191,12 @@
   "CONFIRMED": "CONFIRMADO",
   "Slide to confirm": "Deslice para confirmar",
   "Click to view in explorer": "Haga clic para ver en el explorador",
-  "Copy": "Copiar",
-  "Swap": "Intercambiar",
   "Powered by": "Powered by",
   "Key deleted": "Clave eliminada",
   "Key has been deleted successfully.": "La clave se ha eliminado con éxito.",
   "Key name is too short.": "El nombre de la clave es demasiado corto.",
   "Key name is too long.": "El nombre de la clave es demasiado largo.",
   "Key name contains invalid characters.": "El nombre de la clave contiene caracteres no válidos.",
-  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio",
-  "Create or Import a Key": "Crear o importar una clave",
-  "English": "Inglés",
-  "Spanish": "Español",
-  "Portuguese": "Portugués",
-  "Chinese": "Chino",
   "Type your old passcode": "Escriba su contraseña anterior",
   "Type your new passcode": "Escriba su nueva contraseña",
   "Confirm your new passcode": "Confirme su nueva contraseña",
@@ -151,23 +206,7 @@
   "Type your passcode": "Escribe tu contraseña",
   "Passcode is incorrected": "El código de acceso está incorrecto",
   "Failed": "Failed",
-  "Confirm": "Confirmar",
-  "Anonymous User": "Usuario anónimo",
-  "Asset Management at Your Fingertips": "Gestión de activos a su alcance",
-  "Below features are coming soon to Spend…": "Las siguientes características estarán disponibles pronto para gastar ...",
-  "- Buy 100+ Gift Cards with cryptocurrency": "- Compre más de 100 tarjetas de regalo con criptomoneda",
-  "- Swap between any token in your wallet": "- Cambia entre cualquier ficha en tu billetera",
-  "- Multi-sign approval of transactions": "- Aprobación de transacciones con múltiples signos",
-  "Earn cryptocurrency with ease": "Gana criptomonedas con facilidad",
-  "Below features are coming soon to Earn…": "Las siguientes características estarán disponibles pronto para ganar ...",
-  "- Earn cryptocurrency by completing tasks": "- Gana criptomonedas completando tareas",
-  "- Gain interests from a variety of Defi products": "- Obtenga intereses de una variedad de productos Defi",
-  "- Cash Back": "- \"Devolución de efectivo\" en compras con criptomoneda",
-  "Coming soon...": "Próximamente...",
   "Is this correct?": "¿Es esto correcto?",
-  "Clear": "Claro",
-  "START OVER": "COMENZAR DE NUEVO",
-  "Send All": "Envia todo",
   "Sent Funds": "Fondos enviados",
   "Received Funds": "Fondos recibidos",
   "Sending Funds": "Envío de fondos",
@@ -186,9 +225,6 @@
   "Name is too short.": "El nombre es muy corto.",
   "Name is too long.": "El nombre es demasiado largo.",
   "Name contains invalid characters.": "Nombre contiene caracteres inválidos.",
-  "Your Name": "Tu nombre",
-  "What's your name?": "¿Cuál es tu nombre?",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio",
   "Select Wallet": "Seleccionar billetera",
   "Duplicate Phrase": "Frase duplicada",
   "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."

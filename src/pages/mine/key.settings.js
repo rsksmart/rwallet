@@ -227,26 +227,26 @@ class KeySettings extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<KeysettingsHeader title="Key Settings" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
-              <Loc style={[styles.keyTitle]} text="Key Name" />
+              <Loc style={[styles.keyTitle]} text="page.mine.keySettings.keyName" />
               <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
             </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Wallets" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Wallets" />
             {KeySettings.renderWalletList(walletListData)}
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Security" />
-            <ListRow title="Backup" onPress={this.onBackupPress} />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
+            <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Advanced" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
-              <Loc style={[styles.listRowTitle, styles.warningText]} text="Delete" />
+              <Loc style={[styles.listRowTitle, styles.warningText]} text="page.mine.keySettings.delete" />
             </TouchableOpacity>
           </View>
         </BasePageGereral>

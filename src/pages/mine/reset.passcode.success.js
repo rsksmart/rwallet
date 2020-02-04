@@ -63,7 +63,7 @@ export default class ResetPasscodeSuccess extends Component {
           hasLoader={false}
           bottomBtnText="BACK TO SETTING"
           bottomBtnOnPress={this.onBackButtonPress}
-          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="Your Name" />}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="page.mine.resetPasscodeSuccess.title" />}
         >
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />

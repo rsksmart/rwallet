@@ -5,14 +5,111 @@
     "Earn": "收入",
     "Me": "我的"
   },
-  "test3": {
-    "text": "这是测试3页面",
-    "button": "跳转到设置"
+  "page": {
+    "start": {
+      "start": {
+        "button": "开始"
+      },
+      "terms": {
+        "term1": "我理解我的资产安全地保存在本地设备，并非在公司。",
+        "term2": "我理解当我卸载或移动App到另外的设备时，我的比特币只能通过助记词去恢复。",
+        "term3": "我已经阅读并理解使用协议。",
+        "viewTerms": "查看完成协议",
+        "button": "确认完成"
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "加入RSK社群",
+        "settings": "设置",
+        "createKey": "创建或导入一个密钥",
+        "keys": "密钥",
+        "anonymousUser": "匿名用户",
+        "wallets": "钱包"
+      },
+      "language": {
+        "title": "语言"
+      },
+      "currency": {
+        "title": "币种"
+      },
+      "2fa": {
+        "title": "双因素认证",
+        "resetPasscode": "重置密码"
+      },
+      "resetPasscodeSuccess" :{
+        "title": "重置密码成功"
+      },
+      "keySettings": {
+        "title": "密钥设置",
+        "keyContains": "这个密钥包含",
+        "wallets": "钱包",
+        "security": "安全",
+        "advanced": "高级",
+        "Wallets": "钱包",
+        "keyName": "密钥名字",
+        "delete": "删除",
+        "backup": "备份"
+      },
+      "keyName": {
+        "title": "密钥名字",
+        "question": "你如何称呼这个密钥呢？",
+        "notice": "在下面你可以改变显示的名字。",
+        "name": "名字",
+        "comment": "* 密钥名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+      },
+      "rename": {
+        "title": "名字",
+        "question": "名字是什么？",
+        "comment": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "轻松赚取加密货币",
+        "comingSoon": "即将推出...",
+        "featuresTitle": "以下赚钱功能即将推出...",
+        "feature1": "- 通过完成任务来赚取加密货币",
+        "feature2": "- 从各种Defi产品中获得收益",
+        "feature3": "- 使用加密货币购买, “现金返还”"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "触手可及的资产管理",
+        "featuresTitle": "以下消费功能即将推出...",
+        "feature1": "- 用加密货币购买100多张礼品卡",
+        "feature2": "- 在钱包中的所有币种之间交换",
+        "feature3": "- 交易的多签名批准"
+      }
+    }
   },
-  "Language": "语言",
-  "2FA": "双因素认证",
-  "Reset Passcode": "重置密码",
-  "Reset Passcode Success": "重置密码成功",
+  "language": {
+    "English": "英语",
+    "Spanish": "西班牙语",
+    "Portuguese": "葡萄牙语",
+    "Chinese": "中文"
+  },
+  "button": {
+    "save": "保存",
+    "next": "下一步",
+    "gotIt": "好的",
+    "CREATE": "创建",
+    "CONFIRM": "确认",
+    "RETRY": "重试",
+    "IMPORT": "导入",
+    "cancel": "取消",
+    "Clear": "清除",
+    "START OVER": "重新开始",
+    "Copy": "复制",
+    "Swap": "交换",
+    "confirm": "确认",
+    "Send All": "全部发送",
+    "CONFIRM & FINISH": "确认完成",
+    "goToWallet": "查看钱包",
+    "backToWallet": "查看钱包"
+  },
+
   "Add Wallet": "创建钱包",
   "Select Wallet Currency": "选择钱包类型",
   "Recovery Phrase": "恢复助记词",
@@ -31,24 +128,16 @@
   "Recover your wallet using your passphrase": "使用助记词导入",
   "Mainnet": "正式网络",
   "Testnet": "测试网络",
-  "CREATE": "创建",
-  "Two-Factor Authentication": "双因素认证",
-  "Currency": "币种",
-  "Settings": "设置",
   "Use Fingerprint": "使用指纹验证",
   "Enter Old Passcode": "请输入旧密码",
   "Enter New Passcode": "请输入新密码",
   "Confirm Passcode": "重复新密码",
-  "Cancel": "取消",
   "BACK TO SETTING": "回到设置",
   "Reset completed!": "重置成功！",
-  "COMFIRM": "确认",
   "Address": "地址",
   "Receive": "接收",
   "Receiving": "接收中",
   "Send": "发送",
-  "Get Started": "开始",
-  "COMFIRM & FINISH": "确认完成",
   "Sent": "已发送",
   "Sending": "发送中",
   "Received": "已接收",
@@ -60,8 +149,6 @@
   "Average": "中",
   "Fast": "快",
   "How fast you want this done?": "需要多快完成？",
-  "NEXT": "下一步",
-  "GOT IT": "好的",
   "Safeguard your recovery phrase": "保管好你的助记词",
   "Safeguard your recovery phrase Text": "你的助记词包含12个随机单词，请按顺序记录下来.",
   "Write down or copy these words": "写下或复制这些助记词",
@@ -69,8 +156,6 @@
   "somewhere safe": "到安全的地方",
   "verifyPhraseAlertTitle": "正确地记录助记词非常重要，它可以恢复您的钱包，请检查后重试。",
   "Tap each word in the correct order": "按顺序点击助记词标签",
-  "GO TO WALLET": "查看钱包",
-  "BACK TO WALLET": "查看钱包",
   "Your recovery phrase is verified": "您的助记词正确",
   "Be sure to store your recovery phrase in a safe and secure place": "请将助记词保存到安全的地方",
   "tip": "提示",
@@ -78,9 +163,6 @@
   "Transfer Completed!": "转账成功！",
   "TransferText": "您的转账正在进行中。",
   "View Complete Terms Of Use": "查看完成协议",
-  "TermsLine1": "我理解我的资产安全地保存在本地设备，并非在公司",
-  "TermsLine2": "我理解当我卸载或移动App到另外的设备时，我的比特币只能通过助记词去恢复。",
-  "TermsLine3": "我已经阅读并理解使用协议。",
   "Use passcode": "使用密码验证",
   "Touch Sensor": "指纹验证",
   "No match": "指纹不匹配",
@@ -88,35 +170,20 @@
   "The recovery phrase has been copied to clipboard": "助记词已复制",
   "The address has been copied to clipboard": "地址已复制",
   "Type the recovery phrase(usually 12 words)": "输入恢复助记词（通常是12个单词）",
-  "IMPORT": "导入",
   "Too Many Words": "单词太多",
   "The recovery phrase has to be 12 words": "已经超过了12个单词了。",
   "Advanced Options": "高级选项",
   "Specify derivation path": "指定派生路径",
   "Passcode Mismatch": "密码不匹配",
   "Passcode Mismatch Body": "两次输入密码不匹配。请重试。",
-  "RETRY": "重试",
   "Old Password": "旧密码",
   "Old Password is wrong": "旧密码不正确",
   "Backup Phrase": "备份助记词",
   "Incorrect backup phrase": "备份助记词不正确",
   "Unable to recover": "不能备份",
   "Unable to recover Body": "不能通过您的助记词导入钱包，请确保正确输入助记词。",
-  "Key Settings": "密钥设置",
   "SAVE": "保存",
-  "What do you call this key?": "你如何称呼这个密钥呢？",
-  "You can change the name displayed on the device below": "在下面你可以改变显示的名字",
-  "Name": "名字",
-  "Security": "安全",
-  "Advanced": "高级",
-  "Wallets": "钱包",
   "wallets": "钱包",
-  "Key Name": "密钥名字",
-  "Delete": "删除",
-  "Backup": "备份",
-  "Keys": "密钥",
-  "Join RSK's Community": "加入RSK社群",
-  "This key contains": "这个密钥包含",
   "There is no transaction found in this wallet": "此钱包还没有任何交易",
   "Internal server error": "内部服务器错误",
   "Please contact customer support": "请联系客服。",
@@ -128,20 +195,12 @@
   "CONFIRMED": "已确认",
   "Slide to confirm": "滑动以确认",
   "Click to view in explorer": "单击以在浏览器中查看",
-  "Copy": "复制",
-  "Swap": "交换",
   "Powered by": "Powered by",
   "Key deleted": "密钥已删除",
   "Key has been deleted successfully.": "密钥已成功删除。",
   "Key name is too short.": "密钥名字太短。",
   "Key name is too long.": "密钥名字太长。",
   "Key name contains invalid characters.": "密钥名字含有不合法字符",
-  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 密钥名字可以包含1-32个字符（a-z），数字（0-9）和空格",
-  "Create or Import a Key": "创建或导入一个密钥",
-  "English": "英语",
-  "Spanish": "西班牙语",
-  "Portuguese": "葡萄牙语",
-  "Chinese": "中文",
   "Type your old passcode": "输入您的旧密码",
   "Type your new passcode": "输入新密码",
   "Confirm your new passcode": "确认新密码",
@@ -151,23 +210,7 @@
   "Type your passcode": "输入密码",
   "Passcode is incorrected": "密码不正确",
   "Failed": "失败",
-  "Confirm": "确认",
-  "Anonymous User": "匿名用户",
-  "Asset Management at Your Fingertips": "触手可及的资产管理",
-  "Below features are coming soon to Spend…": "以下消费功能即将推出：",
-  "- Buy 100+ Gift Cards with cryptocurrency": "- 用加密货币购买100多张礼品卡",
-  "- Swap between any token in your wallet": "- 在钱包中的所有币种之间交换",
-  "- Multi-sign approval of transactions": "- 交易的多签名批准",
-  "Earn cryptocurrency with ease": "轻松赚取加密货币",
-  "Below features are coming soon to Earn…": "以下赚钱功能即将推出：",
-  "- Earn cryptocurrency by completing tasks": "- 通过完成任务来赚取加密货币",
-  "- Gain interests from a variety of Defi products": "- 从各种Defi产品中获得收益",
-  "- Cash Back": "- 使用加密货币购买, “现金返还”",
-  "Coming soon...": "即将推出...",
   "Is this correct?": "这是正确的助记词？",
-  "Clear": "清除",
-  "START OVER": "重新开始",
-  "Send All": "全部发送",
   "Sent Funds": "已发送资金",
   "Received Funds": "已接收资金",
   "Sending Funds": "发送中资金",
@@ -186,9 +229,6 @@
   "Name is too short.": "名字太短了。",
   "Name is too long.": "名字太长了。",
   "Name contains invalid characters.": "名字包含不合法字符。",
-  "Your Name": "名字",
-  "What's your name?": "名字是什么？",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格",
   "Select Wallet": "选择钱包",
   "Duplicate Phrase": "重复的助记词",
   "This phrase is already imported in the app. Please try with a different phrase.": "此助记词已导入到应用程序中，请尝试使用其他短语。"

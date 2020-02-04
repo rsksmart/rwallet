@@ -74,12 +74,7 @@ class StartPage extends Component {
         </View>
         {(isInitWithParseDone && isEmpty(wallets)) && (
         <View style={styles.buttonView}>
-          <Button
-            text="Get Started"
-            onPress={async () => {
-              navigation.navigate('TermsPage');
-            }}
-          />
+          <Button text="page.start.start.button" onPress={() => navigation.navigate('TermsPage')} />
         </View>
         )}
         <Text style={styles.versionText}>{`version: ${version}`}</Text>

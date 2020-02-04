@@ -144,7 +144,7 @@ class WalletRecovery extends Component {
         const notification = createErrorNotification(
           'Unable to recover',
           'Unable to recover Body',
-          'GOT IT',
+          'button.gotIt',
         );
         addNotification(notification);
         return;
@@ -156,7 +156,7 @@ class WalletRecovery extends Component {
         const notification = createErrorNotification(
           'Duplicate Phrase',
           'This phrase is already imported in the app. Please try with a different phrase.',
-          'GOT IT',
+          'button.gotIt',
         );
         addNotification(notification);
         return;
