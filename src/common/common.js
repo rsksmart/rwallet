@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
 import rsk3 from 'rsk3';
+import { randomBytes } from 'react-native-randombytes';
 import config from '../../config';
 import store from './storage';
 
@@ -267,6 +268,13 @@ const common = {
    */
   getSymbolFullName(symbol, type) {
     return `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+  },
+
+  getRandom(count) {
+    return new Promise((resolve, reject) => randomBytes(count, (err, bytes) => {
+      if (err) reject(err);
+      else resolve(bytes);
+    }));
   },
 };
 
