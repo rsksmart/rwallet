@@ -77,6 +77,34 @@
         "note": "Escriba la frase de recuperación (generalmente 12 palabras)",
         "advancedOptions": "Opciones avanzadas",
         "specifyPath": "Especificar ruta de derivación"
+      },
+      "recoveryPhrase": {
+        "title": "Recovery Phrase",
+        "note1": "Escriba o copie estas palabras",
+        "note2": "en el orden correcto y guárdelos",
+        "note3": "un lugar seguro"
+      },
+      "backupPhrase": {
+        "title": "Frase de respaldo",
+        "note": "Toca cada palabra en el orden correcto",
+        "isCorrect": "¿Es esto correcto?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Frase verificada exitosamente",
+        "body": "Tu frase de recuperación está verificada",
+        "note": "Asegúrese de guardar su frase de recuperación en un muy lugar seguro"
+      },
+      "verifyFingerprint": {
+        "title": "Verificar impressão digital"
+      },
+      "scan": {
+        "title": "Escanear"
+      },
+      "transferCompleted": {
+        "title": "Enviar",
+        "body": "¡Transferencia completada!",
+        "note": "Su transacción está en proceso.",
+        "viewExplorer": "Haga clic para ver en el explorador"
       }
     },
     "mine": {
@@ -123,6 +151,9 @@
         "title": "Tu nombre",
         "question": "¿Cuál es tu nombre?",
         "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+      },
+      "resetcompleted": {
+        "title": "¡Reinicio completado!"
       }
     },
     "earn": {
@@ -153,20 +184,21 @@
   },
   "button": {
     "save": "GUARDAR",
-    "next": "SIGUIENTE",
+    "NEXT": "SIGUIENTE",
     "gotIt": "ENTENDIDO",
     "create": "CREAR",
     "CONFIRM": "CONFIRMAR",
     "RETRY": "INTENTA DE NUEVO",
     "IMPORT": "IMPORTAR",
-    "cancel": "Cancelar",
     "Clear": "Claro",
     "START OVER": "COMENZAR DE NUEVO",
     "Copy": "Copiar",
-    "confirm": "Confirmar",
+    "Confirm": "Confirmar",
+    "Cancel": "Cancelar",
     "Send All": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
+    "backToSetting": "VOLVER A LA CONFIGURACIÓN",
     "Send": "Enviar",
     "Receive": "Recibir",
     "Swap": "Intercambiar"
@@ -190,73 +222,61 @@
     "tooManyPhrase": {
       "title": "Demasiadas palabras",
       "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
+    },
+    "txFailed": {
+      "title": "La transferencia ha fallado",
+      "moreRBTC": "Necesita más saldo RBTC para completar la transferencia",
+      "moreRIF": "Necesita más saldo RIF para completar la transferencia",
+      "moreBalance": "Necesita más saldo para completar la transferencia",
+      "serverTimeout": "Disculpe, el tiempo de espera se ha excedido, trate de nuevo",
+      "contactService": "Por favor, póngase en contacto con el servicio al cliente"
+    },
+    "invalidAmount": {
+      "title": "Monto invalido",
+      "body": "El monto no es valido"
+    },
+    "invalidAddress": {
+      "title": "Dirección inválida",
+      "body": "La direccion no es valida"
+    },
+    "incorrectName": {
+      "title": "Nombre incorrecto",
+      "tooShort": "El nombre es muy corto.",
+      "tooLong": "El nombre es demasiado largo.",
+      "invalid": "Nombre contiene caracteres inválidos."
+    },
+    "incorrectKeyName": {
+      "title": "Nombre de clave incorrecto",
+      "tooShort": "El nombre de la clave es demasiado corto.",
+      "tooLong": "El nombre de la clave es demasiado largo.",
+      "invalid": "El nombre de la clave contiene caracteres no válidos."
+    },
+    "guardPhrase": {
+      "title": "Resguarde su frase de recuperación",
+      "body": "YSu frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Frase de respaldo incorrecta",
+      "body": "Es indispensable que escriba su frase de recuperación correctamente. Si algo le sucede a su wallet, la necesitará para recuperar su dinero. Por favor revise e intente nuevamente."
+    },
+    "phraseCopied": {
+      "title": "Copiado",
+      "body": "La frase de recuperación se ha copiado al portapapeles."
+    },
+    "passcode": {
+      "typeOldPasscode": "Escriba su contraseña anterior",
+      "typeNewPasscode": "Escriba su nueva contraseña",
+      "confirmNewPasscode": "Confirme su nueva contraseña",
+      "oldIncorrect": "El código de acceso anterior es incorrecto, intente nuevamente",
+      "notMatch": "La contraseña no coincide, intente nuevamente"
+    },
+    "verifyPasscode": {
+      "type": "Escribe tu contraseña",
+      "incorrected": "El código de acceso está incorrecto"
+    },
+    "touchSensor": {
+      "title": "Sensor tátil",
+      "usePasscode": "Usar contraseña"
     }
-  },
-
-  "Verify Your Phrase": "Verifica tu frase",
-  "Verify Phrase Success": "Frase verificada exitosamente",
-  "Verify Fingerprint": "Verifica su huella digital",
-  "Verify Passcode": "Verificar contraseña",
-  "Scan": "Escanear",
-  "Use Fingerprint": "Usar huella digital",
-  "Enter Old Passcode": "Ingrese su contraseña antigua",
-  "Enter New Passcode": "Ingrese su contraseña nueva",
-  "Confirm Passcode": "Confirmar contraseña",
-  "BACK TO SETTING": "VOLVER A LA CONFIGURACIÓN",
-  "Reset completed!": "¡Reinicio completado!",
-  "Safeguard your recovery phrase": "Resguarde su frase de recuperación",
-  "Safeguard your recovery phrase Text": "Su frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen.",
-  "Write down or copy these words": "Escriba o copie estas palabras",
-  "in the right order and save them": "en el orden correcto y guárdelos",
-  "somewhere safe": "un lugar seguro",
-  "verifyPhraseAlertTitle": "Es indispensable que escriba su frase de recuperación correctamente. Si algo le sucede a su wallet, la necesitará para recuperar su dinero. Por favor revise e intente nuevamente.",
-  "Tap each word in the correct order": "Toca cada palabra en el orden correcto",
-  "Your recovery phrase is verified": "Tu frase de recuperación está verificada",
-  "Be sure to store your recovery phrase in a safe and secure place": "Asegúrese de guardar su frase de recuperación en un muy lugar seguro",
-  "tip": "propina",
-  "Enter Passcode": "Introduce un código de acceso",
-  "Transfer Completed!": "¡Transferencia completada!",
-  "TransferText": "Su transacción está en proceso.",
-  "Use passcode": "Usar contraseña",
-  "Touch Sensor": "Sensor tátil",
-  "No match": "No coincide",
-  "Copied": "Copiado",
-  "The recovery phrase has been copied to clipboard": "La frase de recuperación se ha copiado al portapapeles.",
-  "The address has been copied to clipboard": "La dirección ha sido copiada al portapapeles.",
-  "Passcode Mismatch": "La contraseña no coincide",
-  "Passcode Mismatch Body": "Los dos códigos de acceso ingresados son diferentes. Inténtalo de nuevo.",
-  "Old Password": "Contraseña anterior",
-  "Old Password is wrong": "La contraseña anterior es incorrecta",
-  "Backup Phrase": "Frase de respaldo",
-  "Incorrect backup phrase": "Frase de respaldo incorrecta",
-  "Internal server error": "Error de servidor interno",
-  "Please contact customer support": "Por favor, póngase en contacto con atención al cliente.",
-  "Transfer is failed": "La transferencia ha fallado",
-  "You need more balance to complete the transfer": "Necesita más saldo para completar la transferencia",
-  "Sorry server timeout, try again": "Disculpe, el tiempo de espera se ha excedido, trate de nuevo",
-  "Click to view in explorer": "Haga clic para ver en el explorador",
-  "Powered by": "Powered by",
-  "Key deleted": "Clave eliminada",
-  "Key has been deleted successfully.": "La clave se ha eliminado con éxito.",
-  "Key name is too short.": "El nombre de la clave es demasiado corto.",
-  "Key name is too long.": "El nombre de la clave es demasiado largo.",
-  "Key name contains invalid characters.": "El nombre de la clave contiene caracteres no válidos.",
-  "Type your old passcode": "Escriba su contraseña anterior",
-  "Type your new passcode": "Escriba su nueva contraseña",
-  "Confirm your new passcode": "Confirme su nueva contraseña",
-  "Password not match, Try again": "La contraseña no coincide, intente nuevamente",
-  "Old Passcode is incorrect, try again": "El código de acceso anterior es incorrecto, intente nuevamente",
-  "Passcode not match, Try again": "La contraseña no coincide, intente nuevamente",
-  "Type your passcode": "Escribe tu contraseña",
-  "Passcode is incorrected": "El código de acceso está incorrecto",
-  "Is this correct?": "¿Es esto correcto?",
-  "You need more RBTC balance to complete the transfer": "Necesita más saldo RBTC para completar la transferencia",
-  "You need more RIF balance to complete the transfer": "Necesita más saldo RIF para completar la transferencia",
-  "Invalid amount": "Monto invalido",
-  "Amount is not valid": "El monto no es valido",
-  "Invalid address": "Dirección inválida",
-  "Address is not valid": "La direccion no es valida",
-  "Name is too short.": "El nombre es muy corto.",
-  "Name is too long.": "El nombre es demasiado largo.",
-  "Name contains invalid characters.": "Nombre contiene caracteres inválidos."
+  }
 }

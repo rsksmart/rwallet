@@ -9,11 +9,11 @@ class ResetPasscodeModal extends PureComponent {
   constructor(props) {
     super(props);
     this.flows = [
-      { index: 0, title: 'Type your old passcode' },
-      { index: 1, title: 'Type your new passcode' },
-      { index: 2, title: 'Confirm your new passcode' },
-      { index: 3, title: 'Old Passcode is incorrect, try again' },
-      { index: 4, title: 'Passcode not match, Try again' },
+      { index: 0, title: 'modal.passcode.typeOldPasscode' },
+      { index: 1, title: 'modal.passcode.typeNewPasscode' },
+      { index: 2, title: 'modal.passcode.confirmNewPasscode' },
+      { index: 3, title: 'modal.passcode.oldIncorrect' },
+      { index: 4, title: 'modal.passcode.notMatch' },
     ];
     this.flowIndex = 0;
     this.tempPasscode = '';
@@ -25,7 +25,7 @@ class ResetPasscodeModal extends PureComponent {
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
 
-  componentDidMount(): void {
+  componentDidMount() {
     this.passcode = global.passcode;
   }
 

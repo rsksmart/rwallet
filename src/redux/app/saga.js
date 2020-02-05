@@ -185,7 +185,6 @@ function* changeLanguageRequest(action) {
 
 function* renameRequest(action) {
   const { name } = action;
-  console.log('saga::renameRequest is triggered, name: ', name);
   try {
     settings.rename(name);
     yield put(actions.setSingleSettings('username', name));
@@ -194,13 +193,13 @@ function* renameRequest(action) {
     let notification = null;
     switch (err.message) {
       case 'err.nametooshort':
-        notification = createErrorNotification('Incorrect name', 'Name is too short.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.toShort');
         break;
       case 'err.nametoolong':
-        notification = createErrorNotification('Incorrect name', 'Name is too long.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooLong');
         break;
       case 'err.nameinvalid':
-        notification = createErrorNotification('Incorrect name', 'Name contains invalid characters.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
         notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);

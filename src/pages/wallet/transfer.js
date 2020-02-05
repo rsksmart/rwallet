@@ -513,8 +513,8 @@ class Transfer extends Component {
     const isAmountNumber = common.isAmount(amount);
     if (!isAmountNumber) {
       const notification = createErrorNotification(
-        'Invalid amount',
-        'Amount is not valid',
+        'modal.invalidAmount.title',
+        'modal.invalidAmount.body',
       );
       addNotification(notification);
       return false;
@@ -522,8 +522,8 @@ class Transfer extends Component {
     const isAddress = common.isWalletAddress(address, symbol, type);
     if (!isAddress) {
       const notification = createErrorNotification(
-        'Invalid address',
-        'Address is not valid',
+        'modal.invalidAddress.title',
+        'modal.invalidAddress.body',
       );
       addNotification(notification);
       return false;
@@ -558,43 +558,43 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
-      const buttonText = 'RETRY';
+      const buttonText = 'button.RETRY';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
           case 'err.notenoughbalance.rbtc':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RBTC balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRBTC',
               buttonText,
             );
             break;
           case 'err.notenoughbalance.rif':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RIF balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRIF',
               buttonText,
             );
             break;
           case 'err.notenoughbalance':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreBalance',
               buttonText,
             );
             break;
           case 'err.timeout':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'Sorry server timeout',
+              'modal.txFailed.title',
+              'modal.txFailed.serverTimeout',
               buttonText,
             );
             addNotification(notification);
             break;
           case 'err.customized':
             notification = createErrorNotification(
-              'Transfer is failed',
+              'modal.txFailed.title',
               message[1],
               buttonText,
             );
@@ -606,8 +606,8 @@ class Transfer extends Component {
       // Default error notification
       if (!notification) {
         notification = createErrorNotification(
-          'Transfer is failed',
-          'Please contact customer service',
+          'modal.txFailed.title',
+          'modal.txFailed.contactService',
           buttonText,
         );
       }
@@ -818,7 +818,7 @@ class Transfer extends Component {
                   )}
                 label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.Confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );

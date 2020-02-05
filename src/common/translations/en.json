@@ -77,6 +77,35 @@
         "note": "Type the recovery phrase(usually 12 words)",
         "advancedOptions": "Advanced Options",
         "specifyPath": "Specify derivation path"
+      },
+      "recoveryPhrase": {
+        "title": "Recovery Phrase",
+        "note1": "Write down or copy these words",
+        "note2": "in the right order and save them",
+        "note3": "somewhere safe"
+      },
+      "backupPhrase": {
+        "title": "Backup Phrase",
+        "note": "Tap each word in the correct order",
+        "isCorrect": "Is this correct?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Verify Phrase Success",
+        "body": "Your recovery phrase is verified",
+        "note": "Be sure to store your recovery phrase in a safe and secure place"
+      },
+      "verifyFingerprint": {
+        "title": "Verify Fingerprint",
+        "noMatch": "No match"
+      },
+      "scan": {
+        "title": "Scan"
+      },
+      "transferCompleted": {
+        "title": "Send",
+        "body": "Transfer Completed!",
+        "note": "Your transaction is on its way.",
+        "viewExplorer": "Click to view in explorer"
       }
     },
     "mine": {
@@ -123,6 +152,9 @@
         "title": "Your Name",
         "question": "What's your name?",
         "comment": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space"
+      },
+      "resetcompleted": {
+        "title": "Reset completed!"
       }
     },
     "earn": {
@@ -153,21 +185,22 @@
   },
   "button": {
     "save": "SAVE",
-    "next": "NEXT",
+    "NEXT": "NEXT",
     "gotIt": "GOT IT",
     "create": "CREATE",
     "CONFIRM": "COMFIRM",
     "RETRY": "RETRY",
     "IMPORT": "IMPORT",
-    "cancel": "Cancel",
     "Clear": "Clear",
-    "START OVER": "START OVER",
+    "startOver": "START OVER",
     "Copy": "Copy",
-    "confirm": "Confirm",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel",
     "Send All": "Send All",
     "Get Started": "Get Started",
     "goToWallet": "GO TO WALLET",
     "backToWallet": "BACK TO WALLET",
+    "backToSetting": "BACK TO SETTING",
     "Send": "Send",
     "Receive": "Receive",
     "Swap": "Swap"
@@ -180,6 +213,10 @@
     "Failed": "Failed"
   },
   "modal": {
+    "defaultError": {
+      "title": "Internal server error",
+      "body": "Please contact customer support"
+    },
     "unableRecover": {
       "title": "Unable to recover",
       "body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
@@ -191,78 +228,61 @@
     "tooManyPhrase": {
       "title": "Too Many Words",
       "body": "The recovery phrase has to be 12 words."
+    },
+    "txFailed": {
+      "title": "Transfer is failed",
+      "moreRBTC": "You need more RBTC balance to complete the transfer",
+      "moreRIF": "You need more RIF balance to complete the transfer",
+      "moreBalance": "You need more balance to complete the transfer",
+      "serverTimeout": "Sorry, server timeout",
+      "contactService": "Please contact customer service"
+    },
+    "invalidAmount": {
+      "title": "Invalid amount",
+      "body": "Amount is not valid"
+    },
+    "invalidAddress": {
+      "title": "Invalid address",
+      "body": "Address is not valid"
+    },
+    "incorrectName": {
+      "title": "Incorrect name",
+      "tooShort": "Name is too short.",
+      "tooLong": "Name is too long.",
+      "invalid": "Name contains invalid characters."
+    },
+    "incorrectKeyName": {
+      "title": "Incorrect key name",
+      "tooShort": "Key name is too short.",
+      "tooLong": "Key name is too long.",
+      "invalid": "Key name contains invalid characters."
+    },
+    "guardPhrase": {
+      "title": "Safeguard your recovery phrase",
+      "body": "Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Incorrect backup phrase",
+      "body": "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again."
+    },
+    "phraseCopied": {
+      "title": "Copied",
+      "body": "The recovery phrase has been copied to clipboard."
+    },
+    "passcode": {
+      "typeOldPasscode": "Type your old passcode",
+      "typeNewPasscode": "Type your new passcode",
+      "confirmNewPasscode": "Confirm your new passcode",
+      "oldIncorrect": "Old Passcode is incorrect, try again",
+      "notMatch": "Passcode not match, Try again"
+    },
+    "verifyPasscode": {
+      "type": "Type your passcode",
+      "incorrected": "passcode is incorrected"
+    },
+    "touchSensor": {
+      "title": "Touch Sensor",
+      "usePasscode": "Use passcode"
     }
-  },
-
-  "Verify Your Phrase": "Verify Your Phrase",
-  "Verify Phrase Success": "Verify Phrase Success",
-  "Verify Fingerprint": "Verify Fingerprint",
-  "Verify Passcode": "Verify Passcode",
-  "Scan": "Scan",
-  "Use Fingerprint": "Use Fingerprint",
-  "Enter Old Passcode": "Enter Old Passcode",
-  "Enter New Passcode": "Enter New Passcode",
-  "Confirm Passcode": "Confirm Passcode",
-  "BACK TO SETTING": "BACK TO SETTING",
-  "Reset completed!": "Reset completed!",
-  "Safeguard your recovery phrase": "Safeguard your recovery phrase",
-  "Safeguard your recovery phrase Text": "Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear.",
-  "Write down or copy these words": "Write down or copy these words",
-  "in the right order and save them": "in the right order and save them",
-  "somewhere safe": "somewhere safe",
-  "verifyPhraseAlertTitle": "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.",
-  "Tap each word in the correct order": "Tap each word in the correct order",
-  "Your recovery phrase is verified": "Your recovery phrase is verified",
-  "Be sure to store your recovery phrase in a safe and secure place": "Be sure to store your recovery phrase in a safe and secure place",
-  "tip": "tip",
-  "Enter Passcode": "Enter Passcode",
-  "Transfer Completed!": "Transfer Completed!",
-  "TransferText": "Your transaction is on its way.",
-  "Use passcode": "Use passcode",
-  "Touch Sensor": "Touch Sensor",
-  "No match": "No match",
-  "Copied": "Copied",
-  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
-  "The address has been copied to clipboard": "The address has been copied to clipboard.",
-  "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
-  "Passcode Mismatch": "Passcode Mismatch",
-  "Passcode Mismatch Body": "The two passcodes entered are different. Please try again.",
-  "Old Password": "Old Password",
-  "Old Password is wrong": "Old Password is wrong",
-  "Backup Phrase": "Backup Phrase",
-  "Incorrect backup phrase": "Incorrect backup phrase",
-  "What do you call this key?": "What do you call this key?",
-  "You can change the name displayed on the device below": "You can change the name displayed on the device below.",
-  "There is no transaction found in this wallet": "There is no transaction found in this wallet.",
-  "Internal server error": "Internal server error",
-  "Please contact customer support": "Please contact customer support.",
-  "Transfer is failed": "Transfer is failed",
-  "You need more balance to complete the transfer": "You need more balance to complete the transfer",
-  "Sorry server timeout": "Sorry server timeout",
-  "Click to view in explorer": "Click to view in explorer",
-  "Powered by": "Powered by",
-  "Key deleted": "Key deleted",
-  "Key has been deleted successfully.": "Key has been deleted successfully.",
-  "Key name is too short.": "Key name is too short.",
-  "Key name is too long.": "Key name is too long.",
-  "Key name contains invalid characters.": "Key name contains invalid characters.",
-  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space",
-  "Type your old passcode": "Type your old passcode",
-  "Type your new passcode": "Type your new passcode",
-  "Confirm your new passcode": "Confirm your new passcode",
-  "Password not match, Try again": "Password not match, Try again",
-  "Old Passcode is incorrect, try again": "Old Passcode is incorrect, try again",
-  "Passcode not match, Try again": "Passcode not match, Try again",
-  "Type your passcode": "Type your passcode",
-  "Passcode is incorrected": "Passcode is incorrected",
-  "Is this correct?": "Is this correct?",
-  "You need more RBTC balance to complete the transfer": "You need more RBTC balance to complete the transfer",
-  "You need more RIF balance to complete the transfer": "You need more RIF balance to complete the transfer",
-  "Invalid amount": "Invalid amount",
-  "Amount is not valid": "Amount is not valid",
-  "Invalid address": "Invalid address",
-  "Address is not valid": "Address is not valid",
-  "Name is too short.": "Name is too short.",
-  "Name is too long.": "Name is too long.",
-  "Name contains invalid characters.": "Name contains invalid characters."
+  }
 }

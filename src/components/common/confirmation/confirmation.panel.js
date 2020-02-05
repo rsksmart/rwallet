@@ -117,6 +117,6 @@ ConfirmationPanel.propTypes = {
 ConfirmationPanel.defaultProps = {
   onClosePress: null,
   confirmationCallback: null,
-  comfirmText: 'button.confirm',
-  cancelText: 'button.cancel',
+  comfirmText: 'button.Confirm',
+  cancelText: 'button.Cancel',
 };

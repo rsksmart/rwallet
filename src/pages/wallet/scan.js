@@ -250,7 +250,7 @@ export default class Scan extends Component {
       return (
         <View style={[flex.flex1]}>
           <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Loc style={[styles.headerTitle]} text="Scan" />
+            <Loc style={[styles.headerTitle]} text="page.wallet.scan.title" />
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => {

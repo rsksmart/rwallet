@@ -77,6 +77,34 @@
         "note": "输入恢复助记词（通常是12个单词）",
         "advancedOptions": "高级选项",
         "specifyPath": "指定派生路径"
+      },
+      "recoveryPhrase": {
+        "title": "恢复助记词",
+        "note1": "写下或复制这些助记词",
+        "note2": "按顺序保存记录并保存它们",
+        "note3": "到安全的地方"
+      },
+      "backupPhrase": {
+        "title": "备份助记词",
+        "note": "按顺序点击助记词标签",
+        "isCorrect": "这是正确的助记词？"
+      },
+      "verifyPhraseSuccess": {
+        "title": "验证助记词成功",
+        "body": "您的助记词正确",
+        "note": "请将助记词保存到安全的地方"
+      },
+      "verifyFingerprint": {
+        "title": "验证指纹"
+      },
+      "scan": {
+        "title": "扫码"
+      },
+      "transferCompleted": {
+        "title": "发送",
+        "body": "转账成功！",
+        "note": "您的转账正在进行中。",
+        "viewExplorer": "单击以在浏览器中查看"
       }
     },
     "mine": {
@@ -123,6 +151,9 @@
         "title": "名字",
         "question": "名字是什么？",
         "comment": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+      },
+      "resetcompleted": {
+        "title": "重置成功！"
       }
     },
     "earn": {
@@ -153,21 +184,22 @@
   },
   "button": {
     "save": "保存",
-    "next": "下一步",
+    "NEXT": "下一步",
     "gotIt": "好的",
     "create": "创建",
     "CONFIRM": "确认",
     "RETRY": "重试",
     "IMPORT": "导入",
-    "cancel": "取消",
     "Clear": "清除",
     "START OVER": "重新开始",
     "Copy": "复制",
-    "confirm": "确认",
+    "Confirm": "确认",
+    "Cancel": "取消",
     "Send All": "全部发送",
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
     "backToWallet": "查看钱包",
+    "backToSetting": "回到设置",
     "Send": "发送",
     "Receive": "接收",
     "Swap": "交换"
@@ -191,77 +223,61 @@
     "tooManyPhrase": {
       "title": "单词太多",
       "body": "已经超过了12个单词了。"
+    },
+    "txFailed": {
+      "title": "转账失败",
+      "moreRBTC": "您需要更多RBTC余额才能完成转帐",
+      "moreRIF": "您需要更多RIF余额才能完成转帐",
+      "moreBalance": "您需要更多余额才能完成转帐",
+      "serverTimeout": "抱歉，服务器超时",
+      "contactService": "请您联系客服"
+    },
+    "invalidAmount": {
+      "title": "不合法的数额",
+      "body": "数额不合法"
+    },
+    "invalidAddress": {
+      "title": "不合法的地址",
+      "body": "地址不合法"
+    },
+    "incorrectName": {
+      "title": "不正确的名字",
+      "tooShort": "密钥名字太短。",
+      "tooLong": "密钥名字太长。",
+      "invalid": "密钥名字含有不合法字符。"
+    },
+    "incorrectKeyName": {
+      "title": "不正确的密钥名字",
+      "tooShort": "密钥名字太短。",
+      "tooLong": "密钥名字太长。",
+      "invalid": "密钥名字含有不合法字符。"
+    },
+    "guardPhrase": {
+      "title": "保管好你的助记词",
+      "body": "你的助记词包含12个随机单词，请按顺序记录下来。"
+    },
+    "incorrectBackupPhrase": {
+      "title": "备份助记词不正确",
+      "body": "正确地记录助记词非常重要，它可以恢复您的钱包，请检查后重试。"
+    },
+    "phraseCopied": {
+      "title": "已复制",
+      "body": "助记词已复制。"
+    },
+    "passcode": {
+      "typeOldPasscode": "输入您的旧密码",
+      "typeNewPasscode": "输入新密码",
+      "confirmNewPasscode": "确认新密码",
+      "oldIncorrect": "旧密码不正确，请重试",
+      "notMatch": "密码不匹配，请重试"
+    },
+    "verifyPasscode": {
+      "type": "输入密码",
+      "incorrected": "密码不正确"
+    },
+    "touchSensor": {
+      "title": "指纹验证",
+      "usePasscode": "使用密码验证"
     }
-  },
-
-
-  "Verify Your Phrase": "验证助记词",
-  "Verify Phrase Success": "验证助记词成功",
-  "Verify Fingerprint": "验证指纹",
-  "Verify Passcode": "验证密码",
-  "Scan": "扫码",
-  "Use Fingerprint": "使用指纹验证",
-  "Enter Old Passcode": "请输入旧密码",
-  "Enter New Passcode": "请输入新密码",
-  "Confirm Passcode": "重复新密码",
-  "BACK TO SETTING": "回到设置",
-  "Reset completed!": "重置成功！",
-  "Safeguard your recovery phrase": "保管好你的助记词",
-  "Safeguard your recovery phrase Text": "你的助记词包含12个随机单词，请按顺序记录下来.",
-  "Write down or copy these words": "写下或复制这些助记词",
-  "in the right order and save them": "按顺序保存记录并保存它们",
-  "somewhere safe": "到安全的地方",
-  "verifyPhraseAlertTitle": "正确地记录助记词非常重要，它可以恢复您的钱包，请检查后重试。",
-  "Tap each word in the correct order": "按顺序点击助记词标签",
-  "Your recovery phrase is verified": "您的助记词正确",
-  "Be sure to store your recovery phrase in a safe and secure place": "请将助记词保存到安全的地方",
-  "tip": "提示",
-  "Enter Passcode": "输入密码",
-  "Transfer Completed!": "转账成功！",
-  "TransferText": "您的转账正在进行中。",
-  "View Complete Terms Of Use": "查看完成协议",
-  "Use passcode": "使用密码验证",
-  "Touch Sensor": "指纹验证",
-  "No match": "指纹不匹配",
-  "Copied": "已复制",
-  "The recovery phrase has been copied to clipboard": "助记词已复制",
-  "The address has been copied to clipboard": "地址已复制",
-  "Passcode Mismatch": "密码不匹配",
-  "Passcode Mismatch Body": "两次输入密码不匹配。请重试。",
-  "Old Password": "旧密码",
-  "Old Password is wrong": "旧密码不正确",
-  "Backup Phrase": "备份助记词",
-  "Incorrect backup phrase": "备份助记词不正确",
-  "SAVE": "保存",
-  "wallets": "钱包",
-  "Internal server error": "内部服务器错误",
-  "Please contact customer support": "请联系客服。",
-  "Transfer is failed": "转账失败",
-  "You need more balance to complete the transfer": "您需要更多余额才能完成转帐",
-  "Sorry server timeout": "抱歉，服务器超时",
-  "Click to view in explorer": "单击以在浏览器中查看",
-  "Powered by": "Powered by",
-  "Key deleted": "密钥已删除",
-  "Key has been deleted successfully.": "密钥已成功删除。",
-  "Key name is too short.": "密钥名字太短。",
-  "Key name is too long.": "密钥名字太长。",
-  "Key name contains invalid characters.": "密钥名字含有不合法字符",
-  "Type your old passcode": "输入您的旧密码",
-  "Type your new passcode": "输入新密码",
-  "Confirm your new passcode": "确认新密码",
-  "Password not match, Try again": "密码不匹配，请重试",
-  "Old Passcode is incorrect, try again": "旧密码不正确，请重试",
-  "Passcode not match, Try again": "密码不匹配，请重试",
-  "Type your passcode": "输入密码",
-  "Passcode is incorrected": "密码不正确",
-  "Is this correct?": "这是正确的助记词？",
-  "You need more RBTC balance to complete the transfer": "您需要更多RBTC余额才能完成转帐",
-  "You need more RIF balance to complete the transfer": "您需要更多RIF余额才能完成转帐",
-  "Invalid amount": "不合法的数额",
-  "Amount is not valid": "数额不合法",
-  "Invalid address": "不合法的地址",
-  "Address is not valid": "地址不合法",
-  "Name is too short.": "名字太短了。",
-  "Name is too long.": "名字太长了。",
-  "Name contains invalid characters.": "名字包含不合法字符。"
+  }
 }
