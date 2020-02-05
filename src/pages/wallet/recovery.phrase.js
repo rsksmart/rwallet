@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   View, TouchableOpacity, StyleSheet, Clipboard,
 } from 'react-native';
-import { randomBytes } from 'react-native-randombytes';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
@@ -12,6 +11,7 @@ import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import common from '../../common/common';
 
 const bip39 = require('bip39');
 
@@ -61,7 +61,7 @@ class RecoveryPhrase extends Component {
 
       // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
       if (shouldCreatePhrase) {
-        const entropy = await this.getRandom(16);
+        const entropy = await common.getRandom(16);
         this.phrase = bip39.entropyToMnemonic(entropy);
       } else {
         this.phrase = phrase;
@@ -92,11 +92,6 @@ class RecoveryPhrase extends Component {
       );
       addNotification(notification);
     }
-
-    getRandom = (count) => new Promise((resolve, reject) => randomBytes(count, (err, bytes) => {
-      if (err) reject(err);
-      else resolve(bytes);
-    }));
 
     render() {
       const { phrases } = this.state;
