@@ -211,6 +211,10 @@
     "Failed": "Falhou"
   },
   "modal": {
+    "defaultError": {
+      "title": "Erro do Servidor Interno",
+      "body": "Entre em contato com o suporte ao cliente."
+    },
     "unableRecover": {
       "title": "Não foi possível recuperar",
       "body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta."

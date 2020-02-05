@@ -211,6 +211,10 @@
     "Failed": "Ha fallado"
   },
   "modal": {
+    "defaultError": {
+      "title": "Error de servidor interno",
+      "body": "Por favor, póngase en contacto con atención al cliente."
+    },
     "unableRecover": {
       "title": "Incapaz de recuperarse",
       "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."

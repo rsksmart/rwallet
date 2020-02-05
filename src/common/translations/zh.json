@@ -212,6 +212,10 @@
     "Failed": "失败"
   },
   "modal": {
+    "defaultError": {
+      "title": "内部服务器错误",
+      "body": "请联系客服。"
+    },
     "unableRecover": {
       "title": "不能备份",
       "body": "不能通过您的助记词导入钱包，请确保正确输入助记词。"
@@ -279,5 +283,5 @@
       "title": "指纹验证",
       "usePasscode": "使用密码验证"
     }
-  }
+  },
 }

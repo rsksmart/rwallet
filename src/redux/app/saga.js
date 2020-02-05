@@ -19,8 +19,8 @@ import ParseHelper from '../../common/parse';
 import { createErrorNotification } from '../../common/notification.controller';
 
 // Define default error notification text
-const DEFAULT_ERROR_NOTIFICATION_TITLE = 'Internal server error';
-const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'Please contact customer support';
+const DEFAULT_ERROR_NOTIFICATION_TITLE = 'modal.defaultError.title';
+const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'modal.defaultError.body';
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
