@@ -107,7 +107,7 @@ class Transaction extends Component {
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: strings('No memo'),
+      memo: rawTransaction.memo || strings('No memo'),
       title: `${transation.state} Funds`,
     };
   }
