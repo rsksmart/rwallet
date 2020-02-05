@@ -58,6 +58,7 @@
         "slideConfirm": "Deslice para confirmar"
       },
       "add": {
+        "title": "Agregar Wallet",
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
         "importWallet": "Importar Wallet existente",
@@ -67,6 +68,15 @@
         "title": "Seleccionar moneda de Wallet",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Seleccionar billetera"
+      },
+      "recoveryPhrase": {
+        "title": "Frase de recuperación",
+        "note": "La frase de recuperación tiene que ser exactamente de 12 palabras.",
+        "advancedOptions": "Opciones avanzadas",
+        "specifyPath": "Especificar ruta de derivación"
       }
     },
     "mine": {
@@ -169,7 +179,6 @@
     "Failed": "Ha fallado"
   },
 
-  "Recovery Phrase": "Frase de recuperación",
   "Verify Your Phrase": "Verifica tu frase",
   "Verify Phrase Success": "Frase verificada exitosamente",
   "Verify Fingerprint": "Verifica su huella digital",
@@ -202,9 +211,6 @@
   "The address has been copied to clipboard": "La dirección ha sido copiada al portapapeles.",
   "Type the recovery phrase(usually 12 words)": "Escriba la frase de recuperación (generalmente 12 palabras)",
   "Too Many Words": "Demasiadas palabras",
-  "The recovery phrase has to be 12 words": "La frase de recuperación tiene que ser exactamente de 12 palabras.",
-  "Advanced Options": "Opciones avanzadas",
-  "Specify derivation path": "Especificar ruta de derivación",
   "Passcode Mismatch": "La contraseña no coincide",
   "Passcode Mismatch Body": "Los dos códigos de acceso ingresados son diferentes. Inténtalo de nuevo.",
   "Old Password": "Contraseña anterior",
@@ -243,7 +249,6 @@
   "Name is too short.": "El nombre es muy corto.",
   "Name is too long.": "El nombre es demasiado largo.",
   "Name contains invalid characters.": "Nombre contiene caracteres inválidos.",
-  "Select Wallet": "Seleccionar billetera",
   "Duplicate Phrase": "Frase duplicada",
   "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
 }

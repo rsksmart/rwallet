@@ -213,9 +213,9 @@ class WalletRecovery extends Component {
         >
           <View style={styles.wapper}>
             <ScrollView>
-              <Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />
+              <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
               <View style={styles.body}>
-                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+                <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
                 <View style={styles.phraseView}>
                   <TextInput
                     autoFocus // If true, focuses the input on componentDidMount. The default value is false.
@@ -242,8 +242,8 @@ class WalletRecovery extends Component {
                   </View>
                 </View>
                 <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Loc style={[styles.sectionTitle]} text="Advanced Options" />
-                  <SwitchListItem title={strings('Specify derivation path')} value={false} />
+                  <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
+                  <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
                 </View>
               </View>
             </ScrollView>

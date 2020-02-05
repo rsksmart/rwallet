@@ -50,7 +50,7 @@ class WalletAddIndex extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Add Wallet" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>

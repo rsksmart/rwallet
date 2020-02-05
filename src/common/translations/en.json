@@ -58,6 +58,7 @@
         "slideConfirm": "Slide to confirm"
       },
       "add": {
+        "title": "Add Wallet",
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
         "importWallet": "Import existing Wallet",
@@ -67,6 +68,15 @@
         "title": "Select Wallet Currency",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Select Wallet"
+      },
+      "recoveryPhrase": {
+        "title": "Recovery Phrase",
+        "note": "The recovery phrase has to be 12 words.",
+        "advancedOptions": "Advanced Options",
+        "specifyPath": "Specify derivation path"
       }
     },
     "mine": {
@@ -169,8 +179,6 @@
     "Receiving": "Receiving",
     "Failed": "Failed"
   },
-
-  "Recovery Phrase": "Recovery Phrase",
   "Verify Your Phrase": "Verify Your Phrase",
   "Verify Phrase Success": "Verify Phrase Success",
   "Verify Fingerprint": "Verify Fingerprint",
@@ -203,9 +211,6 @@
   "The address has been copied to clipboard": "The address has been copied to clipboard.",
   "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
   "Too Many Words": "Too Many Words",
-  "The recovery phrase has to be 12 words": "The recovery phrase has to be 12 words.",
-  "Advanced Options": "Advanced Options",
-  "Specify derivation path": "Specify derivation path",
   "Passcode Mismatch": "Passcode Mismatch",
   "Passcode Mismatch Body": "The two passcodes entered are different. Please try again.",
   "Old Password": "Old Password",
@@ -248,7 +253,6 @@
   "Name is too short.": "Name is too short.",
   "Name is too long.": "Name is too long.",
   "Name contains invalid characters.": "Name contains invalid characters.",
-  "Select Wallet": "Select Wallet",
   "Duplicate Phrase": "Duplicate Phrase",
   "This phrase is already imported in the app. Please try with a different phrase.": "This phrase is already imported in the app. Please try with a different phrase."
 }

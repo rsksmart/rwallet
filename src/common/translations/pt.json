@@ -58,6 +58,7 @@
         "slideConfirm": "Deslize para confirmar"
       },
       "add": {
+        "title": "Adicionar carteira",
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
@@ -67,6 +68,15 @@
         "title": "Selecionar moeda da carteira",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Selecionar carteira"
+      },
+      "recoveryPhrase": {
+        "title": "Frase de recuperação",
+        "note": "A frase de recuperação deve conter 12 palavras.",
+        "advancedOptions": "Opções avançadas",
+        "specifyPath": "Especificar caminho de derivação"
       }
     },
     "mine": {
@@ -169,7 +179,6 @@
     "Failed": "Falhou"
   },
 
-  "Recovery Phrase": "Frase de recuperação",
   "Verify Your Phrase": "Verifique sua frase",
   "Verify Phrase Success": "Verifique o sucesso da frase",
   "Verify Fingerprint": "Verificar impressão digital",
@@ -204,9 +213,6 @@
   "The address has been copied to clipboard": "O endereço foi copiado para a área de transferência.",
   "Type the recovery phrase(usually 12 words)": "Digite a frase de recuperação (geralmente 12 palavras)",
   "Too Many Words": "Muitas palavras",
-  "The recovery phrase has to be 12 words": "A frase de recuperação deve conter 12 palavras.",
-  "Advanced Options": "Opções avançadas",
-  "Specify derivation path": "Especificar caminho de derivação",
   "Passcode Mismatch": "Incompatibilidade da senha",
   "Passcode Mismatch Body": "Os dois códigos digitados são diferentes. Por favor, tente novamente.",
   "Old Password": "Senha Antiga",
@@ -245,7 +251,6 @@
   "Name is too short.": "Nome muito curto.",
   "Name is too long.": "O nome é muito longo.",
   "Name contains invalid characters.": "O nome contém caracteres inválidos.",
-  "Select Wallet": "Selecionar carteira",
   "Duplicate Phrase": "Frase duplicada",
   "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase já foi importada no aplicativo. Por favor, tente com uma frase diferente."
 }

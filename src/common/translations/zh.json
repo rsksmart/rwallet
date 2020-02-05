@@ -58,6 +58,7 @@
         "slideConfirm": "滑动以确认"
       },
       "add": {
+        "title": "创建钱包",
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
@@ -67,6 +68,15 @@
         "title": "选择钱包类型",
         "mainnet": "正式网络",
         "testnet": "测试网络"
+      },
+      "selectWallet": {
+        "title": "选择钱包"
+      },
+      "recoveryPhrase": {
+        "title": "恢复助记词",
+        "note": "已经超过了12个单词了。",
+        "advancedOptions": "高级选项",
+        "specifyPath": "指定派生路径"
       }
     },
     "mine": {
@@ -170,7 +180,6 @@
     "Failed": "失败"
   },
 
-  "Recovery Phrase": "恢复助记词",
   "Verify Your Phrase": "验证助记词",
   "Verify Phrase Success": "验证助记词成功",
   "Verify Fingerprint": "验证指纹",
@@ -204,9 +213,6 @@
   "The address has been copied to clipboard": "地址已复制",
   "Type the recovery phrase(usually 12 words)": "输入恢复助记词（通常是12个单词）",
   "Too Many Words": "单词太多",
-  "The recovery phrase has to be 12 words": "已经超过了12个单词了。",
-  "Advanced Options": "高级选项",
-  "Specify derivation path": "指定派生路径",
   "Passcode Mismatch": "密码不匹配",
   "Passcode Mismatch Body": "两次输入密码不匹配。请重试。",
   "Old Password": "旧密码",
@@ -247,7 +253,6 @@
   "Name is too short.": "名字太短了。",
   "Name is too long.": "名字太长了。",
   "Name contains invalid characters.": "名字包含不合法字符。",
-  "Select Wallet": "选择钱包",
   "Duplicate Phrase": "重复的助记词",
   "This phrase is already imported in the app. Please try with a different phrase.": "此助记词已导入到应用程序中，请尝试使用其他短语。"
 }
