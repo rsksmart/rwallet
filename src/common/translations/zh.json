@@ -19,11 +19,38 @@
       }
     },
     "wallet": {
+      "list": {
+        "title": "钱包",
+        "myAssets": "我的资产",
+        "allAssets": "所有资产",
+        "addAsset": "新增"
+      },
+      "history": {
+        "noTransNote": "此钱包还没有任何交易。",
+        "recent": "最近的"
+      },
+      "transaction": {
+        "Sent Funds": "已发送资金",
+        "Received Funds": "已接收资金",
+        "Sending Funds": "发送中资金",
+        "Receiving Funds": "接收中资金",
+        "date": "日期",
+        "confirmations": "确认",
+        "memo": "备注",
+        "noMemo": "无备注",
+        "transactionID": "交易ID",
+        "viewOnChain": "在区块链上查看"
+      },
       "add": {
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
         "importWalletNote": "使用助记词导入"
+      },
+      "selectCurrency": {
+        "title": "选择钱包类型",
+        "mainnet": "正式网络",
+        "testnet": "测试网络"
       }
     },
     "mine": {
@@ -102,7 +129,7 @@
     "save": "保存",
     "next": "下一步",
     "gotIt": "好的",
-    "CREATE": "创建",
+    "create": "创建",
     "CONFIRM": "确认",
     "RETRY": "重试",
     "IMPORT": "导入",
@@ -110,28 +137,28 @@
     "Clear": "清除",
     "START OVER": "重新开始",
     "Copy": "复制",
-    "Swap": "交换",
     "confirm": "确认",
     "Send All": "全部发送",
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
-    "backToWallet": "查看钱包"
+    "backToWallet": "查看钱包",
+    "send": "发送",
+    "receive": "接收",
+    "swap": "交换"
+  },
+  "txState": {
+    "Sent": "已发送",
+    "Sending": "发送中",
+    "Received": "已接收",
+    "Receiving": "接收中"
   },
 
-  "Add Wallet": "创建钱包",
-  "Select Wallet Currency": "选择钱包类型",
   "Recovery Phrase": "恢复助记词",
   "Verify Your Phrase": "验证助记词",
   "Verify Phrase Success": "验证助记词成功",
   "Verify Fingerprint": "验证指纹",
   "Verify Passcode": "验证密码",
   "Scan": "扫码",
-  "Your Wallet": "钱包",
-  "My Assets": "我的资产",
-  "All Assets": "所有资产",
-  "Add Asset": "新增",
-  "Mainnet": "正式网络",
-  "Testnet": "测试网络",
   "Use Fingerprint": "使用指纹验证",
   "Enter Old Passcode": "请输入旧密码",
   "Enter New Passcode": "请输入新密码",
@@ -139,12 +166,6 @@
   "BACK TO SETTING": "回到设置",
   "Reset completed!": "重置成功！",
   "Address": "地址",
-  "Receive": "接收",
-  "Receiving": "接收中",
-  "Send": "发送",
-  "Sent": "已发送",
-  "Sending": "发送中",
-  "Received": "已接收",
   "To": "接收地址",
   "Memo (optional)": "备注（可选）",
   "Miner fee": "费用",
@@ -188,10 +209,8 @@
   "Unable to recover Body": "不能通过您的助记词导入钱包，请确保正确输入助记词。",
   "SAVE": "保存",
   "wallets": "钱包",
-  "There is no transaction found in this wallet": "此钱包还没有任何交易",
   "Internal server error": "内部服务器错误",
   "Please contact customer support": "请联系客服。",
-  "Recent": "最近的",
   "Transfer is failed": "转账失败",
   "You need more balance to complete the transfer": "您需要更多余额才能完成转帐",
   "Sorry server timeout": "抱歉，服务器超时",
@@ -215,15 +234,6 @@
   "Passcode is incorrected": "密码不正确",
   "Failed": "失败",
   "Is this correct?": "这是正确的助记词？",
-  "Sent Funds": "已发送资金",
-  "Received Funds": "已接收资金",
-  "Sending Funds": "发送中资金",
-  "Receiving Funds": "接收中资金",
-  "Date": "日期",
-  "Confirmations": "确认",
-  "Memo": "备注",
-  "Transaction ID": "交易ID",
-  "No memo": "无备注",
   "You need more RBTC balance to complete the transfer": "您需要更多RBTC余额才能完成转帐",
   "You need more RIF balance to complete the transfer": "您需要更多RIF余额才能完成转帐",
   "Invalid amount": "不合法的数额",

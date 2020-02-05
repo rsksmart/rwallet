@@ -19,11 +19,38 @@
       }
     },
     "wallet": {
+      "list": {
+        "title": "Your Wallet",
+        "myAssets": "My Assets",
+        "allAssets": "All Assets",
+        "addAsset": "Add Asset"
+      },
+      "history": {
+        "noTransNote": "There is no transaction found in this wallet",
+        "recent": "Recent"
+      },
+      "transaction": {
+        "Sent Funds": "Sent Funds",
+        "Received Funds": "Received Funds",
+        "Sending Funds": "Sending Funds",
+        "Receiving Funds": "Receiving Funds",
+        "date": "Date",
+        "confirmations": "Confirmations",
+        "memo": "Memo",
+        "noMemo": "No memo",
+        "transactionID": "Transaction ID",
+        "viewOnChain": "View on blockchain"
+      },
       "add": {
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
         "importWallet": "Import existing Wallet",
         "importWalletNote": "Recover your wallet using your passphrase"
+      },
+      "selectCurrency": {
+        "title": "Select Wallet Currency",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       }
     },
     "mine": {
@@ -110,28 +137,28 @@
     "Clear": "Clear",
     "START OVER": "START OVER",
     "Copy": "Copy",
-    "Swap": "Swap",
     "confirm": "confirm",
     "Send All": "Send All",
     "Get Started": "Get Started",
     "goToWallet": "GO TO WALLET",
-    "backToWallet": "BACK TO WALLET"
+    "backToWallet": "BACK TO WALLET",
+    "send": "Send",
+    "receive": "Receive",
+    "swap": "Swap"
+  },
+  "txState": {
+    "Sent": "Sent",
+    "Sending": "Sending",
+    "Received": "Received",
+    "Receiving": "Receiving"
   },
 
-  "Add Wallet": "Add Wallet",
-  "Select Wallet Currency": "Select Wallet Currency",
   "Recovery Phrase": "Recovery Phrase",
   "Verify Your Phrase": "Verify Your Phrase",
   "Verify Phrase Success": "Verify Phrase Success",
   "Verify Fingerprint": "Verify Fingerprint",
   "Verify Passcode": "Verify Passcode",
   "Scan": "Scan",
-  "Your Wallet": "Your Wallet",
-  "My Assets": "My Assets",
-  "All Assets": "All Assets",
-  "Add Asset": "Add Asset",
-  "Mainnet": "Mainnet",
-  "Testnet": "Testnet",
   "Use Fingerprint": "Use Fingerprint",
   "Enter Old Passcode": "Enter Old Passcode",
   "Enter New Passcode": "Enter New Passcode",
@@ -139,12 +166,6 @@
   "BACK TO SETTING": "BACK TO SETTING",
   "Reset completed!": "Reset completed!",
   "Address": "Address",
-  "Receive": "Receive",
-  "Receiving": "Receiving",
-  "Send": "Send",
-  "Sent": "Sent",
-  "Sending": "Sending",
-  "Received": "Received",
   "To": "To",
   "Memo (optional)": "Memo (optional)",
   "Miner fee": "Miner fee",
@@ -190,7 +211,6 @@
   "There is no transaction found in this wallet": "There is no transaction found in this wallet.",
   "Internal server error": "Internal server error",
   "Please contact customer support": "Please contact customer support.",
-  "Recent": "Recent",
   "Transfer is failed": "Transfer is failed",
   "You need more balance to complete the transfer": "You need more balance to complete the transfer",
   "Sorry server timeout": "Sorry server timeout",
@@ -216,15 +236,6 @@
   "Failed": "Failed",
   "Anonymous User": "Anonymous User",
   "Is this correct?": "Is this correct?",
-  "Sent Funds": "Sent Funds",
-  "Received Funds": "Received Funds",
-  "Sending Funds": "Sending Funds",
-  "Receiving Funds": "Receving Funds",
-  "Date": "Date",
-  "Confirmations": "Confirmations",
-  "Memo": "Memo",
-  "Transaction ID": "Transaction ID",
-  "No memo": "No memo",
   "You need more RBTC balance to complete the transfer": "You need more RBTC balance to complete the transfer",
   "You need more RIF balance to complete the transfer": "You need more RIF balance to complete the transfer",
   "Invalid amount": "Invalid amount",

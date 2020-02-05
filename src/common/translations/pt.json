@@ -19,11 +19,38 @@
       }
     },
     "wallet": {
+      "list": {
+        "title": "Sua carteira",
+        "myAssets": "Meus ativos",
+        "allAssets": "Todos os ativos",
+        "addAsset": "Adicionar ativo"
+      },
+      "history": {
+        "noTransNote": "Não há transações encontradas nesta carteira.",
+        "recent": "Recente"
+      },
+      "transaction": {
+        "Sent Funds": "Fundos enviados",
+        "Received Funds": "Fundos Recebidos",
+        "Sending Funds": "Envio de fundos",
+        "Receiving Funds": "Recebimento de fundos",
+        "date": "Encontro",
+        "confirmations": "Confirmações",
+        "memo": "Memorando",
+        "noMemo": "Nenhuma nota",
+        "transactionID": "ID da transação",
+        "viewOnChain": "Ver na blockchain"
+      },
       "add": {
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
         "importWalletNote": "Recupere sua carteira usando sua senha"
+      },
+      "selectCurrency": {
+        "title": "Selecionar moeda da carteira",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       }
     },
     "mine": {
@@ -102,7 +129,7 @@
     "save": "GUARDAR",
     "next": "PRÓXIMO",
     "gotIt": "ENTENDI",
-    "CREATE": "CRIO",
+    "create": "CRIO",
     "CONFIRM": "CONFIRME",
     "RETRY": "RETRY",
     "IMPORT": "IMPORTAR",
@@ -110,27 +137,27 @@
     "Clear": "Claro",
     "START OVER": "RECOMEÇAR",
     "Copy": "cópia de",
-    "Swap": "Troca",
     "confirm": "confirme",
     "Send All": "Envie todos",
     "goToWallet": "IR PARA A CARTEIRA",
-    "backToWallet": "VOLTAR À CARTEIRA"
+    "backToWallet": "VOLTAR À CARTEIRA",
+    "send": "Mandar",
+    "receive": "Receber",
+    "swap": "Troca"
+  },
+  "txState": {
+    "Sent": "Enviei",
+    "Sending": "Enviando",
+    "Received": "Recebido",
+    "Receiving": "Recebendo"
   },
 
-  "Add Wallet": "Adicionar carteira",
-  "Select Wallet Currency": "Selecionar moeda da carteira",
   "Recovery Phrase": "Frase de recuperação",
   "Verify Your Phrase": "Verifique sua frase",
   "Verify Phrase Success": "Verifique o sucesso da frase",
   "Verify Fingerprint": "Verificar impressão digital",
   "Verify Passcode": "Verificar código de acesso",
   "Scan": "Varredura",
-  "Your Wallet": "Sua carteira",
-  "My Assets": "Meus ativos",
-  "All Assets": "Todos os ativos",
-  "Add Asset": "Adicionar ativo",
-  "Mainnet": "Mainnet",
-  "Testnet": "Testnet",
   "Two-Factor Authentication": "Autenticação de dois fatores",
   "Currency": "Moeda",
   "Use Fingerprint": "Usar impressão digital",
@@ -140,12 +167,6 @@
   "BACK TO SETTING": "VOLTAR À CONFIGURAÇÃO",
   "Reset completed!": "Redefinição concluída!",
   "Address": "Endereço",
-  "Receive": "Receber",
-  "Receiving": "Recebendo",
-  "Send": "Mandar",
-  "Sent": "Enviei",
-  "Sending": "Enviando",
-  "Received": "Recebido",
   "To": "Para",
   "Memo (optional)": "Memorando (opcional)",
   "Miner fee": "Taxa do mineiro",
@@ -186,10 +207,8 @@
   "Incorrect backup phrase": "Frase de backup incorreta",
   "Unable to recover": "Não foi possível recuperar",
   "Unable to recover Body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta.",
-  "There is no transaction found in this wallet": "Não há transações encontradas nesta carteira.",
   "Internal server error": "Erro do Servidor Interno",
   "Please contact customer support": "Entre em contato com o suporte ao cliente.",
-  "Recent": "Recente",
   "Transfer is failed": "A transferência falhou",
   "You need more balance to complete the transfer": "Você precisa de mais saldo para concluir a transferência",
   "Sorry server timeout": "Desculpe o tempo limite do servidor",
@@ -213,15 +232,6 @@
   "Passcode is incorrected": "A senha está incorreta",
   "Failed": "Failed",
   "Is this correct?": "Isso está correto?",
-  "Sent Funds": "Fundos enviados",
-  "Received Funds": "Fundos Recebidos",
-  "Sending Funds": "Envio de fundos",
-  "Receiving Funds": "Recebimento de fundos",
-  "Date": "Encontro",
-  "Confirmations": "Confirmações",
-  "Memo": "Memorando",
-  "Transaction ID": "ID da transação",
-  "No memo": "Nenhuma nota",
   "You need more RBTC balance to complete the transfer": "Você precisa de mais saldo RBTC para concluir a transferência",
   "You need more RIF balance to complete the transfer": "Você precisa de mais saldo RIF para concluir a transferência",
   "Invalid amount": "Montante inválido",
