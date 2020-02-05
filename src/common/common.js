@@ -227,6 +227,9 @@ const common = {
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
+      if (!coinType[symbol]) {
+        return false;
+      }
       const chainId = coinType[symbol].networkId;
       isAdress = rsk3.utils.isAddress(address, chainId);
     }
