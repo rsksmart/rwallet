@@ -41,6 +41,22 @@
         "transactionID": "ID de transacción",
         "viewOnChain": "Ver en blockchain"
       },
+      "receive": {
+        "address": "Dirección"
+      },
+      "transfer": {
+        "to": "Para",
+        "memo": "Memo (opcional)",
+        "fee": "Tarifa del minero",
+        "custom": "Personalizado",
+        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "slow": "Lento",
+        "Average": "Promedio",
+        "Fast": "Rápido",
+        "CONFIRMED": "CONFIRMADO",
+        "enterMemo": "Ingrese una nota de transacción",
+        "slideConfirm": "Deslice para confirmar"
+      },
       "add": {
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
@@ -141,15 +157,16 @@
     "Send All": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
-    "send": "Enviar",
-    "receive": "Recibir",
-    "swap": "Intercambiar"
+    "Send": "Enviar",
+    "Receive": "Recibir",
+    "Swap": "Intercambiar"
   },
   "txState": {
     "Sent": "Enviado",
     "Sending": "Enviando",
     "Received": "Recibido",
-    "Receiving": "Recibiendo"
+    "Receiving": "Recibiendo",
+    "Failed": "Ha fallado"
   },
 
   "Recovery Phrase": "Frase de recuperación",
@@ -164,15 +181,6 @@
   "Confirm Passcode": "Confirmar contraseña",
   "BACK TO SETTING": "VOLVER A LA CONFIGURACIÓN",
   "Reset completed!": "¡Reinicio completado!",
-  "Address": "Dirección",
-  "To": "Para",
-  "Memo (optional)": "Memo (opcional)",
-  "Miner fee": "Tarifa del minero",
-  "Custom": "Personalizado",
-  "Slow": "Lento",
-  "Average": "Promedio",
-  "Fast": "Rápido",
-  "How fast you want this done?": "¿Qué tan rápido quieres su transacción?",
   "Safeguard your recovery phrase": "Resguarde su frase de recuperación",
   "Safeguard your recovery phrase Text": "Su frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen.",
   "Write down or copy these words": "Escriba o copie estas palabras",
@@ -210,9 +218,6 @@
   "Transfer is failed": "La transferencia ha fallado",
   "You need more balance to complete the transfer": "Necesita más saldo para completar la transferencia",
   "Sorry server timeout, try again": "Disculpe, el tiempo de espera se ha excedido, trate de nuevo",
-  "Enter a transaction memo": "Ingrese una nota de transacción",
-  "CONFIRMED": "CONFIRMADO",
-  "Slide to confirm": "Deslice para confirmar",
   "Click to view in explorer": "Haga clic para ver en el explorador",
   "Powered by": "Powered by",
   "Key deleted": "Clave eliminada",
@@ -228,7 +233,6 @@
   "Passcode not match, Try again": "La contraseña no coincide, intente nuevamente",
   "Type your passcode": "Escribe tu contraseña",
   "Passcode is incorrected": "El código de acceso está incorrecto",
-  "Failed": "Failed",
   "Is this correct?": "¿Es esto correcto?",
   "You need more RBTC balance to complete the transfer": "Necesita más saldo RBTC para completar la transferencia",
   "You need more RIF balance to complete the transfer": "Necesita más saldo RIF para completar la transferencia",

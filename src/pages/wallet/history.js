@@ -550,7 +550,7 @@ class History extends Component {
                 onPress={this.onSendButtonClick}
               >
                 <Image source={send} />
-                <Loc style={[styles.sendText]} text="button.send" />
+                <Loc style={[styles.sendText]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -558,7 +558,7 @@ class History extends Component {
                 onPress={this.onReceiveButtonClick}
               >
                 <Image source={receive} />
-                <Loc style={[styles.receiveText]} text="button.receive" />
+                <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
             </View>
           </View>

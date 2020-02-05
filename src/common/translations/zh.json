@@ -41,6 +41,22 @@
         "transactionID": "交易ID",
         "viewOnChain": "在区块链上查看"
       },
+      "receive": {
+        "address": "地址"
+      },
+      "transfer": {
+        "to": "接收地址",
+        "memo": "备注（可选）",
+        "fee": "费用",
+        "custom": "自定义",
+        "feeQuestion": "需要多快完成？",
+        "Slow": "慢",
+        "Average": "中",
+        "Fast": "快",
+        "CONFIRMED": "已确认",
+        "enterMemo": "请输入转账备注",
+        "slideConfirm": "滑动以确认"
+      },
       "add": {
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
@@ -142,15 +158,16 @@
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
     "backToWallet": "查看钱包",
-    "send": "发送",
-    "receive": "接收",
-    "swap": "交换"
+    "Send": "发送",
+    "Receive": "接收",
+    "Swap": "交换"
   },
   "txState": {
     "Sent": "已发送",
     "Sending": "发送中",
     "Received": "已接收",
-    "Receiving": "接收中"
+    "Receiving": "接收中",
+    "Failed": "失败"
   },
 
   "Recovery Phrase": "恢复助记词",
@@ -165,15 +182,6 @@
   "Confirm Passcode": "重复新密码",
   "BACK TO SETTING": "回到设置",
   "Reset completed!": "重置成功！",
-  "Address": "地址",
-  "To": "接收地址",
-  "Memo (optional)": "备注（可选）",
-  "Miner fee": "费用",
-  "Custom": "自定义",
-  "Slow": "慢",
-  "Average": "中",
-  "Fast": "快",
-  "How fast you want this done?": "需要多快完成？",
   "Safeguard your recovery phrase": "保管好你的助记词",
   "Safeguard your recovery phrase Text": "你的助记词包含12个随机单词，请按顺序记录下来.",
   "Write down or copy these words": "写下或复制这些助记词",
@@ -214,9 +222,6 @@
   "Transfer is failed": "转账失败",
   "You need more balance to complete the transfer": "您需要更多余额才能完成转帐",
   "Sorry server timeout": "抱歉，服务器超时",
-  "Enter a transaction memo": "请输入转账备注",
-  "CONFIRMED": "已确认",
-  "Slide to confirm": "滑动以确认",
   "Click to view in explorer": "单击以在浏览器中查看",
   "Powered by": "Powered by",
   "Key deleted": "密钥已删除",
@@ -232,7 +237,6 @@
   "Passcode not match, Try again": "密码不匹配，请重试",
   "Type your passcode": "输入密码",
   "Passcode is incorrected": "密码不正确",
-  "Failed": "失败",
   "Is this correct?": "这是正确的助记词？",
   "You need more RBTC balance to complete the transfer": "您需要更多RBTC余额才能完成转帐",
   "You need more RIF balance to complete the transfer": "您需要更多RIF余额才能完成转帐",

@@ -697,7 +697,7 @@ class Transfer extends Component {
     return (
       <TextInput
         style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
-        placeholder={strings('Enter a transaction memo')}
+        placeholder={strings('page.wallet.transfer.enterMemo')}
         multiline
         numberOfLines={Platform.OS === 'ios' ? null : MEMO_NUM_OF_LINES}
         minHeight={(Platform.OS === 'ios' && MEMO_NUM_OF_LINES) ? (MEMO_LINE_HEIGHT * MEMO_NUM_OF_LINES + paddingBottom) : null}
@@ -729,7 +729,7 @@ class Transfer extends Component {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>
-              <Loc style={[styles.title1]} text="Sending" />
+              <Loc style={[styles.title1]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
             <View style={styles.textInputView}>
@@ -743,7 +743,7 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title2]} text="To" />
+            <Loc style={[styles.title2]} text="page.wallet.transfer.to" />
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
@@ -761,19 +761,19 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="Memo (optional)" />
+            <Loc style={[styles.title3]} text="page.wallet.transfer.memo" />
             <View style={styles.textInputView}>
               {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
-            <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
-            <Loc style={[styles.question]} text="How fast you want this done?" />
+            <Loc style={[styles.title2, { marginBottom: 5 }]} text="page.wallet.transfer.fee" />
+            <Loc style={[styles.question]} text="page.wallet.transfer.feeQuestion" />
             {this.renderFeeOptions()}
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
               <Switch
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
@@ -816,9 +816,9 @@ class Transfer extends Component {
                     style={{ width: 32, height: 32 }}
                   />
                   )}
-                label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+                label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );

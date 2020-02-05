@@ -356,7 +356,7 @@ class WalletList extends Component {
                 onPress={() => navigation.navigate('SelectWallet', { operation: 'send' })}
               >
                 <Image source={send} />
-                <Loc style={[styles.sendText]} text="button.send" />
+                <Loc style={[styles.sendText]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -364,7 +364,7 @@ class WalletList extends Component {
                 onPress={() => navigation.navigate('SelectWallet', { operation: 'receive' })}
               >
                 <Image source={receive} />
-                <Loc style={[styles.receiveText]} text="button.receive" />
+                <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -372,7 +372,7 @@ class WalletList extends Component {
                 onPress={() => {}}
               >
                 <Image source={swap} />
-                <Loc style={[styles.swapText]} text="button.swap" />
+                <Loc style={[styles.swapText]} text="button.Swap" />
               </TouchableOpacity>
             </View>
           </View>

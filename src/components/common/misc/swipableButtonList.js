@@ -109,7 +109,7 @@ export default class SwipableButtonList extends Component {
               ]}
               onPress={() => this.listView.safeCloseOpenRow()}
             >
-              <Loc style={[styles.backText]} text="button.swap" />
+              <Loc style={[styles.backText]} text="button.Swap" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -123,7 +123,7 @@ export default class SwipableButtonList extends Component {
                 }
               }}
             >
-              <Loc style={[styles.backText]} text="button.send" />
+              <Loc style={[styles.backText]} text="button.Send" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -137,7 +137,7 @@ export default class SwipableButtonList extends Component {
                 }
               }}
             >
-              <Loc style={[styles.backText]} text="button.receive" />
+              <Loc style={[styles.backText]} text="button.Receive" />
             </TouchableOpacity>
           </View>
         )}

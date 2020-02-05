@@ -107,7 +107,7 @@ class Transaction extends Component {
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: strings('No memo'),
+      memo: strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
     };
   }
@@ -172,7 +172,7 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
-              <Loc style={styles.link} text="View on blockchain" />
+              <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>
           </View>
         </View>
