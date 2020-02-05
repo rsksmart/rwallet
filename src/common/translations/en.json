@@ -72,9 +72,9 @@
       "selectWallet": {
         "title": "Select Wallet"
       },
-      "recoveryPhrase": {
+      "recovery": {
         "title": "Recovery Phrase",
-        "note": "The recovery phrase has to be 12 words.",
+        "note": "Type the recovery phrase(usually 12 words)",
         "advancedOptions": "Advanced Options",
         "specifyPath": "Specify derivation path"
       }
@@ -179,6 +179,21 @@
     "Receiving": "Receiving",
     "Failed": "Failed"
   },
+  "modal": {
+    "unableRecover": {
+      "title": "Unable to recover",
+      "body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
+    },
+    "duplicatePhrase": {
+      "title": "Duplicate Phrase",
+      "body": "This phrase is already imported in the app. Please try with a different phrase."
+    },
+    "tooManyPhrase": {
+      "title": "Too Many Words",
+      "body": "The recovery phrase has to be 12 words."
+    }
+  },
+
   "Verify Your Phrase": "Verify Your Phrase",
   "Verify Phrase Success": "Verify Phrase Success",
   "Verify Fingerprint": "Verify Fingerprint",
@@ -210,15 +225,12 @@
   "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
   "The address has been copied to clipboard": "The address has been copied to clipboard.",
   "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
-  "Too Many Words": "Too Many Words",
   "Passcode Mismatch": "Passcode Mismatch",
   "Passcode Mismatch Body": "The two passcodes entered are different. Please try again.",
   "Old Password": "Old Password",
   "Old Password is wrong": "Old Password is wrong",
   "Backup Phrase": "Backup Phrase",
   "Incorrect backup phrase": "Incorrect backup phrase",
-  "Unable to recover": "Unable to recover",
-  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct.",
   "What do you call this key?": "What do you call this key?",
   "You can change the name displayed on the device below": "You can change the name displayed on the device below.",
   "There is no transaction found in this wallet": "There is no transaction found in this wallet.",
@@ -252,7 +264,5 @@
   "Address is not valid": "Address is not valid",
   "Name is too short.": "Name is too short.",
   "Name is too long.": "Name is too long.",
-  "Name contains invalid characters.": "Name contains invalid characters.",
-  "Duplicate Phrase": "Duplicate Phrase",
-  "This phrase is already imported in the app. Please try with a different phrase.": "This phrase is already imported in the app. Please try with a different phrase."
+  "Name contains invalid characters.": "Name contains invalid characters."
 }

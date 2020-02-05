@@ -72,9 +72,9 @@
       "selectWallet": {
         "title": "选择钱包"
       },
-      "recoveryPhrase": {
+      "recovery": {
         "title": "恢复助记词",
-        "note": "已经超过了12个单词了。",
+        "note": "输入恢复助记词（通常是12个单词）",
         "advancedOptions": "高级选项",
         "specifyPath": "指定派生路径"
       }
@@ -179,6 +179,21 @@
     "Receiving": "接收中",
     "Failed": "失败"
   },
+  "modal": {
+    "unableRecover": {
+      "title": "不能备份",
+      "body": "不能通过您的助记词导入钱包，请确保正确输入助记词。"
+    },
+    "duplicatePhrase": {
+      "title": "重复的助记词",
+      "body": "此助记词已导入到应用程序中，请尝试使用其他短语。"
+    },
+    "tooManyPhrase": {
+      "title": "单词太多",
+      "body": "已经超过了12个单词了。"
+    }
+  },
+
 
   "Verify Your Phrase": "验证助记词",
   "Verify Phrase Success": "验证助记词成功",
@@ -211,16 +226,12 @@
   "Copied": "已复制",
   "The recovery phrase has been copied to clipboard": "助记词已复制",
   "The address has been copied to clipboard": "地址已复制",
-  "Type the recovery phrase(usually 12 words)": "输入恢复助记词（通常是12个单词）",
-  "Too Many Words": "单词太多",
   "Passcode Mismatch": "密码不匹配",
   "Passcode Mismatch Body": "两次输入密码不匹配。请重试。",
   "Old Password": "旧密码",
   "Old Password is wrong": "旧密码不正确",
   "Backup Phrase": "备份助记词",
   "Incorrect backup phrase": "备份助记词不正确",
-  "Unable to recover": "不能备份",
-  "Unable to recover Body": "不能通过您的助记词导入钱包，请确保正确输入助记词。",
   "SAVE": "保存",
   "wallets": "钱包",
   "Internal server error": "内部服务器错误",
@@ -252,7 +263,5 @@
   "Address is not valid": "地址不合法",
   "Name is too short.": "名字太短了。",
   "Name is too long.": "名字太长了。",
-  "Name contains invalid characters.": "名字包含不合法字符。",
-  "Duplicate Phrase": "重复的助记词",
-  "This phrase is already imported in the app. Please try with a different phrase.": "此助记词已导入到应用程序中，请尝试使用其他短语。"
+  "Name contains invalid characters.": "名字包含不合法字符。"
 }

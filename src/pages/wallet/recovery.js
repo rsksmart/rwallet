@@ -142,9 +142,8 @@ class WalletRecovery extends Component {
       console.log(`isValid: ${isValid}`);
       if (!isValid) {
         const notification = createErrorNotification(
-          'Unable to recover',
-          'Unable to recover Body',
-          'button.gotIt',
+          'modal.unableRecover.title',
+          'modal.unableRecover.body',
         );
         addNotification(notification);
         return;
@@ -154,9 +153,8 @@ class WalletRecovery extends Component {
       const wallet = _.find(wallets, { mnemonic: inputPhrases });
       if (wallet) {
         const notification = createErrorNotification(
-          'Duplicate Phrase',
-          'This phrase is already imported in the app. Please try with a different phrase.',
-          'button.gotIt',
+          'modal.duplicatePhrase.title',
+          'modal.duplicatePhrase.body',
         );
         addNotification(notification);
         return;
@@ -181,8 +179,8 @@ class WalletRecovery extends Component {
       }
       if (phrases.length === 12) {
         const notification = createErrorNotification(
-          'Too Many Words',
-          'The recovery phrase has to be 12 words',
+          'modal.tooManyPhrase.title',
+          'modal.tooManyPhrase.body',
         );
         addNotification(notification);
         return;
@@ -248,7 +246,7 @@ class WalletRecovery extends Component {
               </View>
             </ScrollView>
             <View style={[styles.buttonView]}>
-              <Button text="IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
+              <Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
             </View>
           </View>
         </BasePageGereral>

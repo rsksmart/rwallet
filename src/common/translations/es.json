@@ -72,9 +72,9 @@
       "selectWallet": {
         "title": "Seleccionar billetera"
       },
-      "recoveryPhrase": {
+      "recovery": {
         "title": "Frase de recuperación",
-        "note": "La frase de recuperación tiene que ser exactamente de 12 palabras.",
+        "note": "Escriba la frase de recuperación (generalmente 12 palabras)",
         "advancedOptions": "Opciones avanzadas",
         "specifyPath": "Especificar ruta de derivación"
       }
@@ -178,6 +178,20 @@
     "Receiving": "Recibiendo",
     "Failed": "Ha fallado"
   },
+  "modal": {
+    "unableRecover": {
+      "title": "Incapaz de recuperarse",
+      "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."
+    },
+    "duplicatePhrase": {
+      "title Phrase": "Frase duplicada",
+      "body": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
+    },
+    "tooManyPhrase": {
+      "title": "Demasiadas palabras",
+      "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
+    }
+  },
 
   "Verify Your Phrase": "Verifica tu frase",
   "Verify Phrase Success": "Frase verificada exitosamente",
@@ -209,16 +223,12 @@
   "Copied": "Copiado",
   "The recovery phrase has been copied to clipboard": "La frase de recuperación se ha copiado al portapapeles.",
   "The address has been copied to clipboard": "La dirección ha sido copiada al portapapeles.",
-  "Type the recovery phrase(usually 12 words)": "Escriba la frase de recuperación (generalmente 12 palabras)",
-  "Too Many Words": "Demasiadas palabras",
   "Passcode Mismatch": "La contraseña no coincide",
   "Passcode Mismatch Body": "Los dos códigos de acceso ingresados son diferentes. Inténtalo de nuevo.",
   "Old Password": "Contraseña anterior",
   "Old Password is wrong": "La contraseña anterior es incorrecta",
   "Backup Phrase": "Frase de respaldo",
   "Incorrect backup phrase": "Frase de respaldo incorrecta",
-  "Unable to recover": "Incapaz de recuperarse",
-  "Unable to recover Body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta.",
   "Internal server error": "Error de servidor interno",
   "Please contact customer support": "Por favor, póngase en contacto con atención al cliente.",
   "Transfer is failed": "La transferencia ha fallado",
@@ -248,7 +258,5 @@
   "Address is not valid": "La direccion no es valida",
   "Name is too short.": "El nombre es muy corto.",
   "Name is too long.": "El nombre es demasiado largo.",
-  "Name contains invalid characters.": "Nombre contiene caracteres inválidos.",
-  "Duplicate Phrase": "Frase duplicada",
-  "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
+  "Name contains invalid characters.": "Nombre contiene caracteres inválidos."
 }
