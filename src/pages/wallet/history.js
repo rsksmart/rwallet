@@ -443,6 +443,7 @@ class History extends Component {
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    // simulate 1s network delay
     setTimeout(() => {
       this.setState({ isRefreshing: false });
     }, 1000);
