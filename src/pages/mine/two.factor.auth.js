@@ -64,11 +64,11 @@ class TwoFactorAuth extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Two-Factor Authentication" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.2fa.title" />}
         >
           <View style={styles.body}>
             <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
-              <Loc style={[styles.title]} text="Reset Passcode" />
+              <Loc style={[styles.title]} text="page.mine.2fa.resetPasscode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
           </View>

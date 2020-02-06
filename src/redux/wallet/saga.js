@@ -249,7 +249,7 @@ function* renameKeyRequest(action) {
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
-    const notification = createErrorNotification('Incorrect name', message.message);
+    const notification = createErrorNotification('modal.incorrectKeyName.title', message.message);
     yield put(appActions.addNotification(notification));
     // console.error(message);
   }

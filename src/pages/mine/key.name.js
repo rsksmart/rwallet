@@ -83,13 +83,11 @@ class KeyName extends Component {
     onPress() {
       const { name } = this.state;
       const { renameKey, walletManager } = this.props;
-      console.log(`Key name save! name: ${name}`);
       renameKey(this.key, name, walletManager);
       this.nameInput.focus();
     }
 
     onSubmitEditing() {
-      console.log('onSubmitEditing');
       const { name } = this.state;
       const submitText = name.trim();
       this.setState({ name: submitText });
@@ -107,14 +105,14 @@ class KeyName extends Component {
           isSafeView
           hasBottomBtn
           hasLoader={false}
-          bottomBtnText="SAVE"
+          bottomBtnText="button.save"
           bottomBtnOnPress={this.onPress}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Key Name" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.keyName.title" />}
         >
           <View style={styles.body}>
-            <Loc style={[styles.title]} text="What do you call this key?" />
-            <Loc text="You can change the name displayed on the device below" />
-            <Loc style={[styles.title, styles.name]} text="Name" />
+            <Loc style={[styles.title]} text="page.mine.keyName.question" />
+            <Loc text="page.mine.keyName.notice" />
+            <Loc style={[styles.title, styles.name]} text="page.mine.keyName.name" />
             <TextInput
               ref={(ref) => { this.nameInput = ref; }}
               style={[presetStyle.textInput, styles.nameInput]}
@@ -125,7 +123,7 @@ class KeyName extends Component {
               autoCorrect={false}
               blurOnSubmit={false}
             />
-            <Loc style={[styles.notice]} text="* Key name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+            <Loc style={[styles.notice]} text="page.mine.keyName.comment" />
           </View>
         </BasePageGereral>
       );

@@ -142,7 +142,7 @@ class WalletReceive extends Component {
         >
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
-              <Loc style={[styles.sectionTitle]} text="Address" />
+              <Loc style={[styles.sectionTitle]} text="page.wallet.receive.address" />
               <View style={styles.address}>
                 <TouchableOpacity onPress={this.onCopyPress}>
                   <Image style={styles.copyIcon} source={copyIcon} />

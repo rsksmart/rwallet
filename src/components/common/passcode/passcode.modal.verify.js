@@ -8,8 +8,8 @@ class VerifyPasscodeModal extends PureComponent {
   constructor(props) {
     super(props);
     this.flows = [
-      { index: 0, title: 'Type your passcode' },
-      { index: 1, title: 'Passcode is incorrected' },
+      { index: 0, title: 'modal.verifyPasscode.type' },
+      { index: 1, title: 'modal.verifyPasscode.incorrected' },
     ];
     this.flowIndex = 0;
     this.title = this.flows[0].title;
@@ -21,7 +21,7 @@ class VerifyPasscodeModal extends PureComponent {
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
   }
 
-  componentDidMount(): void {
+  componentDidMount() {
     this.passcode = global.passcode;
   }
 

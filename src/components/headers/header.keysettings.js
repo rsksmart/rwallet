@@ -49,9 +49,9 @@ export default function KeySettingsHeader({ title, walletCount, onBackButtonPres
     <ImageBackground source={header} style={[styles.headerImage]}>
       <Loc style={[styles.headerTitle]} text={title} />
       <Text style={[styles.headerText]}>
-        <Loc text="This key contains" />
+        <Loc text="page.mine.keySettings.keyContains" />
         {` ${walletCount} `}
-        <Loc text="wallets" />
+        <Loc text="page.mine.keySettings.wallets" />
       </Text>
       <TouchableOpacity
         style={styles.backButton}

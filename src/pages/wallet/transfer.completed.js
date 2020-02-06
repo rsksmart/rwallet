@@ -112,17 +112,17 @@ export default class TransferCompleted extends Component {
       <BasePageGereral
         isSafeView
         hasBottomBtn
-        bottomBtnText="GO TO WALLET"
+        bottomBtnText="button.goToWallet"
         bottomBtnOnPress={this.onBackPress}
         hasLoader={false}
-        headerComponent={<Header title="Send" onBackButtonPress={this.onBackPress} />}
+        headerComponent={<Header title="page.wallet.transferCompleted.title" onBackButtonPress={this.onBackPress} />}
       >
         <View style={styles.content}>
           <Image style={styles.check} source={completed} />
-          <Loc style={[styles.title]} text="Transfer Completed!" />
-          <Loc style={[styles.text]} text="TransferText" />
+          <Loc style={[styles.title]} text="page.wallet.transferCompleted.body" />
+          <Loc style={[styles.text]} text="page.wallet.transferCompleted.note" />
           <TouchableOpacity onPress={this.onExplorePress}>
-            <Loc style={[styles.text, styles.link]} text="Click to view in explorer" />
+            <Loc style={[styles.text, styles.link]} text="page.wallet.transferCompleted.viewExplorer" />
           </TouchableOpacity>
         </View>
       </BasePageGereral>

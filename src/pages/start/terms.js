@@ -55,24 +55,18 @@ export default class TermsPage extends Component {
           <Image style={styles.logo} source={logo} />
           <View style={styles.termsView}>
             <View style={styles.termsView2}>
-              <TermRow
-                text="TermsLine1"
-                delay={0}
-              />
-              <TermRow
-                text="TermsLine2"
-                delay={0.5}
-              />
-              <TermRow text="TermsLine3" delay={1} />
+              <TermRow text="page.start.terms.term1" delay={0} />
+              <TermRow text="page.start.terms.term2" delay={0.5} />
+              <TermRow text="page.start.terms.term3" delay={1} />
             </View>
           </View>
           <View style={styles.buttonView}>
             <TouchableOpacity style={styles.completeTerms}>
-              <Loc style={[styles.completeTermsText]} text="View Complete Terms Of Use" />
+              <Loc style={[styles.completeTermsText]} text="page.start.terms.viewTerms" />
             </TouchableOpacity>
             <Button
               style={styles.button}
-              text="COMFIRM & FINISH"
+              text="page.start.terms.button"
               onPress={() => {
                 const { navigation } = this.props;
                 navigation.navigate('PrimaryTabNavigator');

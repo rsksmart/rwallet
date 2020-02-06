@@ -57,7 +57,7 @@ export default function EarnHeader({ title, imageSource, imageBgColor }) {
       <View style={[styles.titleImageView, { backgroundColor: imageBgColor }]}>
         <Image style={styles.titleImage} source={imageSource} />
       </View>
-      <Loc style={[styles.coming]} text="Coming soon..." />
+      <Loc style={[styles.coming]} text="page.earn.index.comingSoon" />
     </View>
   );
 }

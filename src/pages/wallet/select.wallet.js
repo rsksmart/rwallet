@@ -97,7 +97,7 @@ class SelectWallet extends Component {
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Select Wallet" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.selectWallet.title" />}
       >
         <View style={styles.body}>
           <FlatList

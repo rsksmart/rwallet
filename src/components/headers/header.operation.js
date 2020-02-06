@@ -45,7 +45,7 @@ function OperationHeader({ operation, symbolName, onBackButtonPress }) {
           <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          <Loc text={operation} />
+          <Loc text={`button.${operation}`} />
           {` ${symbolName}`}
         </Text>
       </View>

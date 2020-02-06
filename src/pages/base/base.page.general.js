@@ -20,10 +20,11 @@ const styles = StyleSheet.create({
 const BasePageGereral = (props) => {
   const {
     children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
+    refreshControl,
   } = props;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
-      <ScrollView>
+      <ScrollView refreshControl={refreshControl}>
         {headerComponent}
         <View pointerEvents="box-none">
           {children}
@@ -50,6 +51,7 @@ BasePageGereral.propTypes = {
   bottomBtnText: PropTypes.string,
   isLoading: PropTypes.bool,
   headerComponent: PropTypes.element.isRequired,
+  refreshControl: PropTypes.element,
 };
 
 BasePageGereral.defaultProps = {
@@ -59,6 +61,7 @@ BasePageGereral.defaultProps = {
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
+  refreshControl: null,
 };
 
 

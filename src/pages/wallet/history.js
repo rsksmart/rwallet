@@ -17,6 +17,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
+import { strings } from '../../common/i18n';
 
 const { getCurrencySymbol } = common;
 
@@ -238,7 +239,7 @@ function Item({
       <View style={styles.iconView}>{icon}</View>
       <View style={styles.rowRight}>
         <View style={[styles.rowRightR1]}>
-          <Loc style={[styles.title]} text={title} />
+          <Loc style={[styles.title]} text={`txState.${title}`} />
         </View>
         <View style={[styles.rowRightR2]}>
           <Text style={styles.amount}>{amount}</Text>
@@ -340,7 +341,7 @@ class History extends Component {
       return <ActivityIndicator size="small" color="#00ff00" />;
     }
     if (listData.length === 0) {
-      return <Loc style={[styles.noTransNotice]} text="There is no transaction found in this wallet" />;
+      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
     }
     return (
       <FlatList
@@ -443,6 +444,10 @@ class History extends Component {
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    // simulate 1s network delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   }
 
   onEndReached() {
@@ -499,7 +504,7 @@ class History extends Component {
         style={styles.refreshControl}
         refreshing={isRefreshing}
         onRefresh={this.onRefresh}
-        title="Loading..."
+        title={strings('page.wallet.history.loading')}
       />
     );
   }
@@ -530,6 +535,7 @@ class History extends Component {
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
+        refreshControl={this.refreshControl()}
         headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.headerBoardView}>
@@ -550,7 +556,7 @@ class History extends Component {
                 onPress={this.onSendButtonClick}
               >
                 <Image source={send} />
-                <Loc style={[styles.sendText]} text="Send" />
+                <Loc style={[styles.sendText]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -558,13 +564,13 @@ class History extends Component {
                 onPress={this.onReceiveButtonClick}
               >
                 <Image source={receive} />
-                <Loc style={[styles.receiveText]} text="Receive" />
+                <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-          <Loc style={[styles.recent]} text="Recent" />
+          <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
         <View style={styles.sectionContainer}>
           {History.listView(listData, this.onListItemPress)}
@@ -597,6 +603,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
   prices: state.Wallet.get('prices'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = () => ({
