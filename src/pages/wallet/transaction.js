@@ -107,7 +107,7 @@ class Transaction extends Component {
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: strings('page.wallet.transaction.noMemo'),
+      memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
     };
   }
