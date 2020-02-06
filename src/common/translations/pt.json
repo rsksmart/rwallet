@@ -27,7 +27,8 @@
       },
       "history": {
         "noTransNote": "Não há transações encontradas nesta carteira.",
-        "recent": "Recente"
+        "recent": "Recente",
+        "loading": "Carregando..."
       },
       "transaction": {
         "Sent Funds": "Fundos enviados",

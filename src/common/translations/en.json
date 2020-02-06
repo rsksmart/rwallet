@@ -27,7 +27,8 @@
       },
       "history": {
         "noTransNote": "There is no transaction found in this wallet",
-        "recent": "Recent"
+        "recent": "Recent",
+        "loading": "Loading..."
       },
       "transaction": {
         "Sent Funds": "Sent Funds",

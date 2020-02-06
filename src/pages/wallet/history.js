@@ -17,6 +17,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
+import { strings } from '../../common/i18n';
 
 const { getCurrencySymbol } = common;
 
@@ -443,6 +444,10 @@ class History extends Component {
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    // simulate 1s network delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   }
 
   onEndReached() {
@@ -499,7 +504,7 @@ class History extends Component {
         style={styles.refreshControl}
         refreshing={isRefreshing}
         onRefresh={this.onRefresh}
-        title="Loading..."
+        title={strings('page.wallet.history.loading')}
       />
     );
   }
@@ -530,6 +535,7 @@ class History extends Component {
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
+        refreshControl={this.refreshControl()}
         headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.headerBoardView}>
@@ -597,6 +603,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
   prices: state.Wallet.get('prices'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = () => ({
