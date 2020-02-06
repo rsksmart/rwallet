@@ -107,7 +107,7 @@ class Transaction extends Component {
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: strings('No memo'),
+      memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
     };
   }
@@ -144,7 +144,7 @@ class Transaction extends Component {
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
-        headerComponent={<Header title={title} onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<Header title={`page.wallet.transaction.${title}`} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
@@ -155,24 +155,24 @@ class Transaction extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Date" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.date" />
             <Text>{datetime}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Confirmations" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.confirmations" />
             <Text>{confirmations}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, memo]} text="Memo" />
+            <Loc style={[styles.sectionTitle, memo]} text="page.wallet.transaction.memo" />
             <Text>{memo}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Transaction ID" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
             <Text numberOfLines={1}>{transactionId}</Text>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
-              <Loc style={styles.link} text="View on blockchain" />
+              <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>
           </View>
         </View>

@@ -97,7 +97,7 @@ export default class TouchSensorModal extends Component {
             style={styles.container}
           >
             <View style={styles.panel}>
-              <Loc style={[styles.title]} text="Touch Sensor" />
+              <Loc style={[styles.title]} text="modal.touchSensor.title" />
               <Image style={styles.finger} source={finger} />
               <TouchableOpacity
                 style={styles.passcode}
@@ -108,7 +108,7 @@ export default class TouchSensorModal extends Component {
                   }
                 }}
               >
-                <Loc style={[styles.passcodeText]} text="Use passcode" />
+                <Loc style={[styles.passcodeText]} text="modal.touchSensor.usePasscode" />
               </TouchableOpacity>
               {errView}
             </View>

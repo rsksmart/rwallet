@@ -160,18 +160,18 @@ class WalletSelectCurrency extends Component {
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          bottomBtnText="CREATE"
+          bottomBtnText="button.create"
           bottomBtnOnPress={this.onCreateButtonPress}
           hasLoader
           isLoading={isLoading}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Select Wallet Currency" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.selectCurrency.title" />}
         >
           <View style={[styles.sectionContainer]}>
-            <Loc style={[styles.sectionTitle]} text="Mainnet" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.mainnet" />
             <CoinTypeList data={this.mainnet} />
           </View>
           <View style={[styles.sectionContainer]}>
-            <Loc style={[styles.sectionTitle]} text="Testnet" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.testnet" />
             <CoinTypeList data={this.testnet} />
           </View>
         </BasePageGereral>

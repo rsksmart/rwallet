@@ -98,12 +98,12 @@ class Rename extends Component {
           isSafeView
           hasBottomBtn
           hasLoader={false}
-          bottomBtnText="SAVE"
+          bottomBtnText="button.save"
           bottomBtnOnPress={this.onPress}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Your Name" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.rename.title" />}
         >
           <View style={styles.body}>
-            <Loc style={[styles.title]} text="What's your name?" />
+            <Loc style={[styles.title]} text="page.mine.rename.question" />
             <TextInput
               ref={(ref) => { this.nameInput = ref; }}
               style={[presetStyle.textInput, styles.nameInput]}
@@ -114,7 +114,7 @@ class Rename extends Component {
               autoCorrect={false}
               blurOnSubmit={false}
             />
-            <Loc style={[styles.notice]} text="* Name can contain 1-32 letters (a-z), numbers (0-9), and space" />
+            <Loc style={[styles.notice]} text="page.mine.rename.comment" />
           </View>
         </BasePageGereral>
       );

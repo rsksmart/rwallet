@@ -1,9 +1,8 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import flex from '../../assets/styles/layout.flex';
-import Loc from './misc/loc';
 import presetStyles from '../../assets/styles/style';
 
 const rsk = require('../../assets/images/mine/rsk.png');
@@ -34,7 +33,7 @@ const RSKAd = () => (
     end={{ x: 0, y: 0.85 }}
     style={[flex.justifyEnd, styles.logoView]}
   >
-    <Loc style={[styles.powerby]} text="Powered by" />
+    <Text style={[styles.powerby]}>Powered by</Text>
     <Image style={presetStyles.rskIcon} source={rsk} />
   </LinearGradient>
 );

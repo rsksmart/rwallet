@@ -141,9 +141,9 @@ class VerifyPhrase extends Component {
     } else {
       this.notificationReason = 'incorrectPhrase';
       const notification = createErrorNotification(
-        'Incorrect backup phrase',
-        'verifyPhraseAlertTitle',
-        'START OVER',
+        'modal.incorrectBackupPhrase.title',
+        'modal.incorrectBackupPhrase.body',
+        'button.startOver',
         () => this.reset(),
       );
       addNotification(notification);
@@ -173,8 +173,8 @@ class VerifyPhrase extends Component {
     } else {
       this.notificationReason = 'createPassword';
       const notification = createInfoNotification(
-        'Please set a password',
-        'Password can protect your funds if this device is stolen or compromised by malicious software.',
+        'modal.createPasscode.title',
+        'modal.createPasscode.body',
         null,
         () => showPasscode('create', () => this.createWallet(phrase, coins)),
       );
@@ -250,9 +250,9 @@ class VerifyPhrase extends Component {
     const { isShowConfirmation } = this.state;
     return !isShowConfirmation ? null : (
       <View style={styles.confirmationView}>
-        <Loc style={[styles.confirmationTitle]} text="Is this correct?" />
-        <Button style={[styles.confirmationButton]} text="Confirm" onPress={this.onConfirmPress} />
-        <TouchableOpacity style={styles.confirmationClearButton} onPress={this.onClearPress}><Loc style={[styles.confirmationClearButtonText]} text="Clear" /></TouchableOpacity>
+        <Loc style={[styles.confirmationTitle]} text="page.wallet.backupPhrase.isCorrect" />
+        <Button style={[styles.confirmationButton]} text="button.Confirm" onPress={this.onConfirmPress} />
+        <TouchableOpacity style={styles.confirmationClearButton} onPress={this.onClearPress}><Loc style={[styles.confirmationClearButtonText]} text="button.Clear" /></TouchableOpacity>
       </View>
     );
   }
@@ -267,10 +267,10 @@ class VerifyPhrase extends Component {
         hasLoader
         isLoading={isLoading}
         renderAccessory={this.renderConfirmation}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Backup Phrase" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.backupPhrase.title" />}
       >
         <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
-        <Loc style={[styles.tip]} text="Tap each word in the correct order" />
+        <Loc style={[styles.tip]} text="page.wallet.backupPhrase.note" />
         <Tags
           data={shuffleWords}
           style={[styles.tags]}

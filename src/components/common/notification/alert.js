@@ -72,7 +72,7 @@ export default class Alert extends Component {
     const {
       title, message, buttonText, type,
     } = this.props;
-    const closeButtonText = buttonText || 'GOT IT';
+    const closeButtonText = buttonText || 'button.gotIt';
     return (
       <Modal
         animationType={animationType}

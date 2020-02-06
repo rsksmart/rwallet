@@ -225,7 +225,6 @@ class WalletManager {
    * Delete a wallet
    */
   async deleteWallet(wallet) {
-    console.log('walletManager::deleteWallet, wallet: ', wallet);
     const { wallets } = this;
     _.remove(wallets, (item) => item === wallet);
     await this.serialize();
@@ -237,15 +236,14 @@ class WalletManager {
    */
   async renameWallet(wallet, name) {
     if (name.length < 1) {
-      throw new Error('Key name is too short.');
+      throw new Error('modal.incorrectKeyName.tooShort');
     } else if (name.length > 32) {
-      throw new Error('Key name is too long.');
+      throw new Error('modal.incorrectKeyName.tooLong');
     }
     const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
     const match = regex.exec(name);
     if (!match) {
-      console.log('renameWallet, regex validatiton failed');
-      throw new Error('Key name contains invalid characters.');
+      throw new Error('modal.incorrectKeyName.invalid');
     }
     const modifyWallet = wallet;
     modifyWallet.name = name;
