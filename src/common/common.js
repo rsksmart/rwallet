@@ -7,7 +7,6 @@ import * as bitcoin from 'bitcoinjs-lib';
 import rsk3 from 'rsk3';
 import config from '../../config';
 import store from './storage';
-import coinType from './wallet/cointype';
 
 
 const { consts: { currencies } } = config;
@@ -229,17 +228,14 @@ const common = {
    * @param {string} address
    * @param {string} symbol, BTC, RBTC, RIF
    * @param {string} type, MainTest or Testnet
+   * @param {string} networkId
    */
-  isWalletAddress(address, symbol, type) {
+  isWalletAddress(address, symbol, type, networkId) {
     let isAdress = false;
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
-      if (!coinType[symbol]) {
-        return false;
-      }
-      const chainId = coinType[symbol].networkId;
-      isAdress = rsk3.utils.isAddress(address, chainId);
+      isAdress = rsk3.utils.isAddress(address, networkId);
     }
     return isAdress;
   },
