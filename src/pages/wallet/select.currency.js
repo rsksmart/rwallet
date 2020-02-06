@@ -133,8 +133,8 @@ class WalletSelectCurrency extends Component {
         this.createWallet(phrase, coins);
       } else {
         const notification = createInfoNotification(
-          'Please set a password',
-          'Password can protect your funds if this device is stolen or compromised by malicious software.',
+          'modal.createPasscode.title',
+          'modal.createPasscode.body',
           null,
           () => showPasscode('create', () => this.createWallet(phrase, coins)),
         );
