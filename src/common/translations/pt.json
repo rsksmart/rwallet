@@ -282,6 +282,10 @@
     "touchSensor": {
       "title": "Usar senha",
       "usePasscode": "Sensor de toque"
+    },
+    "deleteKey": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
     }
   }
 }

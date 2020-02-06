@@ -282,6 +282,10 @@
     "touchSensor": {
       "title": "Sensor tátil",
       "usePasscode": "Usar contraseña"
+    },
+    "deleteKey": {
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
     }
   }
 }
