@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import PropTypes from 'prop-types';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import List from './list';
 import AddIndex from './add.index';
 import appActions from '../../redux/app/actions';
@@ -12,9 +13,32 @@ class Dashboard extends Component {
       header: null,
     });
 
+    static callFingerprintVerify() {
+      const onAttempt = (error) => {
+        console.log(`onAttempt: ${error}`);
+        // this.setState({ errorMessage: 'No match' });
+      };
+      const params = {
+        onAttempt,
+        description: 'Scan your fingerprint on the device scanner to continue',
+      };
+      FingerprintScanner
+        .authenticate(params)
+        .then(() => {
+          console.log('fingerprint ok!');
+          // this.touchSensor.setModalVisible(false);
+          // navigation.state.params.verified();
+          // navigation.goBack();
+        })
+        .catch((error) => {
+          console.log(error.message);
+          // Alert.alert('try again.');
+        });
+    }
+
     constructor(props) {
       super(props);
-      this.callPasscodeInput = this.callPasscodeInput.bind(this);
+      this.callAuthVerify = this.callAuthVerify.bind(this);
       this.willFocusSubscription = null;
     }
 
@@ -23,19 +47,24 @@ class Dashboard extends Component {
       this.willFocusSubscription = navigation.addListener(
         'willFocus',
         () => {
-          this.callPasscodeInput();
+          this.callAuthVerify();
         },
       );
     }
 
-    componentWillUnmount(): void {
+    componentWillUnmount() {
       this.willFocusSubscription.remove();
     }
 
-    callPasscodeInput() {
-      const { wallets, showPasscode } = this.props;
+    callAuthVerify() {
+      const { wallets, showPasscode, showFingerprintModal } = this.props;
       if (!isEmpty(wallets)) {
-        showPasscode('verify');
+        const { isFingerprint } = this.props;
+        if ((true || isFingerprint) && FingerprintScanner.isSensorAvailable()) {
+          showFingerprintModal();
+        } else {
+          showPasscode('verify');
+        }
       }
     }
 
@@ -56,6 +85,8 @@ Dashboard.propTypes = {
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
   showPasscode: PropTypes.func.isRequired,
+  isFingerprint: PropTypes.bool.isRequired,
+  showFingerprintModal: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
@@ -65,13 +96,12 @@ Dashboard.defaultProps = {
 const mapStateToProps = (state) => ({
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
-
+  isFingerprint: state.App.get('fingerprint'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  showPasscode: (category) => dispatch(
-    appActions.showPasscode(category),
-  ),
+  showPasscode: (category) => dispatch(appActions.showPasscode(category)),
+  showFingerprintModal: () => dispatch(appActions.showFingerprintModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

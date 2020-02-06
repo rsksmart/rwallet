@@ -12,6 +12,7 @@ import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
 import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
+import TouchSensorModal from '../components/common/modal/touchSensorModal';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import common from '../common/common';
@@ -125,6 +126,7 @@ class RootComponent extends Component {
   render() {
     const {
       showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback, isShowConfirmation, confirmation, removeConfirmation, confirmationCallback,
+      isShowFingerprintModal, fingerprintCallback, fingerprintFallback,
     } = this.props;
 
     return (
@@ -134,7 +136,8 @@ class RootComponent extends Component {
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
-          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
+          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} fingerprintFallback={fingerprintFallback} />
+          <TouchSensorModal isShowFingerprintModal={isShowFingerprintModal} onUsePasscodePress={() => {}} errorMessage="" fingerprintCallback={fingerprintCallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>
@@ -169,6 +172,9 @@ RootComponent.propTypes = {
   confirmation: PropTypes.shape({}),
   removeConfirmation: PropTypes.func.isRequired,
   confirmationCallback: PropTypes.func,
+  isShowFingerprintModal: PropTypes.bool.isRequired,
+  fingerprintCallback: PropTypes.func,
+  fingerprintFallback: PropTypes.func,
 };
 
 RootComponent.defaultProps = {
@@ -179,6 +185,8 @@ RootComponent.defaultProps = {
   passcodeFallback: null,
   confirmation: null,
   confirmationCallback: null,
+  fingerprintCallback: null,
+  fingerprintFallback: null,
 };
 
 export default RootComponent;

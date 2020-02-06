@@ -32,6 +32,8 @@ const actions = {
   RENAME: 'RENAME',
   USER_NAME_UPDATED: 'USER_NAME_UPDATED',
   RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
+  SHOW_FINGERPRINT_MODAL: 'SHOW_FINGERPRINT_MODAL',
+  HIDE_FINGERPRINT_MODAL: 'HIDE_FINGERPRINT_MODAL',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -98,6 +100,13 @@ const actions = {
   }),
   resetUsernameUpdated: () => ({
     type: actions.RESET_USER_NAME_UPDATED,
+  }),
+  showFingerprintModal: (callback, fallback) => ({
+    type: actions.SHOW_FINGERPRINT_MODAL,
+    value: { callback, fallback },
+  }),
+  hideFingerprintModal: () => ({
+    type: actions.HIDE_FINGERPRINT_MODAL,
   }),
 };
 

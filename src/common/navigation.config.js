@@ -21,6 +21,7 @@ import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import Scan from '../pages/wallet/scan';
 import Transaction from '../pages/wallet/transaction';
+import FingerPrint from '../pages/wallet/fingerprint';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -160,6 +161,15 @@ const routeConfigMap = {
         headerTitle: 'VerifyFingerprint',
       }),
     },
+
+    FingerPrint: {
+      screen: FingerPrint,
+      path: 'FingerPrint',
+      navigationOptions: () => ({
+        headerTitle: 'FingerPrint',
+      }),
+    },
+
     Scan: {
       screen: Scan,
       path: 'Scan',

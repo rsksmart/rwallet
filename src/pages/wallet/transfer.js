@@ -7,6 +7,7 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
@@ -411,12 +412,13 @@ class Transfer extends Component {
       // this.resetConfirm();
       return;
     }
-    const { showPasscode } = this.props;
-    if (global.passcode) {
-      // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
+    const { showPasscode, showFingerprintModal } = this.props;
+    const { isFingerprint } = this.props;
+    if ((true || isFingerprint) && FingerprintScanner.isSensorAvailable()) {
+      showFingerprintModal(this.confirm, () => {});
+    } else if (global.passcode) {
       showPasscode('verify', this.confirm, () => {});
     } else {
-      // await this.onConfirmSliderVerified();
       await this.confirm();
     }
   }
@@ -835,6 +837,8 @@ Transfer.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  showFingerprintModal: PropTypes.func.isRequired,
+  isFingerprint: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -842,6 +846,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   language: state.App.get('language'),
+  isFingerprint: state.App.get('fingerprint'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -850,6 +855,9 @@ const mapDispatchToProps = (dispatch) => ({
   ),
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
+  ),
+  showFingerprintModal: (callback, fallback) => dispatch(
+    appActions.showFingerprintModal(callback, fallback),
   ),
 });
 

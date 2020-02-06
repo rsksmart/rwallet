@@ -20,6 +20,9 @@ const mapStateToProps = (state) => ({
   isShowConfirmation: state.App.get('isShowConfirmation'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
+  isShowFingerprintModal: state.App.get('isShowFingerprintModal'),
+  fingerprintCallback: state.App.get('fingerprintCallback'),
+  fingerprintFallback: state.App.get('fingerprintFallback'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

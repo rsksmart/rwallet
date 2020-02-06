@@ -353,7 +353,9 @@ class WalletList extends Component {
             <View style={styles.myAssetsButtonsView}>
               <TouchableOpacity
                 style={styles.ButtonView}
-                onPress={() => {}}
+                onPress={() => {
+                  navigation.navigate('FingerPrint');
+                }}
               >
                 <Image source={send} />
                 <Loc style={[styles.sendText]} text="Send" />
@@ -369,7 +371,9 @@ class WalletList extends Component {
               <View style={styles.spliteLine} />
               <TouchableOpacity
                 style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                onPress={() => {}}
+                onPress={() => {
+                  navigation.navigate('VerifyFingerprint');
+                }}
               >
                 <Image source={swap} />
                 <Loc style={[styles.swapText]} text="Swap" />
