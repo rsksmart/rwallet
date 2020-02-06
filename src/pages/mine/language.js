@@ -31,7 +31,7 @@ class Language extends Component {
     });
 
     static createListData() {
-      const listData = _.map(locales, (row) => ({ title: strings(row.name) }));
+      const listData = _.map(locales, (row) => ({ title: strings(`language.${row.name}`) }));
       return listData;
     }
 
@@ -73,7 +73,7 @@ class Language extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Language" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.language.title" />}
         >
           <View style={styles.listView}>
             <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />

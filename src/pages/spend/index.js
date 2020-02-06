@@ -46,14 +46,14 @@ export default class SpendIndex extends Component {
         hasBottomBtn={false}
         hasLoader={false}
         renderAccessory={() => <RSKad />}
-        headerComponent={<EarnHeader title="Asset Management at Your Fingertips" imageSource={headerImage} imageBgColor="#61DABF" />}
+        headerComponent={<EarnHeader title="page.spend.index.title" imageSource={headerImage} imageBgColor="#61DABF" />}
       >
         <View style={styles.body}>
-          <Loc style={[styles.title]} text="Below features are coming soon to Spend…" />
+          <Loc style={[styles.title]} text="page.spend.index.featuresTitle" />
           <View style={styles.greenLine} />
-          <Loc style={[styles.listText]} text="- Buy 100+ Gift Cards with cryptocurrency" />
-          <Loc style={[styles.listText]} text="- Swap between any token in your wallet" />
-          <Loc style={[styles.listText]} text="- Multi-sign approval of transactions" />
+          <Loc style={[styles.listText]} text="page.spend.index.feature1" />
+          <Loc style={[styles.listText]} text="page.spend.index.feature2" />
+          <Loc style={[styles.listText]} text="page.spend.index.feature3" />
         </View>
       </BasePageGereral>
     );

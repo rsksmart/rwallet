@@ -97,5 +97,5 @@ Alert.propTypes = {
 
 Alert.defaultProps = {
   onClosePress: null,
-  buttonText: 'GOT IT',
+  buttonText: 'button.gotIt',
 };

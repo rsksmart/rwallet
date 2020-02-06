@@ -5,191 +5,282 @@
     "Earn": "Ganhar",
     "Me": "Eu"
   },
-  "test3": {
-    "text": "Esta é a página de teste 3",
-    "button": "Vá para Configuração"
+  "page": {
+    "start": {
+      "start": {
+        "button": "Iniciar"
+      },
+      "terms": {
+        "term1": "Entendo que meus fundos estão retidos com segurança neste dispositivo, não por uma empresa.",
+        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meu Bitcoin poderá ser recuperado apenas com a frase de recuperação.",
+        "term3": "Eu li, compreendi e concordo com os Termos de uso.",
+        "viewTerms": "Ver Termos de Uso Completos",
+        "button": "CONFIRMAR E ACABAR"
+      }
+    },
+    "wallet": {
+      "list": {
+        "title": "Sua carteira",
+        "myAssets": "Meus ativos",
+        "allAssets": "Todos os ativos",
+        "addAsset": "Adicionar ativo"
+      },
+      "history": {
+        "noTransNote": "Não há transações encontradas nesta carteira.",
+        "recent": "Recente"
+      },
+      "transaction": {
+        "Sent Funds": "Fundos enviados",
+        "Received Funds": "Fundos Recebidos",
+        "Sending Funds": "Envio de fundos",
+        "Receiving Funds": "Recebimento de fundos",
+        "date": "Encontro",
+        "confirmations": "Confirmações",
+        "memo": "Memorando",
+        "noMemo": "Nenhuma nota",
+        "transactionID": "ID da transação",
+        "viewOnChain": "Ver na blockchain"
+      },
+      "receive": {
+        "address": "Endereço"
+      },
+      "transfer": {
+        "to": "Para",
+        "memo": "Memorando (opcional)",
+        "fee": "Taxa do mineiro",
+        "custom": "Personalizados",
+        "feeQuestion": "Quão rápido você quer que isso seja feito?",
+        "Slow": "Lento",
+        "Average": "Média",
+        "Fast": "Rápido",
+        "CONFIRMED": "CONFIRMADO",
+        "enterMemo": "Inserir uma nota de transação",
+        "slideConfirm": "Deslize para confirmar"
+      },
+      "add": {
+        "title": "Adicionar carteira",
+        "createWallet": "Criar carteira básica",
+        "createWalletNote": "Recomendado para usuários iniciantes",
+        "importWallet": "Importar carteira existente",
+        "importWalletNote": "Recupere sua carteira usando sua senha"
+      },
+      "selectCurrency": {
+        "title": "Selecionar moeda da carteira",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Selecionar carteira"
+      },
+      "recovery": {
+        "title": "Frase de recuperação",
+        "note": "Digite a frase de recuperação (geralmente 12 palavras)",
+        "advancedOptions": "Opções avançadas",
+        "specifyPath": "Especificar caminho de derivação"
+      },
+      "recoveryPhrase": {
+        "title": "Frase de recuperação",
+        "note1": "Anote ou copie estas palavras",
+        "note2": "na ordem certa e salve-os",
+        "note3": "em algum lugar seguro"
+      },
+      "backupPhrase": {
+        "title": "Frase de backup",
+        "note": "Toque em cada palavra na ordem correta",
+        "isCorrect": "Isso está correto?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Verifique o sucesso da frase",
+        "body": "Sua frase de recuperação foi verificada",
+        "note": "Certifique-se de armazenar sua frase de recuperação em um local seguro"
+      },
+      "verifyFingerprint": {
+        "title": "Verificar impressão digital"
+      },
+      "scan": {
+        "title": "Varredura"
+      },
+      "transferCompleted": {
+        "title": "Mandar",
+        "body": "Transferência concluída!",
+        "note": "Sua transação está a caminho.",
+        "viewExplorer": "Clique para ver no explorer"
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "Junte-se à comunidade de RSK",
+        "settings": "Configurações",
+        "createKey": "Criar ou importar uma chave",
+        "keys": "Chaves",
+        "anonymousUser": "Usuário anônimo",
+        "wallets": "Carteiras"
+      },
+      "language": {
+        "title": "Língua"
+      },
+      "currency": {
+        "title": "Moeda"
+      },
+      "2fa": {
+        "title": "Autenticação de dois fatores",
+        "resetPasscode": "Redefinir senha"
+      },
+      "resetPasscodeSuccess" :{
+        "title": "Redefinir sucesso da senha"
+      },
+      "keySettings": {
+        "title": "Configurações principais",
+        "wallets": "carteiras",
+        "keyContains": "Esta chave contém",
+        "security": "Segurança",
+        "advanced": "Avançado",
+        "Wallets": "Carteiras",
+        "keyName": "Nome da chave",
+        "delete": "Excluir",
+        "backup": "Backup"
+      },
+      "keyName": {
+        "title": "Nome da chave",
+        "question": "Como você chama essa chave?",
+        "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
+        "name": "Nome",
+        "comment": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+      },
+      "rename": {
+        "title": "Seu nome",
+        "question": "Qual o seu nome?",
+        "comment": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+      },
+      "resetcompleted": {
+        "title": "Redefinição concluída!"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "Ganhe criptomoeda com facilidade",
+        "comingSoon": "Em breve...",
+        "featuresTitle": "Os recursos abaixo estão chegando em breve.",
+        "feature1": "- Ganhe criptomoeda concluindo tarefas",
+        "feature2": "- Obter interesses de uma variedade de produtos Defi",
+        "feature3": "- \"Cash Back\" em compras com criptomoeda"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "Gerenciamento de ativos ao seu alcance",
+        "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
+        "feature1": "- Compre mais de 100 cartões-presente com criptomoeda",
+        "feature2": "- Troque entre qualquer token na sua carteira",
+        "feature3": "- Aprovação de transações com vários sinais"
+      }
+    }
   },
-  "Language": "Língua",
-  "2FA": "2FA",
-  "Reset Passcode": "Redefinir senha",
-  "Reset Passcode Success": "Redefinir sucesso da senha",
-  "Add Wallet": "Adicionar carteira",
-  "Select Wallet Currency": "Selecionar moeda da carteira",
-  "Recovery Phrase": "Frase de recuperação",
-  "Verify Your Phrase": "Verifique sua frase",
-  "Verify Phrase Success": "Verifique o sucesso da frase",
-  "Verify Fingerprint": "Verificar impressão digital",
-  "Verify Passcode": "Verificar código de acesso",
-  "Scan": "Varredura",
-  "Your Wallet": "Sua carteira",
-  "My Assets": "Meus ativos",
-  "All Assets": "Todos os ativos",
-  "Add Asset": "Adicionar ativo",
-  "Create Basic Wallet": "Criar carteira básica",
-  "Recommended for first-time users": "Recomendado para usuários iniciantes",
-  "Import existing Wallet": "Importar carteira existente",
-  "Recover your wallet using your passphrase": "Recupere sua carteira usando sua senha",
-  "Mainnet": "Mainnet",
-  "Testnet": "Testnet",
-  "CREATE": "CRIO",
-  "Two-Factor Authentication": "Autenticação de dois fatores",
-  "Currency": "Moeda",
-  "Settings": "Configurações",
-  "Use Fingerprint": "Usar impressão digital",
-  "Enter Old Passcode": "Digite a senha antiga",
-  "Enter New Passcode": "Digite a nova senha",
-  "Confirm Passcode": "Confirmar senha",
-  "Cancel": "Cancelar",
-  "BACK TO SETTING": "VOLTAR À CONFIGURAÇÃO",
-  "Reset completed!": "Redefinição concluída!",
-  "COMFIRM": "CONFIRME",
-  "Address": "Endereço",
-  "Receive": "Receber",
-  "Receiving": "Recebendo",
-  "Send": "Mandar",
-  "Get Started": "COMEÇADO",
-  "COMFIRM & FINISH": "CONFIRMAR E ACABAR",
-  "Sent": "Enviei",
-  "Sending": "Enviando",
-  "Received": "Recebido",
-  "To": "Para",
-  "Memo (optional)": "Memorando (opcional)",
-  "Miner fee": "Taxa do mineiro",
-  "Custom": "Personalizados",
-  "Slow": "Lento",
-  "Average": "Média",
-  "Fast": "Rápido",
-  "How fast you want this done?": "Quão rápido você quer que isso seja feito?",
-  "NEXT": "PRÓXIMO",
-  "GOT IT": "ENTENDI",
-  "Safeguard your recovery phrase": "Proteja sua frase de recuperação",
-  "Safeguard your recovery phrase Text": "Sua frase de recuperação é composta por 12 palavras selecionadas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem.",
-  "Write down or copy these words": "Anote ou copie estas palavras",
-  "in the right order and save them": "na ordem certa e salve-os",
-  "somewhere safe": "em algum lugar seguro",
-  "verifyPhraseAlertTitle": "É importante que você anote sua frase de recuperação corretamente. Se algo acontecer com sua carteira, você precisará recuperar seu dinheiro. Por favor revise e tente novamente.",
-  "Tap each word in the correct order": "Toque em cada palavra na ordem correta",
-  "GO TO WALLET": "IR PARA A CARTEIRA",
-  "BACK TO WALLET": "VOLTAR À CARTEIRA",
-  "Your recovery phrase is verified": "Sua frase de recuperação foi verificada",
-  "Be sure to store your recovery phrase in a safe and secure place": "Certifique-se de armazenar sua frase de recuperação em um local seguro",
-  "tip": "dica",
-  "Enter Passcode": "Digite a senha",
-  "Transfer Completed!": "Transferência concluída!",
-  "TransferText": "Sua transação está a caminho.",
-  "View Complete Terms Of Use": "Ver Termos de Uso Completos",
-  "TermsLine1": "Entendo que meus fundos estão retidos com segurança neste dispositivo, não por uma empresa.",
-  "TermsLine2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meu Bitcoin poderá ser recuperado apenas com a frase de recuperação.",
-  "TermsLine3": "Eu li, compreendi e concordo com os Termos de uso.",
-  "Use passcode": "Usar senha",
-  "Touch Sensor": "Sensor de toque",
-  "No match": "Sem correspondência",
-  "Copied": "Copiado",
-  "The recovery phrase has been copied to clipboard": "A frase de recuperação foi copiada para a área de transferência.",
-  "The address has been copied to clipboard": "O endereço foi copiado para a área de transferência.",
-  "Type the recovery phrase(usually 12 words)": "Digite a frase de recuperação (geralmente 12 palavras)",
-  "IMPORT": "IMPORTAR",
-  "Too Many Words": "Muitas palavras",
-  "The recovery phrase has to be 12 words": "A frase de recuperação deve conter 12 palavras.",
-  "Advanced Options": "Opções avançadas",
-  "Specify derivation path": "Especificar caminho de derivação",
-  "Passcode Mismatch": "Incompatibilidade da senha",
-  "Passcode Mismatch Body": "Os dois códigos digitados são diferentes. Por favor, tente novamente.",
-  "RETRY": "RETRY",
-  "Old Password": "Senha Antiga",
-  "Old Password is wrong": "A senha antiga está incorreta",
-  "Backup Phrase": "Frase de backup",
-  "Incorrect backup phrase": "Frase de backup incorreta",
-  "Unable to recover": "Não foi possível recuperar",
-  "Unable to recover Body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta.",
-  "Key Settings": "Configurações principais",
-  "SAVE": "GUARDAR",
-  "What do you call this key?": "Como você chama essa chave?",
-  "You can change the name displayed on the device below": "Você pode alterar o nome exibido no dispositivo abaixo.",
-  "Name": "Nome",
-  "Security": "Segurança",
-  "Advanced": "Avançado",
-  "Wallets": "Carteiras",
-  "wallets": "carteiras",
-  "Key Name": "Nome da chave",
-  "Delete": "Excluir",
-  "Backup": "Backup",
-  "Keys": "Chaves",
-  "Join RSK's Community": "Junte-se à comunidade de RSK",
-  "This key contains": "Esta chave contém",
-  "There is no transaction found in this wallet": "Não há transações encontradas nesta carteira.",
-  "Internal server error": "Erro do Servidor Interno",
-  "Please contact customer support": "Entre em contato com o suporte ao cliente.",
-  "Recent": "Recente",
-  "Transfer is failed": "A transferência falhou",
-  "You need more balance to complete the transfer": "Você precisa de mais saldo para concluir a transferência",
-  "Sorry server timeout": "Desculpe o tempo limite do servidor",
-  "Enter a transaction memo": "Inserir uma nota de transação",
-  "CONFIRMED": "CONFIRMADO",
-  "Slide to confirm": "Deslize para confirmar",
-  "Click to view in explorer": "Clique para ver no explorer",
-  "Copy": "cópia de",
-  "Swap": "Troca",
-  "Powered by": "Distribuído por",
-  "Key deleted": "Chave excluída",
-  "Key has been deleted successfully.": "A chave foi excluída com sucesso.",
-  "Key name is too short.": "O nome da chave é muito curto.",
-  "Key name is too long.": "O nome da chave é muito longo.",
-  "Key name contains invalid characters.": "O nome da chave contém caracteres inválidos.",
-  "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço",
-  "Create or Import a Key": "Criar ou importar uma chave",
-  "English": "Inglês",
-  "Spanish": "Espanhol",
-  "Portuguese": "Português",
-  "Chinese": "Chinês",
-  "Type your old passcode": "Digite sua senha antiga",
-  "Type your new passcode": "Digite sua nova senha",
-  "Confirm your new passcode": "Confirme sua nova senha",
-  "Password not match, Try again": "A senha não corresponde, tente novamente",
-  "Old Passcode is incorrect, try again": "A senha antiga está incorreta. Tente novamente",
-  "Passcode not match, Try again": "A senha não corresponde, tente novamente",
-  "Type your passcode": "Digite sua senha",
-  "Passcode is incorrected": "A senha está incorreta",
-  "Failed": "Failed",
-  "Confirm": "confirme",
-  "Anonymous User": "Usuário anônimo",
-  "Asset Management at Your Fingertips": "Gerenciamento de ativos ao seu alcance",
-  "Below features are coming soon to Spend…": "Os recursos abaixo estão chegando em breve para gastar…",
-  "- Buy 100+ Gift Cards with cryptocurrency": "- Compre mais de 100 cartões-presente com criptomoeda",
-  "- Swap between any token in your wallet": "- Troque entre qualquer token na sua carteira",
-  "- Multi-sign approval of transactions": "- Aprovação de transações com vários sinais",
-  "Earn cryptocurrency with ease": "Ganhe criptomoeda com facilidade",
-  "Below features are coming soon to Earn…": "Os recursos abaixo estão chegando em breve.",
-  "- Earn cryptocurrency by completing tasks": "- Ganhe criptomoeda concluindo tarefas",
-  "- Gain interests from a variety of Defi products": "- Obter interesses de uma variedade de produtos Defi",
-  "- Cash Back": "- \"Cash Back\" em compras com criptomoeda",
-  "Coming soon...": "Em breve...",
-  "Is this correct?": "Isso está correto?",
-  "Clear": "Claro",
-  "START OVER": "RECOMEÇAR",
-  "Send All": "Envie todos",
-  "Sent Funds": "Fundos enviados",
-  "Received Funds": "Fundos Recebidos",
-  "Sending Funds": "Envio de fundos",
-  "Receiving Funds": "Recebimento de fundos",
-  "Date": "Encontro",
-  "Confirmations": "Confirmações",
-  "Memo": "Memorando",
-  "Transaction ID": "ID da transação",
-  "No memo": "Nenhuma nota",
-  "You need more RBTC balance to complete the transfer": "Você precisa de mais saldo RBTC para concluir a transferência",
-  "You need more RIF balance to complete the transfer": "Você precisa de mais saldo RIF para concluir a transferência",
-  "Invalid amount": "Montante inválido",
-  "Amount is not valid": "Valor inválido",
-  "Invalid address": "Endereço inválido",
-  "Address is not valid": "Endereço inválido",
-  "Name is too short.": "Nome muito curto.",
-  "Name is too long.": "O nome é muito longo.",
-  "Name contains invalid characters.": "O nome contém caracteres inválidos.",
-  "Your Name": "Seu nome",
-  "What's your name?": "Qual o seu nome?",
-  "* Name can contain 1-32 letters (a-z), numbers (0-9), and space": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço",
-  "Select Wallet": "Selecionar carteira",
-  "Duplicate Phrase": "Frase duplicada",
-  "This phrase is already imported in the app. Please try with a different phrase.": "Esta frase já foi importada no aplicativo. Por favor, tente com uma frase diferente."
+  "language": {
+    "English": "Inglês",
+    "Spanish": "Espanhol",
+    "Portuguese": "Português",
+    "Chinese": "Chinês"
+  },
+  "button": {
+    "save": "GUARDAR",
+    "NEXT": "PRÓXIMO",
+    "gotIt": "ENTENDI",
+    "create": "CRIO",
+    "CONFIRM": "CONFIRME",
+    "RETRY": "RETRY",
+    "IMPORT": "IMPORTAR",
+    "Clear": "Claro",
+    "START OVER": "RECOMEÇAR",
+    "Copy": "cópia de",
+    "Confirm": "confirme",
+    "Cancel": "Cancelar",
+    "Send All": "Envie todos",
+    "goToWallet": "IR PARA A CARTEIRA",
+    "backToWallet": "VOLTAR À CARTEIRA",
+    "backToSetting": "VOLTAR À CONFIGURAÇÃO",
+    "Send": "Mandar",
+    "Receive": "Receber",
+    "Swap": "Troca"
+  },
+  "txState": {
+    "Sent": "Enviei",
+    "Sending": "Enviando",
+    "Received": "Recebido",
+    "Receiving": "Recebendo",
+    "Failed": "Falhou"
+  },
+  "modal": {
+    "defaultError": {
+      "title": "Erro do Servidor Interno",
+      "body": "Entre em contato com o suporte ao cliente."
+    },
+    "unableRecover": {
+      "title": "Não foi possível recuperar",
+      "body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta."
+    },
+    "duplicatePhrase": {
+      "title Phrase": "Frase duplicada",
+      "body": "Esta frase já foi importada no aplicativo. Por favor, tente com uma frase diferente."
+    },
+    "tooManyPhrase": {
+      "title": "Muitas palavras",
+      "body": "A frase de recuperação deve conter 12 palavras."
+    },
+    "txFailed": {
+      "title": "A transferência falhou",
+      "moreRBTC": "Você precisa de mais saldo RBTC para concluir a transferência",
+      "moreRIF": "Você precisa de mais saldo RIF para concluir a transferência",
+      "moreBalance": "Você precisa de mais saldo para concluir a transferência",
+      "serverTimeout": "Desculpe, tempo limite do servidor",
+      "contactService": "Entre em contato com o atendimento ao cliente"
+    },
+    "invalidAmount": {
+      "title": "Montante inválido",
+      "body": "Valor inválido"
+    },
+    "invalidAddress": {
+      "title": "Endereço inválido",
+      "body": "Endereço inválido"
+    },
+    "incorrectName": {
+      "title": "Nome incorreto",
+      "tooShort": "Nome muito curto.",
+      "tooLong": "O nome é muito longo.",
+      "invalid": "O nome contém caracteres inválidos."
+    },
+    "incorrectKeyName": {
+      "title": "Nome de chave incorreto",
+      "tooShort": "O nome da chave é muito curto.",
+      "tooLong": "O nome da chave é muito longo.",
+      "invalid": "O nome da chave contém caracteres inválidos."
+    },
+    "guardPhrase": {
+      "title": "Proteja sua frase de recuperação",
+      "body": "Sua frase de recuperação é composta por 12 palavras selecionadas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Frase de backup incorreta",
+      "body": "É importante que você anote sua frase de recuperação corretamente. Se algo acontecer com sua carteira, você precisará recuperar seu dinheiro. Por favor revise e tente novamente."
+    },
+    "phraseCopied": {
+      "title": "Copiado",
+      "body": "A frase de recuperação foi copiada para a área de transferência."
+    },
+    "passcode": {
+      "typeOldPasscode": "Digite sua senha antiga",
+      "typeNewPasscode": "Digite sua nova senha",
+      "confirmNewPasscode": "Confirme sua nova senha",
+      "oldIncorrect": "A senha antiga está incorreta. Tente novamente",
+      "notMatch": "A senha não corresponde, tente novamente"
+    },
+    "verifyPasscode": {
+      "type": "Digite sua senha",
+      "incorrected": "A senha está incorreta"
+    },
+    "touchSensor": {
+      "title": "Usar senha",
+      "usePasscode": "Sensor de toque"
+    }
+  }
 }

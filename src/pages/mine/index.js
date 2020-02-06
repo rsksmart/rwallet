@@ -160,7 +160,7 @@ class MineIndex extends Component {
               <Text>{item.name}</Text>
               <Text style={styles.keyWallets}>
                 {`${item.walletCount} `}
-                <Loc text="Wallets" />
+                <Loc text="page.mine.index.wallets" />
               </Text>
             </View>
           </TouchableOpacity>
@@ -172,7 +172,7 @@ class MineIndex extends Component {
 
   settings = [
     {
-      title: 'Language',
+      title: 'page.mine.language.title',
       icon: <MaterialIcons name="language" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />,
       onPress: () => {
         const { navigation } = this.props;
@@ -180,7 +180,7 @@ class MineIndex extends Component {
       },
     },
     {
-      title: 'Currency',
+      title: 'page.mine.currency.title',
       icon: (
         <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />
       ),
@@ -190,7 +190,7 @@ class MineIndex extends Component {
       },
     },
     {
-      title: 'Two-Factor Authentication',
+      title: 'page.mine.2fa.title',
       icon: (
         <MaterialCommunityIcons
           name="two-factor-authentication"
@@ -288,7 +288,7 @@ class MineIndex extends Component {
     const { keyListData, settings, joins } = this.state;
     const { defaultSettings: { username: defaultUsername } } = config;
     // Translate If username is default user name
-    const usernameText = username === defaultUsername ? strings(defaultUsername) : username;
+    const usernameText = username === defaultUsername ? strings('page.mine.index.anonymousUser') : username;
 
     return (
       <BasePageGereral
@@ -300,7 +300,7 @@ class MineIndex extends Component {
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Settings" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.settings" />
             <FlatList
               data={settings}
               extraData={language}
@@ -309,16 +309,16 @@ class MineIndex extends Component {
             />
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Keys" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
             <View style={styles.createWalletButtonView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Loc style={[styles.createWalletButtonText]} text="Create or Import a Key" />
+                <Loc style={[styles.createWalletButtonText]} text="page.mine.index.createKey" />
               </TouchableOpacity>
             </View>
           </View>
           <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Join RSK's Community" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
               renderItem={({ item }) => <Item data={item} title={item.title} />}
