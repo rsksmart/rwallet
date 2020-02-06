@@ -27,7 +27,8 @@
       },
       "history": {
         "noTransNote": "此钱包还没有任何交易。",
-        "recent": "最近的"
+        "recent": "最近的",
+        "loading": "加载中"
       },
       "transaction": {
         "Sent Funds": "已发送资金",
@@ -283,5 +284,5 @@
       "title": "指纹验证",
       "usePasscode": "使用密码验证"
     }
-  },
+  }
 }

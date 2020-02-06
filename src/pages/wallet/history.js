@@ -443,6 +443,9 @@ class History extends Component {
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   }
 
   onEndReached() {
@@ -530,6 +533,7 @@ class History extends Component {
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
+        refreshControl={this.refreshControl()}
         headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.headerBoardView}>
