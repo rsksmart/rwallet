@@ -17,6 +17,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
+import { strings } from '../../common/i18n';
 
 const { getCurrencySymbol } = common;
 
@@ -503,7 +504,7 @@ class History extends Component {
         style={styles.refreshControl}
         refreshing={isRefreshing}
         onRefresh={this.onRefresh}
-        title="Loading..."
+        title={strings('page.wallet.history.loading')}
       />
     );
   }
@@ -602,6 +603,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
   prices: state.Wallet.get('prices'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = () => ({
