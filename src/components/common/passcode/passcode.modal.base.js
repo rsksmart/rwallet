@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
     color: color.component.passcodeModal.title.color,
   },
   dotRow: {
-    marginTop: 20,
-    marginBottom: 50,
+    marginTop: 25,
+    marginBottom: 45,
     flexDirection: 'row',
   },
   dot: {
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     width: dotSize,
     height: dotSize,
     borderRadius: dotSize / 2,
@@ -155,11 +155,7 @@ class PasscodeModalBase extends PureComponent {
     const { cancelBtnOnPress, showCancel } = this.props;
 
     return (
-      <Modal
-        style={[]}
-        animationType="fade"
-        transparent
-      >
+      <Modal animationType="fade" transparent>
         <View style={[styles.background, styles.container]}>
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Loc style={[styles.title]} text={title} />
@@ -171,10 +167,7 @@ class PasscodeModalBase extends PureComponent {
             </View>
           </View>
           {showCancel && (
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={cancelBtnOnPress}
-            >
+            <TouchableOpacity style={styles.cancelButton} onPress={cancelBtnOnPress}>
               <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
             </TouchableOpacity>
           )}
