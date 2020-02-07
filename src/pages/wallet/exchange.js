@@ -13,12 +13,11 @@ import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 5,
     marginHorizontal: 18,
   },
 });
 
-class SelectWallet extends Component {
+class Exchange extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -85,7 +84,7 @@ class SelectWallet extends Component {
     } = this.props;
 
     const { wallets } = walletManager;
-    const listData = SelectWallet.createListData(wallets, navigation);
+    const listData = Exchange.createListData(wallets, navigation);
 
     this.setState({ listData });
   }
@@ -106,7 +105,7 @@ class SelectWallet extends Component {
             renderItem={({ item }) => (
               <View style={coinListItemStyles.itemView}>
                 <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
-                {SelectWallet.renderWalletList(item.coins)}
+                {Exchange.renderWalletList(item.coins)}
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -117,7 +116,7 @@ class SelectWallet extends Component {
   }
 }
 
-SelectWallet.propTypes = {
+Exchange.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -129,7 +128,7 @@ SelectWallet.propTypes = {
   }),
 };
 
-SelectWallet.defaultProps = {
+Exchange.defaultProps = {
   walletManager: undefined,
 };
 
@@ -137,4 +136,4 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
 });
 
-export default connect(mapStateToProps)(SelectWallet);
+export default connect(mapStateToProps)(Exchange);

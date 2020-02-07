@@ -15,6 +15,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
 import ListPageHeader from '../../components/headers/header.listpage';
+import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -24,13 +25,6 @@ const scan = require('../../assets/images/icon/scan.png');
 const { getCurrencySymbol } = common;
 
 const styles = StyleSheet.create({
-  sectionTitle: {
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000',
-    paddingHorizontal: 10,
-  },
   sectionContainer: {
     paddingHorizontal: 0,
   },
@@ -152,7 +146,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   assetsTitle: {
-    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 10,
+    color: '#000000', fontSize: 13, letterSpacing: 0.25, fontWeight: 'bold', marginLeft: 10, marginBottom: 20,
   },
   logoView: {
     alignItems: 'center',
@@ -241,14 +235,17 @@ class WalletList extends Component {
           worth: worthText,
           amount: amountText,
           icon: coin.icon,
+          onPress: () => {
+            navigation.navigate('WalletHistory', { wallet, coin });
+          },
           r1Press: () => {
             navigation.navigate('Transfer', { wallet, coin });
           },
           r2Press: () => {
             navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
           },
-          onPress: () => {
-            navigation.navigate('WalletHistory', { wallet, coin });
+          onSwapButtonPress: () => {
+            navigation.navigate('Exchange', { coin });
           },
         };
         wal.coins.push(item);
@@ -264,8 +261,8 @@ class WalletList extends Component {
       <FlatList
         data={listData}
         renderItem={({ item }) => (
-          <View>
-            <Text style={[styles.sectionTitle]}>{item.name}</Text>
+          <View style={coinListItemStyles.itemView}>
+            <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
             <SwipableButtonList data={item.coins} />
           </View>
         )}
@@ -369,7 +366,7 @@ class WalletList extends Component {
               <View style={styles.spliteLine} />
               <TouchableOpacity
                 style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                onPress={() => {}}
+                onPress={() => navigation.navigate('ExchangeSelection')}
               >
                 <Image source={swap} />
                 <Loc style={[styles.swapText]} text="button.Swap" />
@@ -384,7 +381,7 @@ class WalletList extends Component {
           <View style={styles.sectionContainer}>
             {WalletList.accountListView(listData)}
           </View>
-          <View style={[styles.sectionContainer, { marginTop: 20 }]}>
+          <View style={[styles.sectionContainer, { marginTop: -5 }]}>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('WalletAddIndex', { skipPasscode: true });

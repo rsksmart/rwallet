@@ -65,6 +65,9 @@ const style = StyleSheet.create({
     marginLeft: -5,
     marginTop: -2,
   },
+  listItemIndicator: {
+    color: color.component.listItemIndicator.color,
+  },
 });
 
 export default style;

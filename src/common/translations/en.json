@@ -107,6 +107,15 @@
         "body": "Transfer Completed!",
         "note": "Your transaction is on its way.",
         "viewExplorer": "Click to view in explorer"
+      },
+      "exchange": {
+        "title": "Send",
+        "body": "Transfer Completed!",
+        "note": "Your transaction is on its way.",
+        "viewExplorer": "Click to view in explorer"
+      },
+      "exchangeSelection": {
+        "title": "Select Currency"
       }
     },
     "mine": {

@@ -3,11 +3,14 @@ import color from './color.ts';
 
 const coinListItemStyles = StyleSheet.create({
   sectionTitle: {
-    marginTop: 5,
+    marginBottom: 10,
     fontSize: 20,
     fontWeight: '600',
     color: '#000',
     paddingHorizontal: 10,
+  },
+  itemView: {
+    marginBottom: 25,
   },
   row: {
     flexDirection: 'row',
@@ -18,7 +21,8 @@ const coinListItemStyles = StyleSheet.create({
     flex: 1,
     borderBottomColor: color.component.swipableButtonList.right.borderBottomColor,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 20,
+    paddingTop: 12,
+    paddingBottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
   },

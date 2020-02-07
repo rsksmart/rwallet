@@ -123,6 +123,9 @@ const color = {
                 backgroundColor: '#FFF',
             }
         },
+        listItemIndicator: {
+            color: '#9B9B9B',
+        },
         swipableButtonList: {
             backText: {
                 color: '#FFF',

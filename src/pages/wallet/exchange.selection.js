@@ -5,20 +5,21 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
+import presetStyles from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 5,
     marginHorizontal: 18,
   },
 });
 
-class SelectWallet extends Component {
+class ExchangeSelection extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -36,6 +37,9 @@ class SelectWallet extends Component {
                 <Text style={coinListItemStyles.title}>{item.title}</Text>
                 <Text style={coinListItemStyles.text}>{item.text}</Text>
               </View>
+              <View>
+                <EvilIcons name="chevron-right" size={45} style={presetStyles.listItemIndicator} />
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -44,8 +48,8 @@ class SelectWallet extends Component {
     );
   }
 
-  static createListData(wallets, navigation) {
-    const { operation } = navigation.state.params;
+  static createListData(wallets) {
+    // const { operation } = navigation.state.params;
     if (!_.isArray(wallets)) {
       return [];
     }
@@ -64,11 +68,11 @@ class SelectWallet extends Component {
           text: coinType,
           icon: coin.icon,
           onPress: () => {
-            if (operation === 'send') {
-              navigation.navigate('Transfer', { wallet, coin });
-            } else if (operation === 'receive') {
-              navigation.navigate('WalletReceive', { coin });
-            }
+            // if (operation === 'send') {
+            //   navigation.navigate('Transfer', { wallet, coin });
+            // } else if (operation === 'receive') {
+            //   navigation.navigate('WalletReceive', { coin });
+            // }
           },
         };
         wal.coins.push(item);
@@ -85,7 +89,7 @@ class SelectWallet extends Component {
     } = this.props;
 
     const { wallets } = walletManager;
-    const listData = SelectWallet.createListData(wallets, navigation);
+    const listData = ExchangeSelection.createListData(wallets, navigation);
 
     this.setState({ listData });
   }
@@ -98,7 +102,7 @@ class SelectWallet extends Component {
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.selectWallet.title" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.exchangeSelection.title" />}
       >
         <View style={styles.body}>
           <FlatList
@@ -106,7 +110,7 @@ class SelectWallet extends Component {
             renderItem={({ item }) => (
               <View style={coinListItemStyles.itemView}>
                 <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
-                {SelectWallet.renderWalletList(item.coins)}
+                {ExchangeSelection.renderWalletList(item.coins)}
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -117,7 +121,7 @@ class SelectWallet extends Component {
   }
 }
 
-SelectWallet.propTypes = {
+ExchangeSelection.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -129,7 +133,7 @@ SelectWallet.propTypes = {
   }),
 };
 
-SelectWallet.defaultProps = {
+ExchangeSelection.defaultProps = {
   walletManager: undefined,
 };
 
@@ -137,4 +141,4 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
 });
 
-export default connect(mapStateToProps)(SelectWallet);
+export default connect(mapStateToProps)(ExchangeSelection);
