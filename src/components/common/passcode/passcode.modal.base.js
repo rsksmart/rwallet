@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, Modal,
+  View, Text, StyleSheet, TouchableOpacity, Modal,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   dotRow: {
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 50,
     flexDirection: 'row',
   },
   dot: {
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     position: 'absolute',
-    right: 40,
+    right: 60,
+    bottom: 80,
   },
   cancel: {
     fontSize: 18,
@@ -159,7 +160,7 @@ class PasscodeModalBase extends PureComponent {
         animationType="fade"
         transparent
       >
-        <TouchableHighlight style={[styles.background, styles.container]}>
+        <View style={[styles.background, styles.container]}>
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Loc style={[styles.title]} text={title} />
             <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
@@ -168,18 +169,16 @@ class PasscodeModalBase extends PureComponent {
             <View style={styles.buttonView}>
               {this.renderButtons()}
             </View>
-            {showCancel && (
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={cancelBtnOnPress}
-              >
-                <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
-              </TouchableOpacity>
-            </View>
-            )}
           </View>
-        </TouchableHighlight>
+          {showCancel && (
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={cancelBtnOnPress}
+            >
+              <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </Modal>
     );
   }
