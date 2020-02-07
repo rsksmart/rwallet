@@ -34,6 +34,7 @@ const actions = {
   RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
   SHOW_FINGERPRINT_MODAL: 'SHOW_FINGERPRINT_MODAL',
   HIDE_FINGERPRINT_MODAL: 'HIDE_FINGERPRINT_MODAL',
+  FINGERPRINT_USE_PASSCODE: 'FINGERPRINT_USE_FINGERPRINT',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -107,6 +108,10 @@ const actions = {
   }),
   hideFingerprintModal: () => ({
     type: actions.HIDE_FINGERPRINT_MODAL,
+  }),
+  fingerprintUsePasscode: (callback, fallback) => ({
+    type: actions.FINGERPRINT_USE_PASSCODE,
+    value: { callback, fallback },
   }),
 };
 

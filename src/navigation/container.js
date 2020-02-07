@@ -37,6 +37,8 @@ const mapDispatchToProps = (dispatch) => ({
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
   removeNotification: () => dispatch(appActions.removeNotification()),
   removeConfirmation: () => dispatch(appActions.removeConfirmation()),
+  fingerprintUsePasscode: (callback, fallback) => dispatch(appActions.fingerprintUsePasscode(callback, fallback)),
+  hideFingerprintModal: () => dispatch(appActions.hideFingerprintModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

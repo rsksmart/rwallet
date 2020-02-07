@@ -126,7 +126,7 @@ class RootComponent extends Component {
   render() {
     const {
       showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback, isShowConfirmation, confirmation, removeConfirmation, confirmationCallback,
-      isShowFingerprintModal, fingerprintCallback, fingerprintFallback,
+      isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
     } = this.props;
 
     return (
@@ -137,7 +137,7 @@ class RootComponent extends Component {
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} fingerprintFallback={fingerprintFallback} />
-          <TouchSensorModal isShowFingerprintModal={isShowFingerprintModal} onUsePasscodePress={() => {}} errorMessage="" fingerprintCallback={fingerprintCallback} />
+          <TouchSensorModal isShowFingerprintModal={isShowFingerprintModal} fingerprintCallback={fingerprintCallback} fingerprintUsePasscode={fingerprintUsePasscode} hideFingerprintModal={hideFingerprintModal} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>
@@ -173,8 +173,10 @@ RootComponent.propTypes = {
   removeConfirmation: PropTypes.func.isRequired,
   confirmationCallback: PropTypes.func,
   isShowFingerprintModal: PropTypes.bool.isRequired,
+  hideFingerprintModal: PropTypes.func.isRequired,
   fingerprintCallback: PropTypes.func,
   fingerprintFallback: PropTypes.func,
+  fingerprintUsePasscode: PropTypes.func,
 };
 
 RootComponent.defaultProps = {
@@ -187,6 +189,7 @@ RootComponent.defaultProps = {
   confirmationCallback: null,
   fingerprintCallback: null,
   fingerprintFallback: null,
+  fingerprintUsePasscode: null,
 };
 
 export default RootComponent;

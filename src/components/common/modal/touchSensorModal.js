@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import {
   Modal, View, StyleSheet, Image, TouchableOpacity, Platform,
 } from 'react-native';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
-import appActions from '../../../redux/app/actions';
 
 
 const styles = StyleSheet.create({
@@ -30,14 +28,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 30,
-    fontWeight: '900',
     color: color.component.touchSensorModal.color,
+    fontFamily: 'Avenir-Book',
+    fontSize: 30,
     marginTop: 30,
   },
   finger: {
-    marginTop: 45,
-    marginBottom: 30,
+    marginTop: 25,
+    marginBottom: 10,
   },
   passcode: {},
   passcodeText: {
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
 
 const finger = require('../../../assets/images/misc/finger.png');
 
-class TouchSensorModal extends Component {
+export default class TouchSensorModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,16 +59,20 @@ class TouchSensorModal extends Component {
     };
     this.onCancelPress = this.onCancelPress.bind(this);
     this.onUsePasscodePress = this.onUsePasscodePress.bind(this);
+    this.onIconPress = this.onIconPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { isShowFingerprintModal } = this.props;
+    const { isShowFingerprintModal } = nextProps;
+    const { isShowFingerprintModal: isShowFingerprintModalLast } = this.props;
     this.setState({ errorMessage: nextProps.errorMessage });
-    if (nextProps.isShowFingerprintModal !== isShowFingerprintModal) {
-      if (nextProps.isShowFingerprintModal) {
-        this.onShowFingerprintModal();
-      }
+    if (isShowFingerprintModal && !isShowFingerprintModalLast) {
+      this.onShowFingerprintModal();
     }
+  }
+
+  onIconPress() {
+    this.requestScan();
   }
 
   onShowFingerprintModal() {
@@ -78,18 +80,20 @@ class TouchSensorModal extends Component {
   }
 
   onUsePasscodePress() {
-    const { hideFingerprintModal, onUsePasscodePress } = this.props;
-    if (onUsePasscodePress) {
+    const {
+      hideFingerprintModal, fingerprintUsePasscode, fingerprintCallback, fingerprintFallback,
+    } = this.props;
+    if (fingerprintUsePasscode) {
+      fingerprintUsePasscode(fingerprintCallback, fingerprintFallback);
       hideFingerprintModal();
-      onUsePasscodePress();
     }
   }
 
   onCancelPress() {
     const { hideFingerprintModal, fingerprintFallback } = this.props;
     if (fingerprintFallback) {
-      hideFingerprintModal();
       fingerprintFallback();
+      hideFingerprintModal();
     }
   }
 
@@ -142,9 +146,11 @@ class TouchSensorModal extends Component {
         <View style={styles.container}>
           <View style={styles.panel}>
             <Loc style={[styles.title]} text="Touch Sensor" />
+            {errView}
             <TouchableOpacity
               style={styles.finger}
-              onPress={() => (Platform.OS === 'ios' ? this.requestScan() : {})}
+              onPress={this.onIconPress}
+              disabled={!Platform.OS === 'ios'}
             >
               <Image source={finger} />
             </TouchableOpacity>
@@ -162,7 +168,6 @@ class TouchSensorModal extends Component {
                 </TouchableOpacity>
               )
             }
-            {errView}
           </View>
         </View>
       </Modal>
@@ -171,29 +176,17 @@ class TouchSensorModal extends Component {
 }
 
 TouchSensorModal.propTypes = {
-  onUsePasscodePress: PropTypes.func,
   errorMessage: PropTypes.string,
   isShowFingerprintModal: PropTypes.bool.isRequired,
   hideFingerprintModal: PropTypes.func.isRequired,
   fingerprintCallback: PropTypes.func,
   fingerprintFallback: PropTypes.func,
+  fingerprintUsePasscode: PropTypes.func,
 };
 
 TouchSensorModal.defaultProps = {
-  onUsePasscodePress: null,
   errorMessage: null,
   fingerprintCallback: null,
   fingerprintFallback: null,
+  fingerprintUsePasscode: null,
 };
-
-const mapStateToProps = (state) => ({
-  isShowFingerprintModal: state.App.get('isShowFingerprintModal'),
-  fingerprintCallback: state.App.get('fingerprintCallback'),
-  fingerprintFallback: state.App.get('fingerprintFallback'),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  hideFingerprintModal: () => dispatch(appActions.hideFingerprintModal()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TouchSensorModal);

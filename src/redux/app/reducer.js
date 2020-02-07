@@ -113,6 +113,10 @@ export default function appReducer(state = initState, action) {
       return state.set('isShowFingerprintModal', false)
         .set('fingerprintCallback', null)
         .set('fingerprintFallback', null);
+    case actions.FINGERPRINT_USE_PASSCODE:
+      return state.set('isShowFingerprintModal', false)
+        .set('fingerprintCallback', null)
+        .set('fingerprintFallback', null);
     default:
       return state;
   }

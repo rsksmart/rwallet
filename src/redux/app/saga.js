@@ -209,6 +209,10 @@ function* renameRequest(action) {
   }
 }
 
+function* fingerprintUsePasscode(action) {
+  yield put(actions.showPasscode('verify', action.value.callback, action.value.fallback));
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -219,5 +223,6 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+    takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscode),
   ]);
 }
