@@ -1,69 +1,61 @@
 import React from 'react';
 import {
-  StyleSheet, Image, View,
+  StyleSheet, View, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Loc from '../common/misc/loc';
-import FullWidthImage from '../common/misc/full.width.image';
-
+import presetStyles from '../../assets/styles/style';
 
 const header = require('../../assets/images/misc/header.earn.png');
 
 const styles = StyleSheet.create({
   headerImage: {
+    marginTop: -200,
+    height: 630,
+  },
+  titleView: {
+    flexDirection: 'row',
     position: 'absolute',
-    width: '100%',
+    bottom: 350,
+    left: 10,
+    alignItems: 'center',
   },
   headerTitle: {
-    fontFamily: 'Avenir-Black',
-    fontSize: 32,
-    letterSpacing: -0.7,
-    position: 'absolute',
-    left: 24,
-    right: 50,
-    color: '#FFF',
-  },
-  title: {
-    bottom: 350,
-  },
-  coming: {
-    fontFamily: 'Avenir-Black',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
     fontSize: 20,
-    letterSpacing: -0.44,
-    color: '#FFF',
-    position: 'absolute',
-    left: 24,
-    bottom: 42,
+    letterSpacing: 0.39,
+    marginLeft: -2,
+    marginBottom: 2,
   },
-  titleImage: {
-    marginVertical: 32,
-    width: 286,
-    height: 159,
-  },
-  titleImageView: {
+  rightButtonView: {
     position: 'absolute',
-    width: '100%',
-    bottom: 90,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    bottom: 430,
+    right: 20,
   },
 });
 
-export default function EarnHeader({ title, imageSource, imageBgColor }) {
+export default function ExchangeHeader({ title, onBackButtonPress, rightButton }) {
   return (
     <View>
-      <FullWidthImage source={header} style={[styles.headerImage]} />
-      <Loc style={[styles.headerTitle, styles.title]} text={title} />
-      <View style={[styles.titleImageView, { backgroundColor: imageBgColor }]}>
-        <Image style={styles.titleImage} source={imageSource} />
-      </View>
-      <Loc style={[styles.coming]} text="page.earn.index.comingSoon" />
+      <ImageBackground source={header} style={[styles.headerImage]}>
+        <View style={styles.titleView}>
+          <TouchableOpacity onPress={onBackButtonPress}>
+            <EvilIcons name="chevron-left" size={40} style={presetStyles.navBackIndicator} />
+          </TouchableOpacity>
+          <Loc style={styles.headerTitle} text={title} />
+        </View>
+        <View style={styles.rightButtonView}>
+          {rightButton}
+        </View>
+      </ImageBackground>
     </View>
   );
 }
 
-EarnHeader.propTypes = {
+ExchangeHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  imageSource: PropTypes.number.isRequired,
-  imageBgColor: PropTypes.string.isRequired,
+  onBackButtonPress: PropTypes.func.isRequired,
+  rightButton: PropTypes.element.isRequired,
 };

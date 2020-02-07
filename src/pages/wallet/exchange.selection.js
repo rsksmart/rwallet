@@ -48,14 +48,11 @@ class ExchangeSelection extends Component {
     );
   }
 
-  static createListData(wallets) {
-    // const { operation } = navigation.state.params;
+  static createListData(wallets, navigation) {
     if (!_.isArray(wallets)) {
       return [];
     }
-
     const listData = [];
-
     // Create element for each wallet (e.g. key 0)
     wallets.forEach((wallet) => {
       const wal = { name: wallet.name, coins: [] };
@@ -67,19 +64,12 @@ class ExchangeSelection extends Component {
           title: coin.defaultName,
           text: coinType,
           icon: coin.icon,
-          onPress: () => {
-            // if (operation === 'send') {
-            //   navigation.navigate('Transfer', { wallet, coin });
-            // } else if (operation === 'receive') {
-            //   navigation.navigate('WalletReceive', { coin });
-            // }
-          },
+          onPress: () => navigation.navigate('Exchange'),
         };
         wal.coins.push(item);
       });
       listData.push(wal);
     });
-
     return listData;
   }
 

@@ -68,6 +68,9 @@ const style = StyleSheet.create({
   listItemIndicator: {
     color: color.component.listItemIndicator.color,
   },
+  navBackIndicator: {
+    color: color.component.navBackIndicator.color,
+  },
 });
 
 export default style;

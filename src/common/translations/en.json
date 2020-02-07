@@ -109,10 +109,7 @@
         "viewExplorer": "Click to view in explorer"
       },
       "exchange": {
-        "title": "Send",
-        "body": "Transfer Completed!",
-        "note": "Your transaction is on its way.",
-        "viewExplorer": "Click to view in explorer"
+        "title": "Exchange"
       },
       "exchangeSelection": {
         "title": "Select Currency"
@@ -213,7 +210,8 @@
     "backToSetting": "BACK TO SETTING",
     "Send": "Send",
     "Receive": "Receive",
-    "Swap": "Swap"
+    "Swap": "Swap",
+    "Exchange": "Exchange"
   },
   "txState": {
     "Sent": "Sent",

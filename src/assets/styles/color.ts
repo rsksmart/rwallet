@@ -126,6 +126,9 @@ const color = {
         listItemIndicator: {
             color: '#9B9B9B',
         },
+        navBackIndicator: {
+            color: '#FFF',
+        },
         swipableButtonList: {
             backText: {
                 color: '#FFF',
