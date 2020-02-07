@@ -15,15 +15,15 @@ export default class Coin {
     this.chain = this.metadata.chain;
     this.type = this.metadata.type;
     this.symbol = this.metadata.symbol;
+    this.networkId = this.metadata.networkId;
   }
 
   derive(seed) {
     const network = this.metadata && this.metadata.network;
-    const networkId = this.metadata && this.metadata.networkId;
 
     try {
       const master = fromSeed(seed, network).toBase58();
-      const networkNode = Coin.getNetworkNode(master, network, networkId);
+      const networkNode = Coin.getNetworkNode(master, network, this.networkId);
       const accountNode = Coin.generateAccountNode(networkNode, network, 0);
       const addressNode = Coin.generateAddressNode(accountNode, network, 0);
       this.addressPath = addressNode.path;
