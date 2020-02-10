@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableHighlight, TouchableOpacity, Modal,
+  View, Text, StyleSheet, TouchableOpacity, Modal,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
     color: color.component.passcodeModal.title.color,
   },
   dotRow: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 25,
+    marginBottom: 45,
     flexDirection: 'row',
   },
   dot: {
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     width: dotSize,
     height: dotSize,
     borderRadius: dotSize / 2,
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     position: 'absolute',
-    right: 40,
+    right: 60,
+    bottom: 80,
   },
   cancel: {
     fontSize: 18,
@@ -154,12 +155,8 @@ class PasscodeModalBase extends PureComponent {
     const { cancelBtnOnPress, showCancel } = this.props;
 
     return (
-      <Modal
-        style={[]}
-        animationType="fade"
-        transparent
-      >
-        <TouchableHighlight style={[styles.background, styles.container]}>
+      <Modal animationType="fade" transparent>
+        <View style={[styles.background, styles.container]}>
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Loc style={[styles.title]} text={title} />
             <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
@@ -168,18 +165,13 @@ class PasscodeModalBase extends PureComponent {
             <View style={styles.buttonView}>
               {this.renderButtons()}
             </View>
-            {showCancel && (
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={cancelBtnOnPress}
-              >
-                <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
-              </TouchableOpacity>
-            </View>
-            )}
           </View>
-        </TouchableHighlight>
+          {showCancel && (
+            <TouchableOpacity style={styles.cancelButton} onPress={cancelBtnOnPress}>
+              <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </Modal>
     );
   }
