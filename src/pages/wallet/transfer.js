@@ -7,7 +7,6 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
@@ -412,15 +411,8 @@ class Transfer extends Component {
       // this.resetConfirm();
       return;
     }
-    const { showPasscode, showFingerprintModal } = this.props;
-    const { isFingerprint } = this.props;
-    if ((true || isFingerprint) && FingerprintScanner.isSensorAvailable()) {
-      showFingerprintModal(this.confirm, () => {});
-    } else if (global.passcode) {
-      showPasscode('verify', this.confirm, () => {});
-    } else {
-      await this.confirm();
-    }
+    const { callAuthVerify } = this.props;
+    callAuthVerify(this.confirm);
   }
 
   getFeeParams() {
@@ -838,9 +830,7 @@ Transfer.propTypes = {
   addNotification: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
-  showPasscode: PropTypes.func.isRequired,
-  showFingerprintModal: PropTypes.func.isRequired,
-  isFingerprint: PropTypes.bool.isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -855,11 +845,8 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
   ),
-  showPasscode: (category, callback, fallback) => dispatch(
-    appActions.showPasscode(category, callback, fallback),
-  ),
-  showFingerprintModal: (callback, fallback) => dispatch(
-    appActions.showFingerprintModal(callback, fallback),
+  callAuthVerify: (callback, fallback) => dispatch(
+    appActions.callAuthVerify(callback, fallback),
   ),
 });
 

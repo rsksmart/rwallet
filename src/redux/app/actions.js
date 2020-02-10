@@ -35,6 +35,7 @@ const actions = {
   SHOW_FINGERPRINT_MODAL: 'SHOW_FINGERPRINT_MODAL',
   HIDE_FINGERPRINT_MODAL: 'HIDE_FINGERPRINT_MODAL',
   FINGERPRINT_USE_PASSCODE: 'FINGERPRINT_USE_FINGERPRINT',
+  AUTH_VERIFY: 'AUTH_VERIFY',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -111,6 +112,14 @@ const actions = {
   }),
   fingerprintUsePasscode: (callback, fallback) => ({
     type: actions.FINGERPRINT_USE_PASSCODE,
+    value: { callback, fallback },
+  }),
+  /**
+ * callAuthVerify decide how to verify authorization
+ * fingerprint, passcode or nothing
+ */
+  callAuthVerify: (callback, fallback) => ({
+    type: actions.AUTH_VERIFY,
     value: { callback, fallback },
   }),
 };

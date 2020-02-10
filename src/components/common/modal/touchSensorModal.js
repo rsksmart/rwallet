@@ -65,7 +65,6 @@ export default class TouchSensorModal extends Component {
   componentWillReceiveProps(nextProps) {
     const { isShowFingerprintModal } = nextProps;
     const { isShowFingerprintModal: isShowFingerprintModalLast } = this.props;
-    this.setState({ errorMessage: nextProps.errorMessage });
     if (isShowFingerprintModal && !isShowFingerprintModalLast) {
       this.onShowFingerprintModal();
     }
@@ -105,10 +104,7 @@ export default class TouchSensorModal extends Component {
       console.log(`onAttempt: ${error}`);
       this.setState({ errorMessage: 'No match' });
     };
-    const params = {
-      onAttempt,
-      description: 'Scan your fingerprint on the device scanner to continue',
-    };
+    const params = { onAttempt };
     FingerprintScanner.authenticate(params).then(() => {
       if (fingerprintCallback) {
         fingerprintCallback();
@@ -176,7 +172,6 @@ export default class TouchSensorModal extends Component {
 }
 
 TouchSensorModal.propTypes = {
-  errorMessage: PropTypes.string,
   isShowFingerprintModal: PropTypes.bool.isRequired,
   hideFingerprintModal: PropTypes.func.isRequired,
   fingerprintCallback: PropTypes.func,
@@ -185,7 +180,6 @@ TouchSensorModal.propTypes = {
 };
 
 TouchSensorModal.defaultProps = {
-  errorMessage: null,
   fingerprintCallback: null,
   fingerprintFallback: null,
   fingerprintUsePasscode: null,

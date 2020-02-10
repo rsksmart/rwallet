@@ -1,6 +1,6 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  call, all, takeEvery, put,
+  call, all, takeEvery, put, select,
 } from 'redux-saga/effects';
 import _ from 'lodash';
 
@@ -10,6 +10,7 @@ import walletActions from '../wallet/actions';
 
 import application from '../../common/application';
 import settings from '../../common/settings';
+import common from '../../common/common';
 import walletManager from '../../common/wallet/walletManager';
 import I18n from '../../common/i18n';
 
@@ -208,8 +209,27 @@ function* renameRequest(action) {
   }
 }
 
-function* fingerprintUsePasscode(action) {
+function* fingerprintUsePasscodeRequest(action) {
   yield put(actions.showPasscode('verify', action.value.callback, action.value.fallback));
+}
+
+/**
+ * authVerifyRequest decide how to verify authorization
+ * If fingerprint in settings is enabled, and sensor is avaliable, use fingerprint
+ * If passcode is seted, use passcode
+ * If passcode is not seted, call callback function
+ */
+function* authVerifyRequest(action) {
+  const { callback, fallback } = action.value;
+  const state = yield select();
+  const isFingerprint = state.App.get('fingerprint');
+  if (isFingerprint && common.isFingerprintAvailable()) {
+    yield put(actions.showFingerprintModal(callback, fallback));
+  } else if (global.passcode) {
+    yield put(actions.showPasscode('verify', callback, fallback));
+  } else if (callback) {
+    yield call(callback);
+  }
 }
 
 export default function* () {
@@ -222,6 +242,7 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
-    takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscode),
+    takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscodeRequest),
+    takeEvery(actions.AUTH_VERIFY, authVerifyRequest),
   ]);
 }
