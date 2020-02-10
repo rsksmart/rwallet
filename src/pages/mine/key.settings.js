@@ -192,9 +192,9 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { showPasscode } = this.props;
+      const { callAuthVerify } = this.props;
       if (global.passcode) {
-        showPasscode('verify', this.backup, () => {});
+        callAuthVerify(this.backup, () => {});
       } else {
         this.backup();
       }
@@ -206,9 +206,9 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const { showPasscode } = this.props;
+      const { callAuthVerify } = this.props;
       if (global.passcode) {
-        showPasscode('verify', this.deleteKey, () => {});
+        callAuthVerify(this.deleteKey, () => {});
       } else {
         this.deleteKey();
       }
@@ -287,7 +287,7 @@ KeySettings.propTypes = {
   confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  showPasscode: PropTypes.func.isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -306,9 +306,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
-  showPasscode: (category, callback, fallback) => dispatch(
-    appActions.showPasscode(category, callback, fallback),
-  ),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);
