@@ -328,6 +328,49 @@ class ParseHelper {
   static fetchLatestBlockHeight() {
     return Parse.Cloud.run('getLatestBlockHeight');
   }
+
+  static requestCoinswitchAPI(type, coinswitchParams = {}) {
+    const { deposit, destination } = coinswitchParams;
+    let method; let path; let params;
+    // eslint-disable-next-line default-case
+    switch (type) {
+      case 'coins':
+        method = 'get';
+        path = 'coins';
+        break;
+      case 'pair':
+        method = 'post';
+        path = 'pairs';
+        params = [];
+        // eslint-disable-next-line no-unused-expressions
+        deposit && params.push({ key: 'depositCoin', value: deposit });
+        // eslint-disable-next-line no-unused-expressions
+        destination && params.push({ key: 'destinationCoin', value: destination });
+        break;
+      case 'rate':
+        method = 'post';
+        path = 'rate';
+        params = [];
+        params.push({ key: 'depositCoin', value: deposit }, { key: 'destinationCoin', value: destination });
+        break;
+      case 'order':
+        method = 'post';
+        path = 'order';
+        params = [];
+        params.push(
+          { key: 'depositCoin', value: deposit },
+          { key: 'destinationCoin', value: destination },
+          { key: 'depositCoinAmount', value: coinswitchParams.amount },
+          { key: 'destinationAddress', value: coinswitchParams.destinationAddress },
+          { key: 'refundAddress', value: coinswitchParams.refundAddress },
+        );
+        break;
+    }
+    const options = { method, path };
+    // eslint-disable-next-line no-unused-expressions
+    params && (options.params = params);
+    return Parse.Cloud.run('coinswitch', options);
+  }
 }
 
 export default ParseHelper;
