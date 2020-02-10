@@ -283,6 +283,10 @@
       "title": "Usar senha",
       "usePasscode": "Sensor de toque"
     },
+    "createPasscode": {
+      "title": "Defina uma senha",
+      "body": "A senha pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
+    },
     "deleteKey": {
       "title": "Atenção!",
       "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
