@@ -89,18 +89,18 @@ export default class TouchSensorModal extends Component {
     const { isShowFingerprintModal } = nextProps;
     const { isShowFingerprintModal: isShowFingerprintModalLast } = this.props;
     if (isShowFingerprintModal && !isShowFingerprintModalLast) {
-      this.onShowFingerprintModal();
+      this.onShowFingerprintModal(nextProps);
     }
   }
 
   onIconPress() {
     this.setState({ errorMessage: null });
-    this.requestScan();
+    this.requestScan(this.props);
   }
 
-  onShowFingerprintModal() {
+  onShowFingerprintModal(props) {
     this.setState({ errorMessage: null });
-    this.requestScan();
+    this.requestScan(props);
   }
 
   onUsePasscodePress() {
@@ -123,8 +123,8 @@ export default class TouchSensorModal extends Component {
 
   startShow = () => {}
 
-  requestScan() {
-    const { hideFingerprintModal, fingerprintCallback } = this.props;
+  requestScan(props) {
+    const { hideFingerprintModal, fingerprintCallback } = props;
     const onAttempt = (error) => {
       console.log(`onAttempt: ${error}`);
       this.setState({ errorMessage: 'modal.touchSensor.fingerprintNotMatch' }, () => this.errView.shake(800));

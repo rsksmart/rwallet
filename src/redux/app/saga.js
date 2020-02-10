@@ -210,6 +210,7 @@ function* renameRequest(action) {
 }
 
 function* fingerprintUsePasscodeRequest(action) {
+  yield put(actions.hideFingerprintModal());
   yield put(actions.showPasscode('verify', action.value.callback, action.value.fallback));
 }
 
