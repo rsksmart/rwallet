@@ -18,6 +18,7 @@ const initState = new Map({
   transactions: undefined,
   showNotification: false,
   notification: null,
+  confirmationCancelCallback: null,
   showPasscode: false,
   passcodeType: null,
   passcodeCallback: null,
@@ -26,11 +27,13 @@ const initState = new Map({
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
   username: defaultSettings.username,
+  isUsernameUpdated: false,
   isShowConfirmation: false,
   confirmation: null,
-  isUsernameUpdated: false,
+  confirmationCallback: null,
   isShowFingerprintModal: false,
   fingerprintCallback: null,
+  fingerprintFallback: null,
 });
 
 export default function appReducer(state = initState, action) {
@@ -63,21 +66,25 @@ export default function appReducer(state = initState, action) {
     case actions.ADD_NOTIFICATION:
       return state
         .set('showNotification', true)
-        .set('notification', action.notification);
+        .set('notification', action.notification)
+        .set('notificationCloseCallback', action.notification.notificationCloseCallback);
     case actions.REMOVE_NOTIFICATION:
       return state
         .set('showNotification', false)
-        .set('notification', null);
+        .set('notification', null)
+        .set('notificationCloseCallback', null);
     case actions.ADD_CONFIRMATION:
       return state
         .set('isShowConfirmation', true)
         .set('confirmation', action.confirmation)
-        .set('confirmationCallback', action.confirmation.confirmationCallback);
+        .set('confirmationCallback', action.confirmation.confirmationCallback)
+        .set('confirmationCancelCallback', action.confirmation.confirmationCancelCallback);
     case actions.REMOVE_CONFIRMATION:
       return state
         .set('isShowConfirmation', false)
         .set('confirmation', null)
-        .set('confirmationCallback', null);
+        .set('confirmationCallback', null)
+        .set('confirmationCancelCallback', null);
     case actions.SHOW_PASSCODE:
       return state
         .set('showPasscode', true)

@@ -58,6 +58,7 @@ export default class ConfirmationPanel extends Component {
       transparent: true,
     };
     this.onConfirmPress = this.onConfirmPress.bind(this);
+    this.onCancelPress = this.onCancelPress.bind(this);
   }
 
   onConfirmPress() {
@@ -68,13 +69,21 @@ export default class ConfirmationPanel extends Component {
     }
   }
 
+  onCancelPress() {
+    const { onClosePress, confirmationCancelCallback } = this.props;
+    onClosePress();
+    if (confirmationCancelCallback) {
+      confirmationCancelCallback();
+    }
+  }
+
   startShow = () => {
   };
 
   render() {
     const { animationType, transparent } = this.state;
     const {
-      title, message, comfirmText, cancelText, onClosePress,
+      title, message, comfirmText, cancelText,
     } = this.props;
     return (
       <Modal
@@ -91,7 +100,7 @@ export default class ConfirmationPanel extends Component {
             </View>
             <View style={styles.line} />
             <View style={styles.ButtonsView}>
-              <TouchableOpacity onPress={onClosePress}>
+              <TouchableOpacity onPress={this.onCancelPress}>
                 <Loc style={[styles.button]} text={cancelText} />
               </TouchableOpacity>
               <TouchableOpacity onPress={this.onConfirmPress}>
@@ -112,11 +121,13 @@ ConfirmationPanel.propTypes = {
   comfirmText: PropTypes.string,
   cancelText: PropTypes.string,
   confirmationCallback: PropTypes.func,
+  confirmationCancelCallback: PropTypes.func,
 };
 
 ConfirmationPanel.defaultProps = {
   onClosePress: null,
   confirmationCallback: null,
+  confirmationCancelCallback: null,
   comfirmText: 'button.Confirm',
   cancelText: 'button.Cancel',
 };

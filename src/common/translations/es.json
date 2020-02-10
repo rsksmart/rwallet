@@ -288,6 +288,10 @@
       "failedAndTryAgain.": "La autenticación ha fallado. Inténtalo de nuevo.",
       "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
     },
+    "createPasscode": {
+      "title": "Por favor establezca una contraseña",
+      "body": "La contraseña puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
+    },
     "deleteKey": {
       "title": "¡Advertencia!",
       "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"

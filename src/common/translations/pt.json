@@ -288,6 +288,10 @@
       "failedAndTryAgain.": "A autenticação falhou. Tente novamente.",
       "fingerprintNotMatch": "A impressão digital não corresponde. Tente novamente."
     },
+    "createPasscode": {
+      "title": "Defina uma senha",
+      "body": "A senha pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
+    },
     "deleteKey": {
       "title": "Atenção!",
       "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
