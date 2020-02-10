@@ -288,6 +288,10 @@
       "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
       "failedAndTryAgain.": "验证失败，请重试。",
       "fingerprintNotMatch": "指纹不匹配，请重试。"
+    },
+    "deleteKey": {
+      "title": "警告!",
+      "body": "您确定要删除使用此密钥的所有钱包吗？"
     }
   }
 }

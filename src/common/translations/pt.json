@@ -287,6 +287,10 @@
       "failedAndTryPasscode": "Falha na autenticação. Tente usar a senha.",
       "failedAndTryAgain.": "A autenticação falhou. Tente novamente.",
       "fingerprintNotMatch": "A impressão digital não corresponde. Tente novamente."
+    },
+    "deleteKey": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
     }
   }
 }

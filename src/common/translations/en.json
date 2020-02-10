@@ -285,6 +285,10 @@
       "failedAndTryPasscode": "A autenticação falhou. Tente usar a senha.",
       "failedAndTryAgain.": "Authentication is failed. Try again.",
       "fingerprintNotMatch": "Fingerprint is not matched. Try again."
+    },
+    "deleteKey": {
+      "title": "Warning!",
+      "body": "Are you sure you want to delete all wallets using this key?"
     }
   }
 }

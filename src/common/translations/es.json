@@ -287,6 +287,10 @@
       "failedAndTryPasscode": "La autenticación ha fallado. Intente usar el código de acceso en su lugar.",
       "failedAndTryAgain.": "La autenticación ha fallado. Inténtalo de nuevo.",
       "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
+    },
+    "deleteKey": {
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
     }
   }
 }
