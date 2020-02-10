@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
+import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 
@@ -53,23 +54,20 @@ export default class RBTCCoin {
     this.chain = this.metadata.chain;
     this.type = this.metadata.type;
     this.symbol = this.metadata.symbol;
+    this.networkId = this.metadata.networkId;
   }
 
   derive(seed) {
-    const networkId = this.metadata && this.metadata.networkId;
-
     try {
       const master = RBTCCoin.generateMasterFromSeed(seed);
-      const networkNode = RBTCCoin.generateRootNodeFromMaster(master, networkId);
+      const networkNode = RBTCCoin.generateRootNodeFromMaster(master, this.networkId);
       const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
-      this.address = RBTCCoin.getAddress(addressNode);
+      this.address = RBTCCoin.getAddress(addressNode, this.networkId);
       this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
     } catch (ex) {
       console.error(ex);
     }
-
-    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
   }
 
   static getPrivateKey(master, addressNode) {
@@ -126,11 +124,12 @@ export default class RBTCCoin {
     return serializePublic(deserialized.deriveChild(index));
   }
 
-  static getAddress(addressNode) {
+  static getAddress(addressNode, networkId) {
     const publicKey = JSON.parse(addressNode.public_key).puk;
     const addressBin = ethereumjsUtil.pubToAddress(Buffer.from(publicKey, 'hex'), true);
     const address = Buffer.from(addressBin).toString('hex');
-    return ethereumjsUtil.toChecksumAddress(address);
+    const checksumAddress = rsk3.utils.toChecksumAddress(address, networkId);
+    return checksumAddress;
   }
 
   /**

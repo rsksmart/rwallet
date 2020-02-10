@@ -408,7 +408,7 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type, coin.networkId)) {
       // this.resetConfirm();
       return;
     }
@@ -509,23 +509,24 @@ class Transfer extends Component {
    * @param {string} address, wallet address
    * @param {string} symbol, coin symbol
    * @param {string} type, coin network type
+   * @param {number} type, coin networkId
    */
-  validateFormData(amount, address, symbol, type) {
+  validateFormData(amount, address, symbol, type, networkId) {
     const { addNotification } = this.props;
     const isAmountNumber = common.isAmount(amount);
     if (!isAmountNumber) {
       const notification = createErrorNotification(
-        'Invalid amount',
-        'Amount is not valid',
+        'modal.invalidAmount.title',
+        'modal.invalidAmount.body',
       );
       addNotification(notification);
       return false;
     }
-    const isAddress = common.isWalletAddress(address, symbol, type);
+    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
     if (!isAddress) {
       const notification = createErrorNotification(
-        'Invalid address',
-        'Address is not valid',
+        'modal.invalidAddress.title',
+        'modal.invalidAddress.body',
       );
       addNotification(notification);
       return false;
@@ -544,7 +545,8 @@ class Transfer extends Component {
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
-      let transaction = new Transaction(coin, to, amount, '', memo, feeParams);
+      const extraParams = { data: '', memo, gasFee: feeParams };
+      let transaction = new Transaction(coin, to, amount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -559,43 +561,43 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
-      const buttonText = 'RETRY';
+      const buttonText = 'button.RETRY';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
           case 'err.notenoughbalance.rbtc':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RBTC balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRBTC',
               buttonText,
             );
             break;
           case 'err.notenoughbalance.rif':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RIF balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRIF',
               buttonText,
             );
             break;
           case 'err.notenoughbalance':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreBalance',
               buttonText,
             );
             break;
           case 'err.timeout':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'Sorry server timeout',
+              'modal.txFailed.title',
+              'modal.txFailed.serverTimeout',
               buttonText,
             );
             addNotification(notification);
             break;
           case 'err.customized':
             notification = createErrorNotification(
-              'Transfer is failed',
+              'modal.txFailed.title',
               message[1],
               buttonText,
             );
@@ -607,8 +609,8 @@ class Transfer extends Component {
       // Default error notification
       if (!notification) {
         notification = createErrorNotification(
-          'Transfer is failed',
-          'Please contact customer service',
+          'modal.txFailed.title',
+          'modal.txFailed.contactService',
           buttonText,
         );
       }
@@ -698,7 +700,7 @@ class Transfer extends Component {
     return (
       <TextInput
         style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
-        placeholder={strings('Enter a transaction memo')}
+        placeholder={strings('page.wallet.transfer.enterMemo')}
         multiline
         numberOfLines={Platform.OS === 'ios' ? null : MEMO_NUM_OF_LINES}
         minHeight={(Platform.OS === 'ios' && MEMO_NUM_OF_LINES) ? (MEMO_LINE_HEIGHT * MEMO_NUM_OF_LINES + paddingBottom) : null}
@@ -730,7 +732,7 @@ class Transfer extends Component {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>
-              <Loc style={[styles.title1]} text="Sending" />
+              <Loc style={[styles.title1]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
             <View style={styles.textInputView}>
@@ -744,7 +746,7 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title2]} text="To" />
+            <Loc style={[styles.title2]} text="page.wallet.transfer.to" />
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
@@ -762,19 +764,19 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="Memo (optional)" />
+            <Loc style={[styles.title3]} text="page.wallet.transfer.memo" />
             <View style={styles.textInputView}>
               {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
-            <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
-            <Loc style={[styles.question]} text="How fast you want this done?" />
+            <Loc style={[styles.title2, { marginBottom: 5 }]} text="page.wallet.transfer.fee" />
+            <Loc style={[styles.question]} text="page.wallet.transfer.feeQuestion" />
             {this.renderFeeOptions()}
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
               <Switch
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
@@ -817,9 +819,9 @@ class Transfer extends Component {
                     style={{ width: 32, height: 32 }}
                   />
                   )}
-                label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+                label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.Confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );

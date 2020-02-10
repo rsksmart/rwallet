@@ -65,8 +65,16 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
+  /**
+   * convertUnitToCoinAmount, if unitNumber is nil, return null
+   * @param {*} symbol
+   * @param {*} unitNumber
+   */
   convertUnitToCoinAmount(symbol, unitNumber) {
     let amount = null;
+    if (_.isNil(unitNumber)) {
+      return null;
+    }
     switch (symbol) {
       case 'BTC':
         amount = common.satoshiToBtc(unitNumber);
@@ -220,13 +228,14 @@ const common = {
    * @param {string} address
    * @param {string} symbol, BTC, RBTC, RIF
    * @param {string} type, MainTest or Testnet
+   * @param {string} networkId
    */
-  isWalletAddress(address, symbol, type) {
+  isWalletAddress(address, symbol, type, networkId) {
     let isAdress = false;
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
-      isAdress = rsk3.utils.isAddress(address);
+      isAdress = rsk3.utils.isAddress(address, networkId);
     }
     return isAdress;
   },

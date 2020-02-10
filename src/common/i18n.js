@@ -11,7 +11,7 @@ import zh from './translations/zh.json';
 
 // Change the default separator
 // https://github.com/AlexanderZaytsev/react-native-i18n/issues/73
-I18n.defaultSeparator = '/';
+I18n.defaultSeparator = '.';
 
 // Should the app fallback to English if user locale doesn't exists
 I18n.fallbacks = true;

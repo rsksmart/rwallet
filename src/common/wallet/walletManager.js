@@ -130,9 +130,12 @@ class WalletManager {
         // Find Coin instances by symbol
         const coins = getTokens({ symbol: tokenSymbol });
 
-        coins.forEach((coin) => {
-          if (coin.balance) {
-            // eslint-disable-next-line no-param-reassign
+        coins.forEach((coinItem) => {
+          const coin = coinItem;
+          // if coin.type is Testnet, set balanceValue 0
+          if (coin.type === 'Testnet') {
+            coin.balanceValue = new BigNumber(0);
+          } else if (coin.balance) {
             coin.balanceValue = coin.balance.times(tokenPrice);
             value = value.plus(coin.balanceValue);
           }
@@ -165,8 +168,8 @@ class WalletManager {
         try {
           // Try to convert hex string to BigNumber
           const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
-
-          if (!newBalance.isEqualTo(newToken.balance)) {
+          // Update if it fetched new balance value
+          if (newBalance && !newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;
             isDirty = true;
           }
@@ -222,7 +225,6 @@ class WalletManager {
    * Delete a wallet
    */
   async deleteWallet(wallet) {
-    console.log('walletManager::deleteWallet, wallet: ', wallet);
     const { wallets } = this;
     _.remove(wallets, (item) => item === wallet);
     await this.serialize();
@@ -234,15 +236,14 @@ class WalletManager {
    */
   async renameWallet(wallet, name) {
     if (name.length < 1) {
-      throw new Error('Key name is too short.');
+      throw new Error('modal.incorrectKeyName.tooShort');
     } else if (name.length > 32) {
-      throw new Error('Key name is too long.');
+      throw new Error('modal.incorrectKeyName.tooLong');
     }
     const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
     const match = regex.exec(name);
     if (!match) {
-      console.log('renameWallet, regex validatiton failed');
-      throw new Error('Key name contains invalid characters.');
+      throw new Error('modal.incorrectKeyName.invalid');
     }
     const modifyWallet = wallet;
     modifyWallet.name = name;

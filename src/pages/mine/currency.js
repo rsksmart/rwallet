@@ -98,7 +98,7 @@ class Currency extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Currency" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.currency.title" />}
         >
           <View style={styles.listView}>
             <SelectionList data={this.listData} onChange={this.onChange} selected={currencyIndex} />

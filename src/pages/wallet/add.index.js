@@ -15,8 +15,8 @@ class WalletAddIndex extends Component {
     listData = [
       {
         id: '1',
-        title: 'Create Basic Wallet',
-        text: 'Recommended for first-time users',
+        title: 'page.wallet.add.createWallet',
+        text: 'page.wallet.add.createWalletNote',
         icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
           this.createWalletFlow('WalletSelectCurrency');
@@ -24,8 +24,8 @@ class WalletAddIndex extends Component {
       },
       {
         id: '2',
-        title: 'Import existing Wallet',
-        text: 'Recover your wallet using your passphrase',
+        title: 'page.wallet.add.importWallet',
+        text: 'page.wallet.add.importWalletNote',
         icon: (<AntDesign name="download" size={25} style={{ color: '#515151' }} />),
         onPress: () => {
           this.createWalletFlow('WalletRecovery');
@@ -50,7 +50,7 @@ class WalletAddIndex extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Add Wallet" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>

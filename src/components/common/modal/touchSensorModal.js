@@ -145,7 +145,7 @@ export default class TouchSensorModal extends Component {
       >
         <View style={styles.container}>
           <View style={styles.panel}>
-            <Loc style={[styles.title]} text="Touch Sensor" />
+            <Loc style={[styles.title]} text="modal.touchSensor.title" />
             {errView}
             <TouchableOpacity
               style={styles.finger}
@@ -159,7 +159,7 @@ export default class TouchSensorModal extends Component {
               style={styles.passcode}
               onPress={this.onUsePasscodePress}
             >
-              <Loc style={[styles.passcodeText]} text="Use passcode" />
+              <Loc style={[styles.passcodeText]} text="modal.touchSensor.usePasscode" />
             </TouchableOpacity>
             {
               fingerprintFallback && (

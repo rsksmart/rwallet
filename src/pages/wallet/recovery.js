@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   View, StyleSheet, TextInput, ScrollView,
@@ -127,7 +128,7 @@ class WalletRecovery extends Component {
     }
 
     onImportPress() {
-      const { navigation, addNotification } = this.props;
+      const { navigation, addNotification, walletManager } = this.props;
       const { phrases } = this.state;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
@@ -141,9 +142,19 @@ class WalletRecovery extends Component {
       console.log(`isValid: ${isValid}`);
       if (!isValid) {
         const notification = createErrorNotification(
-          'Unable to recover',
-          'Unable to recover Body',
-          'GOT IT',
+          'modal.unableRecover.title',
+          'modal.unableRecover.body',
+        );
+        addNotification(notification);
+        return;
+      }
+      // If phrases is already in the app, notify user
+      const { wallets } = walletManager;
+      const wallet = _.find(wallets, { mnemonic: inputPhrases });
+      if (wallet) {
+        const notification = createErrorNotification(
+          'modal.duplicatePhrase.title',
+          'modal.duplicatePhrase.body',
         );
         addNotification(notification);
         return;
@@ -168,8 +179,8 @@ class WalletRecovery extends Component {
       }
       if (phrases.length === 12) {
         const notification = createErrorNotification(
-          'Too Many Words',
-          'The recovery phrase has to be 12 words',
+          'modal.tooManyPhrase.title',
+          'modal.tooManyPhrase.body',
         );
         addNotification(notification);
         return;
@@ -200,9 +211,9 @@ class WalletRecovery extends Component {
         >
           <View style={styles.wapper}>
             <ScrollView>
-              <Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />
+              <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
               <View style={styles.body}>
-                <Loc style={[styles.sectionTitle]} text="Type the recovery phrase(usually 12 words)" />
+                <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
                 <View style={styles.phraseView}>
                   <TextInput
                     autoFocus // If true, focuses the input on componentDidMount. The default value is false.
@@ -229,13 +240,13 @@ class WalletRecovery extends Component {
                   </View>
                 </View>
                 <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Loc style={[styles.sectionTitle]} text="Advanced Options" />
-                  <SwitchListItem title={strings('Specify derivation path')} value={false} />
+                  <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
+                  <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
                 </View>
               </View>
             </ScrollView>
             <View style={[styles.buttonView]}>
-              <Button text="IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
+              <Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
             </View>
           </View>
         </BasePageGereral>
@@ -251,10 +262,18 @@ WalletRecovery.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array.isRequired,
+  }),
+};
+
+WalletRecovery.defaultProps = {
+  walletManager: undefined,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
+  walletManager: state.Wallet.get('walletManager'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
