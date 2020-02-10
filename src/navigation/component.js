@@ -136,8 +136,14 @@ class RootComponent extends Component {
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
-          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} fingerprintFallback={fingerprintFallback} />
-          <TouchSensorModal isShowFingerprintModal={isShowFingerprintModal} fingerprintCallback={fingerprintCallback} fingerprintUsePasscode={fingerprintUsePasscode} hideFingerprintModal={hideFingerprintModal} />
+          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
+          <TouchSensorModal
+            isShowFingerprintModal={isShowFingerprintModal}
+            fingerprintCallback={fingerprintCallback}
+            fingerprintFallback={fingerprintFallback}
+            hideFingerprintModal={hideFingerprintModal}
+            fingerprintUsePasscode={fingerprintUsePasscode}
+          />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
       </View>

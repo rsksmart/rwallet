@@ -412,7 +412,7 @@ class Transfer extends Component {
       return;
     }
     const { callAuthVerify } = this.props;
-    callAuthVerify(this.confirm);
+    callAuthVerify(this.confirm, () => null);
   }
 
   getFeeParams() {

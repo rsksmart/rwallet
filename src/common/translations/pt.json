@@ -281,7 +281,12 @@
     },
     "touchSensor": {
       "title": "Usar senha",
-      "usePasscode": "Sensor de toque"
+      "usePasscode": "Sensor de toque",
+      "touchToVerify": "Toque para verificar a impressão digital",
+      "nativeNote": "Digitalize sua impressão digital no scanner do dispositivo para continuar",
+      "failedAndTryPasscode": "Falha na autenticação. Tente usar a senha.",
+      "failedAndTryAgain.": "A autenticação falhou. Tente novamente.",
+      "fingerprintNotMatch": "A impressão digital não corresponde. Tente novamente."
     }
   }
 }
