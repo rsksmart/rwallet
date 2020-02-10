@@ -338,7 +338,7 @@ class ParseHelper {
         method = 'get';
         path = 'coins';
         break;
-      case 'pair':
+      case 'pairs':
         method = 'post';
         path = 'pairs';
         params = [];
