@@ -288,6 +288,10 @@
     "createPasscode": {
       "title": "Please set a password",
       "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+    },
+    "deleteKey": {
+      "title": "Warning!",
+      "body": "Are you sure you want to delete all wallets using this key?"
     }
   }
 }

@@ -407,7 +407,7 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
+    if (!this.validateFormData(amount, to, coin.symbol, coin.type, coin.networkId)) {
       // this.resetConfirm();
       return;
     }
@@ -507,8 +507,9 @@ class Transfer extends Component {
    * @param {string} address, wallet address
    * @param {string} symbol, coin symbol
    * @param {string} type, coin network type
+   * @param {number} type, coin networkId
    */
-  validateFormData(amount, address, symbol, type) {
+  validateFormData(amount, address, symbol, type, networkId) {
     const { addNotification } = this.props;
     const isAmountNumber = common.isAmount(amount);
     if (!isAmountNumber) {
@@ -519,7 +520,7 @@ class Transfer extends Component {
       addNotification(notification);
       return false;
     }
-    const isAddress = common.isWalletAddress(address, symbol, type);
+    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
     if (!isAddress) {
       const notification = createErrorNotification(
         'modal.invalidAddress.title',

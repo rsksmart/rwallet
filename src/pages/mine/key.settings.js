@@ -148,6 +148,11 @@ class KeySettings extends Component {
         isConfirmDeleteKey: false,
       };
       this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
+      this.onBackupPress = this.onBackupPress.bind(this);
+      this.onKeyNamePress = this.onKeyNamePress.bind(this);
+      this.onDeletePress = this.onDeletePress.bind(this);
+      this.deleteKey = this.deleteKey.bind(this);
+      this.backup = this.backup.bind(this);
     }
 
     componentWillMount() {
@@ -161,9 +166,6 @@ class KeySettings extends Component {
         name,
         walletListData,
       });
-      this.onBackupPress = this.onBackupPress.bind(this);
-      this.onKeyNamePress = this.onKeyNamePress.bind(this);
-      this.onDeletePress = this.onDeletePress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -190,9 +192,12 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { navigation } = this.props;
-      // Backup flow will skip phrase and wallet creation.
-      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldCreateWallet: false });
+      const { showPasscode } = this.props;
+      if (global.passcode) {
+        showPasscode('verify', this.backup, () => {});
+      } else {
+        this.backup();
+      }
     }
 
     onKeyNamePress() {
@@ -201,20 +206,34 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const { deleteKey, walletManager } = this.props;
-      deleteKey(this.key, walletManager);
-      this.setState({ isConfirmDeleteKey: true });
-      console.log('Delete, key: ', this.key);
+      const { showPasscode } = this.props;
+      if (global.passcode) {
+        showPasscode('verify', this.deleteKey, () => {});
+      } else {
+        this.deleteKey();
+      }
     }
 
     onDeletePress() {
       const { addConfirmation } = this.props;
       const infoConfirmation = createInfoConfirmation(
-        'Warning!',
-        'Are you sure you want to delete all wallets using this key?',
-        this.onDeleteConfirm,
+        'modal.deleteKey.title',
+        'modal.deleteKey.body',
+        () => this.onDeleteConfirm(),
       );
       addConfirmation(infoConfirmation);
+    }
+
+    backup() {
+      const { navigation } = this.props;
+      // Backup flow will skip phrase and wallet creation.
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldCreateWallet: false });
+    }
+
+    deleteKey() {
+      const { deleteKey, walletManager } = this.props;
+      deleteKey(this.key, walletManager);
+      this.setState({ isConfirmDeleteKey: true });
     }
 
     render() {
@@ -268,6 +287,7 @@ KeySettings.propTypes = {
   confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -286,6 +306,9 @@ const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);
