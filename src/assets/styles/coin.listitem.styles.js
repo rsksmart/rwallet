@@ -3,9 +3,9 @@ import color from './color.ts';
 
 const coinListItemStyles = StyleSheet.create({
   sectionTitle: {
+    fontFamily: 'Avenir-Heavy',
     marginBottom: 10,
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 14,
     color: '#000',
     paddingHorizontal: 10,
   },

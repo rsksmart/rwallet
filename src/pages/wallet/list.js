@@ -245,7 +245,7 @@ class WalletList extends Component {
             navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
           },
           onSwapButtonPress: () => {
-            navigation.navigate('Exchange', { coin });
+            navigation.navigate('Swap', { coin });
           },
         };
         wal.coins.push(item);
@@ -366,7 +366,7 @@ class WalletList extends Component {
               <View style={styles.spliteLine} />
               <TouchableOpacity
                 style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                onPress={() => navigation.navigate('ExchangeSelection')}
+                onPress={() => navigation.navigate('SwapSelection')}
               >
                 <Image source={swap} />
                 <Loc style={[styles.swapText]} text="button.Swap" />

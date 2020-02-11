@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
   },
   rightButtonView: {
     position: 'absolute',
-    bottom: 430,
+    bottom: 350,
     right: 20,
   },
 });
 
-export default function ExchangeHeader({ title, onBackButtonPress, rightButton }) {
+export default function SwapHeader({ title, onBackButtonPress, rightButton }) {
   return (
     <View>
       <ImageBackground source={header} style={[styles.headerImage]}>
@@ -54,7 +54,7 @@ export default function ExchangeHeader({ title, onBackButtonPress, rightButton }
   );
 }
 
-ExchangeHeader.propTypes = {
+SwapHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onBackButtonPress: PropTypes.func.isRequired,
   rightButton: PropTypes.element.isRequired,

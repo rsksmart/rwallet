@@ -108,11 +108,17 @@
         "note": "Your transaction is on its way.",
         "viewExplorer": "Click to view in explorer"
       },
-      "exchange": {
-        "title": "Exchange"
+      "swap": {
+        "title": "Swap"
       },
-      "exchangeSelection": {
+      "swapSelection": {
         "title": "Select Currency"
+      },
+      "swapCompleted": {
+        "title": "Swap",
+        "body": "Exchange Completed!",
+        "note": "Your Exchange is on its way.",
+        "viewExplorer": "Click to view in explorer"
       }
     },
     "mine": {

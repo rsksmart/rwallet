@@ -71,6 +71,18 @@ const style = StyleSheet.create({
   navBackIndicator: {
     color: color.component.navBackIndicator.color,
   },
+  board: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: '#FFF',
+  },
 });
 
 export default style;

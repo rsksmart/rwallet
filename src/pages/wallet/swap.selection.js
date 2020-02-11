@@ -16,6 +16,59 @@ import presetStyles from '../../assets/styles/style';
 const styles = StyleSheet.create({
   body: {
     marginHorizontal: 18,
+    marginTop: -20,
+  },
+  board: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  walletName: {
+    color: '#000',
+    fontSize: 14,
+    fontFamily: 'Avenir-Heavy',
+    letterSpacing: 0.27,
+    marginTop: 10,
+    marginBottom: 7,
+  },
+  coinName: {
+    color: '#000',
+    fontSize: 16,
+    fontFamily: 'Avenir-Roman',
+    letterSpacing: 0.4,
+    flex: 1,
+  },
+  rowRightView: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: 50,
+  },
+  icon: {
+    marginLeft: -7,
+    marginRight: 10,
+  },
+  row: {
+    marginBottom: 5,
+  },
+  indicatorView: {
+    width: 30,
+    justifyContent: 'center',
+  },
+  listItemIndicator: {
+    color: '#D5D5D5',
+    marginLeft: -3,
+  },
+  rowTitleView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  balance: {
+    fontFamily: 'Avenir-Roman',
+    fontSize: 12,
+    color: '#77869E',
+    letterSpacing: 1,
+  },
+  noBorder: {
+    borderBottomColor: 'rgba(0,0,0,0)',
   },
 });
 
@@ -29,20 +82,23 @@ class ExchangeSelection extends Component {
       <FlatList
         data={listData}
         extraData={listData}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={coinListItemStyles.row} onPress={() => item.onPress()}>
-            <Image style={coinListItemStyles.icon} source={item.icon} />
-            <View style={coinListItemStyles.rowRightView}>
-              <View style={coinListItemStyles.rowTitleView}>
-                <Text style={coinListItemStyles.title}>{item.title}</Text>
-                <Text style={coinListItemStyles.text}>{item.text}</Text>
+        renderItem={({ item, index }) => {
+          const isLastRow = index === listData.length - 1;
+          return (
+            <TouchableOpacity style={[coinListItemStyles.row, styles.row]} onPress={() => item.onPress()}>
+              <Image style={styles.icon} source={item.icon} />
+              <View style={[coinListItemStyles.rowRightView, styles.rowRightView, isLastRow ? styles.noBorder : {}]}>
+                <View style={[coinListItemStyles.rowTitleView, styles.rowTitleView]}>
+                  <Text style={styles.coinName}>{item.title}</Text>
+                  <Text style={styles.balance}>{item.amount}</Text>
+                </View>
+                <View style={styles.indicatorView}>
+                  <EvilIcons name="chevron-right" size={37} style={[presetStyles.listItemIndicator, styles.listItemIndicator]} />
+                </View>
               </View>
-              <View>
-                <EvilIcons name="chevron-right" size={45} style={presetStyles.listItemIndicator} />
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
         keyExtractor={(item, index) => index.toString()}
       />
     );
@@ -58,13 +114,13 @@ class ExchangeSelection extends Component {
       const wal = { name: wallet.name, coins: [] };
       // Create element for each Token (e.g. BTC, RBTC, RIF)
       wallet.coins.forEach((coin, index) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
         const item = {
           key: `${index}`,
           title: coin.defaultName,
-          text: coinType,
+          amount: amountText,
           icon: coin.icon,
-          onPress: () => navigation.navigate('Exchange'),
+          onPress: () => navigation.navigate('Swap', { coin }),
         };
         wal.coins.push(item);
       });
@@ -92,14 +148,15 @@ class ExchangeSelection extends Component {
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.exchangeSelection.title" />}
+        bgColor="#00B520"
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
       >
         <View style={styles.body}>
           <FlatList
             data={listData}
             renderItem={({ item }) => (
-              <View style={coinListItemStyles.itemView}>
-                <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
+              <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
+                <Text style={[styles.walletName]}>{item.name}</Text>
                 {ExchangeSelection.renderWalletList(item.coins)}
               </View>
             )}
