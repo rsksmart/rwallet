@@ -11,6 +11,7 @@ import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import common from '../../common/common';
 
 const bip39 = require('bip39');
 
@@ -42,32 +43,37 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      const { navigation } = props;
-      const { shouldCreatePhrase, phrase } = navigation.state.params;
-      if (_.isNil(shouldCreatePhrase)) {
-        throw new Error('shouldCreatePhrase is undefined or null.');
-      }
-      // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
-      if (shouldCreatePhrase) {
-        this.phrase = bip39.generateMnemonic();
-      } else {
-        this.phrase = phrase;
-      }
-      const phrases = this.phrase.split(' ');
+
       this.state = {
-        phrases,
+        phrases: [],
       };
       this.onNextPress = this.onNextPress.bind(this);
       this.onCopyPress = this.onCopyPress.bind(this);
     }
 
-    componentDidMount() {
-      const { addNotification } = this.props;
-      const notification = createInfoNotification(
-        'modal.guardPhrase.title',
-        'modal.guardPhrase.body',
-      );
-      addNotification(notification);
+    async componentDidMount() {
+      const { addNotification, navigation } = this.props;
+
+      const { shouldCreatePhrase, phrase } = navigation.state.params;
+      if (_.isNil(shouldCreatePhrase)) {
+        throw new Error('shouldCreatePhrase is undefined or null.');
+      }
+
+      // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
+      if (shouldCreatePhrase) {
+        const entropy = await common.getRandom(16);
+        this.phrase = bip39.entropyToMnemonic(entropy);
+      } else {
+        this.phrase = phrase;
+      }
+      const phrases = this.phrase.split(' ');
+      this.setState({ phrases }, () => {
+        const notification = createInfoNotification(
+          'Recovery Phrase',
+          'Safeguard your recovery phrase Text',
+        );
+        addNotification(notification);
+      });
     }
 
     onNextPress() {

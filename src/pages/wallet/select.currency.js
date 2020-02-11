@@ -12,6 +12,7 @@ import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -78,17 +79,18 @@ class WalletSelectCurrency extends Component {
       this.state = {
         isLoading: false,
       };
+      this.isShowNotification = false;
+      this.selectedCoins = null;
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-      const {
-        navigation, isWalletsUpdated,
-      } = nextProps;
+      const { navigation, isWalletsUpdated } = nextProps;
+      const { isLoading } = this.state;
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
-      if (isWalletsUpdated) {
+      if (isWalletsUpdated && isLoading) {
         this.setState({ isLoading: false });
         const statckActions = StackActions.popToTop();
         navigation.dispatch(statckActions);
@@ -104,7 +106,7 @@ class WalletSelectCurrency extends Component {
     }
 
     async onCreateButtonPress() {
-      const { navigation, createKey, walletManager } = this.props;
+      const { navigation } = this.props;
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
         if (this.mainnet[i].selected) {
@@ -117,19 +119,39 @@ class WalletSelectCurrency extends Component {
           coins.push(coinId);
         }
       }
+      this.selectedCoins = coins;
       if (this.isImportWallet) {
-        // createKey cost time, it will block ui.
-        // So we let run at next tick, loading ui can present first.
-        this.setState({ isLoading: true }, () => {
-          setTimeout(() => {
-            createKey(null, this.phrase, coins, walletManager);
-          }, 0);
-        });
+        this.requestCreateWallet(this.phrase, this.selectedCoins);
       } else {
-        navigation.navigate('RecoveryPhrase', { coins, shouldCreatePhrase: true, shouldCreateWallet: true });
+        navigation.navigate('RecoveryPhrase', { coins: this.selectedCoins, shouldCreatePhrase: true, shouldCreateWallet: true });
       }
     }
 
+    requestCreateWallet(phrase, coins) {
+      const { addNotification, showPasscode } = this.props;
+      if (global.passcode) {
+        this.createWallet(phrase, coins);
+      } else {
+        const notification = createInfoNotification(
+          'modal.createPasscode.title',
+          'modal.createPasscode.body',
+          null,
+          () => showPasscode('create', () => this.createWallet(phrase, coins)),
+        );
+        addNotification(notification);
+      }
+    }
+
+    createWallet(phrase, coins) {
+      // createKey cost time, it will block ui.
+      // So we let run at next tick, loading ui can present first.
+      const { createKey, walletManager } = this.props;
+      this.setState({ isLoading: true }, () => {
+        setTimeout(() => {
+          createKey(null, phrase, coins, walletManager);
+        }, 0);
+      });
+    }
 
     render() {
       const { isLoading } = this.state;
@@ -168,6 +190,8 @@ WalletSelectCurrency.propTypes = {
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  addNotification: PropTypes.func.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 WalletSelectCurrency.defaultProps = {
@@ -177,12 +201,15 @@ WalletSelectCurrency.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isShowNotification: state.App.get('showNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectCurrency);

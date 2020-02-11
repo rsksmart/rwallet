@@ -283,6 +283,14 @@
     "touchSensor": {
       "title": "指纹验证",
       "usePasscode": "使用密码验证"
+    },
+    "createPasscode": {
+      "title": "请设置一个密码",
+      "body": "如果此设备被恶意软件窃取或破坏，密码可以保护您的资金。"
+    },
+    "deleteKey": {
+      "title": "警告!",
+      "body": "您确定要删除使用此密钥的所有钱包吗？"
     }
   }
 }

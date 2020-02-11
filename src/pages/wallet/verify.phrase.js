@@ -10,10 +10,11 @@ import WordField from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 
@@ -72,6 +73,7 @@ class VerifyPhrase extends Component {
     super(props);
     const { navigation } = this.props;
     const { phrase } = navigation.state.params;
+    this.notificationReason = null;
     this.correctPhrases = phrase.split(' ');
     this.reset(true);
 
@@ -84,16 +86,10 @@ class VerifyPhrase extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      navigation, isWalletsUpdated,
-    } = nextProps;
-    const { notification } = nextProps;
-    const { notification: curNotification } = this.props;
-    if (notification !== curNotification && notification === null) {
-      this.onNotificationRemoved();
-    }
+    const { navigation, isWalletsUpdated } = nextProps;
+    const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
-    if (isWalletsUpdated) {
+    if (isWalletsUpdated && isLoading) {
       this.setState({ isLoading: false });
       navigation.navigate('VerifyPhraseSuccess');
     }
@@ -107,10 +103,6 @@ class VerifyPhrase extends Component {
     }
   }
 
-  onNotificationRemoved() {
-    this.reset();
-  }
-
   onWordFieldPress(i) {
     const { isShowConfirmation } = this.state;
     // Avoid user press world field when confirmation
@@ -121,7 +113,7 @@ class VerifyPhrase extends Component {
   }
 
   onPhraseValid() {
-    const { navigation, createKey, walletManager } = this.props;
+    const { navigation } = this.props;
     const { shouldCreateWallet, phrase, coins } = navigation.state.params;
     if (_.isNil(shouldCreateWallet)) {
       throw new Error('shouldCreateWallet is undefined or null.');
@@ -131,13 +123,7 @@ class VerifyPhrase extends Component {
       navigation.navigate('VerifyPhraseSuccess');
       return;
     }
-    // createKey cost time, it will block ui.
-    // So we let run at next tick, loading ui can present first.
-    this.setState({ isLoading: true }, () => {
-      setTimeout(() => {
-        createKey(null, phrase, coins, walletManager);
-      }, 0);
-    });
+    this.requestCreateWallet(phrase, coins);
   }
 
   onConfirmPress() {
@@ -153,10 +139,12 @@ class VerifyPhrase extends Component {
     if (isEqual) {
       this.onPhraseValid();
     } else {
+      this.notificationReason = 'incorrectPhrase';
       const notification = createErrorNotification(
         'modal.incorrectBackupPhrase.title',
         'modal.incorrectBackupPhrase.body',
         'button.startOver',
+        () => this.reset(),
       );
       addNotification(notification);
     }
@@ -176,6 +164,33 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       this.setState({ isShowConfirmation: true });
     }
+  }
+
+  requestCreateWallet(phrase, coins) {
+    const { addNotification, showPasscode } = this.props;
+    if (global.passcode) {
+      this.createWallet(phrase, coins);
+    } else {
+      this.notificationReason = 'createPassword';
+      const notification = createInfoNotification(
+        'modal.createPasscode.title',
+        'modal.createPasscode.body',
+        null,
+        () => showPasscode('create', () => this.createWallet(phrase, coins)),
+      );
+      addNotification(notification);
+    }
+  }
+
+  createWallet(phrase, coins) {
+    // createKey cost time, it will block ui.
+    // So we let run at next tick, loading ui can present first.
+    const { createKey, walletManager } = this.props;
+    this.setState({ isLoading: true }, () => {
+      setTimeout(() => {
+        createKey(null, phrase, coins, walletManager);
+      }, 0);
+    });
   }
 
   reset(isInitialize = false) {
@@ -277,27 +292,27 @@ VerifyPhrase.propTypes = {
   }).isRequired,
   walletManager: PropTypes.shape({}),
   addNotification: PropTypes.func.isRequired,
-  notification: PropTypes.shape({}),
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
   walletManager: undefined,
-  notification: null,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
-  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);
