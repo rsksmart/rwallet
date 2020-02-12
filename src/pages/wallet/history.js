@@ -319,7 +319,7 @@ class History extends Component {
       }
       let datetimeText = '';
       if (datetime) {
-        datetimeText = moment(datetime).format('MMM D. YYYY');
+        datetimeText = datetime.format('MMM D. YYYY');
       }
       transactions.push({
         state,
