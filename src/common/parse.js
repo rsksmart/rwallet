@@ -295,22 +295,23 @@ class ParseHelper {
       return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
         .then((results) => {
           newToken.transactions = _.map(results, (item) => {
-            const transaction = {};
             const createdAt = item.get('createdAt');
-            transaction.createdAt = createdAt ? moment(createdAt) : null;
             const confirmedAt = item.get('confirmedAt');
-            transaction.confirmedAt = confirmedAt ? moment(confirmedAt) : null;
-            transaction.chain = item.get('chain');
-            transaction.type = item.get('type');
-            transaction.from = item.get('from');
-            transaction.hash = item.get('hash');
-            transaction.value = item.get('value');
-            transaction.blockHeight = item.get('blockHeight');
-            transaction.symbol = item.get('symbol');
-            transaction.to = item.get('to');
-            transaction.confirmations = item.get('confirmations');
-            transaction.memo = item.get('memo');
-            transaction.objectId = item.id;
+            const transaction = {
+              createdAt: createdAt ? moment(createdAt) : null,
+              confirmedAt: confirmedAt ? moment(confirmedAt) : null,
+              chain: item.get('chain'),
+              type: item.get('type'),
+              from: item.get('from'),
+              hash: item.get('hash'),
+              value: item.get('value'),
+              blockHeight: item.get('blockHeight'),
+              symbol: item.get('symbol'),
+              to: item.get('to'),
+              confirmations: item.get('confirmations'),
+              memo: item.get('memo'),
+              objectId: item.id,
+            };
             return transaction;
           });
           if (!_.isEmpty(newToken.transactions)) {

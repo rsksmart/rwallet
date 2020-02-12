@@ -285,41 +285,23 @@ class History extends Component {
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      let datetime = transaction.createdAt;
-      let isComfirmed = true;
-      let isSender = false;
-      let state = 'Receiving';
+      let state = null;
+      const isComfirmed = !(transaction.blockHeight === -1);
+      const isSender = address === transaction.from;
+      const datetime = isComfirmed ? transaction.confirmedAt : transaction.createdAt;
+      const datetimeText = datetime ? datetime.format('MMM D. YYYY') : '';
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
       }
-      if (address === transaction.from) {
-        isSender = true;
-      }
-      if (transaction.blockHeight === -1) {
-        isComfirmed = false;
-      }
-      if (isSender) {
-        if (isComfirmed) {
-          state = 'Sent';
-          datetime = transaction.confirmedAt;
-        } else {
-          state = 'Sending';
-          if (transaction.createdAt) {
-            const isFailed = isFailedTransaction(transaction.createdAt);
-            state = isFailed ? 'Failed' : state;
-          }
+      if (isComfirmed) {
+        state = isSender ? 'Sent' : 'Received';
+      } else {
+        state = isSender ? 'Sending' : 'Receiving';
+        if (transaction.createdAt) {
+          const isFailed = isFailedTransaction(transaction.createdAt);
+          state = isFailed ? 'Failed' : state;
         }
-      } else if (isComfirmed) {
-        state = 'Received';
-        datetime = transaction.confirmedAt;
-      } else if (transaction.createdAt) {
-        const isFailed = isFailedTransaction(transaction.createdAt);
-        state = isFailed ? 'Failed' : state;
-      }
-      let datetimeText = '';
-      if (datetime) {
-        datetimeText = datetime.format('MMM D. YYYY');
       }
       transactions.push({
         state,
