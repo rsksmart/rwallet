@@ -312,31 +312,6 @@ class ParseHelper {
             transaction.objectId = item.get('objectId');
             return transaction;
           });
-          // const convertToDate = (datetime) => {
-          //   if (typeof datetime === 'string') {
-          //     return datetime;
-          //   }
-          //   // for example, {__type: "Date", iso: "2020-02-06T16:15:33.172Z"}
-          //   if (typeof datetime === 'object' && datetime.iso) {
-          //     return datetime.iso;
-          //   }
-          //   return null;
-          // };
-          // _.each(newToken.transactions, (rawTransaction) => {
-          //   const transaction = rawTransaction;
-          //   if (!_.isNil(transaction.createdAt)) {
-          //     transaction.createdAt = convertToDate(transaction.createdAt);
-          //   }
-          //   if (!_.isNil(transaction.updatedAt)) {
-          //     transaction.updatedAt = convertToDate(transaction.updatedAt);
-          //   }
-          //   if (!_.isNil(transaction.confirmedAt)) {
-          //     transaction.confirmedAt = convertToDate(transaction.confirmedAt);
-          //   }
-          //   if (!_.isNil(transaction.receivedAt)) {
-          //     transaction.receivedAt = convertToDate(transaction.receivedAt);
-          //   }
-          // });
           if (!_.isEmpty(newToken.transactions)) {
             console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
           }
