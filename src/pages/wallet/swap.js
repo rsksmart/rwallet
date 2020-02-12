@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, Text, Image,
+  View, StyleSheet, TouchableOpacity, Text, Image, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import posed from 'react-native-pose';
+import BigNumber from 'bignumber.js';
 import SwapHeader from '../../components/headers/header.swap';
 // import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
@@ -13,12 +15,7 @@ import Button from '../../components/common/button/button';
 import space from '../../assets/styles/space';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
-
-const SwitcherItemActived = posed.View({
-  route0: { left: '0%' },
-  route1: { left: '33.333%' },
-  route2: { left: '66.666%' },
-});
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   body: {
@@ -131,20 +128,26 @@ const styles = StyleSheet.create({
     marginTop: 8,
     alignItems: 'center',
   },
+  sourceAmount: {
+    flex: 1,
+    paddingRight: 50,
+  },
+  textInput: {
+    color: '#000',
+    fontFamily: 'Avenir-Book',
+    fontSize: 27,
+  },
   boardAmount: {
-    color: '#FFBB00',
+    color: '#000',
     fontSize: 27,
     fontFamily: 'Avenir-Book',
     letterSpacing: 0.4,
     flex: 1,
   },
-  boardAmountReceive: {
-    color: '#00B520',
-  },
   boardValue: {
     fontFamily: 'Avenir-Book',
   },
-  switcherView: {
+  switchView: {
     height: 40,
     marginTop: 33,
     backgroundColor: '#F3F3F3',
@@ -154,14 +157,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
   },
-  switcherItem: {
+  switchItem: {
     width: '33.3%',
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center',
     borderRadius: 25,
   },
-  switcherItemActived: {
+  switchItemActived: {
     position: 'absolute',
     left: '33.3%',
     width: '33.3%',
@@ -171,10 +174,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  switcherText: {
+  switchText: {
     fontFamily: 'Avenir-Heavy',
   },
-  switcherTextActived: {
+  switchTextActived: {
     color: '#FFF',
   },
   error: {
@@ -201,19 +204,138 @@ res.RIF = require('../../assets/images/icon/RIF.png');
 res.currencyExchange = require('../../assets/images/icon/currencyExchange.png');
 res.error = require('../../assets/images/icon/error.png');
 
-const tabs = ['MIN', 'HALF', 'ALL'];
+const switchItems = ['MIN', 'HALF', 'ALL'];
 
-export default class Swap extends Component {
+const SwitchItemActived = posed.View({
+  item0: { left: '0%' },
+  item1: { left: '33.333%' },
+  item2: { left: '66.666%' },
+});
+
+
+// RATE, get from backend;
+const RATE = 0.7;
+
+const MIN_SWAP_AMOUNT = 0.0019;
+
+class Swap extends Component {
   static navigationOptions = () => ({
     header: null,
   });
 
-  static renderExchangeStateBlock(isError) {
-    if (isError) {
+  // static generateValueText(value, currency) {
+  //   const currencySymbol = common.getCurrencySymbol(currency);
+  //   const amountValueText = common.getAssetValueString(value);
+  //   const valueText = `${currencySymbol}${amountValueText}`;
+  //   return valueText;
+  // }
+
+  constructor(props) {
+    super(props);
+    this.onExchangePress = this.onExchangePress.bind(this);
+    this.onSwitchPress = this.onSwitchPress.bind(this);
+    this.onHistoryPress = this.onHistoryPress.bind(this);
+    this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
+    this.onSelectDestPress = this.onSelectDestPress.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
+    this.state = {
+      switchIndex: -1,
+      switchSelectedText: switchItems[0],
+      isBalanceEnough: true,
+      sourceAmount: null,
+      destAmount: null,
+      sourceValue: null,
+      destValue: null,
+      intputText: null,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { sourceAmount } = this.state;
+    this.setAmountState(sourceAmount, nextProps);
+  }
+
+  onExchangePress() {
+    const { navigation, swapSource } = this.props;
+    const { sourceAmount, destAmount } = this.state;
+    console.log(`sourceAmount: ${sourceAmount}, destAmount: ${destAmount}`);
+    navigation.navigate('SwapCompleted', { coin: swapSource.coin });
+  }
+
+  onSwitchPress(index) {
+    const { swapSource } = this.props;
+    let { sourceAmount } = this.state;
+    const { balance } = swapSource.coin;
+    switch (index) {
+      case 0:
+        sourceAmount = new BigNumber(MIN_SWAP_AMOUNT);
+        break;
+      case 1:
+        sourceAmount = balance.div(2);
+        break;
+      case 2:
+        sourceAmount = balance;
+        break;
+      default:
+    }
+    const isBalanceEnough = balance.isGreaterThanOrEqualTo(MIN_SWAP_AMOUNT) || sourceAmount.isGreaterThanOrEqualTo(MIN_SWAP_AMOUNT);
+    this.setState({
+      switchIndex: index, switchSelectedText: switchItems[index], isBalanceEnough, intputText: common.getBalanceString(swapSource.coin.symbol, sourceAmount),
+    });
+    this.setAmountState(sourceAmount, this.props);
+  }
+
+  onHistoryPress() {
+    const { navigation, swapSource } = this.props;
+    navigation.navigate('WalletHistory', { coin: swapSource.coin });
+  }
+
+  onSelectSourcePress() {
+    const { navigation } = this.props;
+    navigation.push('SwapSelection', { selectionType: 'source' });
+  }
+
+  onSelectDestPress() {
+    const { navigation } = this.props;
+    navigation.push('SwapSelection', { selectionType: 'dest' });
+  }
+
+  onChangeText(text) {
+    const isAmount = common.isAmount(text);
+    let sourceAmount = null;
+    if (isAmount) {
+      sourceAmount = new BigNumber(text);
+    }
+    this.setAmountState(sourceAmount, this.props);
+    this.setState({ intputText: text });
+  }
+
+  setAmountState(sourceAmount, props) {
+    const {
+      swapSource, swapDest, currency, prices,
+    } = props;
+    if (!sourceAmount) {
+      this.setState({
+        sourceAmount: null, sourceValue: null, destAmount: null, destValue: null, isBalanceEnough: false,
+      });
+      return;
+    }
+    const sourceValue = common.getCoinValue(sourceAmount, swapSource.coin.symbol, currency, prices);
+    const destAmount = swapDest ? sourceAmount * RATE : null;
+    const destValue = swapDest ? common.getCoinValue(sourceAmount, swapDest.coin.symbol, currency, prices) : null;
+    const isBalanceEnough = sourceAmount.isGreaterThanOrEqualTo(MIN_SWAP_AMOUNT);
+    this.setState({
+      sourceAmount, sourceValue, destAmount, destValue, isBalanceEnough,
+    });
+  }
+
+  renderExchangeStateBlock(isBalanceEnough, sourceAmountText, destAmountText, sourceValueText, destValueText) {
+    const { swapSource } = this.props;
+    if (!isBalanceEnough) {
       return (
         <View style={[styles.errorView, space.marginTop_27]}>
           <Image style={styles.error} source={res.error} />
-          <Text style={styles.errorText}>The amount is lower than the exchange mininum of 0.00352277 BTC</Text>
+          <Text style={styles.errorText}>{`The amount is lower than the exchange mininum of ${MIN_SWAP_AMOUNT} ${swapSource.coin.symbol}`}</Text>
         </View>
       );
     }
@@ -224,8 +346,8 @@ export default class Swap extends Component {
             <Text>Exchanging</Text>
           </View>
           <View style={styles.operationRight}>
-            <Text style={styles.operationAmount}>0.00362297 BTC</Text>
-            <Text style={styles.operationValue}>$35</Text>
+            <Text style={styles.operationAmount}>{sourceAmountText}</Text>
+            <Text style={styles.operationValue}>{sourceValueText}</Text>
           </View>
         </View>
         <View style={[styles.operationView, space.marginTop_10]}>
@@ -233,40 +355,32 @@ export default class Swap extends Component {
             <Text>Receiving</Text>
           </View>
           <View style={styles.operationRight}>
-            <Text style={[styles.operationAmount, styles.receivingAmount]}>+0.16277451 RBTC</Text>
-            <Text style={styles.operationValue}>+$33.99</Text>
+            <Text style={[styles.operationAmount, styles.receivingAmount]}>{`+${destAmountText}`}</Text>
+            <Text style={styles.operationValue}>{`+${destValueText}`}</Text>
           </View>
         </View>
       </View>
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.onExchangePress = this.onExchangePress.bind(this);
-    this.onTabPress = this.onTabPress.bind(this);
-    this.state = {
-      tabIndex: 0,
-      tabSelectedText: tabs[0],
-      isError: false,
-    };
-  }
-
-  onExchangePress() {
-    const { navigation } = this.props;
-    navigation.navigate('SwapCompleted');
-  }
-
-  onTabPress(index) {
-    const isError = index === 1;
-    this.setState({ tabIndex: index, tabSelectedText: tabs[index], isError });
-  }
-
   render() {
-    const { navigation } = this.props;
-    const { tabIndex, tabSelectedText, isError } = this.state;
+    const {
+      navigation, swapSource, swapDest, currency,
+    } = this.props;
+    const {
+      switchIndex, switchSelectedText, isBalanceEnough, sourceValue, destValue, sourceAmount, destAmount, intputText,
+    } = this.state;
+
+    console.log(sourceAmount);
+    const currencySymbol = common.getCurrencySymbol(currency);
+    const sourceValueText = currencySymbol + common.getAssetValueString(sourceValue || '0.00');
+    const destValueText = currencySymbol + common.getAssetValueString(destValue || '0.00');
+    const destAmountText = swapDest && destAmount ? common.getBalanceString(swapDest.coin.symbol, destAmount) : '0.00';
+    const sourceAmountText = sourceAmount ? common.getBalanceString(swapSource.coin.symbol, destAmount) : null;
+
+    const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
     const rightButton = (
-      <TouchableOpacity onPress={() => null}>
+      <TouchableOpacity onPress={this.onHistoryPress}>
         <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
       </TouchableOpacity>
     );
@@ -280,20 +394,31 @@ export default class Swap extends Component {
         <View style={styles.body}>
           <View style={[presetStyles.board, styles.board]}>
             <Text style={styles.boardText}>
-              I have 0.00463127 Bitcoin in
-              <Text style={styles.boardWalletName}> Wallet name 1</Text>
+              {`I have ${balanceText} ${swapSource.coin.symbol} in `}
+              <Text style={styles.boardWalletName}>{swapSource.walletName}</Text>
             </Text>
             <View style={styles.boardTokenView}>
               <View style={styles.boardTokenViewLeft}>
-                <Image style={styles.boardTokenIcon} source={res.BTC} />
-                <Text style={styles.boardTokenName}>BTC</Text>
-                <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                <Image style={styles.boardTokenIcon} source={swapSource.coin.icon} />
+                <Text style={styles.boardTokenName}>{swapSource.coin.symbol}</Text>
+                <TouchableOpacity onPress={this.onSelectSourcePress}>
+                  <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                </TouchableOpacity>
               </View>
               <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
             </View>
             <View style={styles.boardAmountView}>
-              <Text style={styles.boardAmount}>0.00362297</Text>
-              <Text style={styles.boardValue}>$0</Text>
+              <View style={styles.sourceAmount}>
+                <TextInput
+                  style={[styles.textInput]}
+                  value={intputText}
+                  onChangeText={this.onChangeText}
+                  placeholder="0.00"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+              <Text style={styles.boardValue}>{sourceValueText}</Text>
             </View>
           </View>
           <View style={styles.seprator}>
@@ -303,39 +428,45 @@ export default class Swap extends Component {
             </View>
           </View>
           <View style={[presetStyles.board, styles.board]}>
-            <Text style={styles.boardText}>
-              I want RBTC in
-              <Text style={styles.boardWalletName}> Wallet name 1</Text>
-            </Text>
+            { swapDest && (
+              <Text style={styles.boardText}>
+                {`I want ${swapDest.coin.symbol} in`}
+                <Text style={styles.boardWalletName}>{` ${swapDest.walletName}`}</Text>
+              </Text>
+            )}
             <View style={styles.boardTokenView}>
               <View style={styles.boardTokenViewLeft}>
-                <Image style={styles.boardTokenIcon} source={res.BTC} />
-                <Text style={styles.boardTokenName}>RBTC</Text>
-                <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                {swapDest && (<Image style={styles.boardTokenIcon} source={swapDest.coin.icon} />)}
+                {swapDest && (<Text style={styles.boardTokenName}>{swapDest.coin.symbol}</Text>)}
+                <TouchableOpacity onPress={this.onSelectDestPress}>
+                  <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                </TouchableOpacity>
               </View>
               <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
             </View>
             <View style={styles.boardAmountView}>
-              <Text style={[styles.boardAmount, styles.boardAmountReceive]}>0.00362297</Text>
-              <Text style={styles.boardValue}>$0</Text>
+              <Text style={[styles.boardAmount]}>{destAmountText}</Text>
+              <Text style={styles.boardValue}>{destValueText}</Text>
             </View>
           </View>
 
-          <View style={styles.switcherView}>
-            <TouchableOpacity style={[styles.switcherItem]} onPress={() => this.onTabPress(0)}>
-              <Text style={[styles.switcherText]}>MIN</Text>
+          <View style={styles.switchView}>
+            <TouchableOpacity style={[styles.switchItem]} onPress={() => this.onSwitchPress(0)}>
+              <Text style={[styles.switchText]}>{switchItems[0]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.switcherItem} onPress={() => this.onTabPress(1)}>
-              <Text style={styles.switcherText}>HALF</Text>
+            <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(1)}>
+              <Text style={styles.switchText}>{switchItems[1]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.switcherItem} onPress={() => this.onTabPress(2)}>
-              <Text style={styles.switcherText}>ALL</Text>
+            <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(2)}>
+              <Text style={styles.switchText}>{switchItems[2]}</Text>
             </TouchableOpacity>
-            <SwitcherItemActived style={[styles.switcherItemActived]} pose={`route${tabIndex}`}>
-              <Text style={[styles.switcherText, styles.switcherTextActived]}>{ tabSelectedText }</Text>
-            </SwitcherItemActived>
+            {switchIndex >= 0 && (
+              <SwitchItemActived style={[styles.switchItemActived]} pose={`item${switchIndex}`}>
+                <Text style={[styles.switchText, styles.switchTextActived]}>{ switchSelectedText }</Text>
+              </SwitchItemActived>
+            )}
           </View>
-          { Swap.renderExchangeStateBlock(isError) }
+          { this.renderExchangeStateBlock(isBalanceEnough, sourceAmountText, destAmountText, sourceValueText, destValueText) }
           <View style={[styles.buttonView, space.marginTop_30, space.marginBottom_20]}>
             <Button text="button.Exchange" onPress={this.onExchangePress} />
           </View>
@@ -351,5 +482,31 @@ Swap.propTypes = {
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
+    push: PropTypes.func.isRequired,
   }).isRequired,
+  swapSource: PropTypes.shape({
+    walletName: PropTypes.string.isRequired,
+    coin: PropTypes.object.isRequired,
+  }),
+  swapDest: PropTypes.shape({
+    walletName: PropTypes.string.isRequired,
+    coin: PropTypes.object.isRequired,
+  }),
+  // prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  currency: PropTypes.string.isRequired,
 };
+
+Swap.defaultProps = {
+  swapSource: null,
+  swapDest: null,
+};
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  swapSource: state.Wallet.get('swapSource'),
+  swapDest: state.Wallet.get('swapDest'),
+  prices: state.Wallet.get('prices'),
+  currency: state.App.get('currency'),
+});
+
+export default connect(mapStateToProps)(Swap);

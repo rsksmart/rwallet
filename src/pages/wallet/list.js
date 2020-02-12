@@ -16,6 +16,7 @@ import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
 import ListPageHeader from '../../components/headers/header.listpage';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
+import walletActions from '../../redux/wallet/actions';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -213,48 +214,6 @@ class WalletList extends Component {
   /**
    * Transform from wallets to ListData for rendering
    */
-  static createListData(wallets, currencySymbol, navigation) {
-    if (!_.isArray(wallets)) {
-      return [];
-    }
-
-    const listData = [];
-
-    // Create element for each wallet (e.g. key 0)
-    wallets.forEach((wallet) => {
-      const wal = { name: wallet.name, coins: [] };
-      // Create element for each Token (e.g. BTC, RBTC, RIF)
-      wallet.coins.forEach((coin, index) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
-        const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
-        const item = {
-          key: `${index}`,
-          title: coin.defaultName,
-          text: coinType,
-          worth: worthText,
-          amount: amountText,
-          icon: coin.icon,
-          onPress: () => {
-            navigation.navigate('WalletHistory', { wallet, coin });
-          },
-          r1Press: () => {
-            navigation.navigate('Transfer', { wallet, coin });
-          },
-          r2Press: () => {
-            navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
-          },
-          onSwapButtonPress: () => {
-            navigation.navigate('Swap', { coin });
-          },
-        };
-        wal.coins.push(item);
-      });
-      listData.push(wal);
-    });
-
-    return listData;
-  }
 
   static accountListView(listData) {
     return (
@@ -286,10 +245,12 @@ class WalletList extends Component {
       currency, walletManager, navigation,
     } = this.props;
 
+    this.onSwapPress = this.onSwapPress.bind(this);
+
     const { wallets } = walletManager;
 
     const currencySymbol = getCurrencySymbol(currency);
-    const listData = WalletList.createListData(wallets, currencySymbol, navigation);
+    const listData = this.createListData(wallets, currencySymbol, navigation);
     const totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
 
     this.setState({
@@ -315,12 +276,65 @@ class WalletList extends Component {
     newState.currencySymbol = getCurrencySymbol(currency);
 
     if (updateTimestamp !== lastUpdateTimeStamp) {
-      newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
+      newState.listData = this.createListData(wallets, newState.currencySymbol, navigation);
       newState.totalAssetValueText = WalletList.getTotalAssetValueText(walletManager);
     }
 
     this.setState(newState);
   }
+
+  onSwapPress() {
+    const { resetSwap, navigation } = this.props;
+    resetSwap();
+    navigation.navigate('SwapSelection', { selectionType: 'source' });
+  }
+
+  createListData(wallets, currencySymbol, navigation) {
+    const { resetSwap, setSwapSource } = this.props;
+    if (!_.isArray(wallets)) {
+      return [];
+    }
+
+    const listData = [];
+
+    // Create element for each wallet (e.g. key 0)
+    wallets.forEach((wallet) => {
+      const wal = { name: wallet.name, coins: [] };
+      // Create element for each Token (e.g. BTC, RBTC, RIF)
+      wallet.coins.forEach((coin, index) => {
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
+        const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
+        const item = {
+          key: `${index}`,
+          title: coin.defaultName,
+          text: coinType,
+          worth: worthText,
+          amount: amountText,
+          icon: coin.icon,
+          onPress: () => {
+            navigation.navigate('WalletHistory', { wallet, coin });
+          },
+          r1Press: () => {
+            navigation.navigate('Transfer', { wallet, coin });
+          },
+          r2Press: () => {
+            navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
+          },
+          onSwapButtonPress: () => {
+            resetSwap();
+            setSwapSource(wallet.name, coin);
+            navigation.navigate('Swap', { coin });
+          },
+        };
+        wal.coins.push(item);
+      });
+      listData.push(wal);
+    });
+
+    return listData;
+  }
+
 
   render() {
     const { navigation } = this.props;
@@ -366,7 +380,7 @@ class WalletList extends Component {
               <View style={styles.spliteLine} />
               <TouchableOpacity
                 style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                onPress={() => navigation.navigate('SwapSelection')}
+                onPress={this.onSwapPress}
               >
                 <Image source={swap} />
                 <Loc style={[styles.swapText]} text="button.Swap" />
@@ -411,7 +425,8 @@ WalletList.propTypes = {
     wallets: PropTypes.array.isRequired,
   }),
   updateTimestamp: PropTypes.number.isRequired,
-
+  resetSwap: PropTypes.func.isRequired,
+  setSwapSource: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -424,4 +439,9 @@ const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-export default connect(mapStateToProps, null)(WalletList);
+const mapDispatchToProps = (dispatch) => ({
+  setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
+  resetSwap: () => dispatch(walletActions.resetSwap()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

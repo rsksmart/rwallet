@@ -4,7 +4,7 @@ import {
   // Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions } from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Loc from '../../components/common/misc/loc';
 import SwapHeader from '../../components/headers/header.swap';
@@ -125,7 +125,23 @@ export default class SwapCompleted extends Component {
   constructor(props) {
     super(props);
     this.onBackPress = this.onBackPress.bind(this);
+    this.onHistoryPress = this.onHistoryPress.bind(this);
+    const { navigation } = props;
+    const { coin } = navigation.state.params;
+    this.coin = coin;
     // this.onExplorePress = this.onExplorePress.bind(this);
+  }
+
+  onHistoryPress() {
+    const { navigation } = this.props;
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Dashboard' }),
+        NavigationActions.navigate({ routeName: 'WalletHistory', params: { coin: this.coin } }),
+      ],
+    });
+    navigation.dispatch(resetAction);
   }
 
   onBackPress() {
@@ -137,7 +153,7 @@ export default class SwapCompleted extends Component {
   render() {
     const { navigation } = this.props;
     const rightButton = (
-      <TouchableOpacity onPress={() => null}>
+      <TouchableOpacity onPress={this.onHistoryPress}>
         <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
       </TouchableOpacity>
     );

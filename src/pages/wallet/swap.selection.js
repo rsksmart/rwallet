@@ -12,6 +12,7 @@ import Header from '../../components/headers/header';
 import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../assets/styles/style';
+import walletActions from '../../redux/wallet/actions';
 
 const styles = StyleSheet.create({
   body: {
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class ExchangeSelection extends Component {
+class SwapSelection extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -104,40 +105,69 @@ class ExchangeSelection extends Component {
     );
   }
 
-  static createListData(wallets, navigation) {
+  componentWillMount() {
+    const {
+      walletManager, navigation,
+    } = this.props;
+    const { selectionType } = navigation.state.params;
+    const { wallets } = walletManager;
+    const listData = this.createListData(wallets, navigation, selectionType);
+
+    this.setState({ listData });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      walletManager, navigation,
+    } = nextProps;
+    const { selectionType } = navigation.state.params;
+    const { wallets } = walletManager;
+    const listData = this.createListData(wallets, navigation, selectionType);
+    this.setState({ listData });
+  }
+
+
+  createListData(wallets, navigation, selectionType) {
+    const {
+      setSwapSource, setSwapDest, swapSource, swapDest,
+    } = this.props;
+
     if (!_.isArray(wallets)) {
       return [];
     }
+    // const onDestCoinSelected = navigation.state.params && navigation.state.params.onDestCoinSelected;
     const listData = [];
     // Create element for each wallet (e.g. key 0)
     wallets.forEach((wallet) => {
       const wal = { name: wallet.name, coins: [] };
       // Create element for each Token (e.g. BTC, RBTC, RIF)
-      wallet.coins.forEach((coin, index) => {
+      wallet.coins.forEach((coin) => {
+        if (selectionType === 'dest' && coin.symbol === swapSource.coin.symbol) {
+          return;
+        }
+        if (selectionType === 'source' && swapDest && coin.symbol === swapDest.coin.symbol) {
+          return;
+        }
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
         const item = {
-          key: `${index}`,
-          title: coin.defaultName,
+          title: coinType,
           amount: amountText,
           icon: coin.icon,
-          onPress: () => navigation.navigate('Swap', { coin }),
+          onPress: () => {
+            if (selectionType === 'source') {
+              setSwapSource(wallet.name, coin);
+            } else {
+              setSwapDest(wallet.name, coin);
+            }
+            navigation.navigate('Swap');
+          },
         };
         wal.coins.push(item);
       });
       listData.push(wal);
     });
     return listData;
-  }
-
-  componentWillMount() {
-    const {
-      walletManager, navigation,
-    } = this.props;
-
-    const { wallets } = walletManager;
-    const listData = ExchangeSelection.createListData(wallets, navigation);
-
-    this.setState({ listData });
   }
 
   render() {
@@ -157,7 +187,7 @@ class ExchangeSelection extends Component {
             renderItem={({ item }) => (
               <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
                 <Text style={[styles.walletName]}>{item.name}</Text>
-                {ExchangeSelection.renderWalletList(item.coins)}
+                {SwapSelection.renderWalletList(item.coins)}
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -168,7 +198,7 @@ class ExchangeSelection extends Component {
   }
 }
 
-ExchangeSelection.propTypes = {
+SwapSelection.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -178,14 +208,33 @@ ExchangeSelection.propTypes = {
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
   }),
+  swapSource: PropTypes.shape({
+    walletName: PropTypes.string.isRequired,
+    coin: PropTypes.object.isRequired,
+  }),
+  swapDest: PropTypes.shape({
+    walletName: PropTypes.string.isRequired,
+    coin: PropTypes.object.isRequired,
+  }),
+  setSwapSource: PropTypes.func.isRequired,
+  setSwapDest: PropTypes.func.isRequired,
 };
 
-ExchangeSelection.defaultProps = {
+SwapSelection.defaultProps = {
   walletManager: undefined,
+  swapSource: undefined,
+  swapDest: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  swapSource: state.Wallet.get('swapSource'),
+  swapDest: state.Wallet.get('swapDest'),
 });
 
-export default connect(mapStateToProps)(ExchangeSelection);
+const mapDispatchToProps = (dispatch) => ({
+  setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
+  setSwapDest: (walletName, coin) => dispatch(walletActions.setSwapDest(walletName, coin)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SwapSelection);
