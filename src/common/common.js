@@ -6,6 +6,7 @@ import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
 import rsk3 from 'rsk3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import { randomBytes } from 'react-native-randombytes';
 import config from '../../config';
 import store from './storage';
 
@@ -281,6 +282,13 @@ const common = {
 
   isFingerprintAvailable() {
     return FingerprintScanner.isSensorAvailable();
+  },
+
+  getRandom(count) {
+    return new Promise((resolve, reject) => randomBytes(count, (err, bytes) => {
+      if (err) reject(err);
+      else resolve(bytes);
+    }));
   },
 };
 

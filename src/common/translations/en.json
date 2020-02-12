@@ -15,7 +15,7 @@
         "term2": "I understand that if this app is moved to another device or deleted, my Bitcoin can only be recoverd with the recovery phrase.",
         "term3": "I have read, understood, and agreed to the Terms of Use.",
         "viewTerms": "View Complete Terms Of Use",
-        "button": "COMFIRM & FINISH"
+        "button": "Confirm & Accept"
       }
     },
     "wallet": {
@@ -185,7 +185,7 @@
     "NEXT": "NEXT",
     "gotIt": "GOT IT",
     "create": "CREATE",
-    "CONFIRM": "COMFIRM",
+    "CONFIRM": "CONFIRM",
     "RETRY": "RETRY",
     "IMPORT": "IMPORT",
     "Clear": "Clear",
