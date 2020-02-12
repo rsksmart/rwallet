@@ -309,7 +309,8 @@ class ParseHelper {
             transaction.symbol = item.get('symbol');
             transaction.to = item.get('to');
             transaction.confirmations = item.get('confirmations');
-            transaction.objectId = item.get('objectId');
+            transaction.memo = item.get('memo');
+            transaction.objectId = item.id;
             return transaction;
           });
           if (!_.isEmpty(newToken.transactions)) {
