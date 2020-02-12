@@ -286,7 +286,7 @@ class History extends Component {
       let amountText = ' ';
       let amount = null;
       let state = null;
-      const isComfirmed = !(transaction.blockHeight === -1);
+      const isComfirmed = transaction.blockHeight !== -1;
       const isSender = address === transaction.from;
       const datetime = isComfirmed ? transaction.confirmedAt : transaction.createdAt;
       const datetimeText = datetime ? datetime.format('MMM D. YYYY') : '';
