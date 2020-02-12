@@ -330,20 +330,17 @@ class ParseHelper {
       case 'rate':
         method = 'post';
         path = 'rate';
-        params = [];
-        params.push({ key: 'depositCoin', value: deposit }, { key: 'destinationCoin', value: destination });
+        params = [{ key: 'depositCoin', value: deposit }, { key: 'destinationCoin', value: destination }];
         break;
       case 'order':
         method = 'post';
         path = 'order';
-        params = [];
-        params.push(
-          { key: 'depositCoin', value: deposit },
+        params = [{ key: 'depositCoin', value: deposit },
           { key: 'destinationCoin', value: destination },
           { key: 'depositCoinAmount', value: coinswitchParams.amount },
           { key: 'destinationAddress', value: coinswitchParams.destinationAddress },
           { key: 'refundAddress', value: coinswitchParams.refundAddress },
-        );
+        ];
         break;
     }
     const options = { method, path };
