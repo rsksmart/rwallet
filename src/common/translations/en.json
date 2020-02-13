@@ -217,6 +217,7 @@
     "Send": "Send",
     "Receive": "Receive",
     "Swap": "Swap",
+    "Finish": "Finish",
     "Exchange": "Exchange"
   },
   "txState": {

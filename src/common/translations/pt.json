@@ -202,7 +202,9 @@
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
     "Send": "Mandar",
     "Receive": "Receber",
-    "Swap": "Troca"
+    "Swap": "Troca",
+    "Finish": "Terminar",
+    "Exchange": "Troca"
   },
   "txState": {
     "Sent": "Enviei",

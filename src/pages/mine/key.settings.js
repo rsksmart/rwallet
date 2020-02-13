@@ -212,7 +212,7 @@ class KeySettings extends Component {
     backup() {
       const { navigation } = this.props;
       // Backup flow will skip phrase and wallet creation.
-      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldCreateWallet: false });
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldVerifyPhrase: false });
     }
 
     deleteKey() {
