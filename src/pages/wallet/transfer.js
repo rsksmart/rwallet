@@ -408,6 +408,9 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
+    // This app use checksum address with chainId, but some third-party app use web3 address,
+    // so we need to convert input address to checksum address with chainId before validation and transfer
+    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
     const toAddress = coin.symbol === 'BTC' ? to : rsk3.utils.toChecksumAddress(to, coin.networkId);
     if (!this.validateFormData(amount, toAddress, coin.symbol, coin.type, coin.networkId)) {
       // this.resetConfirm();
@@ -536,8 +539,8 @@ class Transfer extends Component {
 
   async confirm(toAddress) {
     const { navigation, navigation: { state }, addNotification } = this.props;
-    const { params, memo } = state;
-    const { coin } = params;
+    const { coin } = state.params;
+    const { memo } = this.state;
     let { amount } = this.state;
     amount = amount.trim();
     try {
