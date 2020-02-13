@@ -203,7 +203,8 @@
     "Send": "Mandar",
     "Receive": "Receber",
     "Swap": "Troca",
-    "Finish": "Terminar"
+    "Finish": "Terminar",
+    "Exchange": "Troca"
   },
   "txState": {
     "Sent": "Enviei",

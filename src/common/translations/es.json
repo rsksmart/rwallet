@@ -203,7 +203,8 @@
     "Send": "Enviar",
     "Receive": "Recibir",
     "Swap": "Intercambiar",
-    "Finish": "Terminar"
+    "Finish": "Terminar",
+    "Exchange": "Intercambiar"
   },
   "txState": {
     "Sent": "Enviado",

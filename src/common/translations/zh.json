@@ -204,7 +204,8 @@
     "Send": "发送",
     "Receive": "接收",
     "Swap": "交换",
-    "Finish": "完成"
+    "Finish": "完成",
+    "Exchange": "兑换"
   },
   "txState": {
     "Sent": "已发送",
