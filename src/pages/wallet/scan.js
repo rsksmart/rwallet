@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, ImageBackground,
+  View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
-import Entypo from 'react-native-vector-icons/Entypo';
+import { connect } from 'react-redux';
 import color from '../../assets/styles/color.ts';
 import flex from '../../assets/styles/layout.flex';
-import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
-import ScreenHelper from '../../common/screenHelper';
+import OperationHeader from '../../components/headers/header.operation';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   container: {
@@ -197,10 +196,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const header = require('../../assets/images/misc/header.png');
+// const header = require('../../assets/images/misc/header.png');
 // const scan = require('../../assets/images/misc/scan.png');
 
-export default class Scan extends Component {
+class Scan extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -208,10 +207,10 @@ export default class Scan extends Component {
     render() {
       const { navigation } = this.props;
       const barcodeMask = (<BarcodeMask width={240} height={240} edgeBorderWidth={1} showAnimatedLine={false} />);
-      let headerHeight = 100;
-      if (DEVICE.isIphoneX) {
-        headerHeight += ScreenHelper.iphoneXTopHeight;
-      }
+      // let headerHeight = 100;
+      // if (DEVICE.isIphoneX) {
+      //   headerHeight += ScreenHelper.iphoneXTopHeight;
+      // }
       const scanner = (
         <RNCamera
           ref={(ref) => {
@@ -249,17 +248,7 @@ export default class Scan extends Component {
 
       return (
         <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Loc style={[styles.headerTitle]} text="page.wallet.scan.title" />
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </ImageBackground>
+          <OperationHeader title={strings('page.wallet.scan.title')} onBackButtonPress={() => navigation.goBack()} />
           <View style={styles.body}>
             {scanner}
           </View>
@@ -276,3 +265,9 @@ Scan.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
+
+export default connect(mapStateToProps)(Scan);

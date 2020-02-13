@@ -718,6 +718,7 @@ class Transfer extends Component {
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolFullName(symbol, type);
+    const title = `${strings('button.Send')} ${symbolName}`;
 
     return (
       <BasePageGereral
@@ -725,7 +726,7 @@ class Transfer extends Component {
         hasBottomBtn={false}
         hasLoader
         isLoading={loading}
-        headerComponent={<OperationHeader operation="Send" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>

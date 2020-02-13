@@ -14,6 +14,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -132,13 +133,14 @@ class WalletReceive extends Component {
       const type = coin && coin.type;
       const symbolName = common.getSymbolFullName(symbol, type);
       const qrText = address;
+      const title = `${strings('button.Receive')} ${symbolName}`;
 
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<OperationHeader operation="Receive" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
@@ -181,7 +183,9 @@ WalletReceive.propTypes = {
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
