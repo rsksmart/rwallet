@@ -202,7 +202,8 @@
     "backToSetting": "VOLVER A LA CONFIGURACIÓN",
     "Send": "Enviar",
     "Receive": "Recibir",
-    "Swap": "Intercambiar"
+    "Swap": "Intercambiar",
+    "Finish": "Terminar"
   },
   "txState": {
     "Sent": "Enviado",

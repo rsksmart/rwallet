@@ -203,7 +203,8 @@
     "backToSetting": "回到设置",
     "Send": "发送",
     "Receive": "接收",
-    "Swap": "交换"
+    "Swap": "交换",
+    "Finish": "完成"
   },
   "txState": {
     "Sent": "已发送",

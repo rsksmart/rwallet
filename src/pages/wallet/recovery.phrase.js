@@ -43,12 +43,17 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-
+      const { navigation } = props;
+      const { shouldVerifyPhrase } = navigation.state.params;
       this.state = {
         phrases: [],
       };
-      this.onNextPress = this.onNextPress.bind(this);
-      this.onCopyPress = this.onCopyPress.bind(this);
+      if (_.isNil(shouldVerifyPhrase)) {
+        throw new Error('shouldVerifyPhrase is undefined or null.');
+      }
+      this.bottomBtnText = shouldVerifyPhrase ? 'button.NEXT' : 'button.Finish';
+      this.onBottomBtnPress = (shouldVerifyPhrase ? this.onNextPressed : this.onFinishPressed).bind(this);
+      this.onCopyPressed = this.onCopyPressed.bind(this);
     }
 
     async componentDidMount() {
@@ -76,13 +81,18 @@ class RecoveryPhrase extends Component {
       });
     }
 
-    onNextPress() {
+    onNextPressed() {
       const { navigation } = this.props;
       const params = { ...navigation.state.params, phrase: this.phrase };
       navigation.navigate('VerifyPhrase', params);
     }
 
-    onCopyPress() {
+    onFinishPressed() {
+      const { navigation } = this.props;
+      navigation.goBack();
+    }
+
+    onCopyPressed() {
       const { phrase } = this;
       const { addNotification } = this.props;
       Clipboard.setString(phrase);
@@ -100,8 +110,8 @@ class RecoveryPhrase extends Component {
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          bottomBtnText="button.NEXT"
-          bottomBtnOnPress={this.onNextPress}
+          bottomBtnText={this.bottomBtnText}
+          bottomBtnOnPress={this.onBottomBtnPress}
           hasLoader={false}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recoveryPhrase.title" />}
         >
@@ -111,7 +121,7 @@ class RecoveryPhrase extends Component {
           <View style={styles.tagsView}>
             <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
           </View>
-          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPress}>
+          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPressed}>
             <Loc style={[styles.copy]} text="button.Copy" />
           </TouchableOpacity>
         </BasePageGereral>

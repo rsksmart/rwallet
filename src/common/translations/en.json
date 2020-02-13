@@ -204,7 +204,8 @@
     "backToSetting": "BACK TO SETTING",
     "Send": "Send",
     "Receive": "Receive",
-    "Swap": "Swap"
+    "Swap": "Swap",
+    "Finish": "Finish"
   },
   "txState": {
     "Sent": "Sent",
