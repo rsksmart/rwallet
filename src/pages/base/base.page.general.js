@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
 const BasePageGereral = (props) => {
   const {
     children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
-    refreshControl,
+    refreshControl, bgColor,
   } = props;
   return (
-    <View style={[flex.flex1, isSafeView ? styles.safeView : {}]}>
+    <View style={[flex.flex1, isSafeView ? styles.safeView : {}, bgColor ? { backgroundColor: bgColor } : null]}>
       <ScrollView refreshControl={refreshControl}>
         {headerComponent}
         <View pointerEvents="box-none">
@@ -52,6 +52,7 @@ BasePageGereral.propTypes = {
   isLoading: PropTypes.bool,
   headerComponent: PropTypes.element.isRequired,
   refreshControl: PropTypes.element,
+  bgColor: PropTypes.string,
 };
 
 BasePageGereral.defaultProps = {
@@ -62,6 +63,7 @@ BasePageGereral.defaultProps = {
   renderAccessory: null,
   hasLoader: false,
   refreshControl: null,
+  bgColor: null,
 };
 
 

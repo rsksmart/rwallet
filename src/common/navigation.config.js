@@ -22,6 +22,9 @@ import WalletHistory from '../pages/wallet/history';
 import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
 import Transaction from '../pages/wallet/transaction';
+import Swap from '../pages/wallet/swap';
+import SwapSelection from '../pages/wallet/swap.selection';
+import SwapCompleted from '../pages/wallet/swap.completed';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -180,6 +183,27 @@ const routeConfigMap = {
       path: 'Transaction',
       navigationOptions: () => ({
         headerTitle: 'Transaction',
+      }),
+    },
+    Swap: {
+      screen: Swap,
+      path: 'Swap',
+      navigationOptions: () => ({
+        headerTitle: 'Swap',
+      }),
+    },
+    SwapSelection: {
+      screen: SwapSelection,
+      path: 'SwapSelection',
+      navigationOptions: () => ({
+        headerTitle: 'SwapSelection',
+      }),
+    },
+    SwapCompleted: {
+      screen: SwapCompleted,
+      path: 'SwapCompleted',
+      navigationOptions: () => ({
+        headerTitle: 'SwapCompleted',
       }),
     },
   },

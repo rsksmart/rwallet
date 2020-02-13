@@ -13,6 +13,7 @@ import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 
 const styles = StyleSheet.create({
   body: {
+    marginTop: 5,
     marginHorizontal: 18,
   },
 });
@@ -103,7 +104,7 @@ class SelectWallet extends Component {
           <FlatList
             data={listData}
             renderItem={({ item }) => (
-              <View>
+              <View style={coinListItemStyles.itemView}>
                 <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
                 {SelectWallet.renderWalletList(item.coins)}
               </View>
