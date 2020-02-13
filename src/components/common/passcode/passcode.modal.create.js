@@ -9,9 +9,9 @@ class CreatePasscodeModal extends PureComponent {
   constructor(props) {
     super(props);
     this.flows = [
-      { index: 0, title: 'Type your new passcode' },
-      { index: 1, title: 'Confirm your new passcode' },
-      { index: 2, title: 'Password not match, Try again' },
+      { index: 0, title: 'modal.passcode.typeNewPasscode' },
+      { index: 1, title: 'modal.passcode.confirmNewPasscode' },
+      { index: 2, title: 'modal.passcode.notMatched' },
     ];
     this.flowIndex = 0;
     this.tempPasscode = '';

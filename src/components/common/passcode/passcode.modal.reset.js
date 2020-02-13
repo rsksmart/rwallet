@@ -13,7 +13,7 @@ class ResetPasscodeModal extends PureComponent {
       { index: 1, title: 'modal.passcode.typeNewPasscode' },
       { index: 2, title: 'modal.passcode.confirmNewPasscode' },
       { index: 3, title: 'modal.passcode.oldIncorrect' },
-      { index: 4, title: 'modal.passcode.notMatch' },
+      { index: 4, title: 'modal.passcode.notMatched' },
     ];
     this.flowIndex = 0;
     this.tempPasscode = '';

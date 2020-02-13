@@ -279,7 +279,7 @@
       "typeNewPasscode": "Escriba su nueva contraseña",
       "confirmNewPasscode": "Confirme su nueva contraseña",
       "oldIncorrect": "El código de acceso anterior es incorrecto, intente nuevamente",
-      "notMatch": "La contraseña no coincide, intente nuevamente"
+      "notMatched": "El código de acceso no coincide. Inténtalo de nuevo."
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",
