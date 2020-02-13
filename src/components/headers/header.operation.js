@@ -3,10 +3,8 @@ import {
   View, StyleSheet, TouchableOpacity, ImageBackground, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
-import Loc from '../common/misc/loc';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -37,7 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function OperationHeader({ operation, symbolName, onBackButtonPress }) {
+export default function OperationHeader({ title, onBackButtonPress }) {
   return (
     <ImageBackground source={header} style={styles.headerImage}>
       <View style={styles.titleView}>
@@ -45,8 +43,7 @@ function OperationHeader({ operation, symbolName, onBackButtonPress }) {
           <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          <Loc text={`button.${operation}`} />
-          {` ${symbolName}`}
+          {title}
         </Text>
       </View>
     </ImageBackground>
@@ -54,13 +51,6 @@ function OperationHeader({ operation, symbolName, onBackButtonPress }) {
 }
 
 OperationHeader.propTypes = {
-  operation: PropTypes.string.isRequired,
-  symbolName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   onBackButtonPress: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = (state) => ({
-  currentLocale: state.App.get('language'),
-});
-
-export default connect(mapStateToProps)(OperationHeader);

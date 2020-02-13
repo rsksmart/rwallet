@@ -202,7 +202,9 @@
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
     "Send": "Mandar",
     "Receive": "Receber",
-    "Swap": "Troca"
+    "Swap": "Troca",
+    "Finish": "Terminar",
+    "Exchange": "Troca"
   },
   "txState": {
     "Sent": "Enviei",
@@ -267,6 +269,10 @@
     "phraseCopied": {
       "title": "Copiado",
       "body": "A frase de recuperação foi copiada para a área de transferência."
+    },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "O endereço foi copiado para a área de transferência."
     },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",

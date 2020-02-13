@@ -10,6 +10,8 @@ const initState = new Map({
   isBalanceUpdated: false,
   isWalletsUpdated: false,
   isWalletNameUpdated: false,
+  swapFromCoin: null,
+  swapDestCoin: null,
 });
 
 /**
@@ -78,6 +80,15 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.RESET_WALLET_NAME_UPDATED: {
       return state.set('isWalletNameUpdated', false);
+    }
+    case actions.SET_SWAP_SOURCE: {
+      return state.set('swapSource', action.payload);
+    }
+    case actions.SET_SWAP_DEST: {
+      return state.set('swapDest', action.payload);
+    }
+    case actions.RESET_SWAP: {
+      return state.set('swapSource', null).set('swapDest', null);
     }
     default:
       return state;

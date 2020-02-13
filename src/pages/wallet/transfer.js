@@ -7,6 +7,7 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
+import rsk3 from 'rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
@@ -407,12 +408,16 @@ class Transfer extends Component {
     let { amount, to } = this.state;
     amount = amount.trim();
     to = to.trim();
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type, coin.networkId)) {
+    // This app use checksum address with chainId, but some third-party app use web3 address,
+    // so we need to convert input address to checksum address with chainId before validation and transfer
+    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
+    const toAddress = coin.symbol === 'BTC' ? to : rsk3.utils.toChecksumAddress(to, coin.networkId);
+    if (!this.validateFormData(amount, toAddress, coin.symbol, coin.type, coin.networkId)) {
       // this.resetConfirm();
       return;
     }
     const { callAuthVerify } = this.props;
-    callAuthVerify(this.confirm, () => null);
+    callAuthVerify(this.confirm(toAddress), () => null);
   }
 
   getFeeParams() {
@@ -526,19 +531,17 @@ class Transfer extends Component {
     return true;
   }
 
-  async confirm() {
+  async confirm(toAddress) {
     const { navigation, navigation: { state }, addNotification } = this.props;
-    const { params } = state;
-    const { coin } = params;
+    const { coin } = state.params;
     const { memo } = this.state;
-    let { amount, to } = this.state;
+    let { amount } = this.state;
     amount = amount.trim();
-    to = to.trim();
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
-      let transaction = new Transaction(coin, to, amount, extraParams);
+      let transaction = new Transaction(coin, toAddress, amount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -712,6 +715,7 @@ class Transfer extends Component {
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolFullName(symbol, type);
+    const title = `${strings('button.Send')} ${symbolName}`;
 
     return (
       <BasePageGereral
@@ -719,7 +723,7 @@ class Transfer extends Component {
         hasBottomBtn={false}
         hasLoader
         isLoading={loading}
-        headerComponent={<OperationHeader operation="Send" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>

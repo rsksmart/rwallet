@@ -202,7 +202,9 @@
     "backToSetting": "VOLVER A LA CONFIGURACIÓN",
     "Send": "Enviar",
     "Receive": "Recibir",
-    "Swap": "Intercambiar"
+    "Swap": "Intercambiar",
+    "Finish": "Terminar",
+    "Exchange": "Intercambiar"
   },
   "txState": {
     "Sent": "Enviado",
@@ -267,6 +269,10 @@
     "phraseCopied": {
       "title": "Copiado",
       "body": "La frase de recuperación se ha copiado al portapapeles."
+    },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "La dirección ha sido copiada al portapapeles."
     },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
