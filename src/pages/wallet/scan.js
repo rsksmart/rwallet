@@ -196,9 +196,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// const header = require('../../assets/images/misc/header.png');
-// const scan = require('../../assets/images/misc/scan.png');
-
 class Scan extends Component {
     static navigationOptions = () => ({
       header: null,
@@ -207,10 +204,6 @@ class Scan extends Component {
     render() {
       const { navigation } = this.props;
       const barcodeMask = (<BarcodeMask width={240} height={240} edgeBorderWidth={1} showAnimatedLine={false} />);
-      // let headerHeight = 100;
-      // if (DEVICE.isIphoneX) {
-      //   headerHeight += ScreenHelper.iphoneXTopHeight;
-      // }
       const scanner = (
         <RNCamera
           ref={(ref) => {
