@@ -13,9 +13,11 @@ class ResetPasscodeModal extends PureComponent {
       { index: 1, title: 'modal.passcode.typeNewPasscode' },
       { index: 2, title: 'modal.passcode.confirmNewPasscode' },
       { index: 3, title: 'modal.passcode.oldIncorrect' },
-      { index: 4, title: 'modal.passcode.notMatch' },
+      { index: 4, title: 'modal.passcode.notMatched' },
     ];
-    this.flowIndex = 0;
+    this.state = {
+      flowIndex: 0,
+    };
     this.tempPasscode = '';
     this.title = this.flows[0].title;
     const { closePasscodeModal, passcodeCallback } = this.props;
@@ -23,10 +25,18 @@ class ResetPasscodeModal extends PureComponent {
     this.passcodeCallback = passcodeCallback;
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
+    this.onStartOverPressed = this.onStartOverPressed.bind(this);
   }
 
   componentDidMount() {
     this.passcode = global.passcode;
+  }
+
+  onStartOverPressed() {
+    let flow = null;
+    this.setState({ flowIndex: 1 });
+    flow = _.find(this.flows, { index: 1 });
+    this.baseModal.resetModal(flow.title);
   }
 
   cancelBtnOnPress = () => {
@@ -35,23 +45,24 @@ class ResetPasscodeModal extends PureComponent {
 
   passcodeOnFill = async (input) => {
     let flow = null;
-    switch (this.flowIndex) {
+    const { flowIndex } = this.state;
+    switch (flowIndex) {
       case 0:
       case 3:
         if (input === this.passcode) {
-          this.flowIndex = 1;
-          flow = _.find(this.flows, { index: this.flowIndex });
+          this.setState({ flowIndex: 1 });
+          flow = _.find(this.flows, { index: 1 });
           this.baseModal.resetModal(flow.title);
         } else {
-          this.flowIndex = 3;
-          flow = _.find(this.flows, { index: this.flowIndex });
+          this.setState({ flowIndex: 3 });
+          flow = _.find(this.flows, { index: 3 });
           this.baseModal.rejectPasscord(flow.title);
         }
         break;
       case 1:
         this.tempPasscode = input;
-        this.flowIndex = 2;
-        flow = _.find(this.flows, { index: this.flowIndex });
+        this.setState({ flowIndex: 2 });
+        flow = _.find(this.flows, { index: 2 });
         this.baseModal.resetModal(flow.title);
         break;
       case 2:
@@ -63,8 +74,8 @@ class ResetPasscodeModal extends PureComponent {
             this.passcodeCallback();
           }
         } else {
-          this.flowIndex = 4;
-          flow = _.find(this.flows, { index: this.flowIndex });
+          this.setState({ flowIndex: 4 });
+          flow = _.find(this.flows, { index: 4 });
           this.baseModal.rejectPasscord(flow.title);
         }
         break;
@@ -72,11 +83,15 @@ class ResetPasscodeModal extends PureComponent {
   };
 
   render() {
+    const { flowIndex } = this.state;
+    const isShowStartOver = flowIndex === 2 || flowIndex === 4;
     return (
       <PasscodeModalBase
         ref={(ref) => { this.baseModal = ref; }}
         passcodeOnFill={this.passcodeOnFill}
         cancelBtnOnPress={this.cancelBtnOnPress}
+        onStartOverPressed={this.onStartOverPressed}
+        isShowStartOver={isShowStartOver}
         title={this.title}
       />
     );

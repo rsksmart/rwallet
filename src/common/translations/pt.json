@@ -192,7 +192,7 @@
     "RETRY": "RETRY",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
-    "START OVER": "RECOMEÇAR",
+    "startOver": "RECOMEÇAR",
     "Copy": "cópia de",
     "Confirm": "confirme",
     "Cancel": "Cancelar",
@@ -202,7 +202,9 @@
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
     "Send": "Mandar",
     "Receive": "Receber",
-    "Swap": "Troca"
+    "Swap": "Troca",
+    "Delete": "Excluir",
+    "StartOver": "Recomeçar"
   },
   "txState": {
     "Sent": "Enviei",
@@ -273,7 +275,7 @@
       "typeNewPasscode": "Digite sua nova senha",
       "confirmNewPasscode": "Confirme sua nova senha",
       "oldIncorrect": "A senha antiga está incorreta. Tente novamente",
-      "notMatch": "A senha não corresponde, tente novamente"
+      "notMatched": "A senha não corresponde, tente novamente"
     },
     "verifyPasscode": {
       "type": "Digite sua senha",

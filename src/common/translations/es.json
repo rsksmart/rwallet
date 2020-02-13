@@ -192,7 +192,7 @@
     "RETRY": "INTENTA DE NUEVO",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
-    "START OVER": "COMENZAR DE NUEVO",
+    "startOver": "COMENZAR DE NUEVO",
     "Copy": "Copiar",
     "Confirm": "Confirmar",
     "Cancel": "Cancelar",
@@ -202,7 +202,9 @@
     "backToSetting": "VOLVER A LA CONFIGURACIÓN",
     "Send": "Enviar",
     "Receive": "Recibir",
-    "Swap": "Intercambiar"
+    "Swap": "Intercambiar",
+    "Delete": "Eliminar",
+    "StartOver": "Comenzar de nuevo"
   },
   "txState": {
     "Sent": "Enviado",
@@ -273,7 +275,7 @@
       "typeNewPasscode": "Escriba su nueva contraseña",
       "confirmNewPasscode": "Confirme su nueva contraseña",
       "oldIncorrect": "El código de acceso anterior es incorrecto, intente nuevamente",
-      "notMatch": "La contraseña no coincide, intente nuevamente"
+      "notMatched": "El código de acceso no coincide, intente nuevamente"
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",

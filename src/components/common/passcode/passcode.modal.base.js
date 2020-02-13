@@ -70,8 +70,35 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     position: 'absolute',
-    right: 60,
-    bottom: 80,
+    right: '8%',
+    bottom: '7%',
+  },
+  deleteButton: {
+    position: 'absolute',
+    width: buttonSize,
+    height: buttonSize,
+    right: 15,
+    bottom: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  delete: {
+    fontFamily: 'Avenir-Medium',
+    fontSize: 20,
+    color: color.component.passcodeModal.cancel.color,
+  },
+  startOverButton: {
+    position: 'absolute',
+    width: '100%',
+    bottom: -45,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  startOver: {
+    fontFamily: 'Avenir-Medium',
+    fontSize: 20,
+    color: color.component.passcodeModal.cancel.color,
+    letterSpacing: 1.3,
   },
   cancel: {
     fontSize: 18,
@@ -97,6 +124,7 @@ class PasscodeModalBase extends PureComponent {
       input: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
+    this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
   onPressButton(i) {
@@ -108,6 +136,15 @@ class PasscodeModalBase extends PureComponent {
         passcodeOnFill(input);
       }
     });
+  }
+
+  onDeletePressed() {
+    let { input } = this.state;
+    if (input.length === 0) {
+      return;
+    }
+    input = input.substr(0, input.length - 1);
+    this.setState({ input });
   }
 
   resetModal = (title) => {
@@ -152,7 +189,9 @@ class PasscodeModalBase extends PureComponent {
     const {
       title,
     } = this.state;
-    const { cancelBtnOnPress, showCancel } = this.props;
+    const {
+      cancelBtnOnPress, showCancel, onStartOverPressed, isShowStartOver,
+    } = this.props;
 
     return (
       <Modal animationType="fade" transparent>
@@ -164,11 +203,22 @@ class PasscodeModalBase extends PureComponent {
             </Animatable.View>
             <View style={styles.buttonView}>
               {this.renderButtons()}
+              <TouchableOpacity style={styles.deleteButton} onPress={this.onDeletePressed}>
+                <Loc style={[styles.delete]} text="button.Delete" />
+              </TouchableOpacity>
             </View>
+            {isShowStartOver && (
+              <TouchableOpacity
+                style={styles.startOverButton}
+                onPress={onStartOverPressed}
+              >
+                <Loc style={[styles.startOver]} text="button.StartOver" />
+              </TouchableOpacity>
+            )}
           </View>
           {showCancel && (
             <TouchableOpacity style={styles.cancelButton} onPress={cancelBtnOnPress}>
-              <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+              <Text style={styles.cancel}><Loc style={[styles.title]} text="button.Cancel" /></Text>
             </TouchableOpacity>
           )}
         </View>
@@ -181,12 +231,16 @@ PasscodeModalBase.propTypes = {
   title: PropTypes.string.isRequired,
   passcodeOnFill: PropTypes.func.isRequired,
   cancelBtnOnPress: PropTypes.func,
+  onStartOverPressed: PropTypes.func,
   showCancel: PropTypes.bool,
+  isShowStartOver: PropTypes.bool,
 };
 
 PasscodeModalBase.defaultProps = {
   showCancel: true,
+  isShowStartOver: false,
   cancelBtnOnPress: null,
+  onStartOverPressed: null,
 };
 
 export default PasscodeModalBase;
