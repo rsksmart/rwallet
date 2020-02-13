@@ -205,7 +205,9 @@
     "Receive": "接收",
     "Swap": "交换",
     "Delete": "删除",
-    "StartOver": "重新开始"
+    "StartOver": "重新开始",
+    "Finish": "完成",
+    "Exchange": "兑换"
   },
   "txState": {
     "Sent": "已发送",
@@ -270,6 +272,10 @@
     "phraseCopied": {
       "title": "已复制",
       "body": "助记词已复制。"
+    },
+    "addressCopied": {
+      "title": "已复制",
+      "body": "地址已复制。"
     },
     "passcode": {
       "typeOldPasscode": "输入您的旧密码",

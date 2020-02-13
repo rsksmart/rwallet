@@ -123,7 +123,7 @@ class WalletSelectCurrency extends Component {
       if (this.isImportWallet) {
         this.requestCreateWallet(this.phrase, this.selectedCoins);
       } else {
-        navigation.navigate('RecoveryPhrase', { coins: this.selectedCoins, shouldCreatePhrase: true, shouldCreateWallet: true });
+        navigation.navigate('RecoveryPhrase', { coins: this.selectedCoins, shouldCreatePhrase: true, shouldVerifyPhrase: true });
       }
     }
 
