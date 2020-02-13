@@ -81,7 +81,7 @@ export default class TouchSensorModal extends Component {
     };
     this.onCancelPress = this.onCancelPress.bind(this);
     this.onUsePasscodePress = this.onUsePasscodePress.bind(this);
-    this.onIconPress = this.onIconPress.bind(this);
+    this.onIconPressed = this.onIconPressed.bind(this);
     this.requestScan = this.requestScan.bind(this);
   }
 
@@ -93,7 +93,7 @@ export default class TouchSensorModal extends Component {
     }
   }
 
-  onIconPress() {
+  onIconPressed() {
     this.setState({ errorMessage: null });
     this.requestScan(this.props);
   }
@@ -180,7 +180,7 @@ export default class TouchSensorModal extends Component {
             </Animatable.View>
             <TouchableOpacity
               style={styles.finger}
-              onPress={this.onIconPress}
+              onPress={this.onIconPressed}
               disabled={!(Platform.OS === 'ios')}
             >
               <Image source={finger} />
