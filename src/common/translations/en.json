@@ -270,6 +270,10 @@
       "title": "Copied",
       "body": "The recovery phrase has been copied to clipboard."
     },
+    "addressCopied": {
+      "title": "Copied",
+      "body": "The address has been copied to clipboard."
+    },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
       "typeNewPasscode": "Type your new passcode",
@@ -292,6 +296,6 @@
     "deleteKey": {
       "title": "Warning!",
       "body": "Are you sure you want to delete all wallets using this key?"
-    }
+    },
   }
 }
