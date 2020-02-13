@@ -15,7 +15,7 @@
         "term2": "I understand that if this app is moved to another device or deleted, my Bitcoin can only be recoverd with the recovery phrase.",
         "term3": "I have read, understood, and agreed to the Terms of Use.",
         "viewTerms": "View Complete Terms Of Use",
-        "button": "COMFIRM & FINISH"
+        "button": "Confirm & Accept"
       }
     },
     "wallet": {
@@ -107,6 +107,18 @@
         "body": "Transfer Completed!",
         "note": "Your transaction is on its way.",
         "viewExplorer": "Click to view in explorer"
+      },
+      "swap": {
+        "title": "Swap"
+      },
+      "swapSelection": {
+        "title": "Select Currency"
+      },
+      "swapCompleted": {
+        "title": "Swap",
+        "body": "Exchange Completed!",
+        "note": "Your Exchange is on its way.",
+        "viewExplorer": "Click to view in explorer"
       }
     },
     "mine": {
@@ -189,7 +201,7 @@
     "NEXT": "NEXT",
     "gotIt": "GOT IT",
     "create": "CREATE",
-    "CONFIRM": "COMFIRM",
+    "CONFIRM": "CONFIRM",
     "RETRY": "RETRY",
     "IMPORT": "IMPORT",
     "Clear": "Clear",
@@ -204,7 +216,8 @@
     "backToSetting": "BACK TO SETTING",
     "Send": "Send",
     "Receive": "Receive",
-    "Swap": "Swap"
+    "Swap": "Swap",
+    "Exchange": "Exchange"
   },
   "txState": {
     "Sent": "Sent",
