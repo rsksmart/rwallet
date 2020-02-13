@@ -270,6 +270,10 @@
       "title": "Copiado",
       "body": "A frase de recuperação foi copiada para a área de transferência."
     },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "O endereço foi copiado para a área de transferência."
+    },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",
       "typeNewPasscode": "Digite sua nova senha",

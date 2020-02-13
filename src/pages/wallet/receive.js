@@ -116,8 +116,8 @@ class WalletReceive extends Component {
       }
       Clipboard.setString(address);
       const notification = createInfoNotification(
-        'Copied',
-        'The address has been copied to clipboard',
+        'modal.addressCopied.title',
+        'modal.addressCopied.body',
       );
       addNotification(notification);
     }

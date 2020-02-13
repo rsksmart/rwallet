@@ -74,8 +74,8 @@ class RecoveryPhrase extends Component {
       const phrases = this.phrase.split(' ');
       this.setState({ phrases }, () => {
         const notification = createInfoNotification(
-          'Recovery Phrase',
-          'Safeguard your recovery phrase Text',
+          'modal.guardPhrase.title',
+          'modal.guardPhrase.body',
         );
         addNotification(notification);
       });
@@ -97,8 +97,8 @@ class RecoveryPhrase extends Component {
       const { addNotification } = this.props;
       Clipboard.setString(phrase);
       const notification = createInfoNotification(
-        'modal.copied.title',
-        'modal.copied.body',
+        'modal.phraseCopied.title',
+        'modal.phraseCopied.body',
       );
       addNotification(notification);
     }
