@@ -56,7 +56,7 @@ class SpendIndex extends Component {
 
 
     try {
-      const order = await CoinswitchHelper.placeOrder('rbtc', 'btc', 0.02, { address: '1736ZdbgBLy4mL4VuzsqavGJqY9KYcPnM9' }, { address: '0x3D503484703bcF9C9e75E197d254045E30b3025e' });
+      const order = await CoinswitchHelper.placeOrder('btc', 'rbtc', 0.00105, { address: '0x3d503484703bcf9c9e75e197d254045e30b3025e' }, { address: '1736ZdbgBLy4mL4VuzsqavGJqY9KYcPnM9' });
       const {orderId, exchangeAddress: {address}} = order;
 
       let coin = null;
