@@ -312,6 +312,6 @@
     "deleteKey": {
       "title": "Warning!",
       "body": "Are you sure you want to delete all wallets using this key?"
-    },
+    }
   }
 }
