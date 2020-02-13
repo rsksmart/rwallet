@@ -192,7 +192,7 @@
     "RETRY": "重试",
     "IMPORT": "导入",
     "Clear": "清除",
-    "START OVER": "重新开始",
+    "startOver": "重新开始",
     "Copy": "复制",
     "Confirm": "确认",
     "Cancel": "取消",
@@ -249,9 +249,9 @@
     },
     "incorrectName": {
       "title": "不正确的名字",
-      "tooShort": "密钥名字太短。",
-      "tooLong": "密钥名字太长。",
-      "invalid": "密钥名字含有不合法字符。"
+      "tooShort": "名字太短。",
+      "tooLong": "名字太长。",
+      "invalid": "名字含有不合法字符。"
     },
     "incorrectKeyName": {
       "title": "不正确的密钥名字",

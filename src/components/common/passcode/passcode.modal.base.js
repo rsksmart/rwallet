@@ -168,7 +168,7 @@ class PasscodeModalBase extends PureComponent {
           </View>
           {showCancel && (
             <TouchableOpacity style={styles.cancelButton} onPress={cancelBtnOnPress}>
-              <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
+              <Text style={styles.cancel}><Loc style={[styles.title]} text="button.Cancel" /></Text>
             </TouchableOpacity>
           )}
         </View>
