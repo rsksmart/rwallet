@@ -89,22 +89,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 15,
+    marginBottom: 80,
+  },
+  noBorder: {
+    borderBottomColor: 'rgba(0,0,0,0)',
   },
 });
 
-function Item({ data, title }) {
+function Item({ data, title, isHasBottomBorder }) {
   return (
-    <TouchableOpacity
-      style={[styles.row]}
-      onPress={() => {
-        if (data.onPress) {
-          data.onPress();
-        }
-      }}
-    >
+    <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
       {data.icon}
-      <View style={styles.right}>
+      <View style={[styles.right, isHasBottomBorder ? styles.noBorder : null]}>
         <Text>{title}</Text>
       </View>
     </TouchableOpacity>
@@ -118,6 +114,7 @@ Item.propTypes = {
     onPress: PropTypes.func,
   }),
   title: PropTypes.string.isRequired,
+  isHasBottomBorder: PropTypes.bool.isRequired,
 };
 
 Item.defaultProps = {
@@ -321,7 +318,7 @@ class MineIndex extends Component {
             <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
-              renderItem={({ item }) => <Item data={item} title={item.title} />}
+              renderItem={({ item, index }) => <Item data={item} title={item.title} isHasBottomBorder={index === joins.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>

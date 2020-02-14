@@ -9,6 +9,7 @@ import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
+import color from '../../assets/styles/color.ts';
 
 // eslint-disable-next-line import/no-unresolved
 const EventEmitter = require('EventEmitter');
@@ -29,12 +30,13 @@ const styles = StyleSheet.create({
     bottom: '10%',
   },
   versionText: {
+    color: color.midGrey,
+    fontFamily: 'Avenir-Black',
+    fontSize: 16,
+    fontWeight: '500',
     position: 'absolute',
     bottom: 10,
     right: 10,
-    fontSize: 16,
-    color: '#565c66',
-    fontWeight: 'bold',
   },
 });
 
