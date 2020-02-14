@@ -5,21 +5,25 @@ import PropTypes from 'prop-types';
 import PasscodeModalBase from './passcode.modal.base';
 import common from '../../../common/common';
 
+const STATE_OLD_PASSCODE = 0;
+const STATE_NEW_PASSCODE = 1;
+const STATE_CONFIRM_PASSCODE = 2;
+const STATE_OLD_PASSCODE_INCORRECT = 3;
+const STATE_NOT_MATCHED = 4;
+
 class ResetPasscodeModal extends PureComponent {
   constructor(props) {
     super(props);
     this.flows = [
-      { index: 0, title: 'modal.passcode.typeOldPasscode' },
-      { index: 1, title: 'modal.passcode.typeNewPasscode' },
-      { index: 2, title: 'modal.passcode.confirmNewPasscode' },
-      { index: 3, title: 'modal.passcode.oldIncorrect' },
-      { index: 4, title: 'modal.passcode.notMatched' },
+      { index: STATE_OLD_PASSCODE, title: 'modal.passcode.typeOldPasscode' },
+      { index: STATE_NEW_PASSCODE, title: 'modal.passcode.typeNewPasscode' },
+      { index: STATE_CONFIRM_PASSCODE, title: 'modal.passcode.confirmNewPasscode' },
+      { index: STATE_OLD_PASSCODE_INCORRECT, title: 'modal.passcode.oldIncorrect' },
+      { index: STATE_NOT_MATCHED, title: 'modal.passcode.notMatched' },
     ];
-    this.state = {
-      flowIndex: 0,
-    };
+    this.state = { flowIndex: STATE_OLD_PASSCODE };
     this.tempPasscode = '';
-    this.title = this.flows[0].title;
+    this.title = this.flows[STATE_OLD_PASSCODE].title;
     const { closePasscodeModal, passcodeCallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
@@ -34,8 +38,8 @@ class ResetPasscodeModal extends PureComponent {
 
   onStartOverPressed() {
     let flow = null;
-    this.setState({ flowIndex: 1 });
-    flow = _.find(this.flows, { index: 1 });
+    this.setState({ flowIndex: STATE_NEW_PASSCODE });
+    flow = _.find(this.flows, { index: STATE_NEW_PASSCODE });
     this.baseModal.resetModal(flow.title);
   }
 
@@ -47,26 +51,26 @@ class ResetPasscodeModal extends PureComponent {
     let flow = null;
     const { flowIndex } = this.state;
     switch (flowIndex) {
-      case 0:
-      case 3:
+      case STATE_OLD_PASSCODE:
+      case STATE_OLD_PASSCODE_INCORRECT:
         if (input === this.passcode) {
-          this.setState({ flowIndex: 1 });
-          flow = _.find(this.flows, { index: 1 });
+          this.setState({ flowIndex: STATE_NEW_PASSCODE });
+          flow = _.find(this.flows, { index: STATE_NEW_PASSCODE });
           this.baseModal.resetModal(flow.title);
         } else {
-          this.setState({ flowIndex: 3 });
-          flow = _.find(this.flows, { index: 3 });
+          this.setState({ flowIndex: STATE_OLD_PASSCODE_INCORRECT });
+          flow = _.find(this.flows, { index: STATE_OLD_PASSCODE_INCORRECT });
           this.baseModal.rejectPasscord(flow.title);
         }
         break;
-      case 1:
+      case STATE_NEW_PASSCODE:
         this.tempPasscode = input;
-        this.setState({ flowIndex: 2 });
-        flow = _.find(this.flows, { index: 2 });
+        this.setState({ flowIndex: STATE_CONFIRM_PASSCODE });
+        flow = _.find(this.flows, { index: STATE_CONFIRM_PASSCODE });
         this.baseModal.resetModal(flow.title);
         break;
-      case 2:
-      case 4:
+      case STATE_CONFIRM_PASSCODE:
+      case STATE_NOT_MATCHED:
         if (this.tempPasscode === input) {
           await common.updateInAppPasscode(input);
           this.closePasscodeModal();
@@ -74,8 +78,8 @@ class ResetPasscodeModal extends PureComponent {
             this.passcodeCallback();
           }
         } else {
-          this.setState({ flowIndex: 4 });
-          flow = _.find(this.flows, { index: 4 });
+          this.setState({ flowIndex: STATE_NOT_MATCHED });
+          flow = _.find(this.flows, { index: STATE_NOT_MATCHED });
           this.baseModal.rejectPasscord(flow.title);
         }
         break;
@@ -84,7 +88,7 @@ class ResetPasscodeModal extends PureComponent {
 
   render() {
     const { flowIndex } = this.state;
-    const isShowStartOver = flowIndex === 2 || flowIndex === 4;
+    const isShowStartOver = flowIndex === STATE_CONFIRM_PASSCODE || flowIndex === STATE_NOT_MATCHED;
     return (
       <PasscodeModalBase
         ref={(ref) => { this.baseModal = ref; }}

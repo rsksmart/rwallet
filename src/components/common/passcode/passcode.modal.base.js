@@ -139,12 +139,12 @@ class PasscodeModalBase extends PureComponent {
   }
 
   onDeletePressed() {
-    let { input } = this.state;
+    const { input } = this.state;
     if (input.length === 0) {
       return;
     }
-    input = input.substr(0, input.length - 1);
-    this.setState({ input });
+    const newInput = input.substr(0, input.length - 1);
+    this.setState({ input: newInput });
   }
 
   resetModal = (title) => {
