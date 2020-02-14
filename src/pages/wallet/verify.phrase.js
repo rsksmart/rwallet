@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity, Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
-import WordField from '../../components/common/misc/wordField';
+import WordField, { wordFieldWidth } from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
@@ -15,8 +15,8 @@ import Button from '../../components/common/button/button';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 
-
 const MNEMONIC_PHRASE_LENGTH = 12;
+const WORD_FIELD_MARGIN = 20;
 
 const styles = StyleSheet.create({
   wordFieldView: {
@@ -62,6 +62,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  wordsView: {
+    flexDirection: 'row',
+  },
+  wordsWrapper: {
+    marginTop: 10,
+    marginLeft: '50%',
+  },
+  wordField: {
+    marginLeft: WORD_FIELD_MARGIN,
+  },
+  firstWordField: {
+    marginLeft: -wordFieldWidth / 2,
+  },
 });
 
 class VerifyPhrase extends Component {
@@ -75,7 +88,12 @@ class VerifyPhrase extends Component {
     const { phrase } = navigation.state.params;
     this.notificationReason = null;
     this.correctPhrases = phrase.split(' ');
-    this.reset(true);
+    // Shuffle the 12-word here so user need to choose from a different order than the last time
+    // We want to make sure they really write down the phrase
+    const shuffleWords = _.shuffle(this.correctPhrases);
+    this.state = {
+      selectedWordIndexs: [], shuffleWords, isLoading: false, isShowConfirmation: false, wordsOffset: new Animated.Value(0),
+    };
 
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
     this.onTagsPressed = this.onTagsPressed.bind(this);
@@ -156,6 +174,22 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       this.setState({ isShowConfirmation: true });
     }
+    this.moveWordField();
+  }
+
+  moveWordField() {
+    const { selectedWordIndexs, wordsOffset } = this.state;
+    let offset = 0;
+    if (selectedWordIndexs.length > 1) {
+      offset = -(wordFieldWidth + WORD_FIELD_MARGIN) * (selectedWordIndexs.length - 1);
+    }
+    Animated.timing(
+      wordsOffset,
+      {
+        toValue: offset,
+        duration: 300,
+      },
+    ).start();
   }
 
   requestCreateWallet(phrase, coins) {
@@ -185,17 +219,8 @@ class VerifyPhrase extends Component {
     });
   }
 
-  reset(isInitialize = false) {
-    if (isInitialize) {
-      // Shuffle the 12-word here so user need to choose from a different order than the last time
-      // We want to make sure they really write down the phrase
-      const shuffleWords = _.shuffle(this.correctPhrases);
-      this.state = {
-        selectedWordIndexs: [], shuffleWords, isLoading: false, isShowConfirmation: false,
-      };
-    } else {
-      this.setState({ selectedWordIndexs: [], isShowConfirmation: false });
-    }
+  reset() {
+    this.setState({ selectedWordIndexs: [], isShowConfirmation: false, wordsOffset: new Animated.Value(0) });
   }
 
   revert() {
@@ -204,22 +229,14 @@ class VerifyPhrase extends Component {
     this.setState({
       selectedWordIndexs,
     });
+    this.moveWordField();
   }
 
   renderSelectedWords() {
-    const startX = -82;
+    const { wordsOffset } = this.state;
     const words = [];
-    const margin = 200;
-    let offset = 0;
     const { shuffleWords, selectedWordIndexs } = this.state;
-    if (selectedWordIndexs.length > 1) {
-      offset = -margin * (selectedWordIndexs.length - 1);
-    }
     for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
-      const marginLeft = startX + i * margin + offset;
-      const style = {
-        position: 'absolute', left: '50%', top: 10, marginLeft,
-      };
       let text = '';
       if (i < selectedWordIndexs.length) {
         const index = selectedWordIndexs[i];
@@ -230,12 +247,24 @@ class VerifyPhrase extends Component {
         isDisabled = true;
       }
       words.push(
-        <TouchableOpacity style={style} key={(`${i}`)} disabled={isDisabled} onPress={() => this.onWordFieldPress(i)}>
+        <TouchableOpacity
+          style={i === 0 ? styles.firstWordField : styles.wordField}
+          disabled={isDisabled}
+          onPress={() => this.onWordFieldPress(i)}
+          key={(`${i}`)}
+        >
           <WordField text={text} />
         </TouchableOpacity>,
       );
     }
-    return words;
+    const wordsView = (
+      <View style={styles.wordsWrapper}>
+        <Animated.View style={[styles.wordsView, { marginLeft: wordsOffset }]}>
+          {words}
+        </Animated.View>
+      </View>
+    );
+    return wordsView;
   }
 
   renderConfirmation() {

@@ -6,13 +6,15 @@ import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
 import DashLine from './dashLine';
 
+export const wordFieldWidth = 163;
+
 const styles = StyleSheet.create({
   frame: {
     borderColor: '#00B520',
     backgroundColor: color.component.input.backgroundColor,
     borderRadius: 4,
     borderWidth: 1,
-    width: 163,
+    width: wordFieldWidth,
     height: 107,
   },
   textView: {
