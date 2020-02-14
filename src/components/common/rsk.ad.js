@@ -4,6 +4,7 @@ import { Image, StyleSheet, Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import flex from '../../assets/styles/layout.flex';
 import presetStyles from '../../assets/styles/style';
+import color from '../../assets/styles/color.ts';
 
 const rsk = require('../../assets/images/mine/rsk.png');
 
@@ -18,9 +19,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   powerby: {
+    color: color.midGrey,
     fontFamily: 'Avenir-Black',
-    color: '#727372',
     fontSize: 17,
+    fontWeight: '500',
     marginTop: 5,
   },
 });
