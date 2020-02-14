@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: color.component.button.color,
     fontSize: 16,
-    fontFamily: 'Avenir Black',
+    fontFamily: 'Avenir-Black',
     fontWeight: '900',
   },
 });

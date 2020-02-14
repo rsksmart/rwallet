@@ -18,9 +18,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   powerby: {
+    fontFamily: 'Avenir-Black',
     color: '#727372',
     fontSize: 17,
-    fontWeight: '900',
     marginTop: 5,
   },
 });

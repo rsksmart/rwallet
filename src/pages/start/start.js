@@ -29,12 +29,12 @@ const styles = StyleSheet.create({
     bottom: '10%',
   },
   versionText: {
+    color: '#565c66',
+    fontFamily: 'Avenir-Black',
+    fontSize: 16,
     position: 'absolute',
     bottom: 10,
     right: 10,
-    fontSize: 16,
-    color: '#565c66',
-    fontWeight: 'bold',
   },
 });
 
