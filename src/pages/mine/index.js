@@ -304,7 +304,7 @@ class MineIndex extends Component {
             <FlatList
               data={settings}
               extraData={language}
-              renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index === joins.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
