@@ -32,6 +32,8 @@ const RSKAd = () => (
     // end.y param is gradient proportion in y axis. It is seted to 0.85 more comfortable.
     end={{ x: 0, y: 0.85 }}
     style={[flex.justifyEnd, styles.logoView]}
+    // Keep it from blocking user touch
+    pointerEvents="box-none"
   >
     <Text style={[styles.powerby]}>Powered by</Text>
     <Image style={presetStyles.rskIcon} source={rsk} />
