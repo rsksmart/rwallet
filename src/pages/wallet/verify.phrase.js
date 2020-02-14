@@ -16,7 +16,7 @@ import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
-const WORD_FIELD_MARGIN = 20;
+const WORD_FIELD_MARGIN = 37;
 
 const styles = StyleSheet.create({
   wordFieldView: {
