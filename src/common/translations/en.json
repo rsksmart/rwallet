@@ -293,7 +293,7 @@
       "typeNewPasscode": "Type your new passcode",
       "confirmNewPasscode": "Confirm your new passcode",
       "oldIncorrect": "Old Passcode is incorrect, try again",
-      "notMatched": "Passcode is not matched. Try again."
+      "notMatched": "Passcode does not match. Please try again."
     },
     "verifyPasscode": {
       "type": "Type your passcode",

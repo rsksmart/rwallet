@@ -279,7 +279,7 @@
       "typeNewPasscode": "Digite sua nova senha",
       "confirmNewPasscode": "Confirme sua nova senha",
       "oldIncorrect": "A senha antiga está incorreta. Tente novamente",
-      "notMatched": "A senha não corresponde. Tente novamente."
+      "notMatched": "A senha não corresponde. Por favor, tente novamente."
     },
     "verifyPasscode": {
       "type": "Digite sua senha",
