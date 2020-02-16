@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, Text, Image, TextInput,
