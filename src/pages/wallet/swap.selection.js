@@ -105,29 +105,7 @@ class SwapSelection extends Component {
     );
   }
 
-  componentWillMount() {
-    const {
-      walletManager, navigation,
-    } = this.props;
-    const { selectionType } = navigation.state.params;
-    const { wallets } = walletManager;
-    const listData = this.createListData(wallets, navigation, selectionType);
-
-    this.setState({ listData });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {
-      walletManager, navigation,
-    } = nextProps;
-    const { selectionType } = navigation.state.params;
-    const { wallets } = walletManager;
-    const listData = this.createListData(wallets, navigation, selectionType);
-    this.setState({ listData });
-  }
-
-
-  createListData(wallets, navigation, selectionType) {
+  createListData = (wallets, navigation, selectionType) => {
     const {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
@@ -135,7 +113,7 @@ class SwapSelection extends Component {
     if (!_.isArray(wallets)) {
       return [];
     }
-    // const onDestCoinSelected = navigation.state.params && navigation.state.params.onDestCoinSelected;
+
     const listData = [];
     // Create element for each wallet (e.g. key 0)
     wallets.forEach((wallet) => {
@@ -160,7 +138,7 @@ class SwapSelection extends Component {
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation.navigate('Swap');
+            navigation.navigate('Swap', { type: selectionType, coin });
           },
         };
         wal.coins.push(item);
@@ -168,11 +146,12 @@ class SwapSelection extends Component {
       listData.push(wal);
     });
     return listData;
-  }
+  };
 
   render() {
-    const { navigation } = this.props;
-    const { listData } = this.state;
+    const { navigation, walletManager } = this.props;
+    const { selectionType } = navigation.state.params;
+    const { wallets } = walletManager;
     return (
       <BasePageGereral
         isSafeView
@@ -183,7 +162,7 @@ class SwapSelection extends Component {
       >
         <View style={styles.body}>
           <FlatList
-            data={listData}
+            data={this.createListData(wallets, navigation, selectionType)}
             renderItem={({ item }) => (
               <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
                 <Text style={[styles.walletName]}>{item.name}</Text>
