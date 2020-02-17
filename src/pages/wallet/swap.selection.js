@@ -13,6 +13,7 @@ import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
+import Loc from '../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   body: {
@@ -70,6 +71,12 @@ const styles = StyleSheet.create({
   },
   noBorder: {
     borderBottomColor: 'rgba(0,0,0,0)',
+  },
+  headerTitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 20,
+    letterSpacing: 0.39,
   },
 });
 
@@ -149,16 +156,34 @@ class SwapSelection extends Component {
   };
 
   render() {
-    const { navigation, walletManager } = this.props;
+    const { navigation, walletManager, resetSwap } = this.props;
     const { selectionType } = navigation.state.params;
     const { wallets } = walletManager;
+    const rightButton = (
+      <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
+        <TouchableOpacity onPress={() => {
+          resetSwap();
+          navigation.navigate('Swap', { reset: true });
+        }}
+        >
+          <Loc style={styles.headerTitle} text="Reset" />
+        </TouchableOpacity>
+      </View>
+    );
+
     return (
       <BasePageGereral
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
         bgColor="#00B520"
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
+        headerComponent={(
+          <Header
+            onBackButtonPress={() => navigation.goBack()}
+            title="page.wallet.swapSelection.title"
+            rightBtn={() => rightButton}
+          />
+        )}
       >
         <View style={styles.body}>
           <FlatList
@@ -197,6 +222,7 @@ SwapSelection.propTypes = {
   }),
   setSwapSource: PropTypes.func.isRequired,
   setSwapDest: PropTypes.func.isRequired,
+  resetSwap: PropTypes.func.isRequired,
 };
 
 SwapSelection.defaultProps = {
@@ -214,6 +240,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
   setSwapDest: (walletName, coin) => dispatch(walletActions.setSwapDest(walletName, coin)),
+  resetSwap: () => dispatch(walletActions.resetSwap()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwapSelection);
