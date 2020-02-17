@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Header({ title, onBackButtonPress }) {
+function Header({ title, onBackButtonPress, rightBtn }) {
   let backButton = null;
   let titleStyle = null;
   if (onBackButtonPress) {
@@ -60,6 +60,7 @@ function Header({ title, onBackButtonPress }) {
     <ImageBackground source={header} style={[styles.headerImage]}>
       <ResponsiveText layoutStyle={[styles.headerTitle, titleStyle]} fontStyle={styles.headerTitleText} maxFontSize={32}>{strings(title)}</ResponsiveText>
       { backButton }
+      { rightBtn && rightBtn() }
     </ImageBackground>
   );
 }
@@ -67,10 +68,12 @@ function Header({ title, onBackButtonPress }) {
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   onBackButtonPress: PropTypes.func,
+  rightBtn: PropTypes.func,
 };
 
 Header.defaultProps = {
   onBackButtonPress: null,
+  rightBtn: null,
 };
 
 const mapStateToProps = (state) => ({
