@@ -13,6 +13,7 @@ import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import { createInfoNotification } from '../../common/notification.controller';
+import { images } from '../../assets/references';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -28,10 +29,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const BTC = require('../../assets/images/icon/BTC.png');
-const RBTC = require('../../assets/images/icon/RBTC.png');
-const RIF = require('../../assets/images/icon/RIF.png');
-
 class WalletSelectCurrency extends Component {
     static navigationOptions = () => ({
       header: null,
@@ -40,17 +37,22 @@ class WalletSelectCurrency extends Component {
     mainnet = [
       {
         title: 'BTC',
-        icon: BTC,
+        icon: images.BTC,
         selected: false,
       },
       {
         title: 'RBTC',
-        icon: RBTC,
+        icon: images.RBTC,
         selected: false,
       },
       {
         title: 'RIF',
-        icon: RIF,
+        icon: images.RIF,
+        selected: false,
+      },
+      {
+        title: 'DOC',
+        icon: images.DOC,
         selected: false,
       },
     ];
@@ -58,18 +60,23 @@ class WalletSelectCurrency extends Component {
     testnet = [
       {
         title: 'BTC',
-        icon: BTC,
+        icon: images.BTC,
         selected: true,
       },
       {
         title: 'RBTC',
-        icon: RBTC,
+        icon: images.RBTC,
         selected: true,
       },
       {
         title: 'RIF',
-        icon: RIF,
+        icon: images.RIF,
         selected: true,
+      },
+      {
+        title: 'DOC',
+        icon: images.DOC,
+        selected: false,
       },
     ];
 
