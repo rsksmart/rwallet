@@ -204,6 +204,8 @@
     "Send": "发送",
     "Receive": "接收",
     "Swap": "交换",
+    "Delete": "删除",
+    "StartOver": "重新开始",
     "Finish": "完成",
     "Exchange": "兑换"
   },

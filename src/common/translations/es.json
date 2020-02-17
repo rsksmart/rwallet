@@ -203,6 +203,8 @@
     "Send": "Enviar",
     "Receive": "Recibir",
     "Swap": "Intercambiar",
+    "Delete": "Eliminar",
+    "StartOver": "Comenzar de nuevo",
     "Finish": "Terminar",
     "Exchange": "Intercambiar"
   },

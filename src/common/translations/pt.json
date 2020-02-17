@@ -203,6 +203,8 @@
     "Send": "Mandar",
     "Receive": "Receber",
     "Swap": "Troca",
+    "Delete": "Excluir",
+    "StartOver": "Recomeçar",
     "Finish": "Terminar",
     "Exchange": "Troca"
   },
