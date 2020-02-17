@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { Component } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, Text, Image, TextInput,
@@ -8,10 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import posed from 'react-native-pose';
-import BigNumber from 'bignumber.js';
 import SwapHeader from '../../components/headers/header.swap';
-// import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import space from '../../assets/styles/space';
@@ -20,6 +15,8 @@ import presetStyles from '../../assets/styles/style';
 import common from '../../common/common';
 import CoinswitchHelper from '../../common/coinswitch.helper';
 import Transaction from '../../common/transaction';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
 
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const DEFAULT_RBTC_MIN_GAS = 21000;
@@ -253,11 +250,12 @@ class Swap extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { swapSource: currentSwapSource, swapDest: currentSwapDest, prices } = nextProps;
+    const { sourceAmount } = this.state;
     const { swapSource: lastSwapSource, swapDest: lastSwapDest } = this.props;
     const suRate = currentSwapSource ? prices.find((price) => price.symbol === currentSwapSource.coin.symbol) : null;
     const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
-    suRate && this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
-    duRate && this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
+    if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
+    if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
 
     if ((currentSwapSource && currentSwapDest) && ((!lastSwapSource || !this.isSameCoin(currentSwapSource, lastSwapSource)) || (!lastSwapDest || !this.isSameCoin(currentSwapDest, lastSwapDest)))
     ) {
@@ -277,24 +275,35 @@ class Swap extends Component {
             limitMinDepositCoin,
             limitMaxDepositCoin,
             limitHalfDepositCoin: ((limitMaxDepositCoin + limitMinDepositCoin) / 2).toPrecision(2),
-          }, () => this.setState({ coinLoading: false }));
+          }, () => {
+            this.setAmountState(sourceAmount, nextProps, this.state);
+            this.setState({ coinLoading: false });
+          });
         }).catch((err) => {
           console.log(err);
         });
+    } else if (!currentSwapSource || !currentSwapDest) {
+      this.resetAmountState();
     }
   }
 
   async onExchangePress() {
-    try {
-      const { navigation, swapSource, swapDest } = this.props;
-      const { sourceAmount } = this.state;
+    const {
+      navigation, swapSource, swapDest, addNotification,
+    } = this.props;
+    const { sourceAmount } = this.state;
 
+    try {
+      this.setState({ loading: true });
       const { address: sourceAddress, id: sourceId } = swapSource.coin;
       const { address: destAddress, id: destId } = swapDest.coin;
       const sourceCoin = sourceId.toLowerCase();
       const destCoin = destId.toLowerCase();
       const order = await CoinswitchHelper.placeOrder(sourceCoin, destCoin, sourceAmount, { address: destAddress }, { address: sourceAddress });
-      const { orderId, exchangeAddress: { address: agentAddress } } = order;
+      const {
+        // orderId,
+        exchangeAddress: { address: agentAddress },
+      } = order;
 
       const gasFee = this.getFeeParams(sourceCoin);
       const extraParams = { data: '', memo: '', gasFee };
@@ -306,13 +315,70 @@ class Swap extends Component {
       transaction = null;
       navigation.navigate('SwapCompleted', { coin: swapSource.coin });
     } catch (error) {
+      this.setState({ loading: false });
+      console.log(`confirm, error: ${error.message}`);
+      const buttonText = 'button.RETRY';
+      let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
+        console.log(message[0]);
         switch (message[0]) {
+          case 'err.notenoughbalance.btc':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreBTC',
+              buttonText,
+            );
+            break;
+          case 'err.notenoughbalance.rbtc':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreRBTC',
+              buttonText,
+            );
+            break;
+          case 'err.notenoughbalance.rif':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreRIF',
+              buttonText,
+            );
+            break;
+          case 'err.notenoughbalance':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreBalance',
+              buttonText,
+            );
+            break;
+          case 'err.timeout':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.serverTimeout',
+              buttonText,
+            );
+            addNotification(notification);
+            break;
+          case 'err.customized':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              message[1],
+              buttonText,
+            );
+            break;
           default:
             break;
         }
       }
+      // Default error notification
+      if (!notification) {
+        notification = createErrorNotification(
+          'modal.txFailed.title',
+          'modal.txFailed.contactService',
+          buttonText,
+        );
+      }
+      addNotification(notification);
     }
   }
 
@@ -399,9 +465,24 @@ class Swap extends Component {
     }
   };
 
-  renderExchangeStateBlock(isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) {
+  resetAmountState() {
+    this.setState({
+      destAmount: null,
+      rate: -1,
+      minerFee: 0,
+      limitMinDepositCoin: -1,
+      limitMaxDepositCoin: -1,
+      limitHalfDepositCoin: -1,
+    });
+  }
+
+  renderExchangeStateBlock = (isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) => {
     let errorText = null;
-    if (!isAmountInRange) {
+    if (!sourceAmount) {
+      errorText = 'Source amount need to be specified';
+    } else if (!destAmount) {
+      errorText = 'Dest amount need to be specified';
+    } else if (!isAmountInRange) {
       errorText = 'The amount is not valid';
     } else if (!isBalanceEnough) {
       errorText = 'Sorry, but you dont have enough balance';
@@ -444,8 +525,8 @@ class Swap extends Component {
       navigation, swapSource, swapDest, currency,
     } = this.props;
     const {
-      switchIndex, switchSelectedText, isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin
+      isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
     } = this.state;
 
     const currencySymbol = common.getCurrencySymbol(currency);
@@ -495,9 +576,9 @@ class Swap extends Component {
           </View>
           <View style={styles.seprator}>
             <View style={styles.sepratorLine} />
-            <View style={styles.exchangeIconView}>
+            <TouchableOpacity style={styles.exchangeIconView} onPress={() => {}}>
               <Image style={styles.exchangeIcon} source={res.exchange} />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (
@@ -519,7 +600,10 @@ class Swap extends Component {
               <Text style={styles.boardValue}>{destValueText}</Text>
             </View>
           </View>
-          <View style={styles.switchView}>
+          <View
+            pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 ? 'auto' : 'none'}
+            style={styles.switchView}
+          >
             <TouchableOpacity style={[styles.switchItem]} onPress={() => this.onSwitchPress(0)}>
               <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
             </TouchableOpacity>
@@ -532,7 +616,11 @@ class Swap extends Component {
           </View>
           { this.renderExchangeStateBlock(isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) }
           <View style={[styles.buttonView, space.marginTop_30, space.marginBottom_20]}>
-            <Button text="button.Exchange" onPress={this.onExchangePress} />
+            <Button
+              text="button.Exchange"
+              disabled={!isAmountInRange || !isBalanceEnough}
+              onPress={this.onExchangePress}
+            />
           </View>
         </View>
       </BasePageGereral>
@@ -558,6 +646,7 @@ Swap.propTypes = {
   }),
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
@@ -573,4 +662,10 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
 });
 
-export default connect(mapStateToProps)(Swap);
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(
+    appActions.addNotification(notification),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Swap);
