@@ -4,8 +4,8 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { StackActions } from 'react-navigation';
+import _ from 'lodash';
 import CoinTypeList from '../../components/wallet/coin.type.list';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
@@ -13,7 +13,8 @@ import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import { createInfoNotification } from '../../common/notification.controller';
-import { images } from '../../assets/references';
+import config from '../../../config';
+import coinType from '../../common/wallet/cointype';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -34,63 +35,23 @@ class WalletSelectCurrency extends Component {
       header: null,
     });
 
-    mainnet = [
-      {
-        title: 'BTC',
-        icon: images.BTC,
-        selected: false,
-      },
-      {
-        title: 'RBTC',
-        icon: images.RBTC,
-        selected: false,
-      },
-      {
-        title: 'RIF',
-        icon: images.RIF,
-        selected: false,
-      },
-      {
-        title: 'DOC',
-        icon: images.DOC,
-        selected: false,
-      },
-    ];
-
-    testnet = [
-      {
-        title: 'BTC',
-        icon: images.BTC,
-        selected: true,
-      },
-      {
-        title: 'RBTC',
-        icon: images.RBTC,
-        selected: true,
-      },
-      {
-        title: 'RIF',
-        icon: images.RIF,
-        selected: true,
-      },
-      {
-        title: 'DOC',
-        icon: images.DOC,
-        selected: false,
-      },
-    ];
-
     constructor(props) {
       super(props);
       const { navigation } = this.props;
-      this.state = {
-        isLoading: false,
-      };
-      this.isShowNotification = false;
-      this.selectedCoins = null;
+      this.state = { isLoading: false };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
+      this.mainnet = [];
+      this.testnet = [];
+      const { consts: { supportedTokens } } = config;
+      _.each(supportedTokens, (token) => {
+        const item = { title: token, icon: coinType[token].icon, selected: false };
+        this.mainnet.push(item);
+        const testnetItem = _.clone(item);
+        testnetItem.selected = testnetItem.title !== 'DOC';
+        this.testnet.push(testnetItem);
+      });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -126,11 +87,10 @@ class WalletSelectCurrency extends Component {
           coins.push(coinId);
         }
       }
-      this.selectedCoins = coins;
       if (this.isImportWallet) {
-        this.requestCreateWallet(this.phrase, this.selectedCoins);
+        this.requestCreateWallet(this.phrase, coins);
       } else {
-        navigation.navigate('RecoveryPhrase', { coins: this.selectedCoins, shouldCreatePhrase: true, shouldVerifyPhrase: true });
+        navigation.navigate('RecoveryPhrase', { coins, shouldCreatePhrase: true, shouldVerifyPhrase: true });
       }
     }
 
@@ -208,7 +168,6 @@ WalletSelectCurrency.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
-  isShowNotification: state.App.get('showNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
