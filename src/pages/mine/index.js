@@ -100,7 +100,7 @@ function Item({ data, title, isHasBottomBorder }) {
   return (
     <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
       {data.icon}
-      <View style={[styles.right, !isHasBottomBorder ? styles.noBorder : null]}>
+      <View style={[styles.right, isHasBottomBorder ? null : styles.noBorder]}>
         <Text>{title}</Text>
       </View>
     </TouchableOpacity>
