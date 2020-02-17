@@ -251,9 +251,9 @@
     },
     "incorrectName": {
       "title": "不正确的名字",
-      "tooShort": "密钥名字太短。",
-      "tooLong": "密钥名字太长。",
-      "invalid": "密钥名字含有不合法字符。"
+      "tooShort": "名字太短。",
+      "tooLong": "名字太长。",
+      "invalid": "名字含有不合法字符。"
     },
     "incorrectKeyName": {
       "title": "不正确的密钥名字",
@@ -282,7 +282,7 @@
       "typeNewPasscode": "输入新密码",
       "confirmNewPasscode": "确认新密码",
       "oldIncorrect": "旧密码不正确，请重试",
-      "notMatched": "密码不匹配，请重试"
+      "notMatched": "密码不匹配，请重试。"
     },
     "verifyPasscode": {
       "type": "输入密码",

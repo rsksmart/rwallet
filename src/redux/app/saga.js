@@ -193,7 +193,7 @@ function* renameRequest(action) {
     let notification = null;
     switch (err.message) {
       case 'err.nametooshort':
-        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.toShort');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooShort');
         break;
       case 'err.nametoolong':
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooLong');
