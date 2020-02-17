@@ -174,10 +174,10 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       this.setState({ isShowConfirmation: true });
     }
-    this.moveWordField();
+    this.calculateOffsetAndMove();
   }
 
-  moveWordField() {
+  calculateOffsetAndMove() {
     const { selectedWordIndexs, wordsOffset } = this.state;
     let offset = 0;
     if (selectedWordIndexs.length > 1) {
@@ -229,7 +229,7 @@ class VerifyPhrase extends Component {
     this.setState({
       selectedWordIndexs,
     });
-    this.moveWordField();
+    this.calculateOffsetAndMove();
   }
 
   renderSelectedWords() {
