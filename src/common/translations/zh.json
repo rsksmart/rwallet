@@ -192,7 +192,7 @@
     "RETRY": "重试",
     "IMPORT": "导入",
     "Clear": "清除",
-    "START OVER": "重新开始",
+    "startOver": "重新开始",
     "Copy": "复制",
     "Confirm": "确认",
     "Cancel": "取消",
@@ -204,6 +204,8 @@
     "Send": "发送",
     "Receive": "接收",
     "Swap": "交换",
+    "Delete": "删除",
+    "StartOver": "重新开始",
     "Finish": "完成",
     "Exchange": "兑换"
   },
@@ -280,7 +282,7 @@
       "typeNewPasscode": "输入新密码",
       "confirmNewPasscode": "确认新密码",
       "oldIncorrect": "旧密码不正确，请重试",
-      "notMatch": "密码不匹配，请重试"
+      "notMatched": "密码不匹配，请重试"
     },
     "verifyPasscode": {
       "type": "输入密码",

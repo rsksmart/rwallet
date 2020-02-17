@@ -217,6 +217,8 @@
     "Send": "Send",
     "Receive": "Receive",
     "Swap": "Swap",
+    "Delete": "Delete",
+    "StartOver": "Start Over",
     "Finish": "Finish",
     "Exchange": "Exchange"
   },
@@ -293,7 +295,7 @@
       "typeNewPasscode": "Type your new passcode",
       "confirmNewPasscode": "Confirm your new passcode",
       "oldIncorrect": "Old Passcode is incorrect, try again",
-      "notMatch": "Passcode not match, Try again"
+      "notMatched": "Passcode is not matched, Try again"
     },
     "verifyPasscode": {
       "type": "Type your passcode",
