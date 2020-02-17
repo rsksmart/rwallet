@@ -45,11 +45,12 @@ class WalletSelectCurrency extends Component {
       this.mainnet = [];
       this.testnet = [];
       const { consts: { supportedTokens } } = config;
+      // Generate mainnet and testnet list data
       _.each(supportedTokens, (token) => {
         const item = { title: token, icon: coinType[token].icon, selected: false };
         this.mainnet.push(item);
         const testnetItem = _.clone(item);
-        testnetItem.selected = testnetItem.title !== 'DOC';
+        testnetItem.selected = token !== 'DOC';
         this.testnet.push(testnetItem);
       });
     }

@@ -369,10 +369,10 @@ class Transfer extends Component {
         minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
         break;
       case 'RIF':
-        common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
         break;
       case 'DOC':
-        common.convertUnitToCoinAmount(feeSymbol, DEFAULT_DOC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_DOC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
         break;
       default:
     }
