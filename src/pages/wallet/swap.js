@@ -20,7 +20,9 @@ import { createErrorNotification } from '../../common/notification.controller';
 
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const DEFAULT_RBTC_MIN_GAS = 21000;
+const DEFAULT_DOC_MIN_GAS = 57000;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS * 1.25;
+const DEFAULT_DOC_MEDIUM_GAS = DEFAULT_DOC_MIN_GAS * 1.25;
 
 const styles = StyleSheet.create({
   body: {
@@ -471,6 +473,11 @@ class Swap extends Component {
         return {
           gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
           gas: DEFAULT_RBTC_MEDIUM_GAS,
+        };
+      case 'doc':
+        return {
+          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
+          gas: DEFAULT_DOC_MEDIUM_GAS,
         };
       default:
         return null;
