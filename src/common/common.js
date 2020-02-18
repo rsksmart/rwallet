@@ -276,6 +276,33 @@ const common = {
       else resolve(bytes);
     }));
   },
+
+  /**
+   * Calculates DOC price
+   * DOC value is 1 dollar, convert to other currencies by btc price
+   * Returns new prices array
+   * @param {*} prices
+   */
+  calculateDocPrice(prices) {
+    const newPrice = _.clone(prices);
+    const btcPrice = _.find(newPrice, { symbol: 'BTC' });
+    const docIndex = _.findIndex(newPrice, { symbol: 'DOC' });
+    const usdPrice = parseFloat(btcPrice.price.USD);
+    const newDocPrice = { symbol: 'DOC', price: { USD: '1' } };
+    const keys = _.keys(btcPrice.price);
+    _.each(keys, (key) => {
+      if (key !== 'USD') {
+        const currency = parseFloat(btcPrice.price[key]);
+        newDocPrice.price[key] = (currency / usdPrice).toString();
+      }
+    });
+    if (docIndex !== -1) {
+      newPrice[docIndex] = newDocPrice;
+    } else {
+      newPrice.push(newDocPrice);
+    }
+    return newPrice;
+  },
 };
 
 export default common;
