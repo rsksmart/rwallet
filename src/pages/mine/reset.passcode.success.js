@@ -58,7 +58,7 @@ export default class ResetPasscodeSuccess extends Component {
     render() {
       return (
         <BasePageGereral
-          isSafeView={false}
+          isSafeView
           hasBottomBtn
           hasLoader={false}
           bottomBtnText="button.backToSetting"

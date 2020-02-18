@@ -100,7 +100,7 @@ function Item({ data, title, isHasBottomBorder }) {
   return (
     <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
       {data.icon}
-      <View style={[styles.right, isHasBottomBorder ? styles.noBorder : null]}>
+      <View style={[styles.right, isHasBottomBorder ? null : styles.noBorder]}>
         <Text>{title}</Text>
       </View>
     </TouchableOpacity>
@@ -301,7 +301,7 @@ class MineIndex extends Component {
             <FlatList
               data={settings}
               extraData={language}
-              renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index !== settings.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
@@ -318,7 +318,7 @@ class MineIndex extends Component {
             <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
-              renderItem={({ item, index }) => <Item data={item} title={item.title} isHasBottomBorder={index === joins.length - 1} />}
+              renderItem={({ item, index }) => <Item data={item} title={item.title} isHasBottomBorder={index !== joins.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>

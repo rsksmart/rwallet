@@ -6,17 +6,19 @@ import * as rbtc from './rbtccoin';
 
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
+  let signedTransaction = null;
   switch (symbol) {
     case 'BTC':
-      // eslint-disable-next-line no-return-await
-      return await btc.signTransaction(rawTransaction, privateKey);
+      signedTransaction = await btc.signTransaction(rawTransaction, privateKey);
+      break;
     case 'RBTC':
     case 'RIF':
-      // eslint-disable-next-line no-return-await
-      return await rbtc.signTransaction(rawTransaction, privateKey);
+    case 'DOC':
+      signedTransaction = await rbtc.signTransaction(rawTransaction, privateKey);
+      break;
     default:
-      return null;
   }
+  return signedTransaction;
 };
 
 const createRawTransactionParam = (params) => {
@@ -25,6 +27,7 @@ const createRawTransactionParam = (params) => {
       return btc.getRawTransactionParam(params);
     case 'RBTC':
     case 'RIF':
+    case 'DOC':
       return rbtc.getRawTransactionParam(params);
     default:
       return null;
@@ -37,7 +40,8 @@ const convertTransferValue = (symbol, value) => {
       return common.btcToSatoshiHex(value);
     case 'RBTC':
     case 'RIF':
-      return common.rbtcToWeiHex(value);
+    case 'DOC':
+      return common.rskCoinToWeiHex(value);
     default:
       return null;
   }
@@ -49,6 +53,7 @@ const createSendSignedTransactionParam = (symbol, signedTransaction, netType, me
       return btc.getSignedTransactionParam(signedTransaction, netType, memo);
     case 'RBTC':
     case 'RIF':
+    case 'DOC':
       return rbtc.getSignedTransactionParam(signedTransaction, netType, memo);
     default:
       return null;
@@ -61,6 +66,7 @@ const getTxHash = (symbol, txResult) => {
       return btc.getTxHash(txResult);
     case 'RBTC':
     case 'RIF':
+    case 'DOC':
       return rbtc.getTxHash(txResult);
     default:
       return null;
