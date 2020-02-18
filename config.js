@@ -18,7 +18,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
