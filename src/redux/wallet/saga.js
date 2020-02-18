@@ -1,6 +1,6 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  take, call, all, takeEvery, put,
+  take, call, all, takeEvery, put, select,
 } from 'redux-saga/effects';
 
 import _ from 'lodash';
@@ -221,7 +221,7 @@ function* createKeyRequest(action) {
   } = action.payload;
   try {
     yield call(walletManager.createWallet, name, phrase, coinIds);
-    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: actions.UPDATE_WALLETS });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
@@ -233,7 +233,7 @@ function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
   try {
     yield call(walletManager.deleteWallet, key);
-    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: actions.UPDATE_WALLETS });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
@@ -255,6 +255,13 @@ function* renameKeyRequest(action) {
   }
 }
 
+function* updateWalletsRequest() {
+  const state = yield select();
+  const currency = state.App.get('currency');
+  yield put(actions.updateAssetValue(currency));
+  yield put({ type: actions.WALLETS_UPDATED });
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.GET_PRICE, getPriceRequest),
@@ -270,5 +277,7 @@ export default function* () {
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
     takeEvery(actions.CREATE_KEY, createKeyRequest),
+
+    takeEvery(actions.UPDATE_WALLETS, updateWalletsRequest),
   ]);
 }
