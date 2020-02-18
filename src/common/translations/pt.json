@@ -35,12 +35,14 @@
         "Received Funds": "Fundos Recebidos",
         "Sending Funds": "Envio de fundos",
         "Receiving Funds": "Recebimento de fundos",
+        "Failed Funds": "Fundos falidos",
         "date": "Encontro",
         "confirmations": "Confirmações",
         "memo": "Memorando",
         "noMemo": "Nenhuma nota",
         "transactionID": "ID da transação",
-        "viewOnChain": "Ver na blockchain"
+        "viewOnChain": "Ver na blockchain",
+        "Unconfirmed": "Não confirmado"
       },
       "receive": {
         "address": "Endereço"

@@ -310,6 +310,7 @@ class ParseHelper {
               to: item.get('to'),
               confirmations: item.get('confirmations'),
               memo: item.get('memo'),
+              status: item.get('status'),
               objectId: item.id,
             };
             return transaction;

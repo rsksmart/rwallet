@@ -35,12 +35,14 @@
         "Received Funds": "Received Funds",
         "Sending Funds": "Sending Funds",
         "Receiving Funds": "Receiving Funds",
+        "Failed Funds": "Failed Funds",
         "date": "Date",
         "confirmations": "Confirmations",
         "memo": "Memo",
         "noMemo": "No memo",
         "transactionID": "Transaction ID",
-        "viewOnChain": "View on blockchain"
+        "viewOnChain": "View on blockchain",
+        "Unconfirmed": "Unconfirmed"
       },
       "receive": {
         "address": "Address"
