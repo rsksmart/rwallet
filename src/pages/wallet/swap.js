@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, Text, Image, TextInput,
+  View, StyleSheet, TouchableOpacity, Text, Image, TextInput, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -20,7 +20,9 @@ import { createErrorNotification } from '../../common/notification.controller';
 
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const DEFAULT_RBTC_MIN_GAS = 21000;
+const DEFAULT_DOC_MIN_GAS = 57000;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS * 1.25;
+const DEFAULT_DOC_MEDIUM_GAS = DEFAULT_DOC_MIN_GAS * 1.25;
 
 const styles = StyleSheet.create({
   body: {
@@ -198,6 +200,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     flex: 1,
+  },
+  cardOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    opacity: 0.75,
+    borderWidth: 0,
   },
 });
 
@@ -460,6 +474,11 @@ class Swap extends Component {
           gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
           gas: DEFAULT_RBTC_MEDIUM_GAS,
         };
+      case 'doc':
+        return {
+          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
+          gas: DEFAULT_DOC_MEDIUM_GAS,
+        };
       default:
         return null;
     }
@@ -526,7 +545,7 @@ class Swap extends Component {
     } = this.props;
     const {
       isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate, coinLoading, loading,
     } = this.state;
 
     const currencySymbol = common.getCurrencySymbol(currency);
@@ -541,9 +560,8 @@ class Swap extends Component {
     );
     return (
       <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
+        hasLoader
+        isLoading={loading}
         headerComponent={<SwapHeader title="page.wallet.swap.title" onBackButtonPress={() => navigation.goBack()} rightButton={rightButton} />}
       >
         <View style={styles.body}>
@@ -573,6 +591,14 @@ class Swap extends Component {
               </View>
               <Text style={styles.boardValue}>{sourceValueText}</Text>
             </View>
+            {coinLoading && (
+            <View style={[styles.cardOverlay, presetStyles.board]}>
+              <ActivityIndicator
+                size="large"
+                animating={coinLoading}
+              />
+            </View>
+            )}
           </View>
           <View style={styles.seprator}>
             <View style={styles.sepratorLine} />
@@ -599,9 +625,17 @@ class Swap extends Component {
               <Text style={[styles.boardAmount]}>{destAmount}</Text>
               <Text style={styles.boardValue}>{destValueText}</Text>
             </View>
+            {coinLoading && (
+            <View style={[styles.cardOverlay, presetStyles.board]}>
+              <ActivityIndicator
+                size="large"
+                animating={coinLoading}
+              />
+            </View>
+            )}
           </View>
           <View
-            pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 ? 'auto' : 'none'}
+            pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 && !coinLoading ? 'auto' : 'none'}
             style={styles.switchView}
           >
             <TouchableOpacity style={[styles.switchItem]} onPress={() => this.onSwitchPress(0)}>

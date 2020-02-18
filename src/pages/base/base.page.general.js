@@ -43,7 +43,7 @@ const BasePageGereral = (props) => {
 
 BasePageGereral.propTypes = {
   isSafeView: PropTypes.bool,
-  hasBottomBtn: PropTypes.bool.isRequired,
+  hasBottomBtn: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   hasLoader: PropTypes.bool,
   renderAccessory: PropTypes.func,
@@ -64,6 +64,7 @@ BasePageGereral.defaultProps = {
   hasLoader: false,
   refreshControl: null,
   bgColor: null,
+  hasBottomBtn: false,
 };
 
 
