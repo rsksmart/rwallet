@@ -6,19 +6,19 @@ import * as rbtc from './rbtccoin';
 
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
-  let signedransaction = null;
+  let signedTransaction = null;
   switch (symbol) {
     case 'BTC':
-      signedransaction = await btc.signTransaction(rawTransaction, privateKey);
+      signedTransaction = await btc.signTransaction(rawTransaction, privateKey);
       break;
     case 'RBTC':
     case 'RIF':
     case 'DOC':
-      signedransaction = await rbtc.signTransaction(rawTransaction, privateKey);
+      signedTransaction = await rbtc.signTransaction(rawTransaction, privateKey);
       break;
     default:
   }
-  return signedransaction;
+  return signedTransaction;
 };
 
 const createRawTransactionParam = (params) => {
