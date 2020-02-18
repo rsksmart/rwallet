@@ -1,12 +1,12 @@
 // BTC TBTC RBTC TRBTC RIF TRIF
 import { networks } from 'bitcoinjs-lib';
-import { images } from '../../assets/references';
+import references from '../../assets/references';
 
 const coinType = {
   BTC: {
     networkId: 0,
     network: networks.bitcoin,
-    icon: images.BTC,
+    icon: references.images.BTC,
     queryKey: 'BTC',
     defaultName: 'Bitcoin',
     chain: 'Bitcoin',
@@ -15,7 +15,7 @@ const coinType = {
   },
   RBTC: {
     networkId: 137,
-    icon: images.RBTC,
+    icon: references.images.RBTC,
     queryKey: 'RBTC',
     defaultName: 'SmartBitcoin',
     chain: 'Rootstock',
@@ -24,7 +24,7 @@ const coinType = {
   },
   RIF: {
     networkId: 137,
-    icon: images.RIF,
+    icon: references.images.RIF,
     queryKey: 'RIF',
     defaultName: 'RIF',
     chain: 'Rootstock',
@@ -33,7 +33,7 @@ const coinType = {
   },
   DOC: {
     networkId: 137,
-    icon: images.DOC,
+    icon: references.images.DOC,
     queryKey: 'DOC',
     defaultName: 'DOC',
     chain: 'Rootstock',
@@ -43,7 +43,7 @@ const coinType = {
   BTCTestnet: {
     networkId: 1,
     network: networks.testnet,
-    icon: images.BTC,
+    icon: references.images.BTC,
     queryKey: 'TBTC',
     defaultName: 'Bitcoin',
     chain: 'Bitcoin',
@@ -52,7 +52,7 @@ const coinType = {
   },
   RBTCTestnet: {
     networkId: 37310,
-    icon: images.RBTC,
+    icon: references.images.RBTC,
     queryKey: 'TRBTC',
     defaultName: 'SmartBitcoin',
     chain: 'Rootstock',
@@ -61,7 +61,7 @@ const coinType = {
   },
   RIFTestnet: {
     networkId: 37310,
-    icon: images.RIF,
+    icon: references.images.RIF,
     queryKey: 'TRIF',
     defaultName: 'RIF',
     chain: 'Rootstock',
@@ -70,7 +70,7 @@ const coinType = {
   },
   DOCTestnet: {
     networkId: 37310,
-    icon: images.DOC,
+    icon: references.images.DOC,
     queryKey: 'DOC',
     defaultName: 'DOC',
     chain: 'Rootstock',
