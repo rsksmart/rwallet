@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: '5%',
+    bottom: '10%',
   },
   completeTerms: {
     flexDirection: 'row',
