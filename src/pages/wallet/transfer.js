@@ -232,8 +232,10 @@ const styles = StyleSheet.create({
 const FEE_LEVEL_ADJUSTMENT = 0.25;
 const DEFAULT_RBTC_MIN_GAS = 21000;
 const DEFAULT_RIF_MIN_GAS = 23064;
+const DEFAULT_DOC_MIN_GAS = 57000;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
+const DEFAULT_DOC_MEDIUM_GAS = DEFAULT_DOC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_BTC_MIN_FEE = 60000;
 const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
@@ -359,12 +361,20 @@ class Transfer extends Component {
     const maxFee = this.mediumFee.times(MAX_FEE_TIMES).times(1 + FEE_LEVEL_ADJUSTMENT);
     // If feeSymbol is RBTC, fee must multiply DEFAULT_RBTC_GAS_PRICE
     let minFee = null;
-    if (coin.symbol === 'RBTC') {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
-    } else if (coin.symbol === 'RIF') {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
-    } else {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_BTC_MIN_FEE);
+    switch (coin.symbol) {
+      case 'BTC':
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_BTC_MIN_FEE);
+        break;
+      case 'RBTC':
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+        break;
+      case 'RIF':
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+        break;
+      case 'DOC':
+        minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_DOC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
+        break;
+      default:
     }
     // minFee + (maxFee-minFee) * value
     const customFee = minFee.plus(maxFee.minus(minFee).times(value));
@@ -386,7 +396,7 @@ class Transfer extends Component {
     if (_.isNil(coin.balance)) {
       return;
     }
-    if (coin.symbol === 'RIF') {
+    if (coin.symbol === 'RIF' || coin.symbol === 'DOC') {
       const amount = common.getBalanceString(coin.symbol, coin.balance);
       this.setState({ amount });
     } else {
@@ -453,7 +463,20 @@ class Transfer extends Component {
         medium: 1,
         high: 1 + FEE_LEVEL_ADJUSTMENT,
       };
-      const mediumGas = coin.symbol === 'RIF' ? DEFAULT_RIF_MEDIUM_GAS : DEFAULT_RBTC_MEDIUM_GAS;
+      let mediumGas = null;
+      switch (coin.symbol) {
+        case 'RBTC':
+          mediumGas = DEFAULT_RBTC_MEDIUM_GAS;
+          break;
+        case 'RIF':
+          mediumGas = DEFAULT_RIF_MEDIUM_GAS;
+          break;
+        case 'DOC':
+          mediumGas = DEFAULT_DOC_MEDIUM_GAS;
+          break;
+        default:
+          break;
+      }
       feeParams = {
         gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
         gas: mediumGas * feeLevels[preference],
@@ -477,20 +500,16 @@ class Transfer extends Component {
       1,
       1 + FEE_LEVEL_ADJUSTMENT,
     ];
-    const feeBase = { BTC: DEFAULT_BTC_MEDIUM_FEE, RBTC: DEFAULT_RBTC_MEDIUM_GAS, RIF: DEFAULT_RIF_MEDIUM_GAS };
-    let feeSymbol = coin.symbol;
-    if (feeSymbol === 'RIF') {
-      feeSymbol = 'RBTC';
-    }
+    const feeBase = {
+      BTC: DEFAULT_BTC_MEDIUM_FEE, RBTC: DEFAULT_RBTC_MEDIUM_GAS, RIF: DEFAULT_RIF_MEDIUM_GAS, DOC: DEFAULT_DOC_MEDIUM_GAS,
+    };
+    const feeSymbol = coin.symbol === 'RIF' || coin.symbol === 'DOC' ? 'RBTC' : coin.symbol;
     const feeData = [];
     for (let i = 0; i < 3; i += 1) {
       const item = {};
       const fee = feeLevels[i] * feeBase[coin.symbol];
-
       let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
-      if (feeSymbol === 'RBTC') {
-        coinAmount = coinAmount.times(DEFAULT_RBTC_GAS_PRICE);
-      }
+      coinAmount = feeSymbol === 'RBTC' ? coinAmount.times(DEFAULT_RBTC_GAS_PRICE) : coinAmount;
       const coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
       item.value = coinValue;
       item.coin = coinAmount;

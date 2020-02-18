@@ -36,23 +36,15 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rbtcToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').decimalPlaces(0).toString(16)}`;
+  rskCoinToWeiHex(amount) {
+    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
     return result;
   },
-  rbtcToWei(amount) {
+  rskCoinToWei(amount) {
     const result = new BigNumber(amount).times('1e18');
     return result;
   },
-  weiToRbtc(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
-  },
-  rifToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').decimalPlaces(0).toString(16)}`;
-    return result;
-  },
-  weiToRif(wei) {
+  weiToRskCoin(wei) {
     const result = new BigNumber(wei).div('1e18');
     return result;
   },
@@ -81,10 +73,9 @@ const common = {
         amount = common.satoshiToBtc(unitNumber);
         break;
       case 'RBTC':
-        amount = common.weiToRbtc(unitNumber);
-        break;
       case 'RIF':
-        amount = common.weiToRif(unitNumber);
+      case 'DOC':
+        amount = common.weiToRskCoin(unitNumber);
         break;
       default:
     }
