@@ -162,6 +162,7 @@ const color = {
             }
         }
     },
+    midGrey: '#727372',
     ...styleScript(),
 };
 

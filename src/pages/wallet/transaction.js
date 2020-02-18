@@ -4,7 +4,6 @@ import {
   View, StyleSheet, Text, Linking, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -95,7 +94,7 @@ class Transaction extends Component {
     }
     let datetimeText = null;
     if (!_.isNil(transation.datetime)) {
-      datetimeText = moment(transation.datetime).format('DD/MM/YYYY hh:mm a');
+      datetimeText = transation.datetime.format('DD/MM/YYYY hh:mm a');
     }
     let confirmations = latestBlockHeight - rawTransaction.blockHeight;
     confirmations = confirmations < 0 ? 0 : confirmations;

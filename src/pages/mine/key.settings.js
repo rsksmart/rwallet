@@ -10,6 +10,7 @@ import appActions from '../../redux/app/actions';
 import createInfoConfirmation from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -71,16 +72,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const BTC = require('../../assets/images/icon/BTC.png');
-const RBTC = require('../../assets/images/icon/RBTC.png');
-const RIF = require('../../assets/images/icon/RIF.png');
-
-
-const getIcon = (symbol) => {
-  const icons = { BTC, RBTC, RIF };
-  return icons[symbol];
-};
-
 const ListRow = ({ title, onPress }) => {
   const listRow = (
     <TouchableOpacity style={styles.listRow} onPress={onPress}>
@@ -98,14 +89,8 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const icon = getIcon(coin.symbol);
-        const item = {
-          icon,
-          title: coin.id,
-          onPress: () => {
-            console.log('onPress, coin: ', coin);
-          },
-        };
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
       return listData;
@@ -117,10 +102,10 @@ class KeySettings extends Component {
           data={listData}
           extraData={listData}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.walletRow} onPress={item.onPress}>
+            <View style={styles.walletRow}>
               <Image source={item.icon} />
               <Text style={styles.walletRowTitle}>{item.title}</Text>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -227,7 +212,7 @@ class KeySettings extends Component {
     backup() {
       const { navigation } = this.props;
       // Backup flow will skip phrase and wallet creation.
-      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldCreateWallet: false });
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldVerifyPhrase: false });
     }
 
     deleteKey() {

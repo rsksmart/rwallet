@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
 
@@ -293,7 +294,26 @@ class ParseHelper {
 
       return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
         .then((results) => {
-          newToken.transactions = _.map(results, (item) => item.toJSON());
+          newToken.transactions = _.map(results, (item) => {
+            const createdAt = item.get('createdAt');
+            const confirmedAt = item.get('confirmedAt');
+            const transaction = {
+              createdAt: createdAt ? moment(createdAt) : null,
+              confirmedAt: confirmedAt ? moment(confirmedAt) : null,
+              chain: item.get('chain'),
+              type: item.get('type'),
+              from: item.get('from'),
+              hash: item.get('hash'),
+              value: item.get('value'),
+              blockHeight: item.get('blockHeight'),
+              symbol: item.get('symbol'),
+              to: item.get('to'),
+              confirmations: item.get('confirmations'),
+              memo: item.get('memo'),
+              objectId: item.id,
+            };
+            return transaction;
+          });
           if (!_.isEmpty(newToken.transactions)) {
             console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
           }

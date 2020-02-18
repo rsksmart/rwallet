@@ -192,7 +192,7 @@
     "RETRY": "RETRY",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
-    "START OVER": "RECOMEÇAR",
+    "startOver": "RECOMEÇAR",
     "Copy": "cópia de",
     "Confirm": "confirme",
     "Cancel": "Cancelar",
@@ -202,7 +202,11 @@
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
     "Send": "Mandar",
     "Receive": "Receber",
-    "Swap": "Troca"
+    "Swap": "Troca",
+    "Delete": "Excluir",
+    "StartOver": "Recomeçar",
+    "Finish": "Terminar",
+    "Exchange": "Troca"
   },
   "txState": {
     "Sent": "Enviei",
@@ -268,12 +272,16 @@
       "title": "Copiado",
       "body": "A frase de recuperação foi copiada para a área de transferência."
     },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "O endereço foi copiado para a área de transferência."
+    },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",
       "typeNewPasscode": "Digite sua nova senha",
       "confirmNewPasscode": "Confirme sua nova senha",
       "oldIncorrect": "A senha antiga está incorreta. Tente novamente",
-      "notMatch": "A senha não corresponde, tente novamente"
+      "notMatched": "A senha não corresponde. Por favor, tente novamente."
     },
     "verifyPasscode": {
       "type": "Digite sua senha",
