@@ -287,7 +287,7 @@ const common = {
     const newPrice = _.clone(prices);
     const btcPrice = _.find(newPrice, { symbol: 'BTC' });
     const usdPrice = parseFloat(btcPrice.price.USD);
-    const keys = _.keys(btcPrice.price);
+    const btcPriceKeys = _.keys(btcPrice.price);
     let docPrice = _.find(newPrice, { symbol: 'DOC' });
     if (_.isUndefined(docPrice)) {
       docPrice = { symbol: 'DOC' };
@@ -297,7 +297,7 @@ const common = {
       docPrice.price = {};
     }
     docPrice.price.USD = '1';
-    _.each(keys, (key) => {
+    _.each(btcPriceKeys, (key) => {
       if (key !== 'USD') {
         const currency = parseFloat(btcPrice.price[key]);
         docPrice.price[key] = (currency / usdPrice).toString();
