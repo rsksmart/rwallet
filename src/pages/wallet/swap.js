@@ -558,11 +558,22 @@ class Swap extends Component {
         <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
       </TouchableOpacity>
     );
+
+    const customBottomButton = (
+      <Button
+        text="button.Exchange"
+        disabled={!isAmountInRange || !isBalanceEnough}
+        onPress={this.onExchangePress}
+      />
+    );
+
     return (
       <BasePageGereral
+        isSafeView
         hasLoader
         isLoading={loading}
         headerComponent={<SwapHeader title="page.wallet.swap.title" onBackButtonPress={() => navigation.goBack()} rightButton={rightButton} />}
+        customBottomButton={customBottomButton}
       >
         <View style={styles.body}>
           <View style={[presetStyles.board, styles.board]}>
@@ -649,13 +660,6 @@ class Swap extends Component {
             </TouchableOpacity>
           </View>
           { this.renderExchangeStateBlock(isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) }
-          <View style={[styles.buttonView, space.marginTop_30, space.marginBottom_20]}>
-            <Button
-              text="button.Exchange"
-              disabled={!isAmountInRange || !isBalanceEnough}
-              onPress={this.onExchangePress}
-            />
-          </View>
         </View>
       </BasePageGereral>
     );
