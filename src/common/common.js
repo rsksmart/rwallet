@@ -278,29 +278,31 @@ const common = {
   },
 
   /**
-   * Calculates DOC price
+   * Add or update DOC price
    * DOC value is 1 dollar, convert to other currencies by btc price
    * Returns new prices array
    * @param {*} prices
    */
-  calculateDocPrice(prices) {
+  addOrUpdateDOCPrice(prices) {
     const newPrice = _.clone(prices);
     const btcPrice = _.find(newPrice, { symbol: 'BTC' });
-    const docIndex = _.findIndex(newPrice, { symbol: 'DOC' });
     const usdPrice = parseFloat(btcPrice.price.USD);
-    const newDocPrice = { symbol: 'DOC', price: { USD: '1' } };
     const keys = _.keys(btcPrice.price);
+    let docPrice = _.find(newPrice, { symbol: 'DOC' });
+    if (_.isUndefined(docPrice)) {
+      docPrice = { symbol: 'DOC' };
+      newPrice.push(docPrice);
+    }
+    if (_.isUndefined(docPrice.price)) {
+      docPrice.price = {};
+    }
+    docPrice.price.USD = '1';
     _.each(keys, (key) => {
       if (key !== 'USD') {
         const currency = parseFloat(btcPrice.price[key]);
-        newDocPrice.price[key] = (currency / usdPrice).toString();
+        docPrice.price[key] = (currency / usdPrice).toString();
       }
     });
-    if (docIndex !== -1) {
-      newPrice[docIndex] = newDocPrice;
-    } else {
-      newPrice.push(newDocPrice);
-    }
     return newPrice;
   },
 };
