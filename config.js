@@ -60,7 +60,11 @@ const config = {
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
     RIF: {
-      Mainnet: 'https://explorer.rsk.co/tx/',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    DOC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
