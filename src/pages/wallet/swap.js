@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwapHeader from '../../components/headers/header.swap';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
@@ -17,7 +17,6 @@ import CoinswitchHelper from '../../common/coinswitch.helper';
 import Transaction from '../../common/transaction';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import walletActions from '../../redux/wallet/actions';
 
 const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const DEFAULT_RBTC_MIN_GAS = 21000;
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
   seprator: {
     marginVertical: 12,
     justifyContent: 'center',
-    height: 30,
   },
   exchangeIcon: {
     width: 20,
@@ -260,6 +258,10 @@ class Swap extends Component {
     };
   }
 
+  async componentDidMount() {
+    console.log('componentDidMount');
+  }
+
   componentWillReceiveProps(nextProps) {
     const { swapSource: currentSwapSource, swapDest: currentSwapDest, prices } = nextProps;
     const { sourceAmount } = this.state;
@@ -438,7 +440,7 @@ class Swap extends Component {
     if (isAmount) {
       sourceAmount = parseFloat(text);
     }
-    this.setState({ sourceText: text, switchIndex: -1 }, () => this.setAmountState(sourceAmount, this.props, this.state));
+    this.setState({ sourceText: text }, () => this.setAmountState(sourceAmount, this.props, this.state));
   }
 
   setAmountState(sourceAmount, props, state) {
@@ -481,13 +483,6 @@ class Swap extends Component {
       default:
         return null;
     }
-  };
-
-  switchSourceDest = () => {
-    const { switchSwap } = this.props;
-    const { destAmount } = this.state;
-    switchSwap();
-    this.onChangeSourceAmount(destAmount || 0);
   };
 
   resetAmountState() {
@@ -551,7 +546,7 @@ class Swap extends Component {
     } = this.props;
     const {
       isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate, coinLoading, loading, switchIndex,
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate, coinLoading, loading,
     } = this.state;
 
     const currencySymbol = common.getCurrencySymbol(currency);
@@ -560,10 +555,9 @@ class Swap extends Component {
 
     const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
     const rightButton = (
-      // <TouchableOpacity onPress={this.onHistoryPress}>
-      //   <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
-      // </TouchableOpacity>
-      <View />
+      <TouchableOpacity onPress={this.onHistoryPress}>
+        <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
+      </TouchableOpacity>
     );
     return (
       <BasePageGereral
@@ -609,11 +603,9 @@ class Swap extends Component {
           </View>
           <View style={styles.seprator}>
             <View style={styles.sepratorLine} />
-            { swapDest && !coinLoading && (
-              <TouchableOpacity style={styles.exchangeIconView} onPress={this.switchSourceDest}>
-                <Image style={styles.exchangeIcon} source={res.exchange} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity style={styles.exchangeIconView} onPress={() => {}}>
+              <Image style={styles.exchangeIcon} source={res.exchange} />
+            </TouchableOpacity>
           </View>
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (
@@ -647,13 +639,13 @@ class Swap extends Component {
             pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 && !coinLoading ? 'auto' : 'none'}
             style={styles.switchView}
           >
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 0 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(0)}>
+            <TouchableOpacity style={[styles.switchItem]} onPress={() => this.onSwitchPress(0)}>
               <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 1 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(1)}>
+            <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(1)}>
               <Text style={styles.switchText}>{limitHalfDepositCoin > 0 ? `${switchItems[1]}(${limitHalfDepositCoin})` : switchItems[1]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 2 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(2)}>
+            <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(2)}>
               <Text style={styles.switchText}>{limitMaxDepositCoin > 0 ? `${switchItems[2]}(${limitMaxDepositCoin})` : switchItems[2]}</Text>
             </TouchableOpacity>
           </View>
@@ -690,7 +682,6 @@ Swap.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   addNotification: PropTypes.func.isRequired,
-  switchSwap: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
@@ -710,7 +701,6 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
   ),
-  switchSwap: () => dispatch(walletActions.switchSwap()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);
