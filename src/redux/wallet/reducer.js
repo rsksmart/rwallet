@@ -31,7 +31,7 @@ export default function walletReducer(state = initState, action) {
     case actions.GET_PRICE_RESULT:
     {
       let prices = action.value && action.value.value;
-      // Calculates DOC price
+      // Add or update DOC price
       prices = prices && common.addOrUpdateDOCPrice(prices);
       return state.set('prices', prices);
     }
