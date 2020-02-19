@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
 });
 
 const FEE_LEVEL_ADJUSTMENT = 0.25;
-const DEFAULT_RBTC_MIN_GAS = 21000;
+const DEFAULT_RBTC_MIN_GAS = 22000;
 const DEFAULT_RIF_MIN_GAS = 23064;
 const DEFAULT_DOC_MIN_GAS = 57000;
 const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
@@ -446,7 +446,7 @@ class Transfer extends Component {
     if (isCustomFee) {
       if (feeSymbol === 'RBTC') {
         const fee = customFee.div(DEFAULT_RBTC_GAS_PRICE);
-        const wei = common.rbtcToWei(fee);
+        const wei = common.rskCoinToWei(fee);
         feeParams = {
           gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
           gas: wei.decimalPlaces(0).toNumber(),
