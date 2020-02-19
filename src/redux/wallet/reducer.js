@@ -90,6 +90,12 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_SWAP: {
       return state.set('swapDest', null);
     }
+    case actions.SWITCH_SWAP: {
+      const swapSource = state.get('swapSource');
+      const swapDest = state.get('swapDest');
+      return state.set('swapSource', swapDest)
+        .set('swapDest', swapSource);
+    }
     default:
       return state;
   }
