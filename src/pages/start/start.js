@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: '10%',
+    bottom: '5%',
   },
   versionText: {
     color: color.midGrey,
