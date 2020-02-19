@@ -235,7 +235,7 @@ function* deleteKeyRequest(action) {
     const state = yield select();
     const currency = state.App.get('currency');
     yield call(walletManager.deleteWallet, key);
-    yield put(actions.updateAssetValue(currency));
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: currency });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
