@@ -29,18 +29,10 @@ class ResetPasscodeModal extends PureComponent {
     this.passcodeCallback = passcodeCallback;
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
-    this.onStartOverPressed = this.onStartOverPressed.bind(this);
   }
 
   componentDidMount() {
     this.passcode = global.passcode;
-  }
-
-  onStartOverPressed() {
-    let flow = null;
-    this.setState({ flowIndex: STATE_NEW_PASSCODE });
-    flow = _.find(this.flows, { index: STATE_NEW_PASSCODE });
-    this.baseModal.resetModal(flow.title);
   }
 
   cancelBtnOnPress = () => {
@@ -87,15 +79,11 @@ class ResetPasscodeModal extends PureComponent {
   };
 
   render() {
-    const { flowIndex } = this.state;
-    const isShowStartOver = flowIndex === STATE_CONFIRM_PASSCODE || flowIndex === STATE_NOT_MATCHED;
     return (
       <PasscodeModalBase
         ref={(ref) => { this.baseModal = ref; }}
         passcodeOnFill={this.passcodeOnFill}
         cancelBtnOnPress={this.cancelBtnOnPress}
-        onStartOverPressed={this.onStartOverPressed}
-        isShowStartOver={isShowStartOver}
         title={this.title}
       />
     );

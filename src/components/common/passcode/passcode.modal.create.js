@@ -20,28 +20,19 @@ class CreatePasscodeModal extends PureComponent {
     this.state = { flowIndex: STATE_NEW_PASSCODE };
     this.tempPasscode = '';
     this.title = this.flows[STATE_NEW_PASSCODE].title;
-    const { closePasscodeModal, passcodeCallback, passcodeFallback } = this.props;
+    const { closePasscodeModal, passcodeCallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
-    this.passcodeFallback = passcodeFallback;
-    this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
-    this.onStartOverPressed = this.onStartOverPressed.bind(this);
+    this.onResetPressed = this.onResetPressed.bind(this);
   }
 
-  onStartOverPressed() {
+  onResetPressed() {
     let flow = null;
     this.setState({ flowIndex: STATE_NEW_PASSCODE });
     flow = _.find(this.flows, { index: STATE_NEW_PASSCODE });
     this.baseModal.resetModal(flow.title);
   }
-
-  cancelBtnOnPress = () => {
-    if (this.passcodeFallback) {
-      this.passcodeFallback();
-    }
-    this.closePasscodeModal();
-  };
 
   passcodeOnFill = async (passcode) => {
     const { flowIndex } = this.state;
@@ -76,10 +67,9 @@ class CreatePasscodeModal extends PureComponent {
       <PasscodeModalBase
         ref={(ref) => { this.baseModal = ref; }}
         passcodeOnFill={this.passcodeOnFill}
-        cancelBtnOnPress={this.cancelBtnOnPress}
-        onStartOverPressed={this.onStartOverPressed}
-        showCancel={!!this.passcodeFallback}
-        isShowStartOver={flowIndex > STATE_NEW_PASSCODE}
+        onResetPressed={this.onResetPressed}
+        isShowReset={flowIndex > STATE_NEW_PASSCODE}
+        showCancel={false}
         title={this.title}
       />
     );
@@ -89,12 +79,10 @@ class CreatePasscodeModal extends PureComponent {
 CreatePasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
-  passcodeFallback: PropTypes.func,
 };
 
 CreatePasscodeModal.defaultProps = {
   passcodeCallback: null,
-  passcodeFallback: null,
 };
 
 export default CreatePasscodeModal;
