@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
 import actions from './actions';
+import common from '../../common/common';
 
 const initState = new Map({
   wallets: [],
@@ -29,7 +30,10 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.GET_PRICE_RESULT:
     {
-      return state.set('prices', action.value && action.value.value);
+      let prices = action.value && action.value.value;
+      // Add or update DOC price
+      prices = prices && common.addOrUpdateDOCPrice(prices);
+      return state.set('prices', prices);
     }
     case actions.FETCH_BALANCE_RESULT:
     {

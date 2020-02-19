@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
@@ -18,6 +17,7 @@ import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
+import definitions from '../../common/definitions';
 
 const { getCurrencySymbol } = common;
 
@@ -214,8 +214,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const TRANSACTION_TIMEOUT_MINUTES = 15;
-
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
   return layoutMeasurement.height + contentOffset.y
@@ -257,11 +255,6 @@ Item.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-const isFailedTransaction = (createdAt) => {
-  const durationMinutes = moment.duration(moment().diff(createdAt)).asMinutes();
-  return durationMinutes >= TRANSACTION_TIMEOUT_MINUTES;
-};
-
 class History extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -285,23 +278,22 @@ class History extends Component {
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      let state = null;
-      const isComfirmed = transaction.blockHeight !== -1;
       const isSender = address === transaction.from;
-      const datetime = isComfirmed ? transaction.confirmedAt : transaction.createdAt;
+      let state = 'Failed';
+      switch (transaction.status) {
+        case definitions.txStatus.PENDING:
+          state = isSender ? 'Sending' : 'Receiving';
+          break;
+        case definitions.txStatus.SUCCESS:
+          state = isSender ? 'Sent' : 'Received';
+          break;
+        default:
+      }
+      const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
       const datetimeText = datetime ? datetime.format('MMM D. YYYY') : '';
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
-      }
-      if (isComfirmed) {
-        state = isSender ? 'Sent' : 'Received';
-      } else {
-        state = isSender ? 'Sending' : 'Receiving';
-        if (transaction.createdAt) {
-          const isFailed = isFailedTransaction(transaction.createdAt);
-          state = isFailed ? 'Failed' : state;
-        }
       }
       transactions.push({
         state,

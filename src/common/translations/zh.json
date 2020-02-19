@@ -35,12 +35,14 @@
         "Received Funds": "已接收资金",
         "Sending Funds": "发送中资金",
         "Receiving Funds": "接收中资金",
+        "Failed Funds": "失败的资金",
         "date": "日期",
         "confirmations": "确认",
         "memo": "备注",
         "noMemo": "无备注",
         "transactionID": "交易ID",
-        "viewOnChain": "在区块链上查看"
+        "viewOnChain": "在区块链上查看",
+        "Unconfirmed": "未确认"
       },
       "receive": {
         "address": "地址"

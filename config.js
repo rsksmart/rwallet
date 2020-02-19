@@ -18,7 +18,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
@@ -47,6 +47,7 @@ const config = {
     BTC: 6,
     RBTC: 6,
     RIF: 3,
+    DOC: 3,
   },
   assetValueDecimalPlaces: 2,
   transactionUrls: {
@@ -59,7 +60,11 @@ const config = {
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
     RIF: {
-      Mainnet: 'https://explorer.rsk.co/tx/',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    DOC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
