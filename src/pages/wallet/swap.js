@@ -327,6 +327,7 @@ class Swap extends Component {
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
       transaction = null;
+      this.setState({ loading: false });
       navigation.navigate('SwapCompleted', { coin: swapSource.coin });
     } catch (error) {
       this.setState({ loading: false });
@@ -625,7 +626,7 @@ class Swap extends Component {
               <Text style={[styles.boardAmount]}>{destAmount}</Text>
               <Text style={styles.boardValue}>{destValueText}</Text>
             </View>
-            {coinLoading && (
+            {coinLoading && swapDest && (
             <View style={[styles.cardOverlay, presetStyles.board]}>
               <ActivityIndicator
                 size="large"
