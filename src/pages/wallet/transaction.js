@@ -85,8 +85,6 @@ class Transaction extends Component {
 
   static processViewData(transation, latestBlockHeights) {
     const { rawTransaction } = transation;
-    let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
-    latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
@@ -96,9 +94,14 @@ class Transaction extends Component {
     if (!_.isNil(transation.datetime)) {
       datetimeText = transation.datetime.format('DD/MM/YYYY hh:mm a');
     }
-    let confirmations = latestBlockHeight - rawTransaction.blockHeight;
-    confirmations = confirmations < 0 ? 0 : confirmations;
-    confirmations = confirmations >= 6 ? '6+' : confirmations;
+    let confirmations = strings('page.wallet.transaction.Unconfirmed');
+    if (transation.state !== 'Failed') {
+      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
+      latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
+      confirmations = latestBlockHeight - rawTransaction.blockHeight;
+      confirmations = confirmations < 0 ? 0 : confirmations;
+      confirmations = confirmations >= 6 ? '6+' : confirmations;
+    }
     return {
       transactionState: transation.state,
       transactionId: rawTransaction.hash,
