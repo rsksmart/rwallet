@@ -11,7 +11,7 @@ import walletActions from '../wallet/actions';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
-import I18n from '../../common/i18n';
+import common from '../../common/common';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -50,8 +50,8 @@ function* initFromStorageRequest() {
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
-    // set I18n.locale
-    I18n.locale = settings.get('language');
+    // set language
+    common.setLanguage(settings.get('language'));
 
     // Sets state in reducer for success
     yield put({
@@ -171,8 +171,8 @@ function* changeLanguageRequest(action) {
   const { language } = action;
   console.log('saga::changeLanguageRequest is triggered, language: ', language);
   try {
-    // 1. Set I18n.locale
-    I18n.locale = language;
+    // 1. Set language
+    common.setLanguage(language);
 
     // 2. Save setting
     yield put(actions.setSingleSettings('language', language));

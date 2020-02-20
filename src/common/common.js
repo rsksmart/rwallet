@@ -6,12 +6,21 @@ import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
 import rsk3 from 'rsk3';
 import { randomBytes } from 'react-native-randombytes';
+import moment from 'moment';
+// import moment locales
+import 'moment/locale/zh-cn';
+import 'moment/locale/es';
+import 'moment/locale/pt';
 import config from '../../config';
 import store from './storage';
-
+import I18n from './i18n';
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+
+// more than 24 hours is considered a day
+// https://momentjs.com/docs/#/customization/relative-time/
+moment.relativeTimeThreshold('h', 24);
 
 // Extract currency symbols from config
 // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
@@ -275,6 +284,12 @@ const common = {
       if (err) reject(err);
       else resolve(bytes);
     }));
+  },
+
+  setLanguage(language) {
+    I18n.locale = language;
+    const newLanguage = language === 'zh' ? 'zh-cn' : language;
+    moment.locale(newLanguage);
   },
 };
 
