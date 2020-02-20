@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import Loc from '../../components/common/misc/loc';
 import { DEVICE } from '../../common/info';
 import ResponsiveText from '../../components/common/misc/responsive.text';
@@ -290,7 +291,16 @@ class History extends Component {
         default:
       }
       const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
-      const datetimeText = datetime ? datetime.format('MMM D. YYYY') : '';
+      let datetimeText = '';
+      if (datetime) {
+        const daysElapsed = moment().diff(datetime, 'days');
+        if (daysElapsed < 1) {
+          datetimeText = datetime.fromNow();
+        } else {
+          datetimeText = datetime.format('MMM D. YYYY');
+        }
+      }
+
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
         amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
