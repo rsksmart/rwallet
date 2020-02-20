@@ -90,10 +90,7 @@ class Transaction extends Component {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
       amountText = `${common.getBalanceString(rawTransaction.symbol, amount)} ${rawTransaction.symbol}`;
     }
-    let datetimeText = null;
-    if (!_.isNil(transation.datetime)) {
-      datetimeText = transation.datetime.format('DD/MM/YYYY hh:mm a');
-    }
+    const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : null;
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
     if (transation.state !== 'Failed') {
       let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
