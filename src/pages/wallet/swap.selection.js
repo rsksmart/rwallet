@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, FlatList, TouchableOpacity, Text, Image, View,
+  StyleSheet, FlatList, TouchableOpacity, Text, Image, View, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -14,6 +14,7 @@ import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
+import CoinswitchHelper from '../../common/coinswitch.helper';
 
 const styles = StyleSheet.create({
   body: {
@@ -85,6 +86,56 @@ class SwapSelection extends Component {
     header: null,
   });
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      coinList: [],
+      loading: true,
+    };
+  }
+
+  async componentDidMount(): void {
+    let rawList;
+    let filters = [];
+    const {
+      navigation, swapDest, swapSource, walletManager,
+    } = this.props;
+    const { wallets } = walletManager;
+    const { selectionType } = navigation.state.params;
+    if (selectionType === 'source' && swapDest) {
+      try {
+        rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
+      } catch {
+        rawList = [];
+      }
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < rawList.length; i++) {
+        const item = rawList[i];
+        if (item.isActive) {
+          filters.push(item.depositCoin);
+        }
+      }
+    } else if (selectionType === 'dest') {
+      try {
+        rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
+      } catch {
+        rawList = [];
+      }
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < rawList.length; i++) {
+        const item = rawList[i];
+        if (item.isActive) {
+          filters.push(item.destinationCoin);
+        }
+      }
+    } else {
+      filters = null;
+    }
+
+    const coinList = this.createListData(wallets, navigation, selectionType, filters);
+    this.setState({ coinList, loading: false });
+  }
+
   static renderWalletList(listData) {
     return (
       <FlatList
@@ -112,7 +163,7 @@ class SwapSelection extends Component {
     );
   }
 
-  createListData = (wallets, navigation, selectionType) => {
+  createListData = (wallets, navigation, selectionType, filters) => {
     const {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
@@ -133,6 +184,9 @@ class SwapSelection extends Component {
         if (selectionType === 'source' && swapDest && coin.symbol === swapDest.coin.symbol) {
           return;
         }
+        if (filters && (filters.length === 0 || !filters.includes(coin.symbol.toLowerCase()))) {
+          return;
+        }
         const coinType = common.getSymbolFullName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
         const item = {
@@ -150,15 +204,16 @@ class SwapSelection extends Component {
         };
         wal.coins.push(item);
       });
-      listData.push(wal);
+      if (wal && wal.coins.length) {
+        listData.push(wal);
+      }
     });
     return listData;
   };
 
   render() {
-    const { navigation, walletManager, resetSwap } = this.props;
-    const { selectionType } = navigation.state.params;
-    const { wallets } = walletManager;
+    const { navigation, resetSwap } = this.props;
+    const { coinList, loading } = this.state;
     const rightButton = (
       <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
         <TouchableOpacity onPress={() => {
@@ -187,7 +242,7 @@ class SwapSelection extends Component {
       >
         <View style={styles.body}>
           <FlatList
-            data={this.createListData(wallets, navigation, selectionType)}
+            data={coinList}
             renderItem={({ item }) => (
               <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
                 <Text style={[styles.walletName]}>{item.name}</Text>
@@ -197,6 +252,7 @@ class SwapSelection extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        {loading && <ActivityIndicator size="large" />}
       </BasePageGereral>
     );
   }

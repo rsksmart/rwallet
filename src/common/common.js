@@ -276,6 +276,35 @@ const common = {
       else resolve(bytes);
     }));
   },
+
+  /**
+   * Add or update DOC price
+   * DOC value is 1 dollar, convert to other currencies by btc price
+   * Returns new prices array
+   * @param {*} prices
+   */
+  addOrUpdateDOCPrice(prices) {
+    const newPrice = _.clone(prices);
+    const btcPrice = _.find(newPrice, { symbol: 'BTC' });
+    const usdPrice = parseFloat(btcPrice.price.USD);
+    const btcPriceKeys = _.keys(btcPrice.price);
+    let docPrice = _.find(newPrice, { symbol: 'DOC' });
+    if (_.isUndefined(docPrice)) {
+      docPrice = { symbol: 'DOC' };
+      newPrice.push(docPrice);
+    }
+    if (_.isUndefined(docPrice.price)) {
+      docPrice.price = {};
+    }
+    docPrice.price.USD = '1';
+    _.each(btcPriceKeys, (key) => {
+      if (key !== 'USD') {
+        const currency = parseFloat(btcPrice.price[key]);
+        docPrice.price[key] = (currency / usdPrice).toString();
+      }
+    });
+    return newPrice;
+  },
 };
 
 export default common;
