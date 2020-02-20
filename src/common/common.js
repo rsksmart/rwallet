@@ -317,8 +317,11 @@ const common = {
 
   setLanguage(language) {
     I18n.locale = language;
-    const newLanguage = language === 'zh' ? 'zh-cn' : language;
-    moment.locale(newLanguage);
+  },
+
+  setMomentLocale(locale) {
+    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    moment.locale(newLocale);
   },
 };
 

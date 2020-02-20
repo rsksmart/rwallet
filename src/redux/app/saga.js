@@ -52,6 +52,7 @@ function* initFromStorageRequest() {
 
     // set language
     common.setLanguage(settings.get('language'));
+    common.setMomentLocale(settings.get('language'));
 
     // Sets state in reducer for success
     yield put({
@@ -173,6 +174,7 @@ function* changeLanguageRequest(action) {
   try {
     // 1. Set language
     common.setLanguage(language);
+    common.setMomentLocale(language);
 
     // 2. Save setting
     yield put(actions.setSingleSettings('language', language));
