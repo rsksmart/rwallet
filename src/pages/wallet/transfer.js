@@ -586,6 +586,13 @@ class Transfer extends Component {
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
+          case 'err.notenoughbalance.btc':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreBTC',
+              buttonText,
+            );
+            break;
           case 'err.notenoughbalance.rbtc':
             notification = createErrorNotification(
               'modal.txFailed.title',

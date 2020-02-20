@@ -236,6 +236,7 @@
     },
     "txFailed": {
       "title": "A transferência falhou",
+      "moreBTC": "Você precisa de mais saldo do BTC para concluir a transferência",
       "moreRBTC": "Você precisa de mais saldo RBTC para concluir a transferência",
       "moreRIF": "Você precisa de mais saldo RIF para concluir a transferência",
       "moreBalance": "Você precisa de mais saldo para concluir a transferência",
