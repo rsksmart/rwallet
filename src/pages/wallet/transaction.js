@@ -95,7 +95,7 @@ class Transaction extends Component {
       datetimeText = transation.datetime.format('DD/MM/YYYY hh:mm a');
     }
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
-    if (transation.state !== 'Failed') {
+    if (transation.state === 'Sent' || transation.state === 'Received') {
       let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
       latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
       confirmations = latestBlockHeight - rawTransaction.blockHeight;

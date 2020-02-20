@@ -250,6 +250,7 @@
     },
     "txFailed": {
       "title": "Transfer is failed",
+      "moreBTC": "You need more BTC balance to complete the transfer",
       "moreRBTC": "You need more RBTC balance to complete the transfer",
       "moreRIF": "You need more RIF balance to complete the transfer",
       "moreBalance": "You need more balance to complete the transfer",

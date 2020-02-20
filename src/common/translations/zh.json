@@ -237,6 +237,7 @@
     },
     "txFailed": {
       "title": "转账失败",
+      "moreBTC": "您需要更多BTC余额才能完成转帐",
       "moreRBTC": "您需要更多RBTC余额才能完成转帐",
       "moreRIF": "您需要更多RIF余额才能完成转帐",
       "moreBalance": "您需要更多余额才能完成转帐",
