@@ -1,6 +1,6 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  take, call, all, takeEvery, put,
+  take, call, all, takeEvery, put, select,
 } from 'redux-saga/effects';
 
 import _ from 'lodash';
@@ -232,7 +232,10 @@ function* createKeyRequest(action) {
 function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
   try {
+    const state = yield select();
+    const currency = state.App.get('currency');
     yield call(walletManager.deleteWallet, key);
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: currency });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
