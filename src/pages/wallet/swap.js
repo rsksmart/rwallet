@@ -17,12 +17,13 @@ import CoinswitchHelper from '../../common/coinswitch.helper';
 import Transaction from '../../common/transaction';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
+import CONSTANTS from '../../common/constants';
 
-const DEFAULT_RBTC_GAS_PRICE = 600000000;
-const DEFAULT_RBTC_MIN_GAS = 21000;
-const DEFAULT_DOC_MIN_GAS = 57000;
-const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS * 1.25;
-const DEFAULT_DOC_MEDIUM_GAS = DEFAULT_DOC_MIN_GAS * 1.25;
+const {
+  DEFAULT_RBTC_GAS_PRICE,
+  DEFAULT_RBTC_MEDIUM_GAS,
+  DEFAULT_DOC_MEDIUM_GAS,
+} = CONSTANTS;
 
 const styles = StyleSheet.create({
   body: {
@@ -288,7 +289,7 @@ class Swap extends Component {
             minerFee,
             limitMinDepositCoin,
             limitMaxDepositCoin,
-            limitHalfDepositCoin: ((limitMaxDepositCoin + limitMinDepositCoin) / 2).toPrecision(2),
+            limitHalfDepositCoin: ((limitMaxDepositCoin + limitMinDepositCoin) / 2).toFixed(2),
           }, () => {
             this.setAmountState(sourceAmount, nextProps, this.state);
             this.setState({ coinLoading: false });
@@ -651,13 +652,13 @@ class Swap extends Component {
             style={styles.switchView}
           >
             <TouchableOpacity style={[styles.switchItem]} onPress={() => this.onSwitchPress(0)}>
-              <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
+              <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin.toFixed(2)})` : switchItems[0]}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(1)}>
               <Text style={styles.switchText}>{limitHalfDepositCoin > 0 ? `${switchItems[1]}(${limitHalfDepositCoin})` : switchItems[1]}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.switchItem} onPress={() => this.onSwitchPress(2)}>
-              <Text style={styles.switchText}>{limitMaxDepositCoin > 0 ? `${switchItems[2]}(${limitMaxDepositCoin})` : switchItems[2]}</Text>
+              <Text style={styles.switchText}>{limitMaxDepositCoin > 0 ? `${switchItems[2]}(${limitMaxDepositCoin.toFixed(2)})` : switchItems[2]}</Text>
             </TouchableOpacity>
           </View>
           { this.renderExchangeStateBlock(isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) }

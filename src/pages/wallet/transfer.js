@@ -11,10 +11,6 @@ import rsk3 from 'rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
-
-// import ConfirmSlider from '../../components/wallet/confirm.slider';
-// import circleCheckIcon from '../../assets/images/misc/circle.check.png';
-// import circleIcon from '../../assets/images/misc/circle.png';
 import { createErrorNotification } from '../../common/notification.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
@@ -23,6 +19,7 @@ import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
+import CONSTANTS from '../../common/constants';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -229,18 +226,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const FEE_LEVEL_ADJUSTMENT = 0.25;
-const DEFAULT_RBTC_MIN_GAS = 21000;
-const DEFAULT_RIF_MIN_GAS = 23064;
-const DEFAULT_DOC_MIN_GAS = 57000;
-const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_DOC_MEDIUM_GAS = DEFAULT_DOC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_BTC_MIN_FEE = 60000;
-const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_RBTC_GAS_PRICE = 600000000;
-const MAX_FEE_TIMES = 2;
-const PLACEHODLER_AMOUNT = 0.001;
+const {
+  FEE_LEVEL_ADJUSTMENT,
+  DEFAULT_RBTC_MIN_GAS,
+  DEFAULT_RIF_MIN_GAS,
+  DEFAULT_DOC_MIN_GAS,
+  DEFAULT_RBTC_MEDIUM_GAS,
+  DEFAULT_RIF_MEDIUM_GAS,
+  DEFAULT_DOC_MEDIUM_GAS,
+  DEFAULT_BTC_MIN_FEE,
+  DEFAULT_BTC_MEDIUM_FEE,
+  DEFAULT_RBTC_GAS_PRICE,
+  MAX_FEE_TIMES,
+  PLACEHODLER_AMOUNT,
+} = CONSTANTS;
 
 const addressIcon = require('../../assets/images/icon/address.png');
 

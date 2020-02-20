@@ -168,6 +168,8 @@ class SwapSelection extends Component {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
 
+    const { init } = navigation.state.params;
+
     if (!_.isArray(wallets)) {
       return [];
     }
@@ -199,7 +201,7 @@ class SwapSelection extends Component {
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation.navigate('Swap', { type: selectionType, coin });
+            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin });
           },
         };
         wal.coins.push(item);
@@ -214,17 +216,18 @@ class SwapSelection extends Component {
   render() {
     const { navigation, resetSwap } = this.props;
     const { coinList, loading } = this.state;
-    const rightButton = (
+    const { selectionType } = navigation.state.params;
+    const rightButton = selectionType === 'dest' ? (
       <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
         <TouchableOpacity onPress={() => {
           resetSwap();
-          navigation.navigate('Swap', { reset: true });
+          navigation.navigate('Swap');
         }}
         >
           <Loc style={styles.headerTitle} text="Reset" />
         </TouchableOpacity>
       </View>
-    );
+    ) : <View />;
 
     return (
       <BasePageGereral
