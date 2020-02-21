@@ -168,7 +168,7 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
-            <Text numberOfLines={1}>{transactionId}</Text>
+            <Text selectable>{transactionId}</Text>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
