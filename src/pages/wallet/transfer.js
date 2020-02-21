@@ -783,10 +783,7 @@ class Transfer extends Component {
                   this.setState({ to: text }, this.validateConfirmControl.bind(this));
                 }}
               />
-              <TouchableOpacity
-                style={styles.textInputIcon}
-                onPress={this.onQrcodeScanPress}
-              >
+              <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
                 <Image source={addressIcon} />
               </TouchableOpacity>
             </View>

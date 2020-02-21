@@ -342,7 +342,7 @@ class WalletList extends Component {
       listData, currencySymbol, totalAssetValueText,
     } = this.state;
     const scanButton = (
-      <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')}>
+      <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
         <Image style={[styles.scan]} source={scan} />
       </TouchableOpacity>
     );
