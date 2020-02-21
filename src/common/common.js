@@ -186,7 +186,7 @@ const common = {
     if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
       url = config.transactionUrls[symbol][type];
     }
-    url = `${url}/${hash}/`;
+    url = `${url}/${hash}${symbol === 'BTC' ? '/' : ''}`;
     return url;
   },
 
