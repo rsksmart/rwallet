@@ -13,7 +13,7 @@ export const getRawTransactionParam = ({
     value,
     data,
     gasPrice,
-    gas,
+    gas: Math.floor(gas), // gas must be integer
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
