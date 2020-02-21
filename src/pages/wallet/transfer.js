@@ -253,7 +253,7 @@ class Transfer extends Component {
   static generateAmountPlaceholderText(symbol, currency, prices) {
     const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
     let amountPlaceholderText = `${amountText} ${symbol}`;
-    if (prices) {
+    if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
       const amountValueText = common.getAssetValueString(amountValue, amountValue);
@@ -692,7 +692,8 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
+              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol}`}
+              {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
         )}
@@ -716,8 +717,7 @@ class Transfer extends Component {
       const fee = feeData[i];
       const coinAmount = common.getBalanceString(feeSymbol, fee.coin);
       item.coin = `${coinAmount} ${feeSymbol}`;
-      const coinValue = common.getAssetValueString(fee.value);
-      item.value = `${currencySymbol}${coinValue}`;
+      item.value = fee.value ? `${currencySymbol}${common.getAssetValueString(fee.value)}` : '';
       items.push(item);
     }
     let selectIndex = null;

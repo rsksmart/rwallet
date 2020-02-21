@@ -45,6 +45,7 @@ export default class ResponsiveText extends Component {
   componentWillReceiveProps(nextProps) {
     const { children, maxFontSize, suffixElementWidth } = nextProps;
     const { layoutWidth } = this.state;
+    if (!children) return;
     // If layout isn't change, but children or style is change, calculate font size again.
     const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
     this.setState({ fontSize });
@@ -53,6 +54,7 @@ export default class ResponsiveText extends Component {
   onLayout = (event) => {
     const { children, suffixElementWidth, maxFontSize } = this.props;
     const { width: layoutWidth } = event.nativeEvent.layout;
+    if (!children) return;
     // layoutWidth - suffixElementWidth is the width text component can use actually
     const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
     this.setState({ fontSize, layoutWidth });
