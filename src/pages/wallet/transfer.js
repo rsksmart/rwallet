@@ -517,7 +517,7 @@ class Transfer extends Component {
     };
     const feeSymbol = coin.symbol === 'RIF' || coin.symbol === 'DOC' ? 'RBTC' : coin.symbol;
     const feeData = [];
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < feeLevels.length; i += 1) {
       const item = {};
       const fee = feeLevels[i] * feeBase[coin.symbol];
       let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
