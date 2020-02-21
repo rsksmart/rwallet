@@ -83,6 +83,9 @@ const style = StyleSheet.create({
     elevation: 1,
     backgroundColor: '#FFF',
   },
+  noBottomBorder: {
+    borderBottomColor: 'rgba(0,0,0,0)',
+  },
 });
 
 export default style;
