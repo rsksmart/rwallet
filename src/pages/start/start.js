@@ -11,9 +11,6 @@ import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
 import color from '../../assets/styles/color.ts';
 
-// eslint-disable-next-line import/no-unresolved
-const EventEmitter = require('EventEmitter');
-
 const logo = require('../../assets/images/icon/logo.png');
 
 const styles = StyleSheet.create({
@@ -63,7 +60,6 @@ class StartPage extends Component {
   async componentDidMount() {
     const version = await DeviceInfo.getVersion();
     this.setState({ version });
-    global.eventEmitter = new EventEmitter();
   }
 
   render() {
