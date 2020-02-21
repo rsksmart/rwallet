@@ -11,11 +11,12 @@ import createInfoConfirmation from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionContainer: {
     paddingHorizontal: 30,
-    marginTop: 10,
+    marginTop: 30,
   },
   sectionTitle: {
     marginTop: 5,
@@ -69,6 +70,9 @@ const styles = StyleSheet.create({
   warningText: {
     color: '#DF5264',
     fontWeight: '500',
+  },
+  advancedBlock: {
+    marginBottom: 60 + screenHelper.bottomHeight,
   },
 });
 
@@ -247,7 +251,7 @@ class KeySettings extends Component {
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
             <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
           </View>
-          <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
+          <View style={[styles.sectionContainer, styles.advancedBlock]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
               <Loc style={[styles.listRowTitle, styles.warningText]} text="page.mine.keySettings.delete" />
