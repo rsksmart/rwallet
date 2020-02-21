@@ -398,7 +398,7 @@ class Transfer extends Component {
     }
     if (coin.symbol === 'RIF' || coin.symbol === 'DOC') {
       const amount = common.getBalanceString(coin.symbol, coin.balance);
-      this.setState({ amount });
+      this.inputAmount(amount);
     } else {
       let fee = feeData[feeLevel].coin;
       if (isCustomFee) {
