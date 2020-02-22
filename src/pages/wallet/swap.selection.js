@@ -15,6 +15,7 @@ import presetStyles from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 import CoinswitchHelper from '../../common/coinswitch.helper';
+import config from '../../../config';
 
 const styles = StyleSheet.create({
   body: {
@@ -198,10 +199,22 @@ class SwapSelection extends Component {
           onPress: () => {
             if (selectionType === 'source') {
               setSwapSource(wallet.name, coin);
+              if (init) {
+                const targetArray = config.coinswitchInitPairs[coin.symbol.toLowerCase()];
+
+                // eslint-disable-next-line no-plusplus
+                for (let i = 0; i < wallets.length; i++) {
+                  const candidate = wallets[i].coins.find((walletCoin) => targetArray.includes(walletCoin.symbol.toLowerCase()));
+                  if (candidate) {
+                    setSwapDest(wallets[i].name, candidate);
+                    break;
+                  }
+                }
+              }
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin });
+            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
           },
         };
         wal.coins.push(item);
