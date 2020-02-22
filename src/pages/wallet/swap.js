@@ -19,6 +19,7 @@ import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import CONSTANTS from '../../common/constants';
 import walletActions from '../../redux/wallet/actions';
+import Loc from '../../components/common/misc/loc';
 
 const {
   DEFAULT_RBTC_GAS_PRICE,
@@ -516,20 +517,20 @@ class Swap extends Component {
   renderExchangeStateBlock = (isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) => {
     let errorText = null;
     if (!sourceAmount) {
-      errorText = 'Source amount need to be specified';
+      errorText = 'page.wallet.swap.errorSourceAmount';
     } else if (!destAmount) {
-      errorText = 'Dest amount need to be specified';
+      errorText = 'page.wallet.swap.errorDestAmount';
     } else if (!isAmountInRange) {
-      errorText = 'The amount is not valid';
+      errorText = 'page.wallet.swap.errorAmountInRange';
     } else if (!isBalanceEnough) {
-      errorText = 'Sorry, but you dont have enough balance';
+      errorText = 'page.wallet.swap.errorBalanceEnough';
     }
 
     if (errorText) {
       return (
         <View style={[styles.errorView, space.marginTop_27]}>
           <Image style={styles.error} source={res.error} />
-          <Text style={styles.errorText}>{errorText}</Text>
+          <Loc style={styles.errorText} text={errorText} />
         </View>
       );
     }
@@ -555,7 +556,7 @@ class Swap extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   render() {
     const {
@@ -597,8 +598,9 @@ class Swap extends Component {
         <View style={styles.body}>
           <View style={[presetStyles.board, styles.board]}>
             <Text style={styles.boardText}>
-              {`I have ${balanceText} ${swapSource.coin.symbol} in `}
-              <Text style={styles.boardWalletName}>{swapSource.walletName}</Text>
+              <Loc text="page.wallet.swap.wallet" />
+              <Text style={styles.boardWalletName}>{` ${swapSource.walletName}`}</Text>
+              {`: ${balanceText} ${swapSource.coin.symbol} `}
             </Text>
             <View style={styles.boardTokenView}>
               <TouchableOpacity onPress={this.onSelectSourcePress} style={styles.boardTokenViewLeft}>
@@ -641,8 +643,9 @@ class Swap extends Component {
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (
               <Text style={styles.boardText}>
-                {`I want ${swapDest.coin.symbol} in`}
-                <Text style={styles.boardWalletName}>{` ${swapDest.walletName}`}</Text>
+                <Loc text="page.wallet.swap.want" />
+                {` ${swapDest.coin.symbol} `}
+                <Text style={styles.boardWalletName}>{`(${swapDest.walletName})`}</Text>
               </Text>
             )}
             <View style={styles.boardTokenView}>
