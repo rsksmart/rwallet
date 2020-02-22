@@ -37,6 +37,7 @@ const actions = {
   SET_SWAP_SOURCE: 'SET_SWAP_SOURCE',
   SET_SWAP_DEST: 'SET_SWAP_DEST',
   RESET_SWAP: 'RESET_SWAP',
+  SWITCH_SWAP: 'SWITCH_SWAP',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -121,6 +122,7 @@ const actions = {
     },
   }),
   resetSwap: () => ({ type: actions.RESET_SWAP }),
+  switchSwap: () => ({ type: actions.SWITCH_SWAP }),
 };
 
 export default actions;
