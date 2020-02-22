@@ -206,7 +206,7 @@
     "Receive": "Recibir",
     "Swap": "Intercambiar",
     "Delete": "Eliminar",
-    "StartOver": "Comenzar de nuevo",
+    "Reset": "Reiniciar",
     "Finish": "Terminar",
     "Exchange": "Intercambiar"
   },
@@ -236,6 +236,7 @@
     },
     "txFailed": {
       "title": "La transferencia ha fallado",
+      "moreBTC": "Necesita más saldo de BTC para completar la transferencia",
       "moreRBTC": "Necesita más saldo RBTC para completar la transferencia",
       "moreRIF": "Necesita más saldo RIF para completar la transferencia",
       "moreBalance": "Necesita más saldo para completar la transferencia",
