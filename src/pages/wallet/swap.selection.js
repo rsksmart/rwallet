@@ -200,11 +200,11 @@ class SwapSelection extends Component {
             if (selectionType === 'source') {
               setSwapSource(wallet.name, coin);
               if (init) {
-                const targetArray = config.coinswitchInitPairs[coin.symbol.toLowerCase()];
+                const targetArray = config.coinswitch.initPairs[coin.symbol];
 
                 // eslint-disable-next-line no-plusplus
                 for (let i = 0; i < wallets.length; i++) {
-                  const candidate = wallets[i].coins.find((walletCoin) => targetArray.includes(walletCoin.symbol.toLowerCase()));
+                  const candidate = wallets[i].coins.find((walletCoin) => targetArray.includes(walletCoin.symbol));
                   if (candidate) {
                     setSwapDest(wallets[i].name, candidate);
                     break;
