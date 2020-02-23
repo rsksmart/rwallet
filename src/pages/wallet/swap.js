@@ -16,15 +16,9 @@ import CoinswitchHelper from '../../common/coinswitch.helper';
 import Transaction from '../../common/transaction';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import CONSTANTS from '../../common/constants';
 import walletActions from '../../redux/wallet/actions';
 import Loc from '../../components/common/misc/loc';
 
-const {
-  DEFAULT_RBTC_GAS_PRICE,
-  DEFAULT_RBTC_MEDIUM_GAS,
-  DEFAULT_DOC_MEDIUM_GAS,
-} = CONSTANTS;
 
 const styles = StyleSheet.create({
   body: {
@@ -302,7 +296,7 @@ class Swap extends Component {
         exchangeAddress: { address: agentAddress },
       } = order;
 
-      const gasFee = this.getFeeParams(sourceCoin);
+      const gasFee = this.getFeeParams(swapSource.coin);
       const extraParams = { data: '', memo: '', gasFee };
       let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       console.log('transaction: ', transaction);
@@ -476,19 +470,19 @@ class Swap extends Component {
     && source.coin.type === target.coin.type
     && source.coin.symbol === target.coin.symbol;
 
-  getFeeParams = (coinId) => {
-    switch (coinId) {
-      case 'btc':
+  getFeeParams = (coin) => {
+    switch (coin.id) {
+      case 'BTC':
         return { preference: 'medium' };
-      case 'rbtc':
+      case 'RBTC':
         return {
-          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-          gas: DEFAULT_RBTC_MEDIUM_GAS,
+          gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
+          gas: coin.metadata.DEFAULT_RBTC_MEDIUM_GAS,
         };
       case 'doc':
         return {
-          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-          gas: DEFAULT_DOC_MEDIUM_GAS,
+          gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
+          gas: coin.metadata.DEFAULT_DOC_MEDIUM_GAS,
         };
       default:
         return null;
