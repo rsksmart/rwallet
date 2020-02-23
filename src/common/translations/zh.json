@@ -108,6 +108,24 @@
         "body": "转账成功！",
         "note": "您的转账正在进行中。",
         "viewExplorer": "单击以在浏览器中查看"
+      },
+      "swap": {
+        "title": "交换",
+        "wallet": "钱包",
+        "want": "我想要",
+        "errorSourceAmount": "需要指定来源数量",
+        "errorDestAmount": "需要指定目的地数量",
+        "errorAmountInRange": "金额无效",
+        "errorBalanceEnough": "抱歉，您的余额不足"
+      },
+      "swapSelection": {
+        "title": "选择货币"
+      },
+      "swapCompleted": {
+        "title": "交换",
+        "body": "交换完成！",
+        "note": "您的交换正在进行中。",
+        "viewExplorer": "单击以在rsk explorer中查看"
       }
     },
     "mine": {

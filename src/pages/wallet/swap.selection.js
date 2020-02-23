@@ -110,7 +110,7 @@ class SwapSelection extends Component {
         rawList = [];
       }
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i++) {
+      for (let i = 0; i < rawList.length; i += 1) {
         const item = rawList[i];
         if (item.isActive) {
           filters.push(item.depositCoin);
@@ -123,7 +123,7 @@ class SwapSelection extends Component {
         rawList = [];
       }
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i++) {
+      for (let i = 0; i < rawList.length; i += 1) {
         const item = rawList[i];
         if (item.isActive) {
           filters.push(item.destinationCoin);

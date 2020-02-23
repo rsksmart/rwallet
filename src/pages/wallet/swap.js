@@ -5,7 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SwapHeader from '../../components/headers/header.swap';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
@@ -572,12 +571,6 @@ class Swap extends Component {
     const destValueText = destAmount && destUsdRate ? currencySymbol + (destAmount * destUsdRate).toFixed(2) : '';
 
     const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
-    const rightButton = (
-      // <TouchableOpacity onPress={this.onHistoryPress}>
-      //   <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
-      // </TouchableOpacity>
-      <View />
-    );
 
     const customBottomButton = (
       <Button
@@ -592,7 +585,7 @@ class Swap extends Component {
         isSafeView
         hasLoader
         isLoading={loading}
-        headerComponent={<SwapHeader title="page.wallet.swap.title" onBackButtonPress={() => navigation.goBack()} rightButton={rightButton} />}
+        headerComponent={<SwapHeader title="page.wallet.swap.title" onBackButtonPress={() => navigation.goBack()} rightButton={<View />} />}
         customBottomButton={customBottomButton}
       >
         <View style={styles.body}>

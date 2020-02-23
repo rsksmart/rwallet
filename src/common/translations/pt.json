@@ -108,6 +108,24 @@
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
+      },
+      "swap": {
+        "title": "Troca",
+        "wallet": "carteira",
+        "want": "eu quero",
+        "errorSourceAmount": "O valor da fonte precisa ser especificado",
+        "errorDestAmount": "O valor do destino precisa ser especificado",
+        "errorAmountInRange": "O valor não é válido",
+        "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente"
+      },
+      "swapSelection": {
+        "title": "Escolha a moeda"
+      },
+      "swapCompleted": {
+        "title": "Troca",
+        "body": "Troca concluída!",
+        "note": "Seu Exchange está a caminho.",
+        "viewExplorer": "Clique para ver no explorer"
       }
     },
     "mine": {
