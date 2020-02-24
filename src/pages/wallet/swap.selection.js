@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, FlatList, TouchableOpacity, Text, Image, View,
+  StyleSheet, FlatList, TouchableOpacity, Text, Image, View, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,6 +13,9 @@ import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
+import Loc from '../../components/common/misc/loc';
+import CoinswitchHelper from '../../common/coinswitch.helper';
+import config from '../../../config';
 
 const styles = StyleSheet.create({
   body: {
@@ -68,12 +71,68 @@ const styles = StyleSheet.create({
     color: '#77869E',
     letterSpacing: 1,
   },
+  headerTitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 20,
+    letterSpacing: 0.39,
+  },
 });
 
 class SwapSelection extends Component {
   static navigationOptions = () => ({
     header: null,
   });
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      coinList: [],
+      loading: true,
+    };
+  }
+
+  async componentDidMount() {
+    let rawList;
+    let filters = [];
+    const {
+      navigation, swapDest, swapSource, walletManager,
+    } = this.props;
+    const { wallets } = walletManager;
+    const { selectionType } = navigation.state.params;
+    if (selectionType === 'source' && swapDest) {
+      try {
+        rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
+      } catch {
+        rawList = [];
+      }
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < rawList.length; i += 1) {
+        const item = rawList[i];
+        if (item.isActive) {
+          filters.push(item.depositCoin);
+        }
+      }
+    } else if (selectionType === 'dest') {
+      try {
+        rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
+      } catch {
+        rawList = [];
+      }
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < rawList.length; i += 1) {
+        const item = rawList[i];
+        if (item.isActive) {
+          filters.push(item.destinationCoin);
+        }
+      }
+    } else {
+      filters = null;
+    }
+
+    const coinList = this.createListData(wallets, navigation, selectionType, filters);
+    this.setState({ coinList, loading: false });
+  }
 
   static renderWalletList(listData) {
     return (
@@ -102,37 +161,17 @@ class SwapSelection extends Component {
     );
   }
 
-  componentWillMount() {
-    const {
-      walletManager, navigation,
-    } = this.props;
-    const { selectionType } = navigation.state.params;
-    const { wallets } = walletManager;
-    const listData = this.createListData(wallets, navigation, selectionType);
-
-    this.setState({ listData });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {
-      walletManager, navigation,
-    } = nextProps;
-    const { selectionType } = navigation.state.params;
-    const { wallets } = walletManager;
-    const listData = this.createListData(wallets, navigation, selectionType);
-    this.setState({ listData });
-  }
-
-
-  createListData(wallets, navigation, selectionType) {
+  createListData = (wallets, navigation, selectionType, filters) => {
     const {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
 
+    const { init } = navigation.state.params;
+
     if (!_.isArray(wallets)) {
       return [];
     }
-    // const onDestCoinSelected = navigation.state.params && navigation.state.params.onDestCoinSelected;
+
     const listData = [];
     // Create element for each wallet (e.g. key 0)
     wallets.forEach((wallet) => {
@@ -145,6 +184,9 @@ class SwapSelection extends Component {
         if (selectionType === 'source' && swapDest && coin.symbol === swapDest.coin.symbol) {
           return;
         }
+        if (filters && (filters.length === 0 || !filters.includes(coin.symbol.toLowerCase()))) {
+          return;
+        }
         const coinType = common.getSymbolFullName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
         const item = {
@@ -154,33 +196,66 @@ class SwapSelection extends Component {
           onPress: () => {
             if (selectionType === 'source') {
               setSwapSource(wallet.name, coin);
+              if (init) {
+                const targetArray = config.coinswitch.initPairs[coin.symbol];
+
+                // eslint-disable-next-line no-plusplus
+                for (let i = 0; i < wallets.length; i++) {
+                  const candidate = wallets[i].coins.find((walletCoin) => targetArray.includes(walletCoin.symbol));
+                  if (candidate) {
+                    setSwapDest(wallets[i].name, candidate);
+                    break;
+                  }
+                }
+              }
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation.navigate('Swap');
+            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
           },
         };
         wal.coins.push(item);
       });
-      listData.push(wal);
+      if (wal && wal.coins.length) {
+        listData.push(wal);
+      }
     });
     return listData;
-  }
+  };
 
   render() {
-    const { navigation } = this.props;
-    const { listData } = this.state;
+    const { navigation, resetSwap } = this.props;
+    const { coinList, loading } = this.state;
+    const { selectionType } = navigation.state.params;
+    const rightButton = selectionType === 'dest' ? (
+      <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
+        <TouchableOpacity onPress={() => {
+          resetSwap();
+          navigation.navigate('Swap');
+        }}
+        >
+          <Loc style={styles.headerTitle} text="Reset" />
+        </TouchableOpacity>
+      </View>
+    ) : <View />;
+
     return (
       <BasePageGereral
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
         bgColor="#00B520"
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
+        headerComponent={(
+          <Header
+            onBackButtonPress={() => navigation.goBack()}
+            title="page.wallet.swapSelection.title"
+            rightBtn={() => rightButton}
+          />
+        )}
       >
         <View style={styles.body}>
           <FlatList
-            data={listData}
+            data={coinList}
             renderItem={({ item }) => (
               <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
                 <Text style={[styles.walletName]}>{item.name}</Text>
@@ -190,6 +265,7 @@ class SwapSelection extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        {loading && <ActivityIndicator size="large" />}
       </BasePageGereral>
     );
   }
@@ -215,6 +291,7 @@ SwapSelection.propTypes = {
   }),
   setSwapSource: PropTypes.func.isRequired,
   setSwapDest: PropTypes.func.isRequired,
+  resetSwap: PropTypes.func.isRequired,
 };
 
 SwapSelection.defaultProps = {
@@ -232,6 +309,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
   setSwapDest: (walletName, coin) => dispatch(walletActions.setSwapDest(walletName, coin)),
+  resetSwap: () => dispatch(walletActions.resetSwap()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwapSelection);

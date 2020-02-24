@@ -111,7 +111,13 @@
         "viewExplorer": "Click to view in explorer"
       },
       "swap": {
-        "title": "Swap"
+        "title": "Swap",
+        "wallet": "wallet",
+        "want": "I want",
+        "errorSourceAmount": "Source amount need to be specified",
+        "errorDestAmount": "Dest amount need to be specified",
+        "errorAmountInRange": "The amount is not valid",
+        "errorBalanceEnough": "Sorry, but you dont have enough balance"
       },
       "swapSelection": {
         "title": "Select Currency"

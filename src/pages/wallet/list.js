@@ -286,7 +286,7 @@ class WalletList extends Component {
   onSwapPress() {
     const { resetSwap, navigation } = this.props;
     resetSwap();
-    navigation.navigate('SwapSelection', { selectionType: 'source' });
+    navigation.navigate('SwapSelection', { selectionType: 'source', init: true });
   }
 
   createListData(wallets, currencySymbol, navigation) {
