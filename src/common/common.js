@@ -186,6 +186,10 @@ const common = {
     if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
       url = config.transactionUrls[symbol][type];
     }
+    // BTC has / suffix, RSK does not.
+    // For example:
+    // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
+    // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
     url = `${url}/${hash}${symbol === 'BTC' ? '/' : ''}`;
     return url;
   },
