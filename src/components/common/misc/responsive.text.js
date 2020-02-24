@@ -3,18 +3,19 @@ import {
   Text, View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 // https://github.com/facebook/react-native/issues/20906
 // magic number, estimated value, fontSize = fontWidth * FONT_SIZE_TIMES;
 const FONT_SIZE_TIMES = 1.7;
 
 /**
- * getFontSize, calculate fit font size in limited width
+ * calcFontSize, calculate fit font size in limited width
  * @param {*} width, limited width
  * @param {*} length, text length
  * @param {*} maxFontSize
  */
-const getFontSize = (width, length, maxFontSize) => {
+const calcFontSize = (width, length, maxFontSize) => {
   let fontSize = Math.floor(width / length);
   fontSize = Math.min(FONT_SIZE_TIMES * fontSize, maxFontSize);
   return fontSize;
@@ -42,22 +43,24 @@ export default class ResponsiveText extends Component {
     };
   }
 
+  // calculate fit font size in limited width
+  static getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth) {
+    // layoutWidth - suffixElementWidth is the width text component can use actually
+    const fontSize = _.isEmpty(children) ? maxFontSize : calcFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
+    return fontSize;
+  }
+
   componentWillReceiveProps(nextProps) {
     const { children, maxFontSize, suffixElementWidth } = nextProps;
     const { layoutWidth } = this.state;
-    if (!children) return;
     // If layout isn't change, but children or style is change, calculate font size again.
-    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
-    this.setState({ fontSize });
+    this.setState({ fontSize: ResponsiveText.getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth) });
   }
 
   onLayout = (event) => {
-    const { children, suffixElementWidth, maxFontSize } = this.props;
+    const { children, maxFontSize, suffixElementWidth } = this.props;
     const { width: layoutWidth } = event.nativeEvent.layout;
-    if (!children) return;
-    // layoutWidth - suffixElementWidth is the width text component can use actually
-    const fontSize = getFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
-    this.setState({ fontSize, layoutWidth });
+    this.setState({ fontSize: ResponsiveText.getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth), layoutWidth });
   }
 
   render() {
