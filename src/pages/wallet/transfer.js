@@ -20,6 +20,7 @@ import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
+import definitions from '../../common/definitions';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -353,7 +354,7 @@ class Transfer extends Component {
     let minFee = null;
     switch (coin.symbol) {
       case 'BTC':
-        minFee = common.convertUnitToCoinAmount(feeSymbol, coin.metadata.DEFAULT_BTC_MEDIUM_FEE * (1 - FEE_LEVEL_ADJUSTMENT));
+        minFee = this.mediumFee.times(1 - FEE_LEVEL_ADJUSTMENT);
         break;
       case 'RBTC':
         minFee = common.convertUnitToCoinAmount(feeSymbol, coin.metadata.DEFAULT_RBTC_MEDIUM_GAS * (1 - FEE_LEVEL_ADJUSTMENT)).times(coin.metadata.DEFAULT_RBTC_GAS_PRICE);
@@ -509,7 +510,7 @@ class Transfer extends Component {
     const feeData = [];
     for (let i = 0; i < feeLevels.length; i += 1) {
       const item = {};
-      const fee = feeLevels[i] * feeBase[coin.symbol];
+      const fee = feeSymbol === 'BTC' ? definitions.btcPreferenceFee[i] : feeLevels[i] * feeBase[coin.symbol];
       let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
       coinAmount = feeSymbol === 'RBTC' ? coinAmount.times(coin.metadata.DEFAULT_RBTC_GAS_PRICE) : coinAmount;
       const coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
