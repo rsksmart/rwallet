@@ -69,6 +69,17 @@ const config = {
     },
   },
   defaultFontFamily: 'Roboto', // defaultFontFamily, for android
+  coinswitch: {
+    // Put the initPair here because
+    // 1. constrain the user to select the pair, which is only supported by coinswitch.
+    // 2. use it as a array, basically we need failback. Because always 2 precondition need to be fullfilled before useing going forward (1. coinswitch supporting 2. use has the specific coin)
+    // 3. Since based on the current logic, we will alwauys know one of them beforehand. So to take advantage of this, by using key-value
+    initPairs: {
+      BTC: ['RBTC', 'DOC'],
+      RBTC: ['BTC'],
+      DOC: ['BTC'],
+    },
+  },
 };
 
 export default config;

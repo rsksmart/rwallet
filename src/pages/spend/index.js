@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import EarnHeader from '../../components/headers/header.earn';
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SpendIndex extends Component {
+class SpendIndex extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -48,13 +48,15 @@ export default class SpendIndex extends Component {
         renderAccessory={() => <RSKad />}
         headerComponent={<EarnHeader title="page.spend.index.title" imageSource={headerImage} imageBgColor="#61DABF" />}
       >
-        <View style={styles.body}>
-          <Loc style={[styles.title]} text="page.spend.index.featuresTitle" />
-          <View style={styles.greenLine} />
-          <Loc style={[styles.listText]} text="page.spend.index.feature1" />
-          <Loc style={[styles.listText]} text="page.spend.index.feature2" />
-          <Loc style={[styles.listText]} text="page.spend.index.feature3" />
-        </View>
+        <TouchableOpacity>
+          <View style={styles.body}>
+            <Loc style={[styles.title]} text="page.spend.index.featuresTitle" />
+            <View style={styles.greenLine} />
+            <Loc style={[styles.listText]} text="page.spend.index.feature1" />
+            <Loc style={[styles.listText]} text="page.spend.index.feature2" />
+            <Loc style={[styles.listText]} text="page.spend.index.feature3" />
+          </View>
+        </TouchableOpacity>
       </BasePageGereral>
     );
   }
@@ -68,3 +70,5 @@ SpendIndex.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+export default SpendIndex;
