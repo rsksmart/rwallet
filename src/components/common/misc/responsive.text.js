@@ -21,6 +21,14 @@ const calcFontSize = (width, length, maxFontSize) => {
   return fontSize;
 };
 
+// calculate fit font size in limited width
+const getFontSize = (children, layoutWidth, maxFontSize, suffixElementWidth) => {
+  // layoutWidth - suffixElementWidth is the width text component can use actually
+  const fontSize = _.isEmpty(children) ? maxFontSize : calcFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
+  return fontSize;
+};
+
+
 const styles = StyleSheet.create({
   textView: {
     flexDirection: 'row',
@@ -43,24 +51,17 @@ export default class ResponsiveText extends Component {
     };
   }
 
-  // calculate fit font size in limited width
-  static getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth) {
-    // layoutWidth - suffixElementWidth is the width text component can use actually
-    const fontSize = _.isEmpty(children) ? maxFontSize : calcFontSize(layoutWidth - suffixElementWidth, children.length, maxFontSize);
-    return fontSize;
-  }
-
   componentWillReceiveProps(nextProps) {
     const { children, maxFontSize, suffixElementWidth } = nextProps;
     const { layoutWidth } = this.state;
     // If layout isn't change, but children or style is change, calculate font size again.
-    this.setState({ fontSize: ResponsiveText.getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth) });
+    this.setState({ fontSize: getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth) });
   }
 
   onLayout = (event) => {
     const { children, maxFontSize, suffixElementWidth } = this.props;
     const { width: layoutWidth } = event.nativeEvent.layout;
-    this.setState({ fontSize: ResponsiveText.getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth), layoutWidth });
+    this.setState({ fontSize: getFontSize(children, layoutWidth, maxFontSize, suffixElementWidth), layoutWidth });
   }
 
   render() {
