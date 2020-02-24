@@ -19,6 +19,8 @@ import HistoryHeader from '../../components/headers/header.history';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import definitions from '../../common/definitions';
+import presetStyles from '../../assets/styles/style';
+import screenHelper from '../../common/screenHelper';
 
 const { getCurrencySymbol } = common;
 
@@ -213,6 +215,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
   },
+  lastRow: {
+    marginBottom: 17 + screenHelper.bottomHeight,
+  },
 });
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -230,13 +235,13 @@ const stateIcons = {
 };
 
 function Item({
-  title, amount, datetime, onPress,
+  title, amount, datetime, onPress, isLastRow,
 }) {
   const icon = stateIcons[title];
   return (
-    <TouchableOpacity style={[styles.row]} onPress={onPress}>
+    <TouchableOpacity style={[styles.row, isLastRow ? styles.lastRow : null]} onPress={onPress}>
       <View style={styles.iconView}>{icon}</View>
-      <View style={styles.rowRight}>
+      <View style={[styles.rowRight, isLastRow ? presetStyles.noBottomBorder : null]}>
         <View style={[styles.rowRightR1]}>
           <Loc style={[styles.title]} text={`txState.${title}`} />
         </View>
@@ -254,6 +259,7 @@ Item.propTypes = {
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  isLastRow: PropTypes.bool.isRequired,
 };
 
 class History extends Component {
@@ -336,6 +342,7 @@ class History extends Component {
             amount={item.amountText}
             datetime={item.datetimeText}
             onPress={() => { onPress(index); }}
+            isLastRow={index === listData.length - 1}
           />
         )}
         keyExtractor={(item, index) => index.toString()}

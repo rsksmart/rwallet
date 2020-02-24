@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     marginHorizontal: 30,
-    marginBottom: 50,
+    marginBottom: 85,
   },
   title: {
     fontSize: 14,

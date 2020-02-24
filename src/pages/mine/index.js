@@ -16,6 +16,7 @@ import RSKad from '../../components/common/rsk.ad';
 import config from '../../../config';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
+import presetStyles from '../../assets/styles/style';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -91,16 +92,13 @@ const styles = StyleSheet.create({
   lastBlockMarginBottom: {
     marginBottom: 80,
   },
-  noBorder: {
-    borderBottomColor: 'rgba(0,0,0,0)',
-  },
 });
 
 function Item({ data, title, isHasBottomBorder }) {
   return (
     <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
       {data.icon}
-      <View style={[styles.right, isHasBottomBorder ? null : styles.noBorder]}>
+      <View style={[styles.right, isHasBottomBorder ? null : presetStyles.noBottomBorder]}>
         <Text>{title}</Text>
       </View>
     </TouchableOpacity>

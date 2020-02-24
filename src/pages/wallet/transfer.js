@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, Platform,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -232,7 +232,7 @@ const {
   PLACEHODLER_AMOUNT,
 } = CONSTANTS;
 
-const addressIcon = require('../../assets/images/icon/address.png');
+// const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -243,7 +243,7 @@ class Transfer extends Component {
   static generateAmountPlaceholderText(symbol, currency, prices) {
     const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
     let amountPlaceholderText = `${amountText} ${symbol}`;
-    if (prices) {
+    if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
       const amountValueText = common.getAssetValueString(amountValue, amountValue);
@@ -388,7 +388,7 @@ class Transfer extends Component {
     }
     if (coin.symbol === 'RIF' || coin.symbol === 'DOC') {
       const amount = common.getBalanceString(coin.symbol, coin.balance);
-      this.setState({ amount });
+      this.inputAmount(amount);
     } else {
       let fee = feeData[feeLevel].coin;
       if (isCustomFee) {
@@ -402,7 +402,7 @@ class Transfer extends Component {
   }
 
   async onConfirmPress() {
-    const { navigation: { state } } = this.props;
+    const { navigation: { state }, addNotification } = this.props;
     const { params } = state;
     const { coin } = params;
     let { amount, to } = this.state;
@@ -411,7 +411,19 @@ class Transfer extends Component {
     // This app use checksum address with chainId, but some third-party app use web3 address,
     // so we need to convert input address to checksum address with chainId before validation and transfer
     // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
-    const toAddress = coin.symbol === 'BTC' ? to : rsk3.utils.toChecksumAddress(to, coin.networkId);
+    let toAddress = to;
+    if (coin.symbol !== 'BTC') {
+      try {
+        toAddress = rsk3.utils.toChecksumAddress(to, coin.networkId);
+      } catch (error) {
+        const notification = createErrorNotification(
+          'modal.invalidAddress.title',
+          'modal.invalidAddress.body',
+        );
+        addNotification(notification);
+        return;
+      }
+    }
     if (!this.validateFormData(amount, toAddress, coin.symbol, coin.type, coin.networkId)) {
       // this.resetConfirm();
       return;
@@ -495,7 +507,7 @@ class Transfer extends Component {
     };
     const feeSymbol = coin.symbol === 'RIF' || coin.symbol === 'DOC' ? 'RBTC' : coin.symbol;
     const feeData = [];
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < feeLevels.length; i += 1) {
       const item = {};
       const fee = feeLevels[i] * feeBase[coin.symbol];
       let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
@@ -670,7 +682,8 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
+              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol}`}
+              {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
         )}
@@ -694,8 +707,7 @@ class Transfer extends Component {
       const fee = feeData[i];
       const coinAmount = common.getBalanceString(feeSymbol, fee.coin);
       item.coin = `${coinAmount} ${feeSymbol}`;
-      const coinValue = common.getAssetValueString(fee.value);
-      item.value = `${currencySymbol}${coinValue}`;
+      item.value = fee.value ? `${currencySymbol}${common.getAssetValueString(fee.value)}` : '';
       items.push(item);
     }
     let selectIndex = null;
@@ -773,12 +785,9 @@ class Transfer extends Component {
                   this.setState({ to: text }, this.validateConfirmControl.bind(this));
                 }}
               />
-              <TouchableOpacity
-                style={styles.textInputIcon}
-                onPress={this.onQrcodeScanPress}
-              >
+              {/* <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
                 <Image source={addressIcon} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <View style={styles.sectionContainer}>

@@ -71,9 +71,6 @@ const styles = StyleSheet.create({
     color: '#77869E',
     letterSpacing: 1,
   },
-  noBorder: {
-    borderBottomColor: 'rgba(0,0,0,0)',
-  },
   headerTitle: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'Avenir-Medium',
@@ -95,7 +92,7 @@ class SwapSelection extends Component {
     };
   }
 
-  async componentDidMount(): void {
+  async componentDidMount() {
     let rawList;
     let filters = [];
     const {
@@ -147,7 +144,7 @@ class SwapSelection extends Component {
           return (
             <TouchableOpacity style={[coinListItemStyles.row, styles.row]} onPress={() => item.onPress()}>
               <Image style={styles.icon} source={item.icon} />
-              <View style={[coinListItemStyles.rowRightView, styles.rowRightView, isLastRow ? styles.noBorder : {}]}>
+              <View style={[coinListItemStyles.rowRightView, styles.rowRightView, isLastRow ? presetStyles.noBottomBorder : {}]}>
                 <View style={[coinListItemStyles.rowTitleView, styles.rowTitleView]}>
                   <Text style={styles.coinName}>{item.title}</Text>
                   <Text style={styles.balance}>{item.amount}</Text>

@@ -22,7 +22,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RBTC',
-    DEFAULT_RBTC_MEDIUM_GAS: 27500,
+    DEFAULT_RBTC_MEDIUM_GAS: 29400,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
   RIF: {
@@ -33,7 +33,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RIF',
-    DEFAULT_RIF_MEDIUM_GAS: 28830,
+    DEFAULT_RIF_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
   DOC: {
@@ -44,7 +44,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'DOC',
-    DEFAULT_DOC_MEDIUM_GAS: 71250,
+    DEFAULT_DOC_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
   BTCTestnet: {
@@ -66,7 +66,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RBTC',
-    DEFAULT_RBTC_MEDIUM_GAS: 27500,
+    DEFAULT_RBTC_MEDIUM_GAS: 29400,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
   RIFTestnet: {
@@ -77,7 +77,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RIF',
-    DEFAULT_RIF_MEDIUM_GAS: 28830,
+    DEFAULT_RIF_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
   DOCTestnet: {
@@ -88,7 +88,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'DOC',
-    DEFAULT_DOC_MEDIUM_GAS: 71250,
+    DEFAULT_DOC_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
   },
 };

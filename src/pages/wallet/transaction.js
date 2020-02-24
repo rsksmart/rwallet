@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   },
   linkView: {
     marginTop: 20,
+    marginBottom: 40,
   },
   amount: {
     flex: 1,
@@ -140,7 +141,7 @@ class Transaction extends Component {
     } = this.state;
     return (
       <BasePageGereral
-        isSafeView={false}
+        isSafeView
         hasBottomBtn={false}
         hasLoader={false}
         headerComponent={<Header title={`page.wallet.transaction.${title}`} onBackButtonPress={() => navigation.goBack()} />}
@@ -167,7 +168,7 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
-            <Text numberOfLines={1}>{transactionId}</Text>
+            <Text selectable>{transactionId}</Text>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
