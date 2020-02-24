@@ -21,7 +21,7 @@ import walletActions from '../../redux/wallet/actions';
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
 const swap = require('../../assets/images/icon/swap.png');
-const scan = require('../../assets/images/icon/scan.png');
+// const scan = require('../../assets/images/icon/scan.png');
 
 const { getCurrencySymbol } = common;
 
@@ -341,18 +341,18 @@ class WalletList extends Component {
     const {
       listData, currencySymbol, totalAssetValueText,
     } = this.state;
-    const scanButton = (
-      <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
-        <Image style={[styles.scan]} source={scan} />
-      </TouchableOpacity>
-    );
+    // const scanButton = (
+    //   <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
+    //     <Image style={[styles.scan]} source={scan} />
+    //   </TouchableOpacity>
+    // );
     return (
       <BasePageGereral
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
         renderAccessory={() => <RSKad />}
-        headerComponent={<ListPageHeader title="page.wallet.list.title" customRightButton={scanButton} />}
+        headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>

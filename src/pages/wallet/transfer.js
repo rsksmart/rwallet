@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, Platform,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -242,7 +242,7 @@ const DEFAULT_RBTC_GAS_PRICE = 600000000;
 const MAX_FEE_TIMES = 2;
 const PLACEHODLER_AMOUNT = 0.001;
 
-const addressIcon = require('../../assets/images/icon/address.png');
+// const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -795,9 +795,9 @@ class Transfer extends Component {
                   this.setState({ to: text }, this.validateConfirmControl.bind(this));
                 }}
               />
-              <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
+              {/* <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
                 <Image source={addressIcon} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <View style={styles.sectionContainer}>
