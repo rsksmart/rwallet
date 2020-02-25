@@ -162,6 +162,8 @@ const color = {
             }
         }
     },
+    black: '#000',
+    white: '#FFF',
     midGrey: '#727372',
     ...styleScript(),
 };
