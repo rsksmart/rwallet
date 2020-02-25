@@ -16,7 +16,6 @@ const SpotLight = posed.View({
   route0: { x: tabWidth * 0.25 },
   route1: { x: tabWidth * 1.25 },
   route2: { x: tabWidth * 2.25 },
-  // route3: { x: tabWidth * 3.35 },
 });
 
 const Scaler = posed.View({
