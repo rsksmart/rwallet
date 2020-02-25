@@ -5,19 +5,19 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import SwapHeader from '../../components/headers/header.swap';
-import BasePageGereral from '../base/base.page.general';
-import Button from '../../components/common/button/button';
-import space from '../../assets/styles/space';
-import color from '../../assets/styles/color.ts';
-import presetStyles from '../../assets/styles/style';
-import common from '../../common/common';
-import CoinswitchHelper from '../../common/coinswitch.helper';
-import Transaction from '../../common/transaction';
-import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
-import walletActions from '../../redux/wallet/actions';
-import Loc from '../../components/common/misc/loc';
+import SwapHeader from '../../../components/headers/header.swap';
+import BasePageGereral from '../../base/base.page.general';
+import Button from '../../../components/common/button/button';
+import space from '../../../assets/styles/space';
+import color from '../../../assets/styles/color.ts';
+import presetStyles from '../../../assets/styles/style';
+import common from '../../../common/common';
+import CoinswitchHelper from '../../../common/coinswitch.helper';
+import Transaction from '../../../common/transaction';
+import appActions from '../../../redux/app/actions';
+import { createErrorNotification } from '../../../common/notification.controller';
+import walletActions from '../../../redux/wallet/actions';
+import Loc from '../../../components/common/misc/loc';
 
 
 const styles = StyleSheet.create({
@@ -213,12 +213,12 @@ const styles = StyleSheet.create({
 });
 
 const res = {};
-res.exchange = require('../../assets/images/icon/exchange.png');
-res.BTC = require('../../assets/images/icon/BTC.png');
-res.RBTC = require('../../assets/images/icon/RBTC.png');
-res.RIF = require('../../assets/images/icon/RIF.png');
-res.currencyExchange = require('../../assets/images/icon/currencyExchange.png');
-res.error = require('../../assets/images/icon/error.png');
+res.exchange = require('../../../assets/images/icon/exchange.png');
+res.BTC = require('../../../assets/images/icon/BTC.png');
+res.RBTC = require('../../../assets/images/icon/RBTC.png');
+res.RIF = require('../../../assets/images/icon/RIF.png');
+res.currencyExchange = require('../../../assets/images/icon/currencyExchange.png');
+res.error = require('../../../assets/images/icon/error.png');
 
 const switchItems = ['MIN', 'HALF', 'ALL'];
 
