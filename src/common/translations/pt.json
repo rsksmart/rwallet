@@ -142,7 +142,7 @@
       "addToken": {
         "title": "Add Tokens",
         "enableAssets": "Ativar ativos",
-        "note": "Desative ativos para ocultá-los do seu portfólio. Bitcoin e Ehtereum devem permanecer ativos, pois a troca exige um mínimo de dois ativos."
+        "note": "Desative ativos para ocultá-los do seu portfólio."
       }
     },
     "mine": {

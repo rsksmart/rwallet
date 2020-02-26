@@ -142,7 +142,7 @@
       "addToken": {
         "title": "Add Tokens",
         "enabledAssets": "Activos habilitados",
-        "note": "Inhabilite los activos para ocultarlos de su cartera. Bitcoin y Ehtereum deben permanecer activados ya que el intercambio requiere un mínimo de dos activos."
+        "note": "Inhabilite los activos para ocultarlos de su cartera."
       }
     },
     "mine": {

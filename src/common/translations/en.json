@@ -143,7 +143,7 @@
       "addToken": {
         "title": "Add Tokens",
         "enabledAssets": "Enabled Assets",
-        "note": "Disable assets to hide them from your portfolio. Bitcoin and Ehtereum must remain on as the exchange requires a minimum of two assets."
+        "note": "Disable assets to hide them from your portfolio."
       }
     },
     "mine": {

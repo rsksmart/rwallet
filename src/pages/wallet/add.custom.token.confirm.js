@@ -85,7 +85,7 @@ export default class AddCustomToken extends Component {
             <View style={styles.tokenView}>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.token" />
-                <Image style={[styles.tokenLogo, space.marginRight_10]} source={references.images.BTC} />
+                <Image style={[styles.tokenLogo, space.marginRight_10]} source={references.images.customToken} />
                 <Text style={styles.symbol}>BTC</Text>
               </View>
               <View style={styles.row}>
