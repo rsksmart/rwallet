@@ -14,7 +14,7 @@ import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../../assets/styles/style';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
-import CoinswitchHelper from '../../../common/coinswitch.helper';
+// import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
 
 const styles = StyleSheet.create({
@@ -93,44 +93,44 @@ class SwapSelection extends Component {
   }
 
   async componentDidMount() {
-    let rawList;
-    let filters = [];
     const {
-      navigation, swapDest, swapSource, walletManager,
+      navigation, walletManager,
     } = this.props;
     const { wallets } = walletManager;
     const { selectionType } = navigation.state.params || { selectionType: 'source' };
-    if (selectionType === 'source' && swapDest) {
-      try {
-        rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
-      } catch {
-        rawList = [];
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i += 1) {
-        const item = rawList[i];
-        if (item.isActive) {
-          filters.push(item.depositCoin);
-        }
-      }
-    } else if (selectionType === 'dest') {
-      try {
-        rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
-      } catch {
-        rawList = [];
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i += 1) {
-        const item = rawList[i];
-        if (item.isActive) {
-          filters.push(item.destinationCoin);
-        }
-      }
-    } else {
-      filters = null;
-    }
+    // let rawList;
+    // let filters = [];
+    // if (selectionType === 'source' && swapDest) {
+    //   try {
+    //     rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
+    //   } catch {
+    //     rawList = [];
+    //   }
+    //   // eslint-disable-next-line no-plusplus
+    //   for (let i = 0; i < rawList.length; i += 1) {
+    //     const item = rawList[i];
+    //     if (item.isActive) {
+    //       filters.push(item.depositCoin);
+    //     }
+    //   }
+    // } else if (selectionType === 'dest') {
+    //   try {
+    //     rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
+    //   } catch {
+    //     rawList = [];
+    //   }
+    //   // eslint-disable-next-line no-plusplus
+    //   for (let i = 0; i < rawList.length; i += 1) {
+    //     const item = rawList[i];
+    //     if (item.isActive) {
+    //       filters.push(item.destinationCoin);
+    //     }
+    //   }
+    // } else {
+    //   filters = null;
+    // }
 
-    const coinList = this.createListData(wallets, navigation, selectionType, filters);
+    const coinList = this.createListData(wallets, navigation, selectionType, null);
     this.setState({ coinList, loading: false });
   }
 
@@ -178,10 +178,16 @@ class SwapSelection extends Component {
       const wal = { name: wallet.name, coins: [] };
       // Create element for each Token (e.g. BTC, RBTC, RIF)
       wallet.coins.forEach((coin) => {
-        if (selectionType === 'dest' && coin.symbol === swapSource.coin.symbol) {
+        if (coin.type !== 'Mainnet') {
           return;
         }
-        if (selectionType === 'source' && swapDest && coin.symbol === swapDest.coin.symbol) {
+        if (!config.coinswitch.initPairs[coin.symbol]) {
+          return;
+        }
+        if (selectionType === 'dest' && (coin.symbol === swapSource.coin.symbol || !config.coinswitch.initPairs[swapSource.coin.symbol].includes(coin.symbol))) {
+          return;
+        }
+        if (selectionType === 'source' && swapDest && (coin.symbol === swapDest.coin.symbol || !config.coinswitch.initPairs[swapDest.coin.symbol].includes(coin.symbol))) {
           return;
         }
         if (filters && (filters.length === 0 || !filters.includes(coin.symbol.toLowerCase()))) {
