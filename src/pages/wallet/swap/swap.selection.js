@@ -7,15 +7,15 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/headers/header';
-import common from '../../common/common';
-import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
-import presetStyles from '../../assets/styles/style';
-import walletActions from '../../redux/wallet/actions';
-import Loc from '../../components/common/misc/loc';
-import CoinswitchHelper from '../../common/coinswitch.helper';
-import config from '../../../config';
+import BasePageGereral from '../../base/base.page.general';
+import Header from '../../../components/headers/header';
+import common from '../../../common/common';
+import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
+import presetStyles from '../../../assets/styles/style';
+import walletActions from '../../../redux/wallet/actions';
+import Loc from '../../../components/common/misc/loc';
+import CoinswitchHelper from '../../../common/coinswitch.helper';
+import config from '../../../../config';
 
 const styles = StyleSheet.create({
   body: {
@@ -99,7 +99,7 @@ class SwapSelection extends Component {
       navigation, swapDest, swapSource, walletManager,
     } = this.props;
     const { wallets } = walletManager;
-    const { selectionType } = navigation.state.params;
+    const { selectionType } = navigation.state.params || { selectionType: 'source' };
     if (selectionType === 'source' && swapDest) {
       try {
         rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
@@ -166,7 +166,7 @@ class SwapSelection extends Component {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
 
-    const { init } = navigation.state.params;
+    const { init } = navigation.state.params || { init: true };
 
     if (!_.isArray(wallets)) {
       return [];
@@ -211,7 +211,7 @@ class SwapSelection extends Component {
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
+            navigation[navigation.state.params && init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
           },
         };
         wal.coins.push(item);
@@ -224,9 +224,11 @@ class SwapSelection extends Component {
   };
 
   render() {
-    const { navigation, resetSwap } = this.props;
+    const {
+      navigation, resetSwap, bottomPaddingComponent, headless,
+    } = this.props;
     const { coinList, loading } = this.state;
-    const { selectionType } = navigation.state.params;
+    const { selectionType } = navigation.state.params || { selectionType: 'source' };
     const rightButton = selectionType === 'dest' ? (
       <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
         <TouchableOpacity onPress={() => {
@@ -245,7 +247,11 @@ class SwapSelection extends Component {
         hasBottomBtn={false}
         hasLoader={false}
         bgColor="#00B520"
-        headerComponent={(
+        headerComponent={headless ? (
+          <Header
+            title="page.wallet.swapSelection.title"
+          />
+        ) : (
           <Header
             onBackButtonPress={() => navigation.goBack()}
             title="page.wallet.swapSelection.title"
@@ -253,7 +259,7 @@ class SwapSelection extends Component {
           />
         )}
       >
-        <View style={styles.body}>
+        <View style={[styles.body, headless ? { marginTop: -95 } : {}]}>
           <FlatList
             data={coinList}
             renderItem={({ item }) => (
@@ -265,6 +271,7 @@ class SwapSelection extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        {bottomPaddingComponent}
         {loading && <ActivityIndicator size="large" />}
       </BasePageGereral>
     );
@@ -292,12 +299,17 @@ SwapSelection.propTypes = {
   setSwapSource: PropTypes.func.isRequired,
   setSwapDest: PropTypes.func.isRequired,
   resetSwap: PropTypes.func.isRequired,
+  headless: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  bottomPaddingComponent: PropTypes.object,
 };
 
 SwapSelection.defaultProps = {
   walletManager: undefined,
   swapSource: undefined,
   swapDest: undefined,
+  bottomPaddingComponent: undefined,
+  headless: false,
 };
 
 const mapStateToProps = (state) => ({

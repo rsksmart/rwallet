@@ -3,7 +3,8 @@
     "Wallet": "Wallet",
     "Spend": "Spend",
     "Earn": "Earn",
-    "Me": "Me"
+    "Me": "Me",
+    "Exchange": "Swap"
   },
   "page": {
     "start": {

@@ -22,14 +22,13 @@ import WalletHistory from '../pages/wallet/history';
 import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
 import Transaction from '../pages/wallet/transaction';
-import Swap from '../pages/wallet/swap';
-import SwapSelection from '../pages/wallet/swap.selection';
+import Swap from '../pages/wallet/swap/swap';
+import SwapSelection from '../pages/wallet/swap/swap.selection';
 import SwapCompleted from '../pages/wallet/swap.completed';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
-import SpendIndex from '../pages/spend/index';
-import EarnIndex from '../pages/earn/index';
+import ExchangeIndex from '../pages/wallet/swap';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 /* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
@@ -207,21 +206,12 @@ const routeConfigMap = {
       }),
     },
   },
-  spend: {
-    SpendIndex: {
-      screen: SpendIndex,
-      path: 'SpendIndex',
+  exchange: {
+    ExchangeIndex: {
+      screen: ExchangeIndex,
+      path: 'ExchangeIndex',
       navigationOptions: () => ({
-        headerTitle: 'Spend',
-      }),
-    },
-  },
-  earn: {
-    EarnIndex: {
-      screen: EarnIndex,
-      path: 'EarnIndex',
-      navigationOptions: () => ({
-        headerTitle: 'Earn',
+        header: null,
       }),
     },
   },
