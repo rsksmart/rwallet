@@ -49,15 +49,14 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   sepratorLine: {
-    borderColor: '#FFF',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    position: 'absolute',
-    width: '100%',
+    backgroundColor: '#FFF',
+    height: StyleSheet.hairlineWidth,
+    flex: 1,
   },
   seprator: {
-    marginVertical: 12,
-    justifyContent: 'center',
-    height: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 14,
   },
   exchangeIcon: {
     width: 20,
@@ -65,8 +64,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   exchangeIconView: {
+    width: 50,
     alignSelf: 'center',
-    backgroundColor: '#54B52D',
+    // backgroundColor: '#54B52D',
     alignItems: 'center',
   },
   operationView: {
@@ -626,6 +626,7 @@ class Swap extends Component {
                 <Image style={styles.exchangeIcon} source={res.exchange} />
               </TouchableOpacity>
             )}
+            <View style={styles.sepratorLine} />
           </View>
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (
