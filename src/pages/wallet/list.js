@@ -14,7 +14,7 @@ import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
-import ListPageHeader, { defaultHeaderHeight } from '../../components/headers/header.listpage';
+import ListPageHeader, { defaultPageMarginTop } from '../../components/headers/header.listpage';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import walletActions from '../../redux/wallet/actions';
 import { ParallaxSwiper, ParallaxSwiperPage } from '../../components/common/swiper';
@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
+    marginTop: 60,
+    marginLeft: 1,
   },
   scanView: {
     position: 'absolute',
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
+    marginTop: 25,
   },
   chevron: {
     color: '#FFF',
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginBottom: 93,
-    marginTop: -defaultHeaderHeight,
+    marginTop: -defaultPageMarginTop,
   },
   pageBackground: {
     width: winWidth,
@@ -438,6 +441,7 @@ class WalletList extends Component {
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
+        isViewWrapper
         renderAccessory={() => <RSKad />}
         headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
