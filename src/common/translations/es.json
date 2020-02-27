@@ -292,11 +292,11 @@
     },
     "phraseCopied": {
       "title": "Copiado",
-      "body": "La frase de recuperación se ha copiado al portapapeles."
+      "body": "La frase de recuperación se ha copiado en el portapapeles."
     },
     "addressCopied": {
       "title": "Copiado",
-      "body": "La dirección ha sido copiada al portapapeles."
+      "body": "La dirección se ha copiado en el portapapeles."
     },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
