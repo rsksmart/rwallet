@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   exchangeIconView: {
-    width: 50,
+    width: 40,
     alignSelf: 'center',
     // backgroundColor: '#54B52D',
     alignItems: 'center',
