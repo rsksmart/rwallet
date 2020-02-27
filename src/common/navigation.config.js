@@ -25,6 +25,9 @@ import Transaction from '../pages/wallet/transaction';
 import Swap from '../pages/wallet/swap/swap';
 import SwapSelection from '../pages/wallet/swap/swap.selection';
 import SwapCompleted from '../pages/wallet/swap.completed';
+import AddToken from '../pages/wallet/add.token';
+import AddCustomToken from '../pages/wallet/add.custom.token';
+import AddCustomTokenConfirm from '../pages/wallet/add.custom.token.confirm';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -203,6 +206,27 @@ const routeConfigMap = {
       path: 'SwapCompleted',
       navigationOptions: () => ({
         headerTitle: 'SwapCompleted',
+      }),
+    },
+    AddToken: {
+      screen: AddToken,
+      path: 'AddToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddToken',
+      }),
+    },
+    AddCustomToken: {
+      screen: AddCustomToken,
+      path: 'AddCustomToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomToken',
+      }),
+    },
+    AddCustomTokenConfirm: {
+      screen: AddCustomTokenConfirm,
+      path: 'AddCustomTokenConfirm',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomTokenConfirm',
       }),
     },
   },

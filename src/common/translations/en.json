@@ -128,6 +128,23 @@
         "body": "Exchange Completed!",
         "note": "Your Exchange is on its way.",
         "viewExplorer": "Click to view in explorer"
+      },
+      "addCustomToken": {
+        "title": "Add Custom Tokens",
+        "address": "Token Contract Address",
+        "symbol": "Token Symbol",
+        "decimals": "Decimals of Precision"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Add Custom Tokens",
+        "question": "Would you like to add these tokens?",
+        "token": "Token",
+        "balance": "Balance"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Enabled Assets",
+        "note": "Disable assets to hide them from your portfolio."
       }
     },
     "mine": {
@@ -208,6 +225,7 @@
   "button": {
     "save": "SAVE",
     "NEXT": "NEXT",
+    "Next": "Next",
     "gotIt": "GOT IT",
     "create": "CREATE",
     "CONFIRM": "CONFIRM",

@@ -127,6 +127,23 @@
         "body": "Intercambio completado!",
         "note": "Su intercambio está en camino.",
         "viewExplorer": "Haga clic para ver en el explorador"
+      },
+      "addCustomToken": {
+        "title": "Agregar tokens personalizados",
+        "address": "Dirección del contrato de token",
+        "symbol": "Símbolo simbólico",
+        "decimals": "Decimales de precisión"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Agregar tokens personalizados",
+        "question": "¿Te gustaría agregar estos tokens?",
+        "token": "Simbólico",
+        "balance": "Equilibrar"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Activos habilitados",
+        "note": "Inhabilite los activos para ocultarlos de su cartera."
       }
     },
     "mine": {
@@ -207,6 +224,7 @@
   "button": {
     "save": "GUARDAR",
     "NEXT": "SIGUIENTE",
+    "Next": "Próximo",
     "gotIt": "ENTENDIDO",
     "create": "CREAR",
     "CONFIRM": "CONFIRMAR",

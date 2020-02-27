@@ -127,6 +127,23 @@
         "body": "交换完成！",
         "note": "您的交换正在进行中。",
         "viewExplorer": "单击以在rsk explorer中查看"
+      },
+      "addCustomToken": {
+        "title": "添加自定义代币",
+        "address": "代币合约地址",
+        "symbol": "代币符号",
+        "decimals": "小数精度"
+      },
+      "addCustomTokenConfirm": {
+        "title": "添加自定义代币",
+        "question": "你想要添加这个代币吗？",
+        "token": "代币",
+        "balance": "余额"
+      },
+      "addToken": {
+        "title": "添加代币",
+        "enableAssets": "开启的资产",
+        "note": "禁用资产以将其从投资组合中隐藏。"
       }
     },
     "mine": {
@@ -207,6 +224,7 @@
   "button": {
     "save": "保存",
     "NEXT": "下一步",
+    "Next": "下一步",
     "gotIt": "好的",
     "create": "创建",
     "CONFIRM": "确认",
