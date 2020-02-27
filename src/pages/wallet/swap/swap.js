@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
   seprator: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 14,
+    height: 25,
+    marginVertical: 12,
   },
   exchangeIcon: {
     width: 20,
@@ -566,6 +567,8 @@ class Swap extends Component {
 
     const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
 
+    const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
+
     const customBottomButton = (
       <Button
         text="button.Exchange"
@@ -621,11 +624,13 @@ class Swap extends Component {
           </View>
           <View style={styles.seprator}>
             <View style={styles.sepratorLine} />
-            {swapSource && swapDest && !coinLoading && (
-              <TouchableOpacity style={styles.exchangeIconView} onPress={this.switchSourceDest}>
-                <Image style={styles.exchangeIcon} source={res.exchange} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={[styles.exchangeIconView, { opacity: isCanSwitchSourceDest ? 1 : 0.3 }]}
+              disabled={!isCanSwitchSourceDest}
+              onPress={this.switchSourceDest}
+            >
+              <Image style={styles.exchangeIcon} source={res.exchange} />
+            </TouchableOpacity>
             <View style={styles.sepratorLine} />
           </View>
           <View style={[presetStyles.board, styles.board]}>
