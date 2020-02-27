@@ -3,10 +3,13 @@ import {
   View, ScrollView, StyleSheet, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import ParallaxSwiperPage from './parallax.swiper.page';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+const dividerWidth = 12;
 
 const styles = StyleSheet.create({
   pageOuterContainer: {
@@ -59,16 +62,16 @@ class ParallaxSwiper extends Component {
     let i = 0;
     // Find the page whose left side distance is larger than half width of screen.
     for (; i < this.pageWidths.length; i += 1) {
-      const pageWidth = this.pageWidths[i];
       if (widthSum - contentOffset > width / 2) {
         break;
       }
-      widthSum += pageWidth;
+      const pageWidth = this.pageWidths[i];
+      widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
     }
     this.pageIndex = i - 1;
     const focusPageWidth = this.pageWidths[this.pageIndex];
     // Calculates new contentOffset, and scroll to it.
-    const x = widthSum - focusPageWidth / 2 - width / 2;
+    const x = widthSum - focusPageWidth / 2 - dividerWidth / 2 - width / 2;
     this.scrollView.scrollTo({
       x, y: 0, animated: true,
     });
@@ -92,7 +95,7 @@ class ParallaxSwiper extends Component {
   render() {
     const { height, width } = this.state;
     const {
-      children, speed, backgroundColor, /* animatedValue, */scrollEnabled,
+      children, speed, /* animatedValue, */scrollEnabled,
     } = this.props;
 
     return (
@@ -100,7 +103,7 @@ class ParallaxSwiper extends Component {
         <ScrollView
           ref={(scrollView) => { this.scrollView = scrollView; }}
           scrollEnabled={scrollEnabled}
-          style={{ width, height, backgroundColor }}
+          style={{ width, height }}
           horizontal
           scrollEventThrottle={1}
           onScroll={(syntheticEvent) => {
@@ -119,6 +122,12 @@ class ParallaxSwiper extends Component {
                   ForegroundComponent={child.props.ForegroundComponent}
                   setPageWidth={this.setPageWidth}
                 />
+                <View
+                  style={{
+                    width: dividerWidth,
+                    height,
+                  }}
+                />
               </View>
             ))
           }
@@ -129,7 +138,6 @@ class ParallaxSwiper extends Component {
 }
 
 ParallaxSwiper.propTypes = {
-  backgroundColor: PropTypes.string,
   speed(props, propName, componentName) {
     const { speed: speedValue } = props;
     if (speedValue < 0 || speedValue > 1) {
@@ -141,11 +149,22 @@ ParallaxSwiper.propTypes = {
   },
   onMomentumScrollEnd: PropTypes.func,
   children: PropTypes.arrayOf((propValue, key, componentName) => {
-    const childComponentName = propValue[key].type.displayName;
-    if (!/ParallaxSwiperPage/.test(childComponentName)) {
-      return new Error(
-        `Invalid component '${childComponentName}' supplied to ${componentName}. Use 'ParallaxSwiperPage' instead.`,
-      );
+    const checkChildComponent = (item) => {
+      const { childComponentName } = item.type.displayName;
+      if (!/ParallaxSwiperPage/.test(childComponentName)) {
+        return new Error(
+          `Invalid component '${childComponentName}' supplied to ${componentName}. Use 'ParallaxSwiperPage' instead.`,
+        );
+      }
+      return null;
+    };
+    if (_.isArray(propValue[key])) {
+      const childList = propValue[key];
+      _.each(childList, (child) => {
+        checkChildComponent(child);
+      });
+    } else {
+      checkChildComponent(propValue[key]);
     }
     return null;
   }),
@@ -154,7 +173,6 @@ ParallaxSwiper.propTypes = {
 };
 
 ParallaxSwiper.defaultProps = {
-  backgroundColor: 'black',
   speed: 0.25,
   onMomentumScrollEnd: () => null,
   scrollToIndex: 0,

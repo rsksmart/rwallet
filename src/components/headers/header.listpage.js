@@ -5,13 +5,14 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import screenHelper from '../../common/screenHelper';
-import Loc from '../common/misc/loc';
+// import Loc from '../common/misc/loc';
 
 const header = require('../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerTopOffset = -150;
 const headerMarginTop = headerTopOffset + screenHelper.topHeight;
+export const defaultHeaderHeight = 350 + headerMarginTop;
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -31,17 +32,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function ListPageHeader({ title, customRightButton }) {
+function ListPageHeader({ /* title,  */ customRightButton }) {
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <Loc style={styles.headerTitle} text={title} />
+      {/* <Loc style={styles.headerTitle} text={title} /> */}
       {customRightButton}
     </ImageBackground>
   );
 }
 
 ListPageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  // title: PropTypes.string.isRequired,
   customRightButton: PropTypes.element,
 };
 

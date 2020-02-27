@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Image, FlatList,
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -14,14 +14,20 @@ import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
-import ListPageHeader from '../../components/headers/header.listpage';
+import ListPageHeader, { defaultHeaderHeight } from '../../components/headers/header.listpage';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import walletActions from '../../redux/wallet/actions';
+import { ParallaxSwiper, ParallaxSwiperPage } from '../../components/common/swiper';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
 const swap = require('../../assets/images/icon/swap.png');
 // const scan = require('../../assets/images/icon/scan.png');
+
+const { width: winWidth, height: winHeight } = Dimensions.get('window');
+const pageWidth = winWidth - 50;
+const addPageWidth = winWidth / 2 + 10;
+const endPageWidth = winWidth / 2 - 10;
 
 const { getCurrencySymbol } = common;
 
@@ -55,9 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
-    position: 'absolute',
-    bottom: 120,
-    left: 24,
   },
   scanView: {
     position: 'absolute',
@@ -69,7 +72,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   headerBoard: {
-    width: '85%',
+    width: '100%',
     height: 166,
     borderRadius: 12,
     borderWidth: 1,
@@ -84,7 +87,6 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: -95,
   },
   chevron: {
     color: '#FFF',
@@ -174,6 +176,24 @@ const styles = StyleSheet.create({
   },
   body: {
     marginBottom: 93,
+    marginTop: -defaultHeaderHeight,
+  },
+  pageBackground: {
+    width: winWidth,
+    height: winHeight,
+    backgroundColor: 'white',
+  },
+  foregroundTextContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  foregroundText: {
+    fontSize: 34,
+    fontWeight: '700',
+    letterSpacing: 0.41,
+    color: 'red',
   },
 });
 
@@ -218,18 +238,11 @@ class WalletList extends Component {
    * Transform from wallets to ListData for rendering
    */
 
-  static accountListView(listData) {
+  static accountListView(coins) {
     return (
-      <FlatList
-        data={listData}
-        renderItem={({ item }) => (
-          <View style={coinListItemStyles.itemView}>
-            <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
-            <SwipableButtonList data={item.coins} />
-          </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <View style={coinListItemStyles.itemView}>
+        <SwipableButtonList data={coins} />
+      </View>
     );
   }
 
@@ -338,26 +351,16 @@ class WalletList extends Component {
     return listData;
   }
 
-
-  render() {
+  createWalletPages() {
     const { navigation } = this.props;
     const {
       listData, currencySymbol, totalAssetValueText,
     } = this.state;
-    // const scanButton = (
-    //   <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
-    //     <Image style={[styles.scan]} source={scan} />
-    //   </TouchableOpacity>
-    // );
-    return (
-      <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
-        renderAccessory={() => <RSKad />}
-        headerComponent={<ListPageHeader title="page.wallet.list.title" />}
-      >
-        <View style={styles.body}>
+    const walletPages = [];
+    _.each(listData, (walletData, index) => {
+      const page = (
+        <View>
+          <Loc style={styles.headerTitle} text={walletData.name} />
           <View style={styles.headerBoardView}>
             <View style={styles.headerBoard}>
               <Text style={styles.myAssetsTitle}>
@@ -392,12 +395,12 @@ class WalletList extends Component {
               </View>
             </View>
           </View>
-          <View style={{ width: '85%', alignSelf: 'center' }}>
+          <View style={{ width: '98%', alignSelf: 'center' }}>
             <View style={[styles.sectionContainer, { marginTop: 30 }]}>
               <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
             </View>
             <View style={styles.sectionContainer}>
-              {WalletList.accountListView(listData)}
+              {WalletList.accountListView(walletData.coins)}
             </View>
             <View style={[styles.sectionContainer, { marginTop: -5 }]}>
               <TouchableOpacity
@@ -412,6 +415,66 @@ class WalletList extends Component {
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+      );
+      const swiperPage = (
+        <ParallaxSwiperPage
+          key={index.toString()}
+          width={pageWidth}
+          BackgroundComponent={<View />}
+          ForegroundComponent={page}
+        />
+      );
+      walletPages.push(swiperPage);
+    });
+    return walletPages;
+  }
+
+  render() {
+    const walletPages = this.createWalletPages();
+    // const scanButton = (
+    //   <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
+    //     <Image style={[styles.scan]} source={scan} />
+    //   </TouchableOpacity>
+    // );
+    return (
+      <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
+        renderAccessory={() => <RSKad />}
+        headerComponent={<ListPageHeader title="page.wallet.list.title" />}
+      >
+        <View style={styles.body}>
+          <ParallaxSwiper
+            speed={0.5}
+            animatedValue={this.myCustomAnimatedValue}
+            onMomentumScrollEnd={(activePageIndex) => console.log(activePageIndex)}
+          >
+            <ParallaxSwiperPage
+              width={addPageWidth}
+              BackgroundComponent={<View />}
+              ForegroundComponent={(
+                <View style={styles.foregroundTextContainer}>
+                  <Text style={[styles.foregroundText]}>
+                Add
+                  </Text>
+                </View>
+              )}
+            />
+            {walletPages}
+            <ParallaxSwiperPage
+              width={endPageWidth}
+              BackgroundComponent={(<View />)}
+              ForegroundComponent={(
+                <View style={styles.foregroundTextContainer}>
+                  <Text style={[styles.foregroundText]}>
+                End
+                  </Text>
+                </View>
+              )}
+            />
+          </ParallaxSwiper>
         </View>
       </BasePageGereral>
     );
