@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 80,
+    marginBottom: 173,
   },
 });
 

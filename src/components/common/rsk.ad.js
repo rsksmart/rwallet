@@ -13,9 +13,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 0,
+    bottom: 78,
     right: 0,
-    height: 50,
+    height: 80,
     width: '100%',
   },
   powerby: {
