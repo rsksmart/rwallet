@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   exchangeIconView: {
     width: 40,
     alignSelf: 'center',
-    // backgroundColor: '#54B52D',
     alignItems: 'center',
   },
   operationView: {
