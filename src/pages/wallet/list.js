@@ -27,7 +27,7 @@ const swap = require('../../assets/images/icon/swap.png');
 
 const { width: winWidth, height: winHeight } = Dimensions.get('window');
 const pageWidth = winWidth - 50;
-const addPageWidth = 100;
+const addPageWidth = 110;
 // const endPageWidth = winWidth / 2 - 10;
 
 const { getCurrencySymbol } = common;
@@ -186,16 +186,15 @@ const styles = StyleSheet.create({
     height: winHeight,
     backgroundColor: 'white',
   },
-  foregroundTextContainer: {
+  addWalletButtonView: {
     flex: 1,
-    backgroundColor: 'transparent',
   },
-  foregroundText: {
+  addWalletText: {
     color: '#FFF',
     fontFamily: 'Avenir-Medium',
     fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.41,
+    marginTop: 10,
+    marginBottom: 15,
   },
   addWalletButton: {
     backgroundColor: 'rgba(255,255,255, 0.5)',
@@ -204,7 +203,6 @@ const styles = StyleSheet.create({
     marginTop: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    // marginLeft: -20,
   },
 });
 
@@ -260,6 +258,7 @@ class WalletList extends Component {
   constructor(props) {
     super(props);
     this.onSwiperScrollEnd = this.onSwiperScrollEnd.bind(this);
+    this.onAddWalletPressed = this.onAddWalletPressed.bind(this);
     this.state = {
       listData: [],
       currencySymbol: getCurrencySymbol(props.currency),
@@ -319,6 +318,12 @@ class WalletList extends Component {
 
   onSwiperScrollEnd(activePageIndex) {
     this.setState({ pageIndex: activePageIndex });
+  }
+
+  onAddWalletPressed() {
+    this.swiper.scrollToIndex(1);
+    const { navigation } = this.props;
+    navigation.navigate('WalletAddIndex');
   }
 
   createListData(wallets, currencySymbol, navigation) {
@@ -411,7 +416,7 @@ class WalletList extends Component {
               </View>
             </View>
           </View>
-          <View style={{ width: '98%', alignSelf: 'center' }}>
+          <View style={{ width: '96%', alignSelf: 'center' }}>
             <View style={[styles.sectionContainer, { marginTop: 30 }]}>
               <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
             </View>
@@ -442,7 +447,6 @@ class WalletList extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
     const { pageIndex } = this.state;
     const walletPages = this.createWalletPages();
     // const scanButton = (
@@ -461,18 +465,18 @@ class WalletList extends Component {
       >
         <View style={styles.body}>
           <ParallaxSwiper
-            speed={0.5}
-            scrollToIndex={pageIndex}
+            ref={(swiper) => { this.swiper = swiper; }}
+            pageIndex={pageIndex}
             animatedValue={this.myCustomAnimatedValue}
             onMomentumScrollEnd={this.onSwiperScrollEnd}
           >
             <ParallaxSwiperPage
               width={addPageWidth}
               component={(
-                <View style={[styles.foregroundTextContainer, { overflow: 'visible' }]}>
-                  <TouchableOpacity style={styles.addWalletButton} onPress={() => navigation.navigate('WalletAddIndex')}>
+                <View style={[styles.addWalletButtonView]}>
+                  <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
                     <Image source={references.images.addWallet} />
-                    <Text style={[styles.foregroundText]}>
+                    <Text style={[styles.addWalletText]}>
                       Add Wallet
                     </Text>
                   </TouchableOpacity>

@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-  StyleSheet, View,
+  StyleSheet, View, Image,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 // import screenHelper from '../../common/screenHelper';
-import FullWidthImage from '../common/misc/full.width.image';
 // import Loc from '../common/misc/loc';
 import references from '../../assets/references';
+import { screen } from '../../common/info';
+
+const IMAGE_WIDTH = 375;
+const IMAGE_HEIGHT = 259;
 
 // const headerHeight = 259;
 const headerTopOffset = 0;
@@ -17,6 +18,7 @@ const headerMarginTop = headerTopOffset;
 const styles = StyleSheet.create({
   headerImage: {
     width: '100%',
+    height: screen.width * (IMAGE_HEIGHT / IMAGE_WIDTH),
     marginTop: headerMarginTop,
   },
   headerTitle: {
@@ -34,26 +36,10 @@ const styles = StyleSheet.create({
   },
 });
 
-function ListPageHeader({ /* title,  */ customRightButton }) {
+export default function ListPageHeader() {
   return (
     <View style={styles.headerView}>
-      <FullWidthImage source={references.images.listHeader} style={[styles.headerImage]} />
-      {customRightButton}
+      <Image source={references.images.listHeader} style={[styles.headerImage]} />
     </View>
   );
 }
-
-ListPageHeader.propTypes = {
-  // title: PropTypes.string.isRequired,
-  customRightButton: PropTypes.element,
-};
-
-ListPageHeader.defaultProps = {
-  customRightButton: null,
-};
-
-const mapStateToProps = (state) => ({
-  currentLocale: state.App.get('language'),
-});
-
-export default connect(mapStateToProps)(ListPageHeader);

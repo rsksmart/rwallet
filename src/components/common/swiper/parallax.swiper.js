@@ -39,65 +39,69 @@ class ParallaxSwiper extends Component {
   }
 
   componentDidMount() {
-    const { scrollToIndex } = this.props;
+    const { pageIndex } = this.props;
 
-    if (scrollToIndex) {
+    if (pageIndex) {
       setTimeout(() => {
-        this.scrollToIndex(scrollToIndex, false);
+        this.scrollToIndex(pageIndex, false);
       });
     }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { scrollToIndex } = nextProps;
-  //   this.scrollToIndex(scrollToIndex);
-  // }
+  componentWillReceiveProps(nextProps) {
+    const { pageIndex, children } = nextProps;
+    this.scrollToIndex(pageIndex);
+    this.pageWidths = [];
+    React.Children.map(children, (child) => {
+      this.pageWidths.push(child.props.width);
+    });
+  }
 
   onScrollEndDrag(syntheticEvent) {
+    // const decelerationRate = 0.998;
     const { width, isShowAddPage } = this.state;
     const { onMomentumScrollEnd } = this.props;
-    const contentOffset = syntheticEvent.nativeEvent.contentOffset.x;
+    const { /* velocity, */ contentOffset } = syntheticEvent.nativeEvent;
+    const offsetX = contentOffset.x;
+    // const vx = velocity.x;
+    // const sign = vx === 0 ? 1 : vx / Math.abs(vx);
+    // const s = vx * 500;
+    // offsetX += s;
+    // const contentOffset = syntheticEvent.nativeEvent.contentOffset.x;
 
-    if (!isShowAddPage && contentOffset < 0) {
+    if (!isShowAddPage && offsetX < 0) {
       this.pageIndex = 0;
-      this.scrollView.scrollTo({
-        x: 0, y: 0, animated: true,
-      });
-      this.setState({ isShowAddPage: true });
     } else {
       // Divide content offset by size of the view to see which page is visible
       let widthSum = 0;
       let i = 0;
       // Find the page whose left side distance is larger than half width of screen.
       for (; i < this.pageWidths.length; i += 1) {
-        if (i > 1 && widthSum - contentOffset > width / 2) {
+        if (i > 1 && widthSum - offsetX > width / 2) {
           break;
         }
         const pageWidth = this.pageWidths[i];
         widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
       }
       this.pageIndex = i - 1;
-      const focusPageWidth = this.pageWidths[this.pageIndex];
-      // Calculates new contentOffset, and scroll to it.
-      const x = widthSum - focusPageWidth / 2 - dividerWidth / 2 - width / 2;
-      this.scrollView.scrollTo({
-        x, y: 0, animated: true,
-      });
-      this.setState({ isShowAddPage: false });
     }
+    this.scrollToIndex(this.pageIndex);
     onMomentumScrollEnd(this.pageIndex);
   }
 
   scrollToIndex(index, animated = true) {
-    console.log(this);
-    let i = 0;
-    let widthSum = 0;
-    // Find the page whose right side distance is larger than half width of screen.
-    for (; i <= index; i += 1) {
-      const pageWidth = this.pageWidths[i];
-      widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
+    this.setState({ isShowAddPage: index === 0 });
+    let x = 10;
+    if (index !== 0) {
+      let i = 0;
+      let widthSum = 0;
+      // Find the page whose right side distance is larger than half width of screen.
+      for (; i <= index; i += 1) {
+        const pageWidth = this.pageWidths[i];
+        widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
+      }
+      x = widthSum - this.pageWidths[index] / 2 - dividerWidth / 2 - deviceWidth / 2;
     }
-    const x = widthSum - this.pageWidths[index] / 2 - deviceWidth / 2;
     this.scrollView.scrollTo({
       x, y: 0, animated,
     });
@@ -106,7 +110,7 @@ class ParallaxSwiper extends Component {
   render() {
     const { height, width } = this.state;
     const {
-      children, speed, /* animatedValue, */scrollEnabled,
+      children, scrollEnabled,
     } = this.props;
     const endPageIndex = children.length;
     const endPageWidth = (deviceWidth - this.pageWidths[children.length - 1]) / 2 - dividerWidth;
@@ -126,7 +130,6 @@ class ParallaxSwiper extends Component {
                 <ParallaxSwiperPage
                   width={child.props.width}
                   index={i}
-                  speed={speed}
                   component={child.props.component}
                 />
                 <View
@@ -142,7 +145,6 @@ class ParallaxSwiper extends Component {
             <ParallaxSwiperPage
               width={endPageWidth}
               index={endPageIndex}
-              speed={speed}
               component={<View />}
             />
           </View>
@@ -153,15 +155,6 @@ class ParallaxSwiper extends Component {
 }
 
 ParallaxSwiper.propTypes = {
-  speed(props, propName, componentName) {
-    const { speed: speedValue } = props;
-    if (speedValue < 0 || speedValue > 1) {
-      return new Error(
-        `Invalid 'speed' prop for ${componentName}. Number should be between 0 and 1.`,
-      );
-    }
-    return null;
-  },
   onMomentumScrollEnd: PropTypes.func,
   children: PropTypes.arrayOf((propValue, key, componentName) => {
     const checkChildComponent = (item) => {
@@ -184,13 +177,12 @@ ParallaxSwiper.propTypes = {
     return null;
   }),
   scrollEnabled: PropTypes.bool,
-  scrollToIndex: PropTypes.number,
+  pageIndex: PropTypes.number,
 };
 
 ParallaxSwiper.defaultProps = {
-  speed: 0.25,
   onMomentumScrollEnd: () => null,
-  scrollToIndex: 0,
+  pageIndex: 0,
   scrollEnabled: true,
   children: null,
 };
