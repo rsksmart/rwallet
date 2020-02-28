@@ -97,7 +97,8 @@ class ParallaxSwiper extends Component {
     const {
       children, speed, /* animatedValue, */scrollEnabled,
     } = this.props;
-
+    const endPageIndex = children.length;
+    const endPageWidth = (deviceWidth - this.pageWidths[children.length - 1]) / 2 - dividerWidth;
     return (
       <View pointerEvents="box-none">
         <ScrollView
@@ -118,9 +119,7 @@ class ParallaxSwiper extends Component {
                   width={child.props.width}
                   index={i}
                   speed={speed}
-                  BackgroundComponent={child.props.BackgroundComponent}
-                  ForegroundComponent={child.props.ForegroundComponent}
-                  setPageWidth={this.setPageWidth}
+                  component={child.props.component}
                 />
                 <View
                   style={{
@@ -131,6 +130,14 @@ class ParallaxSwiper extends Component {
               </View>
             ))
           }
+          <View key={endPageIndex.toString()} style={[styles.pageOuterContainer, { zIndex: -endPageIndex }]}>
+            <ParallaxSwiperPage
+              width={endPageWidth}
+              index={endPageIndex}
+              speed={speed}
+              component={<View />}
+            />
+          </View>
         </ScrollView>
       </View>
     );

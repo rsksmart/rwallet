@@ -20,14 +20,11 @@ class ParallaxSwiperPage extends Component {
   }
 
   render() {
-    const { BackgroundComponent, ForegroundComponent, width } = this.props;
+    const { component, width } = this.props;
     return (
       <View style={[styles.container, { width }]}>
-        <View>
-          {BackgroundComponent}
-        </View>
         <View pointerEvents="box-none" style={styles.foregroundContainer}>
-          {ForegroundComponent}
+          {component}
         </View>
       </View>
     );
@@ -35,14 +32,12 @@ class ParallaxSwiperPage extends Component {
 }
 
 ParallaxSwiperPage.propTypes = {
-  BackgroundComponent: PropTypes.element,
-  ForegroundComponent: PropTypes.element,
+  component: PropTypes.element,
   width: PropTypes.number.isRequired,
 };
 
 ParallaxSwiperPage.defaultProps = {
-  BackgroundComponent: null,
-  ForegroundComponent: null,
+  component: null,
 };
 
 ParallaxSwiperPage.defaultProps = {};

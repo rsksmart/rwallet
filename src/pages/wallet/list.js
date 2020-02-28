@@ -27,7 +27,7 @@ const swap = require('../../assets/images/icon/swap.png');
 const { width: winWidth, height: winHeight } = Dimensions.get('window');
 const pageWidth = winWidth - 50;
 const addPageWidth = winWidth / 2 + 10;
-const endPageWidth = winWidth / 2 - 10;
+// const endPageWidth = winWidth / 2 - 10;
 
 const { getCurrencySymbol } = common;
 
@@ -419,8 +419,7 @@ class WalletList extends Component {
         <ParallaxSwiperPage
           key={index.toString()}
           width={pageWidth}
-          BackgroundComponent={<View />}
-          ForegroundComponent={page}
+          component={page}
         />
       );
       walletPages.push(swiperPage);
@@ -452,8 +451,7 @@ class WalletList extends Component {
           >
             <ParallaxSwiperPage
               width={addPageWidth}
-              BackgroundComponent={<View />}
-              ForegroundComponent={(
+              component={(
                 <View style={styles.foregroundTextContainer}>
                   <Text style={[styles.foregroundText]}>
                 Add
@@ -462,17 +460,6 @@ class WalletList extends Component {
               )}
             />
             {walletPages}
-            <ParallaxSwiperPage
-              width={endPageWidth}
-              BackgroundComponent={(<View />)}
-              ForegroundComponent={(
-                <View style={styles.foregroundTextContainer}>
-                  <Text style={[styles.foregroundText]}>
-                End
-                  </Text>
-                </View>
-              )}
-            />
           </ParallaxSwiper>
         </View>
       </BasePageGereral>

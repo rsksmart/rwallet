@@ -50,7 +50,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/wtHtxG' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Add
@@ -67,7 +67,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/wtHtxG' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Page 1
@@ -84,7 +84,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/KAaVXt' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Page 2
@@ -100,7 +100,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/gt4rWa' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Page 3
@@ -116,7 +116,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/KAaVXt' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Page 4
@@ -132,7 +132,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/wtHtxG' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 Page 5
@@ -148,7 +148,7 @@ class WalletList extends Component {
               source={{ uri: 'https://goo.gl/wtHtxG' }}
             />
           )}
-          ForegroundComponent={(
+          component={(
             <View style={styles.foregroundTextContainer}>
               <Text style={[styles.foregroundText]}>
                 End
