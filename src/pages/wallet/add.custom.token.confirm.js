@@ -65,10 +65,6 @@ export default class AddCustomToken extends Component {
       this.onPress = this.onPress.bind(this);
     }
 
-    onPress() {
-      console.log(this);
-    }
-
     render() {
       const { navigation } = this.props;
       return (
@@ -77,7 +73,7 @@ export default class AddCustomToken extends Component {
           hasBottomBtn
           hasLoader={false}
           bottomBtnText="button.Confirm"
-          bottomBtnOnPress={this.onPress}
+          bottomBtnOnPress={() => {}}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.addCustomTokenConfirm.title" />}
         >
           <View>

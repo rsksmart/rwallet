@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View, StyleSheet,
 } from 'react-native';
@@ -14,22 +14,16 @@ const styles = StyleSheet.create({
   },
 });
 
-class ParallaxSwiperPage extends Component {
-  componentWillMount(nextProps) {
-    console.log(this, nextProps);
-  }
-
-  render() {
-    const { component, width } = this.props;
-    return (
-      <View style={[styles.container, { width }]}>
-        <View pointerEvents="box-none" style={styles.foregroundContainer}>
-          {component}
-        </View>
+const ParallaxSwiperPage = (props) => {
+  const { component, width } = props;
+  return (
+    <View style={[styles.container, { width }]}>
+      <View pointerEvents="box-none" style={styles.foregroundContainer}>
+        {component}
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 ParallaxSwiperPage.propTypes = {
   component: PropTypes.element,
@@ -39,7 +33,5 @@ ParallaxSwiperPage.propTypes = {
 ParallaxSwiperPage.defaultProps = {
   component: null,
 };
-
-ParallaxSwiperPage.defaultProps = {};
 
 export default ParallaxSwiperPage;
