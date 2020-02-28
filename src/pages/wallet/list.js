@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 50,
   },
   addCircle: {
     marginLeft: 10,
@@ -173,7 +172,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   body: {
-    marginBottom: 93,
+    marginBottom: 143,
   },
 });
 
