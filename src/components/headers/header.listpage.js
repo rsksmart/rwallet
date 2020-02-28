@@ -1,23 +1,22 @@
 import React from 'react';
 import {
-  StyleSheet, ImageBackground,
+  StyleSheet, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import screenHelper from '../../common/screenHelper';
+// import screenHelper from '../../common/screenHelper';
+import FullWidthImage from '../common/misc/full.width.image';
 // import Loc from '../common/misc/loc';
+import references from '../../assets/references';
 
-const header = require('../../assets/images/misc/header.png');
-
-const headerHeight = 350;
-const headerTopOffset = -150;
-const headerMarginTop = headerTopOffset + screenHelper.topHeight;
-export const defaultPageMarginTop = 350 + headerTopOffset;
+// const headerHeight = 259;
+const headerTopOffset = 0;
+const headerMarginTop = headerTopOffset;
+// export const defaultPageMarginTop = 350 + headerTopOffset;
 
 const styles = StyleSheet.create({
   headerImage: {
     width: '100%',
-    height: headerHeight,
     marginTop: headerMarginTop,
   },
   headerTitle: {
@@ -30,14 +29,17 @@ const styles = StyleSheet.create({
     bottom: 120,
     left: 24,
   },
+  headerView: {
+    // paddingTop: screenHelper.topHeight,
+  },
 });
 
 function ListPageHeader({ /* title,  */ customRightButton }) {
   return (
-    <ImageBackground source={header} style={[styles.headerImage]}>
-      {/* <Loc style={styles.headerTitle} text={title} /> */}
+    <View style={styles.headerView}>
+      <FullWidthImage source={references.images.listHeader} style={[styles.headerImage]} />
       {customRightButton}
-    </ImageBackground>
+    </View>
   );
 }
 

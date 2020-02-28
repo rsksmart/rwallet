@@ -14,10 +14,11 @@ import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
-import ListPageHeader, { defaultPageMarginTop } from '../../components/headers/header.listpage';
+import ListPageHeader from '../../components/headers/header.listpage';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import walletActions from '../../redux/wallet/actions';
 import { ParallaxSwiper, ParallaxSwiperPage } from '../../components/common/swiper';
+import references from '../../assets/references';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -26,7 +27,7 @@ const swap = require('../../assets/images/icon/swap.png');
 
 const { width: winWidth, height: winHeight } = Dimensions.get('window');
 const pageWidth = winWidth - 50;
-const addPageWidth = winWidth / 2 + 10;
+const addPageWidth = 100;
 // const endPageWidth = winWidth / 2 - 10;
 
 const { getCurrencySymbol } = common;
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
-    marginTop: 60,
+    marginTop: 0,
     marginLeft: 1,
   },
   scanView: {
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginBottom: 143,
-    marginTop: -defaultPageMarginTop,
+    marginTop: -190,
   },
   pageBackground: {
     width: winWidth,
@@ -187,15 +188,23 @@ const styles = StyleSheet.create({
   },
   foregroundTextContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'transparent',
   },
   foregroundText: {
-    fontSize: 34,
+    color: '#FFF',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.41,
-    color: 'red',
+  },
+  addWalletButton: {
+    backgroundColor: 'rgba(255,255,255, 0.5)',
+    borderRadius: 12,
+    height: 155,
+    marginTop: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // marginLeft: -20,
   },
 });
 
@@ -250,11 +259,12 @@ class WalletList extends Component {
 
   constructor(props) {
     super(props);
-
+    this.onSwiperScrollEnd = this.onSwiperScrollEnd.bind(this);
     this.state = {
       listData: [],
       currencySymbol: getCurrencySymbol(props.currency),
       totalAssetValueText: '',
+      pageIndex: 1,
     };
   }
 
@@ -305,6 +315,10 @@ class WalletList extends Component {
     const { resetSwap, navigation } = this.props;
     resetSwap();
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true });
+  }
+
+  onSwiperScrollEnd(activePageIndex) {
+    this.setState({ pageIndex: activePageIndex });
   }
 
   createListData(wallets, currencySymbol, navigation) {
@@ -428,6 +442,8 @@ class WalletList extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const { pageIndex } = this.state;
     const walletPages = this.createWalletPages();
     // const scanButton = (
     //   <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
@@ -446,16 +462,20 @@ class WalletList extends Component {
         <View style={styles.body}>
           <ParallaxSwiper
             speed={0.5}
+            scrollToIndex={pageIndex}
             animatedValue={this.myCustomAnimatedValue}
-            onMomentumScrollEnd={(activePageIndex) => console.log(activePageIndex)}
+            onMomentumScrollEnd={this.onSwiperScrollEnd}
           >
             <ParallaxSwiperPage
               width={addPageWidth}
               component={(
-                <View style={styles.foregroundTextContainer}>
-                  <Text style={[styles.foregroundText]}>
-                Add
-                  </Text>
+                <View style={[styles.foregroundTextContainer, { overflow: 'visible' }]}>
+                  <TouchableOpacity style={styles.addWalletButton} onPress={() => navigation.navigate('WalletAddIndex')}>
+                    <Image source={references.images.addWallet} />
+                    <Text style={[styles.foregroundText]}>
+                      Add Wallet
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               )}
             />

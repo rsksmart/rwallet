@@ -5,5 +5,7 @@ images.RIF = require('./images/icon/RIF.png');
 images.DOC = require('./images/icon/DOC.png');
 images.customToken = require('./images/icon/customToken.png');
 images.cornerButton = require('./images/misc/cornerButton.png');
+images.addWallet = require('./images/misc/addWallet.png');
+images.listHeader = require('./images/misc/listHeader.png');
 
 export default { images };

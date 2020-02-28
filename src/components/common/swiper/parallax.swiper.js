@@ -27,6 +27,7 @@ class ParallaxSwiper extends Component {
     this.state = {
       width: deviceWidth,
       height: deviceHeight,
+      isShowAddPage: false,
     };
     this.scrollViewHasScrolled = false;
     this.pageIndex = 0;
@@ -52,43 +53,53 @@ class ParallaxSwiper extends Component {
   //   this.scrollToIndex(scrollToIndex);
   // }
 
-  onScrollEndDrag(e) {
-    const { width } = this.state;
+  onScrollEndDrag(syntheticEvent) {
+    const { width, isShowAddPage } = this.state;
     const { onMomentumScrollEnd } = this.props;
-    const contentOffset = e.nativeEvent.contentOffset.x;
+    const contentOffset = syntheticEvent.nativeEvent.contentOffset.x;
 
-    // Divide content offset by size of the view to see which page is visible
-    let widthSum = 0;
-    let i = 0;
-    // Find the page whose left side distance is larger than half width of screen.
-    for (; i < this.pageWidths.length; i += 1) {
-      if (widthSum - contentOffset > width / 2) {
-        break;
+    if (!isShowAddPage && contentOffset < 0) {
+      this.pageIndex = 0;
+      this.scrollView.scrollTo({
+        x: 0, y: 0, animated: true,
+      });
+      this.setState({ isShowAddPage: true });
+    } else {
+      // Divide content offset by size of the view to see which page is visible
+      let widthSum = 0;
+      let i = 0;
+      // Find the page whose left side distance is larger than half width of screen.
+      for (; i < this.pageWidths.length; i += 1) {
+        if (i > 1 && widthSum - contentOffset > width / 2) {
+          break;
+        }
+        const pageWidth = this.pageWidths[i];
+        widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
       }
-      const pageWidth = this.pageWidths[i];
-      widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
+      this.pageIndex = i - 1;
+      const focusPageWidth = this.pageWidths[this.pageIndex];
+      // Calculates new contentOffset, and scroll to it.
+      const x = widthSum - focusPageWidth / 2 - dividerWidth / 2 - width / 2;
+      this.scrollView.scrollTo({
+        x, y: 0, animated: true,
+      });
+      this.setState({ isShowAddPage: false });
     }
-    this.pageIndex = i - 1;
-    const focusPageWidth = this.pageWidths[this.pageIndex];
-    // Calculates new contentOffset, and scroll to it.
-    const x = widthSum - focusPageWidth / 2 - dividerWidth / 2 - width / 2;
-    this.scrollView.scrollTo({
-      x, y: 0, animated: true,
-    });
     onMomentumScrollEnd(this.pageIndex);
   }
 
   scrollToIndex(index, animated = true) {
-    const { width } = this.state;
-    const pageWidth = width;
-    const scrollOffset = index * pageWidth;
-
-    if (!this.scrollViewHasScrolled) {
-      this.scrollViewHasScrolled = true;
+    console.log(this);
+    let i = 0;
+    let widthSum = 0;
+    // Find the page whose right side distance is larger than half width of screen.
+    for (; i <= index; i += 1) {
+      const pageWidth = this.pageWidths[i];
+      widthSum += (i === 0 ? 0 : dividerWidth / 2) + pageWidth + dividerWidth / 2;
     }
-
+    const x = widthSum - this.pageWidths[index] / 2 - deviceWidth / 2;
     this.scrollView.scrollTo({
-      x: scrollOffset, y: 0, animated,
+      x, y: 0, animated,
     });
   }
 
@@ -107,10 +118,7 @@ class ParallaxSwiper extends Component {
           style={{ width, height }}
           horizontal
           scrollEventThrottle={1}
-          onScroll={(syntheticEvent) => {
-            console.log('onScroll, syntheticEvent: ', syntheticEvent);
-          }}
-          onScrollEndDrag={(e) => this.onScrollEndDrag(e)}
+          onScrollEndDrag={(syntheticEvent) => this.onScrollEndDrag(syntheticEvent)}
         >
           {
             React.Children.map(children, (child, i) => (
