@@ -60,11 +60,6 @@ export default class AddCustomToken extends Component {
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.onPress = this.onPress.bind(this);
-    }
-
     render() {
       const { navigation } = this.props;
       return (
