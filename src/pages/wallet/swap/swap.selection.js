@@ -7,15 +7,15 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/headers/header';
-import common from '../../common/common';
-import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
-import presetStyles from '../../assets/styles/style';
-import walletActions from '../../redux/wallet/actions';
-import Loc from '../../components/common/misc/loc';
-import CoinswitchHelper from '../../common/coinswitch.helper';
-import config from '../../../config';
+import BasePageGereral from '../../base/base.page.general';
+import Header from '../../../components/headers/header';
+import common from '../../../common/common';
+import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
+import presetStyles from '../../../assets/styles/style';
+import walletActions from '../../../redux/wallet/actions';
+import Loc from '../../../components/common/misc/loc';
+// import CoinswitchHelper from '../../../common/coinswitch.helper';
+import config from '../../../../config';
 
 const styles = StyleSheet.create({
   body: {
@@ -93,44 +93,44 @@ class SwapSelection extends Component {
   }
 
   async componentDidMount() {
-    let rawList;
-    let filters = [];
     const {
-      navigation, swapDest, swapSource, walletManager,
+      navigation, walletManager,
     } = this.props;
     const { wallets } = walletManager;
-    const { selectionType } = navigation.state.params;
-    if (selectionType === 'source' && swapDest) {
-      try {
-        rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
-      } catch {
-        rawList = [];
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i += 1) {
-        const item = rawList[i];
-        if (item.isActive) {
-          filters.push(item.depositCoin);
-        }
-      }
-    } else if (selectionType === 'dest') {
-      try {
-        rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
-      } catch {
-        rawList = [];
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < rawList.length; i += 1) {
-        const item = rawList[i];
-        if (item.isActive) {
-          filters.push(item.destinationCoin);
-        }
-      }
-    } else {
-      filters = null;
-    }
+    const { selectionType } = navigation.state.params || { selectionType: 'source' };
+    // let rawList;
+    // let filters = [];
+    // if (selectionType === 'source' && swapDest) {
+    //   try {
+    //     rawList = await CoinswitchHelper.getPairs(null, swapDest.coin.symbol.toLowerCase());
+    //   } catch {
+    //     rawList = [];
+    //   }
+    //   // eslint-disable-next-line no-plusplus
+    //   for (let i = 0; i < rawList.length; i += 1) {
+    //     const item = rawList[i];
+    //     if (item.isActive) {
+    //       filters.push(item.depositCoin);
+    //     }
+    //   }
+    // } else if (selectionType === 'dest') {
+    //   try {
+    //     rawList = await CoinswitchHelper.getPairs(swapSource.coin.symbol.toLowerCase(), null);
+    //   } catch {
+    //     rawList = [];
+    //   }
+    //   // eslint-disable-next-line no-plusplus
+    //   for (let i = 0; i < rawList.length; i += 1) {
+    //     const item = rawList[i];
+    //     if (item.isActive) {
+    //       filters.push(item.destinationCoin);
+    //     }
+    //   }
+    // } else {
+    //   filters = null;
+    // }
 
-    const coinList = this.createListData(wallets, navigation, selectionType, filters);
+    const coinList = this.createListData(wallets, navigation, selectionType, null);
     this.setState({ coinList, loading: false });
   }
 
@@ -166,7 +166,7 @@ class SwapSelection extends Component {
       setSwapSource, setSwapDest, swapSource, swapDest,
     } = this.props;
 
-    const { init } = navigation.state.params;
+    const { init } = navigation.state.params || { init: true };
 
     if (!_.isArray(wallets)) {
       return [];
@@ -178,10 +178,16 @@ class SwapSelection extends Component {
       const wal = { name: wallet.name, coins: [] };
       // Create element for each Token (e.g. BTC, RBTC, RIF)
       wallet.coins.forEach((coin) => {
-        if (selectionType === 'dest' && coin.symbol === swapSource.coin.symbol) {
+        if (coin.type !== 'Mainnet') {
           return;
         }
-        if (selectionType === 'source' && swapDest && coin.symbol === swapDest.coin.symbol) {
+        if (!config.coinswitch.initPairs[coin.symbol]) {
+          return;
+        }
+        if (selectionType === 'dest' && (coin.symbol === swapSource.coin.symbol || !config.coinswitch.initPairs[swapSource.coin.symbol].includes(coin.symbol))) {
+          return;
+        }
+        if (selectionType === 'source' && swapDest && (coin.symbol === swapDest.coin.symbol || !config.coinswitch.initPairs[swapDest.coin.symbol].includes(coin.symbol))) {
           return;
         }
         if (filters && (filters.length === 0 || !filters.includes(coin.symbol.toLowerCase()))) {
@@ -211,7 +217,7 @@ class SwapSelection extends Component {
             } else {
               setSwapDest(wallet.name, coin);
             }
-            navigation[init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
+            navigation[navigation.state.params && init ? 'replace' : 'navigate']('Swap', { type: selectionType, coin, init });
           },
         };
         wal.coins.push(item);
@@ -224,9 +230,11 @@ class SwapSelection extends Component {
   };
 
   render() {
-    const { navigation, resetSwap } = this.props;
+    const {
+      navigation, resetSwap, bottomPaddingComponent, headless,
+    } = this.props;
     const { coinList, loading } = this.state;
-    const { selectionType } = navigation.state.params;
+    const { selectionType } = navigation.state.params || { selectionType: 'source' };
     const rightButton = selectionType === 'dest' ? (
       <View style={[{ position: 'absolute', right: 20, bottom: 108 }]}>
         <TouchableOpacity onPress={() => {
@@ -245,7 +253,11 @@ class SwapSelection extends Component {
         hasBottomBtn={false}
         hasLoader={false}
         bgColor="#00B520"
-        headerComponent={(
+        headerComponent={headless ? (
+          <Header
+            title="page.wallet.swapSelection.title"
+          />
+        ) : (
           <Header
             onBackButtonPress={() => navigation.goBack()}
             title="page.wallet.swapSelection.title"
@@ -253,7 +265,7 @@ class SwapSelection extends Component {
           />
         )}
       >
-        <View style={styles.body}>
+        <View style={[styles.body, headless ? { marginTop: -95 } : {}]}>
           <FlatList
             data={coinList}
             renderItem={({ item }) => (
@@ -265,6 +277,7 @@ class SwapSelection extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        {bottomPaddingComponent}
         {loading && <ActivityIndicator size="large" />}
       </BasePageGereral>
     );
@@ -292,12 +305,17 @@ SwapSelection.propTypes = {
   setSwapSource: PropTypes.func.isRequired,
   setSwapDest: PropTypes.func.isRequired,
   resetSwap: PropTypes.func.isRequired,
+  headless: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  bottomPaddingComponent: PropTypes.object,
 };
 
 SwapSelection.defaultProps = {
   walletManager: undefined,
   swapSource: undefined,
   swapDest: undefined,
+  bottomPaddingComponent: undefined,
+  headless: false,
 };
 
 const mapStateToProps = (state) => ({

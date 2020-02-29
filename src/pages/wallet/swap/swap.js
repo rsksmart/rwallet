@@ -5,19 +5,19 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import SwapHeader from '../../components/headers/header.swap';
-import BasePageGereral from '../base/base.page.general';
-import Button from '../../components/common/button/button';
-import space from '../../assets/styles/space';
-import color from '../../assets/styles/color.ts';
-import presetStyles from '../../assets/styles/style';
-import common from '../../common/common';
-import CoinswitchHelper from '../../common/coinswitch.helper';
-import Transaction from '../../common/transaction';
-import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
-import walletActions from '../../redux/wallet/actions';
-import Loc from '../../components/common/misc/loc';
+import SwapHeader from '../../../components/headers/header.swap';
+import BasePageGereral from '../../base/base.page.general';
+import Button from '../../../components/common/button/button';
+import space from '../../../assets/styles/space';
+import color from '../../../assets/styles/color.ts';
+import presetStyles from '../../../assets/styles/style';
+import common from '../../../common/common';
+import CoinswitchHelper from '../../../common/coinswitch.helper';
+import Transaction from '../../../common/transaction';
+import appActions from '../../../redux/app/actions';
+import { createErrorNotification } from '../../../common/notification.controller';
+import walletActions from '../../../redux/wallet/actions';
+import Loc from '../../../components/common/misc/loc';
 
 
 const styles = StyleSheet.create({
@@ -49,15 +49,15 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   sepratorLine: {
-    borderColor: '#FFF',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    position: 'absolute',
-    width: '100%',
+    backgroundColor: '#FFF',
+    height: StyleSheet.hairlineWidth,
+    flex: 1,
   },
   seprator: {
-    marginVertical: 12,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 25,
+    marginVertical: 12,
   },
   exchangeIcon: {
     width: 20,
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   exchangeIconView: {
+    width: 43,
     alignSelf: 'center',
-    backgroundColor: '#54B52D',
     alignItems: 'center',
   },
   operationView: {
@@ -213,12 +213,12 @@ const styles = StyleSheet.create({
 });
 
 const res = {};
-res.exchange = require('../../assets/images/icon/exchange.png');
-res.BTC = require('../../assets/images/icon/BTC.png');
-res.RBTC = require('../../assets/images/icon/RBTC.png');
-res.RIF = require('../../assets/images/icon/RIF.png');
-res.currencyExchange = require('../../assets/images/icon/currencyExchange.png');
-res.error = require('../../assets/images/icon/error.png');
+res.exchange = require('../../../assets/images/icon/exchange.png');
+res.BTC = require('../../../assets/images/icon/BTC.png');
+res.RBTC = require('../../../assets/images/icon/RBTC.png');
+res.RIF = require('../../../assets/images/icon/RIF.png');
+res.currencyExchange = require('../../../assets/images/icon/currencyExchange.png');
+res.error = require('../../../assets/images/icon/error.png');
 
 const switchItems = ['MIN', 'HALF', 'ALL'];
 
@@ -566,6 +566,8 @@ class Swap extends Component {
 
     const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
 
+    const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
+
     const customBottomButton = (
       <Button
         text="button.Exchange"
@@ -621,11 +623,14 @@ class Swap extends Component {
           </View>
           <View style={styles.seprator}>
             <View style={styles.sepratorLine} />
-            {swapSource && swapDest && !coinLoading && (
-              <TouchableOpacity style={styles.exchangeIconView} onPress={this.switchSourceDest}>
-                <Image style={styles.exchangeIcon} source={res.exchange} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={[styles.exchangeIconView, { opacity: isCanSwitchSourceDest ? 1 : 0.3 }]}
+              disabled={!isCanSwitchSourceDest}
+              onPress={this.switchSourceDest}
+            >
+              <Image style={styles.exchangeIcon} source={res.exchange} />
+            </TouchableOpacity>
+            <View style={styles.sepratorLine} />
           </View>
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (

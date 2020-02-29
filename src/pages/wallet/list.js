@@ -408,6 +408,7 @@ class WalletList extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={[{ height: 50 }]} />
       </BasePageGereral>
     );
   }
