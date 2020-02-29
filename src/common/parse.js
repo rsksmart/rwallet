@@ -194,7 +194,6 @@ class ParseHelper {
         console.log('INVALID_SESSION_TOKEN: logging out and re-signing in.');
         await Parse.User.logOut();
         await Parse.user.signIn(appId);
-        console.log('finish signing up');
         // Other Parse API errors that you want to explicitly handle
         break;
       default:
