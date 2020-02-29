@@ -311,11 +311,11 @@
     },
     "phraseCopied": {
       "title": "Copied",
-      "body": "The recovery phrase has been copied to clipboard."
+      "body": "The recovery phrase has been copied to the clipboard."
     },
     "addressCopied": {
       "title": "Copied",
-      "body": "The address has been copied to clipboard."
+      "body": "The address has been copied to the clipboard."
     },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
