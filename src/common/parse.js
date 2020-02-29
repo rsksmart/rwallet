@@ -26,22 +26,29 @@ const ParseTransaction = Parse.Object.extend('Transaction');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
-  static signUp(appId) {
-    const user = new Parse.User();
-
+  static signInOrSignUp(appId) {
     // Set appId as username and password.
-    // No real password is needed because we only want to get access to Parse.User here to access related data
-    user.set('username', appId);
-    user.set('password', appId);
-    console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
-    user.set('deviceId', DeviceInfo.getDeviceId());
+    // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
+    const username = appId;
+    const password = appId;
 
-    // TODO: other information needed to be set here.
-    return user.signUp();
-  }
+    return Parse.User.logIn(username, password)
+      .catch((err) => {
+        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+          console.log(`User not found with appId ${username}. Signing up ...`);
+          const user = new Parse.User();
 
-  static signIn(appId) {
-    return Parse.User.logIn(appId, appId);
+          user.set('username', username);
+          user.set('password', password);
+          console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
+          user.set('deviceId', DeviceInfo.getDeviceId());
+
+          // TODO: other information needed to be set here.
+          return user.signUp();
+        }
+
+        return Promise.reject();
+      });
   }
 
   /**
@@ -54,7 +61,7 @@ class ParseHelper {
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
-    const parseUser = Parse.User.current();
+    const parseUser = await Parse.User.currentAsync();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
@@ -177,13 +184,19 @@ class ParseHelper {
    * @returns {object}  error object defined by this app
    * @method handleError
    */
-  static handleError(err) {
+  static async handleError({ err, appId }) {
+    console.log('ERROR: parse.handleError', err, appId);
+
     const message = err.message || 'error.parse.default';
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
-        return Parse.User.logOut();
-      // Other Parse API errors that you want to explicitly handle
+        console.log('INVALID_SESSION_TOKEN: logging out and re-signing in.');
+        await Parse.User.logOut();
+        await Parse.user.signIn(appId);
+        console.log('finish signing up');
+        // Other Parse API errors that you want to explicitly handle
+        break;
       default:
         break;
     }
@@ -210,7 +223,7 @@ class ParseHelper {
    */
   static async getWallets() {
     // Get current Parse.User
-    const parseUser = Parse.User.current();
+    const parseUser = await Parse.User.currentAsync();
 
     if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
       return [];
