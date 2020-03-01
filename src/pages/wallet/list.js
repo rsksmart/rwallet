@@ -317,6 +317,7 @@ class WalletList extends Component {
   }
 
   onSwiperScrollEnd(activePageIndex) {
+    console.log('activePageIndex: ', activePageIndex);
     this.setState({ pageIndex: activePageIndex });
   }
 
@@ -483,7 +484,8 @@ class WalletList extends Component {
                 </View>
               )}
             />
-            {walletPages}
+            {/* {walletPages} */}
+            {React.Children.map(walletPages, (page) => page)}
           </ParallaxSwiper>
         </View>
       </BasePageGereral>
