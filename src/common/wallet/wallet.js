@@ -14,6 +14,7 @@ export default class Wallet {
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
+    this.assetsValue = null;
     // this.createdAt = new Date();
 
     // console.log('Wallet.create.coins', coins);

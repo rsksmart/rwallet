@@ -114,37 +114,35 @@ class WalletManager {
    * @param {*} prices
    */
   updateAssetValue(prices, currency) {
-    const { getTokens } = this;
+    const { wallets } = this;
 
     // Return early if prices or currency is invalid
     if (_.isEmpty(prices) || _.isUndefined(currency)) {
       return;
     }
 
+    let totalAssetValue = new BigNumber(0);
     try {
-      const assetValue = prices.reduce((totalAssetValue, priceObject) => {
-        const tokenSymbol = priceObject.symbol;
-        const tokenPrice = priceObject.price && priceObject.price[currency];
-        let value = new BigNumber(0);
-
-        // Find Coin instances by symbol
-        const coins = getTokens({ symbol: tokenSymbol });
-
-        coins.forEach((coinItem) => {
-          const coin = coinItem;
-          // if coin.type is Testnet, set balanceValue 0
-          if (coin.type === 'Testnet') {
-            coin.balanceValue = new BigNumber(0);
-          } else if (coin.balance) {
-            coin.balanceValue = coin.balance.times(tokenPrice);
-            value = value.plus(coin.balanceValue);
+      _.each(wallets, (wallet) => {
+        const newWallet = wallet;
+        let assetValue = new BigNumber(0);
+        const { coins } = wallet;
+        _.each(coins, (coin) => {
+          const newCoin = coin;
+          if (newCoin.type === 'Testnet') {
+            newCoin.balanceValue = new BigNumber(0);
+          } else if (newCoin.balance) {
+            const priceObject = _.find(prices, { symbol: newCoin.symbol });
+            const tokenPrice = priceObject.price && priceObject.price[currency];
+            newCoin.balanceValue = newCoin.balance.times(tokenPrice);
+            assetValue = assetValue.plus(newCoin.balanceValue);
           }
+          newWallet.assetValue = assetValue;
+          totalAssetValue = totalAssetValue.plus(assetValue);
         });
+      });
 
-        return totalAssetValue.plus(value);
-      }, new BigNumber(0));
-
-      this.assetValue = assetValue;
+      this.assetValue = totalAssetValue;
     } catch (ex) {
       console.error('walletManager.updateAssetValue', ex.message);
     }
