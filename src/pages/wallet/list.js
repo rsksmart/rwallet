@@ -37,10 +37,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   addAsset: {
-    color: '#77869E',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  addAssetView: {
+    flexDirection: 'row',
   },
   addCircle: {
     marginLeft: 10,
@@ -424,12 +425,10 @@ class WalletList extends Component {
             <View style={styles.sectionContainer}>
               {WalletList.accountListView(walletData.coins)}
             </View>
-            <View style={[styles.sectionContainer, { marginTop: -5 }]}>
-              <TouchableOpacity onPress={() => navigation.navigate('AddToken')}>
-                <View style={styles.addAsset}>
-                  <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                  <Loc text="page.wallet.list.addAsset" />
-                </View>
+            <View style={[styles.sectionContainer, styles.addAssetView]}>
+              <TouchableOpacity style={styles.addAsset} onPress={() => navigation.navigate('AddToken')}>
+                <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                <Loc text="page.wallet.list.addAsset" />
               </TouchableOpacity>
             </View>
           </View>
