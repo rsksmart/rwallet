@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   addAsset: {
-    color: '#77869E',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 50,
+  },
+  addAssetView: {
+    flexDirection: 'row',
   },
   addCircle: {
     marginLeft: 10,
@@ -171,6 +171,9 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     marginLeft: 20,
     marginRight: 20,
+  },
+  body: {
+    marginBottom: 143,
   },
 });
 
@@ -354,61 +357,56 @@ class WalletList extends Component {
         renderAccessory={() => <RSKad />}
         headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
-        <View style={styles.headerBoardView}>
-          <View style={styles.headerBoard}>
-            <Text style={styles.myAssetsTitle}>
-              <Loc text="page.wallet.list.myAssets" />
-              {` (${currencySymbol})`}
-            </Text>
-            <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{totalAssetValueText}</ResponsiveText>
-            <View style={styles.myAssetsButtonsView}>
-              <TouchableOpacity
-                style={styles.ButtonView}
-                onPress={() => navigation.navigate('SelectWallet', { operation: 'send' })}
-              >
-                <Image source={send} />
-                <Loc style={[styles.sendText]} text="button.Send" />
-              </TouchableOpacity>
-              <View style={styles.spliteLine} />
-              <TouchableOpacity
-                style={styles.ButtonView}
-                onPress={() => navigation.navigate('SelectWallet', { operation: 'receive' })}
-              >
-                <Image source={receive} />
-                <Loc style={[styles.receiveText]} text="button.Receive" />
-              </TouchableOpacity>
-              <View style={styles.spliteLine} />
-              <TouchableOpacity
-                style={[styles.ButtonView, { borderRightWidth: 0 }]}
-                onPress={this.onSwapPress}
-              >
-                <Image source={swap} />
-                <Loc style={[styles.swapText]} text="button.Swap" />
+        <View style={styles.body}>
+          <View style={styles.headerBoardView}>
+            <View style={styles.headerBoard}>
+              <Text style={styles.myAssetsTitle}>
+                <Loc text="page.wallet.list.myAssets" />
+                {` (${currencySymbol})`}
+              </Text>
+              <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{totalAssetValueText}</ResponsiveText>
+              <View style={styles.myAssetsButtonsView}>
+                <TouchableOpacity
+                  style={styles.ButtonView}
+                  onPress={() => navigation.navigate('SelectWallet', { operation: 'send' })}
+                >
+                  <Image source={send} />
+                  <Loc style={[styles.sendText]} text="button.Send" />
+                </TouchableOpacity>
+                <View style={styles.spliteLine} />
+                <TouchableOpacity
+                  style={styles.ButtonView}
+                  onPress={() => navigation.navigate('SelectWallet', { operation: 'receive' })}
+                >
+                  <Image source={receive} />
+                  <Loc style={[styles.receiveText]} text="button.Receive" />
+                </TouchableOpacity>
+                <View style={styles.spliteLine} />
+                <TouchableOpacity
+                  style={[styles.ButtonView, { borderRightWidth: 0 }]}
+                  onPress={this.onSwapPress}
+                >
+                  <Image source={swap} />
+                  <Loc style={[styles.swapText]} text="button.Swap" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={{ width: '85%', alignSelf: 'center' }}>
+            <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+              <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
+            </View>
+            <View style={styles.sectionContainer}>
+              {WalletList.accountListView(listData)}
+            </View>
+            <View style={[styles.sectionContainer, styles.addAssetView]}>
+              <TouchableOpacity style={styles.addAsset} onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
+                <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+                <Loc text="page.wallet.list.addAsset" />
               </TouchableOpacity>
             </View>
           </View>
         </View>
-        <View style={{ width: '85%', alignSelf: 'center' }}>
-          <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-            <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
-          </View>
-          <View style={styles.sectionContainer}>
-            {WalletList.accountListView(listData)}
-          </View>
-          <View style={[styles.sectionContainer, { marginTop: -5 }]}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('WalletAddIndex', { skipPasscode: true });
-              }}
-            >
-              <View style={styles.addAsset}>
-                <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-                <Loc text="page.wallet.list.addAsset" />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={[{ height: 50 }]} />
       </BasePageGereral>
     );
   }
