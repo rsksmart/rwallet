@@ -17,7 +17,7 @@ const { getCurrencySymbol } = common;
 
 const styles = StyleSheet.create({
   body: {
-    marginBottom: 143,
+    marginBottom: 103,
     marginTop: -190,
   },
 });

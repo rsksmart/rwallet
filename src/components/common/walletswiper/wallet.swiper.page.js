@@ -5,17 +5,15 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { FlatList } from 'react-native-gesture-handler';
 import references from '../../../assets/references';
 import Loc from '../misc/loc';
 import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
-import SwipableButtonList from '../misc/swipableButtonList';
 import ResponsiveText from '../misc/responsive.text';
 import common from '../../../common/common';
+import flex from '../../../assets/styles/layout.flex';
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    paddingHorizontal: 0,
-  },
   // scan: {
   //   width: 30,
   //   height: 30,
@@ -25,6 +23,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addAssetView: {
+    marginTop: 15,
+    marginBottom: 50,
     flexDirection: 'row',
   },
   addCircle: {
@@ -142,14 +142,38 @@ const styles = StyleSheet.create({
   },
 });
 
+const WalletItem = (item) => (
+  <TouchableOpacity style={coinListItemStyles.row} onPress={item.onPress}>
+    <Image style={coinListItemStyles.icon} source={item.icon} />
+    <View style={coinListItemStyles.rowRightView}>
+      <View style={coinListItemStyles.rowTitleView}>
+        <Text style={coinListItemStyles.title}>{item.title}</Text>
+        <Text style={coinListItemStyles.text}>{item.text}</Text>
+      </View>
+      <View style={coinListItemStyles.rowAmountView}>
+        <Text style={coinListItemStyles.worth}>{item.worth}</Text>
+        <Text style={coinListItemStyles.amount}>{item.amount}</Text>
+      </View>
+    </View>
+  </TouchableOpacity>
+);
+
 const WalletSwiperPage = (props) => {
   const {
     walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol,
   } = props;
   const { name, coins, assetValue } = walletData;
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
+  const addAssetButton = (
+    <View style={styles.addAssetView}>
+      <TouchableOpacity style={styles.addAsset} onPress={onAddAssetPressed}>
+        <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
+        <Loc text="page.wallet.list.addAsset" />
+      </TouchableOpacity>
+    </View>
+  );
   return (
-    <View>
+    <View style={flex.flex1}>
       <Loc style={styles.headerTitle} text={name} />
       <View style={styles.headerBoardView}>
         <View style={styles.headerBoard}>
@@ -176,20 +200,19 @@ const WalletSwiperPage = (props) => {
           </View>
         </View>
       </View>
-      <View style={{ width: '96%', alignSelf: 'center' }}>
-        <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+      <View style={{ width: '96%', alignSelf: 'center', flex: 1 }}>
+        <View style={{ marginTop: 30 }}>
           <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
         </View>
-        <View style={styles.sectionContainer}>
-          <View style={coinListItemStyles.itemView}>
-            <SwipableButtonList data={coins} />
-          </View>
-        </View>
-        <View style={[styles.sectionContainer, styles.addAssetView]}>
-          <TouchableOpacity style={styles.addAsset} onPress={onAddAssetPressed}>
-            <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-            <Loc text="page.wallet.list.addAsset" />
-          </TouchableOpacity>
+        <View style={flex.flex1}>
+          <FlatList
+            style={flex.flex1}
+            data={coins}
+            renderItem={({ item }) => WalletItem(item)}
+            keyExtractor={(item, index) => index.toString()}
+            ListFooterComponent={addAssetButton}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       </View>
     </View>

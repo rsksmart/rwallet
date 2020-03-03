@@ -87,7 +87,6 @@ class ParallaxSwiper extends Component {
       const offsetX = widthSum - this.pageWidths[i] / 2 - dividerWidth / 2 - width / 2;
       this.pageOffsets.push(offsetX);
     }
-    console.log(this.pageOffsets);
   }
 
   scrollToIndex(index, animated = true) {
@@ -108,13 +107,14 @@ class ParallaxSwiper extends Component {
         <ScrollView
           ref={(scrollView) => { this.scrollView = scrollView; }}
           scrollEnabled={scrollEnabled}
-          style={{ width, height }}
+          style={{ width }}
           horizontal
           scrollEventThrottle={1}
           decelerationRate="fast"
           snapToOffsets={this.pageOffsets}
           onScrollBeginDrag={this.onScrollBeginDrag}
           onMomentumScrollEnd={(syntheticEvent) => this.onMomentumScrollEnd(syntheticEvent)}
+          showsHorizontalScrollIndicator={false}
         >
           {
             React.Children.map(children, (child, i) => (
@@ -124,12 +124,7 @@ class ParallaxSwiper extends Component {
                   index={i}
                   component={child.props.component}
                 />
-                <View
-                  style={{
-                    width: dividerWidth,
-                    height,
-                  }}
-                />
+                <View style={{ width: dividerWidth, height }} />
               </View>
             ))
           }
