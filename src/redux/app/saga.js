@@ -95,13 +95,10 @@ function* initWithParseRequest() {
   // 1. Sign in or sign up to get Parse.User object
   // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    yield call(ParseHelper.signIn, appId);
+    yield call(ParseHelper.signInOrSignUp, appId);
     console.log(`User found with appId ${appId}. Sign in successful.`);
   } catch (err) {
-    if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-      yield call(ParseHelper.signUp, appId);
-      console.log(`User NOT found with appId ${appId}. Signed up.`);
-    }
+    yield call(ParseHelper.handleError, { err, appId });
   }
 
   // 2. Test server connection and get Server info
@@ -114,8 +111,7 @@ function* initWithParseRequest() {
       value: response,
     });
   } catch (err) {
-    const { message } = err;
-    console.warn(message);
+    yield call(ParseHelper.handleError, { err, appId });
   }
 
   // 3. Upload wallets and settings to server
