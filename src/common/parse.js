@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
-import DeviceInfo from 'react-native-device-info';
+// import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
 
 const parseConfig = config && config.parse;
@@ -40,8 +40,8 @@ class ParseHelper {
 
           user.set('username', username);
           user.set('password', password);
-          console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
-          user.set('deviceId', DeviceInfo.getDeviceId());
+          // console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
+          // user.set('deviceId', DeviceInfo.getDeviceId());
 
           // TODO: other information needed to be set here.
           return user.signUp();
