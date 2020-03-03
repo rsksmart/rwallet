@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  Dimensions, View, TouchableOpacity, StyleSheet, Image, Text,
+  View, TouchableOpacity, StyleSheet, Image, Text,
 } from 'react-native';
 import ParallaxSwiperPage from './parallax.swiper.page';
 import WalletSwiperPage from './wallet.swiper.page';
 import references from '../../../assets/references';
+import { screen } from '../../../common/info';
 
 const styles = StyleSheet.create({
   addWalletButtonView: {
@@ -27,10 +28,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const { width: winWidth } = Dimensions.get('window');
-
-const helper = {
-  pageWidth: winWidth - 50,
+/**
+ * WalletSwiperHelper is a helper for swiper page
+ * We can generate page component with createWalletSwiperPage, createAddWalletPage.
+ */
+const WalletSwiperHelper = {
+  pageWidth: screen.width - 50,
   addPageWidth: 100,
 
   createWalletSwiperPage(index, walletData, onSendPressed,
@@ -57,11 +60,11 @@ const helper = {
     return swiperPage;
   },
 
-  createAddWalletPage() {
+  createAddWalletPage(onAddWalletPressed) {
     console.log('createAddWalletPage');
     const addWalletPage = (
       <View style={[styles.addWalletButtonView]}>
-        <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
+        <TouchableOpacity style={styles.addWalletButton} onPress={onAddWalletPressed}>
           <Image source={references.images.addWallet} />
           <Text style={[styles.addWalletText]}>
             Add Wallet
@@ -79,4 +82,4 @@ const helper = {
   },
 };
 
-export default helper;
+export default WalletSwiperHelper;

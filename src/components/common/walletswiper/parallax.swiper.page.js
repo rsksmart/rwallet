@@ -3,6 +3,10 @@ import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import flex from '../../../assets/styles/layout.flex';
 
+/**
+ * ParallaxSwiperPage is wrapper for ParallaxSwiper
+ * Fisrt page will hide left side, so width add 10, marginLeft set to -10.
+ */
 const ParallaxSwiperPage = (props) => {
   const { component, width, isFirstPage } = props;
   const viewWidth = width + (isFirstPage ? 10 : 0);

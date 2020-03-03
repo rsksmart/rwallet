@@ -43,6 +43,39 @@ export function formatNumberThousands(num) {
 }
 
 class WalletList extends Component {
+  static createListData(wallets, currencySymbol, navigation) {
+    if (!_.isArray(wallets)) {
+      return [];
+    }
+
+    const listData = [];
+
+    // Create element for each wallet (e.g. key 0)
+    wallets.forEach((wallet) => {
+      const wal = { name: wallet.name, coins: [] };
+      // Create element for each Token (e.g. BTC, RBTC, RIF, DOC)
+      wallet.coins.forEach((coin, index) => {
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
+        const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
+        const item = {
+          key: `${index}`,
+          title: coin.defaultName,
+          text: coinType,
+          worth: worthText,
+          amount: amountText,
+          icon: coin.icon,
+          onPress: () => navigation.navigate('WalletHistory', { coin }),
+        };
+        wal.coins.push(item);
+      });
+      wal.assetValue = wallet.assetValue;
+      listData.push(wal);
+    });
+
+    return listData;
+  }
+
   static navigationOptions = () => ({
     header: null,
   });
@@ -68,7 +101,7 @@ class WalletList extends Component {
     const { wallets } = walletManager;
 
     const currencySymbol = getCurrencySymbol(currency);
-    const listData = this.createListData(wallets, currencySymbol, navigation);
+    const listData = WalletList.createListData(wallets, currencySymbol, navigation);
 
     this.setState({
       currencySymbol,
@@ -92,7 +125,7 @@ class WalletList extends Component {
     newState.currencySymbol = getCurrencySymbol(currency);
 
     if (updateTimestamp !== lastUpdateTimeStamp) {
-      newState.listData = this.createListData(wallets, newState.currencySymbol, navigation);
+      newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
     }
 
     this.setState(newState);
@@ -113,53 +146,6 @@ class WalletList extends Component {
     this.swiper.scrollToIndex(1);
     const { navigation } = this.props;
     navigation.navigate('WalletAddIndex');
-  }
-
-  createListData(wallets, currencySymbol, navigation) {
-    const { resetSwap, setSwapSource } = this.props;
-    if (!_.isArray(wallets)) {
-      return [];
-    }
-
-    const listData = [];
-
-    // Create element for each wallet (e.g. key 0)
-    wallets.forEach((wallet) => {
-      const wal = { name: wallet.name, coins: [] };
-      // Create element for each Token (e.g. BTC, RBTC, RIF, DOC)
-      wallet.coins.forEach((coin, index) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.symbol, coin.balance) : '';
-        const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
-        const item = {
-          key: `${index}`,
-          title: coin.defaultName,
-          text: coinType,
-          worth: worthText,
-          amount: amountText,
-          icon: coin.icon,
-          onPress: () => {
-            navigation.navigate('WalletHistory', { wallet, coin });
-          },
-          r1Press: () => {
-            navigation.navigate('Transfer', { wallet, coin });
-          },
-          r2Press: () => {
-            navigation.navigate('WalletReceive', { address: coin.address, icon: coin.icon, coin: coinType });
-          },
-          onSwapButtonPress: () => {
-            resetSwap();
-            setSwapSource(wallet.name, coin);
-            navigation.navigate('Swap', { coin });
-          },
-        };
-        wal.coins.push(item);
-      });
-      wal.assetValue = wallet.assetValue;
-      listData.push(wal);
-    });
-
-    return listData;
   }
 
   createWalletPages() {
@@ -184,7 +170,7 @@ class WalletList extends Component {
   render() {
     const { pageIndex } = this.state;
     const walletPages = this.createWalletPages();
-    const addWalletPage = WalletSwiperHelper.createAddWalletPage(this.addWalletPage);
+    const addWalletPage = WalletSwiperHelper.createAddWalletPage(this.onAddWalletPressed);
     return (
       <BasePageGereral
         isSafeView={false}
@@ -198,7 +184,6 @@ class WalletList extends Component {
           <ParallaxSwiper
             ref={(swiper) => { this.swiper = swiper; }}
             pageIndex={pageIndex}
-            animatedValue={this.myCustomAnimatedValue}
             onMomentumScrollEnd={this.onSwiperScrollEnd}
           >
             {addWalletPage}
@@ -223,7 +208,6 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
-  setSwapSource: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -237,7 +221,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
   resetSwap: () => dispatch(walletActions.resetSwap()),
 });
 

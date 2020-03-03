@@ -12,6 +12,7 @@ import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import ResponsiveText from '../misc/responsive.text';
 import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
+import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({
   // scan: {
@@ -140,6 +141,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  assetsView: {
+    width: '96%',
+    alignSelf: 'center',
+    flex: 1,
+  },
+  noBorderRight: {
+    borderRightWidth: 0,
+  },
 });
 
 const WalletItem = (item) => (
@@ -158,6 +167,10 @@ const WalletItem = (item) => (
   </TouchableOpacity>
 );
 
+/**
+ * WalletSwiperPage is single page for swipe page.
+ * It presents a wallet with coins
+ */
 const WalletSwiperPage = (props) => {
   const {
     walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol,
@@ -193,15 +206,15 @@ const WalletSwiperPage = (props) => {
               <Loc style={[styles.receiveText]} text="button.Receive" />
             </TouchableOpacity>
             <View style={styles.spliteLine} />
-            <TouchableOpacity style={[styles.ButtonView, { borderRightWidth: 0 }]} onPress={onSwapPressed}>
+            <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight]} onPress={onSwapPressed}>
               <Image source={references.images.swap} />
               <Loc style={[styles.swapText]} text="button.Swap" />
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      <View style={{ width: '96%', alignSelf: 'center', flex: 1 }}>
-        <View style={{ marginTop: 30 }}>
+      <View style={styles.assetsView}>
+        <View style={space.marginTop_30}>
           <Loc style={[styles.assetsTitle]} text="page.wallet.list.allAssets" />
         </View>
         <View style={flex.flex1}>
