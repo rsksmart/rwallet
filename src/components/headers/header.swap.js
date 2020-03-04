@@ -57,5 +57,9 @@ export default function SwapHeader({ title, onBackButtonPress, rightButton }) {
 SwapHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onBackButtonPress: PropTypes.func.isRequired,
-  rightButton: PropTypes.element.isRequired,
+  rightButton: PropTypes.element,
+};
+
+SwapHeader.defaultProps = {
+  rightButton: null,
 };

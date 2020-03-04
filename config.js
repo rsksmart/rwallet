@@ -47,7 +47,7 @@ const config = {
     BTC: 6,
     RBTC: 6,
     RIF: 3,
-    DOC: 3,
+    DOC: 6,
   },
   assetValueDecimalPlaces: 2,
   transactionUrls: {
@@ -79,6 +79,9 @@ const config = {
       RBTC: ['BTC'],
       DOC: ['BTC'],
     },
+  },
+  appLock: {
+    timeout: 300000,
   },
 };
 

@@ -440,7 +440,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setSwapSource: (walletName, coin) => dispatch(walletActions.setSwapSource(walletName, coin)),
-  resetSwap: () => dispatch(walletActions.resetSwap()),
+  resetSwap: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

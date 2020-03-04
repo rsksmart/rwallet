@@ -15,9 +15,11 @@ import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
 import Transaction from '../../../common/transaction';
 import appActions from '../../../redux/app/actions';
-import { createErrorNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
+import config from '../../../../config';
+import definitions from '../../../common/definitions';
 
 
 const styles = StyleSheet.create({
@@ -255,27 +257,22 @@ class Swap extends Component {
     };
   }
 
-  async componentDidMount() {
-    const { swapSource, swapDest } = this.props;
-    if (swapSource && swapDest) {
-      this.updateRateInfo(swapSource, swapDest, this.props);
-    }
+  componentDidMount() {
+    const { navigation } = this.props;
+    this.updateSwapData();
+    this.willFocusSubscription = navigation.addListener(
+      'willFocus',
+      () => {
+        this.updateSwapData();
+      },
+    );
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { swapSource: currentSwapSource, swapDest: currentSwapDest, prices } = nextProps;
-    const { swapSource: lastSwapSource, swapDest: lastSwapDest } = this.props;
-    const suRate = currentSwapSource ? prices.find((price) => price.symbol === currentSwapSource.coin.symbol) : null;
-    const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
-    if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
-    if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-
-    if ((currentSwapSource && currentSwapDest) && ((!lastSwapSource || !this.isSameCoin(currentSwapSource, lastSwapSource)) || (!lastSwapDest || !this.isSameCoin(currentSwapDest, lastSwapDest)))
-    ) {
-      this.updateRateInfo(currentSwapSource, currentSwapDest, nextProps);
-    } else if (!currentSwapSource || !currentSwapDest) {
-      this.resetAmountState();
-    }
+  componentWillUnmount() {
+    const { resetSwapDest, resetSwapSource } = this.props;
+    resetSwapSource();
+    resetSwapDest();
+    this.willFocusSubscription.remove();
   }
 
   async onExchangePress() {
@@ -292,20 +289,26 @@ class Swap extends Component {
       const destCoin = destId.toLowerCase();
       const order = await CoinswitchHelper.placeOrder(sourceCoin, destCoin, sourceAmount, { address: destAddress }, { address: sourceAddress });
       const {
-        // orderId,
         exchangeAddress: { address: agentAddress },
       } = order;
 
       const gasFee = this.getFeeParams(swapSource.coin);
-      const extraParams = { data: '', memo: '', gasFee };
+      const extraParams = {
+        data: '', memo: '', gasFee, coinswitch: { order },
+      };
       let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       console.log('transaction: ', transaction);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
-      transaction = null;
       this.setState({ loading: false });
-      navigation.navigate('SwapCompleted', { coin: swapSource.coin });
+      const completedParams = {
+        symbol: swapSource.coin.symbol,
+        type: swapSource.coin.type,
+        hash: transaction.txHash,
+      };
+      navigation.navigate('SwapCompleted', completedParams);
+      transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
@@ -443,19 +446,22 @@ class Swap extends Component {
     const sourceCoinId = currentSwapSource.coin.id.toLowerCase();
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
-    const promise = CoinswitchHelper.getRate(sourceCoinId, destCoinId);
-    Promise.all([promise])
-      .then((values) => {
-        const sdRate = values[0];
+    CoinswitchHelper.getRate(sourceCoinId, destCoinId)
+      .then((sdRate) => {
         const {
-          rate, limitMinDepositCoin, limitMaxDepositCoin, minerFee,
+          rate, limitMinDepositCoin, minerFee,
         } = sdRate;
+
+        const decimalPlaces = config.symbolDecimalPlaces[currentSwapSource.coin.symbol];
+        const limitHalfDepositCoin = (parseFloat(currentSwapSource.coin.balance.toNumber()) / 2).toFixed(6);
+        const gasCost = this.getGasCost(currentSwapSource.coin);
+        const maxDepositCoin = (currentSwapSource.coin.balance.toNumber() - gasCost).toFixed(decimalPlaces);
         this.setState({
           rate,
           minerFee,
           limitMinDepositCoin,
-          limitMaxDepositCoin,
-          limitHalfDepositCoin: ((limitMaxDepositCoin + limitMinDepositCoin) / 2).toFixed(2),
+          limitMaxDepositCoin: maxDepositCoin,
+          limitHalfDepositCoin,
         }, () => {
           this.setAmountState(sourceAmount, props, this.state);
           this.setState({ coinLoading: false });
@@ -463,12 +469,7 @@ class Swap extends Component {
       }).catch((err) => {
         console.log(err);
       });
-  }
-
-  isSameCoin = (source, target) => source.walletName === target.walletName
-    && source.coin.chain === target.coin.chain
-    && source.coin.type === target.coin.type
-    && source.coin.symbol === target.coin.symbol;
+  };
 
   getFeeParams = (coin) => {
     switch (coin.id) {
@@ -479,7 +480,7 @@ class Swap extends Component {
           gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
           gas: coin.metadata.DEFAULT_RBTC_MEDIUM_GAS,
         };
-      case 'doc':
+      case 'DOC':
         return {
           gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
           gas: coin.metadata.DEFAULT_DOC_MEDIUM_GAS,
@@ -489,12 +490,57 @@ class Swap extends Component {
     }
   };
 
+  getGasCost = (coin) => {
+    switch (coin.id) {
+      case 'BTC':
+        return (definitions.btcPreferenceFee[2]) / (10 ** 8);
+      case 'RBTC':
+        return (coin.metadata.DEFAULT_RBTC_MEDIUM_GAS * coin.metadata.DEFAULT_RBTC_GAS_PRICE * 1.5) / (10 ** 18);
+      case 'DOC':
+        return (coin.metadata.DEFAULT_DOC_MEDIUM_GAS * coin.metadata.DEFAULT_RBTC_GAS_PRICE * 1.5) / (10 ** 18);
+      default:
+        return null;
+    }
+  };
+
   switchSourceDest = () => {
     const { switchSwap } = this.props;
     const { destAmount } = this.state;
     switchSwap();
-    this.onChangeSourceAmount(destAmount || 0);
+    const text = destAmount || 0;
+    const isAmount = common.isAmount(text);
+    let sourceAmount = null;
+    if (isAmount) {
+      sourceAmount = parseFloat(text);
+    }
+    this.setState({ sourceText: text, switchIndex: -1, sourceAmount }, () => setTimeout(() => {
+      this.updateSwapData();
+    }, 0));
   };
+
+  updateSwapData() {
+    const {
+      swapSource, swapDest, addNotification, navigation,
+    } = this.props;
+    if (swapSource && swapDest) {
+      const { swapSource: currentSwapSource, swapDest: currentSwapDest, prices } = this.props;
+      const suRate = currentSwapSource ? prices.find((price) => price.symbol === currentSwapSource.coin.symbol) : null;
+      const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
+      if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
+      if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
+      this.updateRateInfo(currentSwapSource, currentSwapDest, this.props);
+    } else if (!swapSource && !swapDest) {
+      const notification = createInfoNotification(
+        'modal.swap.title',
+        'modal.swap.body',
+        'button.addAsset',
+        () => navigation.navigate('Home'),
+      );
+      addNotification(notification);
+    } else if (!swapSource || !swapDest) {
+      this.resetAmountState();
+    }
+  }
 
   resetAmountState() {
     this.setState({
@@ -507,23 +553,34 @@ class Swap extends Component {
     });
   }
 
-  renderExchangeStateBlock = (isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) => {
+  renderExchangeStateBlock = (sourceValueText, destValueText) => {
+    const {
+      isBalanceEnough, sourceAmount, destAmount, limitMinDepositCoin, limitMaxDepositCoin,
+    } = this.state;
+    const { swapSource } = this.props;
     let errorText = null;
+    let additionalInfo = '';
     if (!sourceAmount) {
       errorText = 'page.wallet.swap.errorSourceAmount';
     } else if (!destAmount) {
       errorText = 'page.wallet.swap.errorDestAmount';
-    } else if (!isAmountInRange) {
-      errorText = 'page.wallet.swap.errorAmountInRange';
     } else if (!isBalanceEnough) {
       errorText = 'page.wallet.swap.errorBalanceEnough';
+    } else if (sourceAmount < limitMinDepositCoin) {
+      errorText = 'page.wallet.swap.errorAmountInRange.tooSmall';
+      additionalInfo = `${limitMinDepositCoin} ${swapSource.coin.symbol}`;
+    } else if (sourceAmount > limitMaxDepositCoin) {
+      errorText = 'page.wallet.swap.errorAmountInRange.tooBig';
+      additionalInfo = `${limitMaxDepositCoin} ${swapSource.coin.symbol}`;
     }
 
     if (errorText) {
       return (
         <View style={[styles.errorView, space.marginTop_27]}>
           <Image style={styles.error} source={res.error} />
-          <Loc style={styles.errorText} text={errorText} />
+          <View style={styles.errorText}>
+            <Loc text={errorText} suffix={additionalInfo} />
+          </View>
         </View>
       );
     }
@@ -557,23 +614,25 @@ class Swap extends Component {
     } = this.props;
     const {
       isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate, coinLoading, loading, switchIndex,
+      limitMinDepositCoin, limitMaxDepositCoin, rate, coinLoading, loading, switchIndex,
     } = this.state;
 
     const currencySymbol = common.getCurrencySymbol(currency);
     const sourceValueText = sourceAmount && sourceUsdRate ? currencySymbol + (sourceAmount * sourceUsdRate).toFixed(2) : '';
     const destValueText = destAmount && destUsdRate ? currencySymbol + (destAmount * destUsdRate).toFixed(2) : '';
 
-    const balanceText = swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
+    const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
 
     const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
 
     const customBottomButton = (
-      <Button
-        text="button.Exchange"
-        disabled={!isAmountInRange || !isBalanceEnough}
-        onPress={this.onExchangePress}
-      />
+      swapSource ? (
+        <Button
+          text="button.Exchange"
+          disabled={!isAmountInRange || !isBalanceEnough}
+          onPress={this.onExchangePress}
+        />
+      ) : null
     );
 
     return (
@@ -587,14 +646,13 @@ class Swap extends Component {
         <View style={styles.body}>
           <View style={[presetStyles.board, styles.board]}>
             <Text style={styles.boardText}>
-              <Loc text="page.wallet.swap.wallet" />
-              <Text style={styles.boardWalletName}>{` ${swapSource.walletName}`}</Text>
-              {`: ${balanceText} ${swapSource.coin.symbol} `}
+              <Loc text="page.wallet.swap.have" suffix={swapSource ? `${balanceText} ${swapSource.coin.symbol} ` : ''} />
+              {swapSource && <Loc text="page.wallet.swap.in" suffix={` ${swapSource.walletName}`} />}
             </Text>
             <View style={styles.boardTokenView}>
               <TouchableOpacity onPress={this.onSelectSourcePress} style={styles.boardTokenViewLeft}>
-                <Image style={styles.boardTokenIcon} source={swapSource.coin.icon} />
-                <Text style={styles.boardTokenName}>{swapSource.coin.symbol}</Text>
+                {swapSource && <Image style={styles.boardTokenIcon} source={swapSource.coin.icon} />}
+                {swapSource && <Text style={styles.boardTokenName}>{swapSource.coin.symbol}</Text>}
                 <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
               </TouchableOpacity>
               <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
@@ -637,7 +695,7 @@ class Swap extends Component {
               <Text style={styles.boardText}>
                 <Loc text="page.wallet.swap.want" />
                 {` ${swapDest.coin.symbol} `}
-                <Text style={styles.boardWalletName}>{`(${swapDest.walletName})`}</Text>
+                <Loc text="page.wallet.swap.in" suffix={` ${swapDest.walletName}`} />
               </Text>
             )}
             <View style={styles.boardTokenView}>
@@ -669,13 +727,13 @@ class Swap extends Component {
               <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.switchItem, switchIndex === 1 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(1)}>
-              <Text style={styles.switchText}>{limitHalfDepositCoin > 0 ? `${switchItems[1]}(${limitHalfDepositCoin})` : switchItems[1]}</Text>
+              <Text style={styles.switchText}>{switchItems[1]}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.switchItem, switchIndex === 2 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(2)}>
               <Text style={styles.switchText}>{limitMaxDepositCoin > 0 ? `${switchItems[2]}(${limitMaxDepositCoin})` : switchItems[2]}</Text>
             </TouchableOpacity>
           </View>
-          { this.renderExchangeStateBlock(isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceUsdRate, destUsdRate, sourceValueText, destValueText) }
+          { swapSource && this.renderExchangeStateBlock(sourceValueText, destValueText) }
         </View>
       </BasePageGereral>
     );
@@ -689,6 +747,7 @@ Swap.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
     push: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired,
   }).isRequired,
   swapSource: PropTypes.shape({
     walletName: PropTypes.string.isRequired,
@@ -702,6 +761,11 @@ Swap.propTypes = {
   currency: PropTypes.string.isRequired,
   addNotification: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
+  resetSwapSource: PropTypes.func.isRequired,
+  resetSwapDest: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array.isRequired,
+  }).isRequired,
 };
 
 Swap.defaultProps = {
@@ -722,6 +786,8 @@ const mapDispatchToProps = (dispatch) => ({
     appActions.addNotification(notification),
   ),
   switchSwap: () => dispatch(walletActions.switchSwap()),
+  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
+  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);

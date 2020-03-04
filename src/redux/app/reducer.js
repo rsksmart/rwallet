@@ -31,6 +31,7 @@ const initState = new Map({
   confirmation: null,
   isUsernameUpdated: false,
   confirmationCallback: null,
+  appLock: true,
 });
 
 export default function appReducer(state = initState, action) {
@@ -109,6 +110,8 @@ export default function appReducer(state = initState, action) {
       return state.set('isUsernameUpdated', true);
     case actions.RESET_USER_NAME_UPDATED:
       return state.set('isUsernameUpdated', false);
+    case actions.LOCK_APP:
+      return state.set('appLock', action.lock);
     default:
       return state;
   }

@@ -116,11 +116,23 @@
         "want": "我想要",
         "errorSourceAmount": "需要指定来源数量",
         "errorDestAmount": "需要指定目的地数量",
-        "errorAmountInRange": "金额无效",
-        "errorBalanceEnough": "抱歉，您的余额不足"
+        "errorAmountInRange": {
+          "tooBig": "该金额大于最大交易额 ",
+          "tooSmall": "该金额低于的最低交易金额 "
+        },
+        "errorBalanceEnough": "抱歉，您的余额不足",
+        "have": "我有 ",
+        "in": "在"
       },
       "swapSelection": {
-        "title": "选择货币"
+        "title": "选择货币",
+        "noSwappableCoin": "抱歉，您没有任何可交换币",
+        "please": "请",
+        "create": "创建",
+        "or": "或者",
+        "import": "引入",
+        "aWallet": "钱包",
+        "startSwap": "开始使用交换"
       },
       "swapCompleted": {
         "title": "交换",
@@ -228,7 +240,8 @@
     "Delete": "删除",
     "Reset": "重置",
     "Finish": "完成",
-    "Exchange": "兑换"
+    "Exchange": "兑换",
+    "addAsset": "添加资产"
   },
   "txState": {
     "Sent": "已发送",
@@ -321,6 +334,10 @@
     "deleteKey": {
       "title": "警告!",
       "body": "您确定要删除使用此密钥的所有钱包吗？"
+    },
+    "swap": {
+      "title": "没有可交换币",
+      "body": "交换支持BTC，RBTC和DOC。请添加资产."
     }
   }
 }

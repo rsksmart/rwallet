@@ -117,11 +117,23 @@
         "want": "I want",
         "errorSourceAmount": "Source amount need to be specified",
         "errorDestAmount": "Dest amount need to be specified",
-        "errorAmountInRange": "The amount is not valid",
-        "errorBalanceEnough": "Sorry, but you dont have enough balance"
+        "errorAmountInRange": {
+          "tooBig": "The amount is higher than the exchange maximum of ",
+          "tooSmall": "The amount is lower than the exchange minimum of "
+        },
+        "errorBalanceEnough": "Sorry, but you dont have enough balance",
+        "have": "I have ",
+        "in": "in"
       },
       "swapSelection": {
-        "title": "Select Currency"
+        "title": "Select Currency",
+        "noSwappableCoin": "Sorry, you dont have any Swappable Coin",
+        "please": "Please",
+        "create": "Create",
+        "or": "or",
+        "import": "Import",
+        "aWallet": "a wallet",
+        "startSwap": "to start using Swap"
       },
       "swapCompleted": {
         "title": "Swap",
@@ -228,7 +240,8 @@
     "Delete": "Delete",
     "Reset": "Reset",
     "Finish": "Finish",
-    "Exchange": "Exchange"
+    "Exchange": "Exchange",
+    "addAsset": "Add Asset"
   },
   "txState": {
     "Sent": "Sent",
@@ -321,6 +334,10 @@
     "deleteKey": {
       "title": "Warning!",
       "body": "Are you sure you want to delete all wallets using this key?"
+    },
+    "swap": {
+      "title": "No swappable coin",
+      "body": "Swap supports BTC, RBTC and DOC. Please add asset."
     }
   }
 }
