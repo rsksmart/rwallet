@@ -12,7 +12,6 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
+    marginTop: -76,
   },
   myAssets: {
     marginTop: 17,
