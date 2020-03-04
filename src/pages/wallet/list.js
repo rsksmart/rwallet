@@ -19,6 +19,8 @@ const styles = StyleSheet.create({
   body: {
     marginBottom: 103,
     marginTop: -190,
+    flexDirection: 'column',
+    flex: 1,
   },
 });
 

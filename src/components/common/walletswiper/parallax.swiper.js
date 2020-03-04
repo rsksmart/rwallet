@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import ParallaxSwiperPage from './parallax.swiper.page';
 import { screen } from '../../../common/info';
+import flex from '../../../assets/styles/layout.flex';
 
 const dividerWidth = 12;
 
@@ -26,7 +27,6 @@ class ParallaxSwiper extends Component {
     super(props);
     const { children } = props;
     this.width = screen.width;
-    this.height = screen.height;
     this.onScrollBeginDrag = this.onScrollBeginDrag.bind(this);
     this.pageWidths = [];
     this.pageOffsets = [];
@@ -105,14 +105,13 @@ class ParallaxSwiper extends Component {
   render() {
     const { children, scrollEnabled } = this.props;
     const {
-      width, height, endPageIndex, endPageWidth,
+      endPageIndex, endPageWidth,
     } = this;
     return (
-      <View pointerEvents="box-none">
+      <View pointerEvents="box-none" style={flex.flex1}>
         <ScrollView
           ref={(scrollView) => { this.scrollView = scrollView; }}
           scrollEnabled={scrollEnabled}
-          style={{ width }}
           horizontal
           scrollEventThrottle={1}
           decelerationRate="fast"
@@ -129,7 +128,7 @@ class ParallaxSwiper extends Component {
                   index={i}
                   component={child.props.component}
                 />
-                <View style={{ width: dividerWidth, height }} />
+                <View style={{ width: dividerWidth }} />
               </View>
             ))
           }
