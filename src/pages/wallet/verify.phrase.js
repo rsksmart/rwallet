@@ -272,7 +272,7 @@ class VerifyPhrase extends Component {
     return !isShowConfirmation ? null : (
       <View style={styles.confirmationView}>
         <Loc style={[styles.confirmationTitle]} text="page.wallet.backupPhrase.isCorrect" />
-        <Button style={[styles.confirmationButton]} text="button.Confirm" onPress={this.onConfirmPress} />
+        <Button style={[styles.confirmationButton]} text="button.confirm" onPress={this.onConfirmPress} />
         <TouchableOpacity style={styles.confirmationClearButton} onPress={this.onClearPress}><Loc style={[styles.confirmationClearButtonText]} text="button.Clear" /></TouchableOpacity>
       </View>
     );

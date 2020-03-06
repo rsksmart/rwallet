@@ -101,10 +101,10 @@ export default class ConfirmationPanel extends Component {
             <View style={styles.line} />
             <View style={styles.ButtonsView}>
               <TouchableOpacity onPress={this.onCancelPress}>
-                <Loc style={[styles.button]} text={cancelText} />
+                <Loc style={[styles.button]} text={cancelText} caseType="upper" />
               </TouchableOpacity>
               <TouchableOpacity style={{ marginLeft: 70 }} onPress={this.onConfirmPress}>
-                <Loc style={[styles.button]} text={comfirmText || 'button.Confirm'} />
+                <Loc style={[styles.button]} text={comfirmText || 'button.confirm'} caseType="upper" />
               </TouchableOpacity>
             </View>
           </View>
@@ -129,6 +129,6 @@ ConfirmationPanel.defaultProps = {
   onClosePress: null,
   confirmationCallback: null,
   confirmationCancelCallback: null,
-  comfirmText: 'button.Confirm',
-  cancelText: 'button.Cancel',
+  comfirmText: 'button.confirm',
+  cancelText: 'button.cancel',
 };

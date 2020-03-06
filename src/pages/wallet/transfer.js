@@ -956,7 +956,7 @@ class Transfer extends Component {
                   )}
                 label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="button.Confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );
