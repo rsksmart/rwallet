@@ -32,7 +32,7 @@ class SwapIndex extends Component {
     );
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.willFocusSubscription.remove();
     this.didBlurSubscription.remove();
   }
@@ -41,16 +41,16 @@ class SwapIndex extends Component {
     let hasSwappableCoin = null;
 
     if (wallets.length === 0) {
-      return <SwapSelection navigation={navigation} headless />;
+      return <SwapSelection navigation={navigation} isShowBackButton={false} />;
     }
 
     for (let i = 0; i < wallets.length; i += 1) {
       hasSwappableCoin = wallets[i].coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]);
       if (hasSwappableCoin) {
-        return <SwapSelection navigation={navigation} headless bottomPaddingComponent={<View style={[{ height: 80 }]} />} />;
+        return <SwapSelection navigation={navigation} isShowBackButton={false} bottomPaddingComponent={<View style={[{ height: 80 }]} />} />;
       }
     }
-    return <Swap navigation={navigation} headless />;
+    return <Swap navigation={navigation} />;
   };
 
   render() {

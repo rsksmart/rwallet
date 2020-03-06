@@ -114,7 +114,7 @@ class SwapSelection extends Component {
     );
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
 
@@ -312,7 +312,7 @@ class SwapSelection extends Component {
 
   render() {
     const {
-      navigation, bottomPaddingComponent, headless,
+      navigation, bottomPaddingComponent, isShowBackButton,
     } = this.props;
     const { loading, contentComponent } = this.state;
 
@@ -322,18 +322,9 @@ class SwapSelection extends Component {
         hasBottomBtn={false}
         hasLoader={false}
         bgColor="#00B520"
-        headerComponent={headless ? (
-          <Header
-            title="page.wallet.swapSelection.title"
-          />
-        ) : (
-          <Header
-            onBackButtonPress={() => navigation.goBack()}
-            title="page.wallet.swapSelection.title"
-          />
-        )}
+        headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
       >
-        <View style={[styles.body, headless ? { marginTop: -95 } : {}]}>
+        <View style={[styles.body]}>
           {contentComponent}
         </View>
         {bottomPaddingComponent}
@@ -366,7 +357,7 @@ SwapSelection.propTypes = {
   setSwapDest: PropTypes.func.isRequired,
   resetSwap: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
-  headless: PropTypes.bool,
+  isShowBackButton: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
   bottomPaddingComponent: PropTypes.object,
 };
@@ -376,7 +367,7 @@ SwapSelection.defaultProps = {
   swapSource: undefined,
   swapDest: undefined,
   bottomPaddingComponent: undefined,
-  headless: false,
+  isShowBackButton: true,
 };
 
 const mapStateToProps = (state) => ({

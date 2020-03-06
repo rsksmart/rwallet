@@ -408,7 +408,7 @@ class WalletList extends Component {
               {WalletList.accountListView(listData)}
             </View>
             <View style={[styles.sectionContainer, styles.addAssetView]}>
-              <TouchableOpacity style={styles.addAsset} onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
+              <TouchableOpacity style={styles.addAsset} onPress={() => navigation.navigate('WalletAddIndex')}>
                 <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
                 <Loc text="page.wallet.list.addAsset" />
               </TouchableOpacity>
