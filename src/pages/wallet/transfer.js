@@ -502,7 +502,7 @@ class Transfer extends Component {
       const confirmation = createErrorConfirmation(
         definitions.defaultErrorNotification.title,
         definitions.defaultErrorNotification.message,
-        'button.Retry',
+        'button.retry',
         this.requestFees,
         () => navigation.goBack(),
       );
@@ -682,7 +682,7 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
-      const buttonText = 'button.RETRY';
+      const buttonText = 'button.retry';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');

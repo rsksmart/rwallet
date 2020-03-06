@@ -383,10 +383,10 @@ class ParseHelper {
   }
 
   static getTransactionFees(symbol, type, sender, receiver, value, memo) {
-    console.log(`parse.getTransactionFees, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, memo: ${memo}`);
-    if (symbol === 'BTC') {
-      return { fees: { low: 4500, medium: 4500, high: 4500 } };
-    }
+    // console.log(`parse.getTransactionFees, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, memo: ${memo}`);
+    // if (symbol === 'BTC') {
+    //   return { fees: { low: 4500, medium: 4500, high: 4500 } };
+    // }
     return Parse.Cloud.run('getTransactionFees', {
       symbol, type, sender, receiver, value, memo,
     });
