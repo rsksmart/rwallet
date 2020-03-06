@@ -12,15 +12,12 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import common from '../../common/common';
+import definitions from '../../common/definitions';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
-
-// Define default error notification text
-const DEFAULT_ERROR_NOTIFICATION_TITLE = 'modal.defaultError.title';
-const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'modal.defaultError.body';
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
@@ -159,7 +156,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -176,7 +173,7 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -200,7 +197,7 @@ function* renameRequest(action) {
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
   }

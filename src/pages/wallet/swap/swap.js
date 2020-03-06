@@ -18,8 +18,9 @@ import appActions from '../../../redux/app/actions';
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
-import config from '../../../../config';
 import definitions from '../../../common/definitions';
+import parseHelper from '../../../common/parse';
+import { createErrorConfirmation } from '../../../common/confirmation.controller';
 
 
 const styles = StyleSheet.create({
@@ -237,6 +238,7 @@ class Swap extends Component {
     this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
     this.onSelectDestPress = this.onSelectDestPress.bind(this);
     this.onChangeSourceAmount = this.onChangeSourceAmount.bind(this);
+    this.txFeesCache = {};
     this.state = {
       switchIndex: -1,
       switchSelectedText: switchItems[0],
@@ -291,8 +293,8 @@ class Swap extends Component {
       const {
         exchangeAddress: { address: agentAddress },
       } = order;
-
-      const gasFee = this.getFeeParams(swapSource.coin);
+      const feeObject = await this.requestFee(sourceAmount, swapSource);
+      const gasFee = feeObject.feeParams;
       const extraParams = {
         data: '', memo: '', gasFee, coinswitch: { order },
       };
@@ -441,53 +443,53 @@ class Swap extends Component {
     });
   }
 
-  updateRateInfo = (currentSwapSource, currentSwapDest, props) => {
+  updateRateInfo = async (currentSwapSource, currentSwapDest, props) => {
+    console.log('updateRateInfo', currentSwapSource, currentSwapDest, props);
+    const { navigation, addConfirmation } = this.props;
     const { sourceAmount } = this.state;
     const sourceCoinId = currentSwapSource.coin.id.toLowerCase();
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
-    CoinswitchHelper.getRate(sourceCoinId, destCoinId)
-      .then((sdRate) => {
-        const {
-          rate, limitMinDepositCoin, minerFee,
-        } = sdRate;
+    try {
+      const sdRate = await CoinswitchHelper.getRate(sourceCoinId, destCoinId);
+      const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
-        const decimalPlaces = config.symbolDecimalPlaces[currentSwapSource.coin.symbol];
-        const limitHalfDepositCoin = (parseFloat(currentSwapSource.coin.balance.toNumber()) / 2).toFixed(6);
-        const gasCost = this.getGasCost(currentSwapSource.coin);
-        const maxDepositCoin = (currentSwapSource.coin.balance.toNumber() - gasCost).toFixed(decimalPlaces);
-        this.setState({
-          rate,
-          minerFee,
-          limitMinDepositCoin,
-          limitMaxDepositCoin: maxDepositCoin,
-          limitHalfDepositCoin,
-        }, () => {
-          this.setAmountState(sourceAmount, props, this.state);
-          this.setState({ coinLoading: false });
-        });
-      }).catch((err) => {
-        console.log(err);
+      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
+      const feeObject = await this.requestFee(currentSwapSource.coin.balance, currentSwapSource);
+      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
+
+      this.setState({
+        rate,
+        minerFee,
+        limitMinDepositCoin,
+        limitMaxDepositCoin: maxDepositCoin,
+        limitHalfDepositCoin,
+      }, () => {
+        this.setAmountState(sourceAmount, props, this.state);
       });
+    } catch (err) {
+      console.log(err);
+      const confirmation = createErrorConfirmation(
+        definitions.defaultErrorNotification.title,
+        definitions.defaultErrorNotification.message,
+        'button.Retry',
+        () => this.updateRateInfo(currentSwapSource, currentSwapDest, props),
+        () => navigation.goBack(),
+      );
+      addConfirmation(confirmation);
+    } finally {
+      this.setState({ coinLoading: false });
+    }
   };
 
-  getFeeParams = (coin) => {
-    switch (coin.id) {
-      case 'BTC':
-        return { preference: 'medium' };
-      case 'RBTC':
-        return {
-          gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
-          gas: coin.metadata.DEFAULT_RBTC_MEDIUM_GAS,
-        };
-      case 'DOC':
-        return {
-          gasPrice: coin.metadata.DEFAULT_RBTC_GAS_PRICE.toString(),
-          gas: coin.metadata.DEFAULT_DOC_MEDIUM_GAS,
-        };
-      default:
-        return null;
+  getFeeParams = (symbol, fees) => {
+    if (symbol === 'BTC') {
+      return { fees: fees.fees.medium };
     }
+    return {
+      gasPrice: fees.gasPrice.medium,
+      gas: fees.gas,
+    };
   };
 
   getGasCost = (coin) => {
@@ -517,6 +519,36 @@ class Swap extends Component {
       this.updateSwapData();
     }, 0));
   };
+
+  // Request fee from network, returns { fee, feeParams }
+  async requestFee(sourceAmount, swapSource) {
+    const { symbol, type, address } = swapSource.coin;
+    const transactionFees = await this.loadTransactionFees(symbol, type, address, sourceAmount);
+    let fee = null;
+    let feeParams = null;
+    if (symbol === 'BTC') {
+      const { medium } = transactionFees.fees;
+      const feeHex = `0x${medium.toString(16)}`;
+      feeParams = { fees: feeHex };
+      fee = common.convertUnitToCoinAmount(symbol, medium);
+    } else {
+      const { gas, gasPrice: { medium } } = transactionFees;
+      feeParams = { gas, gasPrice: medium };
+      fee = common.convertUnitToCoinAmount(symbol, gas * medium);
+    }
+    return { fee, feeParams };
+  }
+
+  async loadTransactionFees(symbol, type, address, amount) {
+    const { amount: lastAmount } = this.txFeesCache;
+    if (amount === lastAmount) {
+      return this.txFeesCache.transactionFees;
+    }
+    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const transactionFees = await parseHelper.getTransactionFees(symbol, type, address, address, amountHex);
+    this.txFeesCache = { amount, transactionFees };
+    return transactionFees;
+  }
 
   updateSwapData() {
     const {
@@ -760,6 +792,7 @@ Swap.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
   resetSwapSource: PropTypes.func.isRequired,
   resetSwapDest: PropTypes.func.isRequired,
@@ -784,6 +817,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
+  ),
+  addConfirmation: (confirmation) => dispatch(
+    appActions.addConfirmation(confirmation),
   ),
   switchSwap: () => dispatch(walletActions.switchSwap()),
   resetSwapSource: () => dispatch(walletActions.resetSwapSource()),

@@ -108,6 +108,24 @@ const common = {
     return null;
   },
   /**
+   * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The balance will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  formatAmount(symbol, amount) {
+    const decimalPlaces = config.symbolDecimalPlaces[symbol];
+    if (!_.isNull(amount)) {
+      let amountBigNumber = amount;
+      if (typeof amount === 'number' || typeof value === 'string') {
+        amountBigNumber = new BigNumber(amount);
+      }
+      return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toNumber();
+    }
+    return null;
+  },
+  /**
    * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
    * @param {BigNumber | number | string} value
    */
