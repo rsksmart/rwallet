@@ -38,7 +38,7 @@ class Dashboard extends Component {
       );
     }
 
-    componentWillUnmount(): void {
+    componentWillUnmount() {
       this.willFocusSubscription.remove();
       this.didBlurSubscription.remove();
       timer.clearTimeout(this);
@@ -56,7 +56,7 @@ class Dashboard extends Component {
 
     render() {
       const { navigation, wallets } = this.props;
-      return isEmpty(wallets) ? <AddIndex navigation={navigation} /> : <List navigation={navigation} />;
+      return isEmpty(wallets) ? <AddIndex navigation={navigation} isShowBackButton={false} /> : <List navigation={navigation} />;
     }
 }
 

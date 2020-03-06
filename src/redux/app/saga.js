@@ -181,7 +181,7 @@ function* changeLanguageRequest(action) {
 function* renameRequest(action) {
   const { name } = action;
   try {
-    settings.rename(name);
+    settings.validateName(name);
     yield put(actions.setSingleSettings('username', name));
     yield put({ type: actions.USER_NAME_UPDATED });
   } catch (err) {

@@ -195,10 +195,15 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const { showPasscode } = this.props;
+      const { showPasscode, resetSwapSource, resetSwapDest } = this.props;
       if (global.passcode) {
-        showPasscode('verify', this.deleteKey, () => {});
+        showPasscode('verify', this.deleteKey, () => {
+          resetSwapSource();
+          resetSwapDest();
+        });
       } else {
+        resetSwapSource();
+        resetSwapDest();
         this.deleteKey();
       }
     }
@@ -277,6 +282,8 @@ KeySettings.propTypes = {
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  resetSwapSource: PropTypes.func.isRequired,
+  resetSwapDest: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -298,6 +305,8 @@ const mapDispatchToProps = (dispatch) => ({
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
+  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
+  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);
