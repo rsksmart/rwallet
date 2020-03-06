@@ -433,7 +433,8 @@ class Swap extends Component {
       return;
     }
     const { rate } = state;
-    const destAmount = swapDest && rate ? (sourceAmount * rate).toPrecision(6) : null;
+    const decimalPlaces = config.symbolDecimalPlaces[swapDest.coin.symbol];
+    const destAmount = swapDest && rate ? parseFloat((sourceAmount * rate).toPrecision(decimalPlaces)) : null;
     const isAmountInRange = sourceAmount >= limitMinDepositCoin && sourceAmount <= limitMaxDepositCoin;
     const isBalanceEnough = swapSource.coin.balance.isGreaterThanOrEqualTo(sourceAmount);
     this.setState({
@@ -507,7 +508,7 @@ class Swap extends Component {
     const { switchSwap } = this.props;
     const { destAmount } = this.state;
     switchSwap();
-    const text = destAmount || 0;
+    const text = destAmount.toString() || '';
     const isAmount = common.isAmount(text);
     let sourceAmount = null;
     if (isAmount) {
@@ -600,7 +601,7 @@ class Swap extends Component {
             <Text>Receiving</Text>
           </View>
           <View style={styles.operationRight}>
-            {destAmount && <Text style={[styles.operationAmount, styles.receivingAmount]}>{`+${destAmount.toString()}`}</Text>}
+            {destAmount && <Text style={[styles.operationAmount, styles.receivingAmount]}>{`+${destAmount}`}</Text>}
             <Text style={styles.operationValue}>{destValueText ? `+${destValueText}` : ''}</Text>
           </View>
         </View>

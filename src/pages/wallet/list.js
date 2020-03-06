@@ -17,6 +17,7 @@ import BasePageGereral from '../base/base.page.general';
 import ListPageHeader from '../../components/headers/header.listpage';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
 import walletActions from '../../redux/wallet/actions';
+import config from '../../../config';
 
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
@@ -340,15 +341,20 @@ class WalletList extends Component {
 
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, walletManager } = this.props;
     const {
       listData, currencySymbol, totalAssetValueText,
     } = this.state;
-    // const scanButton = (
-    //   <TouchableOpacity style={styles.scanView} onPress={() => navigation.navigate('Scan')} disabled>
-    //     <Image style={[styles.scan]} source={scan} />
-    //   </TouchableOpacity>
-    // );
+    const { wallets } = walletManager;
+
+    let hasSwappableCoin = false;
+    for (let i = 0; i < wallets.length; i += 1) {
+      hasSwappableCoin = wallets[i].coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]);
+      if (hasSwappableCoin) {
+        break;
+      }
+    }
+
     return (
       <BasePageGereral
         isSafeView={false}
@@ -383,11 +389,13 @@ class WalletList extends Component {
                 </TouchableOpacity>
                 <View style={styles.spliteLine} />
                 <TouchableOpacity
-                  style={[styles.ButtonView, { borderRightWidth: 0 }]}
                   onPress={this.onSwapPress}
+                  disabled={!hasSwappableCoin}
                 >
-                  <Image source={swap} />
-                  <Loc style={[styles.swapText]} text="button.Swap" />
+                  <View style={[styles.ButtonView, { borderRightWidth: 0, opacity: hasSwappableCoin ? 1 : 0.5 }]}>
+                    <Image source={swap} />
+                    <Loc style={[styles.swapText]} text="button.Swap" />
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
