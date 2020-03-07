@@ -6,12 +6,13 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import RSKad from '../../components/common/rsk.ad';
-import common from '../../common/common';
-import BasePageGereral from '../base/base.page.general';
-import ListPageHeader from '../../components/headers/header.listpage';
-import walletActions from '../../redux/wallet/actions';
-import { ParallaxSwiper, WalletSwiperHelper } from '../../components/common/walletswiper';
+import RSKad from '../../../components/common/rsk.ad';
+import common from '../../../common/common';
+import BasePageGereral from '../../base/base.page.general';
+import ListPageHeader from '../../../components/headers/header.listpage';
+import walletActions from '../../../redux/wallet/actions';
+import WalletCarousel from './wallet.carousel';
+
 
 const { getCurrencySymbol } = common;
 
@@ -23,26 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-/**
- * Formatting number with thousand separator.
- * @param  {number} num e.g. 1000000.65
- * @return {string}   "1,000,000.65"
- */
-export function formatNumberThousands(num) {
-  if (_.isUndefined(num)) {
-    return num;
-  }
-
-  const numStr = num.toString();
-  const parts = numStr.split('.');
-
-  const decimalStr = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  const period = _.isUndefined(parts[1]) ? '' : '.';
-  const floatStr = _.isUndefined(parts[1]) ? '' : parts[1];
-
-  return `${decimalStr}${period}${floatStr}`;
-}
 
 class WalletList extends Component {
   static createListData(wallets, currencySymbol, navigation) {
@@ -84,21 +65,16 @@ class WalletList extends Component {
 
   constructor(props) {
     super(props);
-    this.onSwiperScrollEnd = this.onSwiperScrollEnd.bind(this);
-    this.onAddWalletPressed = this.onAddWalletPressed.bind(this);
+    this.onSwapPressed = this.onSwapPressed.bind(this);
     this.state = {
       listData: [],
-      currencySymbol: getCurrencySymbol(props.currency),
-      pageIndex: 1,
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       currency, walletManager, navigation,
     } = this.props;
-
-    this.onSwapPressed = this.onSwapPressed.bind(this);
 
     const { wallets } = walletManager;
 
@@ -139,40 +115,20 @@ class WalletList extends Component {
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true });
   }
 
-  onSwiperScrollEnd(activePageIndex) {
-    console.log('activePageIndex: ', activePageIndex);
-    this.setState({ pageIndex: activePageIndex });
-  }
-
-  onAddWalletPressed() {
-    this.swiper.scrollToIndex(1);
-    const { navigation } = this.props;
-    navigation.navigate('WalletAddIndex');
-  }
-
-  createWalletPages() {
-    const { navigation } = this.props;
-    const { listData, currencySymbol } = this.state;
-    const walletPages = [];
-    _.each(listData, (walletData, index) => {
-      const swiperPage = WalletSwiperHelper.createWalletSwiperPage(
-        index,
-        walletData,
-        () => navigation.navigate('SelectWallet', { operation: 'send' }),
-        () => navigation.navigate('SelectWallet', { operation: 'receive' }),
-        this.onSwapPressed,
-        () => navigation.navigate('AddToken'),
-        currencySymbol,
-      );
-      walletPages.push(swiperPage);
-    });
-    return walletPages;
-  }
-
   render() {
-    const { pageIndex } = this.state;
-    const walletPages = this.createWalletPages();
-    const addWalletPage = WalletSwiperHelper.createAddWalletPage(this.onAddWalletPressed);
+    const { navigation } = this.props;
+    const { currencySymbol, listData } = this.state;
+
+    const pageData = _.map(listData, (walletData, index) => ({
+      index,
+      walletData,
+      onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send' }),
+      onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive' }),
+      onSwapPressed: this.onSwapPressed,
+      onAddAssetPressed: () => navigation.navigate('AddToken'),
+      currencySymbol,
+    }));
+
     return (
       <BasePageGereral
         isSafeView={false}
@@ -182,15 +138,8 @@ class WalletList extends Component {
         renderAccessory={() => <RSKad />}
         headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
-        <View style={styles.body}>
-          <ParallaxSwiper
-            ref={(swiper) => { this.swiper = swiper; }}
-            pageIndex={pageIndex}
-            onMomentumScrollEnd={this.onSwiperScrollEnd}
-          >
-            {addWalletPage}
-            {walletPages}
-          </ParallaxSwiper>
+        <View style={[styles.body]}>
+          <WalletCarousel data={pageData} navigation={navigation} />
         </View>
       </BasePageGereral>
     );

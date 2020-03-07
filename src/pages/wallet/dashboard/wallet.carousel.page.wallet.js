@@ -7,18 +7,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FlatList } from 'react-native-gesture-handler';
 import references from '../../../assets/references';
-import Loc from '../misc/loc';
+import Loc from '../../../components/common/misc/loc';
 import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
-import ResponsiveText from '../misc/responsive.text';
+import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({
-  // scan: {
-  //   width: 30,
-  //   height: 30,
-  // },
   addAsset: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -167,11 +163,7 @@ const WalletItem = (item) => (
   </TouchableOpacity>
 );
 
-/**
- * WalletSwiperPage is single page for swipe page.
- * It presents a wallet with coins
- */
-const WalletSwiperPage = (props) => {
+const WalletPage = (props) => {
   const {
     walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol,
   } = props;
@@ -186,7 +178,7 @@ const WalletSwiperPage = (props) => {
     </View>
   );
   return (
-    <View style={flex.flex1}>
+    <View style={[flex.flex1]}>
       <Loc style={styles.headerTitle} text={name} />
       <View style={styles.headerBoardView}>
         <View style={styles.headerBoard}>
@@ -232,7 +224,7 @@ const WalletSwiperPage = (props) => {
   );
 };
 
-WalletSwiperPage.propTypes = {
+WalletPage.propTypes = {
   walletData: PropTypes.shape({
     name: PropTypes.string.isRequired,
     coins: PropTypes.arrayOf(PropTypes.object),
@@ -249,4 +241,4 @@ const mapStateToProps = (state) => ({
   updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
-export default connect(mapStateToProps)(WalletSwiperPage);
+export default connect(mapStateToProps)(WalletPage);
