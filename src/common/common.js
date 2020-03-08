@@ -345,6 +345,26 @@ const common = {
     const newLocale = locale === 'zh' ? 'zh-cn' : locale;
     moment.locale(newLocale);
   },
+
+  // make promise cancelable
+  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+  makeCancelable(promise) {
+    let hasCanceled = false;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      promise.then(
+        (val) => (hasCanceled ? reject(new Error('err.canceled')) : resolve(val)),
+        (error) => (hasCanceled ? reject(new Error('err.canceled')) : reject(error)),
+      );
+    });
+
+    return {
+      promise: wrappedPromise,
+      cancel() {
+        hasCanceled = true;
+      },
+    };
+  },
 };
 
 export default common;

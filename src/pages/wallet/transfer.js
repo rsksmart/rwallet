@@ -275,7 +275,7 @@ class Transfer extends Component {
     const { navigation: { state: { params: { coin } } } } = props;
     this.coin = coin;
 
-    this.inputCache = {};
+    this.txFeesCache = {};
     this.isRequestSendAll = false;
 
     // BTC transfer data
@@ -290,6 +290,8 @@ class Transfer extends Component {
     // form data validation state
     this.isAmountValid = false;
     this.isAddressValid = false;
+
+    this.getTransactionFeesPromise = null;
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
@@ -323,6 +325,10 @@ class Transfer extends Component {
       const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
+  }
+
+  componentWillUnmount() {
+    if (this.getTransactionFeesPromise) this.getTransactionFeesPromise.cancel();
   }
 
   onGroupSelect(index) {
@@ -483,21 +489,29 @@ class Transfer extends Component {
 
   async loadTransactionFees(symbol, type, address, to, amount, memo) {
     const { navigation, addConfirmation } = this.props;
-    const { amount: lastAmount, to: lastTo, memo: lastMemo } = this.inputCache;
+    const { amount: lastAmount, to: lastTo, memo: lastMemo } = this.txFeesCache;
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
     this.setState({ loading: true });
     try {
       console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
       console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
       if (amount === lastAmount && to === lastTo && memo === lastMemo) {
-        return false;
+        return null;
       }
-      const transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
+      if (this.getTransactionFeesPromise) this.getTransactionFeesPromise = null;
+      this.getTransactionFeesPromise = common.makeCancelable(parseHelper.getTransactionFees(symbol, type, address, to, fee, memo));
+      const transactionFees = await this.getTransactionFeesPromise.promise;
+      this.getTransactionFeesPromise = null;
+      this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
-      this.inputCache = { amount, to, memo };
+      this.txFeesCache = {
+        amount, to, memo, transactionFees,
+      };
       return transactionFees;
     } catch (error) {
+      if (error.message === 'err.canceled') return null;
       // If error, let user try again or quit.
+      this.setState({ loading: false });
       console.log('loadTransactionFees, error: ', error);
       const confirmation = createErrorConfirmation(
         definitions.defaultErrorNotification.title,
@@ -507,9 +521,7 @@ class Transfer extends Component {
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
-      return false;
-    } finally {
-      this.setState({ loading: false });
+      return null;
     }
   }
 
@@ -596,7 +608,7 @@ class Transfer extends Component {
     restAmount = restAmount.isGreaterThan(0) ? restAmount : new BigNumber(0);
     const restAmountText = common.getBalanceString(symbol, restAmount);
     this.inputAmount(restAmountText);
-    this.inputCache.amount = restAmountText;
+    this.txFeesCache.amount = restAmountText;
   }
 
   initContext() {

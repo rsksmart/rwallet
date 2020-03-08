@@ -258,6 +258,9 @@ class Swap extends Component {
       minerFee: 0,
       coinLoading: false,
     };
+
+    this.getRatePromise = null;
+    this.getFeePromise = null;
   }
 
   componentDidMount() {
@@ -276,6 +279,7 @@ class Swap extends Component {
     resetSwapSource();
     resetSwapDest();
     this.willFocusSubscription.remove();
+    if (this.getRatePromise) this.getRatePromise.cancel();
   }
 
   async onExchangePress() {
@@ -453,14 +457,21 @@ class Swap extends Component {
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
     try {
-      const sdRate = await CoinswitchHelper.getRate(sourceCoinId, destCoinId);
+      if (this.getRatePromise) this.getRatePromise.cancel();
+      this.getRatePromise = common.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId));
+      const sdRate = await this.getRatePromise.promise;
+      this.getRatePromise = null;
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
-      const feeObject = await this.requestFee(currentSwapSource.coin.balance, currentSwapSource);
+      if (this.getFeePromise) this.getFeePromise.cancel();
+      this.getFeePromise = common.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource));
+      const feeObject = await this.getFeePromise.promise;
+      this.getFeePromise = null;
       const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
 
       this.setState({
+        coinLoading: false,
         rate,
         minerFee,
         limitMinDepositCoin,
@@ -470,7 +481,8 @@ class Swap extends Component {
         this.setAmountState(sourceAmount, props, this.state);
       });
     } catch (err) {
-      console.log(err);
+      if (err.message === 'err.canceled') return;
+      this.setState({ coinLoading: false });
       const confirmation = createErrorConfirmation(
         definitions.defaultErrorNotification.title,
         definitions.defaultErrorNotification.message,
@@ -479,7 +491,6 @@ class Swap extends Component {
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
-    } finally {
       this.setState({ coinLoading: false });
     }
   };
