@@ -491,13 +491,13 @@ class Transfer extends Component {
     const { navigation, addConfirmation } = this.props;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = this.txFeesCache;
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
-    this.setState({ loading: true });
     try {
       console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
       console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
       if (amount === lastAmount && to === lastTo && memo === lastMemo) {
         return null;
       }
+      this.setState({ loading: true });
       if (this.getTransactionFeesPromise) this.getTransactionFeesPromise = null;
       this.getTransactionFeesPromise = common.makeCancelable(parseHelper.getTransactionFees(symbol, type, address, to, fee, memo));
       const transactionFees = await this.getTransactionFeesPromise.promise;
