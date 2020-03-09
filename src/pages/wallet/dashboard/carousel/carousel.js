@@ -161,17 +161,35 @@ class Carousel extends Component {
       }),
     };
 
-    const animatedScale = {
-      transform: [
-        {
-          scale: this.xOffset.interpolate({
-            inputRange: [startPoint, midPoint, endPoint],
-            outputRange: [inActiveScale, 1, inActiveScale],
-          }),
-        },
-      ],
-    };
-
+    let animatedScale;
+    if (index === 0) {
+      animatedScale = {
+        transform: [
+          {
+            scaleX: this.xOffset.interpolate({
+              inputRange: [startPoint, midPoint, endPoint],
+              outputRange: [inActiveScale * 0.88, 1, inActiveScale * 0.88],
+            }),
+          }, {
+            scaleY: this.xOffset.interpolate({
+              inputRange: [startPoint, midPoint, endPoint],
+              outputRange: [inActiveScale, 1, inActiveScale],
+            }),
+          },
+        ],
+      };
+    } else {
+      animatedScale = {
+        transform: [
+          {
+            scale: this.xOffset.interpolate({
+              inputRange: [startPoint, midPoint, endPoint],
+              outputRange: [inActiveScale, 1, inActiveScale],
+            }),
+          },
+        ],
+      };
+    }
     return {
       ...animatedOpacity,
       ...animatedScale,
