@@ -185,13 +185,15 @@ class ParseHelper {
    * @method handleError
    */
   static async handleError({ err, appId }) {
-    console.log('ERROR: parse.handleError', err, appId);
+    console.log('ERROR: parse.handleError', err);
 
     const message = err.message || 'error.parse.default';
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
-        console.log('INVALID_SESSION_TOKEN: logging out and re-signing in.');
+        console.log('INVALID_SESSION_TOKEN');
+        if (!appId) break;
+        console.log('Logging out and re-signing in. appId: ', appId);
         await Parse.User.logOut();
         await Parse.user.signIn(appId);
         // Other Parse API errors that you want to explicitly handle
