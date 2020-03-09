@@ -238,7 +238,7 @@ const {
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
-    // gesturesEnabled: false,
+    gesturesEnabled: false,
   });
 
   static generateAmountPlaceholderText(symbol, currency, prices) {
@@ -291,8 +291,6 @@ class Transfer extends Component {
     this.isAmountValid = false;
     this.isAddressValid = false;
 
-    this.getTransactionFeesPromise = null;
-
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
@@ -325,10 +323,6 @@ class Transfer extends Component {
       const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getTransactionFeesPromise) this.getTransactionFeesPromise.cancel();
   }
 
   onGroupSelect(index) {
@@ -372,20 +366,7 @@ class Transfer extends Component {
    * @param {number} value slider value, 0-1
    */
   onCustomFeeSlideValueChange(value) {
-    const { currency, prices } = this.props;
-    const { feeSymbol } = this.state;
-    let customFeeValue = null;
-    let customFee = null;
-    if (feeSymbol === 'BTC') {
-      const { minCustomFee, maxCustomFee } = this;
-      customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-    } else {
-      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
-      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
-      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-    }
+    const { customFee, customFeeValue } = this.calcCustomFee(value);
     this.setState({ customFee, customFeeValue });
   }
 
@@ -412,9 +393,7 @@ class Transfer extends Component {
   async onConfirmPress() {
     const { addNotification } = this.props;
     const { symbol, type, networkId } = this.coin;
-    let { amount, to } = this.state;
-    amount = amount.trim();
-    to = to.trim();
+    const { amount, to } = this.state;
     // This app use checksum address with chainId, but some third-party app use web3 address,
     // so we need to convert input address to checksum address with chainId before validation and transfer
     // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
@@ -487,6 +466,24 @@ class Transfer extends Component {
     return feeParams;
   }
 
+  calcCustomFee(value) {
+    const { currency, prices } = this.props;
+    const { feeSymbol } = this.state;
+    let customFeeValue = null;
+    let customFee = null;
+    if (feeSymbol === 'BTC') {
+      const { minCustomFee, maxCustomFee } = this;
+      customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    } else {
+      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
+      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
+      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    }
+    return { customFee, customFeeValue };
+  }
+
   async loadTransactionFees(symbol, type, address, to, amount, memo) {
     const { navigation, addConfirmation } = this.props;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = this.txFeesCache;
@@ -498,10 +495,7 @@ class Transfer extends Component {
         return null;
       }
       this.setState({ loading: true });
-      if (this.getTransactionFeesPromise) this.getTransactionFeesPromise = null;
-      this.getTransactionFeesPromise = common.makeCancelable(parseHelper.getTransactionFees(symbol, type, address, to, fee, memo));
-      const transactionFees = await this.getTransactionFeesPromise.promise;
-      this.getTransactionFeesPromise = null;
+      const transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
@@ -529,26 +523,25 @@ class Transfer extends Component {
     const {
       symbol, type, address,
     } = this.coin;
-    let { amount, to } = this.state;
+    const { amount, to } = this.state;
     const { memo } = this.state;
     const { isAmountValid, isAddressValid } = this;
-    amount = amount ? amount.trim() : '';
-    to = to ? to.trim() : '';
 
-    const isValid = isAmountValid && isAddressValid;
+    const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
     console.log('requestFees, isValid: ', isValid);
-    if (isValid) {
-      const transactionFees = await this.loadTransactionFees(symbol, type, address, to, amount, memo);
-      if (transactionFees) {
-        this.processFees(transactionFees);
-      }
-    }
+    if (!isValid) return;
+    const transactionFees = await this.loadTransactionFees(symbol, type, address, to, amount, memo);
+    if (!transactionFees) return;
+    this.processFees(transactionFees);
   }
 
   processFees(transactionFees) {
     console.log('processFees, transactionFees: ', transactionFees);
     const { prices, currency } = this.props;
-    const { feeSymbol } = this.state;
+    const {
+      feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount,
+    } = this.state;
+    let { customFee } = this.state;
     const { isRequestSendAll } = this;
 
     // Calculates levelFees
@@ -585,20 +578,23 @@ class Transfer extends Component {
 
     this.setState({ levelFees });
 
+    // Update custom fee
+    if (isCustomFee) {
+      const { customFee: curCustomFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      customFee = curCustomFee;
+      this.setState({ customFee, customFeeValue });
+    }
+
     // If user request send all, we need to adjust amount text.
     // We can only use the rest money without fees for transfers
     if (isRequestSendAll) {
-      this.adjustSendAllAmount(levelFees);
+      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount);
       this.isRequestSendAll = false;
     }
   }
 
-  adjustSendAllAmount(levelFees) {
-    const {
-      feeLevel, isCustomFee, customFee, amount,
-    } = this.state;
+  adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount) {
     const { symbol } = this.coin;
-
     let restAmount = null;
     if (isCustomFee) {
       restAmount = new BigNumber(amount).minus(customFee);
@@ -673,8 +669,7 @@ class Transfer extends Component {
     const { navigation, addNotification } = this.props;
     const { coin } = this;
     const { memo } = this.state;
-    let { amount } = this.state;
-    amount = amount.trim();
+    const { amount } = this.state;
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();

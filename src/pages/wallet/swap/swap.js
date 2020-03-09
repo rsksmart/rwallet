@@ -280,6 +280,7 @@ class Swap extends Component {
     resetSwapDest();
     this.willFocusSubscription.remove();
     if (this.getRatePromise) this.getRatePromise.cancel();
+    if (this.getFeePromise) this.getFeePromise.cancel();
   }
 
   async onExchangePress() {
