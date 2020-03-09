@@ -369,6 +369,14 @@ class ParseHelper {
     params && (options.params = params);
     return Parse.Cloud.run('coinswitch', options);
   }
+
+  static getTokenBasicInfo(type, chain, address) {
+    return Parse.Cloud.run('getTokenBasicInfo', { type, chain, address });
+  }
+
+  static saveToken(type, chain, address) {
+    return Parse.Cloud.run('saveToken', { type, chain, address });
+  }
 }
 
 export default ParseHelper;

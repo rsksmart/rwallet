@@ -8,6 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color.ts';
+import parseHelper from '../../common/parse';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -37,15 +38,39 @@ export default class AddCustomToken extends Component {
     constructor(props) {
       super(props);
       this.onPress = this.onPress.bind(this);
+      this.onAddressInputBlur = this.onAddressInputBlur.bind(this);
+      this.state = {
+        address: '0x345dc961828f9fe7c69da34e88d58839f153784c',
+        symbol: '',
+        decimals: '',
+      };
+      this.name = '';
+      this.type = 'Testnet';
+      this.chain = 'Rootstock';
+    }
+
+    async onAddressInputBlur() {
+      const { address } = this.state;
+      const { type, chain } = this;
+      const tokenInfo = await parseHelper.getTokenBasicInfo(type, chain, address);
+      console.log('tokenInfo: ', tokenInfo);
+      const { name, symbol, decimals } = tokenInfo;
+      this.setState({ symbol, decimals });
+      this.name = name;
     }
 
     onPress() {
       const { navigation } = this.props;
-      navigation.navigate('AddCustomTokenConfirm');
+      const { address, symbol, decimals } = this.state;
+      const { name, type, chain } = this;
+      navigation.navigate('AddCustomTokenConfirm', {
+        address, symbol, decimals, name, type, chain,
+      });
     }
 
     render() {
       const { navigation } = this.props;
+      const { address, symbol, decimals } = this.state;
       return (
         <BasePageGereral
           isSafeView
@@ -64,6 +89,8 @@ export default class AddCustomToken extends Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
+                value={address}
+                onBlur={this.onAddressInputBlur}
               />
             </View>
             <View style={styles.sectionContainer}>
@@ -75,6 +102,7 @@ export default class AddCustomToken extends Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
+                value={symbol}
               />
             </View>
             <View style={styles.sectionContainer}>
@@ -86,6 +114,7 @@ export default class AddCustomToken extends Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
+                value={decimals.toString()}
               />
             </View>
           </View>

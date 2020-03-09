@@ -3,6 +3,7 @@ import {
   View, StyleSheet, Text, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { StackActions } from 'react-navigation';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
@@ -10,6 +11,7 @@ import BasePageGereral from '../base/base.page.general';
 import space from '../../assets/styles/space';
 import color from '../../assets/styles/color.ts';
 import references from '../../assets/references';
+import parseHelper from '../../common/parse';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -60,15 +62,45 @@ export default class AddCustomToken extends Component {
       header: null,
     });
 
+    constructor(props) {
+      super(props);
+      this.onComfirmPressed = this.onComfirmPressed.bind(this);
+      const {
+        navigation: {
+          state: {
+            params: {
+              address, symbol, decimals, type, chain,
+            },
+          },
+        },
+      } = props;
+      this.address = address;
+      this.symbol = symbol;
+      this.decimals = decimals;
+      this.type = type;
+      this.chain = chain;
+      this.state = { symbol };
+    }
+
+    async onComfirmPressed() {
+      const { type, chain, address } = this;
+      const { navigation } = this.props;
+      const saveResult = await parseHelper.saveToken(type, chain, address);
+      console.log(saveResult);
+      const statckActions = StackActions.popToTop();
+      navigation.dispatch(statckActions);
+    }
+
     render() {
       const { navigation } = this.props;
+      const { symbol } = this.state;
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn
           hasLoader={false}
           bottomBtnText="button.Confirm"
-          bottomBtnOnPress={() => {}}
+          bottomBtnOnPress={this.onComfirmPressed}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.addCustomTokenConfirm.title" />}
         >
           <View>
@@ -77,11 +109,11 @@ export default class AddCustomToken extends Component {
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.token" />
                 <Image style={[styles.tokenLogo, space.marginRight_10]} source={references.images.customToken} />
-                <Text style={styles.symbol}>BTC</Text>
+                <Text style={styles.symbol}>{symbol}</Text>
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
-                <Text style={styles.balance}>1396.723 BTC</Text>
+                <Text style={styles.balance}>{`1396.723 ${symbol}`}</Text>
               </View>
             </View>
           </View>
