@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import RSKad from '../../../components/common/rsk.ad';
 import common from '../../../common/common';
-import BasePageGereral from '../../base/base.page.general';
+import BasePageHorizental from '../../base/base.page.horizental';
 import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
@@ -130,7 +130,7 @@ class WalletList extends Component {
     }));
 
     return (
-      <BasePageGereral
+      <BasePageHorizental
         isSafeView={false}
         hasBottomBtn={false}
         hasLoader={false}
@@ -141,7 +141,7 @@ class WalletList extends Component {
         <View style={[styles.body]}>
           <WalletCarousel data={pageData} navigation={navigation} />
         </View>
-      </BasePageGereral>
+      </BasePageHorizental>
     );
   }
 }

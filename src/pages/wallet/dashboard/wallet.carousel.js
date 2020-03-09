@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
     fontSize: 12,
     marginTop: 10,
-    marginBottom: 15,
   },
   addWalletButton: {
     backgroundColor: 'rgba(255,255,255, 0.5)',
-    borderRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
     height: 166,
     marginTop: 55,
     alignItems: 'center',

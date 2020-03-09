@@ -45,8 +45,14 @@ class Carousel extends Component {
 
   getItemLayout(data, index) {
     const { itemWidth, separatorWidth } = this.props;
+    let offset;
+    if (index === 0) {
+      offset = 0;
+    } else {
+      offset = (index - 0.5) * (itemWidth + separatorWidth) + this.halfItemWidth - this.halfContainerWidth;
+    }
     return {
-      offset: index === 0 ? 0 : (index - 0.5) * (itemWidth + separatorWidth),
+      offset,
       length: (index === 0 ? 0.5 : 1) * (itemWidth + separatorWidth),
       index,
     };
@@ -87,7 +93,7 @@ class Carousel extends Component {
     this.currentIndex = index;
     setTimeout(() => {
       this.scrollView.getNode().scrollToOffset({
-        offset: index === 0 ? 0 : (index - 0.5) * (itemWidth + separatorWidth),
+        offset: index === 0 ? 0 : (index - 0.5) * (itemWidth + separatorWidth) + this.halfItemWidth - this.halfContainerWidth,
         animated: true,
       });
     });
@@ -132,7 +138,7 @@ class Carousel extends Component {
       // console.log('midPoint: ', midPoint);
 
       if (index === 1) {
-        startPoint = 0;
+        startPoint = this.halfItemWidth - this.halfContainerWidth;
       } else if (index === data.length - 1) {
         startPoint = (data.length - 2 - 0.5) * (itemWidth + separatorWidth) + this.halfItemWidth - this.halfContainerWidth;
       } else {
@@ -150,7 +156,7 @@ class Carousel extends Component {
 
     const animatedOpacity = {
       opacity: this.xOffset.interpolate({
-        inputRange: [startPoint + this.containerPadding, midPoint + this.containerPadding, endPoint + this.containerPadding],
+        inputRange: [startPoint, midPoint, endPoint],
         outputRange: [inActiveOpacity, 1, inActiveOpacity],
       }),
     };
@@ -159,7 +165,7 @@ class Carousel extends Component {
       transform: [
         {
           scale: this.xOffset.interpolate({
-            inputRange: [startPoint + this.containerPadding, midPoint + this.containerPadding, endPoint + this.containerPadding],
+            inputRange: [startPoint, midPoint, endPoint],
             outputRange: [inActiveScale, 1, inActiveScale],
           }),
         },
@@ -225,7 +231,7 @@ class Carousel extends Component {
         ref={(ref) => { this.scrollView = ref; }}
         renderItem={this.renderItemContainer}
         style={[styles.container, { width: containerWidth }, style]}
-        contentContainerStyle={{ paddingHorizontal: this.containerPadding }}
+        contentContainerStyle={{ paddingRight: this.containerPadding }}
         showsHorizontalScrollIndicator={false}
         initialScrollIndex={initialIndex}
         onScrollBeginDrag={this.handleOnScrollBeginDrag}
