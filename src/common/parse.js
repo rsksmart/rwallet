@@ -61,7 +61,7 @@ class ParseHelper {
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
-    const parseUser = await Parse.User.currentAsync();
+    const parseUser = Parse.User.current();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
@@ -222,7 +222,7 @@ class ParseHelper {
    */
   static async getWallets() {
     // Get current Parse.User
-    const parseUser = await Parse.User.currentAsync();
+    const parseUser = Parse.User.current();
 
     if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
       return [];
