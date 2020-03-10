@@ -66,25 +66,11 @@ class WalletList extends Component {
   constructor(props) {
     super(props);
     this.onSwapPressed = this.onSwapPressed.bind(this);
-    this.state = {
-      listData: [],
-    };
-  }
-
-  componentDidMount() {
-    const {
-      currency, walletManager, navigation,
-    } = this.props;
-
+    const { currency, walletManager, navigation } = this.props;
     const { wallets } = walletManager;
-
     const currencySymbol = getCurrencySymbol(currency);
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
-
-    this.setState({
-      currencySymbol,
-      listData,
-    });
+    this.state = { currencySymbol, listData };
   }
 
   componentWillReceiveProps(nextProps) {
