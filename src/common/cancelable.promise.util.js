@@ -28,13 +28,13 @@ const CancelablePromiseUtil = {
           if (!hasCanceled) {
             resolve(val);
           }
-          _.remove(this.promiseObjects, (promiseObject) => promiseObject.promise === wrappedPromise);
+          _.remove(this.promiseObjects, { promise: wrappedPromise });
         },
         (error) => {
           if (!hasCanceled) {
             reject(error);
           }
-          _.remove(this.promiseObjects, (promiseObject) => promiseObject.promise === wrappedPromise);
+          _.remove(this.promiseObjects, { promise: wrappedPromise });
         },
       );
     });
