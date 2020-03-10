@@ -31,7 +31,7 @@ const CancelablePromiseUtil = {
           _.remove(this.promiseObjects, (promiseObject) => promiseObject.promise === wrappedPromise);
         },
         (error) => {
-          if (hasCanceled) {
+          if (!hasCanceled) {
             reject(error);
           }
           _.remove(this.promiseObjects, (promiseObject) => promiseObject.promise === wrappedPromise);
