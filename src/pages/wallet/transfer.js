@@ -503,7 +503,6 @@ class Transfer extends Component {
       };
       return transactionFees;
     } catch (error) {
-      if (error.message === 'err.canceled') return null;
       // If error, let user try again or quit.
       this.setState({ loading: false });
       console.log('loadTransactionFees, error: ', error);

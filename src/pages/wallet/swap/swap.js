@@ -258,9 +258,6 @@ class Swap extends Component {
       minerFee: 0,
       coinLoading: false,
     };
-
-    this.getRatePromise = null;
-    this.getFeePromise = null;
   }
 
   componentDidMount() {
@@ -279,12 +276,6 @@ class Swap extends Component {
     resetSwapSource();
     resetSwapDest();
     this.willFocusSubscription.remove();
-    if (this.getRatePromise) {
-      this.getRatePromise.cancel();
-    }
-    if (this.getFeePromise) {
-      this.getFeePromise.cancel();
-    }
   }
 
   async onExchangePress() {
@@ -454,28 +445,18 @@ class Swap extends Component {
     });
   }
 
-  updateRateInfo = async (currentSwapSource, currentSwapDest, props) => {
-    console.log('updateRateInfo', currentSwapSource, currentSwapDest, props);
+  updateRateInfoAndFee = async (currentSwapSource, currentSwapDest, props) => {
+    console.log('updateRateInfoAndFee', currentSwapSource, currentSwapDest, props);
     const { navigation, addConfirmation } = this.props;
     const { sourceAmount } = this.state;
     const sourceCoinId = currentSwapSource.coin.id.toLowerCase();
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
     try {
-      if (this.getRatePromise) {
-        this.getRatePromise.cancel();
-      }
-      this.getRatePromise = common.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId));
-      const sdRate = await this.getRatePromise.promise;
-      this.getRatePromise = null;
+      const sdRate = await CoinswitchHelper.getRate(sourceCoinId, destCoinId);
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
-      if (this.getFeePromise) {
-        this.getFeePromise.cancel();
-      }
-      this.getFeePromise = common.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource));
-      const feeObject = await this.getFeePromise.promise;
-      this.getFeePromise = null;
+      const feeObject = await this.requestFee(currentSwapSource.coin.balance, currentSwapSource);
       const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
 
@@ -490,13 +471,12 @@ class Swap extends Component {
         this.setAmountState(sourceAmount, props, this.state);
       });
     } catch (err) {
-      if (err.message === 'err.canceled') return;
       this.setState({ coinLoading: false });
       const confirmation = createErrorConfirmation(
         definitions.defaultErrorNotification.title,
         definitions.defaultErrorNotification.message,
         'button.retry',
-        () => this.updateRateInfo(currentSwapSource, currentSwapDest, props),
+        () => this.updateRateInfoAndFee(currentSwapSource, currentSwapDest, props),
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
@@ -582,7 +562,7 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      this.updateRateInfo(currentSwapSource, currentSwapDest, this.props);
+      this.updateRateInfoAndFee(currentSwapSource, currentSwapDest, this.props);
     } else if (!swapSource && !swapDest) {
       const notification = createInfoNotification(
         'modal.swap.title',
