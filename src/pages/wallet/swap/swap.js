@@ -279,8 +279,12 @@ class Swap extends Component {
     resetSwapSource();
     resetSwapDest();
     this.willFocusSubscription.remove();
-    if (this.getRatePromise) this.getRatePromise.cancel();
-    if (this.getFeePromise) this.getFeePromise.cancel();
+    if (this.getRatePromise) {
+      this.getRatePromise.cancel();
+    }
+    if (this.getFeePromise) {
+      this.getFeePromise.cancel();
+    }
   }
 
   async onExchangePress() {
@@ -458,18 +462,22 @@ class Swap extends Component {
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
     try {
-      if (this.getRatePromise) this.getRatePromise.cancel();
+      if (this.getRatePromise) {
+        this.getRatePromise.cancel();
+      }
       this.getRatePromise = common.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId));
       const sdRate = await this.getRatePromise.promise;
       this.getRatePromise = null;
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
-      if (this.getFeePromise) this.getFeePromise.cancel();
+      if (this.getFeePromise) {
+        this.getFeePromise.cancel();
+      }
       this.getFeePromise = common.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource));
       const feeObject = await this.getFeePromise.promise;
       this.getFeePromise = null;
       const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
+      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
 
       this.setState({
         coinLoading: false,
