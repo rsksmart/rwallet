@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
-import WalletTypeList from '../../components/wallet/wallet.type.list';
-import BasePageGereral from '../base/base.page.general';
-import Header from '../../components/headers/header';
+import WalletTypeList from '../../../components/wallet/wallet.type.list';
+import BasePageGereral from '../../base/base.page.general';
+import Header from '../../../components/headers/header';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({

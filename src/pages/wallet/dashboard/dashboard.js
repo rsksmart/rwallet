@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import List from './list';
 import AddIndex from './add.index';
-import appActions from '../../redux/app/actions';
+import appActions from '../../../redux/app/actions';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({

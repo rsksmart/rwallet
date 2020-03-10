@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 const BasePageGereral = (props) => {
   const {
     children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
-    refreshControl, bgColor, customBottomButton, isViewWrapper,
+    refreshControl, bgColor, customBottomButton,
   } = props;
   const content = (
     <View style={flex.flex1}>
@@ -34,20 +34,13 @@ const BasePageGereral = (props) => {
   // const WrapperView = isViewWrapper ? View : ScrollView;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}, bgColor ? { backgroundColor: bgColor } : null]}>
-      {!isViewWrapper && (
-        <ScrollView refreshControl={refreshControl}>
-          {content}
-        </ScrollView>
-      )}
-      {isViewWrapper && (
-        <View style={flex.flex1}>
-          {content}
-        </View>
-      )}
+      <ScrollView refreshControl={refreshControl}>
+        {content}
+      </ScrollView>
       {!customBottomButton && hasBottomBtn && (
-      <View style={[styles.buttonView]}>
-        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
-      </View>
+        <View style={[styles.buttonView]}>
+          <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
+        </View>
       ) }
       { customBottomButton && (
         <View style={[styles.buttonView]}>
@@ -73,7 +66,6 @@ BasePageGereral.propTypes = {
   refreshControl: PropTypes.element,
   bgColor: PropTypes.string,
   customBottomButton: PropTypes.element,
-  isViewWrapper: PropTypes.bool,
 };
 
 BasePageGereral.defaultProps = {
@@ -87,7 +79,6 @@ BasePageGereral.defaultProps = {
   bgColor: null,
   hasBottomBtn: false,
   customBottomButton: null,
-  isViewWrapper: false,
 };
 
 
