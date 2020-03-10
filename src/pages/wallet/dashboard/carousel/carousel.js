@@ -32,7 +32,8 @@ class Carousel extends Component {
   }
 
   componentDidMount() {
-    this.scrollToIndex(1, false);
+    const { initialIndex } = this.props;
+    this.scrollToIndex(initialIndex, false);
   }
 
   setScrollHandler() {
