@@ -90,6 +90,26 @@ const common = {
     }
     return amount;
   },
+
+  /**
+   * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  getAmountBigNumber(symbol, amount) {
+    const decimalPlaces = config.symbolDecimalPlaces[symbol];
+    if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
+      return null;
+    }
+    let amountBigNumber = amount;
+    if (typeof amount === 'number' || typeof amount === 'string') {
+      amountBigNumber = new BigNumber(amount);
+    }
+    return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN);
+  },
+
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
@@ -97,34 +117,22 @@ const common = {
    * @param {BigNumber | number | string} balance
    */
   getBalanceString(symbol, balance) {
-    const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (!_.isNull(balance)) {
-      let balanceBigNumber = balance;
-      if (typeof balance === 'number' || typeof value === 'string') {
-        balanceBigNumber = new BigNumber(balance);
-      }
-      return balanceBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toFixed();
-    }
-    return null;
+    const amountBigNumber = this.getAmountBigNumber(symbol, balance);
+    return amountBigNumber.toFixed();
   },
+
   /**
    * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
-   * The balance will be round down by default.
+   * The result will be round down by default.
    * @param {string} symbol
    * @param {BigNumber | number | string} amount
    * @returns number
    */
   formatAmount(symbol, amount) {
-    const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (!_.isNull(amount)) {
-      let amountBigNumber = amount;
-      if (typeof amount === 'number' || typeof value === 'string') {
-        amountBigNumber = new BigNumber(amount);
-      }
-      return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toNumber();
-    }
-    return null;
+    const amountBigNumber = this.getAmountBigNumber(symbol, amount);
+    return amountBigNumber.toNumber();
   },
+
   /**
    * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
    * @param {BigNumber | number | string} value

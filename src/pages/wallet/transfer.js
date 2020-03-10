@@ -541,7 +541,7 @@ class Transfer extends Component {
     const {
       feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount,
     } = this.state;
-    let { customFee } = this.state;
+    const { customFee } = this.state;
     const { isRequestSendAll } = this;
 
     // Calculates levelFees
@@ -578,17 +578,19 @@ class Transfer extends Component {
 
     this.setState({ levelFees });
 
+    let newCustomFee = customFee;
+
     // Update custom fee
     if (isCustomFee) {
-      const { customFee: curCustomFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
-      customFee = curCustomFee;
-      this.setState({ customFee, customFeeValue });
+      const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      newCustomFee = newFee;
+      this.setState({ customFee: newCustomFee, customFeeValue });
     }
 
     // If user request send all, we need to adjust amount text.
     // We can only use the rest money without fees for transfers
     if (isRequestSendAll) {
-      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount);
+      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee, amount);
       this.isRequestSendAll = false;
     }
   }
