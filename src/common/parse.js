@@ -193,7 +193,7 @@ class ParseHelper {
       case Parse.Error.INVALID_SESSION_TOKEN:
         console.log('INVALID_SESSION_TOKEN. Logging out');
         await Parse.User.logOut();
-        if (!appId) {
+        if (appId) {
           console.log('Re-signing in. appId: ', appId);
           await Parse.user.signIn(appId);
         }
