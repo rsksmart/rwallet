@@ -4,10 +4,8 @@ import _ from 'lodash';
  * Usage:
  *
  * Use CancelablePromiseUtil in page
- * Wrap promise with CancelablePromiseUtil.makeCancelable(promise, this);
- *
- * const getRatePromise = CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(...), this);
- * const sdRate = await getRatePromise.promise;
+ * Wrap promise with CancelablePromiseUtil.run(promise, this);
+ * const sdRate = await CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(...), this);
  *
  * Cancel all the promise about the page when componentWillUnmount
  *
@@ -18,8 +16,8 @@ import _ from 'lodash';
 const CancelablePromiseUtil = {
   promiseObjects: [],
 
-  // Wrap promise, return the promise wrapper { tag, promise, cancel }
-  makeCancelable(promise, tag) {
+  // Wrap promise, return the wraped object  { tag, promise, cancel }
+  wrapPromise(promise, tag) {
     let hasCanceled = false;
 
     const wrappedPromise = new Promise((resolve, reject) => {
@@ -59,8 +57,12 @@ const CancelablePromiseUtil = {
       }
     });
     _.remove(this.promiseObjects, { tag });
-    console.log(this.promiseObjects);
   },
+
+  async makeCancelable(promise, tag) {
+    return this.wrapPromise(promise, tag).promise;
+  },
+
 };
 
 export default CancelablePromiseUtil;

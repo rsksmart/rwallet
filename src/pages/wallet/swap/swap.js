@@ -456,12 +456,10 @@ class Swap extends Component {
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
     try {
-      const getRatePromise = CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId), this);
-      const sdRate = await getRatePromise.promise;
+      const sdRate = await CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId), this);
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
-      const requestFeePromise = CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
-      const feeObject = await requestFeePromise.promise;
+      const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
       const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
 
