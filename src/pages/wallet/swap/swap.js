@@ -22,6 +22,7 @@ import definitions from '../../../common/definitions';
 import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import config from '../../../../config';
+import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 
 
 const styles = StyleSheet.create({
@@ -272,10 +273,12 @@ class Swap extends Component {
   }
 
   componentWillUnmount() {
-    const { resetSwapDest, resetSwapSource } = this.props;
+    const { resetSwapDest, resetSwapSource, removeConfirmation } = this.props;
     resetSwapSource();
     resetSwapDest();
     this.willFocusSubscription.remove();
+    CancelablePromiseUtil.cancel(this);
+    removeConfirmation();
   }
 
   async onExchangePress() {
@@ -453,10 +456,12 @@ class Swap extends Component {
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
     this.setState({ coinLoading: true });
     try {
-      const sdRate = await CoinswitchHelper.getRate(sourceCoinId, destCoinId);
+      const getRatePromise = CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId), this);
+      const sdRate = await getRatePromise.promise;
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
-      const feeObject = await this.requestFee(currentSwapSource.coin.balance, currentSwapSource);
+      const requestFeePromise = CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
+      const feeObject = await requestFeePromise.promise;
       const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee));
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2));
 
@@ -795,6 +800,7 @@ Swap.propTypes = {
   currency: PropTypes.string.isRequired,
   addNotification: PropTypes.func.isRequired,
   addConfirmation: PropTypes.func.isRequired,
+  removeConfirmation: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
   resetSwapSource: PropTypes.func.isRequired,
   resetSwapDest: PropTypes.func.isRequired,
@@ -823,6 +829,7 @@ const mapDispatchToProps = (dispatch) => ({
   addConfirmation: (confirmation) => dispatch(
     appActions.addConfirmation(confirmation),
   ),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
   switchSwap: () => dispatch(walletActions.switchSwap()),
   resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
   resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
