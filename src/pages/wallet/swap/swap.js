@@ -259,7 +259,6 @@ class Swap extends Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    this.updateSwapData();
     this.willFocusSubscription = navigation.addListener(
       'willFocus',
       () => {
