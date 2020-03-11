@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, ScrollView,
+  View, StyleSheet, TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -16,7 +16,6 @@ import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
-import { screen } from '../../common/info';
 
 const bip39 = require('bip39');
 
@@ -74,9 +73,6 @@ const styles = StyleSheet.create({
     borderColor: color.component.input.borderColor,
     borderRadius: 4,
     borderStyle: 'solid',
-  },
-  wapper: {
-    height: screen.height - 25,
   },
   body: {
     flex: 1,
@@ -202,51 +198,46 @@ class WalletRecovery extends Component {
     render() {
       const { phrase, phrases, isCanSubmit } = this.state;
       const { navigation } = this.props;
+      const bottomButton = (<Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />);
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn={false}
           hasLoader={false}
           headerComponent={<View />}
+          customBottomButton={bottomButton}
         >
-          <View style={styles.wapper}>
-            <ScrollView>
-              <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
-              <View style={styles.body}>
-                <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
-                <View style={styles.phraseView}>
-                  <TextInput
-                    autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                            // This code uses a ref to store a reference to a DOM node
-                                            // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                    ref={(ref) => {
-                      this.phraseInput = ref;
-                    }}
-                                            // set blurOnSubmit to false, to prevent keyboard flickering.
-                    blurOnSubmit={false}
-                    style={[presetStyles.textInput, styles.input]}
-                    onChangeText={this.onChangeText}
-                    onSubmitEditing={this.onSubmitEditing}
-                    value={phrase}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                  <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                    <Tags
-                      style={[{ flex: 1 }]}
-                      data={phrases}
-                      onPress={this.onTagsPress}
-                    />
-                  </View>
-                </View>
-                <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
-                  <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
-                </View>
+          <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
+          <View style={styles.body}>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
+            <View style={styles.phraseView}>
+              <TextInput
+                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                        // This code uses a ref to store a reference to a DOM node
+                                        // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                ref={(ref) => {
+                  this.phraseInput = ref;
+                }}
+                                        // set blurOnSubmit to false, to prevent keyboard flickering.
+                blurOnSubmit={false}
+                style={[presetStyles.textInput, styles.input]}
+                onChangeText={this.onChangeText}
+                onSubmitEditing={this.onSubmitEditing}
+                value={phrase}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                <Tags
+                  style={[{ flex: 1 }]}
+                  data={phrases}
+                  onPress={this.onTagsPress}
+                />
               </View>
-            </ScrollView>
-            <View style={[styles.buttonView]}>
-              <Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />
+            </View>
+            <View style={[styles.sectionContainer, styles.bottomBorder]}>
+              <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
+              <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
             </View>
           </View>
         </BasePageGereral>
