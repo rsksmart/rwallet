@@ -137,9 +137,9 @@ class WalletManager {
             newCoin.balanceValue = newCoin.balance.times(tokenPrice);
             assetValue = assetValue.plus(newCoin.balanceValue);
           }
-          newWallet.assetValue = assetValue;
           totalAssetValue = totalAssetValue.plus(assetValue);
         });
+        newWallet.assetValue = assetValue;
       });
 
       this.assetValue = totalAssetValue;
