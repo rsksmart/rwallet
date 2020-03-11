@@ -13,7 +13,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
-import config from '../../../config';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 80,
+    marginBottom: 135,
   },
 });
 
@@ -281,9 +280,8 @@ class MineIndex extends Component {
   render() {
     const { language, navigation, username } = this.props;
     const { keyListData, settings, joins } = this.state;
-    const { defaultSettings: { username: defaultUsername } } = config;
     // Translate If username is default user name
-    const usernameText = username === defaultUsername ? strings('page.mine.index.anonymousUser') : username;
+    const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
 
     return (
       <BasePageGereral
@@ -337,11 +335,12 @@ MineIndex.propTypes = {
   isWalletNameUpdated: PropTypes.bool.isRequired,
   language: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
 };
 
 MineIndex.defaultProps = {
   wallets: undefined,
+  username: undefined,
 };
 
 const mapStateToProps = (state) => ({

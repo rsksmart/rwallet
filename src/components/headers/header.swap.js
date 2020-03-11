@@ -6,13 +6,18 @@ import PropTypes from 'prop-types';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Loc from '../common/misc/loc';
 import presetStyles from '../../assets/styles/style';
+import screenHelper from '../../common/screenHelper';
 
 const header = require('../../assets/images/misc/header.earn.png');
 
+const headerHeight = 630;
+const headerTopOffset = -200;
+const headerMarginTop = headerTopOffset + screenHelper.topHeight;
+
 const styles = StyleSheet.create({
   headerImage: {
-    marginTop: -200,
-    height: 630,
+    height: headerHeight,
+    marginTop: headerMarginTop,
   },
   titleView: {
     flexDirection: 'row',
@@ -57,5 +62,9 @@ export default function SwapHeader({ title, onBackButtonPress, rightButton }) {
 SwapHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onBackButtonPress: PropTypes.func.isRequired,
-  rightButton: PropTypes.element.isRequired,
+  rightButton: PropTypes.element,
+};
+
+SwapHeader.defaultProps = {
+  rightButton: null,
 };

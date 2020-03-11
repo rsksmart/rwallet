@@ -33,6 +33,8 @@ const actions = {
   USER_NAME_UPDATED: 'USER_NAME_UPDATED',
   RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
 
+  LOCK_APP: 'LOCK_APP',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -98,6 +100,10 @@ const actions = {
   }),
   resetUsernameUpdated: () => ({
     type: actions.RESET_USER_NAME_UPDATED,
+  }),
+  lockApp: (lock) => ({
+    type: actions.LOCK_APP,
+    lock,
   }),
 };
 

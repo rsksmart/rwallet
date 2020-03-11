@@ -132,11 +132,12 @@ Rename.propTypes = {
   walletManager: PropTypes.shape({}),
   isUsernameUpdated: PropTypes.bool.isRequired,
   resetUsernameUpdated: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
 };
 
 Rename.defaultProps = {
   walletManager: undefined,
+  username: undefined,
 };
 
 const mapStateToProps = (state) => ({
