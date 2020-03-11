@@ -165,7 +165,7 @@ const WalletItem = (item) => (
 
 const WalletPage = (props) => {
   const {
-    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol,
+    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol, hasSwappableCoin,
   } = props;
   const { name, coins, assetValue } = walletData;
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
@@ -198,7 +198,7 @@ const WalletPage = (props) => {
               <Loc style={[styles.receiveText]} text="button.Receive" />
             </TouchableOpacity>
             <View style={styles.spliteLine} />
-            <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight]} onPress={onSwapPressed}>
+            <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin ? 1 : 0.5 }]} onPress={onSwapPressed} disabled={!hasSwappableCoin}>
               <Image source={references.images.swap} />
               <Loc style={[styles.swapText]} text="button.Swap" />
             </TouchableOpacity>
@@ -235,6 +235,7 @@ WalletPage.propTypes = {
   onSwapPressed: PropTypes.func.isRequired,
   onAddAssetPressed: PropTypes.func.isRequired,
   currencySymbol: PropTypes.string.isRequired,
+  hasSwappableCoin: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({

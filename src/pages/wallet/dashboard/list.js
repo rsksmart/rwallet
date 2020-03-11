@@ -12,7 +12,7 @@ import BasePageHorizental from '../../base/base.page.horizental';
 import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
-
+import config from '../../../../config';
 
 const { getCurrencySymbol } = common;
 
@@ -103,8 +103,17 @@ class WalletList extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, walletManager } = this.props;
     const { currencySymbol, listData } = this.state;
+    const { wallets } = walletManager;
+
+    let hasSwappableCoin = false;
+    for (let i = 0; i < wallets.length; i += 1) {
+      hasSwappableCoin = wallets[i].coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
+      if (hasSwappableCoin) {
+        break;
+      }
+    }
 
     const pageData = _.map(listData, (walletData, index) => ({
       index,
@@ -114,6 +123,7 @@ class WalletList extends Component {
       onSwapPressed: this.onSwapPressed,
       onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
       currencySymbol,
+      hasSwappableCoin,
     }));
 
     return (
@@ -159,7 +169,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  resetSwap: () => dispatch(walletActions.resetSwap()),
+  resetSwap: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

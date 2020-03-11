@@ -78,7 +78,7 @@ const WalletCarousel = (props) => {
   const renderItem = (itemData) => {
     const {
       walletData, onSendPressed, onReceivePressed, onSwapPressed,
-      onAddAssetPressed, currencySymbol, index,
+      onAddAssetPressed, currencySymbol, hasSwappableCoin, index,
     } = itemData.item;
     if (index < 0) {
       return (
@@ -100,6 +100,7 @@ const WalletCarousel = (props) => {
         onSwapPressed={onSwapPressed}
         onAddAssetPressed={onAddAssetPressed}
         currencySymbol={currencySymbol}
+        hasSwappableCoin={hasSwappableCoin}
       />
     );
   };
