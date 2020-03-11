@@ -61,7 +61,7 @@ class ParseHelper {
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings }) {
-    const parseUser = Parse.User.current();
+    const parseUser = await Parse.User.currentAsync();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
@@ -185,15 +185,18 @@ class ParseHelper {
    * @method handleError
    */
   static async handleError({ err, appId }) {
-    console.log('ERROR: parse.handleError', err, appId);
+    console.log('ERROR: parse.handleError', err);
 
     const message = err.message || 'error.parse.default';
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
-        console.log('INVALID_SESSION_TOKEN: logging out and re-signing in.');
+        console.log('INVALID_SESSION_TOKEN. Logging out');
         await Parse.User.logOut();
-        await Parse.user.signIn(appId);
+        if (appId) {
+          console.log('Re-signing in. appId: ', appId);
+          await Parse.user.signIn(appId);
+        }
         // Other Parse API errors that you want to explicitly handle
         break;
       default:
@@ -222,7 +225,7 @@ class ParseHelper {
    */
   static async getWallets() {
     // Get current Parse.User
-    const parseUser = Parse.User.current();
+    const parseUser = await Parse.User.currentAsync();
 
     if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
       return [];
