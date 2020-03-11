@@ -217,10 +217,10 @@ function* fetchLatestBlockHeight() {
 
 function* createKeyRequest(action) {
   const {
-    name, phrase, coinIds, walletManager,
+    name, phrase, coins, walletManager,
   } = action.payload;
   try {
-    yield call(walletManager.createWallet, name, phrase, coinIds);
+    yield call(walletManager.createWallet, name, phrase, coins);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
@@ -258,6 +258,21 @@ function* renameKeyRequest(action) {
   }
 }
 
+function* addCustomTokenRequest(action) {
+  const {
+    walletManager, wallet, symbol, type,
+  } = action.payload;
+  try {
+    yield call(wallet.addCustomToken, symbol, type);
+    yield call(walletManager.serialize);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.GET_PRICE, getPriceRequest),
@@ -273,5 +288,6 @@ export default function* () {
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
     takeEvery(actions.CREATE_KEY, createKeyRequest),
+    takeEvery(actions.ADD_CUSTOM_TOKEN, addCustomTokenRequest),
   ]);
 }

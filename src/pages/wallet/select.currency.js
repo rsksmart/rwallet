@@ -80,13 +80,12 @@ class WalletSelectCurrency extends Component {
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
         if (this.mainnet[i].selected) {
-          coins.push(this.mainnet[i].title);
+          coins.push({ symbol: this.mainnet[i].title, type: 'Mainnet' });
         }
       }
       for (let i = 0; i < this.testnet.length; i += 1) {
         if (this.testnet[i].selected) {
-          const coinId = `${this.mainnet[i].title}Testnet`;
-          coins.push(coinId);
+          coins.push({ symbol: this.mainnet[i].title, type: 'Testnet' });
         }
       }
       if (this.isImportWallet) {

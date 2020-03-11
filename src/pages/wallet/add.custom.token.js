@@ -64,7 +64,7 @@ export default class AddCustomToken extends Component {
       const { address, symbol, decimals } = this.state;
       const { name, type, chain } = this;
       navigation.navigate('AddCustomTokenConfirm', {
-        address, symbol, decimals, name, type, chain,
+        address, symbol, decimals, name, type, chain, ...navigation.state.params,
       });
     }
 

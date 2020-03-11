@@ -30,14 +30,9 @@ class WalletManager {
    * Create a wallet instance
    * @param {string} name Wallet name
    * @param {string} phrase 12-word mnemonic phrase
-   * @param {array} coinIds ["BTC", "RBTC", "RIF"]
+   * @param {array} coinIds [{symbol: "BTC", type:'Mainnet'}, {symbol: "RBTC", type:'Mainnet'}, {symbol: "RIF", type:'Mainnet'}]
    */
-  async createWallet(name, phrase, coinIds) {
-    // 1. Convert coinIds to coins array
-    const coins = _.map(coinIds, (id) => ({
-      id,
-    }));
-
+  async createWallet(name, phrase, coins) {
     console.log('walletManager.createWallet:coins', coins);
 
     // 2. Create a Wallet instance and save into wallets

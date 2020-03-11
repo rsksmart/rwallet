@@ -160,7 +160,7 @@ export default class AddToken extends Component {
 
   onAddCustomTokenPressed() {
     const { navigation } = this.props;
-    navigation.navigate('AddCustomToken');
+    navigation.navigate('AddCustomToken', navigation.state.params);
   }
 
   renderList() {

@@ -371,6 +371,7 @@ class ParseHelper {
   }
 
   static getTokenBasicInfo(type, chain, address) {
+    console.log(`getTokenBasicInfo, type: ${type}, chain: ${chain}, address: ${address}`);
     return Parse.Cloud.run('getTokenBasicInfo', { type, chain, address });
   }
 

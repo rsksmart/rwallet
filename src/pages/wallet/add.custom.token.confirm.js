@@ -3,6 +3,7 @@ import {
   View, StyleSheet, Text, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { StackActions } from 'react-navigation';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
@@ -12,6 +13,7 @@ import space from '../../assets/styles/space';
 import color from '../../assets/styles/color.ts';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
+import walletActions from '../../redux/wallet/actions';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class AddCustomToken extends Component {
+class AddCustomToken extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -69,7 +71,7 @@ export default class AddCustomToken extends Component {
         navigation: {
           state: {
             params: {
-              address, symbol, decimals, type, chain,
+              address, symbol, decimals, type, chain, wallet,
             },
           },
         },
@@ -80,13 +82,17 @@ export default class AddCustomToken extends Component {
       this.type = type;
       this.chain = chain;
       this.state = { symbol };
+      this.wallet = wallet;
     }
 
     async onComfirmPressed() {
-      const { type, chain, address } = this;
-      const { navigation } = this.props;
+      const {
+        symbol, type, chain, address, wallet,
+      } = this;
+      const { navigation, addCustomToken, walletManager } = this.props;
       const saveResult = await parseHelper.saveToken(type, chain, address);
       console.log(saveResult);
+      addCustomToken(walletManager, wallet, symbol, type);
       const statckActions = StackActions.popToTop();
       navigation.dispatch(statckActions);
     }
@@ -129,4 +135,16 @@ AddCustomToken.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addCustomToken: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({}).isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addCustomToken: (walletManager, wallet, symbol, type) => dispatch(walletActions.addCustomToken(walletManager, wallet, symbol, type)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

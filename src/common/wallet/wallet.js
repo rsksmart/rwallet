@@ -12,6 +12,7 @@ export default class Wallet {
   constructor({
     id, name, mnemonic, coins,
   }) {
+    this.addCustomToken = this.addCustomToken.bind(this);
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
@@ -23,19 +24,32 @@ export default class Wallet {
     // Create coins based on ids
     this.coins = [];
 
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    this.seed = bip39.mnemonicToSeedSync(mnemonic);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
         const {
-          id: coinId, amount, address, objectId,
+          id: coinId, symbol, type, amount, address, objectId,
         } = item;
 
+        let newSymbol = symbol;
+        let newType = type;
+        if (!newSymbol) {
+          const index = coinId.lastIndexOf('Testnet');
+          if (index === -1) {
+            newSymbol = coinId;
+            newType = 'Mainnet';
+          } else {
+            newSymbol = coinId.substring(0, index);
+            newType = 'Testnet';
+          }
+        }
+
         let coin;
-        if (coinId === 'BTC' || coinId === 'BTCTestnet') {
-          coin = new Coin(coinId, amount, address);
+        if (newSymbol === 'BTC') {
+          coin = new Coin(newSymbol, newType, amount, address);
         } else {
-          coin = new RBTCCoin(coinId, amount, address);
+          coin = new RBTCCoin(newSymbol, newType, amount, address);
         }
 
         // Add objectId to coin if there is one
@@ -45,7 +59,7 @@ export default class Wallet {
 
         // TODO: right now we always derive privateKey hex string from seed
         // In future we could save those keys into storage to cut derive time
-        coin.derive(seed);
+        coin.derive(this.seed);
 
         this.coins.push(coin);
       });
@@ -172,5 +186,12 @@ export default class Wallet {
     });
 
     return isDirty;
+  }
+
+  addCustomToken(symbol, type/*  , contractAddress, decimalPlaces */) {
+    const coin = new RBTCCoin(symbol, type);
+    coin.derive(this.seed);
+    this.coins.push(coin);
+    console.log('this.coins: ', this.coins);
   }
 }

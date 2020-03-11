@@ -53,6 +53,7 @@ class WalletList extends Component {
         wal.coins.push(item);
       });
       wal.assetValue = wallet.assetValue;
+      wal.wallet = wallet;
       listData.unshift(wal);
     });
 
@@ -125,7 +126,7 @@ class WalletList extends Component {
       onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send' }),
       onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive' }),
       onSwapPressed: this.onSwapPressed,
-      onAddAssetPressed: () => navigation.navigate('AddToken'),
+      onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
       currencySymbol,
     }));
 
