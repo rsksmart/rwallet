@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
 import storage from '../storage';
@@ -14,7 +15,7 @@ export default class Wallet {
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
-    this.assetsValue = null;
+    this.assetValue = new BigNumber(0);
     // this.createdAt = new Date();
 
     // console.log('Wallet.create.coins', coins);

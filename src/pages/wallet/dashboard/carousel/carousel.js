@@ -31,6 +31,11 @@ class Carousel extends Component {
     this.setScrollHandler();
   }
 
+  componentDidMount() {
+    const { initialIndex } = this.props;
+    this.scrollToIndex(initialIndex, false);
+  }
+
   setScrollHandler() {
     this.handleOnScroll = Animated.event(
       [{ nativeEvent: { contentOffset: { x: this.xOffset } } }],
@@ -84,7 +89,7 @@ class Carousel extends Component {
     }
   }
 
-  scrollToIndex(index) {
+  scrollToIndex(index, animated = true) {
     const {
       onScrollEnd, data, itemWidth, separatorWidth,
     } = this.props;
@@ -94,7 +99,7 @@ class Carousel extends Component {
     setTimeout(() => {
       this.scrollView.getNode().scrollToOffset({
         offset: index === 0 ? 0 : (index - 0.5) * (itemWidth + separatorWidth) + this.halfItemWidth - this.halfContainerWidth,
-        animated: true,
+        animated,
       });
     });
   }
@@ -251,7 +256,6 @@ class Carousel extends Component {
         style={[styles.container, { width: containerWidth }, style]}
         contentContainerStyle={{ paddingRight: this.containerPadding }}
         showsHorizontalScrollIndicator={false}
-        initialScrollIndex={initialIndex}
         onScrollBeginDrag={this.handleOnScrollBeginDrag}
         onScroll={this.handleOnScroll}
         onScrollEndDrag={this.handleOnScrollEndDrag}
