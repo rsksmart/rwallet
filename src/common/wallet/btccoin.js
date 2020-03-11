@@ -94,6 +94,8 @@ export default class Coin {
   toJSON() {
     return {
       id: this.id,
+      symbol: this.symbol,
+      type: this.type,
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,

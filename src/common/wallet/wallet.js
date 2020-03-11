@@ -12,7 +12,6 @@ export default class Wallet {
   constructor({
     id, name, mnemonic, coins,
   }) {
-    this.addCustomToken = this.addCustomToken.bind(this);
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
@@ -29,27 +28,14 @@ export default class Wallet {
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
         const {
-          id: coinId, symbol, type, amount, address, objectId,
+          symbol, type, amount, address, objectId,
         } = item;
 
-        let newSymbol = symbol;
-        let newType = type;
-        if (!newSymbol) {
-          const index = coinId.lastIndexOf('Testnet');
-          if (index === -1) {
-            newSymbol = coinId;
-            newType = 'Mainnet';
-          } else {
-            newSymbol = coinId.substring(0, index);
-            newType = 'Testnet';
-          }
-        }
-
         let coin;
-        if (newSymbol === 'BTC') {
-          coin = new Coin(newSymbol, newType, amount, address);
+        if (symbol === 'BTC') {
+          coin = new Coin(symbol, type, amount, address);
         } else {
-          coin = new RBTCCoin(newSymbol, newType, amount, address);
+          coin = new RBTCCoin(symbol, type, amount, address);
         }
 
         // Add objectId to coin if there is one
@@ -163,6 +149,17 @@ export default class Wallet {
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
+    // Migrate from old coin structure
+    _.each(coins, (coin) => {
+      const newCoin = coin;
+      const { id: coinId, symbol } = newCoin;
+      if (!symbol) {
+        const index = coinId.lastIndexOf('Testnet');
+        newCoin.symbol = index === -1 ? coinId : coinId.substring(0, index);
+        newCoin.type = index === -1 ? 'Mainnet' : 'Testnet';
+      }
+    });
+
     const wallet = new Wallet({
       id, name, mnemonic: phrase, coins,
     });
@@ -188,8 +185,8 @@ export default class Wallet {
     return isDirty;
   }
 
-  addCustomToken(symbol, type/*  , contractAddress, decimalPlaces */) {
-    const coin = new RBTCCoin(symbol, type);
+  addCustomToken = (symbol, type, contractAddress, decimalPlaces) => {
+    const coin = new RBTCCoin(symbol, type, null, null, contractAddress, decimalPlaces);
     coin.derive(this.seed);
     this.coins.push(coin);
     console.log('this.coins: ', this.coins);
