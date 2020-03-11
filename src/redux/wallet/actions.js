@@ -37,7 +37,8 @@ const actions = {
 
   SET_SWAP_SOURCE: 'SET_SWAP_SOURCE',
   SET_SWAP_DEST: 'SET_SWAP_DEST',
-  RESET_SWAP: 'RESET_SWAP',
+  RESET_SWAP_SOURCE: 'RESET_SWAP_SOURCE',
+  RESET_SWAP_DEST: 'RESET_SWAP_DEST',
   SWITCH_SWAP: 'SWITCH_SWAP',
 
   // Functions definition
@@ -122,7 +123,8 @@ const actions = {
       coin,
     },
   }),
-  resetSwap: () => ({ type: actions.RESET_SWAP }),
+  resetSwapSource: () => ({ type: actions.RESET_SWAP_SOURCE }),
+  resetSwapDest: () => ({ type: actions.RESET_SWAP_DEST }),
   switchSwap: () => ({ type: actions.SWITCH_SWAP }),
   addCustomToken: (walletManager, wallet, symbol, type) => ({
     type: actions.ADD_CUSTOM_TOKEN,

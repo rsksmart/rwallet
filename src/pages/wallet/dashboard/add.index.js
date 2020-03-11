@@ -44,13 +44,13 @@ class WalletAddIndex extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, isShowBackButton } = this.props;
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" />}
+          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>
@@ -65,6 +65,11 @@ WalletAddIndex.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  isShowBackButton: PropTypes.bool,
+};
+
+WalletAddIndex.defaultProps = {
+  isShowBackButton: true,
 };
 
 const mapStateToProps = () => ({});

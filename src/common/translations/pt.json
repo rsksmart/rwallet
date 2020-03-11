@@ -116,11 +116,23 @@
         "want": "eu quero",
         "errorSourceAmount": "O valor da fonte precisa ser especificado",
         "errorDestAmount": "O valor do destino precisa ser especificado",
-        "errorAmountInRange": "O valor não é válido",
-        "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente"
+        "errorAmountInRange": {
+          "tooBig": "A quantia é maior que a troca máxima de ",
+          "tooSmall": "O valor é menor que o mínimo de troca de "
+        },
+        "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
+        "have": "eu tenho ",
+        "in": "dentro"
       },
       "swapSelection": {
-        "title": "Escolha a moeda"
+        "title": "Escolha a moeda",
+        "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
+        "please": "por favor",
+        "create": "crio",
+        "or": "ou",
+        "import": "Introduzir",
+        "aWallet": "uma carteira",
+        "startSwap": "para começar a usar Swap"
       },
       "swapCompleted": {
         "title": "Troca",
@@ -245,7 +257,8 @@
     "Delete": "Excluir",
     "Reset": "Redefinir",
     "Finish": "Terminar",
-    "Exchange": "Troca"
+    "Exchange": "Troca",
+    "addAsset": "Adicionar ativo"
   },
   "txState": {
     "Sent": "Enviei",
@@ -338,6 +351,10 @@
     "deleteKey": {
       "title": "Atenção!",
       "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
+    },
+    "swap": {
+      "title": "Nenhuma moeda trocável",
+      "body": "O swap suporta BTC, RBTC e DOC. Adicione recurso."
     }
   }
 }

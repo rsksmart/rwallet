@@ -12,7 +12,7 @@ const config = {
     serverURL: 'http://10.0.2.2:1338/parse',
   },
   defaultSettings: {
-    username: 'Anonymous User',
+    username: undefined,
     language: 'en',
     currency: 'USD',
     fingerprint: false,
@@ -79,6 +79,9 @@ const config = {
       RBTC: ['BTC'],
       DOC: ['BTC'],
     },
+  },
+  appLock: {
+    timeout: 300000,
   },
 };
 

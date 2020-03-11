@@ -53,7 +53,7 @@ const common = {
     const result = new BigNumber(amount).times('1e18');
     return result;
   },
-  weiToRskCoin(wei) {
+  weiToCoin(wei) {
     const result = new BigNumber(wei).div('1e18');
     return result;
   },
@@ -84,7 +84,7 @@ const common = {
       case 'RBTC':
       case 'RIF':
       case 'DOC':
-        amount = common.weiToRskCoin(unitNumber);
+        amount = common.weiToCoin(unitNumber);
         break;
       default:
     }

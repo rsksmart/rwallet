@@ -116,11 +116,23 @@
         "want": "quiero",
         "errorSourceAmount": "La cantidad de la fuente debe ser específica",
         "errorDestAmount": "Se debe especificar la cantidad de destino",
-        "errorAmountInRange": "El importe no es válido.",
-        "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo"
+        "errorAmountInRange": {
+          "tooBig": "La cantidad es mayor que el intercambio máximo de ",
+          "tooSmall": "El importe es inferior al mínimo de intercambio de "
+        },
+        "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
+        "have": "yo tengo ",
+        "in": "en"
       },
       "swapSelection": {
-        "title": "Seleccione el tipo de moneda"
+        "title": "Seleccione el tipo de moneda",
+        "noSwappableCoin": "Lo sentimos, no tienes ninguna moneda intercambiable",
+        "please": "Por favor",
+        "create": "crear",
+        "or": "o",
+        "import": "Introducir",
+        "aWallet": "una billetera",
+        "startSwap": "para comenzar a usar Swap"
       },
       "swapCompleted": {
         "title": "Intercambiar",
@@ -245,7 +257,8 @@
     "Delete": "Eliminar",
     "Reset": "Reiniciar",
     "Finish": "Terminar",
-    "Exchange": "Intercambiar"
+    "Exchange": "Intercambiar",
+    "addAsset": "Agregar activo"
   },
   "txState": {
     "Sent": "Enviado",
@@ -338,6 +351,10 @@
     "deleteKey": {
       "title": "¡Advertencia!",
       "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
+    },
+    "swap": {
+      "title": "No hay monedas intercambiables",
+      "body": "Swap admite BTC, RBTC y DOC. Por favor agregue el activo."
     }
   }
 }

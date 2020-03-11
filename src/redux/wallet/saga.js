@@ -166,7 +166,7 @@ function* getPriceRequest(action) {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.warn(message);
   }
 }
@@ -181,7 +181,7 @@ function* fetchBalanceRequest(action) {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.error(message);
   }
 }
@@ -197,7 +197,7 @@ function* fetchTransactionRequest(action) {
       type: actions.FETCH_TRANSACTION_RESULT,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.error(message);
   }
 }
@@ -210,7 +210,7 @@ function* fetchLatestBlockHeight() {
       value: response,
     });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.warn(message);
   }
 }
@@ -224,7 +224,7 @@ function* createKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.error(message);
   }
 }
@@ -239,7 +239,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     console.error(message);
   }
 }
@@ -251,7 +251,7 @@ function* renameKeyRequest(action) {
     yield put({ type: actions.WALLTE_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
+    const message = yield call(ParseHelper.handleError, { err });
     const notification = createErrorNotification('modal.incorrectKeyName.title', message.message);
     yield put(appActions.addNotification(notification));
     // console.error(message);
