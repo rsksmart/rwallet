@@ -75,11 +75,11 @@ const WalletCarousel = (props) => {
   const { data, navigation } = props;
   data.unshift({ index: -1 });
 
-  const renderItem = ({ item }) => {
+  const renderItem = (itemData) => {
     const {
       walletData, onSendPressed, onReceivePressed, onSwapPressed,
       onAddAssetPressed, currencySymbol, index,
-    } = item;
+    } = itemData.item;
     if (index < 0) {
       return (
         <View style={[styles.addWalletButtonView]}>
@@ -125,15 +125,6 @@ WalletCarousel.propTypes = {
     goBack: PropTypes.func.isRequired,
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
-  }).isRequired,
-  item: PropTypes.shape({
-    walletData: PropTypes.object.isRequired,
-    onSendPressed: PropTypes.func.isRequired,
-    onReceivePressed: PropTypes.func.isRequired,
-    onSwapPressed: PropTypes.func.isRequired,
-    onAddAssetPressed: PropTypes.func.isRequired,
-    currencySymbol: PropTypes.object.isRequired,
-    index: PropTypes.object.isRequired,
   }).isRequired,
 };
 
