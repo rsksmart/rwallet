@@ -11,4 +11,9 @@ for (let i = 0; i < btcPreferenceSatPerbyte.length; i += 1) {
   btcPreferenceFee.push(btcPreferenceSatPerbyte[i] * (btcTxSize / 1024));
 }
 
-export default { txStatus, btcPreferenceFee };
+const defaultErrorNotification = {
+  title: 'modal.defaultError.title',
+  message: 'modal.defaultError.body',
+};
+
+export default { txStatus, btcPreferenceFee, defaultErrorNotification };

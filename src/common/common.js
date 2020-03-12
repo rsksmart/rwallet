@@ -79,6 +79,26 @@ const common = {
     const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
     return amount;
   },
+
+  /**
+   * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  getAmountBigNumber(symbol, amount, decimalPlaces) {
+    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
+    if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
+      return null;
+    }
+    let amountBigNumber = amount;
+    if (typeof amount === 'number' || typeof amount === 'string') {
+      amountBigNumber = new BigNumber(amount);
+    }
+    return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN);
+  },
+
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
@@ -86,16 +106,22 @@ const common = {
    * @param {BigNumber | number | string} balance
    */
   getBalanceString(symbol, balance, decimalPlaces) {
-    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (!_.isNull(balance)) {
-      let balanceBigNumber = balance;
-      if (typeof balance === 'number' || typeof value === 'string') {
-        balanceBigNumber = new BigNumber(balance);
-      }
-      return balanceBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toFixed();
-    }
-    return null;
+    const amountBigNumber = this.getAmountBigNumber(symbol, balance, decimalPlaces);
+    return amountBigNumber.toFixed();
   },
+
+  /**
+   * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  formatAmount(symbol, amount, decimalPlaces) {
+    const amountBigNumber = this.getAmountBigNumber(symbol, amount, decimalPlaces);
+    return amountBigNumber.toNumber();
+  },
+
   /**
    * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
    * @param {BigNumber | number | string} value
@@ -312,6 +338,26 @@ const common = {
   setMomentLocale(locale) {
     const newLocale = locale === 'zh' ? 'zh-cn' : locale;
     moment.locale(newLocale);
+  },
+
+  // make promise cancelable
+  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+  makeCancelable(promise) {
+    let hasCanceled = false;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      promise.then(
+        (val) => (hasCanceled ? reject(new Error('err.canceled')) : resolve(val)),
+        (error) => (hasCanceled ? reject(new Error('err.canceled')) : reject(error)),
+      );
+    });
+
+    return {
+      promise: wrappedPromise,
+      cancel() {
+        hasCanceled = true;
+      },
+    };
   },
 };
 
