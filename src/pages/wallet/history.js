@@ -15,7 +15,7 @@ import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
 import { strings } from '../../common/i18n';
 import definitions from '../../common/definitions';
 import presetStyles from '../../assets/styles/style';
@@ -219,12 +219,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y
-    >= contentSize.height - paddingToBottom;
-};
-
 const stateIcons = {
   Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />,
   Sending: <Image source={sending} />,
@@ -323,30 +317,6 @@ class History extends Component {
     });
     const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
     return { transactions, pendingBalance, pendingBalanceValue };
-  }
-
-  static listView(listData, onPress) {
-    if (!listData) {
-      return <ActivityIndicator size="small" color="#00ff00" />;
-    }
-    if (listData.length === 0) {
-      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
-    }
-    return (
-      <FlatList
-        data={listData}
-        renderItem={({ item, index }) => (
-          <Item
-            title={item.state}
-            amount={item.amountText}
-            datetime={item.datetimeText}
-            onPress={() => { onPress(index); }}
-            isLastRow={index === listData.length - 1}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
   }
 
   constructor(props) {
@@ -459,12 +429,6 @@ class History extends Component {
     navigation.navigate('WalletReceive', navigation.state.params);
   }
 
-  static onScroll({ nativeEvent }) {
-    if (isCloseToBottom(nativeEvent)) {
-      // console.log('ScrollView isCloseToBottom');
-    }
-  }
-
   onMomentumScrollEnd(e) {
     // console.log('ScrollView onMomentumScrollEnd');
     const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
@@ -487,6 +451,36 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  listView = (listData, onPress, isRefreshing) => {
+    if (!listData) {
+      return <ActivityIndicator size="small" color="#00ff00" />;
+    }
+    if (listData.length === 0) {
+      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
+    }
+    return (
+      <FlatList
+        data={listData}
+        renderItem={({ item, index }) => (
+          <Item
+            title={item.state}
+            amount={item.amountText}
+            datetime={item.datetimeText}
+            onPress={() => { onPress(index); }}
+            isLastRow={index === listData.length - 1}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={this.onRefresh}
+          />
+        )}
+      />
+    );
+  };
+
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -499,7 +493,7 @@ class History extends Component {
     );
   }
 
-  renderfooter() {
+  renderFooter() {
     const { isLoadMore } = this.state;
     let footer = null;
     if (isLoadMore) {
@@ -508,10 +502,9 @@ class History extends Component {
     return footer;
   }
 
-
   render() {
     const {
-      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -521,13 +514,7 @@ class History extends Component {
     const symbolName = common.getSymbolFullName(symbol, type);
 
     return (
-      <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
-        refreshControl={this.refreshControl()}
-        headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
-      >
+      <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
@@ -563,10 +550,10 @@ class History extends Component {
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
         <View style={styles.sectionContainer}>
-          {History.listView(listData, this.onListItemPress)}
+          {this.listView(listData, this.onListItemPress, isRefreshing)}
         </View>
-        {this.renderfooter()}
-      </BasePageGereral>
+        {this.renderFooter()}
+      </BasePageSimple>
     );
   }
 }
