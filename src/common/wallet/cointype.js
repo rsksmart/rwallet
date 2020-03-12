@@ -13,6 +13,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'BTC',
     DEFAULT_BTC_MEDIUM_FEE: 75000,
+    decimalPlaces: 6,
   },
   RBTC: {
     networkId: 137,
@@ -24,6 +25,7 @@ const coinType = {
     symbol: 'RBTC',
     DEFAULT_RBTC_MEDIUM_GAS: 29400,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 6,
   },
   RIF: {
     networkId: 137,
@@ -35,6 +37,7 @@ const coinType = {
     symbol: 'RIF',
     DEFAULT_RIF_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 3,
   },
   DOC: {
     networkId: 137,
@@ -46,6 +49,7 @@ const coinType = {
     symbol: 'DOC',
     DEFAULT_DOC_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 3,
   },
   BTCTestnet: {
     networkId: 1,
@@ -57,6 +61,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'BTC',
     DEFAULT_BTC_MEDIUM_FEE: 75000,
+    decimalPlaces: 6,
   },
   RBTCTestnet: {
     networkId: 37310,
@@ -68,6 +73,7 @@ const coinType = {
     symbol: 'RBTC',
     DEFAULT_RBTC_MEDIUM_GAS: 29400,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 6,
   },
   RIFTestnet: {
     networkId: 37310,
@@ -79,6 +85,7 @@ const coinType = {
     symbol: 'RIF',
     DEFAULT_RIF_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 3,
   },
   DOCTestnet: {
     networkId: 37310,
@@ -90,6 +97,7 @@ const coinType = {
     symbol: 'DOC',
     DEFAULT_DOC_MEDIUM_GAS: 76000,
     DEFAULT_RBTC_GAS_PRICE: 600000000,
+    decimalPlaces: 3,
   },
 };
 

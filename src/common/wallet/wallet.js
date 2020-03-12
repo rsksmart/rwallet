@@ -25,17 +25,20 @@ export default class Wallet {
 
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
 
+
+    // pre create rbtc coin for
+
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
         const {
-          symbol, type, amount, address, objectId,
+          symbol, type, amount, address, objectId, contractAddress, decimalPlaces,
         } = item;
 
         let coin;
         if (symbol === 'BTC') {
           coin = new Coin(symbol, type, amount, address);
         } else {
-          coin = new RBTCCoin(symbol, type, amount, address);
+          coin = new RBTCCoin(symbol, type, amount, address, contractAddress, decimalPlaces);
         }
 
         // Add objectId to coin if there is one
@@ -190,5 +193,13 @@ export default class Wallet {
     coin.derive(this.seed);
     this.coins.push(coin);
     console.log('this.coins: ', this.coins);
+  }
+
+  getSymbols = () => {
+    const symbols = [];
+    _.each(this.coins, (coin) => {
+      symbols.push(coin.symbol);
+    });
+    return _.uniq(symbols);
   }
 }

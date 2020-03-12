@@ -64,8 +64,9 @@ const actions = {
     type: actions.UPDATE_ASSET_VALUE,
     payload: currency,
   }),
-  startFetchPriceTimer: () => ({
+  startFetchPriceTimer: (walletManager) => ({
     type: actions.START_FETCH_PRICE_TIMER,
+    payload: walletManager,
   }),
   startFetchBalanceTimer: (walletManager) => ({
     type: actions.START_FETCH_BALANCE_TIMER,
@@ -126,10 +127,10 @@ const actions = {
   resetSwapSource: () => ({ type: actions.RESET_SWAP_SOURCE }),
   resetSwapDest: () => ({ type: actions.RESET_SWAP_DEST }),
   switchSwap: () => ({ type: actions.SWITCH_SWAP }),
-  addCustomToken: (walletManager, wallet, symbol, type) => ({
+  addCustomToken: (walletManager, wallet, symbol, type, contractAddress, decimalPlaces) => ({
     type: actions.ADD_CUSTOM_TOKEN,
     payload: {
-      walletManager, wallet, symbol, type,
+      walletManager, wallet, symbol, type, contractAddress, decimalPlaces,
     },
   }),
 };

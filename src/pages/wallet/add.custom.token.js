@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput,
+  View, StyleSheet, TextInput, Switch,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
+import Button from '../../components/common/button/button';
 
 const styles = StyleSheet.create({
   sectionContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.seporatorLineGrey,
     paddingBottom: 20,
   },
   title: {
@@ -28,38 +32,55 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
     marginTop: 13,
   },
+  switchView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: color.seporatorLineGrey,
+    paddingBottom: 15,
+    paddingTop: 15,
+  },
+  switchTitle: {
+    flex: 1,
+    marginBottom: 0,
+  },
 });
 
-export default class AddCustomToken extends Component {
+class AddCustomToken extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
     constructor(props) {
       super(props);
-      this.onPress = this.onPress.bind(this);
-      this.onAddressInputBlur = this.onAddressInputBlur.bind(this);
       this.state = {
+        isLoading: false,
         address: '0x345dc961828f9fe7c69da34e88d58839f153784c',
         symbol: '',
         decimals: '',
+        isMainnet: true,
+        isCanConfirm: false,
       };
       this.name = '';
-      this.type = 'Testnet';
+      this.type = 'Mainnet';
       this.chain = 'Rootstock';
     }
 
-    async onAddressInputBlur() {
-      const { address } = this.state;
-      const { type, chain } = this;
-      const tokenInfo = await parseHelper.getTokenBasicInfo(type, chain, address);
-      console.log('tokenInfo: ', tokenInfo);
-      const { name, symbol, decimals } = tokenInfo;
-      this.setState({ symbol, decimals });
-      this.name = name;
+    onSwitchValueChanged = (value) => {
+      this.setState({ isMainnet: value });
+      this.type = value ? 'Mainnet' : 'Testnet';
+      this.requestTokenInfo();
     }
 
-    onPress() {
+    onAddressInputBlur = async () => {
+      this.requestTokenInfo();
+    }
+
+    onAddressInputChanged = async (text) => {
+      this.setState({ address: text });
+    }
+
+    onPressed = () => {
       const { navigation } = this.props;
       const { address, symbol, decimals } = this.state;
       const { name, type, chain } = this;
@@ -68,17 +89,41 @@ export default class AddCustomToken extends Component {
       });
     }
 
+    requestTokenInfo = async () => {
+      const { addNotification } = this.props;
+      const { address } = this.state;
+      const { type, chain } = this;
+      try {
+        this.setState({ isLoading: true });
+        const tokenInfo = await parseHelper.getTokenBasicInfo(type, chain, address);
+        console.log('tokenInfo: ', tokenInfo);
+        const { name, symbol, decimals } = tokenInfo;
+        this.setState({ symbol, decimals, isCanConfirm: true });
+        this.name = name;
+      } catch (error) {
+        console.log(error);
+        this.setState({ isCanConfirm: false });
+        const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
+        addNotification(notification);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+
     render() {
       const { navigation } = this.props;
-      const { address, symbol, decimals } = this.state;
+      const {
+        isLoading, address, symbol, decimals, isMainnet, isCanConfirm,
+      } = this.state;
+      const bottomButton = (<Button style={{ opacity: isCanConfirm ? 1 : 0.5 }} text="button.Next" onPress={this.onPressed} disabled={!isCanConfirm} />);
       return (
         <BasePageGereral
           isSafeView
-          hasBottomBtn
-          hasLoader={false}
-          bottomBtnText="button.Next"
-          bottomBtnOnPress={this.onPress}
+          hasBottomBtn={false}
+          hasLoader
+          isLoading={isLoading}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.addCustomToken.title" />}
+          customBottomButton={bottomButton}
         >
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
@@ -90,6 +135,7 @@ export default class AddCustomToken extends Component {
                 autoCorrect={false}
                 blurOnSubmit={false}
                 value={address}
+                onChangeText={this.onAddressInputChanged}
                 onBlur={this.onAddressInputBlur}
               />
             </View>
@@ -97,7 +143,6 @@ export default class AddCustomToken extends Component {
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.symbol" />
               <TextInput
                 placeholder="BMT"
-                ref={(ref) => { this.nameInput = ref; }}
                 style={[presetStyle.textInput, styles.nameInput]}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -109,13 +154,16 @@ export default class AddCustomToken extends Component {
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.decimals" />
               <TextInput
                 placeholder="3"
-                ref={(ref) => { this.nameInput = ref; }}
                 style={[presetStyle.textInput, styles.nameInput]}
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
                 value={decimals.toString()}
               />
+            </View>
+            <View style={[styles.switchView]}>
+              <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+              <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
             </View>
           </View>
         </BasePageGereral>
@@ -130,4 +178,19 @@ AddCustomToken.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
+  confirmation: state.App.get('confirmation'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

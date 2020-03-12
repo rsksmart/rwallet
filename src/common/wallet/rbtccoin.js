@@ -4,6 +4,7 @@ import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import references from '../../assets/references';
+import config from '../../../config';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -57,7 +58,7 @@ export default class RBTCCoin {
     }
 
     this.contractAddress = contractAddress;
-    this.decimalPlaces = decimalPlaces;
+    this.decimalPlaces = decimalPlaces || config.symbolDecimalPlaces[symbol];
     this.amount = amount;
     this.address = address;
     this.chain = this.metadata.chain;

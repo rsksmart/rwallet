@@ -73,21 +73,10 @@ const common = {
    * @param {*} unitNumber
    */
   convertUnitToCoinAmount(symbol, unitNumber) {
-    let amount = null;
     if (_.isNil(unitNumber)) {
       return null;
     }
-    switch (symbol) {
-      case 'BTC':
-        amount = common.satoshiToBtc(unitNumber);
-        break;
-      case 'RBTC':
-      case 'RIF':
-      case 'DOC':
-        amount = common.weiToCoin(unitNumber);
-        break;
-      default:
-    }
+    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
     return amount;
   },
   /**
@@ -96,8 +85,8 @@ const common = {
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
    */
-  getBalanceString(symbol, balance) {
-    const decimalPlaces = config.symbolDecimalPlaces[symbol];
+  getBalanceString(symbol, balance, decimalPlaces) {
+    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
     if (!_.isNull(balance)) {
       let balanceBigNumber = balance;
       if (typeof balance === 'number' || typeof value === 'string') {
@@ -182,10 +171,7 @@ const common = {
    * @param {*} hash, transaction hash
    */
   getTransactionUrl(symbol, type, hash) {
-    let url = '';
-    if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
-      url = config.transactionUrls[symbol][type];
-    }
+    let url = symbol === 'BTC' ? config.transactionUrls[symbol][type] : config.transactionUrls.RBTC[type];
     // BTC has / suffix, RSK does not.
     // For example:
     // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/

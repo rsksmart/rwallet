@@ -144,7 +144,8 @@
         "title": "Adicionar tokens personalizados",
         "address": "Endereço do Contrato do Token",
         "symbol": "Símbolo de Token",
-        "decimals": "Decimais de precisão"
+        "decimals": "Decimais de precisão",
+        "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar tokens personalizados",

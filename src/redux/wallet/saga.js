@@ -15,7 +15,7 @@ import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
 
 const {
-  consts: { supportedTokens, currencies: currencySettings },
+  consts: { currencies: currencySettings },
   interval: {
     fetchPrice: FETCH_PRICE_INTERVAL,
     fetchBalance: FETCH_BALANCE_INTERVAL,
@@ -44,12 +44,14 @@ function createTimer(interval) {
 /**
  * Start the timer to call actions.GET_PRICE periodically
  */
-export function* startFetchPriceTimerRequest() {
+export function* startFetchPriceTimerRequest(action) {
   // Call actions.GET_PRICE once to start off
+  const walletManager = action.payload;
+  const symbols = walletManager.getSymbols();
   yield put({
     type: actions.GET_PRICE,
     payload: {
-      symbols: supportedTokens,
+      symbols,
       currencies: _.map(currencySettings, (item) => item.name),
     },
   });
@@ -63,7 +65,7 @@ export function* startFetchPriceTimerRequest() {
       yield put({
         type: actions.GET_PRICE,
         payload: {
-          symbols: supportedTokens,
+          symbols,
           currencies: _.map(currencySettings, (item) => item.name),
         },
       });
@@ -260,10 +262,10 @@ function* renameKeyRequest(action) {
 
 function* addCustomTokenRequest(action) {
   const {
-    walletManager, wallet, symbol, type,
+    walletManager, wallet, symbol, type, contractAddress, decimalPlaces,
   } = action.payload;
   try {
-    yield call(wallet.addCustomToken, symbol, type);
+    yield call(wallet.addCustomToken, symbol, type, contractAddress, decimalPlaces);
     yield call(walletManager.serialize);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });

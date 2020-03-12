@@ -165,6 +165,7 @@ const color = {
     black: '#000',
     white: '#FFF',
     midGrey: '#727372',
+    seporatorLineGrey: '#D8D8D8',
     ...styleScript(),
 };
 

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground, TextInput,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import color from '../../assets/styles/color.ts';
@@ -14,7 +13,6 @@ import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import config from '../../../config';
 import references from '../../assets/references';
-// import presetStyle from '../../assets/styles/style';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -89,27 +87,6 @@ const styles = StyleSheet.create({
     color: '#00BA00',
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
-  },
-  searchInputView: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 17.5,
-    fontSize: 16,
-    height: 28,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  searchInput: {
-    fontFamily: 'Avenir-Roman',
-    flex: 1,
-    color: color.white,
-    marginLeft: 10,
-  },
-  searchIcon: {
-    color: color.white,
-    fontSize: 22,
   },
 });
 
@@ -231,19 +208,7 @@ export default class AddToken extends Component {
               {` (${selectedTokenCount}/${tokenCount})`}
             </Text>
           </View>
-          <Loc style={[styles.note, space.marginBottom_10]} text="page.wallet.addToken.note" />
-          <View style={[styles.searchInputView]}>
-            <MaterialIcons style={styles.searchIcon} name="search" />
-            <TextInput
-              placeholder="Start Searching for Asset …"
-              placeholderTextColor="rgba(255,255,255,0.6)"
-              ref={(ref) => { this.nameInput = ref; }}
-              style={[styles.searchInput]}
-              autoCapitalize="none"
-              autoCorrect={false}
-              blurOnSubmit={false}
-            />
-          </View>
+          <Loc style={[styles.note, space.marginBottom_17]} text="page.wallet.addToken.note" />
           { this.renderList() }
         </View>
       </BasePageGereral>

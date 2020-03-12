@@ -241,8 +241,8 @@ class Transfer extends Component {
     // gesturesEnabled: false,
   });
 
-  static generateAmountPlaceholderText(symbol, currency, prices) {
-    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
+  static generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices) {
+    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT, decimalPlaces);
     let amountPlaceholderText = `${amountText} ${symbol}`;
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
@@ -296,7 +296,7 @@ class Transfer extends Component {
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, coin.decimalPlaces, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
@@ -388,7 +388,7 @@ class Transfer extends Component {
       return;
     }
     if (coin.symbol === 'RIF' || coin.symbol === 'DOC') {
-      const amount = common.getBalanceString(coin.symbol, coin.balance);
+      const amount = common.getBalanceString(coin.symbol, coin.balance, coin.decimalPlaces);
       this.inputAmount(amount);
     } else {
       let fee = feeData[feeLevel].coin;
@@ -397,7 +397,7 @@ class Transfer extends Component {
       }
       let balance = coin.balance.minus(fee);
       balance = balance.gt(0) ? balance : 0;
-      const amountText = common.getBalanceString(coin.symbol, balance);
+      const amountText = common.getBalanceString(coin.symbol, balance, coin.decimalPlaces);
       this.inputAmount(amountText);
     }
   }
@@ -519,7 +519,7 @@ class Transfer extends Component {
       feeData.push(item);
     }
     this.mediumFee = feeData[1].coin;
-    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, coin.decimalPlaces, currency, prices);
     this.setState({ feeData, feeSymbol, amountPlaceholderText });
   }
 
@@ -665,7 +665,8 @@ class Transfer extends Component {
     const {
       customFee, feeSymbol, customFeeValue, feeSliderValue,
     } = this.state;
-    const { currency } = this.props;
+    const { currency, navigation } = this.props;
+    const { coin } = navigation.state.params;
     const currencySymbol = common.getCurrencySymbol(currency);
     return (
       <View style={[styles.customFeeSliderWrapper]}>
@@ -683,7 +684,7 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol}`}
+              {`${common.getBalanceString(feeSymbol, customFee, coin.decimalPlaces)} ${feeSymbol}`}
               {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
@@ -694,10 +695,11 @@ class Transfer extends Component {
   }
 
   renderFeeOptions() {
-    const { currency } = this.props;
+    const { currency, navigation } = this.props;
     const {
       feeSymbol, feeData, feeLevel, isCustomFee,
     } = this.state;
+    const { coin } = navigation.state.params;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
     if (!feeData) {
@@ -706,7 +708,7 @@ class Transfer extends Component {
     for (let i = 0; i < feeData.length; i += 1) {
       const item = {};
       const fee = feeData[i];
-      const coinAmount = common.getBalanceString(feeSymbol, fee.coin);
+      const coinAmount = common.getBalanceString(feeSymbol, fee.coin, coin.decimalPlaces);
       item.coin = `${coinAmount} ${feeSymbol}`;
       item.value = fee.value ? `${currencySymbol}${common.getAssetValueString(fee.value)}` : '';
       items.push(item);

@@ -87,12 +87,12 @@ class AddCustomToken extends Component {
 
     async onComfirmPressed() {
       const {
-        symbol, type, chain, address, wallet,
+        symbol, type, chain, address, wallet, decimals,
       } = this;
       const { navigation, addCustomToken, walletManager } = this.props;
       const saveResult = await parseHelper.saveToken(type, chain, address);
       console.log(saveResult);
-      addCustomToken(walletManager, wallet, symbol, type);
+      addCustomToken(walletManager, wallet, symbol, type, address, decimals);
       const statckActions = StackActions.popToTop();
       navigation.dispatch(statckActions);
     }
@@ -144,7 +144,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addCustomToken: (walletManager, wallet, symbol, type) => dispatch(walletActions.addCustomToken(walletManager, wallet, symbol, type)),
+  addCustomToken: (walletManager, wallet, symbol, type, contractAddress, decimalPlaces) => dispatch(walletActions.addCustomToken(walletManager, wallet, symbol, type, contractAddress, decimalPlaces)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

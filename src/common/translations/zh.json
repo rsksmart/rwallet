@@ -144,7 +144,8 @@
         "title": "添加自定义代币",
         "address": "代币合约地址",
         "symbol": "代币符号",
-        "decimals": "小数精度"
+        "decimals": "小数精度",
+        "mainnet": "正式网络"
       },
       "addCustomTokenConfirm": {
         "title": "添加自定义代币",

@@ -175,6 +175,7 @@ class ParseHelper {
   }
 
   static getPrice({ symbols, currencies }) {
+    console.log('getPrice, symbols: ', symbols);
     return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 

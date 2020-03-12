@@ -275,7 +275,7 @@ class History extends Component {
   * @param {array} prices
   * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static processRawTransactions(rawTransactions, address, symbol, currency, prices) {
+  static processRawTransactions(rawTransactions, address, symbol, decimalPlaces, currency, prices) {
     if (_.isEmpty(rawTransactions)) {
       return { transactions: [], pendingBalance: null, pendingBalanceValue: null };
     }
@@ -308,7 +308,7 @@ class History extends Component {
 
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
-        amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
+        amountText = `${common.getBalanceString(symbol, amount, decimalPlaces)} ${symbol}`;
       }
       transactions.push({
         state,
@@ -316,6 +316,7 @@ class History extends Component {
         datetimeText,
         amountText,
         rawTransaction: transaction,
+        decimalPlaces,
       });
       if (state === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
@@ -373,11 +374,11 @@ class History extends Component {
     this.onListItemPress = this.onListItemPress.bind(this);
   }
 
-  static getBalanceText(symbol, balance) {
+  static getBalanceText(symbol, balance, decimalPlaces) {
     let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(symbol, balance)}`;
+      balanceText = `${common.getBalanceString(symbol, balance, decimalPlaces)}`;
     }
 
     return balanceText;
@@ -393,11 +394,11 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency) {
     const currencySymbol = getCurrencySymbol(currency);
     const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : null;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance, decimalPlaces)} ${symbol}` : null;
     const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
     return {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
@@ -408,10 +409,10 @@ class History extends Component {
     const { currency, prices, navigation } = this.props;
     const { coin } = navigation.state.params;
     const {
-      balance, balanceValue, transactions, address, symbol,
+      balance, balanceValue, transactions, address, symbol, decimalPlaces,
     } = coin;
-    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, decimalPlaces, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency, decimalPlaces);
     this.setState({ listData, ...balanceTexts });
   }
 
@@ -423,10 +424,10 @@ class History extends Component {
     const { coin } = navigation.state.params;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
       const {
-        balance, balanceValue, transactions, address, symbol,
+        balance, balanceValue, transactions, address, symbol, decimalPlaces,
       } = coin;
-      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, decimalPlaces, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency);
       this.setState({ listData, ...balanceTexts });
     }
   }

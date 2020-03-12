@@ -242,6 +242,14 @@ class WalletManager {
     modifyWallet.name = name;
     await this.serialize();
   }
+
+  getSymbols = () => {
+    let symbols = [];
+    _.each(this.wallets, (wallet) => {
+      symbols = _.concat(symbols, wallet.getSymbols());
+    });
+    return _.uniq(symbols);
+  }
 }
 
 export default new WalletManager();

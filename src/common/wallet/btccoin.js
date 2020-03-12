@@ -4,6 +4,7 @@ import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
+import config from '../../../config';
 
 export default class Coin {
   constructor(symbol, type, amount, address) {
@@ -16,6 +17,7 @@ export default class Coin {
     this.type = type;
     this.symbol = symbol;
     this.networkId = this.metadata.networkId;
+    this.decimalPlaces = config.symbolDecimalPlaces[symbol];
   }
 
   derive(seed) {

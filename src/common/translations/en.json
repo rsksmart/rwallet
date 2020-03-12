@@ -145,7 +145,8 @@
         "title": "Add Custom Tokens",
         "address": "Token Contract Address",
         "symbol": "Token Symbol",
-        "decimals": "Decimals of Precision"
+        "decimals": "Decimals of Precision",
+        "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Tokens",
@@ -356,6 +357,10 @@
     "swap": {
       "title": "No swappable coin",
       "body": "Swap supports BTC, RBTC and DOC. Please add asset."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contract Not Found",
+      "body": "We cannot find the input ERC20 token smart contract. Please check if it is right."
     }
   }
 }

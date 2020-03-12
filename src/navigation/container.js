@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => ({
   closePasscodeModal: () => dispatch(appActions.hidePasscode()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  startFetchPriceTimer: () => dispatch(walletActions.startFetchPriceTimer()),
+  startFetchPriceTimer: (walletManager) => dispatch(walletActions.startFetchPriceTimer(walletManager)),
   startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
   startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
   startFetchLatestBlockHeightTimer: () => dispatch(walletActions.startFetchLatestBlockHeightTimer()),
