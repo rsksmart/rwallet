@@ -496,19 +496,6 @@ class Swap extends Component {
     };
   };
 
-  getGasCost = (coin) => {
-    switch (coin.id) {
-      case 'BTC':
-        return (definitions.btcPreferenceFee[2]) / (10 ** 8);
-      case 'RBTC':
-        return (coin.metadata.DEFAULT_RBTC_MEDIUM_GAS * coin.metadata.DEFAULT_RBTC_GAS_PRICE * 1.5) / (10 ** 18);
-      case 'DOC':
-        return (coin.metadata.DEFAULT_DOC_MEDIUM_GAS * coin.metadata.DEFAULT_RBTC_GAS_PRICE * 1.5) / (10 ** 18);
-      default:
-        return null;
-    }
-  };
-
   switchSourceDest = () => {
     const { switchSwap } = this.props;
     const { destAmount } = this.state;

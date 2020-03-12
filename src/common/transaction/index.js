@@ -6,72 +6,19 @@ import * as rbtc from './rbtccoin';
 
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
-  let signedTransaction = null;
-  switch (symbol) {
-    case 'BTC':
-      signedTransaction = await btc.signTransaction(rawTransaction, privateKey);
-      break;
-    case 'RBTC':
-    case 'RIF':
-    case 'DOC':
-      signedTransaction = await rbtc.signTransaction(rawTransaction, privateKey);
-      break;
-    default:
-  }
+  const signedTransaction = await symbol === 'BTC' ? btc.signTransaction(rawTransaction, privateKey) : rbtc.signTransaction(rawTransaction, privateKey);
   return signedTransaction;
 };
 
-const createRawTransactionParam = (params) => {
-  switch (params.symbol) {
-    case 'BTC':
-      return btc.getRawTransactionParam(params);
-    case 'RBTC':
-    case 'RIF':
-    case 'DOC':
-      return rbtc.getRawTransactionParam(params);
-    default:
-      return null;
-  }
-};
+const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));
 
-const convertTransferValue = (symbol, value) => {
-  switch (symbol) {
-    case 'BTC':
-      return common.btcToSatoshiHex(value);
-    case 'RBTC':
-    case 'RIF':
-    case 'DOC':
-      return common.rskCoinToWeiHex(value);
-    default:
-      return null;
-  }
-};
+const convertTransferValue = (symbol, value) => (symbol === 'BTC' ? common.btcToSatoshiHex(value) : common.rskCoinToWeiHex(value));
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => {
-  switch (symbol) {
-    case 'BTC':
-      return btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch);
-    case 'RBTC':
-    case 'RIF':
-    case 'DOC':
-      return rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch);
-    default:
-      return null;
-  }
-};
+const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
+  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
+  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
 
-const getTxHash = (symbol, txResult) => {
-  switch (symbol) {
-    case 'BTC':
-      return btc.getTxHash(txResult);
-    case 'RBTC':
-    case 'RIF':
-    case 'DOC':
-      return rbtc.getTxHash(txResult);
-    default:
-      return null;
-  }
-};
+const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
 class Transaction {
   constructor(coin, receiver, value, extraParams) {

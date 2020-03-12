@@ -53,8 +53,11 @@ export default class RBTCCoin {
     // If coinType does not contain this.id, use RBTC metadata;
     this.metadata = coinType[this.id];
     if (!this.metadata) {
+      const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
+      this.metadata = _.clone(metadata);
       this.metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
       this.metadata.icon = references.images.customToken;
+      this.metadata.defaultName = symbol;
     }
 
     this.contractAddress = contractAddress;

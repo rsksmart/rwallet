@@ -247,8 +247,10 @@ class Transfer extends Component {
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
-      const amountValueText = common.getAssetValueString(amountValue, amountValue);
-      amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+      if (amountValue) {
+        const amountValueText = common.getAssetValueString(amountValue, amountValue);
+        amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+      }
     }
     return amountPlaceholderText;
   }

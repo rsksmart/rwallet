@@ -396,7 +396,7 @@ class History extends Component {
 
   static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency) {
     const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const balanceText = `${History.getBalanceText(symbol, balance, decimalPlaces)} ${symbol}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
     const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance, decimalPlaces)} ${symbol}` : null;
     const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;

@@ -152,6 +152,9 @@ const common = {
     }
     try {
       const price = this.getCoinPrice(symbol, currency, prices);
+      if (!price) {
+        return null;
+      }
       const amountBigNumber = new BigNumber(amount);
       const value = amountBigNumber.times(price);
       return value;
