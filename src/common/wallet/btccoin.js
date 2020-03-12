@@ -7,12 +7,10 @@ import PathKeyPair from './pathkeypair';
 import config from '../../../config';
 
 export default class Coin {
-  constructor(symbol, type, amount, address) {
+  constructor(symbol, type) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, queryKey, defaultName}
     this.metadata = coinType[this.id];
-    this.amount = amount;
-    this.address = address;
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;

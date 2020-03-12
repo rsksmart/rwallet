@@ -265,7 +265,7 @@ function* addCustomTokenRequest(action) {
     walletManager, wallet, symbol, type, contractAddress, decimalPlaces,
   } = action.payload;
   try {
-    yield call(wallet.addCustomToken, symbol, type, contractAddress, decimalPlaces);
+    yield call(wallet.addCustomToken, null, symbol, type, contractAddress, decimalPlaces);
     yield call(walletManager.serialize);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });

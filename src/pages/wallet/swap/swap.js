@@ -459,8 +459,8 @@ class Swap extends Component {
       const { rate, limitMinDepositCoin, minerFee } = sdRate;
 
       const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
-      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.symbol, currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
+      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
+      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
 
       this.setState({
         coinLoading: false,
@@ -644,7 +644,7 @@ class Swap extends Component {
     const sourceValueText = sourceAmount && sourceUsdRate ? currencySymbol + (sourceAmount * sourceUsdRate).toFixed(2) : '';
     const destValueText = destAmount && destUsdRate ? currencySymbol + (destAmount * destUsdRate).toFixed(2) : '';
 
-    const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.symbol, swapSource.coin.balance) : '';
+    const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.balance, swapSource.coin.decimalPlaces) : '';
 
     const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
 

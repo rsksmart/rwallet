@@ -23,6 +23,7 @@ import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
+import config from '../../../config';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -242,7 +243,7 @@ class Transfer extends Component {
   });
 
   static generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices) {
-    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT, decimalPlaces);
+    const amountText = common.getBalanceString(PLACEHODLER_AMOUNT, decimalPlaces);
     let amountPlaceholderText = `${amountText} ${symbol}`;
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
@@ -382,7 +383,7 @@ class Transfer extends Component {
     if (_.isNil(balance)) {
       return;
     }
-    const amount = common.getBalanceString(symbol, balance, decimalPlaces);
+    const amount = common.getBalanceString(balance, decimalPlaces);
     this.inputAmount(amount, () => {
       if (symbol === 'BTC' || symbol === 'RBTC') {
         this.isRequestSendAll = true;
@@ -597,7 +598,7 @@ class Transfer extends Component {
   }
 
   adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount) {
-    const { symbol } = this.coin;
+    const { feeSymbol } = this.state;
     let restAmount = null;
     if (isCustomFee) {
       restAmount = new BigNumber(amount).minus(customFee);
@@ -605,7 +606,7 @@ class Transfer extends Component {
       restAmount = new BigNumber(amount).minus(levelFees[feeLevel].fee);
     }
     restAmount = restAmount.isGreaterThan(0) ? restAmount : new BigNumber(0);
-    const restAmountText = common.getBalanceString(symbol, restAmount);
+    const restAmountText = common.getBalanceString(restAmount, config.symbolDecimalPlaces[feeSymbol]);
     this.inputAmount(restAmountText);
     this.txFeesCache.amount = restAmountText;
   }
@@ -778,8 +779,7 @@ class Transfer extends Component {
     const {
       customFee, feeSymbol, customFeeValue, feeSliderValue,
     } = this.state;
-    const { currency, navigation } = this.props;
-    const { coin } = navigation.state.params;
+    const { currency } = this.props;
     const currencySymbol = common.getCurrencySymbol(currency);
     return (
       <View style={[styles.customFeeSliderWrapper]}>
@@ -797,7 +797,7 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(feeSymbol, customFee, coin.decimalPlaces)} ${feeSymbol}`}
+              {`${common.getBalanceString(customFee, config.symbolDecimalPlaces[feeSymbol])} ${feeSymbol}`}
               {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
@@ -808,18 +808,17 @@ class Transfer extends Component {
   }
 
   renderFeeOptions() {
-    const { currency, navigation } = this.props;
+    const { currency } = this.props;
     const {
       feeSymbol, feeLevel, isCustomFee, levelFees,
     } = this.state;
-    const { coin } = navigation.state.params;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
     for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
       let item = { coin: `0 ${feeSymbol}`, value: `${currencySymbol}0` };
       if (levelFees) {
         const { fee, value } = levelFees[i];
-        const amountText = common.getBalanceString(feeSymbol, fee, coin.decimalPlaces);
+        const amountText = common.getBalanceString(fee, config.symbolDecimalPlaces[feeSymbol]);
         const valueText = value ? `${currencySymbol}${common.getAssetValueString(value)}` : '';
         item = { coin: `${amountText} ${feeSymbol}`, value: valueText };
       }

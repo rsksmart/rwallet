@@ -308,7 +308,7 @@ class History extends Component {
 
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
-        amountText = `${common.getBalanceString(symbol, amount, decimalPlaces)} ${symbol}`;
+        amountText = `${common.getBalanceString(amount, decimalPlaces)} ${symbol}`;
       }
       transactions.push({
         state,
@@ -378,7 +378,7 @@ class History extends Component {
     let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(symbol, balance, decimalPlaces)}`;
+      balanceText = `${common.getBalanceString(balance, decimalPlaces)}`;
     }
 
     return balanceText;
@@ -537,7 +537,10 @@ class History extends Component {
               pendingBalanceText && (
                 <View style={styles.sendingView}>
                   <Image style={styles.sendingIcon} source={sending} />
-                  <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+                  <Text style={styles.sending}>
+                    {pendingBalanceText}
+                    {pendingBalanceValueText && `(${pendingBalanceValueText})`}
+                  </Text>
                 </View>
               )
             }

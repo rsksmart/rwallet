@@ -46,7 +46,7 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, amount, address, contractAddress, decimalPlaces) {
+  constructor(symbol, type, contractAddress, decimalPlaces) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
@@ -61,8 +61,6 @@ export default class RBTCCoin {
 
     this.contractAddress = contractAddress;
     this.decimalPlaces = decimalPlaces || config.symbolDecimalPlaces[symbol];
-    this.amount = amount;
-    this.address = address;
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;

@@ -87,7 +87,7 @@ const common = {
    * @param {BigNumber | number | string} amount
    * @returns number
    */
-  getAmountBigNumber(symbol, amount, decimalPlaces) {
+  getAmountBigNumber(amount, decimalPlaces) {
     // const decimalPlaces = config.symbolDecimalPlaces[symbol];
     if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
       return null;
@@ -105,8 +105,8 @@ const common = {
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
    */
-  getBalanceString(symbol, balance, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(symbol, balance, decimalPlaces);
+  getBalanceString(balance, decimalPlaces) {
+    const amountBigNumber = this.getAmountBigNumber(balance, decimalPlaces);
     return amountBigNumber.toFixed();
   },
 
@@ -117,8 +117,8 @@ const common = {
    * @param {BigNumber | number | string} amount
    * @returns number
    */
-  formatAmount(symbol, amount, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(symbol, amount, decimalPlaces);
+  formatAmount(amount, decimalPlaces) {
+    const amountBigNumber = this.getAmountBigNumber(amount, decimalPlaces);
     return amountBigNumber.toNumber();
   },
 

@@ -25,32 +25,30 @@ export default class Wallet {
 
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
 
+    // TODO: right now we always derive privateKey hex string from seed
+    // In future we could save those keys into storage to cut derive time
 
     // pre create rbtc coin for
+    this.btc = new Coin('BTC', 'Mainnet');
+    this.btc.derive(this.seed);
+
+    this.btcTestnet = new Coin('BTC', 'Mainnet');
+    this.btcTestnet.derive(this.seed);
+
+    this.rbtc = new RBTCCoin('RBTC', 'Mainnet');
+    this.rbtc.derive(this.seed);
+
+    this.rbtcTestnet = new RBTCCoin('RBTC', 'Testnet');
+    this.rbtcTestnet.derive(this.seed);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
         const {
-          symbol, type, amount, address, objectId, contractAddress, decimalPlaces,
+          symbol, type, amount, objectId, contractAddress, decimalPlaces,
         } = item;
 
-        let coin;
-        if (symbol === 'BTC') {
-          coin = new Coin(symbol, type, amount, address);
-        } else {
-          coin = new RBTCCoin(symbol, type, amount, address, contractAddress, decimalPlaces);
-        }
-
-        // Add objectId to coin if there is one
-        if (objectId) {
-          coin.objectId = objectId;
-        }
-
-        // TODO: right now we always derive privateKey hex string from seed
-        // In future we could save those keys into storage to cut derive time
-        coin.derive(this.seed);
-
-        this.coins.push(coin);
+        const coin = this.addToken(objectId, symbol, type, contractAddress, decimalPlaces);
+        coin.amount = amount;
       });
     }
   }
@@ -188,11 +186,26 @@ export default class Wallet {
     return isDirty;
   }
 
-  addCustomToken = (symbol, type, contractAddress, decimalPlaces) => {
-    const coin = new RBTCCoin(symbol, type, null, null, contractAddress, decimalPlaces);
-    coin.derive(this.seed);
+  /**
+   * Create token and add it to coins list
+   */
+  addToken = (objectId, symbol, type, contractAddress, decimalPlaces) => {
+    let coin = null;
+    // Create coin and reuse address and private key
+    if (symbol === 'BTC') {
+      coin = new Coin(symbol, type);
+      coin.privateKey = type === 'Mainet' ? this.btc.privateKey : this.btcTestnet.privateKey;
+      coin.address = type === 'Mainet' ? this.rbtc.address : this.rbtcTestnet.address;
+    } else {
+      coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces);
+      coin.privateKey = type === 'Mainet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;
+      coin.address = type === 'Mainet' ? this.rbtc.address : this.rbtcTestnet.address;
+    }
+    if (objectId) {
+      coin.objectId = objectId;
+    }
     this.coins.push(coin);
-    console.log('this.coins: ', this.coins);
+    return coin;
   }
 
   getSymbols = () => {
