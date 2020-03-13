@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, Image,
+  View, StyleSheet, Text, Image, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -17,6 +17,8 @@ import walletActions from '../../redux/wallet/actions';
 import definitions from '../../common/definitions';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
+import common from '../../common/common';
+import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -60,6 +62,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 1,
   },
+  activityIndicator: {
+    marginRight: 15,
+  },
 });
 
 class AddCustomToken extends Component {
@@ -85,12 +90,17 @@ class AddCustomToken extends Component {
       this.type = type;
       this.chain = chain;
       this.wallet = wallet;
-      this.state = { isLoading: false };
+      this.state = { isLoading: false, balance: null, isLoadingBalance: false };
+    }
+
+    componentDidMount() {
+      this.requestBalance();
     }
 
     componentWillUnmount() {
       const { removeNotification } = this.props;
       removeNotification();
+      CancelablePromiseUtil.cancel(this);
     }
 
     async onComfirmPressed() {
@@ -117,10 +127,28 @@ class AddCustomToken extends Component {
       }
     }
 
+    requestBalance = async () => {
+      const {
+        type, chain, wallet, address: contractAddress,
+      } = this;
+      try {
+        this.setState({ isLoadingBalance: true });
+        const address = type === 'Mainnet' ? wallet.rbtc.address : wallet.rbtcTestnet.address;
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, address), this);
+        console.log('UserTokenBalance: ', result);
+        this.setState({ balance: common.weiToCoin(result.balance) });
+      } catch (error) {
+        console.log('getUserTokenBalance, error: ', error);
+      } finally {
+        this.setState({ isLoadingBalance: false });
+      }
+    }
+
     render() {
       const { navigation } = this.props;
-      const { isLoading } = this.state;
-      const { symbol } = this;
+      const { isLoading, balance, isLoadingBalance } = this.state;
+      const { symbol, decimals } = this;
+      const balanceText = balance ? common.getBalanceString(balance, decimals) : '-';
       return (
         <BasePageGereral
           isSafeView
@@ -141,7 +169,8 @@ class AddCustomToken extends Component {
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
-                <Text style={styles.balance}>{`1396.723 ${symbol}`}</Text>
+                { isLoadingBalance && (<ActivityIndicator style={styles.activityIndicator} size="small" animating={isLoadingBalance} />)}
+                { !isLoadingBalance && (<Text style={styles.balance}>{`${balanceText} ${symbol}`}</Text>)}
               </View>
             </View>
           </View>

@@ -199,7 +199,7 @@ export default class Wallet {
     if (symbol === 'BTC') {
       coin = new Coin(symbol, type);
       coin.privateKey = type === 'Mainet' ? this.btc.privateKey : this.btcTestnet.privateKey;
-      coin.address = type === 'Mainet' ? this.rbtc.address : this.rbtcTestnet.address;
+      coin.address = type === 'Mainet' ? this.btc.address : this.btcTestnet.address;
     } else {
       coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces);
       coin.privateKey = type === 'Mainet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;

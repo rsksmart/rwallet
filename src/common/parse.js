@@ -404,6 +404,13 @@ class ParseHelper {
       symbol, type, sender, receiver, value, memo,
     });
   }
+
+  static getUserTokenBalance(type, chain, constractAddress, address) {
+    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, constractAddress: ${constractAddress}, address: ${address}`);
+    return Parse.Cloud.run('getUserTokenBalance', {
+      type, chain, tokenAddress: constractAddress, userAddress: address,
+    });
+  }
 }
 
 export default ParseHelper;

@@ -357,6 +357,10 @@
     "swap": {
       "title": "没有可交换币",
       "body": "交换支持BTC，RBTC和DOC。请添加资产."
+    },
+    "contractNotFound": {
+      "title": "找不到ERC20合约",
+      "body": "我们找不到输入的ERC20令牌智能合约。请检查是否正确。"
     }
   }
 }

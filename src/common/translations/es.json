@@ -356,6 +356,10 @@
     "swap": {
       "title": "No hay monedas intercambiables",
       "body": "Swap admite BTC, RBTC y DOC. Por favor agregue el activo."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contrato no encontrado",
+      "body": "No podemos encontrar el contrato inteligente de token ERC20 de entrada. Por favor, compruebe si es correcto."
     }
   }
 }
