@@ -138,7 +138,22 @@ class AddToken extends Component {
     const listData = [];
     const { consts: { supportedTokens } } = config;
 
-    // custom tokens
+    const createItem = (token, type) => {
+      const coinId = type === 'Mainnet' ? token : token + type;
+      const { icon } = coinType[coinId];
+      const name = common.getSymbolFullName(token, type);
+      const item = {
+        name, icon, selected: false, token: { symbol: token, type },
+      };
+      const coin = _.find(coins, { symbol: token, type });
+      if (coin) {
+        item.token = coin;
+        item.selected = true;
+      }
+      return item;
+    };
+
+    // add custom tokens to list data
     _.each(coins, (coin) => {
       const foundToken = _.find(supportedTokens, (token) => coin.symbol === token);
       if (!foundToken) {
@@ -149,32 +164,10 @@ class AddToken extends Component {
       }
     });
 
-    // supportedTokens
+    // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      const { icon } = coinType[token];
-      const item = {
-        name: token, icon, selected: false, token: { symbol: token, type: 'Mainnet' },
-      };
-      const coin = _.find(coins, { symbol: token, type: 'Mainnet' });
-      if (coin) {
-        item.token = coin;
-        item.selected = true;
-      }
-      listData.push(item);
-
-      // insert Testnet
-      const coinId = `${token}Testnet`;
-      const { icon: testIcon } = coinType[coinId];
-      const name = common.getSymbolFullName(token, 'Testnet');
-      const testItem = {
-        name, icon: testIcon, selected: false, token: { symbol: token, type: 'Mainnet' },
-      };
-      const testnetCoin = _.find(coins, { symbol: token, type: 'Testnet' });
-      if (testnetCoin) {
-        testItem.token = testnetCoin;
-        testItem.selected = true;
-      }
-      listData.push(testItem);
+      listData.push(createItem(token, 'Mainnet'));
+      listData.push(createItem(token, 'Testnet'));
     });
 
     return listData;
