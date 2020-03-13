@@ -248,6 +248,8 @@ class WalletManager {
     _.each(this.wallets, (wallet) => {
       symbols = _.concat(symbols, wallet.getSymbols());
     });
+    // We need BTC for DOC price caculation
+    symbols.push('BTC');
     return _.uniq(symbols);
   }
 }

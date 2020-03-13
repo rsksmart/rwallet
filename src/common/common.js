@@ -314,6 +314,7 @@ const common = {
   addOrUpdateDOCPrice(prices) {
     const newPrice = _.clone(prices);
     const btcPrice = _.find(newPrice, { symbol: 'BTC' });
+    console.log('addOrUpdateDOCPrice, btcPrice: ', btcPrice);
     const usdPrice = parseFloat(btcPrice.price.USD);
     const btcPriceKeys = _.keys(btcPrice.price);
     let docPrice = _.find(newPrice, { symbol: 'DOC' });

@@ -47,11 +47,10 @@ function createTimer(interval) {
 export function* startFetchPriceTimerRequest(action) {
   // Call actions.GET_PRICE once to start off
   const walletManager = action.payload;
-  const symbols = walletManager.getSymbols();
   yield put({
     type: actions.GET_PRICE,
     payload: {
-      symbols,
+      symbols: walletManager.getSymbols(),
       currencies: _.map(currencySettings, (item) => item.name),
     },
   });
@@ -65,7 +64,7 @@ export function* startFetchPriceTimerRequest(action) {
       yield put({
         type: actions.GET_PRICE,
         payload: {
-          symbols,
+          symbols: walletManager.getSymbols(),
           currencies: _.map(currencySettings, (item) => item.name),
         },
       });
