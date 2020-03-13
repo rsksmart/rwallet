@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { strings } from '../../../common/i18n';
@@ -12,6 +13,8 @@ const Loc = ({
   let translation = strings(text);
   if (caseType === 'upper') {
     translation = translation.toUpperCase();
+  } else if (caseType === 'capitalize') {
+    translation = _.capitalize(translation);
   }
   return <Text style={style}>{pre + translation + suf}</Text>;
 };

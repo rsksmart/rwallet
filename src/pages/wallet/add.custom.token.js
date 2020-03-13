@@ -12,7 +12,10 @@ import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorConfirmation } from '../../common/confirmation.controller';
 import Button from '../../components/common/button/button';
+import CancelablePromiseUtil from '../../common/cancelable.promise.util';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -66,6 +69,11 @@ class AddCustomToken extends Component {
       this.chain = 'Rootstock';
     }
 
+    componentWillUnmount() {
+      this.setState({ isLoading: false });
+      CancelablePromiseUtil.cancel(this);
+    }
+
     onSwitchValueChanged = (value) => {
       this.setState({ isMainnet: value });
       this.type = value ? 'Mainnet' : 'Testnet';
@@ -90,21 +98,32 @@ class AddCustomToken extends Component {
     }
 
     requestTokenInfo = async () => {
-      const { addNotification } = this.props;
+      const { navigation, addNotification, addConfirmation } = this.props;
       const { address } = this.state;
       const { type, chain } = this;
       try {
         this.setState({ isLoading: true });
-        const tokenInfo = await parseHelper.getTokenBasicInfo(type, chain, address);
+        const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, address), this);
         console.log('tokenInfo: ', tokenInfo);
         const { name, symbol, decimals } = tokenInfo;
         this.setState({ symbol, decimals, isCanConfirm: true });
         this.name = name;
       } catch (error) {
         console.log(error);
-        this.setState({ isCanConfirm: false });
-        const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
-        addNotification(notification);
+        if (error.message === 'err.gettokeninfofail') {
+          this.setState({ isCanConfirm: false });
+          const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
+          addNotification(notification);
+        } else {
+          const confirmation = createErrorConfirmation(
+            definitions.defaultErrorNotification.title,
+            definitions.defaultErrorNotification.message,
+            'button.retry',
+            this.requestTokenInfo,
+            () => navigation.goBack(),
+          );
+          addConfirmation(confirmation);
+        }
       } finally {
         this.setState({ isLoading: false });
       }
@@ -179,6 +198,7 @@ AddCustomToken.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -191,6 +211,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
+  removeNotification: () => dispatch(appActions.removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

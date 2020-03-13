@@ -14,6 +14,9 @@ import color from '../../assets/styles/color.ts';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
+import definitions from '../../common/definitions';
+import appActions from '../../redux/app/actions';
+import { createErrorNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -81,31 +84,50 @@ class AddCustomToken extends Component {
       this.decimals = decimals;
       this.type = type;
       this.chain = chain;
-      this.state = { symbol };
       this.wallet = wallet;
+      this.state = { isLoading: false };
+    }
+
+    componentWillUnmount() {
+      const { removeNotification } = this.props;
+      removeNotification();
     }
 
     async onComfirmPressed() {
       const {
         symbol, type, chain, address, wallet, decimals,
       } = this;
-      const { navigation, addCustomToken, walletManager } = this.props;
-      const saveResult = await parseHelper.saveToken(type, chain, address);
-      console.log(saveResult);
-      addCustomToken(walletManager, wallet, symbol, type, address, decimals);
-      const statckActions = StackActions.popToTop();
-      navigation.dispatch(statckActions);
+      const {
+        navigation, addCustomToken, walletManager, addNotification,
+      } = this.props;
+      try {
+        this.setState({ isLoading: true });
+        const saveResult = await parseHelper.saveToken(type, chain, address);
+        console.log(saveResult);
+        addCustomToken(walletManager, wallet, {
+          symbol, type, contractAddress: address, decimalPlaces: decimals,
+        });
+        const statckActions = StackActions.popToTop();
+        navigation.dispatch(statckActions);
+      } catch (error) {
+        const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        addNotification(notification);
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
 
     render() {
       const { navigation } = this.props;
-      const { symbol } = this.state;
+      const { isLoading } = this.state;
+      const { symbol } = this;
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          hasLoader={false}
-          bottomBtnText="button.Confirm"
+          hasLoader
+          isLoading={isLoading}
+          bottomBtnText="button.confirm"
           bottomBtnOnPress={this.onComfirmPressed}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.addCustomTokenConfirm.title" />}
         >
@@ -137,6 +159,8 @@ AddCustomToken.propTypes = {
   }).isRequired,
   addCustomToken: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}).isRequired,
+  addNotification: PropTypes.func.isRequired,
+  removeNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -144,7 +168,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addCustomToken: (walletManager, wallet, symbol, type, contractAddress, decimalPlaces) => dispatch(walletActions.addCustomToken(walletManager, wallet, symbol, type, contractAddress, decimalPlaces)),
+  addCustomToken: (walletManager, wallet, token) => dispatch(walletActions.addCustomToken(walletManager, wallet, token)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  removeNotification: () => dispatch(appActions.removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

@@ -3,6 +3,7 @@ import {
   View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
@@ -13,6 +14,7 @@ import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import config from '../../../config';
 import references from '../../assets/references';
+import walletActions from '../../redux/wallet/actions';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class AddToken extends Component {
+class AddToken extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -103,41 +105,79 @@ export default class AddToken extends Component {
     return count;
   }
 
-  static createListData() {
-    const listData = [];
-    const { consts: { supportedTokens } } = config;
-    _.each(supportedTokens, (token) => {
-      const { icon } = coinType[token];
-      const item = { name: token, icon, selected: false };
-      listData.push(item);
-      const coinId = `${token}Testnet`;
-      const { icon: testIcon } = coinType[coinId];
-      const name = common.getSymbolFullName(token, 'Testnet');
-      const testItem = { name, icon: testIcon, selected: false };
-      listData.push(testItem);
-    });
-    return listData;
-  }
-
   constructor(props) {
     super(props);
+    this.wallet = props.navigation.state.params.wallet;
     this.onSwitchValueChanged = this.onSwitchValueChanged.bind(this);
     this.onAddCustomTokenPressed = this.onAddCustomTokenPressed.bind(this);
-    const listData = AddToken.createListData();
+    const listData = this.createListData();
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.state = { listData, tokenCount: listData.length, selectedTokenCount };
   }
 
   onSwitchValueChanged(index, value) {
+    const { walletManager, addCustomToken, deleteToken } = this.props;
     const { listData } = this.state;
     listData[index].selected = value;
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.setState({ listData, selectedTokenCount });
+    if (listData[index].selected) {
+      addCustomToken(walletManager, this.wallet, listData[index].token);
+    } else {
+      deleteToken(walletManager, this.wallet, listData[index].token);
+    }
   }
 
   onAddCustomTokenPressed() {
     const { navigation } = this.props;
     navigation.navigate('AddCustomToken', navigation.state.params);
+  }
+
+  createListData() {
+    const { coins } = this.wallet;
+    const listData = [];
+    const { consts: { supportedTokens } } = config;
+
+    // custom tokens
+    _.each(coins, (coin) => {
+      const foundToken = _.find(supportedTokens, (token) => coin.symbol === token);
+      if (!foundToken) {
+        const name = common.getSymbolFullName(coin.symbol, coin.type);
+        listData.push({
+          name, icon: coin.metadata.icon, selected: true, token: coin,
+        });
+      }
+    });
+
+    // supportedTokens
+    _.each(supportedTokens, (token) => {
+      const { icon } = coinType[token];
+      const item = {
+        name: token, icon, selected: false, token: { symbol: token, type: 'Mainnet' },
+      };
+      const coin = _.find(coins, { symbol: token, type: 'Mainnet' });
+      if (coin) {
+        item.token = coin;
+        item.selected = true;
+      }
+      listData.push(item);
+
+      // insert Testnet
+      const coinId = `${token}Testnet`;
+      const { icon: testIcon } = coinType[coinId];
+      const name = common.getSymbolFullName(token, 'Testnet');
+      const testItem = {
+        name, icon: testIcon, selected: false, token: { symbol: token, type: 'Mainnet' },
+      };
+      const testnetCoin = _.find(coins, { symbol: token, type: 'Testnet' });
+      if (testnetCoin) {
+        testItem.token = testnetCoin;
+        testItem.selected = true;
+      }
+      listData.push(testItem);
+    });
+
+    return listData;
   }
 
   renderList() {
@@ -223,4 +263,17 @@ AddToken.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addCustomToken: PropTypes.func.isRequired,
+  deleteToken: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({}).isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
+  addCustomToken: (walletManager, wallet, token) => dispatch(walletActions.addCustomToken(walletManager, wallet, token)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddToken);

@@ -21,6 +21,7 @@ const actions = {
   RENAME_KEY: 'RENAME_KEY',
   CREATE_KEY: 'CREATE_KEY',
   ADD_CUSTOM_TOKEN: 'ADD_CUSTOM_TOKEN',
+  DELETE_TOKEN: 'DELETE_TOKEN',
 
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
   WALLETS_UPDATED: 'WALLETS_UPDATED',
@@ -127,10 +128,16 @@ const actions = {
   resetSwapSource: () => ({ type: actions.RESET_SWAP_SOURCE }),
   resetSwapDest: () => ({ type: actions.RESET_SWAP_DEST }),
   switchSwap: () => ({ type: actions.SWITCH_SWAP }),
-  addCustomToken: (walletManager, wallet, symbol, type, contractAddress, decimalPlaces) => ({
+  addCustomToken: (walletManager, wallet, token) => ({
     type: actions.ADD_CUSTOM_TOKEN,
     payload: {
-      walletManager, wallet, symbol, type, contractAddress, decimalPlaces,
+      walletManager, wallet, token,
+    },
+  }),
+  deleteToken: (walletManager, wallet, token) => ({
+    type: actions.DELETE_TOKEN,
+    payload: {
+      walletManager, wallet, token,
     },
   }),
 };

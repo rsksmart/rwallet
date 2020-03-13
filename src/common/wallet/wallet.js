@@ -47,8 +47,9 @@ export default class Wallet {
           symbol, type, amount, objectId, contractAddress, decimalPlaces,
         } = item;
 
-        const coin = this.addToken(objectId, symbol, type, contractAddress, decimalPlaces);
-        coin.amount = amount;
+        this.addToken({
+          objectId, symbol, type, contractAddress, decimalPlaces, amount,
+        });
       });
     }
   }
@@ -189,7 +190,10 @@ export default class Wallet {
   /**
    * Create token and add it to coins list
    */
-  addToken = (objectId, symbol, type, contractAddress, decimalPlaces) => {
+  addToken = (token) => {
+    const {
+      symbol, type, contractAddress, decimalPlaces, objectId, amount,
+    } = token;
     let coin = null;
     // Create coin and reuse address and private key
     if (symbol === 'BTC') {
@@ -204,8 +208,16 @@ export default class Wallet {
     if (objectId) {
       coin.objectId = objectId;
     }
+    if (amount) {
+      coin.amount = amount;
+    }
     this.coins.push(coin);
     return coin;
+  }
+
+  deleteToken = (token) => {
+    const { symbol, type } = token;
+    _.remove(this.coins, { symbol, type });
   }
 
   getSymbols = () => {
