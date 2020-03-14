@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import rsk3 from 'rsk3';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
@@ -17,6 +18,8 @@ import { createErrorConfirmation } from '../../common/confirmation.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import definitions from '../../common/definitions';
+import common from '../../common/common';
+import coinType from '../../common/wallet/cointype';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -102,7 +105,22 @@ class AddCustomToken extends Component {
       const { addNotification, navigation, addConfirmation } = this.props;
       const { address } = this.state;
       const { type, chain } = this;
+      this.setState({ isCanConfirm: false });
       if (_.isEmpty(address)) {
+        return;
+      }
+      try {
+        const contractAddress = rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
+        const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type, coinType.RBTC.networkId);
+        if (!isWalletAddress) {
+          throw new Error();
+        }
+      } catch (error) {
+        const notification = createErrorNotification(
+          'modal.invalidAddress.title',
+          'modal.invalidAddress.body',
+        );
+        addNotification(notification);
         return;
       }
       try {
