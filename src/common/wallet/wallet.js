@@ -204,12 +204,12 @@ export default class Wallet {
     // Create coin and reuse address and private key
     if (symbol === 'BTC') {
       coin = new Coin(symbol, type);
-      coin.privateKey = type === 'Mainet' ? this.btc.privateKey : this.btcTestnet.privateKey;
-      coin.address = type === 'Mainet' ? this.btc.address : this.btcTestnet.address;
+      coin.privateKey = type === 'Mainnet' ? this.btc.privateKey : this.btcTestnet.privateKey;
+      coin.address = type === 'Mainnet' ? this.btc.address : this.btcTestnet.address;
     } else {
       coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces);
-      coin.privateKey = type === 'Mainet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;
-      coin.address = type === 'Mainet' ? this.rbtc.address : this.rbtcTestnet.address;
+      coin.privateKey = type === 'Mainnet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;
+      coin.address = type === 'Mainnet' ? this.rbtc.address : this.rbtcTestnet.address;
     }
     if (objectId) {
       coin.objectId = objectId;

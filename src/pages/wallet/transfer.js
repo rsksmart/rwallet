@@ -378,18 +378,16 @@ class Transfer extends Component {
   }
 
   onSendAllPress() {
-    const { symbol, balance, decimalPlaces } = this.coin;
+    const { balance, decimalPlaces } = this.coin;
     // If balance data have not received from server (user enter this page quickly), return without setState.
     if (_.isNil(balance)) {
       return;
     }
     const amount = common.getBalanceString(balance, decimalPlaces);
     this.inputAmount(amount, () => {
-      if (symbol === 'BTC' || symbol === 'RBTC') {
-        this.isRequestSendAll = true;
-        this.isAmountValid = true;
-        this.requestFees();
-      }
+      this.isRequestSendAll = true;
+      this.isAmountValid = true;
+      this.requestFees();
     });
   }
 
@@ -522,9 +520,7 @@ class Transfer extends Component {
   }
 
   async requestFees() {
-    const {
-      symbol, type, address,
-    } = this.coin;
+    const { symbol, type, address } = this.coin;
     const { amount, to } = this.state;
     const { memo } = this.state;
     const { isAmountValid, isAddressValid } = this;
@@ -541,10 +537,10 @@ class Transfer extends Component {
     console.log('processFees, transactionFees: ', transactionFees);
     const { prices, currency } = this.props;
     const {
-      feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount,
+      feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount, customFee,
     } = this.state;
-    const { customFee } = this.state;
-    const { isRequestSendAll } = this;
+    const { isRequestSendAll, coin } = this;
+    const { symbol } = coin;
 
     // Calculates levelFees
     const levelFees = [];
@@ -567,9 +563,7 @@ class Transfer extends Component {
       for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
         const gasPrice = new BigNumber(txPrices[i]);
         const gasFee = this.gas.times(gasPrice);
-        console.log('gasFee: ', gasFee.toString());
         const fee = common.convertUnitToCoinAmount(feeSymbol, gasFee);
-        console.log('fee: ', fee.toString());
         const value = common.getCoinValue(fee, feeSymbol, currency, prices);
         levelFees.push({ fee, value, gasPrice });
       }
@@ -592,7 +586,9 @@ class Transfer extends Component {
     // If user request send all, we need to adjust amount text.
     // We can only use the rest money without fees for transfers
     if (isRequestSendAll) {
-      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee, amount);
+      if (symbol === 'BTC' || symbol === 'RBTC') {
+        this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee, amount);
+      }
       this.isRequestSendAll = false;
     }
   }

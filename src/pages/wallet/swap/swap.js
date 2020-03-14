@@ -488,8 +488,9 @@ class Swap extends Component {
 
       const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
 
-      const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
-      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
+      // const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
+      // const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
+      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.decimalPlaces);
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
 
       this.setState({
@@ -501,6 +502,7 @@ class Swap extends Component {
         ...amountState,
       });
     } catch (err) {
+      console.log('updateRateInfoAndFee, err', err);
       this.setState({ coinLoading: false });
       const confirmation = createErrorConfirmation(
         definitions.defaultErrorNotification.title,
