@@ -237,22 +237,21 @@ class Swap extends Component {
     this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
     this.onSelectDestPress = this.onSelectDestPress.bind(this);
     this.onChangeSourceAmount = this.onChangeSourceAmount.bind(this);
+    this.onChangeDestAmount = this.onChangeDestAmount.bind(this);
     this.state = {
       switchIndex: -1,
-      switchSelectedText: switchItems[0],
       isBalanceEnough: false,
       isAmountInRange: false,
-      mainCoin: 'source',
       sourceAmount: null,
       destAmount: null,
       sourceText: null,
+      destText: null,
       rate: -1,
       limitMinDepositCoin: -1,
       limitMaxDepositCoin: -1,
       limitHalfDepositCoin: -1,
       sourceUsdRate: -1,
       destUsdRate: -1,
-      minerFee: 0,
       coinLoading: false,
     };
   }
@@ -377,7 +376,10 @@ class Swap extends Component {
   }
 
   onSwitchPress = (index) => {
-    const { limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin } = this.state;
+    const { swapDest, swapSource } = this.props;
+    const {
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
+    } = this.state;
     let amount = -1;
     switch (index) {
       case 0:
@@ -391,11 +393,12 @@ class Swap extends Component {
         break;
       default:
     }
+    const amountState = this.getAmountState(amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
     this.setState({
       switchIndex: index,
-      switchSelectedText: switchItems[index],
       sourceText: amount.toString(),
-    }, () => this.setAmountState(amount, this.props, this.state));
+      ...amountState,
+    });
   };
 
   onHistoryPress() {
@@ -414,32 +417,55 @@ class Swap extends Component {
   }
 
   onChangeSourceAmount(text) {
+    const { swapDest, swapSource } = this.props;
+    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
     const isAmount = common.isAmount(text);
     let sourceAmount = null;
     if (isAmount) {
       sourceAmount = parseFloat(text);
     }
-    this.setState({ sourceText: text, switchIndex: -1 }, () => this.setAmountState(sourceAmount, this.props, this.state));
+    const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+    this.setState({ sourceText: text, switchIndex: -1, ...amountState });
   }
 
-  setAmountState(sourceAmount, props, state) {
-    const { swapDest, swapSource } = props;
-    const { limitMinDepositCoin, limitMaxDepositCoin } = state;
-    if (!sourceAmount) {
-      this.setState({
-        sourceAmount: null, destAmount: null, isBalanceEnough: false,
-      });
-      return;
+  onChangeDestAmount(text) {
+    const { swapDest, swapSource } = this.props;
+    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
+    const isAmount = common.isAmount(text);
+    let destAmount = null;
+    if (isAmount) {
+      destAmount = parseFloat(text);
     }
-    const { rate } = state;
-    const decimalPlaces = config.symbolDecimalPlaces[swapDest.coin.symbol];
-    const destAmount = swapDest && rate ? parseFloat((sourceAmount * rate).toPrecision(decimalPlaces)) : null;
+    const amountState = this.getAmountState(destAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, 'dest');
+    this.setState({ destText: text, switchIndex: -1, ...amountState });
+  }
+
+  getAmountState = (amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, type = 'source') => {
+    let sourceAmount;
+    let destAmount;
+    let textValue;
+    if (!amount) {
+      textValue = type === 'source' ? { destText: null } : { sourceText: null };
+      return {
+        sourceAmount: null, destAmount: null, isBalanceEnough: false, ...textValue,
+      };
+    }
+    const decimalPlaces = config.symbolDecimalPlaces[type === 'source' ? swapDest.coin.symbol : swapSource.coin.symbol];
+    if (type === 'source') {
+      sourceAmount = amount;
+      destAmount = swapDest && rate ? parseFloat((sourceAmount * rate).toPrecision(decimalPlaces)) : null;
+      textValue = { destText: destAmount.toString() };
+    } else {
+      destAmount = amount;
+      sourceAmount = swapSource && rate ? parseFloat((destAmount / rate).toPrecision(decimalPlaces)) : null;
+      textValue = { sourceText: sourceAmount.toString() };
+    }
     const isAmountInRange = sourceAmount >= limitMinDepositCoin && sourceAmount <= limitMaxDepositCoin;
     const isBalanceEnough = swapSource.coin.balance.isGreaterThanOrEqualTo(sourceAmount);
-    this.setState({
-      sourceAmount, destAmount, isBalanceEnough, isAmountInRange,
-    });
-  }
+    return {
+      sourceAmount, destAmount, isBalanceEnough, isAmountInRange, ...textValue,
+    };
+  };
 
   updateRateInfo = (currentSwapSource, currentSwapDest, props) => {
     const { sourceAmount } = this.state;
@@ -448,26 +474,27 @@ class Swap extends Component {
     this.setState({ coinLoading: true });
     CoinswitchHelper.getRate(sourceCoinId, destCoinId)
       .then((sdRate) => {
+        const { swapDest, swapSource } = props;
         const {
-          rate, limitMinDepositCoin, minerFee,
+          rate, limitMinDepositCoin, limitMaxDepositCoin,
         } = sdRate;
 
         const decimalPlaces = config.symbolDecimalPlaces[currentSwapSource.coin.symbol];
         const limitHalfDepositCoin = (parseFloat(currentSwapSource.coin.balance.toNumber()) / 2).toFixed(6);
         const gasCost = this.getGasCost(currentSwapSource.coin);
         const maxDepositCoin = (currentSwapSource.coin.balance.toNumber() - gasCost).toFixed(decimalPlaces);
+        const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
         this.setState({
           rate,
-          minerFee,
           limitMinDepositCoin,
           limitMaxDepositCoin: maxDepositCoin,
           limitHalfDepositCoin,
-        }, () => {
-          this.setAmountState(sourceAmount, props, this.state);
-          this.setState({ coinLoading: false });
+          coinLoading: false,
+          ...amountState,
         });
       }).catch((err) => {
         console.log(err);
+        this.setState({ coinLoading: false });
       });
   };
 
@@ -507,7 +534,7 @@ class Swap extends Component {
     const { switchSwap } = this.props;
     const { destAmount } = this.state;
     switchSwap();
-    const text = destAmount.toString() || '';
+    const text = destAmount ? destAmount.toString() : '';
     const isAmount = common.isAmount(text);
     let sourceAmount = null;
     if (isAmount) {
@@ -545,8 +572,8 @@ class Swap extends Component {
   resetAmountState() {
     this.setState({
       destAmount: null,
+      destText: null,
       rate: -1,
-      minerFee: 0,
       limitMinDepositCoin: -1,
       limitMaxDepositCoin: -1,
       limitHalfDepositCoin: -1,
@@ -613,7 +640,7 @@ class Swap extends Component {
       navigation, swapSource, swapDest, currency,
     } = this.props;
     const {
-      isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, sourceUsdRate, destUsdRate,
+      isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, destText, sourceUsdRate, destUsdRate,
       limitMinDepositCoin, limitMaxDepositCoin, rate, coinLoading, loading, switchIndex,
     } = this.state;
 
@@ -707,7 +734,17 @@ class Swap extends Component {
               <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
             </View>
             <View style={styles.boardAmountView}>
-              <Text style={[styles.boardAmount]}>{destAmount}</Text>
+              <View style={styles.sourceAmount}>
+                <TextInput
+                  style={[styles.textInput]}
+                  value={destText}
+                  onChangeText={this.onChangeDestAmount}
+                  placeholder="0.00"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!!swapDest}
+                />
+              </View>
               <Text style={styles.boardValue}>{destValueText}</Text>
             </View>
             {coinLoading && swapDest && (
