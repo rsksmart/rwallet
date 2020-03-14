@@ -105,6 +105,9 @@ class SwapSelection extends Component {
 
   async componentDidMount() {
     const { navigation, resetSwap } = this.props;
+    if (!(navigation.state && navigation.state.params)) {
+      this.initSelectData(navigation, resetSwap);
+    }
     this.willFocusSubscription = navigation.addListener(
       'willFocus',
       () => {
