@@ -116,13 +116,13 @@ class AddToken extends Component {
   }
 
   onSwitchValueChanged(index, value) {
-    const { walletManager, addCustomToken, deleteToken } = this.props;
+    const { walletManager, addToken, deleteToken } = this.props;
     const { listData } = this.state;
     listData[index].selected = value;
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.setState({ listData, selectedTokenCount });
     if (listData[index].selected) {
-      addCustomToken(walletManager, this.wallet, listData[index].token);
+      addToken(walletManager, this.wallet, listData[index].token);
     } else {
       deleteToken(walletManager, this.wallet, listData[index].token);
     }
@@ -256,7 +256,7 @@ AddToken.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  addCustomToken: PropTypes.func.isRequired,
+  addToken: PropTypes.func.isRequired,
   deleteToken: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}).isRequired,
 };
@@ -267,6 +267,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
-  addCustomToken: (walletManager, wallet, token) => dispatch(walletActions.addCustomToken(walletManager, wallet, token)),
+  addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddToken);

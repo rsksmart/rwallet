@@ -361,6 +361,10 @@
     "contractNotFound": {
       "title": "ERC20 Contract Not Found",
       "body": "We cannot find the input ERC20 token smart contract. Please check if it is right."
+    },
+    "duplicateToken": {
+      "title": "Duplicate Token",
+      "body": "This token is already added in the wallet. Please try with a different token."
     }
   }
 }

@@ -361,6 +361,10 @@
     "contractNotFound": {
       "title": "找不到ERC20合约",
       "body": "我们找不到输入的ERC20令牌智能合约。请检查是否正确。"
+    },
+    "duplicateToken": {
+      "title": "重复的代币",
+      "body": "这个代币已经被加入钱包。请尝试不同的代币。"
     }
   }
 }

@@ -259,18 +259,23 @@ function* renameKeyRequest(action) {
   }
 }
 
-function* addCustomTokenRequest(action) {
+function* addTokenRequest(action) {
   const {
     walletManager, wallet, token,
   } = action.payload;
   try {
     yield call(wallet.addToken, token);
+    yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'success' } });
     yield call(walletManager.serialize);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
-  } catch (err) {
-    console.log(err);
-    const message = yield call(ParseHelper.handleError, err);
+  } catch (error) {
+    console.log(error);
+    if (error.message === 'err.exsistedtoken') {
+      yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'error', error } });
+      return;
+    }
+    const message = yield call(ParseHelper.handleError, error);
     console.error(message);
   }
 }
@@ -303,7 +308,7 @@ export default function* () {
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
     takeEvery(actions.CREATE_KEY, createKeyRequest),
-    takeEvery(actions.ADD_CUSTOM_TOKEN, addCustomTokenRequest),
+    takeEvery(actions.ADD_TOKEN, addTokenRequest),
     takeEvery(actions.DELETE_TOKEN, deleteTokenRequest),
   ]);
 }

@@ -195,6 +195,12 @@ export default class Wallet {
       symbol, type, contractAddress, decimalPlaces, objectId, amount,
     } = token;
     let coin = null;
+
+    const foundCoin = _.find(this.coins, { symbol, type });
+    if (foundCoin) {
+      throw new Error('err.exsistedtoken');
+    }
+
     // Create coin and reuse address and private key
     if (symbol === 'BTC') {
       coin = new Coin(symbol, type);

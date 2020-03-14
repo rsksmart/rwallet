@@ -97,6 +97,20 @@ class AddCustomToken extends Component {
       this.requestBalance();
     }
 
+    componentWillReceiveProps(nextProps) {
+      const { navigation, addNotification } = this.props;
+      const { addTokenResult } = nextProps;
+      if (addTokenResult) {
+        if (addTokenResult.state === 'success') {
+          const statckActions = StackActions.popToTop();
+          navigation.dispatch(statckActions);
+        } else if (addTokenResult.state === 'error') {
+          const notification = createErrorNotification('modal.duplicateToken.title', 'modal.duplicateToken.body');
+          addNotification(notification);
+        }
+      }
+    }
+
     componentWillUnmount() {
       const { removeNotification } = this.props;
       removeNotification();
@@ -108,17 +122,15 @@ class AddCustomToken extends Component {
         symbol, type, chain, address, wallet, decimals,
       } = this;
       const {
-        navigation, addCustomToken, walletManager, addNotification,
+        addToken, walletManager, addNotification,
       } = this.props;
       try {
         this.setState({ isLoading: true });
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
-        addCustomToken(walletManager, wallet, {
+        addToken(walletManager, wallet, {
           symbol, type, contractAddress: address, decimalPlaces: decimals,
         });
-        const statckActions = StackActions.popToTop();
-        navigation.dispatch(statckActions);
       } catch (error) {
         const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
         addNotification(notification);
@@ -186,18 +198,26 @@ AddCustomToken.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  addCustomToken: PropTypes.func.isRequired,
+  addToken: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}).isRequired,
   addNotification: PropTypes.func.isRequired,
   removeNotification: PropTypes.func.isRequired,
+  addTokenResult: PropTypes.shape({
+    state: PropTypes.string,
+  }),
+};
+
+AddCustomToken.defaultProps = {
+  addTokenResult: null,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  addTokenResult: state.Wallet.get('addTokenResult'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addCustomToken: (walletManager, wallet, token) => dispatch(walletActions.addCustomToken(walletManager, wallet, token)),
+  addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   removeNotification: () => dispatch(appActions.removeNotification()),
 });

@@ -360,6 +360,10 @@
     "contractNotFound": {
       "title": "ERC20 Contrato no encontrado",
       "body": "No podemos encontrar el contrato inteligente de token ERC20 de entrada. Por favor, compruebe si es correcto."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
     }
   }
 }
