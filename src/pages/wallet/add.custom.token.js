@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
@@ -58,7 +59,7 @@ class AddCustomToken extends Component {
       super(props);
       this.state = {
         isLoading: false,
-        address: '0x345dc961828f9fe7c69da34e88d58839f153784c',
+        address: '',
         symbol: '',
         decimals: '',
         isMainnet: true,
@@ -101,6 +102,9 @@ class AddCustomToken extends Component {
       const { addNotification/* , navigation, addConfirmation */ } = this.props;
       const { address } = this.state;
       const { type, chain } = this;
+      if (_.isEmpty(address)) {
+        return;
+      }
       try {
         this.setState({ isLoading: true });
         const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, address), this);
@@ -150,6 +154,7 @@ class AddCustomToken extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.address" />
               <TextInput
+                placeholder="0x345dc961828f9fe7c69da34e88d58839f153784c"
                 ref={(ref) => { this.nameInput = ref; }}
                 style={[presetStyle.textInput, styles.nameInput]}
                 autoCapitalize="none"
@@ -163,7 +168,7 @@ class AddCustomToken extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.symbol" />
               <TextInput
-                placeholder="BMT"
+                placeholder="BKG"
                 style={[presetStyle.textInput, styles.nameInput]}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -174,7 +179,7 @@ class AddCustomToken extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.decimals" />
               <TextInput
-                placeholder="3"
+                placeholder="18"
                 style={[presetStyle.textInput, styles.nameInput]}
                 autoCapitalize="none"
                 autoCorrect={false}
