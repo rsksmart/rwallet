@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BasePageHorizental = (props) => {
+const BasePageSimple = (props) => {
   const {
     children, isSafeView, renderAccessory, headerComponent, bgColor,
   } = props;
@@ -38,7 +38,7 @@ const BasePageHorizental = (props) => {
   );
 };
 
-BasePageHorizental.propTypes = {
+BasePageSimple.propTypes = {
   isSafeView: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   renderAccessory: PropTypes.func,
@@ -46,11 +46,11 @@ BasePageHorizental.propTypes = {
   bgColor: PropTypes.string,
 };
 
-BasePageHorizental.defaultProps = {
+BasePageSimple.defaultProps = {
   isSafeView: false,
   renderAccessory: null,
   bgColor: null,
 };
 
 
-export default BasePageHorizental;
+export default BasePageSimple;
