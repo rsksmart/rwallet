@@ -115,6 +115,13 @@ class AddToken extends Component {
     this.state = { listData, tokenCount: listData.length, selectedTokenCount };
   }
 
+  componentWillUnmount() {
+    const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+    if (isWalletsUpdated) {
+      resetWalletsUpdated();
+    }
+  }
+
   onSwitchValueChanged(index, value) {
     const { walletManager, addToken, deleteToken } = this.props;
     const { listData } = this.state;
@@ -129,7 +136,8 @@ class AddToken extends Component {
   }
 
   onAddCustomTokenPressed() {
-    const { navigation } = this.props;
+    const { navigation, resetWalletsUpdated } = this.props;
+    resetWalletsUpdated();
     navigation.navigate('AddCustomToken', navigation.state.params);
   }
 
@@ -259,14 +267,18 @@ AddToken.propTypes = {
   addToken: PropTypes.func.isRequired,
   deleteToken: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}).isRequired,
+  resetWalletsUpdated: PropTypes.func.isRequired,
+  isWalletsUpdated: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
   addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddToken);

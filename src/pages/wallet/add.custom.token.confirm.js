@@ -98,23 +98,28 @@ class AddCustomToken extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      const { navigation, addNotification } = this.props;
-      const { addTokenResult } = nextProps;
-      if (addTokenResult) {
-        if (addTokenResult.state === 'success') {
-          const statckActions = StackActions.popToTop();
-          navigation.dispatch(statckActions);
-        } else if (addTokenResult.state === 'error') {
-          const notification = createErrorNotification('modal.duplicateToken.title', 'modal.duplicateToken.body');
-          addNotification(notification);
-        }
+      const {
+        navigation, addNotification, isWalletsUpdated, resetAddTokenResult, addTokenResult,
+      } = nextProps;
+      if (isWalletsUpdated) {
+        resetAddTokenResult();
+        const statckActions = StackActions.popToTop();
+        navigation.dispatch(statckActions);
+      }
+      if (addTokenResult && addTokenResult.state === 'error') {
+        const notification = createErrorNotification('modal.duplicateToken.title', 'modal.duplicateToken.body');
+        addNotification(notification);
+        resetAddTokenResult();
       }
     }
 
     componentWillUnmount() {
-      const { removeNotification } = this.props;
+      const { removeNotification, isWalletsUpdated, resetWalletsUpdated } = this.props;
       removeNotification();
       CancelablePromiseUtil.cancel(this);
+      if (isWalletsUpdated) {
+        resetWalletsUpdated();
+      }
     }
 
     async onComfirmPressed() {
@@ -205,6 +210,9 @@ AddCustomToken.propTypes = {
   addTokenResult: PropTypes.shape({
     state: PropTypes.string,
   }),
+  isWalletsUpdated: PropTypes.bool.isRequired,
+  resetWalletsUpdated: PropTypes.func.isRequired,
+  resetAddTokenResult: PropTypes.func.isRequired,
 };
 
 AddCustomToken.defaultProps = {
@@ -214,12 +222,15 @@ AddCustomToken.defaultProps = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   addTokenResult: state.Wallet.get('addTokenResult'),
+  isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   removeNotification: () => dispatch(appActions.removeNotification()),
+  resetAddTokenResult: () => dispatch(walletActions.resetAddTokenResult()),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCustomToken);

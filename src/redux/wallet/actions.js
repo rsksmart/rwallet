@@ -143,6 +143,9 @@ const actions = {
       walletManager, wallet, token,
     },
   }),
+  resetAddTokenResult: () => ({
+    type: actions.RESET_ADD_TOKEN_RESULT,
+  }),
 };
 
 export default actions;

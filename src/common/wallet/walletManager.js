@@ -128,6 +128,9 @@ class WalletManager {
             newCoin.balanceValue = new BigNumber(0);
           } else if (newCoin.balance) {
             const priceObject = _.find(prices, { symbol: newCoin.symbol });
+            if (!priceObject) {
+              return;
+            }
             const tokenPrice = priceObject.price && priceObject.price[currency];
             newCoin.balanceValue = newCoin.balance.times(tokenPrice);
             assetValue = assetValue.plus(newCoin.balanceValue);

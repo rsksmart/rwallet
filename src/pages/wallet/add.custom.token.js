@@ -13,10 +13,10 @@ import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-// import { createErrorConfirmation } from '../../common/confirmation.controller';
+import { createErrorConfirmation } from '../../common/confirmation.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
-// import definitions from '../../common/definitions';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -99,7 +99,7 @@ class AddCustomToken extends Component {
     }
 
     requestTokenInfo = async () => {
-      const { addNotification/* , navigation, addConfirmation */ } = this.props;
+      const { addNotification, navigation, addConfirmation } = this.props;
       const { address } = this.state;
       const { type, chain } = this;
       if (_.isEmpty(address)) {
@@ -115,21 +115,19 @@ class AddCustomToken extends Component {
       } catch (error) {
         console.log('getTokenBasicInfo, erorr: ', error);
         this.setState({ isCanConfirm: false });
-        const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
-        addNotification(notification);
-        // if (error.message === 'err.gettokeninfofail') {
-        //   const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
-        //   addNotification(notification);
-        // } else {
-        //   const confirmation = createErrorConfirmation(
-        //     definitions.defaultErrorNotification.title,
-        //     definitions.defaultErrorNotification.message,
-        //     'button.retry',
-        //     this.requestTokenInfo,
-        //     () => navigation.goBack(),
-        //   );
-        //   addConfirmation(confirmation);
-        // }
+        if (error.message === 'err.erc20contractnotfound') {
+          const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
+          addNotification(notification);
+        } else {
+          const confirmation = createErrorConfirmation(
+            definitions.defaultErrorNotification.title,
+            definitions.defaultErrorNotification.message,
+            'button.retry',
+            this.requestTokenInfo,
+            () => navigation.goBack(),
+          );
+          addConfirmation(confirmation);
+        }
       } finally {
         this.setState({ isLoading: false });
       }
@@ -205,7 +203,7 @@ AddCustomToken.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
-  // addConfirmation: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
