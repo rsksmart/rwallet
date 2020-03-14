@@ -32,7 +32,7 @@ export default class Wallet {
     this.btc = new Coin('BTC', 'Mainnet');
     this.btc.derive(this.seed);
 
-    this.btcTestnet = new Coin('BTC', 'Mainnet');
+    this.btcTestnet = new Coin('BTC', 'Testnet');
     this.btcTestnet.derive(this.seed);
 
     this.rbtc = new RBTCCoin('RBTC', 'Mainnet');
