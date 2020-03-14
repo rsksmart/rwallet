@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   StyleSheet, Text, TouchableOpacity, View,
@@ -71,52 +71,61 @@ const styles = StyleSheet.create({
   },
 });
 
-const WalletCarousel = (props) => {
-  const { data, navigation } = props;
-  data.unshift({ index: -1 });
+class WalletCarousel extends Component {
+  onAddWalletPressed = () => {
+    const { navigation } = this.props;
+    this.carousel.scrollToIndex(1);
+    navigation.navigate('WalletAddIndex');
+  }
 
-  const renderItem = (itemData) => {
-    const {
-      walletData, onSendPressed, onReceivePressed, onSwapPressed,
-      onAddAssetPressed, currencySymbol, hasSwappableCoin, index,
-    } = itemData.item;
-    if (index < 0) {
+  render() {
+    const { data } = this.props;
+    data.unshift({ index: -1 });
+
+    const renderItem = (itemData) => {
+      const {
+        walletData, onSendPressed, onReceivePressed, onSwapPressed,
+        onAddAssetPressed, currencySymbol, hasSwappableCoin, index,
+      } = itemData.item;
+      if (index < 0) {
+        return (
+          <View style={[styles.addWalletButtonView]}>
+            <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
+              <Image source={references.images.addWallet} />
+              <Text style={[styles.addWalletText]}>
+                Add Wallet
+              </Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
       return (
-        <View style={[styles.addWalletButtonView]}>
-          <TouchableOpacity style={styles.addWalletButton} onPress={() => navigation.navigate('WalletAddIndex')}>
-            <Image source={references.images.addWallet} />
-            <Text style={[styles.addWalletText]}>
-              Add Wallet
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <WalletPage
+          walletData={walletData}
+          onSendPressed={onSendPressed}
+          onReceivePressed={onReceivePressed}
+          onSwapPressed={onSwapPressed}
+          onAddAssetPressed={onAddAssetPressed}
+          currencySymbol={currencySymbol}
+          hasSwappableCoin={hasSwappableCoin}
+        />
       );
-    }
+    };
+
     return (
-      <WalletPage
-        walletData={walletData}
-        onSendPressed={onSendPressed}
-        onReceivePressed={onReceivePressed}
-        onSwapPressed={onSwapPressed}
-        onAddAssetPressed={onAddAssetPressed}
-        currencySymbol={currencySymbol}
-        hasSwappableCoin={hasSwappableCoin}
+      <Carousel
+        ref={(ref) => { this.carousel = ref; }}
+        style={styles.carousel}
+        data={data}
+        renderItem={renderItem}
+        itemWidth={WALLET_PAGE_WIDTH}
+        inActiveOpacity={0.5}
+        containerWidth={screen.width}
+        initialIndex={1}
       />
     );
-  };
-
-  return (
-    <Carousel
-      style={styles.carousel}
-      data={data}
-      renderItem={renderItem}
-      itemWidth={WALLET_PAGE_WIDTH}
-      inActiveOpacity={0.5}
-      containerWidth={screen.width}
-      initialIndex={1}
-    />
-  );
-};
+  }
+}
 
 WalletCarousel.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
