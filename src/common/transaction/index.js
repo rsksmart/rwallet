@@ -53,7 +53,7 @@ class Transaction {
       const param = createRawTransactionParam({
         symbol, netType, sender, receiver, value, data, memo, gasFee,
       });
-      console.log(`Transaction.processRawTransaction, rawTransactionParams: ${JSON.stringify(param)}`);
+      console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawTransaction', param);
     } catch (e) {
       console.log('Transaction.processRawTransaction err: ', e.message);

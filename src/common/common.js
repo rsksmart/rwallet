@@ -14,6 +14,7 @@ import 'moment/locale/pt';
 import config from '../../config';
 import store from './storage';
 import I18n from './i18n';
+import definitions from './definitions';
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -344,24 +345,45 @@ const common = {
     moment.locale(newLocale);
   },
 
-  // make promise cancelable
-  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
-  makeCancelable(promise) {
-    let hasCanceled = false;
+  estimateBtcSize(amount, transctions, fromAddress, destAddress, privateKey, isSendAllBalance) {
+    console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
+    const inputTxs = [];
+    let sum = new BigNumber(0);
+    if (_.isEmpty(transctions)) {
+      return 400;
+    }
 
-    const wrappedPromise = new Promise((resolve, reject) => {
-      promise.then(
-        (val) => (hasCanceled ? reject(new Error('err.canceled')) : resolve(val)),
-        (error) => (hasCanceled ? reject(new Error('err.canceled')) : reject(error)),
-      );
+    // Find out transactions which combines amount
+    for (let i = 0; i < transctions.length; i += 1) {
+      const tx = transctions[i];
+      if (tx.status === definitions.txStatus.SUCCESS) {
+        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
+        sum = sum.plus(txAmount);
+        inputTxs.push(tx.hash);
+      }
+      if (sum.isGreaterThanOrEqualTo(amount)) {
+        break;
+      }
+    }
+    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
+
+    const outputSize = isSendAllBalance ? 1 : 2;
+    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
+    const tx = new bitcoin.TransactionBuilder();
+    _.each(inputTxs, (inputTx) => {
+      tx.addInput(inputTx, outputSize);
     });
-
-    return {
-      promise: wrappedPromise,
-      cancel() {
-        hasCanceled = true;
-      },
-    };
+    tx.addOutput(destAddress, 0);
+    if (isSendAllBalance) {
+      tx.addOutput(fromAddress, 0);
+    }
+    _.each(inputTxs, (inputTx, index) => {
+      tx.sign(index, key);
+    });
+    const result = tx.build().toHex();
+    const size = result.length / 2;
+    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    return size;
   },
 };
 

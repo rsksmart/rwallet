@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import BigNumber from 'bignumber.js';
 import SwapHeader from '../../../components/headers/header.swap';
 import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
@@ -240,7 +241,6 @@ class Swap extends Component {
     this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
     this.onSelectDestPress = this.onSelectDestPress.bind(this);
     this.onChangeSourceAmount = this.onChangeSourceAmount.bind(this);
-    this.txFeesCache = {};
     this.onChangeDestAmount = this.onChangeDestAmount.bind(this);
     this.state = {
       switchIndex: -1,
@@ -283,19 +283,27 @@ class Swap extends Component {
     const {
       navigation, swapSource, swapDest, addNotification,
     } = this.props;
-    const { sourceAmount } = this.state;
+    const { sourceAmount, limitMaxDepositCoin } = this.state;
 
     try {
       this.setState({ loading: true });
-      const { address: sourceAddress, id: sourceId } = swapSource.coin;
+      const { address: sourceAddress, id: sourceId, symbol: sourceSymbol } = swapSource.coin;
       const { address: destAddress, id: destId } = swapDest.coin;
       const sourceCoin = sourceId.toLowerCase();
       const destCoin = destId.toLowerCase();
+      console.log(`CoinswitchHelper.placeOrder, sourceCoin: ${sourceCoin}, destCoin: ${destCoin}, sourceAmount: ${sourceAmount}, destAddress:${destAddress}, sourceAddress: ${sourceAddress}`);
       const order = await CoinswitchHelper.placeOrder(sourceCoin, destCoin, sourceAmount, { address: destAddress }, { address: sourceAddress });
+      console.log(`CoinswitchHelper.placeOrder, order: ${JSON.stringify(order)}`);
       const {
         exchangeAddress: { address: agentAddress },
       } = order;
-      const feeObject = await this.requestFee(sourceAmount, swapSource);
+
+      let feeObject = null;
+      if ((sourceSymbol === 'BTC' || sourceSymbol === 'RBTC') && limitMaxDepositCoin === sourceAmount && this.maxDepositFeeObject) {
+        feeObject = this.maxDepositFeeObject;
+      } else {
+        feeObject = await this.requestFee(sourceAmount);
+      }
       const gasFee = feeObject.feeParams;
       const extraParams = {
         data: '', memo: '', gasFee, coinswitch: { order },
@@ -473,6 +481,20 @@ class Swap extends Component {
     };
   };
 
+  async getTxFee(amount) {
+    const { swapSource } = this.props;
+    const { symbol } = swapSource.coin;
+    const feeObject = await this.requestFee(amount);
+    if (symbol !== 'BTC') {
+      return feeObject;
+    }
+    const { fee } = feeObject;
+    const newFee = BigNumber.minimum(swapSource.coin.balance.minus(amount), fee);
+    feeObject.fee = newFee;
+    feeObject.feeParams.fees = common.btcToSatoshiHex(newFee);
+    return feeObject;
+  }
+
   updateRateInfoAndFee = async (currentSwapSource, currentSwapDest, props) => {
     console.log('updateRateInfoAndFee', currentSwapSource, currentSwapDest, props);
     const {
@@ -485,13 +507,20 @@ class Swap extends Component {
     try {
       const sdRate = await CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId), this);
       const { rate, limitMinDepositCoin, limitMaxDepositCoin } = sdRate;
+      console.log(`updateRateInfoAndFee, sdRate: ${JSON.stringify(sdRate)}`);
 
       const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
 
-      // const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource), this);
-      // const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
-      const maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.decimalPlaces);
+      let maxDepositCoin = null;
+      if (currentSwapSource.coin.symbol === 'BTC' || currentSwapSource.coin.symbol === 'RBTC') {
+        const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance), this);
+        maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
+        this.maxDepositFeeObject = feeObject;
+      } else {
+        maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.decimalPlaces);
+      }
       const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
+      maxDepositCoin = Math.max(maxDepositCoin, 0);
 
       this.setState({
         rate,
@@ -542,9 +571,10 @@ class Swap extends Component {
   };
 
   // Request fee from network, returns { fee, feeParams }
-  async requestFee(sourceAmount, swapSource) {
-    const { symbol, type, address } = swapSource.coin;
-    const transactionFees = await this.loadTransactionFees(symbol, type, address, sourceAmount);
+  async requestFee(amount) {
+    const { swapSource } = this.props;
+    const { symbol } = swapSource.coin;
+    const transactionFees = await this.loadTransactionFees(amount);
     let fee = null;
     let feeParams = null;
     if (symbol === 'BTC') {
@@ -560,14 +590,25 @@ class Swap extends Component {
     return { fee, feeParams };
   }
 
-  async loadTransactionFees(symbol, type, address, amount) {
-    const { amount: lastAmount } = this.txFeesCache;
-    if (amount === lastAmount) {
-      return this.txFeesCache.transactionFees;
+  async loadTransactionFees(amount) {
+    const txAmount = new BigNumber(amount);
+    const { swapSource } = this.props;
+    const {
+      symbol, type, transactions, privateKey, address, balance,
+    } = swapSource.coin;
+    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(txAmount) : common.rskCoinToWeiHex(txAmount);
+    console.log(`parseHelper.getTransactionFees, symbol: ${symbol}, type: ${type}, address: ${address}, amountHex: ${amountHex}`);
+    let transactionFees = null;
+    if (symbol === 'BTC') {
+      const isAllBalance = balance.isEqualTo(txAmount);
+      const size = common.estimateBtcSize(txAmount, transactions, address, address, privateKey, isAllBalance);
+      console.log('common.estimateBtcSize, size: ', size);
+      transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
+      console.log('loadTransactionFees, transactionFees: ', transactionFees);
+    } else {
+      transactionFees = await parseHelper.getTransactionFees(symbol, type, address, address, amountHex);
+      console.log(`parseHelper.getTransactionFees, amount: ${txAmount}, transactionFees: ${JSON.stringify(transactionFees)}`);
     }
-    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
-    const transactionFees = await parseHelper.getTransactionFees(symbol, type, address, address, amountHex);
-    this.txFeesCache = { amount, transactionFees };
     return transactionFees;
   }
 

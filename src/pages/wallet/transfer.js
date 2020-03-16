@@ -378,16 +378,19 @@ class Transfer extends Component {
   }
 
   onSendAllPress() {
-    const { balance, decimalPlaces } = this.coin;
+    const { symbol, balance, decimalPlaces } = this.coin;
     // If balance data have not received from server (user enter this page quickly), return without setState.
     if (_.isNil(balance)) {
       return;
     }
     const amount = common.getBalanceString(balance, decimalPlaces);
     this.inputAmount(amount, () => {
+      if (symbol === 'BTC') {
+        this.txFeesCache = {};
+      }
       this.isRequestSendAll = true;
       this.isAmountValid = true;
-      this.requestFees();
+      this.requestFees(true);
     });
   }
 
@@ -430,7 +433,7 @@ class Transfer extends Component {
     if (_.isEmpty(amount)) return;
     this.isAmountValid = this.validateAmount(amount);
     if (!this.isAmountValid) return;
-    this.requestFees();
+    this.requestFees(false);
   }
 
   onToInputBlur() {
@@ -439,11 +442,11 @@ class Transfer extends Component {
     if (_.isEmpty(to)) return;
     this.isAddressValid = this.validateAddress(to, symbol, type, networkId);
     if (!this.isAddressValid) return;
-    this.requestFees();
+    this.requestFees(false);
   }
 
   onMemoInputBlur() {
-    this.requestFees();
+    this.requestFees(false);
   }
 
   onAmountInputChangeText(text) {
@@ -485,18 +488,33 @@ class Transfer extends Component {
     return { customFee, customFeeValue };
   }
 
-  async loadTransactionFees(symbol, type, address, to, amount, memo) {
+  async loadTransactionFees(isAllBalance) {
     const { navigation, addConfirmation } = this.props;
-    const { amount: lastAmount, to: lastTo, memo: lastMemo } = this.txFeesCache;
+    const { amount, to, memo } = this.state;
+    const { coin, txFeesCache } = this;
+    const {
+      symbol, type, transactions, privateKey, address,
+    } = coin;
+    const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
+    console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
+    if (amount === lastAmount && to === lastTo && memo === lastMemo) {
+      return null;
+    }
+    if (symbol === 'BTC' && memo === lastMemo) {
+      return null;
+    }
     try {
-      console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
-      console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
-      if (amount === lastAmount && to === lastTo && memo === lastMemo) {
-        return null;
-      }
       this.setState({ loading: true });
-      const transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
+      let transactionFees = null;
+      if (symbol === 'BTC') {
+        const size = common.estimateBtcSize(new BigNumber(amount), transactions, address, to, privateKey, isAllBalance);
+        console.log('common.estimateBtcSize, size: ', size);
+        transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
+      } else {
+        transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
+      }
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
@@ -511,7 +529,7 @@ class Transfer extends Component {
         definitions.defaultErrorNotification.title,
         definitions.defaultErrorNotification.message,
         'button.retry',
-        this.requestFees,
+        this.requestFees(isAllBalance),
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
@@ -519,17 +537,18 @@ class Transfer extends Component {
     }
   }
 
-  async requestFees() {
-    const { symbol, type, address } = this.coin;
+  async requestFees(isAllBalance) {
     const { amount, to } = this.state;
-    const { memo } = this.state;
     const { isAmountValid, isAddressValid } = this;
-
     const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
     console.log('requestFees, isValid: ', isValid);
-    if (!isValid) return;
-    const transactionFees = await this.loadTransactionFees(symbol, type, address, to, amount, memo);
-    if (!transactionFees) return;
+    if (!isValid) {
+      return;
+    }
+    const transactionFees = await this.loadTransactionFees(isAllBalance);
+    if (!transactionFees) {
+      return;
+    }
     this.processFees(transactionFees);
   }
 
