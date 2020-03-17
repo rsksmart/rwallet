@@ -139,6 +139,24 @@
         "body": "交换完成！",
         "note": "您的交换正在进行中。",
         "viewExplorer": "单击以在rsk explorer中查看"
+      },
+      "addCustomToken": {
+        "title": "添加自定义代币",
+        "address": "代币合约地址",
+        "symbol": "代币符号",
+        "decimals": "小数精度",
+        "mainnet": "正式网络"
+      },
+      "addCustomTokenConfirm": {
+        "title": "添加自定义代币",
+        "question": "你想要添加这个代币吗？",
+        "token": "代币",
+        "balance": "余额"
+      },
+      "addToken": {
+        "title": "添加代币",
+        "enableAssets": "开启的资产",
+        "note": "禁用资产以将其从投资组合中隐藏。"
       }
     },
     "mine": {
@@ -219,16 +237,17 @@
   "button": {
     "save": "保存",
     "NEXT": "下一步",
+    "Next": "下一步",
     "gotIt": "好的",
     "create": "创建",
     "CONFIRM": "确认",
-    "RETRY": "重试",
+    "retry": "重试",
     "IMPORT": "导入",
     "Clear": "清除",
     "startOver": "重新开始",
     "Copy": "复制",
-    "Confirm": "确认",
-    "Cancel": "取消",
+    "confirm": "确认",
+    "cancel": "取消",
     "Send All": "全部发送",
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
@@ -338,6 +357,14 @@
     "swap": {
       "title": "没有可交换币",
       "body": "交换支持BTC，RBTC和DOC。请添加资产."
+    },
+    "contractNotFound": {
+      "title": "找不到ERC20合约",
+      "body": "我们找不到输入的ERC20令牌智能合约。请检查是否正确。"
+    },
+    "duplicateToken": {
+      "title": "重复的代币",
+      "body": "这个代币已经被加入钱包。请尝试不同的代币。"
     }
   }
 }

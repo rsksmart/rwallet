@@ -1,56 +1,33 @@
 import React from 'react';
 import {
-  StyleSheet, ImageBackground,
+  StyleSheet, View, Image,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import screenHelper from '../../common/screenHelper';
-import Loc from '../common/misc/loc';
+import references from '../../assets/references';
+import { screen } from '../../common/info';
 
-const header = require('../../assets/images/misc/header.png');
+const IMAGE_WIDTH = 375;
+const IMAGE_HEIGHT = 259;
 
-const headerHeight = 350;
-const headerTopOffset = -150;
-const headerMarginTop = headerTopOffset + screenHelper.topHeight;
+// const headerHeight = 259;
+const headerTopOffset = -40;
+const headerMarginTop = headerTopOffset;
+// export const defaultPageMarginTop = 350 + headerTopOffset;
 
 const styles = StyleSheet.create({
   headerImage: {
     width: '100%',
-    height: headerHeight,
+    height: screen.width * (IMAGE_HEIGHT / IMAGE_WIDTH),
     marginTop: headerMarginTop,
   },
-  headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Avenir-Heavy',
-    fontSize: 20,
-    letterSpacing: 0.39,
-    lineHeight: 28,
-    position: 'absolute',
-    bottom: 120,
-    left: 24,
+  headerView: {
+    // paddingTop: screenHelper.topHeight,
   },
 });
 
-function ListPageHeader({ title, customRightButton }) {
+export default function ListPageHeader() {
   return (
-    <ImageBackground source={header} style={[styles.headerImage]}>
-      <Loc style={styles.headerTitle} text={title} />
-      {customRightButton}
-    </ImageBackground>
+    <View style={styles.headerView}>
+      <Image source={references.images.listHeader} style={[styles.headerImage]} />
+    </View>
   );
 }
-
-ListPageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  customRightButton: PropTypes.element,
-};
-
-ListPageHeader.defaultProps = {
-  customRightButton: null,
-};
-
-const mapStateToProps = (state) => ({
-  currentLocale: state.App.get('language'),
-});
-
-export default connect(mapStateToProps)(ListPageHeader);

@@ -175,6 +175,7 @@ class ParseHelper {
   }
 
   static getPrice({ symbols, currencies }) {
+    console.log('getPrice, symbols: ', symbols);
     return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
@@ -383,6 +384,34 @@ class ParseHelper {
     // eslint-disable-next-line no-unused-expressions
     params && (options.params = params);
     return Parse.Cloud.run('coinswitch', options);
+  }
+
+  static getTokenBasicInfo(type, chain, address) {
+    console.log(`getTokenBasicInfo, type: ${type}, chain: ${chain}, address: ${address}`);
+    return Parse.Cloud.run('getTokenBasicInfo', { type, chain, address });
+  }
+
+  static saveToken(type, chain, address) {
+    return Parse.Cloud.run('saveToken', { type, chain, address });
+  }
+
+  static getTransactionFees(symbol, type, sender, receiver, value, memo) {
+    return Parse.Cloud.run('getTransactionFees', {
+      symbol, type, sender, receiver, value, memo,
+    });
+  }
+
+  static getBtcTransactionFees(symbol, type, size) {
+    return Parse.Cloud.run('getTransactionFees', {
+      symbol, type, size,
+    });
+  }
+
+  static getUserTokenBalance(type, chain, constractAddress, address) {
+    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, constractAddress: ${constractAddress}, address: ${address}`);
+    return Parse.Cloud.run('getUserTokenBalance', {
+      type, chain, tokenAddress: constractAddress, userAddress: address,
+    });
   }
 }
 

@@ -140,6 +140,24 @@
         "body": "Exchange Completed!",
         "note": "Your Exchange is on its way.",
         "viewExplorer": "Click to view in explorer"
+      },
+      "addCustomToken": {
+        "title": "Add Custom Tokens",
+        "address": "Token Contract Address",
+        "symbol": "Token Symbol",
+        "decimals": "Decimals of Precision",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Add Custom Tokens",
+        "question": "Would you like to add these tokens?",
+        "token": "Token",
+        "balance": "Balance"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Enabled Assets",
+        "note": "Disable assets to hide them from your portfolio."
       }
     },
     "mine": {
@@ -220,16 +238,17 @@
   "button": {
     "save": "SAVE",
     "NEXT": "NEXT",
+    "Next": "Next",
     "gotIt": "GOT IT",
     "create": "CREATE",
     "CONFIRM": "CONFIRM",
-    "RETRY": "RETRY",
+    "retry": "Retry",
     "IMPORT": "IMPORT",
     "Clear": "Clear",
     "startOver": "START OVER",
     "Copy": "Copy",
-    "Confirm": "Confirm",
-    "Cancel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
     "Send All": "Send All",
     "goToWallet": "GO TO WALLET",
     "backToWallet": "BACK TO WALLET",
@@ -338,6 +357,14 @@
     "swap": {
       "title": "No swappable coin",
       "body": "Swap supports BTC, RBTC and DOC. Please add asset."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contract Not Found",
+      "body": "We cannot find the input ERC20 token smart contract. Please check if it is right."
+    },
+    "duplicateToken": {
+      "title": "Duplicate Token",
+      "body": "This token is already added in the wallet. Please try with a different token."
     }
   }
 }

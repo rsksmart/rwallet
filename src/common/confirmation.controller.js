@@ -7,4 +7,15 @@ const createInfoConfirmation = (title, message, confirmationCallback, confirmati
   confirmationCancelCallback,
 });
 
-export default createInfoConfirmation;
+
+const createErrorConfirmation = (title, message, comfirmText, confirmationCallback, confirmationCancelCallback) => ({
+  id: Date.now(),
+  type: 'error',
+  title,
+  message,
+  comfirmText,
+  confirmationCallback,
+  confirmationCancelCallback,
+});
+
+export { createInfoConfirmation, createErrorConfirmation };

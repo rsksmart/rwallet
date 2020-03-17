@@ -41,7 +41,7 @@ export const signTransaction = async (transaction, privateKey) => {
   return rawTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo, coinswitch) => {
+export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
   const param = {
     name: 'Bitcoin',
     hash: signedTransaction,
@@ -50,8 +50,8 @@ export const getSignedTransactionParam = (signedTransaction, netType, memo, coin
   if (!_.isEmpty(memo)) {
     param.memo = memo;
   }
-  if (coinswitch) {
-    param.coinswitch = coinswitch;
+  if (coinSwitch) {
+    param.coinSwitch = coinSwitch;
   }
   return param;
 };

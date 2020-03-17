@@ -187,7 +187,7 @@ class PasscodeModalBase extends PureComponent {
               )}
               {showCancel && (
                 <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                  <Loc style={[styles.buttonText]} text="button.Cancel" />
+                  <Loc style={[styles.buttonText]} text="button.cancel" />
                 </TouchableOpacity>
               )}
               {this.renderButtons()}

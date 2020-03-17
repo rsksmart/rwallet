@@ -6,12 +6,12 @@ import React from 'react';
 import common from './common';
 import BackBtn from '../components/common/buttons/back.btn.stateless';
 
-import WalletAddIndex from '../pages/wallet/add.index';
-import Dashboard from '../pages/wallet/dashboard';
+import WalletAddIndex from '../pages/wallet/dashboard/add.index';
+import Dashboard from '../pages/wallet/dashboard/dashboard';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
 import WalletRecovery from '../pages/wallet/recovery';
 import RecoveryPhrase from '../pages/wallet/recovery.phrase';
-import WalletList from '../pages/wallet/list';
+import WalletList from '../pages/wallet/dashboard/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
 import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
@@ -25,6 +25,9 @@ import Transaction from '../pages/wallet/transaction';
 import Swap from '../pages/wallet/swap/swap';
 import SwapSelection from '../pages/wallet/swap/swap.selection';
 import SwapCompleted from '../pages/wallet/swap.completed';
+import AddToken from '../pages/wallet/add.token';
+import AddCustomToken from '../pages/wallet/add.custom.token';
+import AddCustomTokenConfirm from '../pages/wallet/add.custom.token.confirm';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
@@ -203,6 +206,27 @@ const routeConfigMap = {
       path: 'SwapCompleted',
       navigationOptions: () => ({
         headerTitle: 'SwapCompleted',
+      }),
+    },
+    AddToken: {
+      screen: AddToken,
+      path: 'AddToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddToken',
+      }),
+    },
+    AddCustomToken: {
+      screen: AddCustomToken,
+      path: 'AddCustomToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomToken',
+      }),
+    },
+    AddCustomTokenConfirm: {
+      screen: AddCustomTokenConfirm,
+      path: 'AddCustomTokenConfirm',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomTokenConfirm',
       }),
     },
   },

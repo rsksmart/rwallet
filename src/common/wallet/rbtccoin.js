@@ -3,6 +3,8 @@ import { Buffer } from 'buffer';
 import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
+import references from '../../assets/references';
+import config from '../../../config';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -44,16 +46,24 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(id, amount, address) {
-    this.id = id;
+  constructor(symbol, type, contractAddress, decimalPlaces) {
+    this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
-    this.metadata = coinType[id];
-    this.amount = amount;
-    this.address = address;
+    // If coinType does not contain this.id, use RBTC metadata;
+    this.metadata = coinType[this.id];
+    if (!this.metadata) {
+      const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
+      this.metadata = _.clone(metadata);
+      this.metadata.icon = references.images.customToken;
+      this.metadata.defaultName = symbol;
+    }
+
+    this.contractAddress = contractAddress;
+    this.decimalPlaces = decimalPlaces || config.symbolDecimalPlaces[symbol];
     this.chain = this.metadata.chain;
-    this.type = this.metadata.type;
-    this.symbol = this.metadata.symbol;
+    this.type = type;
+    this.symbol = symbol;
     this.networkId = this.metadata.networkId;
   }
 
@@ -138,10 +148,14 @@ export default class RBTCCoin {
   toJSON() {
     return {
       id: this.id,
+      symbol: this.symbol,
+      type: this.type,
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,
       objectId: this.objectId,
+      contractAddress: this.contractAddress,
+      decimalPlaces: this.decimalPlaces,
     };
   }
 

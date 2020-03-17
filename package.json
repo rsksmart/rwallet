@@ -9,6 +9,7 @@
     "buildandroid": "react-native run-android --variant=release",
     "ios": "react-native run-ios --simulator=\"iPhone 11\"",
     "ip8": "react-native run-ios --simulator=\"iPhone 8\"",
+    "ip10": "react-native run-ios --simulator=\"iPhone X\"",
     "test": "jest"
   },
   "dependencies": {

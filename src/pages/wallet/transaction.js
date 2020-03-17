@@ -89,7 +89,7 @@ class Transaction extends Component {
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = `${common.getBalanceString(rawTransaction.symbol, amount)} ${rawTransaction.symbol}`;
+      amountText = `${common.getBalanceString(amount, transation.decimalPlaces)} ${rawTransaction.symbol}`;
     }
     const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');

@@ -14,6 +14,7 @@ const Confirmation = (props) => {
         type={confirmation.type}
         title={confirmation.title}
         message={confirmation.message}
+        comfirmText={confirmation.comfirmText}
         onClosePress={removeConfirmation}
         confirmationCallback={confirmationCallback}
         confirmationCancelCallback={confirmationCancelCallback}
@@ -29,6 +30,7 @@ Confirmation.propTypes = {
     type: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
+    comfirmText: PropTypes.string,
   }),
   removeConfirmation: PropTypes.func.isRequired,
   confirmationCallback: PropTypes.func,

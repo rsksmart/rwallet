@@ -14,7 +14,6 @@ const headerMarginTop = -150 + screenHelper.topHeight;
 
 const styles = StyleSheet.create({
   headerImage: {
-    position: 'absolute',
     width: '100%',
     height: headerHeight,
     marginTop: headerMarginTop,

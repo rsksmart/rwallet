@@ -139,6 +139,24 @@
         "body": "Intercambio completado!",
         "note": "Su intercambio está en camino.",
         "viewExplorer": "Haga clic para ver en el explorador"
+      },
+      "addCustomToken": {
+        "title": "Agregar tokens personalizados",
+        "address": "Dirección del contrato de token",
+        "symbol": "Símbolo simbólico",
+        "decimals": "Decimales de precisión",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Agregar tokens personalizados",
+        "question": "¿Te gustaría agregar estos tokens?",
+        "token": "Simbólico",
+        "balance": "Equilibrar"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Activos habilitados",
+        "note": "Inhabilite los activos para ocultarlos de su cartera."
       }
     },
     "mine": {
@@ -219,16 +237,17 @@
   "button": {
     "save": "GUARDAR",
     "NEXT": "SIGUIENTE",
+    "Next": "Próximo",
     "gotIt": "ENTENDIDO",
     "create": "CREAR",
     "CONFIRM": "CONFIRMAR",
-    "RETRY": "INTENTA DE NUEVO",
+    "retry": "Procesar de nuevo",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
     "startOver": "COMENZAR DE NUEVO",
     "Copy": "Copiar",
-    "Confirm": "Confirmar",
-    "Cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
     "Send All": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
@@ -337,6 +356,14 @@
     "swap": {
       "title": "No hay monedas intercambiables",
       "body": "Swap admite BTC, RBTC y DOC. Por favor agregue el activo."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contrato no encontrado",
+      "body": "No podemos encontrar el contrato inteligente de token ERC20 de entrada. Por favor, compruebe si es correcto."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
     }
   }
 }
