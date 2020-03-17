@@ -143,14 +143,14 @@
       "addCustomToken": {
         "title": "Adicionar tokens personalizados",
         "address": "Endereço do Contrato do Token",
-        "symbol": "Símbolo de Token",
-        "decimals": "Decimais de precisão",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar tokens personalizados",
         "question": "Deseja adicionar esses tokens?",
         "token": "Símbolo",
+        "symbol": "Símbolo de Token",
+        "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
       "addToken": {

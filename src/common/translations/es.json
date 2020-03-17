@@ -143,14 +143,14 @@
       "addCustomToken": {
         "title": "Agregar tokens personalizados",
         "address": "Dirección del contrato de token",
-        "symbol": "Símbolo simbólico",
-        "decimals": "Decimales de precisión",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
         "title": "Agregar tokens personalizados",
         "question": "¿Te gustaría agregar estos tokens?",
         "token": "Simbólico",
+        "symbol": "Símbolo simbólico",
+        "decimals": "Decimales de precisión",
         "balance": "Equilibrar"
       },
       "addToken": {
