@@ -385,7 +385,7 @@ class Transfer extends Component {
     }
     const amount = common.getBalanceString(balance, decimalPlaces);
     this.inputAmount(amount, () => {
-      if (symbol === 'BTC') {
+      if (symbol === 'BTC' || symbol === 'RBTC') {
         this.txFeesCache = {};
       }
       this.isRequestSendAll = true;
@@ -499,12 +499,19 @@ class Transfer extends Component {
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
     console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
-    if (amount === lastAmount && to === lastTo && memo === lastMemo) {
+
+    let isMatched = false;
+    if (amount === lastAmount && to === lastTo) {
+      if (symbol !== 'BTC') {
+        isMatched = memo === lastMemo;
+      } else {
+        isMatched = true;
+      }
+    }
+    if (isMatched) {
       return null;
     }
-    if (symbol === 'BTC' && memo === lastMemo) {
-      return null;
-    }
+
     try {
       this.setState({ loading: true });
       let transactionFees = null;

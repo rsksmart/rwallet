@@ -607,6 +607,8 @@ class Swap extends Component {
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
     } else {
       transactionFees = await parseHelper.getTransactionFees(symbol, type, address, address, amountHex);
+      // DOC swap need 2 times gas
+      transactionFees.gas = symbol === 'DOC' ? transactionFees.gas * 2 : transactionFees.gas;
       console.log(`parseHelper.getTransactionFees, amount: ${txAmount}, transactionFees: ${JSON.stringify(transactionFees)}`);
     }
     return transactionFees;
