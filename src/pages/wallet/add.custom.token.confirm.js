@@ -57,13 +57,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.5,
   },
-  balance: {
+  rowText: {
     fontFamily: 'Avenir-Heavy',
     fontSize: 16,
     letterSpacing: 1,
-  },
-  activityIndicator: {
-    marginRight: 15,
   },
 });
 
@@ -185,9 +182,13 @@ class AddCustomToken extends Component {
                 <Text style={styles.symbol}>{symbol}</Text>
               </View>
               <View style={styles.row}>
+                <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.decimals" />
+                <Text style={styles.rowText}>{decimals}</Text>
+              </View>
+              <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
-                { isLoadingBalance && (<ActivityIndicator style={styles.activityIndicator} size="small" animating={isLoadingBalance} />)}
-                { !isLoadingBalance && (<Text style={styles.balance}>{`${balanceText} ${symbol}`}</Text>)}
+                { isLoadingBalance && (<ActivityIndicator size="small" animating={isLoadingBalance} />)}
+                { !isLoadingBalance && (<Text style={styles.rowText}>{`${balanceText} ${symbol}`}</Text>)}
               </View>
             </View>
           </View>

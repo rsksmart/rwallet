@@ -14,7 +14,6 @@ import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import { createErrorConfirmation } from '../../common/confirmation.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import definitions from '../../common/definitions';
@@ -63,12 +62,9 @@ class AddCustomToken extends Component {
       this.state = {
         isLoading: false,
         address: '',
-        symbol: '',
-        decimals: '',
         isMainnet: true,
         isCanConfirm: false,
       };
-      this.name = '';
       this.type = 'Mainnet';
       this.chain = 'Rootstock';
     }
@@ -81,34 +77,31 @@ class AddCustomToken extends Component {
     onSwitchValueChanged = (value) => {
       this.setState({ isMainnet: value });
       this.type = value ? 'Mainnet' : 'Testnet';
-      this.requestTokenInfo();
-    }
-
-    onAddressInputBlur = async () => {
-      this.requestTokenInfo();
     }
 
     onAddressInputChanged = async (text) => {
-      this.setState({ address: text });
+      this.setState({ address: text, isCanConfirm: !_.isEmpty(text) });
     }
 
-    onPressed = () => {
+    onPressed = async () => {
       const { navigation } = this.props;
-      const { address, symbol, decimals } = this.state;
-      const { name, type, chain } = this;
+      const { address } = this.state;
+      const { type, chain } = this;
+
+      const tokenInfo = await this.requestTokenInfo();
+      if (tokenInfo === null) {
+        return;
+      }
+      const { name, symbol, decimals } = tokenInfo;
       navigation.navigate('AddCustomTokenConfirm', {
         address, symbol, decimals, name, type, chain, ...navigation.state.params,
       });
     }
 
     requestTokenInfo = async () => {
-      const { addNotification, navigation, addConfirmation } = this.props;
+      const { addNotification } = this.props;
       const { address } = this.state;
       const { type, chain } = this;
-      this.setState({ isCanConfirm: false });
-      if (_.isEmpty(address)) {
-        return;
-      }
       try {
         const contractAddress = rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
         const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type, coinType.RBTC.networkId);
@@ -121,31 +114,28 @@ class AddCustomToken extends Component {
           'modal.invalidAddress.body',
         );
         addNotification(notification);
-        return;
+        return null;
       }
       try {
         this.setState({ isLoading: true });
         const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, address), this);
         console.log('tokenInfo: ', tokenInfo);
-        const { name, symbol, decimals } = tokenInfo;
-        this.setState({ symbol, decimals, isCanConfirm: true });
-        this.name = name;
+        return tokenInfo;
       } catch (error) {
         console.log('getTokenBasicInfo, erorr: ', error);
-        this.setState({ isCanConfirm: false });
+        let notification = null;
         if (error.message === 'err.erc20contractnotfound') {
-          const notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body');
+          notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body', 'button.retry');
           addNotification(notification);
         } else {
-          const confirmation = createErrorConfirmation(
+          notification = createErrorNotification(
             definitions.defaultErrorNotification.title,
             definitions.defaultErrorNotification.message,
             'button.retry',
-            this.requestTokenInfo,
-            () => navigation.goBack(),
           );
-          addConfirmation(confirmation);
         }
+        addNotification(notification);
+        return null;
       } finally {
         this.setState({ isLoading: false });
       }
@@ -154,7 +144,7 @@ class AddCustomToken extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        isLoading, address, symbol, decimals, isMainnet, isCanConfirm,
+        isLoading, address, isMainnet, isCanConfirm,
       } = this.state;
       const bottomButton = (<Button style={{ opacity: isCanConfirm ? 1 : 0.5 }} text="button.Next" onPress={this.onPressed} disabled={!isCanConfirm} />);
       return (
@@ -178,29 +168,6 @@ class AddCustomToken extends Component {
                 blurOnSubmit={false}
                 value={address}
                 onChangeText={this.onAddressInputChanged}
-                onBlur={this.onAddressInputBlur}
-              />
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.symbol" />
-              <TextInput
-                placeholder="BKG"
-                style={[presetStyle.textInput, styles.nameInput]}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-                value={symbol}
-              />
-            </View>
-            <View style={styles.sectionContainer}>
-              <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.decimals" />
-              <TextInput
-                placeholder="18"
-                style={[presetStyle.textInput, styles.nameInput]}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-                value={decimals.toString()}
               />
             </View>
             <View style={[styles.switchView]}>
@@ -221,20 +188,16 @@ AddCustomToken.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
-  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
-  confirmation: state.App.get('confirmation'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
-  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
   removeNotification: () => dispatch(appActions.removeNotification()),
 });
 
