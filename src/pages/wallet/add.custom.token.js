@@ -50,6 +50,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 0,
   },
+  addressInput: {
+    height: 'auto',
+    minHeight: 16,
+    textAlignVertical: 'top',
+    paddingBottom: 12,
+    paddingTop: 12,
+  },
 });
 
 class AddCustomToken extends Component {
@@ -160,9 +167,8 @@ class AddCustomToken extends Component {
             <View style={styles.sectionContainer}>
               <Loc style={[styles.title, styles.name]} text="page.wallet.addCustomToken.address" />
               <TextInput
-                placeholder="0x345dc961828f9fe7c69da34e88d58839f153784c"
-                ref={(ref) => { this.nameInput = ref; }}
-                style={[presetStyle.textInput, styles.nameInput]}
+                style={[presetStyle.textInput, styles.addressInput]}
+                multiline
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
