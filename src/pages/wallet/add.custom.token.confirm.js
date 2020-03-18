@@ -76,7 +76,7 @@ class AddCustomToken extends Component {
         navigation: {
           state: {
             params: {
-              address, symbol, decimals, type, chain, wallet,
+              address, symbol, decimals, type, chain, wallet, name,
             },
           },
         },
@@ -87,6 +87,7 @@ class AddCustomToken extends Component {
       this.type = type;
       this.chain = chain;
       this.wallet = wallet;
+      this.name = name;
       this.state = { isLoading: false, balance: null, isLoadingBalance: false };
     }
 
@@ -121,7 +122,7 @@ class AddCustomToken extends Component {
 
     async onComfirmPressed() {
       const {
-        symbol, type, chain, address, wallet, decimals,
+        symbol, type, chain, address, wallet, decimals, name,
       } = this;
       const {
         addToken, walletManager, addNotification,
@@ -131,7 +132,7 @@ class AddCustomToken extends Component {
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
         addToken(walletManager, wallet, {
-          symbol, type, contractAddress: address, decimalPlaces: decimals,
+          symbol, type, contractAddress: address, decimalPlaces: decimals, chain, name,
         });
       } catch (error) {
         const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);

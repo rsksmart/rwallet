@@ -46,7 +46,7 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, contractAddress, decimalPlaces) {
+  constructor(symbol, type, contractAddress, decimalPlaces, name) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
@@ -56,7 +56,7 @@ export default class RBTCCoin {
       const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
       this.metadata = _.clone(metadata);
       this.metadata.icon = references.images.customToken;
-      this.metadata.defaultName = symbol;
+      this.metadata.defaultName = name;
     }
 
     this.contractAddress = contractAddress;
@@ -64,6 +64,7 @@ export default class RBTCCoin {
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
+    this.name = this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
 
@@ -156,6 +157,8 @@ export default class RBTCCoin {
       objectId: this.objectId,
       contractAddress: this.contractAddress,
       decimalPlaces: this.decimalPlaces,
+      chain: this.chain,
+      name: this.name,
     };
   }
 
@@ -215,7 +218,7 @@ export default class RBTCCoin {
   }
 
   get defaultName() {
-    return this.metadata.defaultName;
+    return this.name;
   }
 
   static derivePathFromNode(node, path) {

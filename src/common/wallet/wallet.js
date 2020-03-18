@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
 import storage from '../storage';
+import coinType from './cointype';
 
 const bip39 = require('bip39');
 
@@ -43,13 +44,7 @@ export default class Wallet {
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
-        const {
-          symbol, type, amount, objectId, contractAddress, decimalPlaces,
-        } = item;
-
-        this.addToken({
-          objectId, symbol, type, contractAddress, decimalPlaces, amount,
-        });
+        this.addToken(item);
       });
     }
   }
@@ -156,9 +151,9 @@ export default class Wallet {
       const newCoin = coin;
       const { id: coinId, symbol } = newCoin;
       if (!symbol) {
-        const index = coinId.lastIndexOf('Testnet');
-        newCoin.symbol = index === -1 ? coinId : coinId.substring(0, index);
-        newCoin.type = index === -1 ? 'Mainnet' : 'Testnet';
+        const metadata = coinType[coinId];
+        newCoin.symbol = metadata.symbol;
+        newCoin.type = metadata.type;
       }
     });
 
@@ -192,7 +187,7 @@ export default class Wallet {
    */
   addToken = (token) => {
     const {
-      symbol, type, contractAddress, decimalPlaces, objectId, amount,
+      symbol, type, contractAddress, decimalPlaces, objectId, amount, name,
     } = token;
     let coin = null;
 
@@ -207,7 +202,7 @@ export default class Wallet {
       coin.privateKey = type === 'Mainnet' ? this.btc.privateKey : this.btcTestnet.privateKey;
       coin.address = type === 'Mainnet' ? this.btc.address : this.btcTestnet.address;
     } else {
-      coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces);
+      coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces, name);
       coin.privateKey = type === 'Mainnet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;
       coin.address = type === 'Mainnet' ? this.rbtc.address : this.rbtcTestnet.address;
     }
