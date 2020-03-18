@@ -34,7 +34,7 @@ const BasePageGereral = (props) => {
   // const WrapperView = isViewWrapper ? View : ScrollView;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}, bgColor ? { backgroundColor: bgColor } : null]}>
-      <ScrollView refreshControl={refreshControl}>
+      <ScrollView refreshControl={refreshControl} alwaysBounceVertical={false} bounces={false}>
         {content}
       </ScrollView>
       {!customBottomButton && hasBottomBtn && (
