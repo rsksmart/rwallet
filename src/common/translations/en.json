@@ -77,7 +77,7 @@
         "title": "Select Wallet"
       },
       "recovery": {
-        "title": "Recovery Phrase",
+        "title": "Import Wallet",
         "note": "Type the recovery phrase (usually 12 words)",
         "advancedOptions": "Advanced Options",
         "specifyPath": "Specify derivation path"

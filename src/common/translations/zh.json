@@ -77,7 +77,7 @@
         "title": "选择钱包"
       },
       "recovery": {
-        "title": "恢复助记词",
+        "title": "导入钱包",
         "note": "输入恢复助记词（通常是12个单词）",
         "advancedOptions": "高级选项",
         "specifyPath": "指定派生路径"

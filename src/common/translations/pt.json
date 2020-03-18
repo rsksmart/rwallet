@@ -77,7 +77,7 @@
         "title": "Selecionar carteira"
       },
       "recovery": {
-        "title": "Frase de recuperação",
+        "title": "Importar carteira",
         "note": "Digite a frase de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
         "specifyPath": "Especificar caminho de derivação"
