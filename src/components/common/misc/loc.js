@@ -14,7 +14,11 @@ const Loc = ({
   if (caseType === 'upper') {
     translation = translation.toUpperCase();
   } else if (caseType === 'capitalize') {
-    translation = _.capitalize(translation);
+    const words = _.split(translation, ' ');
+    translation = '';
+    _.each(words, (word, index) => {
+      translation += _.capitalize(word) + (index === words.length ? '' : ' ');
+    });
   }
   return <Text style={style}>{pre + translation + suf}</Text>;
 };
