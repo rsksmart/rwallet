@@ -13,12 +13,13 @@ import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
 import config from '../../../../config';
+import screenHelper from '../../../common/screenHelper';
 
 const { getCurrencySymbol } = common;
 
 const styles = StyleSheet.create({
   body: {
-    marginBottom: 103,
+    marginBottom: screenHelper.bottomHeight + 70,
     marginTop: -190,
     flexDirection: 'column',
     flex: 1,
