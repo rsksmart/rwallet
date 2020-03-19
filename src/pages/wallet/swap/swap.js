@@ -467,11 +467,11 @@ class Swap extends Component {
     const decimalPlaces = config.symbolDecimalPlaces[type === 'source' ? swapDest.coin.symbol : swapSource.coin.symbol];
     if (type === 'source') {
       sourceAmount = amount;
-      destAmount = swapDest && rate ? parseFloat((sourceAmount * rate).toPrecision(decimalPlaces)) : null;
+      destAmount = swapDest && rate ? common.formatAmount(sourceAmount * rate, decimalPlaces) : null;
       textValue = { destText: destAmount.toString() };
     } else {
       destAmount = amount;
-      sourceAmount = swapSource && rate ? parseFloat((destAmount / rate).toPrecision(decimalPlaces)) : null;
+      sourceAmount = swapSource && rate ? common.formatAmount(destAmount / rate, decimalPlaces) : null;
       textValue = { sourceText: sourceAmount.toString() };
     }
     const isAmountInRange = sourceAmount >= limitMinDepositCoin && sourceAmount <= limitMaxDepositCoin;
