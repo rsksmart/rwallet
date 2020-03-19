@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   },
   addWalletButtonView: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   addWalletText: {
     color: '#FFF',

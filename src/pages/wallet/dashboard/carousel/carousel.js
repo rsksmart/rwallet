@@ -21,12 +21,6 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 class Carousel extends Component {
   constructor(props) {
     super(props);
-    this.scrollToIndex = this.scrollToIndex.bind(this);
-    this.itemAnimatedStyles = this.itemAnimatedStyles.bind(this);
-    this.renderItemContainer = this.renderItemContainer.bind(this);
-    this.handleOnScrollBeginDrag = this.handleOnScrollBeginDrag.bind(this);
-    this.handleOnScrollEndDrag = this.handleOnScrollEndDrag.bind(this);
-    this.getItemLayout = this.getItemLayout.bind(this);
     this.initialize();
     this.setScrollHandler();
   }
@@ -36,7 +30,7 @@ class Carousel extends Component {
     this.scrollToIndex(initialIndex, false);
   }
 
-  setScrollHandler() {
+  setScrollHandler = () => {
     this.handleOnScroll = Animated.event(
       [{ nativeEvent: { contentOffset: { x: this.xOffset } } }],
       {
@@ -48,7 +42,7 @@ class Carousel extends Component {
     );
   }
 
-  getItemLayout(data, index) {
+  getItemLayout = (data, index) => {
     const { itemWidth, separatorWidth } = this.props;
     let offset;
     if (index === 0) {
@@ -63,13 +57,13 @@ class Carousel extends Component {
     };
   }
 
-  handleOnScrollBeginDrag() {
+  handleOnScrollBeginDrag = () => {
     const { onScrollBeginDrag } = this.props;
     if (onScrollBeginDrag) onScrollBeginDrag();
     this.scrollXBegin = this.scrollX;
   }
 
-  handleOnScrollEndDrag() {
+  handleOnScrollEndDrag = () => {
     const { minScrollDistance, onScrollEndDrag } = this.props;
     if (onScrollEndDrag) onScrollEndDrag();
 
@@ -89,7 +83,7 @@ class Carousel extends Component {
     }
   }
 
-  scrollToIndex(index, animated = true) {
+  scrollToIndex = (index, animated = true) => {
     const {
       onScrollEnd, data, itemWidth, separatorWidth,
     } = this.props;
@@ -101,10 +95,10 @@ class Carousel extends Component {
         offset: index === 0 ? 0 : (index - 0.5) * (itemWidth + separatorWidth) + this.halfItemWidth - this.halfContainerWidth,
         animated,
       });
-    });
+    }, 0);
   }
 
-  initialize() {
+  initialize = () => {
     const {
       itemWidth,
       containerWidth,
@@ -119,16 +113,13 @@ class Carousel extends Component {
     this.containerPadding = this.halfContainerWidth - this.halfItemWidth;
   }
 
-  itemAnimatedStyles(index) {
+  calculateInitialPositions = (index) => {
     const {
       data,
-      inActiveScale,
-      inActiveOpacity,
       itemWidth,
       separatorWidth,
       containerWidth,
     } = this.props;
-    // console.log('index: ', index);
 
     let startPoint; let midPoint; let endPoint;
     if (index === 0) {
@@ -138,9 +129,8 @@ class Carousel extends Component {
     } else {
       const animatedOffset = this.halfContainerWidth;
       midPoint = (index - 0.5) * (itemWidth + separatorWidth)
-        + this.halfItemWidth
-        - animatedOffset;
-      // console.log('midPoint: ', midPoint);
+          + this.halfItemWidth
+          - animatedOffset;
 
       if (index === 1) {
         startPoint = this.halfItemWidth - this.halfContainerWidth;
@@ -149,22 +139,43 @@ class Carousel extends Component {
       } else {
         startPoint = midPoint - itemWidth - separatorWidth;
       }
-      // console.log('startPoint: ', startPoint);
 
       if (index === data.length - 2) {
         endPoint = (data.length - 1 - 0.5) * (itemWidth + separatorWidth) + itemWidth - containerWidth;
       } else {
         endPoint = midPoint + itemWidth + separatorWidth;
       }
-      // console.log('endPoint: ', endPoint);
     }
 
+    return {
+      startPoint, midPoint, endPoint,
+    };
+  };
+
+  itemAnimatedStylesPosition = (index) => {
+    const {
+      inActiveOpacity,
+    } = this.props;
+
+    const { startPoint, midPoint, endPoint } = this.calculateInitialPositions(index);
     const animatedOpacity = {
       opacity: this.xOffset.interpolate({
         inputRange: [startPoint, midPoint, endPoint],
         outputRange: [inActiveOpacity, 1, inActiveOpacity],
       }),
     };
+
+    return {
+      ...animatedOpacity,
+    };
+  };
+
+  itemAnimatedStylesScale = (index) => {
+    const {
+      inActiveScale,
+    } = this.props;
+
+    const { startPoint, midPoint, endPoint } = this.calculateInitialPositions(index);
 
     let animatedScale;
     if (index === 0) {
@@ -196,36 +207,28 @@ class Carousel extends Component {
       };
     }
     return {
-      ...animatedOpacity,
       ...animatedScale,
     };
-  }
+  };
 
-  renderItemContainer({ item, index }) {
+  renderItemContainer = ({ item, index }) => {
     const {
-      data,
       renderItem,
-      inverted,
       itemWidth,
-      separatorWidth,
       itemContainerStyle,
     } = this.props;
-    const marginWidth = index !== data.length - 1 ? separatorWidth : 0;
-    const marginStyle = inverted
-      ? { marginLeft: marginWidth }
-      : { marginRight: marginWidth };
     return (
       <Animated.View
-        pointerEvents="box-none"
         style={[
           styles.itemContainer,
           itemContainerStyle,
           { width: index === 0 ? itemWidth / 2 : itemWidth },
-          marginStyle,
-          this.itemAnimatedStyles(index),
+          this.itemAnimatedStylesPosition(index),
         ]}
       >
-        {renderItem({ item, index })}
+        <Animated.View style={[this.itemAnimatedStylesScale(index), { flex: 1 }]}>
+          {renderItem({ item, index })}
+        </Animated.View>
       </Animated.View>
     );
   }
