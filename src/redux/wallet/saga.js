@@ -283,8 +283,11 @@ function* addTokenRequest(action) {
 function* deleteTokenRequest(action) {
   const { walletManager, wallet, token } = action.payload;
   try {
+    const state = yield select();
+    const currency = state.App.get('currency');
     yield call(wallet.deleteToken, token);
     yield call(walletManager.serialize);
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: currency });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
