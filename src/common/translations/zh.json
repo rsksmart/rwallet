@@ -74,7 +74,7 @@
         "testnet": "测试网络"
       },
       "selectWallet": {
-        "title": "选择钱包"
+        "title": "选择资产"
       },
       "recovery": {
         "title": "导入钱包",
