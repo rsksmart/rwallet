@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#D8D8D8',
     marginLeft: 20,
-    marginRight: 8,
     paddingBottom: 9,
     paddingTop: 11,
   },
