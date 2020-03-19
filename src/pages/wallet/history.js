@@ -20,6 +20,7 @@ import { strings } from '../../common/i18n';
 import definitions from '../../common/definitions';
 import presetStyles from '../../assets/styles/style';
 import screenHelper from '../../common/screenHelper';
+import flex from '../../assets/styles/layout.flex';
 
 const { getCurrencySymbol } = common;
 
@@ -462,6 +463,7 @@ class History extends Component {
     }
     return (
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={listData}
         renderItem={({ item, index }) => (
           <Item
@@ -554,7 +556,7 @@ class History extends Component {
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
-        <View style={styles.sectionContainer}>
+        <View style={[styles.sectionContainer, flex.flex1]}>
           {this.listView(listData, this.onListItemPress, isRefreshing)}
         </View>
         {this.renderFooter()}
