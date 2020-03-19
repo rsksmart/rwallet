@@ -40,6 +40,11 @@ const actions = {
   RESET_SWAP_DEST: 'RESET_SWAP_DEST',
   SWITCH_SWAP: 'SWITCH_SWAP',
 
+  ADD_TOKEN: 'ADD_CUSTOM_TOKEN',
+  SET_ADD_TOKEN_RESULT: 'SET_ADD_TOKEN_RESULT',
+  RESET_ADD_TOKEN_RESULT: 'RESET_ADD_TOKEN_RESULT',
+  DELETE_TOKEN: 'DELETE_TOKEN',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -63,8 +68,9 @@ const actions = {
     type: actions.UPDATE_ASSET_VALUE,
     payload: currency,
   }),
-  startFetchPriceTimer: () => ({
+  startFetchPriceTimer: (walletManager) => ({
     type: actions.START_FETCH_PRICE_TIMER,
+    payload: walletManager,
   }),
   startFetchBalanceTimer: (walletManager) => ({
     type: actions.START_FETCH_BALANCE_TIMER,
@@ -92,12 +98,12 @@ const actions = {
       walletManager,
     },
   }),
-  createKey: (name, phrase, coinIds, walletManager) => ({
+  createKey: (name, phrase, coins, walletManager) => ({
     type: actions.CREATE_KEY,
     payload: {
       name,
       phrase,
-      coinIds,
+      coins,
       walletManager,
     },
   }),
@@ -125,6 +131,21 @@ const actions = {
   resetSwapSource: () => ({ type: actions.RESET_SWAP_SOURCE }),
   resetSwapDest: () => ({ type: actions.RESET_SWAP_DEST }),
   switchSwap: () => ({ type: actions.SWITCH_SWAP }),
+  addToken: (walletManager, wallet, token) => ({
+    type: actions.ADD_TOKEN,
+    payload: {
+      walletManager, wallet, token,
+    },
+  }),
+  deleteToken: (walletManager, wallet, token) => ({
+    type: actions.DELETE_TOKEN,
+    payload: {
+      walletManager, wallet, token,
+    },
+  }),
+  resetAddTokenResult: () => ({
+    type: actions.RESET_ADD_TOKEN_RESULT,
+  }),
 };
 
 export default actions;

@@ -105,6 +105,9 @@ class SwapSelection extends Component {
 
   async componentDidMount() {
     const { navigation, resetSwap } = this.props;
+    if (!(navigation.state && navigation.state.params)) {
+      this.initSelectData(navigation, resetSwap);
+    }
     this.willFocusSubscription = navigation.addListener(
       'willFocus',
       () => {
@@ -257,7 +260,7 @@ class SwapSelection extends Component {
           return;
         }
         const coinType = common.getSymbolFullName(coin.id, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.id, coin.balance) : '';
+        const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.decimalPlaces) : '';
         const item = {
           title: coinType,
           amount: amountText,

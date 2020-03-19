@@ -15,7 +15,7 @@ import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
 
 const {
-  consts: { supportedTokens, currencies: currencySettings },
+  consts: { currencies: currencySettings },
   interval: {
     fetchPrice: FETCH_PRICE_INTERVAL,
     fetchBalance: FETCH_BALANCE_INTERVAL,
@@ -44,12 +44,13 @@ function createTimer(interval) {
 /**
  * Start the timer to call actions.GET_PRICE periodically
  */
-export function* startFetchPriceTimerRequest() {
+export function* startFetchPriceTimerRequest(action) {
   // Call actions.GET_PRICE once to start off
+  const walletManager = action.payload;
   yield put({
     type: actions.GET_PRICE,
     payload: {
-      symbols: supportedTokens,
+      symbols: walletManager.getSymbols(),
       currencies: _.map(currencySettings, (item) => item.name),
     },
   });
@@ -63,7 +64,7 @@ export function* startFetchPriceTimerRequest() {
       yield put({
         type: actions.GET_PRICE,
         payload: {
-          symbols: supportedTokens,
+          symbols: walletManager.getSymbols(),
           currencies: _.map(currencySettings, (item) => item.name),
         },
       });
@@ -217,10 +218,10 @@ function* fetchLatestBlockHeight() {
 
 function* createKeyRequest(action) {
   const {
-    name, phrase, coinIds, walletManager,
+    name, phrase, coins, walletManager,
   } = action.payload;
   try {
-    yield call(walletManager.createWallet, name, phrase, coinIds);
+    yield call(walletManager.createWallet, name, phrase, coins);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
@@ -258,6 +259,40 @@ function* renameKeyRequest(action) {
   }
 }
 
+function* addTokenRequest(action) {
+  const {
+    walletManager, wallet, token,
+  } = action.payload;
+  try {
+    yield call(wallet.addToken, token);
+    yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'success' } });
+    yield call(walletManager.serialize);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (error) {
+    console.log(error);
+    if (error.message === 'err.exsistedtoken') {
+      yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'error', error } });
+      return;
+    }
+    const message = yield call(ParseHelper.handleError, error);
+    console.error(message);
+  }
+}
+
+function* deleteTokenRequest(action) {
+  const { walletManager, wallet, token } = action.payload;
+  try {
+    yield call(wallet.deleteToken, token);
+    yield call(walletManager.serialize);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+  } catch (err) {
+    const message = yield call(ParseHelper.handleError, err);
+    console.error(message);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.GET_PRICE, getPriceRequest),
@@ -273,5 +308,7 @@ export default function* () {
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
     takeEvery(actions.CREATE_KEY, createKeyRequest),
+    takeEvery(actions.ADD_TOKEN, addTokenRequest),
+    takeEvery(actions.DELETE_TOKEN, deleteTokenRequest),
   ]);
 }

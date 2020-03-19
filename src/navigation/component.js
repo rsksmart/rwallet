@@ -110,7 +110,7 @@ class RootComponent extends Component {
       } else {
         // Start timer to get price frequently
         // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchPriceTimer();
+        startFetchPriceTimer(walletManager);
         startFetchBalanceTimer(walletManager);
         startFetchTransactionTimer(walletManager);
         startFetchLatestBlockHeightTimer();

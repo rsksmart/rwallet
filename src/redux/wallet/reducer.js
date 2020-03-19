@@ -13,6 +13,7 @@ const initState = new Map({
   isWalletNameUpdated: false,
   swapFromCoin: null,
   swapDestCoin: null,
+  addTokenResult: null,
 });
 
 /**
@@ -102,6 +103,12 @@ export default function walletReducer(state = initState, action) {
       const swapDest = state.get('swapDest');
       return state.set('swapSource', swapDest)
         .set('swapDest', swapSource);
+    }
+    case actions.SET_ADD_TOKEN_RESULT: {
+      return state.set('addTokenResult', action.value);
+    }
+    case actions.RESET_ADD_TOKEN_RESULT: {
+      return state.set('addTokenResult', null);
     }
     default:
       return state;

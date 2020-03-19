@@ -13,7 +13,7 @@
       },
       "terms": {
         "term1": "Entiendo que mis fondos se mantienen de forma segura en este dispositivo, no por una empresa.",
-        "term2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mi Bitcoin solo se puede recuperar con la frase de recuperación.",
+        "term2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mis fondos solo se pueden recuperar con la frase de recuperación.",
         "term3": "He leído, comprendido y acepto los términos de uso.",
         "viewTerms": "Ver términos de uso completos",
         "button": "Confirmar y aceptar"
@@ -77,7 +77,7 @@
         "title": "Seleccionar billetera"
       },
       "recovery": {
-        "title": "Frase de recuperación",
+        "title": "Importar billetera",
         "note": "Escriba la frase de recuperación (generalmente 12 palabras)",
         "advancedOptions": "Opciones avanzadas",
         "specifyPath": "Especificar ruta de derivación"
@@ -139,6 +139,24 @@
         "body": "Intercambio completado!",
         "note": "Su intercambio está en camino.",
         "viewExplorer": "Haga clic para ver en el explorador"
+      },
+      "addCustomToken": {
+        "title": "Agregar tokens personalizados",
+        "address": "Dirección del contrato de token",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Agregar tokens personalizados",
+        "question": "¿Te gustaría agregar estos tokens?",
+        "token": "Simbólico",
+        "symbol": "Símbolo simbólico",
+        "decimals": "Decimales de precisión",
+        "balance": "Equilibrar"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Activos habilitados",
+        "note": "Inhabilite los activos para ocultarlos de su cartera."
       }
     },
     "mine": {
@@ -219,16 +237,17 @@
   "button": {
     "save": "GUARDAR",
     "NEXT": "SIGUIENTE",
+    "Next": "Próximo",
     "gotIt": "ENTENDIDO",
     "create": "CREAR",
     "CONFIRM": "CONFIRMAR",
-    "RETRY": "INTENTA DE NUEVO",
+    "retry": "Procesar de nuevo",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
     "startOver": "COMENZAR DE NUEVO",
     "Copy": "Copiar",
-    "Confirm": "Confirmar",
-    "Cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
     "Send All": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
@@ -337,6 +356,14 @@
     "swap": {
       "title": "No hay monedas intercambiables",
       "body": "Swap admite BTC, RBTC y DOC. Por favor agregue el activo."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contrato no encontrado",
+      "body": "No podemos encontrar el contrato inteligente de token ERC20 de entrada. Por favor, compruebe si es correcto."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
     }
   }
 }

@@ -5,9 +5,9 @@ import { isEmpty, debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import List from './list';
 import AddIndex from './add.index';
-import appActions from '../../redux/app/actions';
-import timer from '../../common/timer';
-import config from '../../../config';
+import appActions from '../../../redux/app/actions';
+import timer from '../../../common/timer';
+import config from '../../../../config';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({

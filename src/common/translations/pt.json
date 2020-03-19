@@ -13,7 +13,7 @@
       },
       "terms": {
         "term1": "Entendo que meus fundos estão retidos com segurança neste dispositivo, não por uma empresa.",
-        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meu Bitcoin poderá ser recuperado apenas com a frase de recuperação.",
+        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
         "term3": "Eu li, compreendi e concordo com os Termos de uso.",
         "viewTerms": "Ver Termos de Uso Completos",
         "button": "Confirme e aceite"
@@ -77,7 +77,7 @@
         "title": "Selecionar carteira"
       },
       "recovery": {
-        "title": "Frase de recuperação",
+        "title": "Importar carteira",
         "note": "Digite a frase de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
         "specifyPath": "Especificar caminho de derivação"
@@ -139,6 +139,24 @@
         "body": "Troca concluída!",
         "note": "Seu Exchange está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
+      },
+      "addCustomToken": {
+        "title": "Adicionar tokens personalizados",
+        "address": "Endereço do Contrato do Token",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Adicionar tokens personalizados",
+        "question": "Deseja adicionar esses tokens?",
+        "token": "Símbolo",
+        "symbol": "Símbolo de Token",
+        "decimals": "Decimais de precisão",
+        "balance": "Saldo"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enableAssets": "Ativar ativos",
+        "note": "Desative ativos para ocultá-los do seu portfólio."
       }
     },
     "mine": {
@@ -219,16 +237,17 @@
   "button": {
     "save": "GUARDAR",
     "NEXT": "PRÓXIMO",
+    "Next": "Próximo",
     "gotIt": "ENTENDI",
     "create": "CRIO",
     "CONFIRM": "CONFIRME",
-    "RETRY": "RETRY",
+    "retry": "Repetir",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
     "startOver": "RECOMEÇAR",
     "Copy": "cópia de",
-    "Confirm": "confirme",
-    "Cancel": "Cancelar",
+    "confirm": "confirme",
+    "cancel": "Cancelar",
     "Send All": "Envie todos",
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
@@ -337,6 +356,14 @@
     "swap": {
       "title": "Nenhuma moeda trocável",
       "body": "O swap suporta BTC, RBTC e DOC. Adicione recurso."
+    },
+    "contractNotFound": {
+      "title": "Contrato ERC20 não encontrado",
+      "body": "Não conseguimos encontrar o contrato inteligente de token ERC20 de entrada. Por favor, verifique se está certo."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
     }
   }
 }

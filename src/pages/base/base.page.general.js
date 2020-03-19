@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   buttonView: {
     alignSelf: 'center',
     paddingVertical: 15,
+    flexDirection: 'row',
   },
 });
 
@@ -22,18 +23,24 @@ const BasePageGereral = (props) => {
     children, isSafeView, hasBottomBtn, bottomBtnText, bottomBtnOnPress, hasLoader, isLoading, renderAccessory, headerComponent,
     refreshControl, bgColor, customBottomButton,
   } = props;
+  const content = (
+    <View style={flex.flex1}>
+      {headerComponent}
+      <View style={flex.flex1}>
+        {children}
+      </View>
+    </View>
+  );
+  // const WrapperView = isViewWrapper ? View : ScrollView;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}, bgColor ? { backgroundColor: bgColor } : null]}>
-      <ScrollView refreshControl={refreshControl}>
-        {headerComponent}
-        <View pointerEvents="box-none">
-          {children}
-        </View>
+      <ScrollView refreshControl={refreshControl} alwaysBounceVertical={false} bounces={false}>
+        {content}
       </ScrollView>
       {!customBottomButton && hasBottomBtn && (
-      <View style={[styles.buttonView]}>
-        <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
-      </View>
+        <View style={[styles.buttonView]}>
+          <Button text={bottomBtnText} onPress={bottomBtnOnPress || (() => null)} />
+        </View>
       ) }
       { customBottomButton && (
         <View style={[styles.buttonView]}>

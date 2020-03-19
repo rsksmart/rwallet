@@ -4,18 +4,18 @@ import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
+import config from '../../../config';
 
 export default class Coin {
-  constructor(id, amount, address) {
-    this.id = id;
+  constructor(symbol, type) {
+    this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, queryKey, defaultName}
-    this.metadata = coinType[id];
-    this.amount = amount;
-    this.address = address;
+    this.metadata = coinType[this.id];
     this.chain = this.metadata.chain;
-    this.type = this.metadata.type;
-    this.symbol = this.metadata.symbol;
+    this.type = type;
+    this.symbol = symbol;
     this.networkId = this.metadata.networkId;
+    this.decimalPlaces = config.symbolDecimalPlaces[symbol];
   }
 
   derive(seed) {
@@ -94,6 +94,8 @@ export default class Coin {
   toJSON() {
     return {
       id: this.id,
+      symbol: this.symbol,
+      type: this.type,
       metadata: this.metadata,
       amount: this.amount,
       address: this.address,

@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
 import storage from '../storage';
+import coinType from './cointype';
 
 const bip39 = require('bip39');
 
@@ -14,6 +16,7 @@ export default class Wallet {
     this.id = id;
     this.name = name || WALLET_NAME_PREFIX + id;
     this.mnemonic = mnemonic;
+    this.assetValue = new BigNumber(0);
     // this.createdAt = new Date();
 
     // console.log('Wallet.create.coins', coins);
@@ -21,31 +24,27 @@ export default class Wallet {
     // Create coins based on ids
     this.coins = [];
 
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    this.seed = bip39.mnemonicToSeedSync(mnemonic);
+
+    // TODO: right now we always derive privateKey hex string from seed
+    // In future we could save those keys into storage to cut derive time
+
+    // pre create rbtc coin for
+    this.btc = new Coin('BTC', 'Mainnet');
+    this.btc.derive(this.seed);
+
+    this.btcTestnet = new Coin('BTC', 'Testnet');
+    this.btcTestnet.derive(this.seed);
+
+    this.rbtc = new RBTCCoin('RBTC', 'Mainnet');
+    this.rbtc.derive(this.seed);
+
+    this.rbtcTestnet = new RBTCCoin('RBTC', 'Testnet');
+    this.rbtcTestnet.derive(this.seed);
 
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
-        const {
-          id: coinId, amount, address, objectId,
-        } = item;
-
-        let coin;
-        if (coinId === 'BTC' || coinId === 'BTCTestnet') {
-          coin = new Coin(coinId, amount, address);
-        } else {
-          coin = new RBTCCoin(coinId, amount, address);
-        }
-
-        // Add objectId to coin if there is one
-        if (objectId) {
-          coin.objectId = objectId;
-        }
-
-        // TODO: right now we always derive privateKey hex string from seed
-        // In future we could save those keys into storage to cut derive time
-        coin.derive(seed);
-
-        this.coins.push(coin);
+        this.addToken(item);
       });
     }
   }
@@ -147,6 +146,17 @@ export default class Wallet {
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
+    // Migrate from old coin structure
+    _.each(coins, (coin) => {
+      const newCoin = coin;
+      const { id: coinId, symbol } = newCoin;
+      if (!symbol) {
+        const metadata = coinType[coinId];
+        newCoin.symbol = metadata.symbol;
+        newCoin.type = metadata.type;
+      }
+    });
+
     const wallet = new Wallet({
       id, name, mnemonic: phrase, coins,
     });
@@ -170,5 +180,52 @@ export default class Wallet {
     });
 
     return isDirty;
+  }
+
+  /**
+   * Create token and add it to coins list
+   */
+  addToken = (token) => {
+    const {
+      symbol, type, contractAddress, decimalPlaces, objectId, amount, name,
+    } = token;
+    let coin = null;
+
+    const foundCoin = _.find(this.coins, { symbol, type });
+    if (foundCoin) {
+      throw new Error('err.exsistedtoken');
+    }
+
+    // Create coin and reuse address and private key
+    if (symbol === 'BTC') {
+      coin = new Coin(symbol, type);
+      coin.privateKey = type === 'Mainnet' ? this.btc.privateKey : this.btcTestnet.privateKey;
+      coin.address = type === 'Mainnet' ? this.btc.address : this.btcTestnet.address;
+    } else {
+      coin = new RBTCCoin(symbol, type, contractAddress, decimalPlaces, name);
+      coin.privateKey = type === 'Mainnet' ? this.rbtc.privateKey : this.rbtcTestnet.privateKey;
+      coin.address = type === 'Mainnet' ? this.rbtc.address : this.rbtcTestnet.address;
+    }
+    if (objectId) {
+      coin.objectId = objectId;
+    }
+    if (amount) {
+      coin.amount = amount;
+    }
+    this.coins.push(coin);
+    return coin;
+  }
+
+  deleteToken = (token) => {
+    const { symbol, type } = token;
+    _.remove(this.coins, { symbol, type });
+  }
+
+  getSymbols = () => {
+    const symbols = [];
+    _.each(this.coins, (coin) => {
+      symbols.push(coin.symbol);
+    });
+    return _.uniq(symbols);
   }
 }

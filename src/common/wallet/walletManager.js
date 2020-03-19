@@ -30,14 +30,9 @@ class WalletManager {
    * Create a wallet instance
    * @param {string} name Wallet name
    * @param {string} phrase 12-word mnemonic phrase
-   * @param {array} coinIds ["BTC", "RBTC", "RIF"]
+   * @param {array} coinIds [{symbol: "BTC", type:'Mainnet'}, {symbol: "RBTC", type:'Mainnet'}, {symbol: "RIF", type:'Mainnet'}]
    */
-  async createWallet(name, phrase, coinIds) {
-    // 1. Convert coinIds to coins array
-    const coins = _.map(coinIds, (id) => ({
-      id,
-    }));
-
+  async createWallet(name, phrase, coins) {
     console.log('walletManager.createWallet:coins', coins);
 
     // 2. Create a Wallet instance and save into wallets
@@ -114,37 +109,38 @@ class WalletManager {
    * @param {*} prices
    */
   updateAssetValue(prices, currency) {
-    const { getTokens } = this;
+    const { wallets } = this;
 
     // Return early if prices or currency is invalid
     if (_.isEmpty(prices) || _.isUndefined(currency)) {
       return;
     }
 
+    let totalAssetValue = new BigNumber(0);
     try {
-      const assetValue = prices.reduce((totalAssetValue, priceObject) => {
-        const tokenSymbol = priceObject.symbol;
-        const tokenPrice = priceObject.price && priceObject.price[currency];
-        let value = new BigNumber(0);
-
-        // Find Coin instances by symbol
-        const coins = getTokens({ symbol: tokenSymbol });
-
-        coins.forEach((coinItem) => {
-          const coin = coinItem;
-          // if coin.type is Testnet, set balanceValue 0
-          if (coin.type === 'Testnet') {
-            coin.balanceValue = new BigNumber(0);
-          } else if (coin.balance) {
-            coin.balanceValue = coin.balance.times(tokenPrice);
-            value = value.plus(coin.balanceValue);
+      _.each(wallets, (wallet) => {
+        const newWallet = wallet;
+        let assetValue = new BigNumber(0);
+        const { coins } = wallet;
+        _.each(coins, (coin) => {
+          const newCoin = coin;
+          if (newCoin.type === 'Testnet') {
+            newCoin.balanceValue = new BigNumber(0);
+          } else if (newCoin.balance) {
+            const priceObject = _.find(prices, { symbol: newCoin.symbol });
+            if (!priceObject) {
+              return;
+            }
+            const tokenPrice = priceObject.price && priceObject.price[currency];
+            newCoin.balanceValue = newCoin.balance.times(tokenPrice);
+            assetValue = assetValue.plus(newCoin.balanceValue);
           }
+          totalAssetValue = totalAssetValue.plus(assetValue);
         });
+        newWallet.assetValue = assetValue;
+      });
 
-        return totalAssetValue.plus(value);
-      }, new BigNumber(0));
-
-      this.assetValue = assetValue;
+      this.assetValue = totalAssetValue;
     } catch (ex) {
       console.error('walletManager.updateAssetValue', ex.message);
     }
@@ -248,6 +244,16 @@ class WalletManager {
     const modifyWallet = wallet;
     modifyWallet.name = name;
     await this.serialize();
+  }
+
+  getSymbols = () => {
+    let symbols = [];
+    _.each(this.wallets, (wallet) => {
+      symbols = _.concat(symbols, wallet.getSymbols());
+    });
+    // We need BTC for DOC price caculation
+    symbols.push('BTC');
+    return _.uniq(symbols);
   }
 }
 

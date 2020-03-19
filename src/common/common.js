@@ -14,6 +14,7 @@ import 'moment/locale/pt';
 import config from '../../config';
 import store from './storage';
 import I18n from './i18n';
+import definitions from './definitions';
 
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -73,40 +74,55 @@ const common = {
    * @param {*} unitNumber
    */
   convertUnitToCoinAmount(symbol, unitNumber) {
-    let amount = null;
     if (_.isNil(unitNumber)) {
       return null;
     }
-    switch (symbol) {
-      case 'BTC':
-        amount = common.satoshiToBtc(unitNumber);
-        break;
-      case 'RBTC':
-      case 'RIF':
-      case 'DOC':
-        amount = common.weiToCoin(unitNumber);
-        break;
-      default:
-    }
+    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
     return amount;
   },
+
+  /**
+   * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  getAmountBigNumber(amount, decimalPlaces) {
+    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
+    if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
+      return null;
+    }
+    let amountBigNumber = amount;
+    if (typeof amount === 'number' || typeof amount === 'string') {
+      amountBigNumber = new BigNumber(amount);
+    }
+    return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN);
+  },
+
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
    * @param {string} symbol
    * @param {BigNumber | number | string} balance
    */
-  getBalanceString(symbol, balance) {
-    const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (!_.isNull(balance)) {
-      let balanceBigNumber = balance;
-      if (typeof balance === 'number' || typeof value === 'string') {
-        balanceBigNumber = new BigNumber(balance);
-      }
-      return balanceBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toFixed();
-    }
-    return null;
+  getBalanceString(balance, decimalPlaces) {
+    const amountBigNumber = this.getAmountBigNumber(balance, decimalPlaces);
+    return amountBigNumber.toFixed();
   },
+
+  /**
+   * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {string} symbol
+   * @param {BigNumber | number | string} amount
+   * @returns number
+   */
+  formatAmount(amount, decimalPlaces) {
+    const amountBigNumber = this.getAmountBigNumber(amount, decimalPlaces);
+    return amountBigNumber.toNumber();
+  },
+
   /**
    * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
    * @param {BigNumber | number | string} value
@@ -137,6 +153,9 @@ const common = {
     }
     try {
       const price = this.getCoinPrice(symbol, currency, prices);
+      if (!price) {
+        return null;
+      }
       const amountBigNumber = new BigNumber(amount);
       const value = amountBigNumber.times(price);
       return value;
@@ -182,10 +201,7 @@ const common = {
    * @param {*} hash, transaction hash
    */
   getTransactionUrl(symbol, type, hash) {
-    let url = '';
-    if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
-      url = config.transactionUrls[symbol][type];
-    }
+    let url = symbol === 'BTC' ? config.transactionUrls[symbol][type] : config.transactionUrls.RBTC[type];
     // BTC has / suffix, RSK does not.
     // For example:
     // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
@@ -299,6 +315,7 @@ const common = {
   addOrUpdateDOCPrice(prices) {
     const newPrice = _.clone(prices);
     const btcPrice = _.find(newPrice, { symbol: 'BTC' });
+    console.log('addOrUpdateDOCPrice, btcPrice: ', btcPrice);
     const usdPrice = parseFloat(btcPrice.price.USD);
     const btcPriceKeys = _.keys(btcPrice.price);
     let docPrice = _.find(newPrice, { symbol: 'DOC' });
@@ -326,6 +343,47 @@ const common = {
   setMomentLocale(locale) {
     const newLocale = locale === 'zh' ? 'zh-cn' : locale;
     moment.locale(newLocale);
+  },
+
+  estimateBtcSize(amount, transctions, fromAddress, destAddress, privateKey, isSendAllBalance) {
+    console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
+    const inputTxs = [];
+    let sum = new BigNumber(0);
+    if (_.isEmpty(transctions)) {
+      return 400;
+    }
+
+    // Find out transactions which combines amount
+    for (let i = 0; i < transctions.length; i += 1) {
+      const tx = transctions[i];
+      if (tx.status === definitions.txStatus.SUCCESS) {
+        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
+        sum = sum.plus(txAmount);
+        inputTxs.push(tx.hash);
+      }
+      if (sum.isGreaterThanOrEqualTo(amount)) {
+        break;
+      }
+    }
+    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
+
+    const outputSize = isSendAllBalance ? 1 : 2;
+    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
+    const tx = new bitcoin.TransactionBuilder();
+    _.each(inputTxs, (inputTx) => {
+      tx.addInput(inputTx, outputSize);
+    });
+    tx.addOutput(destAddress, 0);
+    if (isSendAllBalance) {
+      tx.addOutput(fromAddress, 0);
+    }
+    _.each(inputTxs, (inputTx, index) => {
+      tx.sign(index, key);
+    });
+    const result = tx.build().toHex();
+    const size = result.length / 2;
+    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    return size;
   },
 };
 
