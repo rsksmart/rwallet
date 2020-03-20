@@ -3,10 +3,9 @@ import {
   StyleSheet, FlatList, TouchableOpacity, Text, Image, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
@@ -18,14 +17,15 @@ const styles = StyleSheet.create({
   },
 });
 
-class SelectWallet extends Component {
+export default class SelectWallet extends Component {
   static navigationOptions = () => ({
     header: null,
   });
 
-  static renderWalletList(listData) {
+  static renderAssetsList(listData) {
     return (
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={listData}
         extraData={listData}
         renderItem={({ item }) => (
@@ -44,49 +44,36 @@ class SelectWallet extends Component {
     );
   }
 
-  static createListData(wallets, navigation) {
+  static createListData(wallet, navigation) {
     const { operation } = navigation.state.params;
-    if (!_.isArray(wallets)) {
-      return [];
-    }
-
     const listData = [];
-
-    // Create element for each wallet (e.g. key 0)
-    wallets.forEach((wallet) => {
-      const wal = { name: wallet.name, coins: [] };
-      // Create element for each Token (e.g. BTC, RBTC, RIF)
-      wallet.coins.forEach((coin, index) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
-        const item = {
-          key: `${index}`,
-          title: coin.defaultName,
-          text: coinType,
-          icon: coin.icon,
-          onPress: () => {
-            if (operation === 'send') {
-              navigation.navigate('Transfer', { wallet, coin });
-            } else if (operation === 'receive') {
-              navigation.navigate('WalletReceive', { coin });
-            }
-          },
-        };
-        wal.coins.push(item);
-      });
-      listData.push(wal);
+    // Create element for each Token (e.g. BTC, RBTC, RIF)
+    _.each(wallet.coins, (coin) => {
+      const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+      const item = {
+        title: coin.defaultName,
+        text: coinType,
+        icon: coin.icon,
+        onPress: () => {
+          if (operation === 'send') {
+            navigation.navigate('Transfer', { wallet, coin });
+          } else if (operation === 'receive') {
+            navigation.navigate('WalletReceive', { coin });
+          }
+        },
+      };
+      listData.push(item);
     });
-
     return listData;
   }
 
   componentWillMount() {
-    const {
-      walletManager, navigation,
-    } = this.props;
+    const { navigation } = this.props;
 
-    const { wallets } = walletManager;
-    const listData = SelectWallet.createListData(wallets, navigation);
+    const { wallet } = navigation.state.params;
+    const listData = SelectWallet.createListData(wallet, navigation);
 
+    this.name = wallet.name;
     this.setState({ listData });
   }
 
@@ -94,25 +81,15 @@ class SelectWallet extends Component {
     const { navigation } = this.props;
     const { listData } = this.state;
     return (
-      <BasePageGereral
+      <BasePageSimple
         isSafeView
-        hasBottomBtn={false}
-        hasLoader={false}
         headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.selectWallet.title" />}
       >
         <View style={styles.body}>
-          <FlatList
-            data={listData}
-            renderItem={({ item }) => (
-              <View style={coinListItemStyles.itemView}>
-                <Text style={[coinListItemStyles.sectionTitle]}>{item.name}</Text>
-                {SelectWallet.renderWalletList(item.coins)}
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          <Text style={[coinListItemStyles.sectionTitle]}>{this.name}</Text>
+          { SelectWallet.renderAssetsList(listData) }
         </View>
-      </BasePageGereral>
+      </BasePageSimple>
     );
   }
 }
@@ -124,17 +101,4 @@ SelectWallet.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  walletManager: PropTypes.shape({
-    wallets: PropTypes.array.isRequired,
-  }),
 };
-
-SelectWallet.defaultProps = {
-  walletManager: undefined,
-};
-
-const mapStateToProps = (state) => ({
-  walletManager: state.Wallet.get('walletManager'),
-});
-
-export default connect(mapStateToProps)(SelectWallet);

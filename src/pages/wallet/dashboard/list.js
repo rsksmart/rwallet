@@ -97,35 +97,29 @@ class WalletList extends Component {
     this.setState(newState);
   }
 
-  onSwapPressed() {
+  onSwapPressed(wallet) {
     const { resetSwap, navigation } = this.props;
     resetSwap();
-    navigation.navigate('SwapSelection', { selectionType: 'source', init: true });
+    navigation.navigate('SwapSelection', { selectionType: 'source', init: true, wallet });
   }
 
   render() {
-    const { navigation, walletManager } = this.props;
+    const { navigation } = this.props;
     const { currencySymbol, listData } = this.state;
-    const { wallets } = walletManager;
 
-    let hasSwappableCoin = false;
-    for (let i = 0; i < wallets.length; i += 1) {
-      hasSwappableCoin = wallets[i].coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
-      if (hasSwappableCoin) {
-        break;
-      }
-    }
-
-    const pageData = _.map(listData, (walletData, index) => ({
-      index,
-      walletData,
-      onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send' }),
-      onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive' }),
-      onSwapPressed: this.onSwapPressed,
-      onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
-      currencySymbol,
-      hasSwappableCoin,
-    }));
+    const pageData = _.map(listData, (walletData, index) => {
+      const hasSwappableCoin = walletData.wallet.coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
+      return {
+        index,
+        walletData,
+        onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
+        onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
+        onSwapPressed: () => this.onSwapPressed(walletData.wallet),
+        onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
+        currencySymbol,
+        hasSwappableCoin,
+      };
+    });
 
     return (
       <BasePageSimple

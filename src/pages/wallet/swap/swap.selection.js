@@ -97,6 +97,7 @@ class SwapSelection extends Component {
 
   constructor(props) {
     super(props);
+    this.selectedWallet = null;
     this.state = {
       loading: true,
       contentComponent: null,
@@ -124,6 +125,8 @@ class SwapSelection extends Component {
     this.setState({ loading: true });
     if (!navigation.state.params) {
       resetSwap();
+    } else {
+      this.selectedWallet = navigation.state.params.wallet;
     }
     setTimeout(() => {
       this.updateSelectionInfo();
@@ -136,7 +139,7 @@ class SwapSelection extends Component {
     const {
       navigation, walletManager,
     } = this.props;
-    const { wallets } = walletManager;
+    const wallets = this.selectedWallet ? [this.selectedWallet] : walletManager.wallets;
     const { selectionType } = navigation.state.params || { selectionType: 'source' };
     // let rawList;
     // let filters = [];
@@ -169,7 +172,6 @@ class SwapSelection extends Component {
     // } else {
     //   filters = null;
     // }
-
     const coinList = this.createListData(wallets, navigation, selectionType, null);
     if (coinList.length) {
       contentComponent = (
