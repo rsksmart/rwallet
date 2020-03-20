@@ -328,6 +328,11 @@ class Transfer extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { removeConfirmation } = this.props;
+    removeConfirmation();
+  }
+
   onGroupSelect(index) {
     this.setState({ feeLevel: index, isCustomFee: false });
   }
@@ -446,7 +451,10 @@ class Transfer extends Component {
   }
 
   onMemoInputBlur() {
-    this.requestFees(false);
+    const { symbol } = this.coin;
+    if (symbol !== 'BTC') {
+      this.requestFees(false);
+    }
   }
 
   onAmountInputChangeText(text) {
@@ -516,7 +524,7 @@ class Transfer extends Component {
       this.setState({ loading: true });
       let transactionFees = null;
       if (symbol === 'BTC') {
-        const size = common.estimateBtcSize(new BigNumber(amount), transactions, address, to, privateKey, isAllBalance);
+        const size = common.estimateBtcSize(type, amount, transactions, address, to, privateKey, isAllBalance);
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       } else {
@@ -536,7 +544,7 @@ class Transfer extends Component {
         definitions.defaultErrorNotification.title,
         definitions.defaultErrorNotification.message,
         'button.retry',
-        this.requestFees(isAllBalance),
+        () => this.requestFees(isAllBalance),
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
@@ -1005,6 +1013,7 @@ Transfer.propTypes = {
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
   addConfirmation: PropTypes.func.isRequired,
+  removeConfirmation: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   showPasscode: PropTypes.func.isRequired,
@@ -1024,6 +1033,7 @@ const mapDispatchToProps = (dispatch) => ({
   addConfirmation: (confirmation) => dispatch(
     appActions.addConfirmation(confirmation),
   ),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),

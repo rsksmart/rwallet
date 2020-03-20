@@ -601,7 +601,7 @@ class Swap extends Component {
     let transactionFees = null;
     if (symbol === 'BTC') {
       const isAllBalance = balance.isEqualTo(txAmount);
-      const size = common.estimateBtcSize(txAmount, transactions, address, address, privateKey, isAllBalance);
+      const size = common.estimateBtcSize(type, txAmount, transactions, address, address, privateKey, isAllBalance);
       console.log('common.estimateBtcSize, size: ', size);
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
