@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     alignSelf: 'center',
-    paddingVertical: 15,
+    paddingTop: 15,
+    marginBottom: screenHelper.bottomButtonMargin,
     flexDirection: 'row',
   },
 });
