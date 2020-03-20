@@ -4,7 +4,7 @@ import {
   View, Image, StyleSheet, Text,
 } from 'react-native';
 import { isEmpty } from 'lodash';
-import DeviceInfo from 'react-native-device-info';
+import VersionNumber from 'react-native-version-number';
 
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
@@ -58,7 +58,7 @@ class StartPage extends Component {
   }
 
   async componentDidMount() {
-    const version = await DeviceInfo.getVersion();
+    const version = VersionNumber.appVersion;
     this.setState({ version });
   }
 

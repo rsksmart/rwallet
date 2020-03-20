@@ -111,7 +111,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.8.11"
+        versionName "0.8.12"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
@@ -159,8 +159,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-version-number')
     implementation project(':react-native-linear-gradient')
-    implementation project(':react-native-device-info')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-udp')
     implementation project(':react-native-tcp')
