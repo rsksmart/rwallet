@@ -233,7 +233,6 @@ class Carousel extends Component {
   render() {
     const {
       data,
-      bounces,
       style,
       itemWidth,
       containerWidth,
@@ -245,7 +244,6 @@ class Carousel extends Component {
       <AnimatedFlatList
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...otherProps}
-        bounces={bounces}
         horizontal
         data={data}
         decelerationRate={0}
@@ -256,6 +254,8 @@ class Carousel extends Component {
         style={[styles.container, { width: containerWidth }, style]}
         contentContainerStyle={{ paddingRight: this.containerPadding }}
         showsHorizontalScrollIndicator={false}
+        bounces={false}
+        alwaysBounceHorizontal={false}
         onScrollBeginDrag={this.handleOnScrollBeginDrag}
         onScroll={this.handleOnScroll}
         onScrollEndDrag={this.handleOnScrollEndDrag}
@@ -267,7 +267,6 @@ class Carousel extends Component {
 
 Carousel.propTypes = {
   style: ViewPropTypes.style,
-  bounces: PropTypes.bool,
   itemWidth: PropTypes.number,
   separatorWidth: PropTypes.number,
   containerWidth: PropTypes.number,
@@ -292,7 +291,6 @@ Carousel.defaultProps = {
   separatorWidth: 0,
   containerWidth: width,
   itemWidth: 0.9 * width,
-  bounces: true,
   data: [],
   style: {},
   initialIndex: 0,
