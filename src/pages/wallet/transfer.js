@@ -452,6 +452,8 @@ class Transfer extends Component {
 
   onMemoInputBlur() {
     const { symbol } = this.coin;
+    // Because the fee of BTC transaction does not depend on memo,
+    // changes to memo do not require recalculation of fee.
     if (symbol !== 'BTC') {
       this.requestFees(false);
     }
