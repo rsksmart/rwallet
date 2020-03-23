@@ -236,7 +236,6 @@ class Swap extends Component {
   constructor(props) {
     super(props);
     this.onExchangePress = this.onExchangePress.bind(this);
-    this.onSwitchPress = this.onSwitchPress.bind(this);
     this.onHistoryPress = this.onHistoryPress.bind(this);
     this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
     this.onSelectDestPress = this.onSelectDestPress.bind(this);
@@ -257,17 +256,44 @@ class Swap extends Component {
       sourceUsdRate: -1,
       destUsdRate: -1,
       coinLoading: false,
+      isLoading: false,
     };
+    this.maxDepositFeeObject = null;
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, resetSwapRateError } = this.props;
+    resetSwapRateError();
     this.willFocusSubscription = navigation.addListener(
       'willFocus',
       () => {
         this.updateSwapData();
       },
     );
+  }
+
+  async componentWillReceiveProps(nextProps) {
+    const {
+      swapRates, swapRatesError, resetSwapRateError, navigation, addConfirmation,
+    } = nextProps;
+    const { swapRates: lastSwapRates } = this.props;
+    if (swapRates !== lastSwapRates) {
+      this.updateSwapRate(swapRates);
+    }
+
+    // If swap rates is exsisted, reset and ask use to retry.
+    if (swapRatesError) {
+      this.setState({ coinLoading: false });
+      resetSwapRateError();
+      const confirmation = createErrorConfirmation(
+        definitions.defaultErrorNotification.title,
+        definitions.defaultErrorNotification.message,
+        'button.retry',
+        () => this.requestSwapRate(),
+        () => navigation.goBack(),
+      );
+      addConfirmation(confirmation);
+    }
   }
 
   componentWillUnmount() {
@@ -286,7 +312,7 @@ class Swap extends Component {
     const { sourceAmount, limitMaxDepositCoin } = this.state;
 
     try {
-      this.setState({ loading: true });
+      this.setState({ isLoading: true });
       const { address: sourceAddress, id: sourceId, symbol: sourceSymbol } = swapSource.coin;
       const { address: destAddress, id: destId } = swapDest.coin;
       const sourceCoin = sourceId.toLowerCase();
@@ -313,7 +339,7 @@ class Swap extends Component {
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
-      this.setState({ loading: false });
+      this.setState({ isLoading: false });
       const completedParams = {
         symbol: swapSource.coin.symbol,
         type: swapSource.coin.type,
@@ -322,7 +348,7 @@ class Swap extends Component {
       navigation.navigate('SwapCompleted', completedParams);
       transaction = null;
     } catch (error) {
-      this.setState({ loading: false });
+      this.setState({ isLoading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
       let notification = null;
@@ -389,31 +415,31 @@ class Swap extends Component {
     }
   }
 
-  onSwitchPress = (index) => {
-    const { swapDest, swapSource } = this.props;
-    const {
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
-    } = this.state;
-    let amount = -1;
-    switch (index) {
-      case 0:
-        amount = limitMinDepositCoin;
-        break;
-      case 1:
-        amount = limitHalfDepositCoin;
-        break;
-      case 2:
-        amount = limitMaxDepositCoin;
-        break;
-      default:
+  onSwitchPressed = async (index) => {
+    const { navigation, addConfirmation } = this.props;
+    const { maxDepositFeeObject } = this;
+    if (maxDepositFeeObject === null) {
+      this.setState({ isLoading: true });
+      try {
+        this.maxDepositFeeObject = await this.requestMaxDepositFee();
+        const { limitMaxDepositCoin, limitHalfDepositCoin } = this.calcMaxAndHalfDeposit(this.maxDepositFeeObject.fee);
+        this.setState({ limitMaxDepositCoin, limitHalfDepositCoin }, () => this.switchDepositIndex(index));
+      } catch (error) {
+        const confirmation = createErrorConfirmation(
+          definitions.defaultErrorNotification.title,
+          definitions.defaultErrorNotification.message,
+          'button.retry',
+          () => this.onSwitchPressed(),
+          () => navigation.goBack(),
+        );
+        addConfirmation(confirmation);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    } else {
+      this.switchDepositIndex(index);
     }
-    const amountState = this.getAmountState(amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-    this.setState({
-      switchIndex: index,
-      sourceText: amount.toString(),
-      ...amountState,
-    });
-  };
+  }
 
   onHistoryPress() {
     const { navigation, swapSource } = this.props;
@@ -495,56 +521,6 @@ class Swap extends Component {
     return feeObject;
   }
 
-  updateRateInfoAndFee = async (currentSwapSource, currentSwapDest, props) => {
-    console.log('updateRateInfoAndFee', currentSwapSource, currentSwapDest, props);
-    const {
-      navigation, addConfirmation, swapDest, swapSource,
-    } = props;
-    const { sourceAmount } = this.state;
-    const sourceCoinId = currentSwapSource.coin.id.toLowerCase();
-    const destCoinId = currentSwapDest.coin.id.toLowerCase();
-    this.setState({ coinLoading: true });
-    try {
-      const sdRate = await CancelablePromiseUtil.makeCancelable(CoinswitchHelper.getRate(sourceCoinId, destCoinId), this);
-      const { rate, limitMinDepositCoin, limitMaxDepositCoin } = sdRate;
-      console.log(`updateRateInfoAndFee, sdRate: ${JSON.stringify(sdRate)}`);
-
-      const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-
-      let maxDepositCoin = null;
-      if (currentSwapSource.coin.symbol === 'BTC' || currentSwapSource.coin.symbol === 'RBTC') {
-        const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance), this);
-        maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
-        this.maxDepositFeeObject = feeObject;
-      } else {
-        maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.decimalPlaces);
-      }
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
-      maxDepositCoin = Math.max(maxDepositCoin, 0);
-
-      this.setState({
-        rate,
-        limitMinDepositCoin,
-        limitMaxDepositCoin: maxDepositCoin,
-        limitHalfDepositCoin,
-        coinLoading: false,
-        ...amountState,
-      });
-    } catch (err) {
-      console.log('updateRateInfoAndFee, err', err);
-      this.setState({ coinLoading: false });
-      const confirmation = createErrorConfirmation(
-        definitions.defaultErrorNotification.title,
-        definitions.defaultErrorNotification.message,
-        'button.retry',
-        () => this.updateRateInfoAndFee(currentSwapSource, currentSwapDest, props),
-        () => navigation.goBack(),
-      );
-      addConfirmation(confirmation);
-      this.setState({ coinLoading: false });
-    }
-  };
-
   getFeeParams = (symbol, fees) => {
     if (symbol === 'BTC') {
       return { fees: fees.fees.medium };
@@ -565,10 +541,106 @@ class Swap extends Component {
     if (isAmount) {
       sourceAmount = parseFloat(text);
     }
+    this.maxDepositFeeObject = null;
     this.setState({ sourceText: text, switchIndex: -1, sourceAmount }, () => setTimeout(() => {
       this.updateSwapData();
     }, 0));
   };
+
+  updateRateInfoAndFee = async () => {
+    this.requestSwapRate();
+    // Request and calculate maxDeposit
+    try {
+      this.maxDepositFeeObject = await this.requestMaxDepositFee();
+      const { limitMaxDepositCoin, limitHalfDepositCoin } = this.calcMaxAndHalfDeposit(this.maxDepositFeeObject.fee);
+      this.setState({ limitMaxDepositCoin, limitHalfDepositCoin });
+      console.log(`limitMaxDepositCoin: ${limitMaxDepositCoin}, limitHalfDepositCoin: ${limitHalfDepositCoin}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  switchDepositIndex = (index) => {
+    const { swapDest, swapSource } = this.props;
+    const {
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
+    } = this.state;
+    let amount = -1;
+    switch (index) {
+      case 0:
+        amount = limitMinDepositCoin;
+        break;
+      case 1:
+        amount = limitHalfDepositCoin;
+        break;
+      case 2:
+        amount = limitMaxDepositCoin;
+        break;
+      default:
+    }
+
+    const amountState = this.getAmountState(amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+    this.setState({
+      switchIndex: index,
+      sourceText: amount.toString(),
+      ...amountState,
+    });
+  }
+
+  async requestMaxDepositFee() {
+    const { swapSource } = this.props;
+    const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(swapSource.coin.balance), this);
+    return feeObject;
+  }
+
+  calcMaxAndHalfDeposit(fee) {
+    const { swapSource } = this.props;
+    let limitMaxDepositCoin = null;
+    if (swapSource.coin.symbol === 'BTC' || swapSource.coin.symbol === 'RBTC') {
+      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance.minus(fee), swapSource.coin.decimalPlaces);
+    } else {
+      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance, swapSource.coin.decimalPlaces);
+    }
+    const limitHalfDepositCoin = common.formatAmount(swapSource.coin.balance.div(2), swapSource.coin.decimalPlaces);
+    limitMaxDepositCoin = Math.max(limitMaxDepositCoin, 0);
+    const result = { limitMaxDepositCoin, limitHalfDepositCoin };
+    console.log('result: ', result);
+    return result;
+  }
+
+  requestSwapRate() {
+    const {
+      getSwapRate, swapRates, swapDest, swapSource,
+    } = this.props;
+    const sourceSymbol = swapSource.coin.symbol.toLowerCase();
+    const destSymbol = swapDest.coin.symbol.toLowerCase();
+    // Read from cached rate data
+    const isCachedRate = this.updateSwapRate(swapRates);
+    console.log('requestSwapRate: isCachedRate: ', isCachedRate);
+    if (!isCachedRate) {
+      this.setState({ coinLoading: true });
+    }
+    // Get new rate data from backend
+    getSwapRate(sourceSymbol, destSymbol);
+  }
+
+  updateSwapRate(swapRates) {
+    const { swapDest, swapSource } = this.props;
+    const { sourceAmount } = this.state;
+    const sourceSymbol = swapSource.coin.symbol.toLowerCase();
+    const destSymbol = swapDest.coin.symbol.toLowerCase();
+    const sdRate = swapRates[sourceSymbol] && swapRates[sourceSymbol][destSymbol];
+    if (!sdRate) {
+      return false;
+    }
+    console.log(`updateRateInfoAndFee, sdRate: ${JSON.stringify(sdRate)}`);
+    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = sdRate;
+    const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+    this.setState({
+      rate, limitMinDepositCoin, ...amountState, coinLoading: false,
+    });
+    return true;
+  }
 
   // Request fee from network, returns { fee, feeParams }
   async requestFee(amount) {
@@ -624,7 +696,7 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      this.updateRateInfoAndFee(currentSwapSource, currentSwapDest, this.props);
+      this.updateRateInfoAndFee();
     } else if (!swapSource && !swapDest) {
       const notification = createInfoNotification(
         'modal.swap.title',
@@ -710,7 +782,7 @@ class Swap extends Component {
     } = this.props;
     const {
       isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, destText, sourceUsdRate, destUsdRate,
-      limitMinDepositCoin, limitMaxDepositCoin, rate, coinLoading, loading, switchIndex,
+      limitMinDepositCoin, limitMaxDepositCoin, rate, coinLoading, isLoading, switchIndex,
     } = this.state;
 
     const currencySymbol = common.getCurrencySymbol(currency);
@@ -735,7 +807,7 @@ class Swap extends Component {
       <BasePageGereral
         isSafeView
         hasLoader
-        isLoading={loading}
+        isLoading={isLoading}
         headerComponent={<SwapHeader title="page.wallet.swap.title" onBackButtonPress={() => navigation.goBack()} rightButton={<View />} />}
         customBottomButton={customBottomButton}
       >
@@ -829,13 +901,13 @@ class Swap extends Component {
             pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 && !coinLoading ? 'auto' : 'none'}
             style={styles.switchView}
           >
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 0 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(0)}>
+            <TouchableOpacity style={[styles.switchItem, switchIndex === 0 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(0)}>
               <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 1 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(1)}>
+            <TouchableOpacity style={[styles.switchItem, switchIndex === 1 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(1)}>
               <Text style={styles.switchText}>{switchItems[1]}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.switchItem, switchIndex === 2 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPress(2)}>
+            <TouchableOpacity style={[styles.switchItem, switchIndex === 2 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(2)}>
               <Text style={styles.switchText}>{limitMaxDepositCoin > 0 ? `${switchItems[2]}(${limitMaxDepositCoin})` : switchItems[2]}</Text>
             </TouchableOpacity>
           </View>
@@ -873,11 +945,17 @@ Swap.propTypes = {
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
   }).isRequired,
+  addConfirmation: PropTypes.func.isRequired,
+  swapRates: PropTypes.shape({}).isRequired,
+  getSwapRate: PropTypes.func.isRequired,
+  swapRatesError: PropTypes.shape({}),
+  resetSwapRateError: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
   swapSource: null,
   swapDest: null,
+  swapRatesError: null,
 };
 
 const mapStateToProps = (state) => ({
@@ -886,6 +964,8 @@ const mapStateToProps = (state) => ({
   swapDest: state.Wallet.get('swapDest'),
   prices: state.Wallet.get('prices'),
   currency: state.App.get('currency'),
+  swapRates: state.Wallet.get('swapRates'),
+  swapRatesError: state.Wallet.get('swapRatesError'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -899,6 +979,8 @@ const mapDispatchToProps = (dispatch) => ({
   switchSwap: () => dispatch(walletActions.switchSwap()),
   resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
   resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
+  getSwapRate: (sourceCoinId, destCoinId) => dispatch(walletActions.getSwapRate(sourceCoinId, destCoinId)),
+  resetSwapRateError: () => dispatch(walletActions.resetSwapRateResultError()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);

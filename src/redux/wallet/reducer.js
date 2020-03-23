@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 import actions from './actions';
 import common from '../../common/common';
 
@@ -14,6 +15,8 @@ const initState = new Map({
   swapFromCoin: null,
   swapDestCoin: null,
   addTokenResult: null,
+  swapRates: {},
+  swapRatesError: null,
 });
 
 /**
@@ -109,6 +112,27 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.RESET_ADD_TOKEN_RESULT: {
       return state.set('addTokenResult', null);
+    }
+    case actions.GET_SWAP_RATE_RESULT: {
+      const swapRates = _.clone(state.get('swapRates'));
+      const swapRate = action.value;
+      const { sourceCoinId, destCoinId } = swapRate;
+      swapRates[sourceCoinId] = {};
+      swapRates[sourceCoinId][destCoinId] = swapRate.rate;
+      console.log('swapRates: ', swapRates);
+      return state.set('swapRates', swapRates);
+    }
+    case actions.SET_SWAP_RATE_RESULT_ERROR: {
+      const swapRates = state.get('swapRates');
+      const { sourceCoinId, destCoinId, error } = action.value;
+      // If pairs is not in the swapRates cache, set error
+      if (!(swapRates[sourceCoinId] && swapRates[sourceCoinId][destCoinId])) {
+        return state.set('swapRatesError', error);
+      }
+      return state;
+    }
+    case actions.RESET_SWAP_RATE_RESULT_ERROR: {
+      return state.set('swapRatesError', null);
     }
     default:
       return state;
