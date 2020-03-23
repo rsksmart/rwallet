@@ -302,7 +302,7 @@ class Swap extends Component {
       if ((sourceSymbol === 'BTC' || sourceSymbol === 'RBTC') && limitMaxDepositCoin === sourceAmount && this.maxDepositFeeObject) {
         feeObject = this.maxDepositFeeObject;
       } else {
-        feeObject = await this.requestFee(sourceAmount);
+        feeObject = await this.requestFee(sourceAmount, agentAddress);
       }
       const gasFee = feeObject.feeParams;
       const extraParams = {
@@ -481,25 +481,9 @@ class Swap extends Component {
     };
   };
 
-  async getTxFee(amount) {
-    const { swapSource } = this.props;
-    const { symbol } = swapSource.coin;
-    const feeObject = await this.requestFee(amount);
-    if (symbol !== 'BTC') {
-      return feeObject;
-    }
-    const { fee } = feeObject;
-    const newFee = BigNumber.minimum(swapSource.coin.balance.minus(amount), fee);
-    feeObject.fee = newFee;
-    feeObject.feeParams.fees = common.btcToSatoshiHex(newFee);
-    return feeObject;
-  }
-
   updateRateInfoAndFee = async (currentSwapSource, currentSwapDest, props) => {
     console.log('updateRateInfoAndFee', currentSwapSource, currentSwapDest, props);
-    const {
-      navigation, addConfirmation, swapDest, swapSource,
-    } = props;
+    const { navigation, addConfirmation } = props;
     const { sourceAmount } = this.state;
     const sourceCoinId = currentSwapSource.coin.id.toLowerCase();
     const destCoinId = currentSwapDest.coin.id.toLowerCase();
@@ -509,11 +493,11 @@ class Swap extends Component {
       const { rate, limitMinDepositCoin, limitMaxDepositCoin } = sdRate;
       console.log(`updateRateInfoAndFee, sdRate: ${JSON.stringify(sdRate)}`);
 
-      const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+      const amountState = this.getAmountState(sourceAmount, currentSwapDest, currentSwapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
 
       let maxDepositCoin = null;
       if (currentSwapSource.coin.symbol === 'BTC' || currentSwapSource.coin.symbol === 'RBTC') {
-        const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance), this);
+        const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(currentSwapSource.coin.balance, currentSwapSource.coin.address), this);
         maxDepositCoin = common.formatAmount(currentSwapSource.coin.balance.minus(feeObject.fee), currentSwapSource.coin.decimalPlaces);
         this.maxDepositFeeObject = feeObject;
       } else {
@@ -571,10 +555,10 @@ class Swap extends Component {
   };
 
   // Request fee from network, returns { fee, feeParams }
-  async requestFee(amount) {
+  async requestFee(amount, toAddress) {
     const { swapSource } = this.props;
     const { symbol } = swapSource.coin;
-    const transactionFees = await this.loadTransactionFees(amount);
+    const transactionFees = await this.loadTransactionFees(amount, toAddress);
     let fee = null;
     let feeParams = null;
     if (symbol === 'BTC') {
@@ -590,7 +574,7 @@ class Swap extends Component {
     return { fee, feeParams };
   }
 
-  async loadTransactionFees(amount) {
+  async loadTransactionFees(amount, toAddress) {
     const txAmount = new BigNumber(amount);
     const { swapSource } = this.props;
     const {
@@ -601,7 +585,16 @@ class Swap extends Component {
     let transactionFees = null;
     if (symbol === 'BTC') {
       const isAllBalance = balance.isEqualTo(txAmount);
-      const size = common.estimateBtcSize(type, txAmount, transactions, address, address, privateKey, isAllBalance);
+      const estimateParams = {
+        netType: type,
+        amount: txAmount,
+        transactions,
+        fromAddress: address,
+        destAddress: toAddress,
+        privateKey,
+        isSendAllBalance: isAllBalance,
+      };
+      const size = common.estimateBtcSize(estimateParams);
       console.log('common.estimateBtcSize, size: ', size);
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);

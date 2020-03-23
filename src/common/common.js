@@ -345,17 +345,19 @@ const common = {
     moment.locale(newLocale);
   },
 
-  estimateBtcSize(netType, amount, transctions, fromAddress, destAddress, privateKey, isSendAllBalance) {
+  estimateBtcSize({
+    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
     const inputTxs = [];
     let sum = new BigNumber(0);
-    if (_.isEmpty(transctions)) {
+    if (_.isEmpty(transactions)) {
       return 400;
     }
 
     // Find out transactions which combines amount
-    for (let i = 0; i < transctions.length; i += 1) {
-      const tx = transctions[i];
+    for (let i = 0; i < transactions.length; i += 1) {
+      const tx = transactions[i];
       if (tx.status === definitions.txStatus.SUCCESS) {
         const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
         sum = sum.plus(txAmount);
@@ -368,10 +370,9 @@ const common = {
     console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
 
     const outputSize = isSendAllBalance ? 1 : 2;
-
-    const exParams = netType === 'Mainnet' ? undefined : { network: bitcoin.networks.testnet };
-    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), exParams);
     const network = netType === 'Mainnet' ? undefined : bitcoin.networks.testnet;
+    const exParams = { network };
+    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), exParams);
     const tx = new bitcoin.TransactionBuilder(network);
     _.each(inputTxs, (inputTx) => {
       tx.addInput(inputTx, outputSize);

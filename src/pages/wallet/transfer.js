@@ -524,7 +524,16 @@ class Transfer extends Component {
       this.setState({ loading: true });
       let transactionFees = null;
       if (symbol === 'BTC') {
-        const size = common.estimateBtcSize(type, amount, transactions, address, to, privateKey, isAllBalance);
+        const estimateParams = {
+          netType: type,
+          amount,
+          transactions,
+          fromAddress: address,
+          destAddress: to,
+          privateKey,
+          isSendAllBalance: isAllBalance,
+        };
+        const size = common.estimateBtcSize(estimateParams);
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       } else {
