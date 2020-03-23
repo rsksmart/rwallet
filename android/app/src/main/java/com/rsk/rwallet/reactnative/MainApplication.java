@@ -3,8 +3,8 @@ package com.rsk.rwallet.reactnative;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.tradle.react.UdpSocketsModule;
 import com.peel.react.TcpSocketsModule;
@@ -39,8 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNVersionNumberPackage(),
             new LinearGradientPackage(),
-            new RNDeviceInfo(),
             new VectorIconsPackage(),
             new UdpSocketsModule(),
             new TcpSocketsModule(),
