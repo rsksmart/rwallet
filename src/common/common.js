@@ -370,7 +370,7 @@ const common = {
     console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
 
     const outputSize = isSendAllBalance ? 1 : 2;
-    const network = netType === 'Mainnet' ? undefined : bitcoin.networks.testnet;
+    const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const exParams = { network };
     const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), exParams);
     const tx = new bitcoin.TransactionBuilder(network);
