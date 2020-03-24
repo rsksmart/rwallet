@@ -308,8 +308,7 @@ function* getSwapRateRequest(action) {
     };
     yield put({ type: actions.GET_SWAP_RATE_RESULT, value: swapRate });
   } catch (err) {
-    // const message = yield call(ParseHelper.handleError, { err });
-    console.error('getSwapRateRequest, err: ', err);
+    console.log('getSwapRateRequest, err: ', err);
     yield put({ type: actions.SET_SWAP_RATE_RESULT_ERROR, value: { sourceCoinId, destCoinId, error: err } });
   }
 }

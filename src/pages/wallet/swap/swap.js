@@ -416,23 +416,23 @@ class Swap extends Component {
   }
 
   onSwitchPressed = async (index) => {
-    const { navigation, addConfirmation } = this.props;
+    const { addNotification } = this.props;
     const { maxDepositFeeObject } = this;
-    if (maxDepositFeeObject === null) {
+    // MIN, HALF relies only on exchange rates
+    // ALL relies on transfer fees
+    if (index === 2 && maxDepositFeeObject === null) {
       this.setState({ isLoading: true });
       try {
         this.maxDepositFeeObject = await this.requestMaxDepositFee();
-        const { limitMaxDepositCoin, limitHalfDepositCoin } = this.calcMaxAndHalfDeposit(this.maxDepositFeeObject.fee);
-        this.setState({ limitMaxDepositCoin, limitHalfDepositCoin }, () => this.switchDepositIndex(index));
+        const limitMaxDepositCoin = this.calcMaxDeposit(this.maxDepositFeeObject.fee);
+        this.setState({ limitMaxDepositCoin }, () => this.switchDepositIndex(index));
       } catch (error) {
-        const confirmation = createErrorConfirmation(
+        const notification = createErrorNotification(
           definitions.defaultErrorNotification.title,
           definitions.defaultErrorNotification.message,
           'button.retry',
-          () => this.onSwitchPressed(),
-          () => navigation.goBack(),
         );
-        addConfirmation(confirmation);
+        addNotification(notification);
       } finally {
         this.setState({ isLoading: false });
       }
@@ -547,16 +547,16 @@ class Swap extends Component {
     }, 0));
   };
 
-  updateRateInfoAndFee = async () => {
+  updateRateInfoAndMaxDeposit = async () => {
     this.requestSwapRate();
     // Request and calculate maxDeposit
     try {
       this.maxDepositFeeObject = await this.requestMaxDepositFee();
-      const { limitMaxDepositCoin, limitHalfDepositCoin } = this.calcMaxAndHalfDeposit(this.maxDepositFeeObject.fee);
-      this.setState({ limitMaxDepositCoin, limitHalfDepositCoin });
-      console.log(`limitMaxDepositCoin: ${limitMaxDepositCoin}, limitHalfDepositCoin: ${limitHalfDepositCoin}`);
+      const limitMaxDepositCoin = this.calcMaxDeposit(this.maxDepositFeeObject.fee);
+      this.setState({ limitMaxDepositCoin });
+      console.log(`limitMaxDepositCoin: ${limitMaxDepositCoin}`);
     } catch (error) {
-      console.log(error);
+      console.log('swap::requestMaxDepositFee, error: ', error);
     }
   };
 
@@ -593,7 +593,7 @@ class Swap extends Component {
     return feeObject;
   }
 
-  calcMaxAndHalfDeposit(fee) {
+  calcMaxDeposit(fee) {
     const { swapSource } = this.props;
     let limitMaxDepositCoin = null;
     if (swapSource.coin.symbol === 'BTC' || swapSource.coin.symbol === 'RBTC') {
@@ -601,11 +601,8 @@ class Swap extends Component {
     } else {
       limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance, swapSource.coin.decimalPlaces);
     }
-    const limitHalfDepositCoin = common.formatAmount(swapSource.coin.balance.div(2), swapSource.coin.decimalPlaces);
     limitMaxDepositCoin = Math.max(limitMaxDepositCoin, 0);
-    const result = { limitMaxDepositCoin, limitHalfDepositCoin };
-    console.log('result: ', result);
-    return result;
+    return limitMaxDepositCoin;
   }
 
   requestSwapRate() {
@@ -633,7 +630,7 @@ class Swap extends Component {
     if (!sdRate) {
       return false;
     }
-    console.log(`updateRateInfoAndFee, sdRate: ${JSON.stringify(sdRate)}`);
+    console.log(`updateSwapRate, sdRate: ${JSON.stringify(sdRate)}`);
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = sdRate;
     const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
     this.setState({
@@ -696,7 +693,9 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      this.updateRateInfoAndFee();
+      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
+      this.setState({ limitHalfDepositCoin });
+      this.updateRateInfoAndMaxDeposit();
     } else if (!swapSource && !swapDest) {
       const notification = createInfoNotification(
         'modal.swap.title',
@@ -792,6 +791,7 @@ class Swap extends Component {
     const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.balance, swapSource.coin.decimalPlaces) : '';
 
     const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
+    console.log('isCanSwitchSourceDest: ', isCanSwitchSourceDest);
 
     const customBottomButton = (
       swapSource ? (
@@ -898,7 +898,7 @@ class Swap extends Component {
             )}
           </View>
           <View
-            pointerEvents={rate > 0 && limitMinDepositCoin > 0 && limitMaxDepositCoin > 0 && !coinLoading ? 'auto' : 'none'}
+            pointerEvents={rate > 0 && limitMinDepositCoin > 0 && !coinLoading ? 'auto' : 'none'}
             style={styles.switchView}
           >
             <TouchableOpacity style={[styles.switchItem, switchIndex === 0 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(0)}>
