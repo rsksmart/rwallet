@@ -19,6 +19,9 @@ import definitions from './definitions';
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
 
+// Default BTC transaction size
+const DEFAULT_BTC_TX_SIZE = 400;
+
 // more than 24 hours is considered a day
 // https://momentjs.com/docs/#/customization/relative-time/
 moment.relativeTimeThreshold('h', 24);
@@ -345,17 +348,21 @@ const common = {
     moment.locale(newLocale);
   },
 
-  estimateBtcSize(amount, transctions, fromAddress, destAddress, privateKey, isSendAllBalance) {
+  estimateBtcSize({
+    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
     const inputTxs = [];
     let sum = new BigNumber(0);
-    if (_.isEmpty(transctions)) {
-      return 400;
+
+    // If the transactions is empty, returns the default size
+    if (_.isEmpty(transactions)) {
+      return DEFAULT_BTC_TX_SIZE;
     }
 
     // Find out transactions which combines amount
-    for (let i = 0; i < transctions.length; i += 1) {
-      const tx = transctions[i];
+    for (let i = 0; i < transactions.length; i += 1) {
+      const tx = transactions[i];
       if (tx.status === definitions.txStatus.SUCCESS) {
         const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
         sum = sum.plus(txAmount);
@@ -368,8 +375,10 @@ const common = {
     console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
 
     const outputSize = isSendAllBalance ? 1 : 2;
-    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
-    const tx = new bitcoin.TransactionBuilder();
+    const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+    const exParams = { network };
+    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), exParams);
+    const tx = new bitcoin.TransactionBuilder(network);
     _.each(inputTxs, (inputTx) => {
       tx.addInput(inputTx, outputSize);
     });
