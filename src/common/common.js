@@ -19,6 +19,9 @@ import definitions from './definitions';
 const { consts: { currencies } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
 
+// Default BTC transaction size
+const DEFAULT_BTC_TX_SIZE = 400;
+
 // more than 24 hours is considered a day
 // https://momentjs.com/docs/#/customization/relative-time/
 moment.relativeTimeThreshold('h', 24);
@@ -349,13 +352,12 @@ const common = {
     netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
-    const defaultSize = 400;
     const inputTxs = [];
     let sum = new BigNumber(0);
 
     // If the transactions is empty, returns the default size
     if (_.isEmpty(transactions)) {
-      return defaultSize;
+      return DEFAULT_BTC_TX_SIZE;
     }
 
     // Find out transactions which combines amount
