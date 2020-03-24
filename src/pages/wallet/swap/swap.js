@@ -258,7 +258,7 @@ class Swap extends Component {
       coinLoading: false,
       isLoading: false,
     };
-    this.maxDepositFeeObject = null;
+    this.maxDepositFeeObject = undefined;
   }
 
   componentDidMount() {
@@ -285,7 +285,7 @@ class Swap extends Component {
       }
     }
 
-    // If swap rates is exsisted, reset and ask use to retry.
+    // If swap rates is exsisted, reset and ask user to retry.
     if (swapRatesError) {
       this.setState({ coinLoading: false });
       resetSwapRateError();
