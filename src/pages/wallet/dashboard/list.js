@@ -11,9 +11,11 @@ import common from '../../../common/common';
 import BasePageSimple from '../../base/base.page.simple';
 import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
+import appActions from '../../../redux/app/actions';
 import WalletCarousel from './wallet.carousel';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
+import { createErrorNotification } from '../../../common/notification.controller';
 
 const { getCurrencySymbol } = common;
 
@@ -103,6 +105,20 @@ class WalletList extends Component {
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true, wallet });
   }
 
+  validateAddress(address, symbol, type, networkId) {
+    const { addNotification } = this.props;
+    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
+    if (!isAddress) {
+      const notification = createErrorNotification(
+        'modal.invalidAddress.title',
+        'modal.invalidAddress.body',
+      );
+      addNotification(notification);
+      return false;
+    }
+    return true;
+  }
+
   render() {
     const { navigation } = this.props;
     const { currencySymbol, listData } = this.state;
@@ -114,6 +130,19 @@ class WalletList extends Component {
         walletData,
         onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
         onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
+        onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
+          operation: 'scan',
+          wallet: walletData.wallet,
+          onQrcodeDetected: (data, coin) => {
+            console.log('onQrcodeDetected, data: ', data);
+            const { symbol, type, networkId } = coin;
+            this.isAddressValid = this.validateAddress(data, symbol, type, networkId);
+            if (!this.isAddressValid) {
+              return;
+            }
+            navigation.navigate('Transfer', { wallet: walletData.wallet, coin, toAddress: data });
+          },
+        }),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
         onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
         currencySymbol,
@@ -151,6 +180,7 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -165,6 +195,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

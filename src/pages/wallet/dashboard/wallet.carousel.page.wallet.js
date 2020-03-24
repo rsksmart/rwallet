@@ -14,6 +14,8 @@ import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 
+const scan = require('../../../assets/images/icon/scan.png');
+
 const styles = StyleSheet.create({
   addAsset: {
     flexDirection: 'row',
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginTop: 0,
     marginLeft: 1,
+    flex: 1,
   },
   headerBoard: {
     width: '100%',
@@ -147,6 +150,18 @@ const styles = StyleSheet.create({
   noBorderRight: {
     borderRightWidth: 0,
   },
+  scanView: {
+    marginTop: 0,
+    marginRight: 10,
+  },
+  scan: {
+    width: 30,
+    height: 30,
+  },
+  titleView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 const WalletItem = (item) => (
@@ -167,7 +182,8 @@ const WalletItem = (item) => (
 
 const WalletPage = (props) => {
   const {
-    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, currencySymbol, hasSwappableCoin,
+    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, onScanQrcodePressed,
+    currencySymbol, hasSwappableCoin,
   } = props;
   const { name, coins, assetValue } = walletData;
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
@@ -181,7 +197,12 @@ const WalletPage = (props) => {
   );
   return (
     <View style={[flex.flex1]}>
-      <Loc style={styles.headerTitle} text={name} />
+      <View style={styles.titleView}>
+        <Loc style={styles.headerTitle} text={name} />
+        <TouchableOpacity style={styles.scanView} onPress={() => onScanQrcodePressed()}>
+          <Image style={[styles.scan]} source={scan} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.headerBoardView}>
         <View style={styles.headerBoard}>
           <Text style={styles.myAssetsTitle}>
@@ -236,6 +257,7 @@ WalletPage.propTypes = {
   onReceivePressed: PropTypes.func.isRequired,
   onSwapPressed: PropTypes.func.isRequired,
   onAddAssetPressed: PropTypes.func.isRequired,
+  onScanQrcodePressed: PropTypes.func.isRequired,
   currencySymbol: PropTypes.string.isRequired,
   hasSwappableCoin: PropTypes.bool.isRequired,
 };

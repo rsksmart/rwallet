@@ -258,24 +258,8 @@ class Transfer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-      to: null,
-      amount: '',
-      memo: null,
-      feeLevel: 1,
-      // isConfirm: false,
-      enableConfirm: false,
-      isCustomFee: false,
-      customFee: null,
-      customFeeValue: new BigNumber(0),
-      feeSymbol: null,
-      feeSliderValue: 0,
-      amountPlaceholderText: '',
-      levelFees: null, // [ { fee, value }... ]
-    };
 
-    const { navigation: { state: { params: { coin } } } } = props;
+    const { navigation: { state: { params: { coin, toAddress } } } } = props;
     this.coin = coin;
 
     this.txFeesCache = {};
@@ -308,6 +292,23 @@ class Transfer extends Component {
     this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
     this.onAmountInputChangeText = this.onAmountInputChangeText.bind(this);
     this.requestFees = this.requestFees.bind(this);
+
+    this.state = {
+      loading: false,
+      to: toAddress,
+      amount: '',
+      memo: null,
+      feeLevel: 1,
+      // isConfirm: false,
+      enableConfirm: false,
+      isCustomFee: false,
+      customFee: null,
+      customFeeValue: new BigNumber(0),
+      feeSymbol: null,
+      feeSliderValue: 0,
+      amountPlaceholderText: '',
+      levelFees: null, // [ { fee, value }... ]
+    };
   }
 
   componentDidMount() {

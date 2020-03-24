@@ -45,7 +45,7 @@ export default class SelectWallet extends Component {
   }
 
   static createListData(wallet, navigation) {
-    const { operation } = navigation.state.params;
+    const { operation, onQrcodeDetected: onCoinQrcodeDetected } = navigation.state.params;
     const listData = [];
     // Create element for each Token (e.g. BTC, RBTC, RIF)
     _.each(wallet.coins, (coin) => {
@@ -59,6 +59,14 @@ export default class SelectWallet extends Component {
             navigation.navigate('Transfer', { wallet, coin });
           } else if (operation === 'receive') {
             navigation.navigate('WalletReceive', { coin });
+          } else if (operation === 'scan') {
+            navigation.navigate('Scan', {
+              coin,
+              onQrcodeDetected: (data) => {
+                onCoinQrcodeDetected(data, coin);
+                navigation.goBack();
+              },
+            });
           }
         },
       };
