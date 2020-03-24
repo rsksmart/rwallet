@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform, Image,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -234,7 +234,7 @@ const {
   MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
 } = CONSTANTS;
 
-// const addressIcon = require('../../assets/images/icon/address.png');
+const addressIcon = require('../../assets/images/icon/address.png');
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -298,7 +298,6 @@ class Transfer extends Component {
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
-    this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
     // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
@@ -337,16 +336,18 @@ class Transfer extends Component {
     this.setState({ feeLevel: index, isCustomFee: false });
   }
 
-  onQrcodeScanPress() {
+  onQrcodeScanPress = () => {
+    console.log('onQrcodeScanPress');
     const { navigation } = this.props;
     navigation.navigate('Scan', {
       onQrcodeDetected: (data) => {
-        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-        const url = data;
-        const result = parseUrl.exec(url);
-        const host = result[3];
-        const [address2] = host.split('.');
-        this.setState({ to: address2 });
+        console.log('onQrcodeDetected, data: ', data);
+        const { symbol, type, networkId } = this.coin;
+        this.isAddressValid = this.validateAddress(data, symbol, type, networkId);
+        if (!this.isAddressValid) {
+          return;
+        }
+        this.setState({ to: data }, () => this.requestFees(false));
       },
     });
   }
@@ -944,9 +945,9 @@ class Transfer extends Component {
                 }}
                 onBlur={this.onToInputBlur}
               />
-              {/* <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
+              <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
                 <Image source={addressIcon} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.sectionContainer}>
