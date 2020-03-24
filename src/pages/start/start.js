@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
 import color from '../../assets/styles/color.ts';
+import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: '5%',
+    bottom: screenHelper.bottomButtonMargin,
   },
   versionText: {
     color: color.midGrey,
