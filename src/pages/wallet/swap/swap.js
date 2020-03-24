@@ -422,9 +422,10 @@ class Swap extends Component {
   onSwitchPressed = async (index) => {
     const { addNotification, swapSource } = this.props;
     const { maxDepositFeeObject } = this;
+    // MIN, HALF relies only on exchange rates
+    // ALL relies on transfer fees
+    // If swapSource.coin.balance is 0, skip requestMaxDepositFee
     if (index === 2 && maxDepositFeeObject === null && !swapSource.coin.balance.isEqualTo(0)) {
-      // MIN, HALF relies only on exchange rates
-      // ALL relies on transfer fees
       this.setState({ isLoading: true });
       try {
         this.maxDepositFeeObject = await this.requestMaxDepositFee();
