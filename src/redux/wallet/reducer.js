@@ -126,7 +126,7 @@ export default function walletReducer(state = initState, action) {
       const swapRates = state.get('swapRates');
       const { sourceCoinId, destCoinId, error } = action.value;
       // If pairs is not in the swapRates cache, set error
-      if (!(swapRates[sourceCoinId] && swapRates[sourceCoinId][destCoinId])) {
+      if (!swapRates[sourceCoinId] || !swapRates[sourceCoinId][destCoinId]) {
         return state.set('swapRatesError', error);
       }
       return state;
