@@ -349,10 +349,13 @@ const common = {
     netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
+    const defaultSize = 400;
     const inputTxs = [];
     let sum = new BigNumber(0);
+
+    // If the transactions is empty, returns the default size
     if (_.isEmpty(transactions)) {
-      return 400;
+      return defaultSize;
     }
 
     // Find out transactions which combines amount
