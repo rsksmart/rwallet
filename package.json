@@ -6,7 +6,7 @@
     "postinstall": "jetifier -r",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
-    "buildandroid": "react-native run-android --variant=release",
+    "buildandroid": "cd android && ./gradlew assembleRelease",
     "ios": "react-native run-ios --simulator=\"iPhone 11\"",
     "ip8": "react-native run-ios --simulator=\"iPhone 8\"",
     "ip10": "react-native run-ios --simulator=\"iPhone X\"",
