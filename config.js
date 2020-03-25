@@ -1,15 +1,20 @@
-/** App level configurations */
-// serverURL list
-// Dogfood http://130.211.12.3/parse
-// Dev Android Simulator http://10.0.2.2:1338/parse
-// Dev iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
+import { PARSE_SERVER_URL, PARSE_MASTER_KEY } from 'react-native-dotenv';
+import { isEmpty } from 'lodash';
+
+if (isEmpty(PARSE_SERVER_URL)) {
+  throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
+}
+
+if (isEmpty(PARSE_MASTER_KEY)) {
+  throw new Error('PARSE_MASTER_KEY needs to be defined in .env under the root.');
+}
+
 const config = {
   parse: {
     appId: 'rwallet',
     javascriptKey: '',
-    masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
-    // serverURL: 'http://130.211.12.3/parse',
-    serverURL: 'http://10.0.2.2:1338/parse',
+    masterKey: PARSE_MASTER_KEY,
+    serverURL: PARSE_SERVER_URL,
   },
   defaultSettings: {
     username: undefined,
