@@ -46,10 +46,19 @@ class Scan extends Component {
       header: null,
     });
 
+    constructor(props) {
+      super(props);
+      this.isScanFinished = false;
+    }
+
     onBarCodeRead = (scanResult) => {
       const { navigation } = this.props;
-      console.log(`scanResult: ${JSON.stringify(scanResult)}`);
       const { data } = scanResult;
+      if (this.isScanFinished) {
+        return;
+      }
+      this.isScanFinished = true;
+      console.log(`scanResult: ${JSON.stringify(scanResult)}`);
       navigation.state.params.onQrcodeDetected(data);
       navigation.goBack();
     }

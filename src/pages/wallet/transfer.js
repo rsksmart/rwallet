@@ -350,6 +350,7 @@ class Transfer extends Component {
         this.setState({ to: data }, () => {
           this.requestFees(false);
           this.isAddressValid = true;
+          this.validateConfirmControl();
         });
       },
     });
@@ -404,36 +405,19 @@ class Transfer extends Component {
   }
 
   async onConfirmPress() {
-    const { addNotification } = this.props;
     const { symbol, type, networkId } = this.coin;
     const { amount, to } = this.state;
-    // This app use checksum address with chainId, but some third-party app use web3 address,
-    // so we need to convert input address to checksum address with chainId before validation and transfer
-    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
-    let toAddress = to;
-    if (symbol !== 'BTC') {
-      try {
-        toAddress = rsk3.utils.toChecksumAddress(to, networkId);
-      } catch (error) {
-        const notification = createErrorNotification(
-          'modal.invalidAddress.title',
-          'modal.invalidAddress.body',
-        );
-        addNotification(notification);
-        return;
-      }
-    }
-    if (!this.validateFormData(amount, toAddress, symbol, type, networkId)) {
+    if (!this.validateFormData(amount, to, symbol, type, networkId)) {
       // this.resetConfirm();
       return;
     }
     const { showPasscode } = this.props;
     if (global.passcode) {
       // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
-      showPasscode('verify', () => this.confirm(toAddress), () => {});
+      showPasscode('verify', () => this.confirm(to), () => {});
     } else {
       // await this.onConfirmSliderVerified();
-      await this.confirm(toAddress);
+      await this.confirm(to);
     }
   }
 
@@ -688,13 +672,31 @@ class Transfer extends Component {
 
   validateAddress(address, symbol, type, networkId) {
     const { addNotification } = this.props;
-    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
-    if (!isAddress) {
+    const showNotification = () => {
       const notification = createErrorNotification(
         'modal.invalidAddress.title',
         'modal.invalidAddress.body',
       );
       addNotification(notification);
+    };
+
+    // If symbol is RSK coin, convert to checksum address
+    // This app use checksum address with chainId, but some third-party app use web3 address,
+    // so we need to convert input address to checksum address with chainId before validation and transfer
+    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
+    let toAddress = address;
+    if (symbol !== 'BTC') {
+      try {
+        toAddress = rsk3.utils.toChecksumAddress(address, networkId);
+      } catch (error) {
+        showNotification();
+        return false;
+      }
+    }
+
+    const isAddress = common.isWalletAddress(toAddress, symbol, type, networkId);
+    if (!isAddress) {
+      showNotification();
       return false;
     }
     return true;

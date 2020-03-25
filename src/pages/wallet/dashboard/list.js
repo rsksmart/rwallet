@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import rsk3 from 'rsk3';
 
 import RSKad from '../../../components/common/rsk.ad';
 import common from '../../../common/common';
@@ -107,13 +108,25 @@ class WalletList extends Component {
 
   validateAddress(address, symbol, type, networkId) {
     const { addNotification } = this.props;
-    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
-    if (!isAddress) {
+    const showNotification = () => {
       const notification = createErrorNotification(
         'modal.invalidAddress.title',
         'modal.invalidAddress.body',
       );
       addNotification(notification);
+    };
+    let toAddress = address;
+    if (symbol !== 'BTC') {
+      try {
+        toAddress = rsk3.utils.toChecksumAddress(address, networkId);
+      } catch (error) {
+        showNotification();
+        return false;
+      }
+    }
+    const isAddress = common.isWalletAddress(toAddress, symbol, type, networkId);
+    if (!isAddress) {
+      showNotification();
       return false;
     }
     return true;
