@@ -10,5 +10,7 @@ images.listHeader = require('./images/misc/listHeader.png');
 images.send = require('./images/icon/send.png');
 images.receive = require('./images/icon/receive.png');
 images.swap = require('./images/icon/swap.png');
+images.scan = require('./images/icon/scan.png');
+images.scanAddress = require('./images/icon/address.png');
 
 export default { images };

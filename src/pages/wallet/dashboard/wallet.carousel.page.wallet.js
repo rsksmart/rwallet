@@ -14,8 +14,6 @@ import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 
-const scan = require('../../../assets/images/icon/scan.png');
-
 const styles = StyleSheet.create({
   addAsset: {
     flexDirection: 'row',
@@ -200,7 +198,7 @@ const WalletPage = (props) => {
       <View style={styles.titleView}>
         <Loc style={styles.headerTitle} text={name} />
         <TouchableOpacity style={styles.scanView} onPress={() => onScanQrcodePressed()}>
-          <Image style={[styles.scan]} source={scan} />
+          <Image style={[styles.scan]} source={references.images.scan} />
         </TouchableOpacity>
       </View>
       <View style={styles.headerBoardView}>

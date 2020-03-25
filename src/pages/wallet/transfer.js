@@ -24,6 +24,7 @@ import CONSTANTS from '../../common/constants';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import config from '../../../config';
+import references from '../../assets/references';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -234,8 +235,6 @@ const {
   MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
 } = CONSTANTS;
 
-const addressIcon = require('../../assets/images/icon/address.png');
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -276,7 +275,7 @@ class Transfer extends Component {
 
     // form data validation state
     this.isAmountValid = false;
-    this.isAddressValid = false;
+    this.isAddressValid = !!toAddress;
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
@@ -348,7 +347,10 @@ class Transfer extends Component {
         if (!this.isAddressValid) {
           return;
         }
-        this.setState({ to: data }, () => this.requestFees(false));
+        this.setState({ to: data }, () => {
+          this.requestFees(false);
+          this.isAddressValid = true;
+        });
       },
     });
   }
@@ -947,7 +949,7 @@ class Transfer extends Component {
                 onBlur={this.onToInputBlur}
               />
               <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
-                <Image source={addressIcon} />
+                <Image source={references.images.scanAddress} />
               </TouchableOpacity>
             </View>
           </View>

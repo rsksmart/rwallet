@@ -102,7 +102,12 @@
         "title": "验证指纹"
       },
       "scan": {
-        "title": "扫码"
+        "title": "扫码",
+        "cameraPermission": {
+          "title": "允许使用相机",
+          "message": "我们需要您的许可才能使用您的相机"
+        },
+        "unauthorization": "请打开摄像头权限以使用此功能"
       },
       "transferCompleted": {
         "title": "发送",
@@ -260,7 +265,8 @@
     "Reset": "重置",
     "Finish": "完成",
     "Exchange": "兑换",
-    "addAsset": "添加资产"
+    "addAsset": "添加资产",
+    "ok": "好的"
   },
   "txState": {
     "Sent": "已发送",

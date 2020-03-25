@@ -102,7 +102,12 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Varredura"
+        "title": "Varredura",
+        "cameraPermission": {
+          "title": "Permissão para usar a câmera",
+          "message": "Precisamos da sua permissão para usar sua câmera"
+        },
+        "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
         "title": "Mandar",
@@ -259,7 +264,8 @@
     "Reset": "Redefinir",
     "Finish": "Terminar",
     "Exchange": "Troca",
-    "addAsset": "Adicionar ativo"
+    "addAsset": "Adicionar ativo",
+    "ok": "Está bem"
   },
   "txState": {
     "Sent": "Enviei",

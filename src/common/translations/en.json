@@ -103,7 +103,12 @@
         "noMatch": "No match"
       },
       "scan": {
-        "title": "Scan"
+        "title": "Scan",
+        "cameraPermission": {
+          "title": "Permission to use camera",
+          "message": "We need your permission to use your camera"
+        },
+        "unauthorization": "Please turn on camera permissions to use this feature."
       },
       "transferCompleted": {
         "title": "Send",
@@ -260,7 +265,8 @@
     "Reset": "Reset",
     "Finish": "Finish",
     "Exchange": "Exchange",
-    "addAsset": "Add Asset"
+    "addAsset": "Add Asset",
+    "ok": "Ok"
   },
   "txState": {
     "Sent": "Sent",

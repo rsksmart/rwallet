@@ -1,251 +1,99 @@
 import React, { Component } from 'react';
-import {
-  View, StyleSheet,
-} from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
 import color from '../../assets/styles/color.ts';
-import flex from '../../assets/styles/layout.flex';
 import OperationHeader from '../../components/headers/header.operation';
+import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
+import BasePageSimple from '../base/base.page.simple';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20,
-  },
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 25,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 8,
-  },
-  chevron: {
-    color: '#FFF',
-  },
-  headImage: {
-    position: 'absolute',
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 10,
-    marginLeft: 10,
-  },
-  sectionContainer: {
-    marginTop: 10,
-    paddingHorizontal: 20,
-  },
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  content: {
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  check: {
-    margin: 25,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: '900',
-    color: '#000000',
-  },
-  text: {
-    color: '#4A4A4A',
-    fontSize: 15,
-    fontWeight: '300',
-    width: '80%',
-    marginTop: 15,
-    textAlign: 'center',
-  },
-  link: {
-    color: '#00B520',
-  },
   body: {
     flex: 1,
     backgroundColor: 'white',
   },
-  title1: {
-    color: '#000000',
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: 0.39,
-    marginBottom: 15,
-    marginTop: 20,
-  },
-  title2: {
-    color: '#000000',
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: 0.31,
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  title3: {
-    color: '#000000',
-    fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 0.23,
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  textInput: {
-    color: '#B5B5B5',
-    fontSize: 12,
-    fontWeight: '300',
-    paddingVertical: 0,
-    marginLeft: 5,
-    marginVertical: 10,
+  authorizationContainer: {
+    backgroundColor: color.white,
+    width: '100%',
     flex: 1,
-  },
-  textInputView: {
-    borderColor: color.component.input.borderColor,
-    backgroundColor: color.component.input.backgroundColor,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textInputIcon: {
-    marginRight: 20,
-  },
-  question: {
-    fontSize: 16,
-    fontWeight: '300',
-    letterSpacing: 0.31,
-    marginBottom: 10,
-  },
-  radioItem: {
-    flexDirection: 'row',
-    width: '33%',
-  },
-  radioItemLeft: {
-
-  },
-  radioItemText1: {
-    color: '#000000',
-    fontSize: 16,
-    letterSpacing: 0.31,
-  },
-  radioItemText2: {
-    color: '#4A4A4A',
-    fontSize: 12,
-    fontWeight: '300',
-    letterSpacing: 0.23,
-  },
-  radioCheck: {
-    fontSize: 20,
-  },
-  RadioGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  circle: {
-    marginTop: 5,
-    marginRight: 10,
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ACACAC',
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-  checkedCircle: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: '#00B520',
-  },
-  customRow: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
 });
+
+const UnauthorizationView = () => (
+  <View style={styles.authorizationContainer}>
+    <Loc text="page.wallet.scan.unauthorization" />
+  </View>
+);
+
+const PendingView = () => (
+  <View style={styles.authorizationContainer}>
+    <ActivityIndicator size="small" />
+  </View>
+);
 
 class Scan extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
+    onBarCodeRead = (scanResult) => {
+      const { navigation } = this.props;
+      console.log(`scanResult: ${JSON.stringify(scanResult)}`);
+      const { data } = scanResult;
+      navigation.state.params.onQrcodeDetected(data);
+      navigation.goBack();
+    }
+
     render() {
       const { navigation } = this.props;
       const barcodeMask = (<BarcodeMask width={240} height={240} edgeBorderWidth={1} showAnimatedLine={false} />);
       const scanner = (
         <RNCamera
-          ref={(ref) => {
-            this.camera = ref;
-          }}
+          ref={(ref) => { this.camera = ref; }}
+          captureAudio={false}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
           flashMode={RNCamera.Constants.FlashMode.on}
           barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
           androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
+            title: strings('page.wallet.scan.cameraPermission.title'),
+            message: strings('page.wallet.scan.cameraPermission.message'),
+            buttonPositive: strings('button.ok'),
+            buttonNegative: strings('button.cancel'),
           }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          onGoogleVisionBarcodesDetected={({ barcodes }) => {
-            console.log(barcodes);
-          }}
-          onBarCodeRead={(scanResult) => {
-            console.log(`scanResult: ${JSON.stringify(scanResult)}`);
-            const { data } = scanResult;
-            navigation.state.params.onQrcodeDetected(data);
-            navigation.goBack();
-          }}
+          onBarCodeRead={this.onBarCodeRead}
         >
-          {barcodeMask}
+          {({ status }) => {
+            if (status === 'PENDING_AUTHORIZATION') {
+              return <PendingView />;
+            }
+            if (status === 'NOT_AUTHORIZED') {
+              return <UnauthorizationView />;
+            }
+            return barcodeMask;
+          }}
         </RNCamera>
       );
 
       return (
-        <View style={[flex.flex1]}>
-          <OperationHeader title={strings('page.wallet.scan.title')} onBackButtonPress={() => navigation.goBack()} />
+        <BasePageSimple
+          isSafeView={false}
+          headerComponent={<OperationHeader title={strings('page.wallet.scan.title')} onBackButtonPress={() => navigation.goBack()} />}
+        >
           <View style={styles.body}>
             {scanner}
           </View>
-        </View>
+        </BasePageSimple>
       );
     }
 }
