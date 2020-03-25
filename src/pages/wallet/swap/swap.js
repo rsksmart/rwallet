@@ -595,7 +595,8 @@ class Swap extends Component {
   // Request fee for maximum deposit amount
   async requestMaxDepositFee() {
     const { swapSource } = this.props;
-    const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(swapSource.coin.balance), this);
+    const { balance, address } = swapSource.coin;
+    const feeObject = await CancelablePromiseUtil.makeCancelable(this.requestFee(balance, address), this);
     return feeObject;
   }
 
@@ -790,7 +791,6 @@ class Swap extends Component {
     const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.balance, swapSource.coin.decimalPlaces) : '';
 
     const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
-    console.log('isCanSwitchSourceDest: ', isCanSwitchSourceDest);
 
     const customBottomButton = (
       swapSource ? (
