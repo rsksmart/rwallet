@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import RootComponent from './component';
 import appActions from '../redux/app/actions';
 import walletActions from '../redux/wallet/actions';
+import priceActions from '../redux/price/actions';
 
 const mapStateToProps = (state) => ({
   showNotification: state.App.get('showNotification'),
@@ -36,6 +37,7 @@ const mapDispatchToProps = (dispatch) => ({
   updateWalletAssetValue: (currency) => dispatch(walletActions.updateAssetValue(currency)),
   removeNotification: () => dispatch(appActions.removeNotification()),
   removeConfirmation: () => dispatch(appActions.removeConfirmation()),
+  initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
