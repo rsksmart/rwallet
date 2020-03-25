@@ -280,9 +280,7 @@ class Swap extends Component {
     const { swapRates: lastSwapRates } = this.props;
     if (swapRates !== lastSwapRates) {
       const cachedRate = this.getCachedSwapRate(swapRates);
-      if (cachedRate) {
-        this.updateStatesByRate(cachedRate);
-      }
+      this.updateStatesByRate(cachedRate);
     }
 
     // If swap rates is exsisted, reset and ask user to retry.
@@ -582,6 +580,9 @@ class Swap extends Component {
 
   // update component states by rate
   updateStatesByRate(rateInfo) {
+    if (!rateInfo) {
+      return;
+    }
     const { swapDest, swapSource } = this.props;
     const { sourceAmount } = this.state;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = rateInfo;

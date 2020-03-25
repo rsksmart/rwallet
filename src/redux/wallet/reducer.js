@@ -116,9 +116,8 @@ export default function walletReducer(state = initState, action) {
     case actions.GET_SWAP_RATE_RESULT: {
       const swapRates = _.clone(state.get('swapRates'));
       const swapRate = action.value;
-      const { sourceCoinId, destCoinId } = swapRate;
-      swapRates[sourceCoinId] = {};
-      swapRates[sourceCoinId][destCoinId] = swapRate.rate;
+      const { sourceCoinId, destCoinId, rate } = swapRate;
+      _.merge(swapRates, { [sourceCoinId]: { [destCoinId]: rate } });
       console.log('swapRates: ', swapRates);
       return state.set('swapRates', swapRates);
     }
