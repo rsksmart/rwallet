@@ -45,6 +45,11 @@ const actions = {
   RESET_ADD_TOKEN_RESULT: 'RESET_ADD_TOKEN_RESULT',
   DELETE_TOKEN: 'DELETE_TOKEN',
 
+  GET_SWAP_RATE: 'GET_SWAP_RATE',
+  GET_SWAP_RATE_RESULT: 'GET_SWAP_RATE_RESULT',
+  SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
+  RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -145,6 +150,13 @@ const actions = {
   }),
   resetAddTokenResult: () => ({
     type: actions.RESET_ADD_TOKEN_RESULT,
+  }),
+  getSwapRate: (sourceCoinId, destCoinId) => ({
+    type: actions.GET_SWAP_RATE,
+    payload: { sourceCoinId, destCoinId },
+  }),
+  resetSwapRateResultError: () => ({
+    type: actions.RESET_SWAP_RATE_RESULT_ERROR,
   }),
 };
 
