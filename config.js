@@ -1,11 +1,11 @@
 import { PARSE_SERVER_URL, PARSE_MASTER_KEY } from 'react-native-dotenv';
-import { isUndefined } from 'lodash';
+import { isEmpty } from 'lodash';
 
-if (isUndefined(PARSE_SERVER_URL)) {
+if (isEmpty(PARSE_SERVER_URL)) {
   throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
 }
 
-if (isUndefined(PARSE_MASTER_KEY)) {
+if (isEmpty(PARSE_MASTER_KEY)) {
   throw new Error('PARSE_MASTER_KEY needs to be defined in .env under the root.');
 }
 
