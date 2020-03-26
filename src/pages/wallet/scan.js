@@ -32,11 +32,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  unauthorizationText: {
+    position: 'absolute',
+    fontFamily: 'Avenir-Roman',
+    fontSize: 17,
+    bottom: '55%',
+    marginHorizontal: 45,
+    textAlign: 'center',
+    lineHeight: 30,
+  },
 });
 
 const UnauthorizationView = () => (
   <View style={styles.authorizationContainer}>
-    <Loc text="page.wallet.scan.unauthorization" />
+    <Loc style={styles.unauthorizationText} text="page.wallet.scan.unauthorization" />
   </View>
 );
 
