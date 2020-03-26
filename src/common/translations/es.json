@@ -102,7 +102,12 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Escanear"
+        "title": "Escanear",
+        "cameraPermission": {
+          "title": "Permiso para usar la cámara",
+          "message": "Necesitamos su permiso para usar su cámara"
+        },
+        "unauthorization": "Active los permisos de la cámara para usar esta función."
       },
       "transferCompleted": {
         "title": "Enviar",
@@ -259,7 +264,8 @@
     "Reset": "Reiniciar",
     "Finish": "Terminar",
     "Exchange": "Intercambiar",
-    "addAsset": "Agregar activo"
+    "addAsset": "Agregar activo",
+    "ok": "Okay"
   },
   "txState": {
     "Sent": "Enviado",

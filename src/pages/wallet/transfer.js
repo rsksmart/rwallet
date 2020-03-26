@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform, Image,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -24,6 +24,7 @@ import CONSTANTS from '../../common/constants';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import config from '../../../config';
+import references from '../../assets/references';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -234,8 +235,6 @@ const {
   MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
 } = CONSTANTS;
 
-// const addressIcon = require('../../assets/images/icon/address.png');
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -258,24 +257,8 @@ class Transfer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-      to: null,
-      amount: '',
-      memo: null,
-      feeLevel: 1,
-      // isConfirm: false,
-      enableConfirm: false,
-      isCustomFee: false,
-      customFee: null,
-      customFeeValue: new BigNumber(0),
-      feeSymbol: null,
-      feeSliderValue: 0,
-      amountPlaceholderText: '',
-      levelFees: null, // [ { fee, value }... ]
-    };
 
-    const { navigation: { state: { params: { coin } } } } = props;
+    const { navigation: { state: { params: { coin, toAddress } } } } = props;
     this.coin = coin;
 
     this.txFeesCache = {};
@@ -292,13 +275,12 @@ class Transfer extends Component {
 
     // form data validation state
     this.isAmountValid = false;
-    this.isAddressValid = false;
+    this.isAddressValid = !!toAddress;
 
     this.confirm = this.confirm.bind(this);
     this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
-    this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
     // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
@@ -309,6 +291,23 @@ class Transfer extends Component {
     this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
     this.onAmountInputChangeText = this.onAmountInputChangeText.bind(this);
     this.requestFees = this.requestFees.bind(this);
+
+    this.state = {
+      loading: false,
+      to: toAddress,
+      amount: '',
+      memo: null,
+      feeLevel: 1,
+      // isConfirm: false,
+      enableConfirm: false,
+      isCustomFee: false,
+      customFee: null,
+      customFeeValue: new BigNumber(0),
+      feeSymbol: null,
+      feeSliderValue: 0,
+      amountPlaceholderText: '',
+      levelFees: null, // [ { fee, value }... ]
+    };
   }
 
   componentDidMount() {
@@ -337,16 +336,19 @@ class Transfer extends Component {
     this.setState({ feeLevel: index, isCustomFee: false });
   }
 
-  onQrcodeScanPress() {
+  onQrcodeScanPress = () => {
+    console.log('onQrcodeScanPress');
     const { navigation } = this.props;
     navigation.navigate('Scan', {
-      onQrcodeDetected: (data) => {
-        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-        const url = data;
-        const result = parseUrl.exec(url);
-        const host = result[3];
-        const [address2] = host.split('.');
-        this.setState({ to: address2 });
+      coin: this.coin,
+      onDetectedAction: 'backToTransfer',
+      onQrcodeDetected: (address) => {
+        console.log('onQrcodeDetected, address: ', address);
+        this.setState({ to: address }, () => {
+          this.requestFees(false);
+          this.isAddressValid = true;
+          this.validateConfirmControl();
+        });
       },
     });
   }
@@ -400,7 +402,6 @@ class Transfer extends Component {
   }
 
   async onConfirmPress() {
-    const { addNotification } = this.props;
     const { symbol, type, networkId } = this.coin;
     const { amount, to } = this.state;
     // This app use checksum address with chainId, but some third-party app use web3 address,
@@ -411,18 +412,21 @@ class Transfer extends Component {
       try {
         toAddress = rsk3.utils.toChecksumAddress(to, networkId);
       } catch (error) {
-        const notification = createErrorNotification(
-          'modal.invalidAddress.title',
-          'modal.invalidAddress.body',
-        );
-        addNotification(notification);
+        this.showInvalidAddressNotification();
         return;
       }
     }
-    if (!this.validateFormData(amount, toAddress, symbol, type, networkId)) {
-      // this.resetConfirm();
+
+    if (!common.isWalletAddress(toAddress, symbol, type, networkId)) {
+      this.showInvalidAddressNotification();
       return;
     }
+
+    if (!common.isAmount(amount)) {
+      this.showInvalidAmountNotification();
+      return;
+    }
+
     const { showPasscode } = this.props;
     if (global.passcode) {
       // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
@@ -436,8 +440,11 @@ class Transfer extends Component {
   onAmountInputBlur() {
     const { amount } = this.state;
     if (_.isEmpty(amount)) return;
-    this.isAmountValid = this.validateAmount(amount);
-    if (!this.isAmountValid) return;
+    this.isAmountValid = common.isAmount(amount);
+    if (!this.isAmountValid) {
+      this.showInvalidAmountNotification();
+      return;
+    }
     this.requestFees(false);
   }
 
@@ -445,8 +452,11 @@ class Transfer extends Component {
     const { to } = this.state;
     const { symbol, type, networkId } = this.coin;
     if (_.isEmpty(to)) return;
-    this.isAddressValid = this.validateAddress(to, symbol, type, networkId);
-    if (!this.isAddressValid) return;
+    this.isAddressValid = common.isWalletAddress(to, symbol, type, networkId);
+    if (!this.isAddressValid) {
+      this.showInvalidAddressNotification();
+      return;
+    }
     this.requestFees(false);
   }
 
@@ -667,47 +677,22 @@ class Transfer extends Component {
   //   this.confirmSlider.reset();
   // }
 
-  /**
-   * validateFormData, return true/false, indicates whether the form datas are valid.
-   * @param {string} amount, coin amount
-   * @param {string} address, wallet address
-   * @param {string} symbol, coin symbol
-   * @param {string} type, coin network type
-   * @param {number} type, coin networkId
-   */
-  validateFormData(amount, address, symbol, type, networkId) {
-    const isValidAmount = this.validateAmount(amount);
-    if (!isValidAmount) return false;
-    const isValidAddress = this.validateAddress(address, symbol, type, networkId);
-    return isValidAddress;
+  showInvalidAddressNotification() {
+    const { addNotification } = this.props;
+    const notification = createErrorNotification(
+      'modal.invalidAddress.title',
+      'modal.invalidAddress.body',
+    );
+    addNotification(notification);
   }
 
-  validateAddress(address, symbol, type, networkId) {
+  showInvalidAmountNotification() {
     const { addNotification } = this.props;
-    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
-    if (!isAddress) {
-      const notification = createErrorNotification(
-        'modal.invalidAddress.title',
-        'modal.invalidAddress.body',
-      );
-      addNotification(notification);
-      return false;
-    }
-    return true;
-  }
-
-  validateAmount(amount) {
-    const { addNotification } = this.props;
-    const isAmountNumber = common.isAmount(amount);
-    if (!isAmountNumber) {
-      const notification = createErrorNotification(
-        'modal.invalidAmount.title',
-        'modal.invalidAmount.body',
-      );
-      addNotification(notification);
-      return false;
-    }
-    return true;
+    const notification = createErrorNotification(
+      'modal.invalidAmount.title',
+      'modal.invalidAmount.body',
+    );
+    addNotification(notification);
   }
 
   async confirm(toAddress) {
@@ -944,9 +929,9 @@ class Transfer extends Component {
                 }}
                 onBlur={this.onToInputBlur}
               />
-              {/* <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress} disabled>
-                <Image source={addressIcon} />
-              </TouchableOpacity> */}
+              <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
+                <Image source={references.images.scanAddress} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.sectionContainer}>
