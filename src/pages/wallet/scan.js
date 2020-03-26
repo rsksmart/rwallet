@@ -4,11 +4,16 @@ import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
+import rsk3 from 'rsk3';
+import { StackActions, NavigationActions } from 'react-navigation';
 import color from '../../assets/styles/color.ts';
 import OperationHeader from '../../components/headers/header.operation';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import BasePageSimple from '../base/base.page.simple';
+import common from '../../common/common';
+import { createErrorNotification } from '../../common/notification.controller';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   preview: {
@@ -46,21 +51,67 @@ class Scan extends Component {
       header: null,
     });
 
+    static validateAddress(address, symbol, type, networkId) {
+      let toAddress = address;
+      if (symbol !== 'BTC') {
+        try {
+          toAddress = rsk3.utils.toChecksumAddress(address, networkId);
+        } catch (error) {
+          return false;
+        }
+      }
+      const isAddress = common.isWalletAddress(toAddress, symbol, type, networkId);
+      if (!isAddress) {
+        return false;
+      }
+      return true;
+    }
+
     constructor(props) {
       super(props);
       this.isScanFinished = false;
     }
 
     onBarCodeRead = (scanResult) => {
-      const { navigation } = this.props;
       const { data } = scanResult;
       if (this.isScanFinished) {
         return;
       }
       this.isScanFinished = true;
       console.log(`scanResult: ${JSON.stringify(scanResult)}`);
-      navigation.state.params.onQrcodeDetected(data);
-      navigation.goBack();
+      this.onQrcodeDetected(data);
+    }
+
+    onQrcodeDetected = (data) => {
+      const { navigation, addNotification } = this.props;
+      const {
+        coin, onDetectedAction,
+      } = navigation.state.params;
+
+      this.isAddressValid = Scan.validateAddress(data, coin.symbol, coin.type, coin.networkId);
+      if (!this.isAddressValid) {
+        const notification = createErrorNotification(
+          'modal.invalidAddress.title',
+          'modal.invalidAddress.body',
+        );
+        addNotification(notification);
+        navigation.goBack();
+        return;
+      }
+
+      if (onDetectedAction === 'backToTransfer') {
+        navigation.state.params.onQrcodeDetected(data);
+        navigation.goBack();
+      } else {
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Dashboard' }),
+            NavigationActions.navigate({ routeName: 'Transfer', params: { coin, toAddress: data } }),
+          ],
+        });
+        navigation.dispatch(resetAction);
+      }
     }
 
     render() {
@@ -114,10 +165,16 @@ Scan.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
 });
 
-export default connect(mapStateToProps)(Scan);
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Scan);

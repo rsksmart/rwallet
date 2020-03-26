@@ -5,18 +5,15 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import rsk3 from 'rsk3';
 
 import RSKad from '../../../components/common/rsk.ad';
 import common from '../../../common/common';
 import BasePageSimple from '../../base/base.page.simple';
 import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
-import appActions from '../../../redux/app/actions';
 import WalletCarousel from './wallet.carousel';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
-import { createErrorNotification } from '../../../common/notification.controller';
 
 const { getCurrencySymbol } = common;
 
@@ -106,32 +103,6 @@ class WalletList extends Component {
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true, wallet });
   }
 
-  validateAddress(address, symbol, type, networkId) {
-    const { addNotification } = this.props;
-    const showNotification = () => {
-      const notification = createErrorNotification(
-        'modal.invalidAddress.title',
-        'modal.invalidAddress.body',
-      );
-      addNotification(notification);
-    };
-    let toAddress = address;
-    if (symbol !== 'BTC') {
-      try {
-        toAddress = rsk3.utils.toChecksumAddress(address, networkId);
-      } catch (error) {
-        showNotification();
-        return false;
-      }
-    }
-    const isAddress = common.isWalletAddress(toAddress, symbol, type, networkId);
-    if (!isAddress) {
-      showNotification();
-      return false;
-    }
-    return true;
-  }
-
   render() {
     const { navigation } = this.props;
     const { currencySymbol, listData } = this.state;
@@ -146,15 +117,7 @@ class WalletList extends Component {
         onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
           operation: 'scan',
           wallet: walletData.wallet,
-          onQrcodeDetected: (data, coin) => {
-            console.log('onQrcodeDetected, data: ', data);
-            const { symbol, type, networkId } = coin;
-            this.isAddressValid = this.validateAddress(data, symbol, type, networkId);
-            if (!this.isAddressValid) {
-              return;
-            }
-            navigation.navigate('Transfer', { wallet: walletData.wallet, coin, toAddress: data });
-          },
+          onDetectedAction: 'navigateToTransfer',
         }),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
         onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
@@ -193,7 +156,6 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
-  addNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -208,7 +170,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
