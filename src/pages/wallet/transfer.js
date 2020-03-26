@@ -431,7 +431,7 @@ class Transfer extends Component {
       showPasscode('verify', () => this.confirm(toAddress), () => {});
     } else {
       // await this.onConfirmSliderVerified();
-      await this.confirm(to);
+      await this.confirm(toAddress);
     }
   }
 
