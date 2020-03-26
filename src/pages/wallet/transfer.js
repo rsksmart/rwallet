@@ -402,7 +402,6 @@ class Transfer extends Component {
   }
 
   async onConfirmPress() {
-    const { addNotification } = this.props;
     const { symbol, type, networkId } = this.coin;
     const { amount, to } = this.state;
     // This app use checksum address with chainId, but some third-party app use web3 address,
@@ -413,18 +412,21 @@ class Transfer extends Component {
       try {
         toAddress = rsk3.utils.toChecksumAddress(to, networkId);
       } catch (error) {
-        const notification = createErrorNotification(
-          'modal.invalidAddress.title',
-          'modal.invalidAddress.body',
-        );
-        addNotification(notification);
+        this.showInvalidAddressNotification();
         return;
       }
     }
-    if (!this.validateFormData(amount, toAddress, symbol, type, networkId)) {
-      // this.resetConfirm();
+
+    if (!common.isWalletAddress(toAddress, symbol, type, networkId)) {
+      this.showInvalidAddressNotification();
       return;
     }
+
+    if (!common.isAmount(amount)) {
+      this.showInvalidAmountNotification();
+      return;
+    }
+
     const { showPasscode } = this.props;
     if (global.passcode) {
       // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
@@ -438,8 +440,11 @@ class Transfer extends Component {
   onAmountInputBlur() {
     const { amount } = this.state;
     if (_.isEmpty(amount)) return;
-    this.isAmountValid = this.validateAmount(amount);
-    if (!this.isAmountValid) return;
+    this.isAmountValid = common.isAmount(amount);
+    if (!this.isAmountValid) {
+      this.showInvalidAmountNotification();
+      return;
+    }
     this.requestFees(false);
   }
 
@@ -447,8 +452,11 @@ class Transfer extends Component {
     const { to } = this.state;
     const { symbol, type, networkId } = this.coin;
     if (_.isEmpty(to)) return;
-    this.isAddressValid = this.validateAddress(to, symbol, type, networkId);
-    if (!this.isAddressValid) return;
+    this.isAddressValid = common.isWalletAddress(to, symbol, type, networkId);
+    if (!this.isAddressValid) {
+      this.showInvalidAddressNotification();
+      return;
+    }
     this.requestFees(false);
   }
 
@@ -669,47 +677,22 @@ class Transfer extends Component {
   //   this.confirmSlider.reset();
   // }
 
-  /**
-   * validateFormData, return true/false, indicates whether the form datas are valid.
-   * @param {string} amount, coin amount
-   * @param {string} address, wallet address
-   * @param {string} symbol, coin symbol
-   * @param {string} type, coin network type
-   * @param {number} type, coin networkId
-   */
-  validateFormData(amount, address, symbol, type, networkId) {
-    const isValidAmount = this.validateAmount(amount);
-    if (!isValidAmount) return false;
-    const isValidAddress = this.validateAddress(address, symbol, type, networkId);
-    return isValidAddress;
+  showInvalidAddressNotification() {
+    const { addNotification } = this.props;
+    const notification = createErrorNotification(
+      'modal.invalidAddress.title',
+      'modal.invalidAddress.body',
+    );
+    addNotification(notification);
   }
 
-  validateAddress(address, symbol, type, networkId) {
+  showInvalidAmountNotification() {
     const { addNotification } = this.props;
-    const isAddress = common.isWalletAddress(address, symbol, type, networkId);
-    if (!isAddress) {
-      const notification = createErrorNotification(
-        'modal.invalidAddress.title',
-        'modal.invalidAddress.body',
-      );
-      addNotification(notification);
-      return false;
-    }
-    return true;
-  }
-
-  validateAmount(amount) {
-    const { addNotification } = this.props;
-    const isAmountNumber = common.isAmount(amount);
-    if (!isAmountNumber) {
-      const notification = createErrorNotification(
-        'modal.invalidAmount.title',
-        'modal.invalidAmount.body',
-      );
-      addNotification(notification);
-      return false;
-    }
-    return true;
+    const notification = createErrorNotification(
+      'modal.invalidAmount.title',
+      'modal.invalidAmount.body',
+    );
+    addNotification(notification);
   }
 
   async confirm(toAddress) {
