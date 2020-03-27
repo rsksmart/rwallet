@@ -87,7 +87,7 @@ class AddCustomToken extends Component {
     }
 
     onAddressInputChanged = async (text) => {
-      this.setState({ address: text, isCanConfirm: !_.isEmpty(text) });
+      this.setState({ address: text.trim(), isCanConfirm: !_.isEmpty(text) });
     }
 
     onPressed = async () => {
