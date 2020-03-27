@@ -151,6 +151,8 @@ class WalletRecovery extends Component {
         const notification = createErrorNotification(
           'modal.duplicatePhrase.title',
           'modal.duplicatePhrase.body',
+          'button.gotIt',
+          () => { this.setState({ phrases: [] }); },
         );
         addNotification(notification);
         return;
