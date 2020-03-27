@@ -115,7 +115,6 @@ export default class SwapCompleted extends Component {
 
   constructor(props) {
     super(props);
-    this.onBackPress = this.onBackPress.bind(this);
     this.onExplorePress = this.onExplorePress.bind(this);
     const { navigation } = props;
     const { coin } = navigation.state.params;
@@ -129,14 +128,14 @@ export default class SwapCompleted extends Component {
     Linking.openURL(url);
   }
 
-  onBackPress() {
+  onBackPress = () => {
     const { navigation } = this.props;
     const statckActions = StackActions.popToTop();
     navigation.dispatch(statckActions);
+    navigation.navigate('Home');
   }
 
   render() {
-    const { navigation } = this.props;
     return (
       <BasePageGereral
         isSafeView
@@ -144,7 +143,7 @@ export default class SwapCompleted extends Component {
         bottomBtnText="button.goToWallet"
         bottomBtnOnPress={this.onBackPress}
         hasLoader={false}
-        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={this.onBackPress} />}
       >
         <View style={styles.content}>
           <Image style={styles.check} source={completed} />
