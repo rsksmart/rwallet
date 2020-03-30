@@ -235,7 +235,6 @@ class Swap extends Component {
 
   constructor(props) {
     super(props);
-    this.onExchangePress = this.onExchangePress.bind(this);
     this.onSwitchPress = this.onSwitchPress.bind(this);
     this.onHistoryPress = this.onHistoryPress.bind(this);
     this.onSelectSourcePress = this.onSelectSourcePress.bind(this);
@@ -279,7 +278,81 @@ class Swap extends Component {
     removeConfirmation();
   }
 
-  async onExchangePress() {
+  onExchangePressed = async () => {
+    const { showPasscode } = this.props;
+    if (global.passcode) {
+      showPasscode('verify', () => this.exchange(), () => {});
+    } else {
+      await this.exchange();
+    }
+  }
+
+  onSwitchPress = (index) => {
+    const { swapDest, swapSource } = this.props;
+    const {
+      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
+    } = this.state;
+    let amount = -1;
+    switch (index) {
+      case 0:
+        amount = limitMinDepositCoin;
+        break;
+      case 1:
+        amount = limitHalfDepositCoin;
+        break;
+      case 2:
+        amount = limitMaxDepositCoin;
+        break;
+      default:
+    }
+    const amountState = this.getAmountState(amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+    this.setState({
+      switchIndex: index,
+      sourceText: amount.toString(),
+      ...amountState,
+    });
+  };
+
+  onHistoryPress() {
+    const { navigation, swapSource } = this.props;
+    navigation.navigate('WalletHistory', { coin: swapSource.coin });
+  }
+
+  onSelectSourcePress() {
+    const { navigation } = this.props;
+    navigation.push('SwapSelection', { selectionType: 'source' });
+  }
+
+  onSelectDestPress() {
+    const { navigation } = this.props;
+    navigation.push('SwapSelection', { selectionType: 'dest' });
+  }
+
+  onChangeSourceAmount(text) {
+    const { swapDest, swapSource } = this.props;
+    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
+    const isAmount = common.isAmount(text);
+    let sourceAmount = null;
+    if (isAmount) {
+      sourceAmount = parseFloat(text);
+    }
+    const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
+    this.setState({ sourceText: text, switchIndex: -1, ...amountState });
+  }
+
+  onChangeDestAmount(text) {
+    const { swapDest, swapSource } = this.props;
+    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
+    const isAmount = common.isAmount(text);
+    let destAmount = null;
+    if (isAmount) {
+      destAmount = parseFloat(text);
+    }
+    const amountState = this.getAmountState(destAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, 'dest');
+    this.setState({ destText: text, switchIndex: -1, ...amountState });
+  }
+
+  exchange = async () => {
     const {
       navigation, swapSource, swapDest, addNotification,
     } = this.props;
@@ -387,71 +460,6 @@ class Swap extends Component {
       }
       addNotification(notification);
     }
-  }
-
-  onSwitchPress = (index) => {
-    const { swapDest, swapSource } = this.props;
-    const {
-      limitMinDepositCoin, limitMaxDepositCoin, limitHalfDepositCoin, rate,
-    } = this.state;
-    let amount = -1;
-    switch (index) {
-      case 0:
-        amount = limitMinDepositCoin;
-        break;
-      case 1:
-        amount = limitHalfDepositCoin;
-        break;
-      case 2:
-        amount = limitMaxDepositCoin;
-        break;
-      default:
-    }
-    const amountState = this.getAmountState(amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-    this.setState({
-      switchIndex: index,
-      sourceText: amount.toString(),
-      ...amountState,
-    });
-  };
-
-  onHistoryPress() {
-    const { navigation, swapSource } = this.props;
-    navigation.navigate('WalletHistory', { coin: swapSource.coin });
-  }
-
-  onSelectSourcePress() {
-    const { navigation } = this.props;
-    navigation.push('SwapSelection', { selectionType: 'source' });
-  }
-
-  onSelectDestPress() {
-    const { navigation } = this.props;
-    navigation.push('SwapSelection', { selectionType: 'dest' });
-  }
-
-  onChangeSourceAmount(text) {
-    const { swapDest, swapSource } = this.props;
-    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
-    let sourceAmount = null;
-    if (isAmount) {
-      sourceAmount = parseFloat(text);
-    }
-    const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-    this.setState({ sourceText: text, switchIndex: -1, ...amountState });
-  }
-
-  onChangeDestAmount(text) {
-    const { swapDest, swapSource } = this.props;
-    const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
-    let destAmount = null;
-    if (isAmount) {
-      destAmount = parseFloat(text);
-    }
-    const amountState = this.getAmountState(destAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, 'dest');
-    this.setState({ destText: text, switchIndex: -1, ...amountState });
   }
 
   getAmountState = (amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, type = 'source') => {
@@ -719,7 +727,7 @@ class Swap extends Component {
         <Button
           text="button.Exchange"
           disabled={!isAmountInRange || !isBalanceEnough}
-          onPress={this.onExchangePress}
+          onPress={this.onExchangePressed}
         />
       ) : null
     );
@@ -866,6 +874,7 @@ Swap.propTypes = {
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
   }).isRequired,
+  showPasscode: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
@@ -892,6 +901,9 @@ const mapDispatchToProps = (dispatch) => ({
   switchSwap: () => dispatch(walletActions.switchSwap()),
   resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
   resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);
