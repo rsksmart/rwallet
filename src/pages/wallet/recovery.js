@@ -1,21 +1,25 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, Switch,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import SwitchListItem from '../../components/common/list/switchListItem';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Tags from '../../components/common/misc/tags';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
+import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
-import { strings } from '../../common/i18n';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
+import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
+import { strings } from '../../common/i18n';
+
+const MAX_ACCOUNT = 4294967295;
 
 const bip39 = require('bip39');
 
@@ -79,6 +83,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pathInputView: {
+    marginVertical: 7,
+  },
+  pathInput: {
+    marginHorizontal: 5,
+    fontSize: 14,
+    height: 30,
+    minWidth: 30,
+    paddingHorizontal: 5,
+    textAlign: 'center',
+  },
+  fieldLabel: {
+    fontFamily: 'Avenir-Book',
+  },
+  selectionModalTitle: {
+    fontSize: 16,
+    fontFamily: 'Avenir-Heavy',
+    color: color.black,
+    marginVertical: 10,
+  },
 });
 
 class WalletRecovery extends Component {
@@ -88,17 +116,25 @@ class WalletRecovery extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {
-        phrases: [],
-        phrase: '',
-        isCanSubmit: false,
-      };
+
       this.inputWord = this.inputWord.bind(this);
       this.deleteWord = this.deleteWord.bind(this);
       this.onSubmitEditing = this.onSubmitEditing.bind(this);
       this.onChangeText = this.onChangeText.bind(this);
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
+      this.tokenPaths = [
+        { symbol: 'BTC', prefix: "m/44'/0'/" },
+        { symbol: 'RBTC', prefix: "m/44'/137'/" },
+      ];
+      this.state = {
+        phrases: [],
+        phrase: '',
+        isCanSubmit: false,
+        isDerivationPathEnabled: true,
+        accounts: [0, 0],
+        selectedTokenIndex: 0,
+      };
     }
 
     onSubmitEditing() {
@@ -125,7 +161,8 @@ class WalletRecovery extends Component {
 
     onImportPress() {
       const { navigation, addNotification, walletManager } = this.props;
-      const { phrases } = this.state;
+      const { phrases, accounts, isDerivationPathEnabled } = this.state;
+      const { tokenPaths } = this;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
         if (i !== 0) {
@@ -157,7 +194,40 @@ class WalletRecovery extends Component {
         addNotification(notification);
         return;
       }
-      navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
+
+      const params = { phrases: inputPhrases };
+      if (isDerivationPathEnabled) {
+        _.each(tokenPaths, (path, index) => {
+          const newPath = path;
+          newPath.account = accounts[index];
+        });
+        params.tokenPaths = tokenPaths;
+      }
+
+      navigation.navigate('WalletSelectCurrency', params);
+    }
+
+    onSelectedTokenIndexChanged = (index) => {
+      this.setState({ selectedTokenIndex: index });
+    }
+
+    onTokenPressed = () => {
+      this.selectionModal.show();
+    }
+
+    onAccountIndexChanged = (value) => {
+      const { selectedTokenIndex, accounts } = this.state;
+
+      if (value === '') {
+        accounts[selectedTokenIndex] = null;
+        this.setState({ accounts });
+      }
+      let account = parseInt(value, 10);
+      if (account >= 0) {
+        account = Math.min(account, MAX_ACCOUNT);
+        accounts[selectedTokenIndex] = account;
+        this.setState({ accounts });
+      }
     }
 
     inputText(text) {
@@ -198,7 +268,15 @@ class WalletRecovery extends Component {
     }
 
     render() {
-      const { phrase, phrases, isCanSubmit } = this.state;
+      const {
+        phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
+      } = this.state;
+
+      const { tokenPaths } = this;
+      const { symbol, prefix } = tokenPaths[selectedTokenIndex];
+      const tokens = _.map(tokenPaths, 'symbol');
+      const accountIndexText = !_.isNil(accounts[selectedTokenIndex]) ? accounts[selectedTokenIndex].toString() : '';
+
       const { navigation } = this.props;
       const bottomButton = (<Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />);
       return (
@@ -239,9 +317,48 @@ class WalletRecovery extends Component {
             </View>
             <View style={[styles.sectionContainer, styles.bottomBorder]}>
               <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
-              <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
+              <View style={styles.row}>
+                <Loc style={[flex.flex1, styles.fieldLabel]} text="page.wallet.recovery.specifyPath" />
+                <Switch
+                  value={isDerivationPathEnabled}
+                  onValueChange={(value) => { this.setState({ isDerivationPathEnabled: value }); }}
+                />
+              </View>
             </View>
+            { isDerivationPathEnabled && (
+              <View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Text style={styles.fieldLabel}>Coin</Text>
+                  <TouchableOpacity onPress={this.onTokenPressed}>
+                    <View style={styles.row}>
+                      <Text style={flex.flex1}>{symbol}</Text>
+                      <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Text style={styles.fieldLabel}>Derivation path</Text>
+                  <View style={[styles.row, styles.pathInputView]}>
+                    <Text>{prefix}</Text>
+                    <TextInput
+                      style={[presetStyles.textInput, styles.pathInput]}
+                      value={accountIndexText}
+                      onChangeText={this.onAccountIndexChanged}
+                      multiline={false}
+                    />
+                    <Text>{'\''}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
+          <SelectionModal
+            ref={(ref) => { this.selectionModal = ref; }}
+            items={tokens}
+            selectIndex={selectedTokenIndex}
+            onChange={this.onSelectedTokenIndexChanged}
+            title={strings('page.wallet.recovery.coin')}
+          />
         </BasePageGereral>
       );
     }

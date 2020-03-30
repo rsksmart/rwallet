@@ -80,7 +80,8 @@
         "title": "Importar carteira",
         "note": "Digite a frase de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
-        "specifyPath": "Especificar caminho de derivação"
+        "specifyPath": "Especificar caminho de derivação",
+        "coin": "Coin"
       },
       "recoveryPhrase": {
         "title": "Frase de recuperação",
