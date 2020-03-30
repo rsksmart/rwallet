@@ -186,7 +186,7 @@ class ParseHelper {
    * @method handleError
    */
   static async handleError({ err, appId }) {
-    console.log('ERROR: parse.handleError', err);
+    console.log('handleError', err);
 
     const message = err.message || 'error.parse.default';
 
@@ -412,6 +412,20 @@ class ParseHelper {
     return Parse.Cloud.run('getUserTokenBalance', {
       type, chain, tokenAddress: constractAddress, userAddress: address,
     });
+  }
+
+  /**
+   * Subscribe to a Live Query channel also-known-as Parse Class
+   * @param {*} collection
+   */
+  static async subscribe(collection) {
+    const query = new Parse.Query(collection);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static unsubscribe(subscription) {
+    subscription.unsubscribe();
   }
 }
 

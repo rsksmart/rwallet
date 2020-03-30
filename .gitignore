@@ -60,3 +60,6 @@ buck-out/
 coverage/
 
 *.snap
+
+.env
+

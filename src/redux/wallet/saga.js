@@ -10,6 +10,7 @@ import { eventChannel /* END */ } from 'redux-saga';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
+import CoinSwitchHelper from '../../common/coinswitch.helper';
 
 import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
@@ -296,6 +297,22 @@ function* deleteTokenRequest(action) {
   }
 }
 
+function* getSwapRateRequest(action) {
+  const { sourceCoinId, destCoinId } = action.payload;
+  try {
+    const response = yield call(CoinSwitchHelper.getRate, sourceCoinId, destCoinId);
+    const swapRate = {
+      sourceCoinId,
+      destCoinId,
+      rate: response,
+    };
+    yield put({ type: actions.GET_SWAP_RATE_RESULT, value: swapRate });
+  } catch (err) {
+    console.log('getSwapRateRequest, err: ', err);
+    yield put({ type: actions.SET_SWAP_RATE_RESULT_ERROR, value: { sourceCoinId, destCoinId, error: err } });
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.GET_PRICE, getPriceRequest),
@@ -313,5 +330,7 @@ export default function* () {
     takeEvery(actions.CREATE_KEY, createKeyRequest),
     takeEvery(actions.ADD_TOKEN, addTokenRequest),
     takeEvery(actions.DELETE_TOKEN, deleteTokenRequest),
+
+    takeEvery(actions.GET_SWAP_RATE, getSwapRateRequest),
   ]);
 }
