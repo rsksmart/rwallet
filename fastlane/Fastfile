@@ -1,0 +1,125 @@
+APP_ID="com.rsk.rwallet.reactnative"
+XCODEPROJ="./ios/rwallet.xcodeproj"
+GRADLE_FILE="android/app/build.gradle"
+SLACK_WEB_HOOK="https://hooks.slack.com/services/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"
+
+before_all do
+    ENV["SLACK_URL"] = SLACK_WEB_HOOK
+end
+
+platform :ios do
+    lane :get_version do
+        ios_get_version(
+            xcodeproj: XCODEPROJ
+        )
+    end
+
+    lane :set_version do |options|
+        ios_set_version(
+            version: options[:version],
+            xcodeproj: XCODEPROJ
+        )
+    end
+
+    lane :get_build do
+        ios_get_build_number(
+            xcodeproj: XCODEPROJ
+        )
+    end
+
+    lane :set_build do |options|
+        # ios_set_build_number will increment by 1 if there's no input options[:build]
+        ios_set_build_number(
+            build_number: options[:build],
+            xcodeproj: XCODEPROJ
+        )
+    end
+
+    desc 'Fetch certificates and provisioning profiles'
+    lane :certificates do
+        match(app_identifier: APP_ID, type: 'development', readonly: true)
+    end
+
+    desc 'Build the iOS application.'
+    private_lane :build do
+        certificates
+        gym(scheme: 'rwallet', project: XCODEPROJ)
+    end
+
+    desc 'Ship to Testflight.'
+    lane :beta do |options|
+        version = set_version(version: options[:version]),
+        set_build(build: options[:build]),
+        build
+        pilot
+        slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
+    end
+
+end
+
+platform :android do
+
+    lane :get_version_code do
+        android_get_version_code(
+            gradle_file: GRADLE_FILE # optional
+        )
+    end
+
+    lane :get_version_name do
+        android_get_version_name(
+            gradle_file: GRADLE_FILE # optional
+        )
+    end
+
+    private_lane :set_version_code do |options|
+        android_set_version_code(
+            version_code: options[:code],
+            gradle_file: GRADLE_FILE # optional
+        )
+    end
+
+    private_lane :set_version_name do |options|
+        android_set_version_name(
+            version_name: options[:version],
+            gradle_file: GRADLE_FILE # optional
+        )
+    end
+
+    desc 'Build the Android application.'
+    private_lane :build do
+        gradle(task: 'clean', project_dir: 'android/')
+        gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+    end
+
+    desc 'Only build the APK.'
+    lane :build_apk do |options|
+        set_version_name(version: options[:version])
+        set_version_code(code: options[:code])
+        build
+        slack(message: "App #{get_version_name}(#{get_version_code}) was built and successfully")
+    end
+
+    desc 'Ship to Play Store Beta.'
+    lane :beta do |options|
+        build
+#        supply(track: 'beta', track_promote_to: 'beta')
+        git_commit(path: GRADLE_FILE, message: 'Release ' + options[:version_name])
+        push_to_git_remote
+    end
+
+    desc 'Ship to Play Store Alpha.'
+    lane :alpha do
+        build
+#        supply(track: 'alpha', track_promote_to: 'alpha')
+        git_commit(path: GRADLE_FILE, message: 'Release ' + options[:version_name])
+        push_to_git_remote
+    end
+
+    desc 'Ship to Play Store Internal.'
+    lane :internal do
+        build
+#        supply(track: 'internal', track_promote_to: 'internal')
+        git_commit(path: GRADLE_FILE, message: 'Release ' + options[:version_name], allow_nothing_to_commit: true)
+        push_to_git_remote
+    end
+end
