@@ -925,7 +925,7 @@ class Transfer extends Component {
                 style={[styles.textInput]}
                 value={to}
                 onChangeText={(text) => {
-                  this.setState({ to: text }, this.validateConfirmControl);
+                  this.setState({ to: text.trim() }, this.validateConfirmControl);
                 }}
                 onBlur={this.onToInputBlur}
               />
