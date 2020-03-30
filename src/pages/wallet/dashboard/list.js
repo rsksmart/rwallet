@@ -12,8 +12,12 @@ import BasePageSimple from '../../base/base.page.simple';
 import ListPageHeader from '../../../components/headers/header.listpage';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
+import WalletPlaceholder from './wallet.carousel.page.wallet.placeholder';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
+import { screen } from '../../../common/info';
+
+const WALLET_PAGE_WIDTH = screen.width - 50;
 
 const { getCurrencySymbol } = common;
 
@@ -21,8 +25,8 @@ const styles = StyleSheet.create({
   body: {
     marginBottom: screenHelper.bottomHeight + 70,
     marginTop: -190,
-    flexDirection: 'column',
     flex: 1,
+    alignItems: 'center',
   },
 });
 
@@ -67,7 +71,14 @@ class WalletList extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      currencySymbol: null,
+      listData: null,
+    };
     this.onSwapPressed = this.onSwapPressed.bind(this);
+  }
+
+  componentDidMount(): void {
     const { currency, walletManager, navigation } = this.props;
     const { wallets } = walletManager;
     const currencySymbol = getCurrencySymbol(currency);
@@ -106,25 +117,29 @@ class WalletList extends Component {
   render() {
     const { navigation } = this.props;
     const { currencySymbol, listData } = this.state;
+    const isDataReady = currencySymbol && listData && listData.length;
+    let pageData = [];
 
-    const pageData = _.map(listData, (walletData, index) => {
-      const hasSwappableCoin = walletData.wallet.coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
-      return {
-        index,
-        walletData,
-        onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
-        onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
-        onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
-          operation: 'scan',
-          wallet: walletData.wallet,
-          onDetectedAction: 'navigateToTransfer',
-        }),
-        onSwapPressed: () => this.onSwapPressed(walletData.wallet),
-        onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
-        currencySymbol,
-        hasSwappableCoin,
-      };
-    });
+    if (isDataReady) {
+      pageData = _.map(listData, (walletData, index) => {
+        const hasSwappableCoin = walletData.wallet.coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
+        return {
+          index,
+          walletData,
+          onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
+          onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
+          onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
+            operation: 'scan',
+            wallet: walletData.wallet,
+            onDetectedAction: 'navigateToTransfer',
+          }),
+          onSwapPressed: () => this.onSwapPressed(walletData.wallet),
+          onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
+          currencySymbol,
+          hasSwappableCoin,
+        };
+      });
+    }
 
     return (
       <BasePageSimple
@@ -136,7 +151,11 @@ class WalletList extends Component {
         headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
         <View style={[styles.body]}>
-          <WalletCarousel data={pageData} navigation={navigation} />
+          {isDataReady ? <WalletCarousel data={pageData} navigation={navigation} pageWidth={WALLET_PAGE_WIDTH} /> : (
+            <View style={[{ width: WALLET_PAGE_WIDTH, height: 450 }]}>
+              <WalletPlaceholder />
+            </View>
+          )}
         </View>
       </BasePageSimple>
     );

@@ -10,8 +10,6 @@ import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
 
-const WALLET_PAGE_WIDTH = screen.width - 50;
-
 const styles = StyleSheet.create({
   carousel: {
   },
@@ -80,7 +78,7 @@ class WalletCarousel extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, pageWidth } = this.props;
     data.unshift({ index: -1 });
 
     const renderItem = (itemData) => {
@@ -120,7 +118,7 @@ class WalletCarousel extends Component {
         style={styles.carousel}
         data={data}
         renderItem={renderItem}
-        itemWidth={WALLET_PAGE_WIDTH}
+        itemWidth={pageWidth}
         inActiveOpacity={0.5}
         containerWidth={screen.width}
         initialIndex={1}
@@ -138,6 +136,7 @@ WalletCarousel.propTypes = {
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  pageWidth: PropTypes.number.isRequired,
 };
 
 export default WalletCarousel;
