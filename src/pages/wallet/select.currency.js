@@ -113,10 +113,15 @@ class WalletSelectCurrency extends Component {
     createWallet(phrase, coins) {
       // createKey cost time, it will block ui.
       // So we let run at next tick, loading ui can present first.
+      const { navigation } = this.props;
       const { createKey, walletManager } = this.props;
+      let specifyPaths = null;
+      if (navigation.state.params && navigation.state.params.specifyPaths) {
+        specifyPaths = navigation.state.params.specifyPaths;
+      }
       this.setState({ isLoading: true }, () => {
         setTimeout(() => {
-          createKey(null, phrase, coins, walletManager);
+          createKey(null, phrase, coins, walletManager, specifyPaths);
         }, 0);
       });
     }
@@ -173,7 +178,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
-  createKey: (name, phrases, coins, walletManager) => dispatch(walletActions.createKey(name, phrases, coins, walletManager)),
+  createKey: (name, phrases, coins, walletManager, specifyPaths) => dispatch(walletActions.createKey(name, phrases, coins, walletManager, specifyPaths)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),

@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import color from '../../../assets/styles/color.ts';
 import flex from '../../../assets/styles/layout.flex';
+import space from '../../../assets/styles/space';
+import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,17 +16,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   panel: {
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     borderRadius: 5,
     marginHorizontal: 45,
-    paddingBottom: 20,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   titleView: {
-    borderBottomColor: '#DCDCDC',
+    borderBottomColor: color.seporatorLineLightGrey,
     borderBottomWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     marginBottom: 15,
@@ -42,6 +43,23 @@ const styles = StyleSheet.create({
   selectedColor: {
     color: color.lightGreen,
   },
+  ButtonsView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopColor: color.seporatorLineLightGrey,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 16,
+    marginVertical: 15,
+  },
+  button: {
+    minWidth: 95,
+  },
 });
 
 class SelectionModal extends Component {
@@ -49,47 +67,66 @@ class SelectionModal extends Component {
     super(props);
     this.state = {
       visible: false,
+      selectedIndex: 0,
+      currentIndex: 0,
     };
   }
 
-  onPressed = (index) => {
-    const { onChange, selectIndex } = this.props;
-    if (selectIndex !== index && onChange) {
-      this.setState({ visible: false });
-      onChange(index);
-    }
+  onItemSelected = (index) => {
+    this.setState({ currentIndex: index });
   }
 
   show = () => {
-    this.setState({ visible: true });
+    const { selectedIndex } = this.state;
+    this.setState({ visible: true, currentIndex: selectedIndex });
+  }
+
+  onCancelPressed = () => {
+    this.setState({ visible: false });
+  }
+
+  onConfirmPressed = () => {
+    const { currentIndex } = this.state;
+    const { onSelected } = this.props;
+    onSelected(currentIndex);
+    this.setState({ visible: false, selectedIndex: currentIndex });
   }
 
   render() {
-    const { items, selectIndex, title } = this.props;
-    const { visible } = this.state;
+    const { items, title } = this.props;
+    const { visible, currentIndex } = this.state;
     return (
       <Modal visible={visible} transparent>
-        <TouchableOpacity style={styles.container} onPress={() => { this.setState({ visible: false }); }}>
+        <View style={styles.container}>
           <View style={styles.panel}>
             <View style={[styles.row, styles.titleView]}><Text style={styles.title}>{title}</Text></View>
             <FlatList
               showsVerticalScrollIndicator={false}
               data={items}
+              extraData={currentIndex}
               renderItem={({ item, index }) => (
                 <TouchableOpacity
                   style={[styles.row, styles.listRow]}
-                  onPress={() => { this.onPressed(index); }}
+                  onPress={() => { this.onItemSelected(index); }}
                 >
-                  <Text style={[flex.flex1, selectIndex === index ? styles.selectedColor : null]}>{item}</Text>
-                  { selectIndex === index && (
+                  <Text style={[flex.flex1, currentIndex === index ? styles.selectedColor : null]}>{item}</Text>
+                  { currentIndex === index && (
                     <Ionicons style={styles.selectedColor} name="ios-checkmark" size={30} />
                   )}
                 </TouchableOpacity>
               )}
               keyExtractor={(item, index) => index.toString()}
             />
+            <View style={styles.ButtonsView}>
+              <TouchableOpacity style={styles.button} onPress={this.onCancelPressed}>
+                <Loc style={[styles.buttonText]} text="button.cancel" caseType="upper" />
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, space.marginLeft_35]} onPress={this.onConfirmPressed}>
+                <Loc style={[styles.buttonText]} text="button.ok" caseType="upper" />
+              </TouchableOpacity>
+            </View>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     );
   }
@@ -97,14 +134,12 @@ class SelectionModal extends Component {
 
 SelectionModal.propTypes = {
   items: PropTypes.arrayOf(PropTypes.string),
-  selectIndex: PropTypes.number,
-  onChange: PropTypes.func.isRequired,
+  onSelected: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
 };
 
 SelectionModal.defaultProps = {
   items: undefined,
-  selectIndex: 0,
 };
 
 export default SelectionModal;

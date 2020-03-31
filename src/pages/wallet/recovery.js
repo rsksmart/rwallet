@@ -18,10 +18,11 @@ import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
-
-const MAX_ACCOUNT = 4294967295;
+import coinType from '../../common/wallet/cointype';
 
 const bip39 = require('bip39');
+
+const MAX_ACCOUNT = 4294967295;
 
 const styles = StyleSheet.create({
   input: {
@@ -123,15 +124,15 @@ class WalletRecovery extends Component {
       this.onChangeText = this.onChangeText.bind(this);
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
-      this.tokenPaths = [
-        { symbol: 'BTC', prefix: "m/44'/0'/" },
-        { symbol: 'RBTC', prefix: "m/44'/137'/" },
+      this.tokens = [
+        { symbol: 'BTC', prefix: "m/44'/0'/", name: coinType.BTC.defaultName },
+        { symbol: 'RBTC', prefix: "m/44'/137'/", name: coinType.RBTC.defaultName },
       ];
       this.state = {
         phrases: [],
         phrase: '',
         isCanSubmit: false,
-        isDerivationPathEnabled: true,
+        isDerivationPathEnabled: false,
         accounts: [0, 0],
         selectedTokenIndex: 0,
       };
@@ -162,7 +163,7 @@ class WalletRecovery extends Component {
     onImportPress() {
       const { navigation, addNotification, walletManager } = this.props;
       const { phrases, accounts, isDerivationPathEnabled } = this.state;
-      const { tokenPaths } = this;
+      const { tokens } = this;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
         if (i !== 0) {
@@ -197,17 +198,22 @@ class WalletRecovery extends Component {
 
       const params = { phrases: inputPhrases };
       if (isDerivationPathEnabled) {
-        _.each(tokenPaths, (path, index) => {
-          const newPath = path;
-          newPath.account = accounts[index];
+        const specifyPaths = {};
+        _.each(tokens, (token, index) => {
+          const account = accounts[index];
+          if (account <= 0) {
+            return;
+          }
+          const { symbol } = this.tokens[index];
+          specifyPaths[symbol] = accounts[index];
         });
-        params.tokenPaths = tokenPaths;
+        params.specifyPaths = specifyPaths;
       }
 
       navigation.navigate('WalletSelectCurrency', params);
     }
 
-    onSelectedTokenIndexChanged = (index) => {
+    onSelectedTokenIndexSelected = (index) => {
       this.setState({ selectedTokenIndex: index });
     }
 
@@ -268,16 +274,17 @@ class WalletRecovery extends Component {
     }
 
     render() {
+      const { navigation } = this.props;
       const {
         phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
       } = this.state;
+      const { tokens } = this;
 
-      const { tokenPaths } = this;
-      const { symbol, prefix } = tokenPaths[selectedTokenIndex];
-      const tokens = _.map(tokenPaths, 'symbol');
+      const { prefix } = tokens[selectedTokenIndex];
+      const coins = _.map(tokens, (token) => `${token.name} (${token.symbol})`);
+      const selectedCoin = coins[selectedTokenIndex];
       const accountIndexText = !_.isNil(accounts[selectedTokenIndex]) ? accounts[selectedTokenIndex].toString() : '';
 
-      const { navigation } = this.props;
       const bottomButton = (<Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />);
       return (
         <BasePageGereral
@@ -328,16 +335,16 @@ class WalletRecovery extends Component {
             { isDerivationPathEnabled && (
               <View>
                 <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Text style={styles.fieldLabel}>Coin</Text>
+                  <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.coin')}</Text>
                   <TouchableOpacity onPress={this.onTokenPressed}>
                     <View style={styles.row}>
-                      <Text style={flex.flex1}>{symbol}</Text>
+                      <Text style={flex.flex1}>{selectedCoin}</Text>
                       <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
                     </View>
                   </TouchableOpacity>
                 </View>
                 <View style={[styles.sectionContainer, styles.bottomBorder]}>
-                  <Text style={styles.fieldLabel}>Derivation path</Text>
+                  <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.derivationPath')}</Text>
                   <View style={[styles.row, styles.pathInputView]}>
                     <Text>{prefix}</Text>
                     <TextInput
@@ -354,9 +361,9 @@ class WalletRecovery extends Component {
           </View>
           <SelectionModal
             ref={(ref) => { this.selectionModal = ref; }}
-            items={tokens}
+            items={coins}
             selectIndex={selectedTokenIndex}
-            onChange={this.onSelectedTokenIndexChanged}
+            onSelected={this.onSelectedTokenIndexSelected}
             title={strings('page.wallet.recovery.coin')}
           />
         </BasePageGereral>
