@@ -115,13 +115,13 @@ class WalletSelectCurrency extends Component {
       // So we let run at next tick, loading ui can present first.
       const { navigation } = this.props;
       const { createKey, walletManager } = this.props;
-      let specifyPaths = null;
-      if (navigation.state.params && navigation.state.params.specifyPaths) {
-        specifyPaths = navigation.state.params.specifyPaths;
+      let specifyPathAccounts = null;
+      if (navigation.state.params && navigation.state.params.specifyPathAccounts) {
+        specifyPathAccounts = navigation.state.params.specifyPathAccounts;
       }
       this.setState({ isLoading: true }, () => {
         setTimeout(() => {
-          createKey(null, phrase, coins, walletManager, specifyPaths);
+          createKey(null, phrase, coins, walletManager, specifyPathAccounts);
         }, 0);
       });
     }
@@ -178,7 +178,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   updateUser: (updateFields) => dispatch(appActions.updateUser(updateFields)),
-  createKey: (name, phrases, coins, walletManager, specifyPaths) => dispatch(walletActions.createKey(name, phrases, coins, walletManager, specifyPaths)),
+  createKey: (name, phrases, coins, walletManager, specifyPathAccounts) => dispatch(walletActions.createKey(name, phrases, coins, walletManager, specifyPathAccounts)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),

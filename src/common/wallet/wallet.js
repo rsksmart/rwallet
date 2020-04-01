@@ -24,14 +24,16 @@ export default class Wallet {
     this.assetValue = new BigNumber(0);
     this.coins = [];
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
-    this.derivationDatas = null;
+    this.derivationDatas = undefined;
   }
 
-  generateDerivationDatas(specifyPaths) {
+  // Generate derivation data(address, privateKey) for BTC, RBTC (RSK tokens)
+  // Save private key to secure storage
+  generateDerivationDatas(specifyPathAccounts) {
     this.derivationDatas = [];
     _.each(drivationTypes, (drivationType) => {
       const { symbol, type } = drivationType;
-      const account = specifyPaths && specifyPaths[symbol] ? specifyPaths[symbol] : 0;
+      const account = specifyPathAccounts && specifyPathAccounts[symbol] ? specifyPathAccounts[symbol] : 0;
       let coin = null;
       if (symbol === 'BTC') {
         coin = new Coin(symbol, type, account);
@@ -50,16 +52,19 @@ export default class Wallet {
     });
   }
 
-  createTokensFromSeed(coins, specifyPaths) {
-    this.generateDerivationDatas(specifyPaths);
+  // Create tokens from seed for first wallet creation
+  createTokensFromSeed(coins, specifyPathAccounts) {
+    this.generateDerivationDatas(specifyPathAccounts);
     this.createCoins(coins);
   }
 
+  // Retore tokens with exsisted derivation datas
   restoreTokensWithDerivationDatas(coins, derivationDatas) {
     this.derivationDatas = derivationDatas;
     this.createCoins(coins);
   }
 
+  // create coins and add to list
   createCoins(coins) {
     if (!_.isEmpty(coins)) {
       coins.forEach((item) => {
@@ -75,10 +80,11 @@ export default class Wallet {
    * @param {string} param0.name Name of wallet
    * @param {string} param0.phrase 12-word phrase
    * @param {array} param0.coins Array of coin JSON
+   * @param {object} specifyPathAccounts {'BTC': 2, 'RBTC': 1}
    *
    */
   static create({
-    id, name, phrase, coins, specifyPaths,
+    id, name, phrase, coins, specifyPathAccounts,
   }) {
     // If phrase is defined we will create mnemonic with phrase
     // Otherwise this line will generate a random mnemonic
@@ -87,8 +93,9 @@ export default class Wallet {
       mnemonic = bip39.generateMnemonic();
     }
 
+    // create wallet and create tokens from seed
     const wallet = new Wallet({ id, name, mnemonic });
-    wallet.createTokensFromSeed(coins, specifyPaths);
+    wallet.createTokensFromSeed(coins, specifyPathAccounts);
 
     // We need to save the phrase to secure storage after generation
     // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
@@ -162,7 +169,6 @@ export default class Wallet {
   static async restorePrivateKey(id, symbol, type) {
     try {
       const privateKey = await storage.getPrivateKey(id, symbol, type);
-
       return privateKey;
     } catch (err) {
       console.log(err.message);
@@ -176,15 +182,12 @@ export default class Wallet {
    * Returns a JSON to save required data to backend server; empty array if there's no coins
    */
   toJSON() {
-    const newDerivationDatas = [];
-    _.each(this.derivationDatas, (derivationData, index) => {
-      newDerivationDatas[index] = {
-        symbol: derivationData.symbol,
-        type: derivationData.type,
-        account: derivationData.account,
-        address: derivationData.address,
-      };
-    });
+    const newDerivationDatas = _.map(this.derivationDatas, (derivationData) => ({
+      symbol: derivationData.symbol,
+      type: derivationData.type,
+      account: derivationData.account,
+      address: derivationData.address,
+    }));
 
     const result = {
       id: this.id,
@@ -212,19 +215,24 @@ export default class Wallet {
 
     // use secure storage to restore private key
     if (derivationDatas) {
+      const privateKeyPromises = [];
       _.each(drivationTypes, async (drivationType) => {
         const { symbol, type } = drivationType;
-        const derivationData = _.find(derivationDatas, { symbol, type });
-        derivationData.privateKey = await Wallet.restorePrivateKey(id, symbol, type);
+        privateKeyPromises.push(Wallet.restorePrivateKey(id, symbol, type));
+      });
+      const privateKeys = await Promise.all(privateKeyPromises);
+      _.each(privateKeys, (privateKey, index) => {
+        derivationDatas[index].privateKey = privateKey;
       });
     }
-    console.log('derivationDatas: ', derivationDatas);
+
     if (!_.isString(phrase)) { // We are be able to restore phrase; do not continue.
       console.log(`Wallet.fromJSON: phrase restored is not a string, Id=${id}; returning null.`);
       return null;
     }
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
+    console.log('Wallet.fromJSON: derivationDatas: ', derivationDatas);
 
     // Migrate from old coin structure
     _.each(coins, (coin) => {
@@ -236,10 +244,6 @@ export default class Wallet {
         newCoin.type = metadata.type;
       }
     });
-
-    // const wallet = new Wallet({
-    //   id, name, mnemonic: phrase, coins,
-    // });
 
     const wallet = Wallet.restore({
       id, name, phrase, coins, derivationDatas,
@@ -271,7 +275,7 @@ export default class Wallet {
    */
   addToken = (token) => {
     const {
-      symbol, type, contractAddress, decimalPlaces, objectId, amount, name,
+      symbol, type, contractAddress, decimalPlaces, objectId, name,
     } = token;
 
     let coin = null;
@@ -293,9 +297,6 @@ export default class Wallet {
     coin.account = derivationData.account;
     if (objectId) {
       coin.objectId = objectId;
-    }
-    if (amount) {
-      coin.amount = amount;
     }
     this.coins.push(coin);
     return coin;

@@ -133,7 +133,7 @@ class WalletRecovery extends Component {
         phrase: '',
         isCanSubmit: false,
         isDerivationPathEnabled: false,
-        accounts: [0, 0],
+        accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
     }
@@ -190,7 +190,7 @@ class WalletRecovery extends Component {
           'modal.duplicatePhrase.title',
           'modal.duplicatePhrase.body',
           'button.gotIt',
-          () => { this.setState({ phrases: [] }); },
+          () => { this.setState({ phrases: [], isCanSubmit: false }); },
         );
         addNotification(notification);
         return;
@@ -352,6 +352,8 @@ class WalletRecovery extends Component {
                       value={accountIndexText}
                       onChangeText={this.onAccountIndexChanged}
                       multiline={false}
+                      placeholder="0"
+                      placeholderTextColor="#555"
                     />
                     <Text>{'\''}</Text>
                   </View>
