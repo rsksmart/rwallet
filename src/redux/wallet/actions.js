@@ -103,14 +103,14 @@ const actions = {
       walletManager,
     },
   }),
-  createKey: (name, phrase, coins, walletManager, specifyPathAccounts) => ({
+  createKey: (name, phrase, coins, walletManager, derivationPaths) => ({
     type: actions.CREATE_KEY,
     payload: {
       name,
       phrase,
       coins,
       walletManager,
-      specifyPathAccounts,
+      derivationPaths,
     },
   }),
 

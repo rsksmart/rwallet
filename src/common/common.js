@@ -394,6 +394,14 @@ const common = {
     console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
+
+  getAccountFromDerivationPath(derivationPath) {
+    if (derivationPath) {
+      const accountField = derivationPath.split('/')[3];
+      return accountField.substr(0, accountField.length - 1);
+    }
+    return '0';
+  },
 };
 
 export default common;

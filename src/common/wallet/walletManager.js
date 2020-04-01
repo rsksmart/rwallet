@@ -31,14 +31,14 @@ class WalletManager {
    * @param {string} name Wallet name
    * @param {string} phrase 12-word mnemonic phrase
    * @param {array} coinIds [{symbol: "BTC", type:'Mainnet'}, {symbol: "RBTC", type:'Mainnet'}, {symbol: "RIF", type:'Mainnet'}]
-   * @param {object} specifyPathAccounts, {'BTC': 2, 'RBTC': 1}
+   * @param {object} derivationPaths, {BTC: "m/44'/0'/1'/0/0", BTC: "m/44'/137'/1'/0/0"}
    */
-  async createWallet(name, phrase, coins, specifyPathAccounts) {
+  async createWallet(name, phrase, coins, derivationPaths) {
     console.log('walletManager.createWallet:coins', coins);
 
     // 2. Create a Wallet instance and save into wallets
     const wallet = await Wallet.create({
-      id: this.currentKeyId, name, phrase, coins, specifyPathAccounts,
+      id: this.currentKeyId, name, phrase, coins, derivationPaths,
     });
 
     this.wallets.push(wallet);

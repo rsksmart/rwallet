@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StackActions } from 'react-navigation';
+import _ from 'lodash';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
@@ -148,8 +149,8 @@ class AddCustomToken extends Component {
       } = this;
       try {
         this.setState({ isLoadingBalance: true });
-        const address = type === 'Mainnet' ? wallet.rbtc.address : wallet.rbtcTestnet.address;
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, address), this);
+        const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, derivation.address), this);
         console.log('UserTokenBalance: ', result);
         this.setState({ balance: common.weiToCoin(result.balance) });
       } catch (error) {

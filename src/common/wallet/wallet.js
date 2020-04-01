@@ -24,27 +24,27 @@ export default class Wallet {
     this.assetValue = new BigNumber(0);
     this.coins = [];
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
-    this.derivationDatas = undefined;
+    this.derivations = undefined;
   }
 
   // Generate derivation data(address, privateKey) for BTC, RBTC (RSK tokens)
   // Save private key to secure storage
-  generateDerivationDatas(specifyPathAccounts) {
-    this.derivationDatas = [];
+  generateDerivations(derivationPaths) {
+    this.derivations = [];
     _.each(drivationTypes, (drivationType) => {
       const { symbol, type } = drivationType;
-      const account = specifyPathAccounts && specifyPathAccounts[symbol] ? specifyPathAccounts[symbol] : 0;
+      const path = type === 'Mainnet' && derivationPaths && derivationPaths[symbol] ? derivationPaths[symbol] : null;
       let coin = null;
       if (symbol === 'BTC') {
-        coin = new Coin(symbol, type, account);
+        coin = new Coin(symbol, type, path);
       } else {
-        coin = new RBTCCoin(symbol, type, account);
+        coin = new RBTCCoin(symbol, type, path);
       }
       coin.derive(this.seed);
-      this.derivationDatas.push({
+      this.derivations.push({
         symbol,
         type,
-        account,
+        path: coin.derivationPath,
         address: coin.address,
         privateKey: coin.privateKey,
       });
@@ -53,14 +53,14 @@ export default class Wallet {
   }
 
   // Create tokens from seed for first wallet creation
-  createTokensFromSeed(coins, specifyPathAccounts) {
-    this.generateDerivationDatas(specifyPathAccounts);
+  createTokensFromSeed(coins, derivationPaths) {
+    this.generateDerivations(derivationPaths);
     this.createCoins(coins);
   }
 
   // Retore tokens with exsisted derivation datas
-  restoreTokensWithDerivationDatas(coins, derivationDatas) {
-    this.derivationDatas = derivationDatas;
+  restoreTokensWithDerivations(coins, derivations) {
+    this.derivations = derivations;
     this.createCoins(coins);
   }
 
@@ -80,11 +80,11 @@ export default class Wallet {
    * @param {string} param0.name Name of wallet
    * @param {string} param0.phrase 12-word phrase
    * @param {array} param0.coins Array of coin JSON
-   * @param {object} specifyPathAccounts {'BTC': 2, 'RBTC': 1}
+   * @param {object} derivationPaths {BTC: "m/44'/0'/1'/0/0", BTC: "m/44'/137'/1'/0/0"}
    *
    */
   static create({
-    id, name, phrase, coins, specifyPathAccounts,
+    id, name, phrase, coins, derivationPaths,
   }) {
     // If phrase is defined we will create mnemonic with phrase
     // Otherwise this line will generate a random mnemonic
@@ -95,7 +95,7 @@ export default class Wallet {
 
     // create wallet and create tokens from seed
     const wallet = new Wallet({ id, name, mnemonic });
-    wallet.createTokensFromSeed(coins, specifyPathAccounts);
+    wallet.createTokensFromSeed(coins, derivationPaths);
 
     // We need to save the phrase to secure storage after generation
     // TODO: We don't wait for success here. There's a chance this will fail; will need to add retry for this
@@ -105,12 +105,12 @@ export default class Wallet {
   }
 
   static restore({
-    id, name, phrase, coins, derivationDatas,
+    id, name, phrase, coins, derivations,
   }) {
     let wallet = null;
-    if (derivationDatas) {
+    if (derivations) {
       wallet = new Wallet({ id, name, mnemonic: phrase });
-      wallet.restoreTokensWithDerivationDatas(coins, derivationDatas);
+      wallet.restoreTokensWithDerivations(coins, derivations);
     } else {
       wallet = Wallet.create({
         id, name, phrase, coins,
@@ -182,11 +182,11 @@ export default class Wallet {
    * Returns a JSON to save required data to backend server; empty array if there's no coins
    */
   toJSON() {
-    const newDerivationDatas = _.map(this.derivationDatas, (derivationData) => ({
-      symbol: derivationData.symbol,
-      type: derivationData.type,
-      account: derivationData.account,
-      address: derivationData.address,
+    const newDerivations = _.map(this.derivations, (derivation) => ({
+      symbol: derivation.symbol,
+      type: derivation.type,
+      path: derivation.path,
+      address: derivation.address,
     }));
 
     const result = {
@@ -194,7 +194,7 @@ export default class Wallet {
       name: this.name,
       // createdAt: this.createdAt,
       coins: this.coins.map((coin) => coin.toJSON()),
-      derivationDatas: newDerivationDatas,
+      derivations: newDerivations,
     };
 
     return result;
@@ -207,14 +207,14 @@ export default class Wallet {
    */
   static async fromJSON(json) {
     const {
-      id, name, coins, derivationDatas,
+      id, name, coins, derivations,
     } = json;
 
     // use secure storage to restore phrase
     const phrase = await Wallet.restorePhrase(id);
 
     // use secure storage to restore private key
-    if (derivationDatas) {
+    if (derivations) {
       const privateKeyPromises = [];
       _.each(drivationTypes, async (drivationType) => {
         const { symbol, type } = drivationType;
@@ -222,7 +222,7 @@ export default class Wallet {
       });
       const privateKeys = await Promise.all(privateKeyPromises);
       _.each(privateKeys, (privateKey, index) => {
-        derivationDatas[index].privateKey = privateKey;
+        derivations[index].privateKey = privateKey;
       });
     }
 
@@ -232,7 +232,7 @@ export default class Wallet {
     }
 
     console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
-    console.log('Wallet.fromJSON: derivationDatas: ', derivationDatas);
+    console.log('Wallet.fromJSON: derivations: ', derivations);
 
     // Migrate from old coin structure
     _.each(coins, (coin) => {
@@ -246,7 +246,7 @@ export default class Wallet {
     });
 
     const wallet = Wallet.restore({
-      id, name, phrase, coins, derivationDatas,
+      id, name, phrase, coins, derivations,
     });
 
     return wallet;
@@ -283,18 +283,16 @@ export default class Wallet {
     if (foundCoin) {
       throw new Error('err.exsistedtoken');
     }
-    let derivationData = null;
     // Create coin and reuse address and private key
-    if (symbol === 'BTC') {
-      coin = new Coin(symbol, type);
-    } else {
-      coin = new RBTCCoin(symbol, type, null, contractAddress, decimalPlaces, name);
-    }
     const derivationSymbol = symbol === 'BTC' ? symbol : 'RBTC';
-    derivationData = _.find(this.derivationDatas, { symbol: derivationSymbol, type });
-    coin.privateKey = derivationData.privateKey;
-    coin.address = derivationData.address;
-    coin.account = derivationData.account;
+    const derivation = _.find(this.derivations, { symbol: derivationSymbol, type });
+    if (symbol === 'BTC') {
+      coin = new Coin(symbol, type, derivation.path);
+    } else {
+      coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, decimalPlaces, name);
+    }
+    coin.privateKey = derivation.privateKey;
+    coin.address = derivation.address;
     if (objectId) {
       coin.objectId = objectId;
     }

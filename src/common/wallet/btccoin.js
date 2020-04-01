@@ -5,17 +5,21 @@ import { payments } from 'bitcoinjs-lib';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import config from '../../../config';
+import common from '../common';
 
 export default class Coin {
-  constructor(symbol, type, account) {
+  constructor(symbol, type, derivationPath) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, queryKey, defaultName}
     this.metadata = coinType[this.id];
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
-    this.account = account || 0;
+    // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+    // m / purpose' / coin_type' / account' / change / address_index
+    this.account = common.getAccountFromDerivationPath(derivationPath);
     this.networkId = this.metadata.networkId;
+    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
     this.decimalPlaces = config.symbolDecimalPlaces[symbol];
   }
 
@@ -97,7 +101,7 @@ export default class Coin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      amount: this.amount,
+      derivationPath: this.derivationPath,
       address: this.address,
       objectId: this.objectId,
     };
@@ -105,9 +109,9 @@ export default class Coin {
 
   static fromJSON(json) {
     const {
-      id, amount, address, objectId,
+      symbol, type, derivationPath, objectId,
     } = json;
-    const instance = new Coin(id, amount, address);
+    const instance = new Coin(symbol, type, derivationPath);
     instance.objectId = objectId;
     return instance;
   }

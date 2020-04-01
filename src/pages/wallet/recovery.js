@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
+    fontFamily: 'Avenir-Heavy',
     fontSize: 14,
-    fontWeight: '600',
     color: '#000',
     marginBottom: 10,
   },
@@ -88,9 +88,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  pathInputView: {
-    marginVertical: 7,
-  },
   pathInput: {
     marginHorizontal: 5,
     fontSize: 14,
@@ -99,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: 'center',
   },
-  fieldLabel: {
+  switchLabel: {
     fontFamily: 'Avenir-Book',
   },
   selectionModalTitle: {
@@ -107,6 +104,25 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Heavy',
     color: color.black,
     marginVertical: 10,
+  },
+  phraseSection: {
+    marginTop: 17,
+    paddingBottom: 17,
+    marginBottom: 10,
+  },
+  phraseTitle: {
+    marginBottom: 14,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+  },
+  fieldLabel: {
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  fieldText: {
+    fontFamily: 'Avenir-Book',
+    fontSize: 15,
   },
 });
 
@@ -133,6 +149,8 @@ class WalletRecovery extends Component {
         phrase: '',
         isCanSubmit: false,
         isDerivationPathEnabled: false,
+        // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+        // m / purpose' / coin_type' / account' / change / address_index
         accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
@@ -198,16 +216,16 @@ class WalletRecovery extends Component {
 
       const params = { phrases: inputPhrases };
       if (isDerivationPathEnabled) {
-        const specifyPaths = {};
+        const derivationPaths = {};
         _.each(tokens, (token, index) => {
-          const account = accounts[index];
-          if (account <= 0) {
+          const account = parseInt(accounts[index], 10);
+          if (_.isNaN(account) || account <= 0) {
             return;
           }
-          const { symbol } = this.tokens[index];
-          specifyPaths[symbol] = accounts[index];
+          const { symbol } = token;
+          derivationPaths[symbol] = `${token.prefix + accounts[index]}'/0/0`;
         });
-        params.specifyPaths = specifyPaths;
+        params.derivationPaths = derivationPaths;
       }
 
       navigation.navigate('WalletSelectCurrency', params);
@@ -228,8 +246,9 @@ class WalletRecovery extends Component {
         accounts[selectedTokenIndex] = null;
         this.setState({ accounts });
       }
+
       let account = parseInt(value, 10);
-      if (account >= 0) {
+      if (!_.isNaN(account) && account >= 0) {
         account = Math.min(account, MAX_ACCOUNT);
         accounts[selectedTokenIndex] = account;
         this.setState({ accounts });
@@ -296,36 +315,38 @@ class WalletRecovery extends Component {
         >
           <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
           <View style={styles.body}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
-            <View style={styles.phraseView}>
-              <TextInput
-                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                        // This code uses a ref to store a reference to a DOM node
-                                        // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                ref={(ref) => {
-                  this.phraseInput = ref;
-                }}
-                                        // set blurOnSubmit to false, to prevent keyboard flickering.
-                blurOnSubmit={false}
-                style={[presetStyles.textInput, styles.input]}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-                value={phrase}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                <Tags
-                  style={[{ flex: 1 }]}
-                  data={phrases}
-                  onPress={this.onTagsPress}
+            <View style={[styles.phraseSection, styles.bottomBorder]}>
+              <Loc style={styles.phraseTitle} text="page.wallet.recovery.note" />
+              <View style={styles.phraseView}>
+                <TextInput
+                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                          // This code uses a ref to store a reference to a DOM node
+                                          // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                  ref={(ref) => {
+                    this.phraseInput = ref;
+                  }}
+                                          // set blurOnSubmit to false, to prevent keyboard flickering.
+                  blurOnSubmit={false}
+                  style={[presetStyles.textInput, styles.input]}
+                  onChangeText={this.onChangeText}
+                  onSubmitEditing={this.onSubmitEditing}
+                  value={phrase}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
+                <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                  <Tags
+                    style={[{ flex: 1 }]}
+                    data={phrases}
+                    onPress={this.onTagsPress}
+                  />
+                </View>
               </View>
             </View>
             <View style={[styles.sectionContainer, styles.bottomBorder]}>
               <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
               <View style={styles.row}>
-                <Loc style={[flex.flex1, styles.fieldLabel]} text="page.wallet.recovery.specifyPath" />
+                <Loc style={[flex.flex1, styles.switchLabel]} text="page.wallet.recovery.specifyPath" />
                 <Switch
                   value={isDerivationPathEnabled}
                   onValueChange={(value) => { this.setState({ isDerivationPathEnabled: value }); }}
@@ -338,15 +359,15 @@ class WalletRecovery extends Component {
                   <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.coin')}</Text>
                   <TouchableOpacity onPress={this.onTokenPressed}>
                     <View style={styles.row}>
-                      <Text style={flex.flex1}>{selectedCoin}</Text>
+                      <Text style={[flex.flex1, styles.fieldText]}>{selectedCoin}</Text>
                       <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
                     </View>
                   </TouchableOpacity>
                 </View>
                 <View style={[styles.sectionContainer, styles.bottomBorder]}>
                   <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.derivationPath')}</Text>
-                  <View style={[styles.row, styles.pathInputView]}>
-                    <Text>{prefix}</Text>
+                  <View style={[styles.row]}>
+                    <Text style={styles.fieldText}>{prefix}</Text>
                     <TextInput
                       style={[presetStyles.textInput, styles.pathInput]}
                       value={accountIndexText}
