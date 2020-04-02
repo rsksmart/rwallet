@@ -5,6 +5,7 @@ import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import references from '../../assets/references';
 import config from '../../../config';
+import common from '../common';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -46,7 +47,7 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, contractAddress, decimalPlaces, name) {
+  constructor(symbol, type, derivationPath, contractAddress, decimalPlaces, name) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
@@ -64,6 +65,11 @@ export default class RBTCCoin {
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
+    // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+    // m / purpose' / coin_type' / account' / change / address_index
+    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.networkId = this.metadata.networkId;
+    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
     this.name = this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
@@ -71,9 +77,9 @@ export default class RBTCCoin {
   derive(seed) {
     try {
       const master = RBTCCoin.generateMasterFromSeed(seed);
-      const networkNode = RBTCCoin.generateRootNodeFromMaster(master, this.networkId);
-      const accountNode = RBTCCoin.generateAccountNode(networkNode, 0);
-      const addressNode = RBTCCoin.generateAddressNode(accountNode, 0);
+      const accountNode = RBTCCoin.generateAccountNode(master, this.networkId, this.account);
+      const changeNode = RBTCCoin.generateChangeNode(accountNode, 0);
+      const addressNode = RBTCCoin.generateAddressNode(changeNode, 0);
       this.address = RBTCCoin.getAddress(addressNode, this.networkId);
       this.privateKey = RBTCCoin.getPrivateKey(master, addressNode);
     } catch (ex) {
@@ -111,22 +117,22 @@ export default class RBTCCoin {
     });
   }
 
-  static generateRootNodeFromMaster(master, networkId) {
+  static generateAccountNode(master, networkId, account) {
     let node = deserializePrivate(master);
-    const path = `m/44'/${networkId}'/0'`;
+    const path = `m/44'/${networkId}'/${account}'`;
     node = node.derive(path);
     return new PathKeyPair(path, serializePublic(node));
   }
 
-  static generateAccountNode(networkNode, index) {
-    const path = `${networkNode.path}/${index}`;
-    const publicKey = this.deriveChildFromNode(networkNode.public_key, index);
+  static generateChangeNode(accountNode, index) {
+    const path = `${accountNode.path}/${index}`;
+    const publicKey = this.deriveChildFromNode(accountNode.public_key, index);
     return new PathKeyPair(path, publicKey);
   }
 
-  static generateAddressNode(accountNode, index) {
-    const path = `${accountNode.path}/${index}`;
-    const publicKey = this.deriveChildFromNode(accountNode.public_key, index);
+  static generateAddressNode(changeNode, index) {
+    const path = `${changeNode.path}/${index}`;
+    const publicKey = this.deriveChildFromNode(changeNode.public_key, index);
     return new PathKeyPair(path, publicKey);
   }
 
@@ -152,7 +158,7 @@ export default class RBTCCoin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      amount: this.amount,
+      derivationPath: this.derivationPath,
       address: this.address,
       objectId: this.objectId,
       contractAddress: this.contractAddress,

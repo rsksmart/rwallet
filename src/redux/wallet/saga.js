@@ -219,10 +219,10 @@ function* fetchLatestBlockHeight() {
 
 function* createKeyRequest(action) {
   const {
-    name, phrase, coins, walletManager,
+    name, phrase, coins, walletManager, derivationPaths,
   } = action.payload;
   try {
-    yield call(walletManager.createWallet, name, phrase, coins);
+    yield call(walletManager.createWallet, name, phrase, coins, derivationPaths);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {

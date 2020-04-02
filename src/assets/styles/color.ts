@@ -166,6 +166,8 @@ const color = {
     white: '#FFF',
     midGrey: '#727372',
     seporatorLineGrey: '#D8D8D8',
+    seporatorLineLightGrey: '#DCDCDC',
+    lightGreen: '#00B520',
     ...styleScript(),
 };
 

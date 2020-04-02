@@ -80,7 +80,9 @@
         "title": "Importar billetera",
         "note": "Escriba la frase de recuperación (generalmente 12 palabras)",
         "advancedOptions": "Opciones avanzadas",
-        "specifyPath": "Especificar ruta de derivación"
+        "specifyPath": "Especificar ruta de derivación",
+        "coin": "Coin",
+        "derivationPath": "Ruta de derivación"
       },
       "recoveryPhrase": {
         "title": "Recovery Phrase",

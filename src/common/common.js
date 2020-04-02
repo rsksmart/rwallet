@@ -394,6 +394,27 @@ const common = {
     console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
+
+  /**
+   * parse account from derivation path.
+   * derivation path, // m / purpose' / coin_type' / account' / change / address_index
+   * @param {*} derivationPath
+   * @returns If derivationPath is valid, returns account, else returns '0'.
+   */
+  parseAccountFromDerivationPath(derivationPath) {
+    if (derivationPath) {
+      try {
+        const accountField = derivationPath.split('/')[3];
+        // BTC: "m/44'/0'/1'/0/0"
+        // accountField.length - 1 is for removing the quote in 1'
+        return accountField.substr(0, accountField.length - 1);
+      } catch (error) {
+        console.warn(`derivationPath can't be parsed, derivationPath: ${derivationPath}, error: `, error);
+        return '0';
+      }
+    }
+    return '0';
+  },
 };
 
 export default common;

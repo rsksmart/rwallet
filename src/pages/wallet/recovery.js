@@ -1,23 +1,28 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, Switch,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import SwitchListItem from '../../components/common/list/switchListItem';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Tags from '../../components/common/misc/tags';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
+import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
-import { strings } from '../../common/i18n';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';
+import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
+import { strings } from '../../common/i18n';
+import coinType from '../../common/wallet/cointype';
 
 const bip39 = require('bip39');
+
+const MAX_ACCOUNT = 4294967295;
 
 const styles = StyleSheet.create({
   input: {
@@ -26,8 +31,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
+    fontFamily: 'Avenir-Heavy',
     fontSize: 14,
-    fontWeight: '600',
     color: '#000',
     marginBottom: 10,
   },
@@ -79,6 +84,46 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pathInput: {
+    marginHorizontal: 5,
+    fontSize: 14,
+    height: 30,
+    minWidth: 30,
+    paddingHorizontal: 5,
+    textAlign: 'center',
+  },
+  switchLabel: {
+    fontFamily: 'Avenir-Book',
+  },
+  selectionModalTitle: {
+    fontSize: 16,
+    fontFamily: 'Avenir-Heavy',
+    color: color.black,
+    marginVertical: 10,
+  },
+  phraseSection: {
+    marginTop: 17,
+    paddingBottom: 17,
+    marginBottom: 10,
+  },
+  phraseTitle: {
+    marginBottom: 14,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+  },
+  fieldLabel: {
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  fieldText: {
+    fontFamily: 'Avenir-Book',
+    fontSize: 15,
+  },
 });
 
 class WalletRecovery extends Component {
@@ -88,17 +133,27 @@ class WalletRecovery extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {
-        phrases: [],
-        phrase: '',
-        isCanSubmit: false,
-      };
+
       this.inputWord = this.inputWord.bind(this);
       this.deleteWord = this.deleteWord.bind(this);
       this.onSubmitEditing = this.onSubmitEditing.bind(this);
       this.onChangeText = this.onChangeText.bind(this);
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
+      this.tokens = [
+        { symbol: 'BTC', prefix: "m/44'/0'/", name: coinType.BTC.defaultName },
+        { symbol: 'RBTC', prefix: "m/44'/137'/", name: coinType.RBTC.defaultName },
+      ];
+      this.state = {
+        phrases: [],
+        phrase: '',
+        isCanSubmit: false,
+        isDerivationPathEnabled: false,
+        // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+        // m / purpose' / coin_type' / account' / change / address_index
+        accounts: [undefined, undefined],
+        selectedTokenIndex: 0,
+      };
     }
 
     onSubmitEditing() {
@@ -125,7 +180,8 @@ class WalletRecovery extends Component {
 
     onImportPress() {
       const { navigation, addNotification, walletManager } = this.props;
-      const { phrases } = this.state;
+      const { phrases, accounts, isDerivationPathEnabled } = this.state;
+      const { tokens } = this;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
         if (i !== 0) {
@@ -152,12 +208,55 @@ class WalletRecovery extends Component {
           'modal.duplicatePhrase.title',
           'modal.duplicatePhrase.body',
           'button.gotIt',
-          () => { this.setState({ phrases: [] }); },
+          () => { this.setState({ phrases: [], isCanSubmit: false }); },
         );
         addNotification(notification);
         return;
       }
-      navigation.navigate('WalletSelectCurrency', { phrases: inputPhrases });
+
+      const params = { phrases: inputPhrases };
+      if (isDerivationPathEnabled) {
+        const derivationPaths = {};
+        _.each(tokens, (token, index) => {
+          const account = accounts[index];
+          // account <= 0, It isn't need to pass specifing derivationPath for creating wallet.
+          // It use account 0 to create wallet by default.
+          if (_.isNil(account) || account <= 0) {
+            return;
+          }
+          const { symbol } = token;
+          derivationPaths[symbol] = `${token.prefix + accounts[index]}'/0/0`;
+        });
+        params.derivationPaths = derivationPaths;
+      }
+
+      navigation.navigate('WalletSelectCurrency', params);
+    }
+
+    onSelectedTokenIndexSelected = (index) => {
+      this.setState({ selectedTokenIndex: index });
+    }
+
+    onTokenPressed = () => {
+      this.selectionModal.show();
+    }
+
+    onAccountIndexChanged = (value) => {
+      const { selectedTokenIndex, accounts } = this.state;
+
+      if (value === '') {
+        accounts[selectedTokenIndex] = null;
+        this.setState({ accounts });
+      }
+
+      let account = parseInt(value, 10);
+      // account < 0, textinput will not be changed, else present number in textinput.
+      if (_.isNaN(account) || account < 0) {
+        return;
+      }
+      account = Math.min(account, MAX_ACCOUNT);
+      accounts[selectedTokenIndex] = account;
+      this.setState({ accounts });
     }
 
     inputText(text) {
@@ -198,8 +297,17 @@ class WalletRecovery extends Component {
     }
 
     render() {
-      const { phrase, phrases, isCanSubmit } = this.state;
       const { navigation } = this.props;
+      const {
+        phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
+      } = this.state;
+      const { tokens } = this;
+
+      const { prefix } = tokens[selectedTokenIndex];
+      const coins = _.map(tokens, (token) => `${token.name} (${token.symbol})`);
+      const selectedCoin = coins[selectedTokenIndex];
+      const accountIndexText = !_.isNil(accounts[selectedTokenIndex]) ? accounts[selectedTokenIndex].toString() : '';
+
       const bottomButton = (<Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />);
       return (
         <BasePageGereral
@@ -211,37 +319,80 @@ class WalletRecovery extends Component {
         >
           <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
           <View style={styles.body}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.note" />
-            <View style={styles.phraseView}>
-              <TextInput
-                autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                        // This code uses a ref to store a reference to a DOM node
-                                        // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                ref={(ref) => {
-                  this.phraseInput = ref;
-                }}
-                                        // set blurOnSubmit to false, to prevent keyboard flickering.
-                blurOnSubmit={false}
-                style={[presetStyles.textInput, styles.input]}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-                value={phrase}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                <Tags
-                  style={[{ flex: 1 }]}
-                  data={phrases}
-                  onPress={this.onTagsPress}
+            <View style={[styles.phraseSection, styles.bottomBorder]}>
+              <Loc style={styles.phraseTitle} text="page.wallet.recovery.note" />
+              <View style={styles.phraseView}>
+                <TextInput
+                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
+                                          // This code uses a ref to store a reference to a DOM node
+                                          // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
+                  ref={(ref) => {
+                    this.phraseInput = ref;
+                  }}
+                                          // set blurOnSubmit to false, to prevent keyboard flickering.
+                  blurOnSubmit={false}
+                  style={[presetStyles.textInput, styles.input]}
+                  onChangeText={this.onChangeText}
+                  onSubmitEditing={this.onSubmitEditing}
+                  value={phrase}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
+                <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
+                  <Tags
+                    style={[{ flex: 1 }]}
+                    data={phrases}
+                    onPress={this.onTagsPress}
+                  />
+                </View>
               </View>
             </View>
             <View style={[styles.sectionContainer, styles.bottomBorder]}>
               <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
-              <SwitchListItem title={strings('page.wallet.recovery.specifyPath')} value={false} />
+              <View style={styles.row}>
+                <Loc style={[flex.flex1, styles.switchLabel]} text="page.wallet.recovery.specifyPath" />
+                <Switch
+                  value={isDerivationPathEnabled}
+                  onValueChange={(value) => { this.setState({ isDerivationPathEnabled: value }); }}
+                />
+              </View>
             </View>
+            { isDerivationPathEnabled && (
+              <View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.coin')}</Text>
+                  <TouchableOpacity onPress={this.onTokenPressed}>
+                    <View style={styles.row}>
+                      <Text style={[flex.flex1, styles.fieldText]}>{selectedCoin}</Text>
+                      <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={[styles.sectionContainer, styles.bottomBorder]}>
+                  <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.derivationPath')}</Text>
+                  <View style={[styles.row]}>
+                    <Text style={styles.fieldText}>{prefix}</Text>
+                    <TextInput
+                      style={[presetStyles.textInput, styles.pathInput]}
+                      value={accountIndexText}
+                      onChangeText={this.onAccountIndexChanged}
+                      multiline={false}
+                      placeholder="0"
+                      placeholderTextColor="#555"
+                    />
+                    <Text>{'\''}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
+          <SelectionModal
+            ref={(ref) => { this.selectionModal = ref; }}
+            items={coins}
+            selectIndex={selectedTokenIndex}
+            onSelected={this.onSelectedTokenIndexSelected}
+            title={strings('page.wallet.recovery.coin')}
+          />
         </BasePageGereral>
       );
     }
