@@ -181,8 +181,8 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { showPasscode } = this.props;
-      if (global.passcode) {
+      const { showPasscode, passcode } = this.props;
+      if (passcode) {
         showPasscode('verify', this.backup, () => {});
       } else {
         this.backup();
@@ -195,8 +195,10 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const { showPasscode, resetSwapSource, resetSwapDest } = this.props;
-      if (global.passcode) {
+      const {
+        passcode, showPasscode, resetSwapSource, resetSwapDest,
+      } = this.props;
+      if (passcode) {
         showPasscode('verify', this.deleteKey, () => {
           resetSwapSource();
           resetSwapDest();
@@ -284,11 +286,13 @@ KeySettings.propTypes = {
   showPasscode: PropTypes.func.isRequired,
   resetSwapSource: PropTypes.func.isRequired,
   resetSwapDest: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
   confirmation: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -296,6 +300,7 @@ const mapStateToProps = (state) => ({
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
   confirmation: state.App.get('confirmation'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

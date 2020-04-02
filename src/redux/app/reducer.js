@@ -32,6 +32,7 @@ const initState = new Map({
   isUsernameUpdated: false,
   confirmationCallback: null,
   appLock: true,
+  passcode: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -112,6 +113,8 @@ export default function appReducer(state = initState, action) {
       return state.set('isUsernameUpdated', false);
     case actions.LOCK_APP:
       return state.set('appLock', action.lock);
+    case actions.UPDATE_PASSCODE:
+      return state.set('passcode', action.passcode);
     default:
       return state;
   }

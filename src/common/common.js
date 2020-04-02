@@ -12,7 +12,6 @@ import 'moment/locale/zh-cn';
 import 'moment/locale/es';
 import 'moment/locale/pt';
 import config from '../../config';
-import store from './storage';
 import I18n from './i18n';
 import definitions from './definitions';
 
@@ -182,19 +181,6 @@ const common = {
     }
 
     return DEFAULT_CURRENCY_SYMBOL;
-  },
-
-  async updateInAppPasscode(input) {
-    let passcode = null;
-    if (input) {
-      await store.setPasscode(input);
-      // eslint-disable-next-line no-multi-assign
-      global.passcode = passcode = input;
-    } else {
-      // eslint-disable-next-line no-multi-assign
-      global.passcode = passcode = await store.getPasscode();
-    }
-    return passcode;
   },
 
   /**

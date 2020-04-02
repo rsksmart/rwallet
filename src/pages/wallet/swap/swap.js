@@ -307,8 +307,8 @@ class Swap extends Component {
   }
 
   onExchangePressed = async () => {
-    const { showPasscode } = this.props;
-    if (global.passcode) {
+    const { showPasscode, passcode } = this.props;
+    if (passcode) {
       showPasscode('verify', () => this.exchange(), () => {});
     } else {
       await this.exchange();
@@ -958,12 +958,14 @@ Swap.propTypes = {
   getSwapRate: PropTypes.func.isRequired,
   swapRatesError: PropTypes.shape({}),
   resetSwapRateError: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 Swap.defaultProps = {
   swapSource: null,
   swapDest: null,
   swapRatesError: null,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -974,6 +976,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   swapRates: state.Wallet.get('swapRates'),
   swapRatesError: state.Wallet.get('swapRatesError'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

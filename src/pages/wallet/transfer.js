@@ -427,8 +427,8 @@ class Transfer extends Component {
       return;
     }
 
-    const { showPasscode } = this.props;
-    if (global.passcode) {
+    const { showPasscode, passcode } = this.props;
+    if (passcode) {
       // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
       showPasscode('verify', () => this.confirm(toAddress), () => {});
     } else {
@@ -1013,6 +1013,11 @@ Transfer.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
+};
+
+Transfer.defaultProps = {
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -1020,6 +1025,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   language: state.App.get('language'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
