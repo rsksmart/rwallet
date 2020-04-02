@@ -395,10 +395,19 @@ const common = {
     return size;
   },
 
-  getAccountFromDerivationPath(derivationPath) {
+  /**
+   * parse account from derivation path.
+   * If derivationPath can't be parsed, return '0'.
+   */
+  parseAccountFromDerivationPath(derivationPath) {
     if (derivationPath) {
-      const accountField = derivationPath.split('/')[3];
-      return accountField.substr(0, accountField.length - 1);
+      try {
+        const accountField = derivationPath.split('/')[3];
+        return accountField.substr(0, accountField.length - 1);
+      } catch (error) {
+        console.warn(`derivationPath can't be parsed, derivationPath: ${derivationPath}, error: `, error);
+        return '0';
+      }
     }
     return '0';
   },

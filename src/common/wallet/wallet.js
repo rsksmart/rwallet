@@ -29,6 +29,7 @@ export default class Wallet {
 
   // Generate derivation data(address, privateKey) for BTC, RBTC (RSK tokens)
   // Save private key to secure storage
+  // derivationPaths, {BTC: "m/44'/0'/1'/0/0", BTC: "m/44'/137'/1'/0/0"}
   generateDerivations(derivationPaths) {
     this.derivations = [];
     _.each(drivationTypes, (drivationType) => {

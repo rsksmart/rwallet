@@ -218,8 +218,8 @@ class WalletRecovery extends Component {
       if (isDerivationPathEnabled) {
         const derivationPaths = {};
         _.each(tokens, (token, index) => {
-          const account = parseInt(accounts[index], 10);
-          if (_.isNaN(account) || account <= 0) {
+          const account = accounts[index];
+          if (_.isNil(account) || account <= 0) {
             return;
           }
           const { symbol } = token;
@@ -248,11 +248,12 @@ class WalletRecovery extends Component {
       }
 
       let account = parseInt(value, 10);
-      if (!_.isNaN(account) && account >= 0) {
-        account = Math.min(account, MAX_ACCOUNT);
-        accounts[selectedTokenIndex] = account;
-        this.setState({ accounts });
+      if (_.isNaN(account) || account <= 0) {
+        return;
       }
+      account = Math.min(account, MAX_ACCOUNT);
+      accounts[selectedTokenIndex] = account;
+      this.setState({ accounts });
     }
 
     inputText(text) {
