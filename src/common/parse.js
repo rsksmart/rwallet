@@ -419,8 +419,25 @@ class ParseHelper {
    * @param {*} collection
    */
   static async subscribe(collection) {
+    console.log('prase::subscribe');
     const query = new Parse.Query(collection);
+    query.equalTo('key', 'price');
     const subscription = await query.subscribe();
+    subscription.on('open', () => {
+      console.log('[prase::subscribe] subscription opened');
+    });
+    subscription.on('update', (object) => {
+      console.log('[prase::subscribe] object updated', object);
+    });
+    subscription.on('close', () => {
+      console.log('[prase::subscribe] subscription closed');
+    });
+
+    Parse.LiveQuery.on('open', () => {
+      console.log('[prase::subscribe] socket connection established');
+    });
+    Parse.LiveQuery.on('error', (error) => { console.log('[prase::subscribe] Parse LiveQuery Error', error); });
+
     return subscription;
   }
 

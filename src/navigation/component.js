@@ -116,7 +116,7 @@ class RootComponent extends Component {
         startFetchLatestBlockHeightTimer();
 
         console.log('initLiveQueryPrice', initLiveQueryPrice);
-        // initLiveQueryPrice();
+        initLiveQueryPrice();
 
         newState.isParseWritten = true;
       }
