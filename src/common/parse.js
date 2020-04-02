@@ -436,8 +436,12 @@ class ParseHelper {
     Parse.LiveQuery.on('open', () => {
       console.log('[prase::subscribe] socket connection established');
     });
-    Parse.LiveQuery.on('error', (error) => { console.log('[prase::subscribe] Parse LiveQuery Error', error); });
-
+    Parse.LiveQuery.on('error', (error) => {
+      console.log('[prase::subscribe] Parse LiveQuery Error', error);
+    });
+    Parse.LiveQuery.on('close', () => {
+      console.log('[prase::subscribe] socket connection closed');
+    });
     return subscription;
   }
 
