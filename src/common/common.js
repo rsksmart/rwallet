@@ -406,7 +406,7 @@ const common = {
       try {
         const accountField = derivationPath.split('/')[3];
         // BTC: "m/44'/0'/1'/0/0"
-        // accountField.length - 1 is for removing the quoat '
+        // accountField.length - 1 is for removing the quote in 1'
         return accountField.substr(0, accountField.length - 1);
       } catch (error) {
         console.warn(`derivationPath can't be parsed, derivationPath: ${derivationPath}, error: `, error);

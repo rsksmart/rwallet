@@ -219,6 +219,8 @@ class WalletRecovery extends Component {
         const derivationPaths = {};
         _.each(tokens, (token, index) => {
           const account = accounts[index];
+          // account <= 0, It isn't need to pass specifing derivationPath for creating wallet.
+          // It use account 0 to create wallet by default.
           if (_.isNil(account) || account <= 0) {
             return;
           }
@@ -248,6 +250,7 @@ class WalletRecovery extends Component {
       }
 
       let account = parseInt(value, 10);
+      // account < 0, textinput will not be changed, else present number in textinput.
       if (_.isNaN(account) || account < 0) {
         return;
       }
