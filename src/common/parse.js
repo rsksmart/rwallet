@@ -419,29 +419,29 @@ class ParseHelper {
    * @param {*} collection
    */
   static async subscribe(collection) {
-    console.log('prase::subscribe');
+    console.log('parse::subscribe');
     const query = new Parse.Query(collection);
-    query.equalTo('key', 'price');
+    // query.equalTo('key', 'price');
     const subscription = await query.subscribe();
-    subscription.on('open', () => {
-      console.log('[prase::subscribe] subscription opened');
-    });
-    subscription.on('update', (object) => {
-      console.log('[prase::subscribe] object updated', object);
-    });
-    subscription.on('close', () => {
-      console.log('[prase::subscribe] subscription closed');
-    });
+    // subscription.on('open', () => {
+    //   console.log('[parse::subscribe] subscription opened');
+    // });
+    // subscription.on('update', (object) => {
+    //   console.log('[parse::subscribe] object updated', object);
+    // });
+    // subscription.on('close', () => {
+    //   console.log('[parse::subscribe] subscription closed');
+    // });
 
-    Parse.LiveQuery.on('open', () => {
-      console.log('[prase::subscribe] socket connection established');
-    });
-    Parse.LiveQuery.on('error', (error) => {
-      console.log('[prase::subscribe] Parse LiveQuery Error', error);
-    });
-    Parse.LiveQuery.on('close', () => {
-      console.log('[prase::subscribe] socket connection closed');
-    });
+    // Parse.LiveQuery.on('open', () => {
+    //   console.log('[parse::subscribe] socket connection established');
+    // });
+    // Parse.LiveQuery.on('error', (error) => {
+    //   console.log('[parse::subscribe] Parse LiveQuery Error', error);
+    // });
+    // Parse.LiveQuery.on('close', () => {
+    //   console.log('[parse::subscribe] socket connection closed');
+    // });
     return subscription;
   }
 
