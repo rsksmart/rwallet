@@ -248,7 +248,7 @@ class WalletRecovery extends Component {
       }
 
       let account = parseInt(value, 10);
-      if (_.isNaN(account) || account <= 0) {
+      if (_.isNaN(account) || account < 0) {
         return;
       }
       account = Math.min(account, MAX_ACCOUNT);

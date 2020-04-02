@@ -397,12 +397,16 @@ const common = {
 
   /**
    * parse account from derivation path.
-   * If derivationPath can't be parsed, return '0'.
+   * derivation path, // m / purpose' / coin_type' / account' / change / address_index
+   * @param {*} derivationPath
+   * @returns If derivationPath is valid, returns account, else returns '0'.
    */
   parseAccountFromDerivationPath(derivationPath) {
     if (derivationPath) {
       try {
         const accountField = derivationPath.split('/')[3];
+        // BTC: "m/44'/0'/1'/0/0"
+        // accountField.length - 1 is for removing the quoat '
         return accountField.substr(0, accountField.length - 1);
       } catch (error) {
         console.warn(`derivationPath can't be parsed, derivationPath: ${derivationPath}, error: `, error);
