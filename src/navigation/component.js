@@ -40,12 +40,6 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-    global.functions = {
-      showToast: (wording) => {
-        // eslint-disable-next-line react/no-string-refs
-        this.toast.showToast(wording);
-      },
-    };
 
     this.state = {
       isStorageRead: false,
