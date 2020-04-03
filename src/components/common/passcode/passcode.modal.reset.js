@@ -96,7 +96,7 @@ ResetPasscodeModal.propTypes = {
 };
 
 ResetPasscodeModal.defaultProps = {
-  passcodeCallback: null,
+  passcodeCallback: undefined,
   passcode: undefined,
 };
 

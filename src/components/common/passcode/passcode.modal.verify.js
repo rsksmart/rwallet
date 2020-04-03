@@ -69,13 +69,12 @@ VerifyPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
   passcodeFallback: PropTypes.func,
-  passcode: PropTypes.string,
+  passcode: PropTypes.string.isRequired,
 };
 
 VerifyPasscodeModal.defaultProps = {
-  passcodeCallback: null,
-  passcodeFallback: null,
-  passcode: undefined,
+  passcodeCallback: undefined,
+  passcodeFallback: undefined,
 };
 
 const mapStateToProps = (state) => ({
