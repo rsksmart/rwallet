@@ -31,7 +31,17 @@ These instructions will get you a copy of the project up and running on your loc
 The first three steps are needed for both Android and iOS devices.
 
 1. `npm install` to install dependencies
-1. `./node_modules/.bin/rn-nodeify --hack --install`
+1. Create an environment variable file named `.env` in the root directory
+    ```
+    # Parse server configuration
+    # Dogfood Server URL http://130.211.12.3/parse
+    # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
+    # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
+    PARSE_SERVER_URL=
+    PARSE_MASTER_KEY=
+    ```
+    If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
+
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
     > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
