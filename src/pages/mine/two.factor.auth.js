@@ -44,8 +44,8 @@ class TwoFactorAuth extends Component {
     }
 
     onResetPasscodePress() {
-      const { showPasscode, navigation } = this.props;
-      if (global.passcode) {
+      const { passcode, showPasscode, navigation } = this.props;
+      if (passcode) {
         showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
       } else {
         showPasscode('create');
@@ -86,15 +86,18 @@ TwoFactorAuth.propTypes = {
   }).isRequired,
   setSingleSettings: PropTypes.func,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   fingerprint: state.App.get('fingerprint'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

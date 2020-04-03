@@ -96,8 +96,8 @@ class WalletSelectCurrency extends Component {
     }
 
     requestCreateWallet(phrase, coins) {
-      const { addNotification, showPasscode } = this.props;
-      if (global.passcode) {
+      const { addNotification, showPasscode, passcode } = this.props;
+      if (passcode) {
         this.createWallet(phrase, coins);
       } else {
         const notification = createInfoNotification(
@@ -165,15 +165,18 @@ WalletSelectCurrency.propTypes = {
   isWalletsUpdated: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 WalletSelectCurrency.defaultProps = {
   walletManager: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -13,6 +13,7 @@ import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
 import common from '../../common/common';
 import definitions from '../../common/definitions';
+import storage from '../../common/storage';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -55,6 +56,13 @@ function* initFromStorageRequest() {
     yield put({
       type: actions.SET_SETTINGS,
       value: settings,
+    });
+
+    // Set passcode in reducer
+    const passcode = yield call(storage.getPasscode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
     });
 
     // 2. Deserialize Wallets from permenate storage
@@ -203,6 +211,19 @@ function* renameRequest(action) {
   }
 }
 
+function* setPasscodeRequest(action) {
+  const { passcode } = action;
+  try {
+    yield call(storage.setPasscode, passcode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
+    });
+  } catch (error) {
+    console.log('setPasscodeRequest, error: ', error);
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -213,5 +234,6 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+    takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
   ]);
 }

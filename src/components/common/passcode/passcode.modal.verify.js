@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
 
 class VerifyPasscodeModal extends PureComponent {
@@ -21,16 +22,13 @@ class VerifyPasscodeModal extends PureComponent {
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
   }
 
-  componentDidMount() {
-    this.passcode = global.passcode;
-  }
-
   passcodeOnFill = async (input) => {
+    const { passcode } = this.props;
     let flow = null;
     switch (this.flowIndex) {
       case 0:
       case 1:
-        if (input === this.passcode) {
+        if (input === passcode) {
           this.baseModal.resetModal();
           this.closePasscodeModal();
           if (this.passcodeCallback) {
@@ -71,11 +69,16 @@ VerifyPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
   passcodeFallback: PropTypes.func,
+  passcode: PropTypes.string.isRequired,
 };
 
 VerifyPasscodeModal.defaultProps = {
-  passcodeCallback: null,
-  passcodeFallback: null,
+  passcodeCallback: undefined,
+  passcodeFallback: undefined,
 };
 
-export default VerifyPasscodeModal;
+const mapStateToProps = (state) => ({
+  passcode: state.App.get('passcode'),
+});
+
+export default connect(mapStateToProps)(VerifyPasscodeModal);

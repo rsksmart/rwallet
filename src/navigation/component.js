@@ -14,7 +14,6 @@ import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
-import common from '../common/common';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -62,10 +61,6 @@ class RootComponent extends Component {
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
-  }
-
-  async componentDidMount() {
-    await common.updateInAppPasscode();
   }
 
   componentWillReceiveProps(nextProps) {

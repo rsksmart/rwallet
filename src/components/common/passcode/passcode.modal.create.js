@@ -2,8 +2,9 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
-import common from '../../../common/common';
+import appActions from '../../../redux/app/actions';
 
 const STATE_NEW_PASSCODE = 0;
 const STATE_CONFIRM_PASSCODE = 1;
@@ -35,6 +36,7 @@ class CreatePasscodeModal extends PureComponent {
   }
 
   passcodeOnFill = async (passcode) => {
+    const { setPasscode } = this.props;
     const { flowIndex } = this.state;
     let flow = null;
     switch (flowIndex) {
@@ -47,7 +49,7 @@ class CreatePasscodeModal extends PureComponent {
       case STATE_CONFIRM_PASSCODE:
       case STATE_NOT_MATCHED:
         if (this.tempPasscode === passcode) {
-          await common.updateInAppPasscode(passcode);
+          setPasscode(passcode);
           this.closePasscodeModal();
           if (this.passcodeCallback) {
             this.passcodeCallback();
@@ -79,10 +81,15 @@ class CreatePasscodeModal extends PureComponent {
 CreatePasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
+  setPasscode: PropTypes.func.isRequired,
 };
 
 CreatePasscodeModal.defaultProps = {
   passcodeCallback: null,
 };
 
-export default CreatePasscodeModal;
+const mapDispatchToProps = (dispatch) => ({
+  setPasscode: (passcode) => dispatch(appActions.setPasscode(passcode)),
+});
+
+export default connect(null, mapDispatchToProps)(CreatePasscodeModal);

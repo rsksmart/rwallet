@@ -2,8 +2,9 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
-import common from '../../../common/common';
+import appActions from '../../../redux/app/actions';
 
 const STATE_OLD_PASSCODE = 0;
 const STATE_NEW_PASSCODE = 1;
@@ -31,21 +32,18 @@ class ResetPasscodeModal extends PureComponent {
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
   }
 
-  componentDidMount() {
-    this.passcode = global.passcode;
-  }
-
   cancelBtnOnPress = () => {
     this.closePasscodeModal();
   };
 
   passcodeOnFill = async (input) => {
+    const { passcode, setPasscode } = this.props;
     let flow = null;
     const { flowIndex } = this.state;
     switch (flowIndex) {
       case STATE_OLD_PASSCODE:
       case STATE_OLD_PASSCODE_INCORRECT:
-        if (input === this.passcode) {
+        if (input === passcode) {
           this.setState({ flowIndex: STATE_NEW_PASSCODE });
           flow = _.find(this.flows, { index: STATE_NEW_PASSCODE });
           this.baseModal.resetModal(flow.title);
@@ -64,7 +62,7 @@ class ResetPasscodeModal extends PureComponent {
       case STATE_CONFIRM_PASSCODE:
       case STATE_NOT_MATCHED:
         if (this.tempPasscode === input) {
-          await common.updateInAppPasscode(input);
+          setPasscode(input);
           this.closePasscodeModal();
           if (this.passcodeCallback) {
             this.passcodeCallback();
@@ -93,10 +91,21 @@ class ResetPasscodeModal extends PureComponent {
 ResetPasscodeModal.propTypes = {
   closePasscodeModal: PropTypes.func.isRequired,
   passcodeCallback: PropTypes.func,
+  passcode: PropTypes.string,
+  setPasscode: PropTypes.func.isRequired,
 };
 
 ResetPasscodeModal.defaultProps = {
-  passcodeCallback: null,
+  passcodeCallback: undefined,
+  passcode: undefined,
 };
 
-export default ResetPasscodeModal;
+const mapStateToProps = (state) => ({
+  passcode: state.App.get('passcode'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setPasscode: (passcode) => dispatch(appActions.setPasscode(passcode)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPasscodeModal);
