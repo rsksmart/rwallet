@@ -154,6 +154,7 @@ class WalletManager {
    * @returns {boolean} True if any balance has changed
    */
   updateBalance(balances) {
+    console.log('updateBalance, balances: ', balances);
     const tokenInstances = this.getTokens();
     let isDirty = false;
 

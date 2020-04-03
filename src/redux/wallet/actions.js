@@ -50,6 +50,12 @@ const actions = {
   SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
   RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
 
+  SUBSCRIBE_BALANCES: 'SUBSCRIBE_BALANCES',
+  BALANCE_UPDATED: 'BALANCE_UPDATED',
+  MODIFY_BALANCES_QUERY: 'MODIFY_BALANCES_QUERY',
+
+  SET_BALANCES_SUBSCRIPTION: 'SET_BALANCE_SUBSCRIPTION',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -154,6 +160,12 @@ const actions = {
   }),
   resetSwapRateResultError: () => ({
     type: actions.RESET_SWAP_RATE_RESULT_ERROR,
+  }),
+  subscribeBalances: () => ({
+    type: actions.SUBSCRIBE_BALANCES,
+  }),
+  modifyBalancesQuery: () => ({
+    type: actions.MODIFY_BALANCES_QUERY,
   }),
 };
 

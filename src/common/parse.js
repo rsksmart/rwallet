@@ -253,32 +253,57 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  static async fetchBalance(tokens) {
+  // static async fetchBalance(tokens) {
+  //   const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+  //   const promises = _.map(validObjects, (token) => {
+  //     const { objectId } = token;
+  //     const query = new Parse.Query(ParseAddress);
+  //     return query.get(objectId)
+  //       .then((parseObject) => {
+  //         // Update address if the object was retrieved successfully.
+  //         // This address is hex string which needs to be procced during either here or rendering
+  //         const balance = parseObject.get('balance');
+
+  //         return Promise.resolve({
+  //           objectId,
+  //           balance,
+  //         });
+  //       }, (err) => {
+  //         console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
+  //         return Promise.resolve();
+  //       });
+  //   });
+
+  //   const results = await Promise.all(promises);
+  //   console.log('fetchBalance, results:', results);
+
+  //   // Only return items with valid value
+  //   return _.filter(results, (item) => !_.isUndefined(item));
+  // }
+
+  /**
+   * Get balance of parseObject and update property of each addresss
+   * @param {array} tokens Array of Coin class instance
+   * @returns {array} e.g. [{objectId, balance(hex string)}]
+   */
+  static async fetchBalances(tokens) {
     const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const promises = _.map(validObjects, (token) => {
-      const { objectId } = token;
-      const query = new Parse.Query(ParseAddress);
-      return query.get(objectId)
-        .then((parseObject) => {
-          // Update address if the object was retrieved successfully.
-          // This address is hex string which needs to be procced during either here or rendering
-          const balance = parseObject.get('balance');
+    const objectIds = _.map(validObjects, 'objectId');
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('objectId', objectIds);
+    let results = await query.find();
+    results = _.map(results, (token) => ({ objectId: token.id, balance: token.get('balance') }));
+    console.log('fetchBalances, results: ', results);
+    return results;
+  }
 
-          return Promise.resolve({
-            objectId,
-            balance,
-          });
-        }, (err) => {
-          console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
-          return Promise.resolve();
-        });
-    });
-
-    const results = await Promise.all(promises);
-    console.log('fetchBalance, results:', results);
-
-    // Only return items with valid value
-    return _.filter(results, (item) => !_.isUndefined(item));
+  static async subscribeBalances(tokens) {
+    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+    const objectIds = _.map(validObjects, 'objectId');
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('objectId', objectIds);
+    const subscription = await query.subscribe();
+    return subscription;
   }
 
   /**
@@ -433,7 +458,9 @@ class ParseHelper {
   }
 
   static unsubscribe(subscription) {
-    subscription.unsubscribe();
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 }
 

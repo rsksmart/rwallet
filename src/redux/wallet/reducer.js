@@ -15,6 +15,7 @@ const initState = new Map({
   addTokenResult: null,
   swapRates: {},
   swapRatesError: null,
+  balancesSubscription: undefined,
 });
 
 /**
@@ -122,6 +123,20 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.RESET_SWAP_RATE_RESULT_ERROR: {
       return state.set('swapRatesError', null);
+    }
+    case actions.SET_BALANCES_SUBSCRIPTION: {
+      return state.set('balancesSubscription', action.value);
+    }
+    case actions.MODIFY_BALANCES_QUERY: {
+      const balancesSubscription = state.get('balancesSubscription');
+      const walletManager = state.get('walletManager', action.value);
+      console.log('balancesSubscription: ', balancesSubscription);
+      balancesSubscription.query.equalTo('key', 'price');
+      const tokens = walletManager.getTokens();
+      const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+      const objectIds = _.map(validObjects, 'objectId');
+      balancesSubscription.query.containedIn('objectId', objectIds);
+      return state;
     }
     default:
       return state;
