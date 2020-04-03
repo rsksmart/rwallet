@@ -88,11 +88,8 @@ CreatePasscodeModal.defaultProps = {
   passcodeCallback: null,
 };
 
-
-const mapStateToProps = () => ({});
-
 const mapDispatchToProps = (dispatch) => ({
   setPasscode: (passcode) => dispatch(appActions.setPasscode(passcode)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePasscodeModal);
+export default connect(null, mapDispatchToProps)(CreatePasscodeModal);
