@@ -3,8 +3,6 @@ import {
   take, call, all, takeEvery, put, select,
 } from 'redux-saga/effects';
 
-import _ from 'lodash';
-
 import { eventChannel /* END */ } from 'redux-saga';
 
 import actions from './actions';
@@ -16,9 +14,7 @@ import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
 
 const {
-  consts: { currencies: currencySettings },
   interval: {
-    fetchPrice: FETCH_PRICE_INTERVAL,
     fetchBalance: FETCH_BALANCE_INTERVAL,
     fetchTransaction: FETCH_TRANSACTION_INTERVAL,
     fetchLatestBlockHeight: FETCH_LATEST_BLOCK_HEIGHT_INTERVAL,
@@ -40,39 +36,6 @@ function createTimer(interval) {
       clearInterval(intervalInstance);
     };
   });
-}
-
-/**
- * Start the timer to call actions.GET_PRICE periodically
- */
-export function* startFetchPriceTimerRequest(action) {
-  // Call actions.GET_PRICE once to start off
-  const walletManager = action.payload;
-  yield put({
-    type: actions.GET_PRICE,
-    payload: {
-      symbols: walletManager.getSymbols(),
-      currencies: _.map(currencySettings, (item) => item.name),
-    },
-  });
-
-  const chan = yield call(createTimer, FETCH_PRICE_INTERVAL);
-
-  try {
-    while (true) {
-      // take(END) will cause the saga to terminate by jumping to the finally block
-      yield take(chan);
-      yield put({
-        type: actions.GET_PRICE,
-        payload: {
-          symbols: walletManager.getSymbols(),
-          currencies: _.map(currencySettings, (item) => item.name),
-        },
-      });
-    }
-  } finally {
-    console.log('fetchPrice Channel closed.');
-  }
 }
 
 /**
@@ -155,24 +118,6 @@ export function* startFetchLatestBlockHeightTimerRequest() {
   }
 }
 
-function* getPriceRequest(action) {
-  const { symbols, currencies } = action.payload;
-  try {
-    const response = yield call(ParseHelper.getPrice, { symbols, currencies });
-
-    console.log('getPrice', response);
-
-    // Sets state in reducer for success
-    yield put({
-      type: actions.GET_PRICE_RESULT,
-      value: response,
-    });
-  } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.warn(message);
-  }
-}
-
 function* fetchBalanceRequest(action) {
   const walletManager = action.payload;
 
@@ -236,8 +181,9 @@ function* deleteKeyRequest(action) {
   try {
     const state = yield select();
     const currency = state.App.get('currency');
+    const prices = state.Price.get('prices');
     yield call(walletManager.deleteWallet, key);
-    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: currency });
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
@@ -286,9 +232,10 @@ function* deleteTokenRequest(action) {
   try {
     const state = yield select();
     const currency = state.App.get('currency');
+    const prices = state.Price.get('prices');
     yield call(wallet.deleteToken, token);
     yield call(walletManager.serialize);
-    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: currency });
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
@@ -315,12 +262,10 @@ function* getSwapRateRequest(action) {
 
 export default function* () {
   yield all([
-    takeEvery(actions.GET_PRICE, getPriceRequest),
     takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
     takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchLatestBlockHeight),
 
-    takeEvery(actions.START_FETCH_PRICE_TIMER, startFetchPriceTimerRequest),
     takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
     takeEvery(actions.START_FETCH_TRANSACTION_TIMER, startFetchTransactionTimerRequest),
     takeEvery(actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER, startFetchLatestBlockHeightTimerRequest),

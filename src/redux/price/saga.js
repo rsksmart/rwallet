@@ -32,16 +32,6 @@ function createSocketChannel(socket) {
       return emitter({ type: actions.PRICE_OBJECT_UPDATED, data: object });
     };
 
-    const createHandler = (object) => {
-      console.log('createSocketChannel.createHandler', object);
-      return emitter({ type: actions.PRICE_OBJECT_UPDATED, data: object });
-    };
-
-    const enterHandler = (object) => {
-      console.log('createSocketChannel.enterHandler', object);
-      return emitter({ type: actions.PRICE_OBJECT_UPDATED, data: object });
-    };
-
     const errorHandler = (error) => {
       console.log('createSocketChannel.errorHandler', error);
       return emitter({ type: actions.PRICE_CHANNEL_ERROR, error });
@@ -53,22 +43,26 @@ function createSocketChannel(socket) {
     socket.on('close', unsubscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
-    socket.on('enter', enterHandler);
-    socket.on('create', createHandler);
 
     // unsubscribe function, this gets called when we close the channel
     return unsubscribeHandler;
   });
 }
 
-export function* initSocketRequest() {
+export function* initPriceSocketRequest() {
   let socket;
   let socketChannel;
-  console.log('initSocketRequest');
-  try {
-    const collection = 'Global'; // The Parse Class containing price data
+  console.log('initPriceSocketRequest');
 
-    socket = yield call(ParseHelper.subscribe, collection);
+  try {
+    const priceObj = yield call(ParseHelper.fetchPrices);
+    yield put({ type: actions.PRICE_OBJECT_UPDATED, data: priceObj });
+  } catch (error) {
+    console.log('initPriceSocketRequest.fetchPrices, error:', error);
+  }
+
+  try {
+    socket = yield call(ParseHelper.subscribePrice);
     socketChannel = yield call(createSocketChannel, socket);
 
     while (true) {
@@ -77,21 +71,19 @@ export function* initSocketRequest() {
       yield put(payload);
     }
   } catch (err) {
-    console.error('socket error:', err);
+    console.log('socket error:', err);
   } finally {
     if (yield cancelled()) {
-      // close the channel
-      console.log('close!!!!!!!!');
       socketChannel.close();
       socket.close();
     } else {
-      console.error('WebSocket disconnected: Price');
+      console.log('WebSocket disconnected: Price');
     }
   }
 }
 
 export default function* topicSaga() {
   yield all([
-    takeEvery(actions.INIT_SOCKET_PRICE, initSocketRequest),
+    takeEvery(actions.INIT_SOCKET_PRICE, initPriceSocketRequest),
   ]);
 }

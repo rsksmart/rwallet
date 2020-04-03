@@ -1,11 +1,9 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
 import actions from './actions';
-import common from '../../common/common';
 
 const initState = new Map({
   wallets: [],
-  prices: [],
   latestBlockHeights: [],
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
@@ -31,13 +29,6 @@ export default function walletReducer(state = initState, action) {
     case actions.SET_WALLET_MANAGER:
     {
       return state.set('walletManager', action.value);
-    }
-    case actions.GET_PRICE_RESULT:
-    {
-      let prices = action.value && action.value.value;
-      // Add or update DOC price
-      prices = prices && common.addOrUpdateDOCPrice(prices);
-      return state.set('prices', prices);
     }
     case actions.FETCH_BALANCE_RESULT:
     {
@@ -66,8 +57,7 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
-      const prices = state.get('prices');
-      const currency = action.payload;
+      const { currency, prices } = action.payload;
 
       if (walletManager) {
         walletManager.updateAssetValue(prices, currency);

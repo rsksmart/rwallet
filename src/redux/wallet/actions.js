@@ -69,13 +69,9 @@ const actions = {
     type: actions.FETCH_TRANSACTION,
     payload: walletManager,
   }),
-  updateAssetValue: (currency) => ({
+  updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,
-    payload: currency,
-  }),
-  startFetchPriceTimer: (walletManager) => ({
-    type: actions.START_FETCH_PRICE_TIMER,
-    payload: walletManager,
+    payload: { currency, prices },
   }),
   startFetchBalanceTimer: (walletManager) => ({
     type: actions.START_FETCH_BALANCE_TIMER,

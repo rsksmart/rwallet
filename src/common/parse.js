@@ -418,31 +418,18 @@ class ParseHelper {
    * Subscribe to a Live Query channel also-known-as Parse Class
    * @param {*} collection
    */
-  static async subscribe(collection) {
-    console.log('parse::subscribe');
-    const query = new Parse.Query(collection);
-    // query.equalTo('key', 'price');
+  static async subscribePrice() {
+    const query = new Parse.Query('Global');
+    query.equalTo('key', 'price');
     const subscription = await query.subscribe();
-    // subscription.on('open', () => {
-    //   console.log('[parse::subscribe] subscription opened');
-    // });
-    // subscription.on('update', (object) => {
-    //   console.log('[parse::subscribe] object updated', object);
-    // });
-    // subscription.on('close', () => {
-    //   console.log('[parse::subscribe] subscription closed');
-    // });
-
-    // Parse.LiveQuery.on('open', () => {
-    //   console.log('[parse::subscribe] socket connection established');
-    // });
-    // Parse.LiveQuery.on('error', (error) => {
-    //   console.log('[parse::subscribe] Parse LiveQuery Error', error);
-    // });
-    // Parse.LiveQuery.on('close', () => {
-    //   console.log('[parse::subscribe] socket connection closed');
-    // });
     return subscription;
+  }
+
+  static async fetchPrices() {
+    const query = new Parse.Query('Global');
+    const prices = await query.equalTo('key', 'price').first();
+    console.log('parse.fetchPrices, prices: ', prices.toJSON());
+    return prices;
   }
 
   static unsubscribe(subscription) {

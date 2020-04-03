@@ -970,7 +970,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   swapSource: state.Wallet.get('swapSource'),
   swapDest: state.Wallet.get('swapDest'),
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
   currency: state.App.get('currency'),
   swapRates: state.Wallet.get('swapRates'),
   swapRatesError: state.Wallet.get('swapRatesError'),
