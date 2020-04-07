@@ -204,18 +204,8 @@ function createBalancesSubscriptionChannel(subscription) {
   });
 }
 
-function* initLiveQueryBalancesRequest(action) {
-  let subscription;
-  let subscriptionChannel;
-  const { tokens } = action;
-  console.log('initLiveQueryBalancesRequest, tokens: ', tokens);
 
-  const state = yield select();
-  const balancesChannel = state.Wallet.get('balancesChannel');
-  if (balancesChannel) {
-    balancesChannel.close();
-  }
-
+function* fetchBalances(tokens) {
   try {
     console.log('ParseHelper.fetchBalances, tokens: ', tokens);
     const response = yield call(ParseHelper.fetchBalances, tokens);
@@ -227,8 +217,18 @@ function* initLiveQueryBalancesRequest(action) {
   } catch (error) {
     console.log('initLiveQueryBalancesRequest.fetchPrices, error:', error);
   }
+}
 
+function* subscribeBalances(tokens) {
+  let subscription;
+  let subscriptionChannel;
   try {
+    const state = yield select();
+    const balancesChannel = state.Wallet.get('balancesChannel');
+    if (balancesChannel) {
+      balancesChannel.close();
+    }
+
     subscription = yield call(ParseHelper.subscribeBalances, tokens);
     subscriptionChannel = yield call(createBalancesSubscriptionChannel, subscription);
     yield put({ type: actions.SET_BALANCES_CHANNEL, value: subscriptionChannel });
@@ -246,6 +246,14 @@ function* initLiveQueryBalancesRequest(action) {
       console.log('Subscription disconnected: Balance');
     }
   }
+}
+
+function* initLiveQueryBalancesRequest(action) {
+  const { tokens } = action;
+  console.log('initLiveQueryBalancesRequest, tokens: ', tokens);
+
+  yield call(fetchBalances, tokens);
+  yield call(subscribeBalances, tokens);
 }
 
 function createTransactionsSubscriptionChannel(subscription) {
@@ -293,7 +301,6 @@ function createTransactionsSubscriptionChannel(subscription) {
   });
 }
 
-
 function* fetchTransactions(tokens) {
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, tokens);
@@ -307,21 +314,15 @@ function* fetchTransactions(tokens) {
   }
 }
 
-function* initLiveQueryTransactionsRequest(action) {
+function* subscribeTransactions(tokens) {
   let subscription;
   let subscriptionChannel;
-  const { tokens } = action;
-  console.log('initLiveQueryTransactionsRequest, tokens: ', tokens);
-
-  const state = yield select();
-  const transactionsChannel = state.Wallet.get('transactionsChannel');
-  if (transactionsChannel) {
-    transactionsChannel.close();
-  }
-
-  yield call(fetchTransactions, tokens);
-
   try {
+    const state = yield select();
+    const transactionsChannel = state.Wallet.get('transactionsChannel');
+    if (transactionsChannel) {
+      transactionsChannel.close();
+    }
     subscription = yield call(ParseHelper.subscribeTransactions, tokens);
     subscriptionChannel = yield call(createTransactionsSubscriptionChannel, subscription);
     yield put({ type: actions.SET_TRANSACTIONS_CHANNEL, value: subscriptionChannel });
@@ -339,6 +340,13 @@ function* initLiveQueryTransactionsRequest(action) {
       console.log('Subscription disconnected: Balance');
     }
   }
+}
+
+function* initLiveQueryTransactionsRequest(action) {
+  const { tokens } = action;
+  console.log('initLiveQueryTransactionsRequest, tokens: ', tokens);
+  yield call(fetchTransactions, tokens);
+  yield call(subscribeTransactions, tokens);
 }
 
 export default function* () {
