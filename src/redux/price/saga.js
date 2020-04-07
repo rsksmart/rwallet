@@ -49,18 +49,18 @@ function createSocketChannel(socket) {
   });
 }
 
-export function* initPriceSocketRequest() {
-  let socket;
-  let socketChannel;
-  console.log('initPriceSocketRequest');
-
+function* fetchPrices() {
   try {
     const priceObj = yield call(ParseHelper.fetchPrices);
     yield put({ type: actions.PRICE_OBJECT_UPDATED, data: priceObj });
   } catch (error) {
     console.log('initPriceSocketRequest.fetchPrices, error:', error);
   }
+}
 
+function* subscribePrices() {
+  let socket;
+  let socketChannel;
   try {
     socket = yield call(ParseHelper.subscribePrice);
     socketChannel = yield call(createSocketChannel, socket);
@@ -80,6 +80,12 @@ export function* initPriceSocketRequest() {
       console.log('WebSocket disconnected: Price');
     }
   }
+}
+
+function* initPriceSocketRequest() {
+  console.log('initPriceSocketRequest');
+  yield call(fetchPrices);
+  yield call(subscribePrices);
 }
 
 export default function* topicSaga() {
