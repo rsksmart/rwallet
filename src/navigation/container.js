@@ -38,6 +38,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeConfirmation: () => dispatch(appActions.removeConfirmation()),
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   subscribeBalances: () => dispatch(walletActions.subscribeBalances()),
+  subscribeTransactions: () => dispatch(walletActions.subscribeTransactions()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

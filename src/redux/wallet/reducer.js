@@ -51,6 +51,25 @@ export default function walletReducer(state = initState, action) {
       return state.set('isBalanceUpdated', false);
     }
     case actions.FETCH_TRANSACTION_RESULT: {
+      const transactions = action.value;
+      const walletManager = state.get('walletManager');
+      const tokens = walletManager.getTokens();
+      _.each(transactions, (transcation) => {
+        const token = _.find(tokens, (item) => item.address === transcation.from || item.address === transcation.to);
+        if (!token) {
+          return;
+        }
+        if (!token.transactions) {
+          token.transactions = [];
+        }
+        const txIndex = _.findIndex(token.transactions, { hash: transcation.hash });
+        if (txIndex === -1) {
+          token.transactions.push(transcation);
+        } else {
+          token.transactions[txIndex] = transcation;
+        }
+      });
+      console.log('ParseHelper.fetchTransactions, tokens: ', tokens);
       return state.set('updateTimestamp', getUpdateTimestamp());
     }
     case actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT: {

@@ -72,7 +72,7 @@ class RootComponent extends Component {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, subscribeBalances,
+      initLiveQueryPrice, subscribeBalances, subscribeTransactions,
     } = nextProps;
 
     const {
@@ -118,6 +118,7 @@ class RootComponent extends Component {
         console.log('initLiveQueryPrice', initLiveQueryPrice);
         initLiveQueryPrice();
         subscribeBalances();
+        subscribeTransactions();
 
         newState.isParseWritten = true;
       }
@@ -178,6 +179,7 @@ RootComponent.propTypes = {
   confirmationCancelCallback: PropTypes.func,
   initLiveQueryPrice: PropTypes.func.isRequired,
   subscribeBalances: PropTypes.func.isRequired,
+  subscribeTransactions: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

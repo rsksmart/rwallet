@@ -56,6 +56,8 @@ const actions = {
 
   SET_BALANCES_SUBSCRIPTION: 'SET_BALANCE_SUBSCRIPTION',
 
+  SUBSCRIBE_TRANSACTIONS: 'SUBSCRIBE_TRANSACTIONS',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -163,6 +165,9 @@ const actions = {
   }),
   subscribeBalances: () => ({
     type: actions.SUBSCRIBE_BALANCES,
+  }),
+  subscribeTransactions: () => ({
+    type: actions.SUBSCRIBE_TRANSACTIONS,
   }),
   modifyBalancesQuery: () => ({
     type: actions.MODIFY_BALANCES_QUERY,

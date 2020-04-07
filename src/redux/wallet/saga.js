@@ -4,7 +4,7 @@ import {
 } from 'redux-saga/effects';
 
 import { eventChannel /* END */ } from 'redux-saga';
-
+import moment from 'moment';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
@@ -18,7 +18,7 @@ import wm from '../../common/wallet/walletManager';
 const {
   interval: {
     // fetchBalance: FETCH_BALANCE_INTERVAL,
-    fetchTransaction: FETCH_TRANSACTION_INTERVAL,
+    // fetchTransaction: FETCH_TRANSACTION_INTERVAL,
     fetchLatestBlockHeight: FETCH_LATEST_BLOCK_HEIGHT_INTERVAL,
   },
 } = config;
@@ -71,30 +71,30 @@ function createTimer(interval) {
 /**
  * Start the timer to call actions.FETCH_TRANSACTION periodically
  */
-export function* startFetchTransactionTimerRequest(action) {
-  const walletManager = action.payload;
+// export function* startFetchTransactionTimerRequest(action) {
+//   const walletManager = action.payload;
 
-  // Call actions.FETCH_TRANSACTION once to start off
-  yield put({
-    type: actions.FETCH_TRANSACTION,
-    payload: walletManager,
-  });
+//   // Call actions.FETCH_TRANSACTION once to start off
+//   yield put({
+//     type: actions.FETCH_TRANSACTION,
+//     payload: walletManager,
+//   });
 
-  const chan = yield call(createTimer, FETCH_TRANSACTION_INTERVAL);
+//   const chan = yield call(createTimer, FETCH_TRANSACTION_INTERVAL);
 
-  try {
-    while (true) {
-      // take(END) will cause the saga to terminate by jumping to the finally block
-      yield take(chan);
-      yield put({
-        type: actions.FETCH_TRANSACTION,
-        payload: walletManager,
-      });
-    }
-  } finally {
-    console.log('fetchTransaction Channel closed.');
-  }
-}
+//   try {
+//     while (true) {
+//       // take(END) will cause the saga to terminate by jumping to the finally block
+//       yield take(chan);
+//       yield put({
+//         type: actions.FETCH_TRANSACTION,
+//         payload: walletManager,
+//       });
+//     }
+//   } finally {
+//     console.log('fetchTransaction Channel closed.');
+//   }
+// }
 
 /**
  * Start the timer to call actions.FETCH_LATEST_BLOCK_HEIGHT periodically
@@ -135,21 +135,21 @@ export function* startFetchLatestBlockHeightTimerRequest() {
 //   }
 // }
 
-function* fetchTransactionRequest(action) {
-  const walletManager = action.payload;
+// function* fetchTransactionRequest(action) {
+//   const walletManager = action.payload;
 
-  const tokens = walletManager.getTokens();
+//   const tokens = walletManager.getTokens();
 
-  try {
-    yield call(ParseHelper.fetchTransaction, tokens);
-    yield put({
-      type: actions.FETCH_TRANSACTION_RESULT,
-    });
-  } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.error(message);
-  }
-}
+//   try {
+//     yield call(ParseHelper.fetchTransaction, tokens);
+//     yield put({
+//       type: actions.FETCH_TRANSACTION_RESULT,
+//     });
+//   } catch (err) {
+//     const message = yield call(ParseHelper.handleError, { err });
+//     console.error(message);
+//   }
+// }
 
 function* fetchLatestBlockHeight() {
   try {
@@ -335,14 +335,96 @@ function* subscribeBalancesRequest() {
   }
 }
 
+function createTransactionsSubscriptionChannel(subscription) {
+  console.log('createTransactionsSubscriptionChannel');
+  return eventChannel((emitter) => {
+    const subscribeHandler = () => {
+      console.log('createTransactionsSubscriptionChannel.subscribeHandler.');
+    };
+    const unsubscribeHandler = () => {
+      console.log('createTransactionsSubscriptionChannel.unsubscribeHandler.');
+    };
+    const updateHandler = (item) => {
+      console.log('createTransactionsSubscriptionChannel.updateHandler', item);
+      const createdAt = item.get('createdAt');
+      const confirmedAt = item.get('confirmedAt');
+      const transaction = {
+        createdAt: createdAt ? moment(createdAt) : null,
+        confirmedAt: confirmedAt ? moment(confirmedAt) : null,
+        chain: item.get('chain'),
+        type: item.get('type'),
+        from: item.get('from'),
+        hash: item.get('hash'),
+        value: item.get('value'),
+        blockHeight: item.get('blockHeight'),
+        symbol: item.get('symbol'),
+        to: item.get('to'),
+        confirmations: item.get('confirmations'),
+        memo: item.get('memo'),
+        status: item.get('status'),
+        objectId: item.id,
+      };
+      return emitter({ type: actions.FETCH_TRANSACTION_RESULT, value: [transaction] });
+    };
+    const errorHandler = (error) => {
+      console.log('createTransactionsSubscriptionChannel.errorHandler', error);
+    };
+    subscription.on('open', subscribeHandler);
+    subscription.on('close', unsubscribeHandler);
+    subscription.on('update', updateHandler);
+    subscription.on('error', errorHandler);
+    subscription.on('create', updateHandler);
+
+    // unsubscribe function, this gets called when we close the channel
+    return unsubscribeHandler;
+  });
+}
+
+function* subscribeTransactionsRequest() {
+  let subscription;
+  let subscriptionChannel;
+  const tokens = wm.getTokens();
+  console.log('subscribeTransactionsRequest');
+
+  try {
+    const transactions = yield call(ParseHelper.fetchTransactions, tokens);
+    console.log('ParseHelper.fetchTransactions, response: ', transactions);
+    yield put({
+      type: actions.FETCH_TRANSACTION_RESULT,
+      value: transactions,
+    });
+  } catch (error) {
+    console.log('subscribeTransactionsRequest.fetchTransactions, error:', error);
+  }
+
+  try {
+    subscription = yield call(ParseHelper.subscribeTransactions, tokens);
+    subscriptionChannel = yield call(createTransactionsSubscriptionChannel, subscription);
+    while (true) {
+      const payload = yield take(subscriptionChannel);
+      console.log('payload: ', payload);
+      yield put(payload);
+    }
+  } catch (err) {
+    console.log('Subscription error:', err);
+  } finally {
+    if (yield cancelled()) {
+      subscriptionChannel.close();
+      subscription.close();
+    } else {
+      console.log('Subscription disconnected: Balance');
+    }
+  }
+}
+
 export default function* () {
   yield all([
     // takeEvery(actions.FETCH_BALANCE, fetchBalanceRequest),
-    takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
+    // takeEvery(actions.FETCH_TRANSACTION, fetchTransactionRequest),
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchLatestBlockHeight),
 
     // takeEvery(actions.START_FETCH_BALANCE_TIMER, startFetchBalanceTimerRequest),
-    takeEvery(actions.START_FETCH_TRANSACTION_TIMER, startFetchTransactionTimerRequest),
+    // takeEvery(actions.START_FETCH_TRANSACTION_TIMER, startFetchTransactionTimerRequest),
     takeEvery(actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER, startFetchLatestBlockHeightTimerRequest),
 
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -354,5 +436,6 @@ export default function* () {
     takeEvery(actions.GET_SWAP_RATE, getSwapRateRequest),
 
     takeEvery(actions.SUBSCRIBE_BALANCES, subscribeBalancesRequest),
+    takeEvery(actions.SUBSCRIBE_TRANSACTIONS, subscribeTransactionsRequest),
   ]);
 }

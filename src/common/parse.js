@@ -313,58 +313,51 @@ class ParseHelper {
    * @param {array} addresses Array of Coin class instance
    * @memberof ParseHelper
    */
-  static fetchTransaction(tokens) {
-    const promises = _.map(tokens, (token) => {
-      const {
-        address, symbol, chain, type,
-      } = token;
-      const newToken = token;
+  static async fetchTransactions(tokens) {
+    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+    const address = _.map(validObjects, 'address');
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.containedIn('from', address);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.containedIn('to', address);
+    const query = Parse.Query.or(queryFrom, queryTo).descending('receivedAt');
+    const results = await query.find();
 
-      // Find relavent transactions of which token.address is either from or to
-      const queryTo = new Parse.Query(ParseTransaction);
-      queryTo.equalTo('to', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      const queryFrom = new Parse.Query(ParseTransaction);
-      queryFrom.equalTo('from', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
-        .then((results) => {
-          newToken.transactions = _.map(results, (item) => {
-            const createdAt = item.get('createdAt');
-            const confirmedAt = item.get('confirmedAt');
-            const transaction = {
-              createdAt: createdAt ? moment(createdAt) : null,
-              confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-              chain: item.get('chain'),
-              type: item.get('type'),
-              from: item.get('from'),
-              hash: item.get('hash'),
-              value: item.get('value'),
-              blockHeight: item.get('blockHeight'),
-              symbol: item.get('symbol'),
-              to: item.get('to'),
-              confirmations: item.get('confirmations'),
-              memo: item.get('memo'),
-              status: item.get('status'),
-              objectId: item.id,
-            };
-            return transaction;
-          });
-          if (!_.isEmpty(newToken.transactions)) {
-            console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
-          }
-        }, (err) => {
-          console.warn(`fetchTransaction, token ${symbol}`, err.message);
-        });
+    const transactions = _.map(results, (item) => {
+      const createdAt = item.get('createdAt');
+      const confirmedAt = item.get('confirmedAt');
+      const transaction = {
+        createdAt: createdAt ? moment(createdAt) : null,
+        confirmedAt: confirmedAt ? moment(confirmedAt) : null,
+        chain: item.get('chain'),
+        type: item.get('type'),
+        from: item.get('from'),
+        hash: item.get('hash'),
+        value: item.get('value'),
+        blockHeight: item.get('blockHeight'),
+        symbol: item.get('symbol'),
+        to: item.get('to'),
+        confirmations: item.get('confirmations'),
+        memo: item.get('memo'),
+        status: item.get('status'),
+        objectId: item.id,
+      };
+      return transaction;
     });
 
-    return Promise.all(promises);
+    return transactions;
+  }
+
+  static async subscribeTransactions(tokens) {
+    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
+    const addresses = _.map(validObjects, 'address');
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.containedIn('from', addresses);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.containedIn('to', addresses);
+    const query = Parse.Query.or(queryFrom, queryTo);
+    const subscription = await query.subscribe();
+    return subscription;
   }
 
   static fetchLatestBlockHeight() {
