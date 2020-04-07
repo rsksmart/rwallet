@@ -50,13 +50,12 @@ const actions = {
   SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
   RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
 
-  SUBSCRIBE_BALANCES: 'SUBSCRIBE_BALANCES',
+  INIT_LIVE_QUERY_BALANCES: 'INIT_LIVE_QUERY_BALANCES',
+  SET_BALANCES_CHANNEL: 'SET_BALANCES_CHANNEL',
   BALANCE_UPDATED: 'BALANCE_UPDATED',
-  MODIFY_BALANCES_QUERY: 'MODIFY_BALANCES_QUERY',
 
-  SET_BALANCES_SUBSCRIPTION: 'SET_BALANCE_SUBSCRIPTION',
-
-  SUBSCRIBE_TRANSACTIONS: 'SUBSCRIBE_TRANSACTIONS',
+  INIT_LIVE_QUERY_TRANSACTIONS: 'INIT_LIVE_QUERY_TRANSACTIONS',
+  SET_TRANSACTIONS_CHANNEL: 'SET_TRANSACTIONS_CHANNEL',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -163,14 +162,13 @@ const actions = {
   resetSwapRateResultError: () => ({
     type: actions.RESET_SWAP_RATE_RESULT_ERROR,
   }),
-  subscribeBalances: () => ({
-    type: actions.SUBSCRIBE_BALANCES,
+  initLiveQueryBalances: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_BALANCES,
+    tokens,
   }),
-  subscribeTransactions: () => ({
-    type: actions.SUBSCRIBE_TRANSACTIONS,
-  }),
-  modifyBalancesQuery: () => ({
-    type: actions.MODIFY_BALANCES_QUERY,
+  initLiveQueryTransactions: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_TRANSACTIONS,
+    tokens,
   }),
 };
 

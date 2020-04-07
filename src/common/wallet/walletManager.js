@@ -160,7 +160,7 @@ class WalletManager {
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const match = _.find(balances, (balanceObject) => balanceObject.objectId === token.objectId);
+      const match = _.find(balances, (balanceObject) => balanceObject.address === token.address && balanceObject.symbol === token.symbol);
 
       if (match) {
         try {

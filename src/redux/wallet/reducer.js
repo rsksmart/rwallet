@@ -15,7 +15,8 @@ const initState = new Map({
   addTokenResult: null,
   swapRates: {},
   swapRatesError: null,
-  balancesSubscription: undefined,
+  balancesChannel: undefined,
+  transactionsChannel: undefined,
 });
 
 /**
@@ -54,21 +55,23 @@ export default function walletReducer(state = initState, action) {
       const transactions = action.value;
       const walletManager = state.get('walletManager');
       const tokens = walletManager.getTokens();
-      _.each(transactions, (transcation) => {
-        const token = _.find(tokens, (item) => item.address === transcation.from || item.address === transcation.to);
-        if (!token) {
-          return;
-        }
-        if (!token.transactions) {
-          token.transactions = [];
-        }
-        const txIndex = _.findIndex(token.transactions, { hash: transcation.hash });
-        if (txIndex === -1) {
-          token.transactions.push(transcation);
-        } else {
-          token.transactions[txIndex] = transcation;
-        }
+
+      _.each(transactions, (transaction) => {
+        const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
+        _.each(foundTokens, (token) => {
+          const newToken = token;
+          if (!token.transactions) {
+            newToken.transactions = [];
+          }
+          const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
+          if (txIndex === -1) {
+            newToken.transactions.unshift(transaction);
+          } else {
+            newToken.transactions[txIndex] = transaction;
+          }
+        });
       });
+
       console.log('ParseHelper.fetchTransactions, tokens: ', tokens);
       return state.set('updateTimestamp', getUpdateTimestamp());
     }
@@ -143,19 +146,11 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_SWAP_RATE_RESULT_ERROR: {
       return state.set('swapRatesError', null);
     }
-    case actions.SET_BALANCES_SUBSCRIPTION: {
-      return state.set('balancesSubscription', action.value);
+    case actions.SET_BALANCES_CHANNEL: {
+      return state.set('balancesChannel', action.value);
     }
-    case actions.MODIFY_BALANCES_QUERY: {
-      const balancesSubscription = state.get('balancesSubscription');
-      const walletManager = state.get('walletManager', action.value);
-      console.log('balancesSubscription: ', balancesSubscription);
-      balancesSubscription.query.equalTo('key', 'price');
-      const tokens = walletManager.getTokens();
-      const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-      const objectIds = _.map(validObjects, 'objectId');
-      balancesSubscription.query.containedIn('objectId', objectIds);
-      return state;
+    case actions.SET_TRANSACTIONS_CHANNEL: {
+      return state.set('transactionsChannel', action.value);
     }
     default:
       return state;

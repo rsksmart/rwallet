@@ -72,7 +72,7 @@ class RootComponent extends Component {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, subscribeBalances, subscribeTransactions,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
     } = nextProps;
 
     const {
@@ -80,6 +80,8 @@ class RootComponent extends Component {
     } = this.props;
 
     const { isStorageRead, isParseWritten } = this.state;
+
+    const tokens = walletManager.getTokens();
 
     const newState = this.state;
 
@@ -117,8 +119,8 @@ class RootComponent extends Component {
 
         console.log('initLiveQueryPrice', initLiveQueryPrice);
         initLiveQueryPrice();
-        subscribeBalances();
-        subscribeTransactions();
+        initLiveQueryBalances(tokens);
+        initLiveQueryTransactions(tokens);
 
         newState.isParseWritten = true;
       }
@@ -157,7 +159,9 @@ RootComponent.propTypes = {
   startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape({}),
+  walletManager: PropTypes.shape({
+    getTokens: PropTypes.func,
+  }),
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
@@ -178,8 +182,8 @@ RootComponent.propTypes = {
   confirmationCallback: PropTypes.func,
   confirmationCancelCallback: PropTypes.func,
   initLiveQueryPrice: PropTypes.func.isRequired,
-  subscribeBalances: PropTypes.func.isRequired,
-  subscribeTransactions: PropTypes.func.isRequired,
+  initLiveQueryBalances: PropTypes.func.isRequired,
+  initLiveQueryTransactions: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

@@ -18,7 +18,7 @@ function createSocketChannel(socket) {
     // the subscriber must return an unsubscribe function
     // this will be invoked when the saga calls `channel.close` method
     const unsubscribeHandler = () => {
-      // ParseHelper.unsubscribe(socket);
+      ParseHelper.unsubscribe(socket);
       console.log('createSocketChannel.unsubscribeHandler. Price channel unsubscribeHandler is called.');
 
       return emitter({ type: actions.PRICE_UNSUBSCRIBED });
@@ -40,7 +40,7 @@ function createSocketChannel(socket) {
     console.log('socket: ', socket);
 
     socket.on('open', subscribeHandler);
-    socket.on('close', unsubscribeHandler);
+    // socket.on('close', unsubscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
 

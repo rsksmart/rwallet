@@ -253,55 +253,22 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  // static async fetchBalance(tokens) {
-  //   const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-  //   const promises = _.map(validObjects, (token) => {
-  //     const { objectId } = token;
-  //     const query = new Parse.Query(ParseAddress);
-  //     return query.get(objectId)
-  //       .then((parseObject) => {
-  //         // Update address if the object was retrieved successfully.
-  //         // This address is hex string which needs to be procced during either here or rendering
-  //         const balance = parseObject.get('balance');
-
-  //         return Promise.resolve({
-  //           objectId,
-  //           balance,
-  //         });
-  //       }, (err) => {
-  //         console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
-  //         return Promise.resolve();
-  //       });
-  //   });
-
-  //   const results = await Promise.all(promises);
-  //   console.log('fetchBalance, results:', results);
-
-  //   // Only return items with valid value
-  //   return _.filter(results, (item) => !_.isUndefined(item));
-  // }
-
-  /**
-   * Get balance of parseObject and update property of each addresss
-   * @param {array} tokens Array of Coin class instance
-   * @returns {array} e.g. [{objectId, balance(hex string)}]
-   */
   static async fetchBalances(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const objectIds = _.map(validObjects, 'objectId');
+    const addresses = _.map(tokens, 'address');
     const query = new Parse.Query(ParseAddress);
-    query.containedIn('objectId', objectIds);
+    query.containedIn('address', addresses);
     let results = await query.find();
-    results = _.map(results, (token) => ({ objectId: token.id, balance: token.get('balance') }));
+    results = _.map(results, (token) => ({
+      objectId: token.id, balance: token.get('balance'), address: token.get('address'), symbol: token.get('symbol'),
+    }));
     console.log('fetchBalances, results: ', results);
     return results;
   }
 
   static async subscribeBalances(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const objectIds = _.map(validObjects, 'objectId');
+    const addresses = _.map(tokens, 'address');
     const query = new Parse.Query(ParseAddress);
-    query.containedIn('objectId', objectIds);
+    query.containedIn('address', addresses);
     const subscription = await query.subscribe();
     return subscription;
   }
@@ -314,12 +281,11 @@ class ParseHelper {
    * @memberof ParseHelper
    */
   static async fetchTransactions(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const address = _.map(validObjects, 'address');
+    const addresses = _.map(tokens, 'address');
     const queryFrom = new Parse.Query(ParseTransaction);
-    queryFrom.containedIn('from', address);
+    queryFrom.containedIn('from', addresses);
     const queryTo = new Parse.Query(ParseTransaction);
-    queryTo.containedIn('to', address);
+    queryTo.containedIn('to', addresses);
     const query = Parse.Query.or(queryFrom, queryTo).descending('receivedAt');
     const results = await query.find();
 
