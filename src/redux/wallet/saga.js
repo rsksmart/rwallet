@@ -188,7 +188,6 @@ function* getSwapRateRequest(action) {
  * @param {object} subscription parse subscription
  */
 function createBalancesSubscriptionChannel(subscription) {
-  console.log('createBalancesSubscriptionChannel');
   return eventChannel((emitter) => {
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(subscription);
@@ -261,7 +260,6 @@ function* subscribeBalances(tokens) {
  */
 function* initLiveQueryBalancesRequest(action) {
   const { tokens } = action;
-  console.log('initLiveQueryBalancesRequest, tokens: ', tokens);
   yield call(fetchBalances, tokens);
   yield call(subscribeBalances, tokens);
 }
@@ -271,7 +269,6 @@ function* initLiveQueryBalancesRequest(action) {
  * @param {object} subscription parse subscription
  */
 function createTransactionsSubscriptionChannel(subscription) {
-  console.log('createTransactionsSubscriptionChannel');
   return eventChannel((emitter) => {
     const subscribeHandler = () => {
       console.log('createTransactionsSubscriptionChannel.subscribeHandler.');
@@ -353,7 +350,6 @@ function* subscribeTransactions(tokens) {
  */
 function* initLiveQueryTransactionsRequest(action) {
   const { tokens } = action;
-  console.log('initLiveQueryTransactionsRequest, tokens: ', tokens);
   yield call(fetchTransactions, tokens);
   yield call(subscribeTransactions, tokens);
 }

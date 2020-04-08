@@ -253,7 +253,7 @@ class ParseHelper {
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
   static async fetchBalances(tokens) {
-    const addresses = _.map(tokens, 'address');
+    const addresses = _.uniq(_.map(tokens, 'address'));
     const query = new Parse.Query(ParseAddress);
     query.containedIn('address', addresses);
     let results = await query.find();
@@ -266,7 +266,7 @@ class ParseHelper {
    * Subscribe to balances Live Query channel
    */
   static async subscribeBalances(tokens) {
-    const addresses = _.map(tokens, 'address');
+    const addresses = _.uniq(_.map(tokens, 'address'));
     const query = new Parse.Query(ParseAddress);
     query.containedIn('address', addresses);
     const subscription = await query.subscribe();
@@ -281,7 +281,7 @@ class ParseHelper {
    * @memberof ParseHelper
    */
   static async fetchTransactions(tokens) {
-    const addresses = _.map(tokens, 'address');
+    const addresses = _.uniq(_.map(tokens, 'address'));
     const queryFrom = new Parse.Query(ParseTransaction);
     queryFrom.containedIn('from', addresses);
     const queryTo = new Parse.Query(ParseTransaction);
@@ -300,8 +300,7 @@ class ParseHelper {
    * @param {*} tokens
    */
   static async subscribeTransactions(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const addresses = _.map(validObjects, 'address');
+    const addresses = _.uniq(_.map(tokens, 'address'));
     const queryFrom = new Parse.Query(ParseTransaction);
     queryFrom.containedIn('from', addresses);
     const queryTo = new Parse.Query(ParseTransaction);
@@ -397,7 +396,6 @@ class ParseHelper {
   static async fetchPrices() {
     const query = new Parse.Query('Global');
     const prices = await query.equalTo('key', 'price').first();
-    console.log('parse.fetchPrices, prices: ', prices.toJSON());
     return prices;
   }
 

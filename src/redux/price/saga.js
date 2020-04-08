@@ -8,7 +8,6 @@ import ParseHelper from '../../common/parse';
 
 
 function createSocketChannel(socket) {
-  console.log('createSocketChannel');
   return eventChannel((emitter) => {
     const subscribeHandler = () => {
       console.log('createSocketChannel.subscribeHandler.');
@@ -40,7 +39,6 @@ function createSocketChannel(socket) {
     console.log('socket: ', socket);
 
     socket.on('open', subscribeHandler);
-    // socket.on('close', unsubscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
 
@@ -73,7 +71,6 @@ function* subscribePrices() {
 
     while (true) {
       const payload = yield take(socketChannel);
-      console.log('payload: ', payload);
       yield put(payload);
     }
   } catch (err) {
@@ -93,7 +90,6 @@ function* subscribePrices() {
  * @param {array} tokens Array of Coin class instance
  */
 function* initPriceSocketRequest() {
-  console.log('initPriceSocketRequest');
   yield call(fetchPrices);
   yield call(subscribePrices);
 }

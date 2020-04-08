@@ -12,7 +12,7 @@ export default function appReducer(state = initState, action) {
     {
       const priceObj = action.data;
       let prices = priceObj.get('value');
-      prices = prices && common.addOrUpdateDOCPrice(prices);
+      prices = common.addPriceData(prices);
       console.log('PRICE_OBJECT_UPDATED, prices: ', prices);
       return state.set('prices', prices);
     }

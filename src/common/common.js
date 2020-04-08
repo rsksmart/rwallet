@@ -310,15 +310,17 @@ const common = {
   },
 
   /**
-   * Add or update DOC price
-   * DOC value is 1 dollar, convert to other currencies by btc price
+   * Add or update tokens' price
    * Returns new prices array
    * @param {*} prices
    */
-  addOrUpdateDOCPrice(prices) {
+  addPriceData(prices) {
+    if (_.isEmpty(prices)) {
+      return [];
+    }
+    // DOC value is 1 dollar, convert to other currencies by btc price
     const newPrice = _.clone(prices);
     const btcPrice = _.find(newPrice, { symbol: 'BTC' });
-    console.log('addOrUpdateDOCPrice, btcPrice: ', btcPrice);
     const usdPrice = parseFloat(btcPrice.price.USD);
     const btcPriceKeys = _.keys(btcPrice.price);
     let docPrice = _.find(newPrice, { symbol: 'DOC' });
