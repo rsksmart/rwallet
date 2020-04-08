@@ -4,11 +4,11 @@ import {
 } from 'redux-saga/effects';
 
 import { eventChannel /* END */ } from 'redux-saga';
-import moment from 'moment';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
 import CoinSwitchHelper from '../../common/coinswitch.helper';
+import parseDataUtil from '../../common/parseDataUtil';
 
 import { createErrorNotification } from '../../common/notification.controller';
 import config from '../../../config';
@@ -183,6 +183,10 @@ function* getSwapRateRequest(action) {
   }
 }
 
+/**
+ * create balances subscription channel
+ * @param {object} subscription parse subscription
+ */
 function createBalancesSubscriptionChannel(subscription) {
   console.log('createBalancesSubscriptionChannel');
   return eventChannel((emitter) => {
@@ -191,10 +195,8 @@ function createBalancesSubscriptionChannel(subscription) {
       console.log('createBalancesSubscriptionChannel.unsubscribeHandler.');
     };
     const updateHandler = (object) => {
-      console.log('createBalancesSubscriptionChannel.updateHandler', object);
-      const balance = {
-        objectId: object.id, balance: object.get('balance'), address: object.get('address'), symbol: object.get('symbol'),
-      };
+      console.log('createBalancesSubscriptionChannel.updateHandler, object: ', object);
+      const balance = parseDataUtil.getBalance(object);
       return emitter({ type: actions.FETCH_BALANCE_RESULT, value: [balance] });
     };
     subscription.on('update', updateHandler);
@@ -204,21 +206,26 @@ function createBalancesSubscriptionChannel(subscription) {
   });
 }
 
-
+/**
+ * Fetch balances of tokens and update property of each addresss
+ * @param {object} subscription parse subscription
+ */
 function* fetchBalances(tokens) {
   try {
-    console.log('ParseHelper.fetchBalances, tokens: ', tokens);
     const response = yield call(ParseHelper.fetchBalances, tokens);
-    console.log('ParseHelper.fetchBalances, response: ', response);
     yield put({
       type: actions.FETCH_BALANCE_RESULT,
       value: response,
     });
   } catch (error) {
-    console.log('initLiveQueryBalancesRequest.fetchPrices, error:', error);
+    console.log('fetchBalances, error:', error);
   }
 }
 
+/**
+ * Subscribe balances of tokens
+ * @param {object} subscription parse subscription
+ */
 function* subscribeBalances(tokens) {
   let subscription;
   let subscriptionChannel;
@@ -248,14 +255,21 @@ function* subscribeBalances(tokens) {
   }
 }
 
+/**
+ * initialize LiveQuery for balances
+ * @param {array} tokens Array of Coin class instance
+ */
 function* initLiveQueryBalancesRequest(action) {
   const { tokens } = action;
   console.log('initLiveQueryBalancesRequest, tokens: ', tokens);
-
   yield call(fetchBalances, tokens);
   yield call(subscribeBalances, tokens);
 }
 
+/**
+ * Subscribe transactions of tokens
+ * @param {object} subscription parse subscription
+ */
 function createTransactionsSubscriptionChannel(subscription) {
   console.log('createTransactionsSubscriptionChannel');
   return eventChannel((emitter) => {
@@ -268,24 +282,7 @@ function createTransactionsSubscriptionChannel(subscription) {
     };
     const updateHandler = (item) => {
       console.log('createTransactionsSubscriptionChannel.updateHandler', item);
-      const createdAt = item.get('createdAt');
-      const confirmedAt = item.get('confirmedAt');
-      const transaction = {
-        createdAt: createdAt ? moment(createdAt) : null,
-        confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-        chain: item.get('chain'),
-        type: item.get('type'),
-        from: item.get('from'),
-        hash: item.get('hash'),
-        value: item.get('value'),
-        blockHeight: item.get('blockHeight'),
-        symbol: item.get('symbol'),
-        to: item.get('to'),
-        confirmations: item.get('confirmations'),
-        memo: item.get('memo'),
-        status: item.get('status'),
-        objectId: item.id,
-      };
+      const transaction = parseDataUtil.getTransaction(item);
       return emitter({ type: actions.FETCH_TRANSACTION_RESULT, value: [transaction] });
     };
     const errorHandler = (error) => {
@@ -301,10 +298,13 @@ function createTransactionsSubscriptionChannel(subscription) {
   });
 }
 
+/**
+ * Fetch transactions of token sand update property of each addresss
+ * @param {array} tokens Array of Coin class instance
+ */
 function* fetchTransactions(tokens) {
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, tokens);
-    console.log('ParseHelper.fetchTransactions, response: ', transactions);
     yield put({
       type: actions.FETCH_TRANSACTION_RESULT,
       value: transactions,
@@ -314,6 +314,10 @@ function* fetchTransactions(tokens) {
   }
 }
 
+/**
+ * Subscribe transactions of tokens
+ * @param {array} tokens Array of Coin class instance
+ */
 function* subscribeTransactions(tokens) {
   let subscription;
   let subscriptionChannel;
@@ -338,11 +342,15 @@ function* subscribeTransactions(tokens) {
       subscriptionChannel.close();
       subscription.close();
     } else {
-      console.log('Subscription disconnected: Balance');
+      console.log('Subscription disconnected: Transactions');
     }
   }
 }
 
+/**
+ * initialize LiveQuery for transactions
+ * @param {array} tokens Array of Coin class instance
+ */
 function* initLiveQueryTransactionsRequest(action) {
   const { tokens } = action;
   console.log('initLiveQueryTransactionsRequest, tokens: ', tokens);

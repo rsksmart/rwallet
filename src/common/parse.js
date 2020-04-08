@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import moment from 'moment';
-// import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
+import parseDataUtil from './parseDataUtil';
 
 const parseConfig = config && config.parse;
 
@@ -258,13 +257,14 @@ class ParseHelper {
     const query = new Parse.Query(ParseAddress);
     query.containedIn('address', addresses);
     let results = await query.find();
-    results = _.map(results, (token) => ({
-      objectId: token.id, balance: token.get('balance'), address: token.get('address'), symbol: token.get('symbol'),
-    }));
+    results = _.map(results, (token) => parseDataUtil.getBalance(token));
     console.log('fetchBalances, results: ', results);
     return results;
   }
 
+  /**
+   * Subscribe to balances Live Query channel
+   */
   static async subscribeBalances(tokens) {
     const addresses = _.map(tokens, 'address');
     const query = new Parse.Query(ParseAddress);
@@ -274,10 +274,10 @@ class ParseHelper {
   }
 
   /**
-   * Get transactions of parseObject and update property of each addresss
+   * Fetch transactions of parseObject and update property of each addresss
    *
    * @static
-   * @param {array} addresses Array of Coin class instance
+   * @param {array} tokens Array of Coin class instance
    * @memberof ParseHelper
    */
   static async fetchTransactions(tokens) {
@@ -288,32 +288,17 @@ class ParseHelper {
     queryTo.containedIn('to', addresses);
     const query = Parse.Query.or(queryFrom, queryTo).descending('receivedAt');
     const results = await query.find();
-
     const transactions = _.map(results, (item) => {
-      const createdAt = item.get('createdAt');
-      const confirmedAt = item.get('confirmedAt');
-      const transaction = {
-        createdAt: createdAt ? moment(createdAt) : null,
-        confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-        chain: item.get('chain'),
-        type: item.get('type'),
-        from: item.get('from'),
-        hash: item.get('hash'),
-        value: item.get('value'),
-        blockHeight: item.get('blockHeight'),
-        symbol: item.get('symbol'),
-        to: item.get('to'),
-        confirmations: item.get('confirmations'),
-        memo: item.get('memo'),
-        status: item.get('status'),
-        objectId: item.id,
-      };
+      const transaction = parseDataUtil.getTransaction(item);
       return transaction;
     });
-
     return transactions;
   }
 
+  /**
+   * Subscribe to transactions Live Query channel
+   * @param {*} tokens
+   */
   static async subscribeTransactions(tokens) {
     const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
     const addresses = _.map(validObjects, 'address');

@@ -49,6 +49,9 @@ function createSocketChannel(socket) {
   });
 }
 
+/**
+ * Fetch prices of token sand update tokens
+ */
 function* fetchPrices() {
   try {
     const priceObj = yield call(ParseHelper.fetchPrices);
@@ -58,6 +61,9 @@ function* fetchPrices() {
   }
 }
 
+/**
+ * Subscribe prices
+ */
 function* subscribePrices() {
   let socket;
   let socketChannel;
@@ -82,6 +88,10 @@ function* subscribePrices() {
   }
 }
 
+/**
+ * initialize LiveQuery for price
+ * @param {array} tokens Array of Coin class instance
+ */
 function* initPriceSocketRequest() {
   console.log('initPriceSocketRequest');
   yield call(fetchPrices);
