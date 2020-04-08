@@ -10,7 +10,7 @@ import ParseHelper from '../../common/parse';
 function createSocketChannel(socket) {
   return eventChannel((emitter) => {
     const subscribeHandler = () => {
-      console.log('Price live channel subscribed.');
+      console.log('createSocketChannel.subscribeHandler.');
       return emitter({ type: actions.PRICE_SUBSCRIBED });
     };
 
@@ -18,7 +18,7 @@ function createSocketChannel(socket) {
     // this will be invoked when the saga calls `channel.close` method
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(socket);
-      console.log('Price channel unsubscribeHandler is called.');
+      console.log('createSocketChannel.unsubscribeHandler. Price channel unsubscribeHandler is called.');
 
       return emitter({ type: actions.PRICE_UNSUBSCRIBED });
     };
@@ -36,8 +36,9 @@ function createSocketChannel(socket) {
       return emitter({ type: actions.PRICE_CHANNEL_ERROR, error });
     };
 
+    console.log('socket: ', socket);
+
     socket.on('open', subscribeHandler);
-    socket.on('close', unsubscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
 
@@ -46,36 +47,55 @@ function createSocketChannel(socket) {
   });
 }
 
-export function* initSocketRequest() {
+/**
+ * Fetch prices of token sand update tokens
+ */
+function* fetchPrices() {
+  try {
+    const priceObj = yield call(ParseHelper.fetchPrices);
+    yield put({ type: actions.PRICE_OBJECT_UPDATED, data: priceObj });
+  } catch (error) {
+    console.log('initPriceSocketRequest.fetchPrices, error:', error);
+  }
+}
+
+/**
+ * Subscribe prices
+ */
+function* subscribePrices() {
   let socket;
   let socketChannel;
-
   try {
-    const collection = 'Global'; // The Parse Class containing price data
-
-    socket = yield call(ParseHelper.subscribe, collection);
+    socket = yield call(ParseHelper.subscribePrice);
     socketChannel = yield call(createSocketChannel, socket);
 
     while (true) {
       const payload = yield take(socketChannel);
-
       yield put(payload);
     }
   } catch (err) {
-    console.error('socket error:', err);
+    console.log('socket error:', err);
   } finally {
     if (yield cancelled()) {
-      // close the channel
       socketChannel.close();
       socket.close();
     } else {
-      console.error('WebSocket disconnected: Price');
+      console.log('WebSocket disconnected: Price');
     }
   }
 }
 
+/**
+ * initialize LiveQuery for price
+ * @param {array} tokens Array of Coin class instance
+ */
+function* initPriceSocketRequest() {
+  yield call(fetchPrices);
+  yield call(subscribePrices);
+}
+
 export default function* topicSaga() {
   yield all([
-    takeEvery(actions.INIT_SOCKET_PRICE, initSocketRequest),
+    takeEvery(actions.INIT_SOCKET_PRICE, initPriceSocketRequest),
   ]);
 }

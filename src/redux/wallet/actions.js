@@ -50,6 +50,13 @@ const actions = {
   SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
   RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
 
+  INIT_LIVE_QUERY_BALANCES: 'INIT_LIVE_QUERY_BALANCES',
+  SET_BALANCES_CHANNEL: 'SET_BALANCES_CHANNEL',
+  BALANCE_UPDATED: 'BALANCE_UPDATED',
+
+  INIT_LIVE_QUERY_TRANSACTIONS: 'INIT_LIVE_QUERY_TRANSACTIONS',
+  SET_TRANSACTIONS_CHANNEL: 'SET_TRANSACTIONS_CHANNEL',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -69,13 +76,9 @@ const actions = {
     type: actions.FETCH_TRANSACTION,
     payload: walletManager,
   }),
-  updateAssetValue: (currency) => ({
+  updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,
-    payload: currency,
-  }),
-  startFetchPriceTimer: (walletManager) => ({
-    type: actions.START_FETCH_PRICE_TIMER,
-    payload: walletManager,
+    payload: { currency, prices },
   }),
   startFetchBalanceTimer: (walletManager) => ({
     type: actions.START_FETCH_BALANCE_TIMER,
@@ -158,6 +161,14 @@ const actions = {
   }),
   resetSwapRateResultError: () => ({
     type: actions.RESET_SWAP_RATE_RESULT_ERROR,
+  }),
+  initLiveQueryBalances: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_BALANCES,
+    tokens,
+  }),
+  initLiveQueryTransactions: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_TRANSACTIONS,
+    tokens,
   }),
 };
 

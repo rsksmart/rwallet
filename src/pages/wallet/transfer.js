@@ -1021,7 +1021,7 @@ Transfer.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   language: state.App.get('language'),

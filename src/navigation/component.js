@@ -59,8 +59,9 @@ class RootComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
-      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated, initLiveQueryPrice,
+      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
+      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
     } = nextProps;
 
     const {
@@ -68,6 +69,8 @@ class RootComponent extends Component {
     } = this.props;
 
     const { isStorageRead, isParseWritten } = this.state;
+
+    const tokens = walletManager.getTokens();
 
     const newState = this.state;
 
@@ -87,7 +90,7 @@ class RootComponent extends Component {
       }
 
       if (needUpdate) {
-        updateWalletAssetValue(currency);
+        updateWalletAssetValue(currency, prices);
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
@@ -99,13 +102,14 @@ class RootComponent extends Component {
       } else {
         // Start timer to get price frequently
         // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchPriceTimer(walletManager);
         startFetchBalanceTimer(walletManager);
         startFetchTransactionTimer(walletManager);
         startFetchLatestBlockHeightTimer();
 
         console.log('initLiveQueryPrice', initLiveQueryPrice);
-        // initLiveQueryPrice();
+        initLiveQueryPrice();
+        initLiveQueryBalances(tokens);
+        initLiveQueryTransactions(tokens);
 
         newState.isParseWritten = true;
       }
@@ -144,12 +148,13 @@ RootComponent.propTypes = {
   startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape({}),
+  walletManager: PropTypes.shape({
+    getTokens: PropTypes.func,
+  }),
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
-  startFetchPriceTimer: PropTypes.func.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -166,6 +171,8 @@ RootComponent.propTypes = {
   confirmationCallback: PropTypes.func,
   confirmationCancelCallback: PropTypes.func,
   initLiveQueryPrice: PropTypes.func.isRequired,
+  initLiveQueryBalances: PropTypes.func.isRequired,
+  initLiveQueryTransactions: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

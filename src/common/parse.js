@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import moment from 'moment';
-// import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
+import parseDataUtil from './parseDataUtil';
 
 const parseConfig = config && config.parse;
 
@@ -253,93 +252,62 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  static async fetchBalance(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const promises = _.map(validObjects, (token) => {
-      const { objectId } = token;
-      const query = new Parse.Query(ParseAddress);
-      return query.get(objectId)
-        .then((parseObject) => {
-          // Update address if the object was retrieved successfully.
-          // This address is hex string which needs to be procced during either here or rendering
-          const balance = parseObject.get('balance');
-
-          return Promise.resolve({
-            objectId,
-            balance,
-          });
-        }, (err) => {
-          console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
-          return Promise.resolve();
-        });
-    });
-
-    const results = await Promise.all(promises);
-    console.log('fetchBalance, results:', results);
-
-    // Only return items with valid value
-    return _.filter(results, (item) => !_.isUndefined(item));
+  static async fetchBalances(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('address', addresses);
+    let results = await query.find();
+    results = _.map(results, (token) => parseDataUtil.getBalance(token));
+    console.log('fetchBalances, results: ', results);
+    return results;
   }
 
   /**
-   * Get transactions of parseObject and update property of each addresss
+   * Subscribe to balances Live Query channel
+   */
+  static async subscribeBalances(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('address', addresses);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  /**
+   * Fetch transactions of parseObject and update property of each addresss
    *
    * @static
-   * @param {array} addresses Array of Coin class instance
+   * @param {array} tokens Array of Coin class instance
    * @memberof ParseHelper
    */
-  static fetchTransaction(tokens) {
-    const promises = _.map(tokens, (token) => {
-      const {
-        address, symbol, chain, type,
-      } = token;
-      const newToken = token;
-
-      // Find relavent transactions of which token.address is either from or to
-      const queryTo = new Parse.Query(ParseTransaction);
-      queryTo.equalTo('to', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      const queryFrom = new Parse.Query(ParseTransaction);
-      queryFrom.equalTo('from', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
-        .then((results) => {
-          newToken.transactions = _.map(results, (item) => {
-            const createdAt = item.get('createdAt');
-            const confirmedAt = item.get('confirmedAt');
-            const transaction = {
-              createdAt: createdAt ? moment(createdAt) : null,
-              confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-              chain: item.get('chain'),
-              type: item.get('type'),
-              from: item.get('from'),
-              hash: item.get('hash'),
-              value: item.get('value'),
-              blockHeight: item.get('blockHeight'),
-              symbol: item.get('symbol'),
-              to: item.get('to'),
-              confirmations: item.get('confirmations'),
-              memo: item.get('memo'),
-              status: item.get('status'),
-              objectId: item.id,
-            };
-            return transaction;
-          });
-          if (!_.isEmpty(newToken.transactions)) {
-            console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
-          }
-        }, (err) => {
-          console.warn(`fetchTransaction, token ${symbol}`, err.message);
-        });
+  static async fetchTransactions(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.containedIn('from', addresses);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.containedIn('to', addresses);
+    const query = Parse.Query.or(queryFrom, queryTo).descending('receivedAt');
+    const results = await query.find();
+    const transactions = _.map(results, (item) => {
+      const transaction = parseDataUtil.getTransaction(item);
+      return transaction;
     });
+    return transactions;
+  }
 
-    return Promise.all(promises);
+  /**
+   * Subscribe to transactions Live Query channel
+   * @param {*} tokens
+   */
+  static async subscribeTransactions(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.containedIn('from', addresses);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.containedIn('to', addresses);
+    const query = Parse.Query.or(queryFrom, queryTo);
+    const subscription = await query.subscribe();
+    return subscription;
   }
 
   static fetchLatestBlockHeight() {
@@ -418,14 +386,24 @@ class ParseHelper {
    * Subscribe to a Live Query channel also-known-as Parse Class
    * @param {*} collection
    */
-  static async subscribe(collection) {
-    const query = new Parse.Query(collection);
+  static async subscribePrice() {
+    const query = new Parse.Query('Global');
+    query.equalTo('key', 'price');
     const subscription = await query.subscribe();
     return subscription;
   }
 
+  static async fetchPrices() {
+    const query = new Parse.Query('Global');
+    const priceObj = await query.equalTo('key', 'price').first();
+    const prices = priceObj ? priceObj.get('value') : [];
+    return prices;
+  }
+
   static unsubscribe(subscription) {
-    subscription.unsubscribe();
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 }
 

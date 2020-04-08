@@ -154,12 +154,13 @@ class WalletManager {
    * @returns {boolean} True if any balance has changed
    */
   updateBalance(balances) {
+    console.log('updateBalance, balances: ', balances);
     const tokenInstances = this.getTokens();
     let isDirty = false;
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const match = _.find(balances, (balanceObject) => balanceObject.objectId === token.objectId);
+      const match = _.find(balances, (balanceObject) => balanceObject.address === token.address && balanceObject.symbol === token.symbol);
 
       if (match) {
         try {

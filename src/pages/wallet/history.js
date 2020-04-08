@@ -585,7 +585,7 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
   language: state.App.get('language'),
 });
 
