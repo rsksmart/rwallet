@@ -78,10 +78,10 @@ function* createKeyRequest(action) {
     name, phrase, coins, walletManager, derivationPaths,
   } = action.payload;
   try {
-    const tokens = walletManager.getTokens();
     yield call(walletManager.createWallet, name, phrase, coins, derivationPaths);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
     yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
@@ -92,7 +92,6 @@ function* createKeyRequest(action) {
 
 function* deleteKeyRequest(action) {
   const { walletManager, key } = action.payload;
-  const tokens = walletManager.getTokens();
   try {
     const state = yield select();
     const currency = state.App.get('currency');
@@ -101,6 +100,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
     yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
@@ -127,13 +127,13 @@ function* addTokenRequest(action) {
   const {
     walletManager, wallet, token,
   } = action.payload;
-  const tokens = walletManager.getTokens();
   try {
     yield call(wallet.addToken, token);
     yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'success' } });
     yield call(walletManager.serialize);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
     yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (error) {
@@ -150,7 +150,6 @@ function* addTokenRequest(action) {
 function* deleteTokenRequest(action) {
   const { walletManager, wallet, token } = action.payload;
   try {
-    const tokens = walletManager.getTokens();
     const state = yield select();
     const currency = state.App.get('currency');
     const prices = state.Price.get('prices');
@@ -159,6 +158,7 @@ function* deleteTokenRequest(action) {
     yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
     yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
@@ -224,13 +224,13 @@ function* subscribeBalances(tokens) {
   let subscriptionChannel;
   try {
     const state = yield select();
+    subscription = yield call(ParseHelper.subscribeBalances, tokens);
+    subscriptionChannel = yield call(createBalancesSubscriptionChannel, subscription);
+    // If there is already a channel here, cancel the previous channel and save the new channel.
     const balancesChannel = state.Wallet.get('balancesChannel');
     if (balancesChannel) {
       balancesChannel.close();
     }
-
-    subscription = yield call(ParseHelper.subscribeBalances, tokens);
-    subscriptionChannel = yield call(createBalancesSubscriptionChannel, subscription);
     yield put({ type: actions.SET_BALANCES_CHANNEL, value: subscriptionChannel });
     while (true) {
       const payload = yield take(subscriptionChannel);
@@ -319,12 +319,13 @@ function* subscribeTransactions(tokens) {
   let subscriptionChannel;
   try {
     const state = yield select();
+    subscription = yield call(ParseHelper.subscribeTransactions, tokens);
+    subscriptionChannel = yield call(createTransactionsSubscriptionChannel, subscription);
+    // If there is already a channel here, cancel the previous channel and save the new channel.
     const transactionsChannel = state.Wallet.get('transactionsChannel');
     if (transactionsChannel) {
       transactionsChannel.close();
     }
-    subscription = yield call(ParseHelper.subscribeTransactions, tokens);
-    subscriptionChannel = yield call(createTransactionsSubscriptionChannel, subscription);
     yield put({ type: actions.SET_TRANSACTIONS_CHANNEL, value: subscriptionChannel });
     while (true) {
       const payload = yield take(subscriptionChannel);
