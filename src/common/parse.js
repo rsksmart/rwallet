@@ -395,7 +395,8 @@ class ParseHelper {
 
   static async fetchPrices() {
     const query = new Parse.Query('Global');
-    const prices = await query.equalTo('key', 'price').first();
+    const priceObj = await query.equalTo('key', 'price').first();
+    const prices = priceObj ? priceObj.get('value') : [];
     return prices;
   }
 

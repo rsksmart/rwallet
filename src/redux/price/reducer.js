@@ -10,8 +10,7 @@ export default function appReducer(state = initState, action) {
   switch (action.type) {
     case actions.PRICE_OBJECT_UPDATED:
     {
-      const priceObj = action.data;
-      let prices = priceObj.get('value');
+      let prices = action.data;
       prices = common.addPriceData(prices);
       console.log('PRICE_OBJECT_UPDATED, prices: ', prices);
       return state.set('prices', prices);
