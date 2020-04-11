@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -160,6 +159,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-firebase')
     implementation project(':react-native-version-number')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-vector-icons')
@@ -193,3 +193,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+// apply plugin: 'com.google.gms.google-services' must be at the bottom of the file
+apply plugin: 'com.google.gms.google-services'

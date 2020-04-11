@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1015605870697-5rplra6b6eovje44u6cfbsdr27g3pce9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1015605870697-5rplra6b6eovje44u6cfbsdr27g3pce9</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1015605870697-10ic72m9vsjojr3ln7gdlsrmqhtek5u3.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA3gMHYFj-zkjj7JiEa-rEdbG9C-x8Fzns</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1015605870697</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.rsk.rwallet.reactnative</string>
+	<key>PROJECT_ID</key>
+	<string>rwallet-40420</string>
+	<key>STORAGE_BUCKET</key>
+	<string>rwallet-40420.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1015605870697:ios:d3e7b8ab79cfbbf1b922f8</string>
+	<key>DATABASE_URL</key>
+	<string>https://rwallet-40420.firebaseio.com</string>
+</dict>
+</plist>
