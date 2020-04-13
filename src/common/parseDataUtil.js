@@ -37,6 +37,10 @@ const parseDataUtil = {
     };
     return balance;
   },
+
+  getPrices(priceObj) {
+    return priceObj ? priceObj.get('value') : [];
+  },
 };
 
 export default parseDataUtil;
