@@ -69,7 +69,7 @@ The first three steps are needed for both Android and iOS devices.
         ```
     * For iOS device, `npm run ios` will start the App in iOS physical or virtual device.
 
-3. Hot reload code change - Press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
+1. Hot reload code change - Press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
 
 ## Fastlane
 
