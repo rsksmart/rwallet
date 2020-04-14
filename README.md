@@ -41,7 +41,7 @@ The first three steps are needed for both Android and iOS devices.
     ```
     If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
 
-2. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
+1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
     > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
     > node node_modules/react-native/local-cli/cli.js start
