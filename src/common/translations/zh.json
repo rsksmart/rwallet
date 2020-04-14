@@ -121,13 +121,12 @@
         "title": "交换",
         "wallet": "钱包",
         "want": "我想要",
-        "errorSourceAmount": "需要指定来源数量",
-        "errorDestAmount": "需要指定目的地数量",
         "errorAmountInRange": {
-          "tooBig": "该金额大于最大交易额 ",
-          "tooSmall": "该金额低于的最低交易金额 "
+          "tooBig": "该金额大于最大交易额 %{max} %{symbol}",
+          "tooSmall": "该金额低于的最低交易金额 %{min} %{symbol}"
         },
         "errorBalanceEnough": "抱歉，您的余额不足",
+        "errorAmountInvalid": "%{symbol}的余额无效。",
         "have": "我有 ",
         "in": "在"
       },

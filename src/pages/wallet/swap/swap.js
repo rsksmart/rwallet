@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 import SwapHeader from '../../../components/headers/header.swap';
 import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
@@ -730,23 +731,29 @@ class Swap extends Component {
 
   renderExchangeStateBlock = (sourceValueText, destValueText) => {
     const {
-      isBalanceEnough, sourceAmount, destAmount, limitMinDepositCoin, limitMaxDepositCoin,
+      isBalanceEnough, sourceText, sourceAmount, destText, destAmount, limitMinDepositCoin, limitMaxDepositCoin,
     } = this.state;
-    const { swapSource } = this.props;
+    const { swapSource, swapDest } = this.props;
     let errorText = null;
-    let additionalInfo = '';
-    if (!sourceAmount) {
-      errorText = 'page.wallet.swap.errorSourceAmount';
-    } else if (!destAmount) {
-      errorText = 'page.wallet.swap.errorDestAmount';
+    if (_.isEmpty(sourceText) && _.isEmpty(destText)) {
+      return <View style={space.marginTop_30} />;
+    }
+
+    let interpolates = null;
+    if (!common.isAmount(sourceText)) {
+      errorText = 'page.wallet.swap.errorAmountInvalid';
+      interpolates = { symbol: swapSource.coin.symbol };
+    } else if (!common.isAmount(destText)) {
+      errorText = 'page.wallet.swap.errorAmountInvalid';
+      interpolates = { symbol: swapDest.coin.symbol };
     } else if (!isBalanceEnough) {
       errorText = 'page.wallet.swap.errorBalanceEnough';
     } else if (sourceAmount < limitMinDepositCoin) {
       errorText = 'page.wallet.swap.errorAmountInRange.tooSmall';
-      additionalInfo = `${limitMinDepositCoin} ${swapSource.coin.symbol}`;
+      interpolates = { min: limitMinDepositCoin, symbol: swapSource.coin.symbol };
     } else if (sourceAmount > limitMaxDepositCoin) {
       errorText = 'page.wallet.swap.errorAmountInRange.tooBig';
-      additionalInfo = `${limitMaxDepositCoin} ${swapSource.coin.symbol}`;
+      interpolates = { max: limitMaxDepositCoin, symbol: swapSource.coin.symbol };
     }
 
     if (errorText) {
@@ -754,7 +761,7 @@ class Swap extends Component {
         <View style={[styles.errorView, space.marginTop_27]}>
           <Image style={styles.error} source={res.error} />
           <View style={styles.errorText}>
-            <Loc text={errorText} suffix={additionalInfo} />
+            <Loc text={errorText} interpolates={interpolates} />
           </View>
         </View>
       );

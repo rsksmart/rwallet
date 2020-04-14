@@ -6,11 +6,9 @@ import { connect } from 'react-redux';
 import { strings } from '../../../common/i18n';
 
 const Loc = ({
-  text, style, prefix, suffix, caseType,
+  text, style, caseType, interpolates,
 }) => {
-  const pre = prefix === '&space&' ? ' ' : prefix;
-  const suf = suffix === '&space&' ? ' ' : suffix;
-  let translation = strings(text);
+  let translation = strings(text, interpolates);
   if (caseType === 'upper') {
     translation = translation.toUpperCase();
   } else if (caseType === 'capitalize') {
@@ -20,22 +18,20 @@ const Loc = ({
       translation += _.capitalize(word) + (index === words.length ? '' : ' ');
     });
   }
-  return <Text style={style}>{pre + translation + suf}</Text>;
+  return <Text style={style}>{ translation }</Text>;
 };
 
 Loc.propTypes = {
   text: PropTypes.string.isRequired,
   style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  prefix: PropTypes.string,
-  suffix: PropTypes.string,
   caseType: PropTypes.string,
+  interpolates: PropTypes.shape({}),
 };
 
 Loc.defaultProps = {
   style: null,
-  prefix: '',
-  suffix: '',
   caseType: undefined,
+  interpolates: undefined,
 };
 
 const mapStateToProps = (state) => ({

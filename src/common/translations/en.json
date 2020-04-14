@@ -122,13 +122,12 @@
         "title": "Swap",
         "wallet": "wallet",
         "want": "I want",
-        "errorSourceAmount": "Source amount need to be specified",
-        "errorDestAmount": "Dest amount need to be specified",
         "errorAmountInRange": {
-          "tooBig": "The amount is higher than the exchange maximum of ",
-          "tooSmall": "The amount is lower than the exchange minimum of "
+          "tooBig": "The amount is higher than the exchange maximum of %{max} %{symbol}",
+          "tooSmall": "The amount is lower than the exchange minimum of %{min} %{symbol}"
         },
         "errorBalanceEnough": "Sorry, but you dont have enough balance",
+        "errorAmountInvalid": "The amount of %{symbol} is invalid.",
         "have": "I have ",
         "in": "in"
       },

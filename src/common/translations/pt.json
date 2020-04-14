@@ -121,13 +121,12 @@
         "title": "Troca",
         "wallet": "carteira",
         "want": "eu quero",
-        "errorSourceAmount": "O valor da fonte precisa ser especificado",
-        "errorDestAmount": "O valor do destino precisa ser especificado",
         "errorAmountInRange": {
-          "tooBig": "A quantia é maior que a troca máxima de ",
-          "tooSmall": "O valor é menor que o mínimo de troca de "
+          "tooBig": "O valor é superior ao máximo de troca de %{max} %{symbol}",
+          "tooSmall": "O valor é menor que o mínimo de troca de %{min} %{symbol}"
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
+        "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
         "have": "eu tenho ",
         "in": "dentro"
       },
