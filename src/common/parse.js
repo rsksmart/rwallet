@@ -11,9 +11,8 @@ if (_.isUndefined(parseConfig)) {
   throw new Error('Unable to find config for Parse init. Check config file path!');
 }
 
-Parse.initialize(parseConfig.appId, parseConfig.javascriptKey, parseConfig.masterKey);
+Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
 Parse.serverURL = parseConfig.serverURL;
-Parse.masterKey = parseConfig.masterKey;
 Parse.setAsyncStorage(AsyncStorage);
 
 /** Parse Class definition */
