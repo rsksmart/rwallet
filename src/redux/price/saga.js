@@ -5,6 +5,7 @@ import {
 import { eventChannel } from 'redux-saga';
 import actions from './actions';
 import ParseHelper from '../../common/parse';
+import parseDataUtil from '../../common/parseDataUtil';
 
 
 function createSocketChannel(socket) {
@@ -28,7 +29,8 @@ function createSocketChannel(socket) {
     // Here we only care about data update so only specify updateHandler
     const updateHandler = (object) => {
       console.log('createSocketChannel.updateHandler', object);
-      return emitter({ type: actions.PRICE_OBJECT_UPDATED, data: object });
+      const prices = parseDataUtil.getPrices(object);
+      return emitter({ type: actions.PRICE_OBJECT_UPDATED, data: prices });
     };
 
     const errorHandler = (error) => {
@@ -52,8 +54,8 @@ function createSocketChannel(socket) {
  */
 function* fetchPrices() {
   try {
-    const priceObj = yield call(ParseHelper.fetchPrices);
-    yield put({ type: actions.PRICE_OBJECT_UPDATED, data: priceObj });
+    const prices = yield call(ParseHelper.fetchPrices);
+    yield put({ type: actions.PRICE_OBJECT_UPDATED, data: prices });
   } catch (error) {
     console.log('initPriceSocketRequest.fetchPrices, error:', error);
   }
