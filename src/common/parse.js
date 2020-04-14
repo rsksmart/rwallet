@@ -59,13 +59,17 @@ class ParseHelper {
    * @param {array} param0.settings
    * @returns {parseUser} saved User
    */
-  static async updateUser({ wallets, settings }) {
+  static async updateUser({ wallets, settings, fcmToken }) {
     const parseUser = await Parse.User.currentAsync();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
     if (_.isObject(settings)) {
       parseUser.set('settings', settings);
+    }
+
+    if (fcmToken) {
+      parseUser.set('fcmToken', fcmToken);
     }
 
     // Only set wallets when it's defined.

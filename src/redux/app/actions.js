@@ -38,8 +38,6 @@ const actions = {
   SET_PASSCODE: 'SET_PASSWORD',
   UPDATE_PASSCODE: 'UPDATE_PASSCODE',
 
-  INIT_FIREBASE_MESSAGING: 'INIT_FIREBASE_MESSAGING',
-
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -113,9 +111,6 @@ const actions = {
   setPasscode: (passcode) => ({
     type: actions.SET_PASSCODE,
     passcode,
-  }),
-  initializeFirebaseMessaging: () => ({
-    type: actions.INIT_FIREBASE_MESSAGING,
   }),
 };
 
