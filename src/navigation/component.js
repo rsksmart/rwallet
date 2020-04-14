@@ -3,8 +3,8 @@ import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
 import _ from 'lodash';
-
 import PropTypes from 'prop-types';
+
 import UpdateModal from '../components/update/update.modal';
 import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
@@ -50,11 +50,12 @@ class RootComponent extends Component {
    * RootComponent is the main entrace of the App
    * Initialization jobs need to start here
    */
-  componentWillMount() {
-    const { initializeFromStorage } = this.props;
+  async componentWillMount() {
+    const { initializeFromStorage, initializeFirebaseMessaging } = this.props;
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
+    initializeFirebaseMessaging();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -173,6 +174,7 @@ RootComponent.propTypes = {
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
+  initializeFirebaseMessaging: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

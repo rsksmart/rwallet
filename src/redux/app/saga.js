@@ -14,6 +14,7 @@ import walletManager from '../../common/wallet/walletManager';
 import common from '../../common/common';
 import definitions from '../../common/definitions';
 import storage from '../../common/storage';
+import fcmHelper from '../../common/fcmHelper';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -92,6 +93,10 @@ function* initFromStorageRequest() {
     const { message } = err; // TODO: handle app error in a class
     console.error(message);
   }
+}
+
+function* initFirebaseMessagingRequest() {
+  yield call(fcmHelper.initFirebaseMessaging);
 }
 
 function* initWithParseRequest() {
@@ -228,6 +233,7 @@ export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
+    takeEvery(actions.INIT_FIREBASE_MESSAGING, initFirebaseMessagingRequest),
     takeEvery(actions.INIT_WITH_PARSE, initWithParseRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),

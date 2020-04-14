@@ -39,6 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
+  initializeFirebaseMessaging: () => dispatch(appActions.initializeFirebaseMessaging()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

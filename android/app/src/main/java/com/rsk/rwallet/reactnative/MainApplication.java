@@ -3,6 +3,7 @@ package com.rsk.rwallet.reactnative;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -10,6 +11,9 @@ import com.tradle.react.UdpSocketsModule;
 import com.peel.react.TcpSocketsModule;
 import org.reactnative.camera.RNCameraPackage;
 import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+
 import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
 import com.taluttasgiran.rnsecurestorage.RNSecureStoragePackage;
 import com.horcrux.svg.SvgPackage;
@@ -39,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFirebasePackage(),
             new RNVersionNumberPackage(),
             new LinearGradientPackage(),
             new VectorIconsPackage(),
@@ -54,7 +59,9 @@ public class MainApplication extends Application implements ReactApplication {
             new AsyncStoragePackage(),
             new RNGestureHandlerPackage(),
             new RNScreensPackage(),
-            new ReactSliderPackage()
+            new ReactSliderPackage(),
+            new RNFirebaseMessagingPackage(),
+            new RNFirebaseNotificationsPackage()
       );
     }
 
