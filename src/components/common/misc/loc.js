@@ -5,6 +5,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { strings } from '../../../common/i18n';
 
+/**
+ * Loc
+ * @param {String} text, i18n key
+ * @param {style} style
+ * @param {string} caseType, text format(upper/capitalize)
+ * @param {object} interpolates, interpolates for translation template
+ * @returns element
+ */
 const Loc = ({
   text, style, caseType, interpolates,
 }) => {
