@@ -19,11 +19,13 @@ const mapStateToProps = (state) => ({
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   currency: state.App.get('currency'),
   prices: state.Price.get('prices'),
-  isShowConfirmation: state.App.get('isShowConfirmation'),
+  isShowInAppNotification: state.App.get('isShowInAppNotification'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
   confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
+  isShowConfirmation: state.App.get('isShowConfirmation'),
   isInAppNotification: state.App.get('isInAppNotification'),
+  inAppNotification: state.App.get('inAppNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

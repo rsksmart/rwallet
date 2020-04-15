@@ -17,6 +17,7 @@ import WalletPlaceholder from './wallet.carousel.page.wallet.placeholder';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
+// import fcmHelper from '../../../common/fcmHelper';
 
 const WALLET_PAGE_WIDTH = screen.width - 50;
 
@@ -88,8 +89,20 @@ class WalletList extends Component {
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
     this.state = { currencySymbol, listData };
     setTimeout(() => {
-      showInAppNotification();
+      showInAppNotification({
+        onPress: () => {
+          const coin = wallets[0].coins[0];
+          navigation.navigate('WalletHistory', { coin });
+        },
+      });
     }, 3);
+    // If fcmNavParams is not null, navigate to proper page.
+    // const fcmNavParams = fcmHelper.getNavigateParams();
+    // if (fcmNavParams) {
+    //   const { routeName, routeParams } = fcmHelper.getNavigateParams();
+    //   navigation.navigate(routeName, routeParams);
+    //   fcmHelper.resetOpenUrl();
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -196,7 +209,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
-  showInAppNotification: () => dispatch(appActions.showInAppNotification()),
+  showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

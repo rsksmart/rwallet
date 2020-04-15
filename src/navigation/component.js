@@ -124,7 +124,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
-      isInAppNotification,
+      isShowInAppNotification, inAppNotification,
     } = this.props;
 
     return (
@@ -136,7 +136,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
-          <InAppNotification isVisiable={isInAppNotification} />
+          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} />
         </Root>
       </View>
     );
@@ -176,7 +176,8 @@ RootComponent.propTypes = {
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
-  isInAppNotification: PropTypes.bool.isRequired,
+  isShowInAppNotification: PropTypes.bool.isRequired,
+  inAppNotification: PropTypes.shape({}),
 };
 
 RootComponent.defaultProps = {
@@ -189,6 +190,7 @@ RootComponent.defaultProps = {
   confirmationCallback: null,
   confirmationCancelCallback: null,
   notificationCloseCallback: null,
+  inAppNotification: undefined,
 };
 
 export default RootComponent;

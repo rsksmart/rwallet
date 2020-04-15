@@ -39,11 +39,10 @@ class Notification extends Component {
 
   show(
     {
-      title, message, onPress, icon, vibrate, additionalProps,
+      title, message, icon, vibrate, additionalProps,
     } = {
       title: '',
       message: '',
-      onPress: null,
       icon: null,
       vibrate: true,
       additionalProps: {},
@@ -61,7 +60,6 @@ class Notification extends Component {
         isOpen: true,
         title,
         message,
-        onPress,
         icon,
         vibrate,
         additionalProps,
@@ -72,7 +70,6 @@ class Notification extends Component {
             isOpen: false,
             title: '',
             message: '',
-            onPress: null,
             icon: null,
             vibrate: true,
             additionalProps,
@@ -111,18 +108,16 @@ class Notification extends Component {
 
   render() {
     const {
-      height: baseHeight,
-      topOffset,
-      backgroundColour,
-      iconApp,
-      notificationBodyComponent: NotificationBody,
+      height: baseHeight, topOffset, backgroundColour, iconApp, notificationBodyComponent: NotificationBody, notification,
     } = this.props;
 
     const {
-      animatedValue, title, message, onPress, isOpen, icon, vibrate, additionalProps,
+      animatedValue, title, message, isOpen, icon, vibrate, additionalProps,
     } = this.state;
 
     const height = baseHeight + this.heightOffset;
+
+    const onPress = notification && notification.onPress ? notification.onPress : null;
 
     return (
       <Animated.View
@@ -166,6 +161,9 @@ Notification.propTypes = {
   notificationBodyComponent: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   iconApp: Image.propTypes.source,
   isVisiable: PropTypes.bool,
+  notification: PropTypes.shape({
+    onPress: PropTypes.func,
+  }),
 };
 
 Notification.defaultProps = {
@@ -177,6 +175,7 @@ Notification.defaultProps = {
   notificationBodyComponent: DefaultNotificationBody,
   iconApp: null,
   isVisiable: false,
+  notification: undefined,
 };
 
 export default Notification;

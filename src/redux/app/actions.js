@@ -114,8 +114,9 @@ const actions = {
     type: actions.SET_PASSCODE,
     passcode,
   }),
-  showInAppNotification: () => ({
+  showInAppNotification: (inAppNotification) => ({
     type: actions.SHOW_INAPP_NOTIFICATON,
+    inAppNotification,
   }),
 };
 
