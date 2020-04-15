@@ -33,6 +33,7 @@ const initState = new Map({
   confirmationCallback: null,
   appLock: true,
   passcode: undefined,
+  isInAppNotification: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -115,6 +116,8 @@ export default function appReducer(state = initState, action) {
       return state.set('appLock', action.lock);
     case actions.UPDATE_PASSCODE:
       return state.set('passcode', action.passcode);
+    case actions.SHOW_INAPP_NOTIFICATON:
+      return state.set('isInAppNotification', true);
     default:
       return state;
   }

@@ -10,6 +10,7 @@ import RSKad from '../../../components/common/rsk.ad';
 import common from '../../../common/common';
 import BasePageSimple from '../../base/base.page.simple';
 import ListPageHeader from '../../../components/headers/header.listpage';
+import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
 import WalletPlaceholder from './wallet.carousel.page.wallet.placeholder';
@@ -78,12 +79,17 @@ class WalletList extends Component {
     this.onSwapPressed = this.onSwapPressed.bind(this);
   }
 
-  componentDidMount(): void {
-    const { currency, walletManager, navigation } = this.props;
+  componentDidMount() {
+    const {
+      currency, walletManager, navigation, showInAppNotification,
+    } = this.props;
     const { wallets } = walletManager;
     const currencySymbol = getCurrencySymbol(currency);
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
     this.state = { currencySymbol, listData };
+    setTimeout(() => {
+      showInAppNotification();
+    }, 3);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -175,6 +181,7 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
+  showInAppNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -189,6 +196,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
+  showInAppNotification: () => dispatch(appActions.showInAppNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

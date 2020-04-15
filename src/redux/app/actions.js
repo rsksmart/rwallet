@@ -38,6 +38,8 @@ const actions = {
   SET_PASSCODE: 'SET_PASSWORD',
   UPDATE_PASSCODE: 'UPDATE_PASSCODE',
 
+  SHOW_INAPP_NOTIFICATON: 'SHOW_INAPP_NOTIFICATON',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -111,6 +113,9 @@ const actions = {
   setPasscode: (passcode) => ({
     type: actions.SET_PASSCODE,
     passcode,
+  }),
+  showInAppNotification: () => ({
+    type: actions.SHOW_INAPP_NOTIFICATON,
   }),
 };
 

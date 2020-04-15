@@ -14,6 +14,7 @@ import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
+import InAppNotification from '../components/common/inapp.notification/notification';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -123,6 +124,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
+      isInAppNotification,
     } = this.props;
 
     return (
@@ -134,6 +136,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
+          <InAppNotification isVisiable={isInAppNotification} />
         </Root>
       </View>
     );
@@ -173,6 +176,7 @@ RootComponent.propTypes = {
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
+  isInAppNotification: PropTypes.bool.isRequired,
 };
 
 RootComponent.defaultProps = {
