@@ -120,15 +120,14 @@
       "swap": {
         "title": "交换",
         "wallet": "钱包",
-        "want": "我想要",
+        "want": "我想要%{symbol}在%{wallet}",
         "errorAmountInRange": {
           "tooBig": "该金额大于最大交易额 %{max} %{symbol}",
           "tooSmall": "该金额低于的最低交易金额 %{min} %{symbol}"
         },
         "errorBalanceEnough": "抱歉，您的余额不足",
         "errorAmountInvalid": "%{symbol}的余额无效。",
-        "have": "我有 ",
-        "in": "在"
+        "have": "我有%{balance}在%{wallet}"
       },
       "swapSelection": {
         "title": "选择货币",

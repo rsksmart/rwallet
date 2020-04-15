@@ -120,15 +120,14 @@
       "swap": {
         "title": "Troca",
         "wallet": "carteira",
-        "want": "eu quero",
+        "want": "Quero %{symbol} no %{wallet}",
         "errorAmountInRange": {
           "tooBig": "O valor é superior ao máximo de troca de %{max} %{symbol}",
           "tooSmall": "O valor é menor que o mínimo de troca de %{min} %{symbol}"
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
-        "have": "eu tenho ",
-        "in": "dentro"
+        "have": "Eu tenho %{balance} no %{wallet}"
       },
       "swapSelection": {
         "title": "Escolha a moeda",

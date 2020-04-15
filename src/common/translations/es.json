@@ -120,15 +120,14 @@
       "swap": {
         "title": "Intercambiar",
         "wallet": "billetera",
-        "want": "quiero",
+        "want": "Quiero %{symbol} en %{wallet}",
         "errorAmountInRange": {
           "tooBig": "El monto es mayor que el intercambio máximo de %{max} %{symbol}",
           "tooSmall": "El monto es inferior al mínimo de intercambio de %{min} %{symbol}"
         },
         "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
         "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
-        "have": "yo tengo ",
-        "in": "en"
+        "have": "Tengo %{balance} en %{wallet}"
       },
       "swapSelection": {
         "title": "Seleccione el tipo de moneda",

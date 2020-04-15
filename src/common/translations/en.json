@@ -121,15 +121,14 @@
       "swap": {
         "title": "Swap",
         "wallet": "wallet",
-        "want": "I want",
+        "want": "I want %{symbol} in %{wallet}",
         "errorAmountInRange": {
           "tooBig": "The amount is higher than the exchange maximum of %{max} %{symbol}",
           "tooSmall": "The amount is lower than the exchange minimum of %{min} %{symbol}"
         },
         "errorBalanceEnough": "Sorry, but you dont have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
-        "have": "I have ",
-        "in": "in"
+        "have": "I have %{balance} in %{wallet}"
       },
       "swapSelection": {
         "title": "Select Currency",

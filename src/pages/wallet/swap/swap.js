@@ -828,8 +828,7 @@ class Swap extends Component {
         <View style={styles.body}>
           <View style={[presetStyles.board, styles.board]}>
             <Text style={styles.boardText}>
-              <Loc text="page.wallet.swap.have" suffix={swapSource ? `${balanceText} ${swapSource.coin.symbol} ` : ''} />
-              {swapSource && <Loc text="page.wallet.swap.in" suffix={` ${swapSource.walletName}`} />}
+              <Loc text="page.wallet.swap.have" interpolates={{ balance: swapSource ? `${balanceText} ${swapSource.coin.symbol}` : '-', wallet: swapSource ? swapSource.walletName : '-' }} />
             </Text>
             <View style={styles.boardTokenView}>
               <TouchableOpacity onPress={this.onSelectSourcePress} style={styles.boardTokenViewLeft}>
@@ -875,9 +874,7 @@ class Swap extends Component {
           <View style={[presetStyles.board, styles.board]}>
             { swapDest && (
               <Text style={styles.boardText}>
-                <Loc text="page.wallet.swap.want" />
-                {` ${swapDest.coin.symbol} `}
-                <Loc text="page.wallet.swap.in" suffix={` ${swapDest.walletName}`} />
+                <Loc text="page.wallet.swap.want" interpolates={{ symbol: swapDest ? swapDest.coin.symbol : '-', wallet: swapDest ? swapDest.walletName : '-' }} />
               </Text>
             )}
             <View style={styles.boardTokenView}>
