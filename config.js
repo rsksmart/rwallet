@@ -1,19 +1,14 @@
-import { PARSE_SERVER_URL, PARSE_MASTER_KEY } from 'react-native-dotenv';
+import { PARSE_SERVER_URL } from 'react-native-dotenv';
 import { isEmpty } from 'lodash';
 
 if (isEmpty(PARSE_SERVER_URL)) {
   throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
 }
 
-if (isEmpty(PARSE_MASTER_KEY)) {
-  throw new Error('PARSE_MASTER_KEY needs to be defined in .env under the root.');
-}
-
 const config = {
   parse: {
     appId: 'rwallet',
     javascriptKey: '',
-    masterKey: PARSE_MASTER_KEY,
     serverURL: PARSE_SERVER_URL,
   },
   defaultSettings: {
