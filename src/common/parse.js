@@ -68,9 +68,7 @@ class ParseHelper {
       parseUser.set('settings', settings);
     }
 
-    if (fcmToken) {
-      parseUser.set('fcmToken', fcmToken);
-    }
+    parseUser.set('fcmToken', fcmToken);
 
     // Only set wallets when it's defined.
     if (_.isArray(wallets)) {
