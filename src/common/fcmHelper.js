@@ -4,22 +4,26 @@ import firebase from 'react-native-firebase';
  * Firebase Cloud Messaging Helper
  */
 class FcmHelper {
+  /**
+   * initFirebaseMessaging
+   * @returns {String} fcmToken. If something goes wrong, return null.
+   */
   initFirebaseMessaging = async () => {
-    await this.requestPermission();
-    const enabled = await firebase.messaging().hasPermission();
-    if (enabled) {
-      await this.getFcmToken();
+    try {
+      await this.requestPermission();
+      const fcmToken = await this.getFcmToken();
+      this.setMessagingListener();
+      return fcmToken;
+    } catch (error) {
+      console.log('initFirebaseMessaging, error: ', error);
+      return null;
     }
-    this.setMessagingListener();
   }
 
   getFcmToken = async () => {
     const fcmToken = await firebase.messaging().getToken();
-    if (fcmToken) {
-      console.log('FirebaseMessaging, Your Firebase Token is: ', fcmToken);
-    } else {
-      console.log('FirebaseMessaging, getFcmToken failed');
-    }
+    console.log('FirebaseMessaging, Your Firebase Token is: ', fcmToken);
+    return fcmToken;
   }
 
   requestPermission = async () => {

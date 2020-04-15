@@ -21,10 +21,10 @@ import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
-function* updateUserRequest() {
+function* updateUserRequest(action) {
   // Upload wallets or settings to server
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings });
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken: action.fcmToken });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -95,10 +95,6 @@ function* initFromStorageRequest() {
   }
 }
 
-function* initFirebaseMessagingRequest() {
-  yield call(fcmHelper.initFirebaseMessaging);
-}
-
 function* initWithParseRequest() {
   const appId = application.get('id');
 
@@ -124,10 +120,12 @@ function* initWithParseRequest() {
     yield call(ParseHelper.handleError, { err, appId });
   }
 
+  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
+
   // 3. Upload wallets and settings to server
   yield put({
     type: actions.UPDATE_USER,
-    payload: { walletManager, settings },
+    fcmToken,
   });
 
   // If we don't encounter error here, mark initialization finished
@@ -233,7 +231,6 @@ export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
-    takeEvery(actions.INIT_FIREBASE_MESSAGING, initFirebaseMessagingRequest),
     takeEvery(actions.INIT_WITH_PARSE, initWithParseRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),

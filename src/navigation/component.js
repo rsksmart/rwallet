@@ -51,11 +51,10 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage, initializeFirebaseMessaging } = this.props;
+    const { initializeFromStorage } = this.props;
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
-    initializeFirebaseMessaging();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -174,7 +173,6 @@ RootComponent.propTypes = {
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
-  initializeFirebaseMessaging: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
