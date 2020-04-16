@@ -1,7 +1,8 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  call, all, takeEvery, put,
+  call, all, takeEvery, put, take,
 } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
 
 /* Actions */
@@ -14,7 +15,7 @@ import walletManager from '../../common/wallet/walletManager';
 import common from '../../common/common';
 import definitions from '../../common/definitions';
 import storage from '../../common/storage';
-import fcmHelper from '../../common/fcmHelper';
+import fcmHelper, { FcmType } from '../../common/fcmHelper';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -93,6 +94,53 @@ function* initFromStorageRequest() {
     const { message } = err; // TODO: handle app error in a class
     console.error(message);
   }
+}
+
+function createFcmChannel() {
+  return eventChannel((emitter) => {
+    // the subscriber must return an unsubscribe function
+    // this will be invoked when the saga calls `channel.close` method
+    const unsubscribeHandler = () => {};
+
+    fcmHelper.startListen((notification, fcmType) => {
+      const { title, body, data } = notification;
+      console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+      const { event, eventParams } = data;
+      const params = JSON.parse(eventParams);
+      switch (event) {
+        case 'receivedTransction': {
+          const { symbol, type, address } = params;
+          const coin = walletManager.findToken(symbol, type, address);
+          switch (fcmType) {
+            case FcmType.LAUNCH: {
+              const action = actions.setFcmNavParams({
+                routeName: 'WalletHistory',
+                routeParams: { coin },
+              });
+              emitter(action);
+              break;
+            }
+            case FcmType.INAPP: {
+              const inAppNotification = {
+                onPress: () => {
+                  common.currentNavigation.navigate('WalletHistory', { coin });
+                },
+              };
+              const action = actions.showInAppNotification(inAppNotification);
+              emitter(action);
+              break;
+            }
+            default:
+          }
+          break;
+        }
+        default:
+      }
+    });
+
+    // unsubscribe function, this gets called when we close the channel
+    return unsubscribeHandler;
+  });
 }
 
 function* initWithParseRequest() {
@@ -227,6 +275,14 @@ function* setPasscodeRequest(action) {
   }
 }
 
+function* initFcmChannelRequest() {
+  const fcmChannel = yield call(createFcmChannel);
+  while (true) {
+    const payload = yield take(fcmChannel);
+    yield put(payload);
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -238,5 +294,7 @@ export default function* () {
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
     takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
+
+    takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
   ]);
 }

@@ -62,7 +62,7 @@ class RootComponent extends Component {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initFcmChannel,
     } = nextProps;
 
     const {
@@ -111,6 +111,7 @@ class RootComponent extends Component {
         initLiveQueryPrice();
         initLiveQueryBalances(tokens);
         initLiveQueryTransactions(tokens);
+        initFcmChannel();
 
         newState.isParseWritten = true;
       }
@@ -124,7 +125,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
-      isShowInAppNotification, inAppNotification,
+      isShowInAppNotification, inAppNotification, resetInAppNotification,
     } = this.props;
 
     return (
@@ -136,7 +137,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
-          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} />
+          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} />
         </Root>
       </View>
     );
@@ -178,6 +179,8 @@ RootComponent.propTypes = {
   initLiveQueryTransactions: PropTypes.func.isRequired,
   isShowInAppNotification: PropTypes.bool.isRequired,
   inAppNotification: PropTypes.shape({}),
+  initFcmChannel: PropTypes.func.isRequired,
+  resetInAppNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

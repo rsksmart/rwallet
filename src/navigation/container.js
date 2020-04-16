@@ -42,6 +42,8 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
+  initFcmChannel: () => dispatch(appActions.initFcmChannel()),
+  resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

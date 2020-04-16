@@ -99,11 +99,12 @@ class Notification extends Component {
 
   closeNotification(done) {
     const { animatedValue } = this.state;
-    const { openCloseDuration } = this.props;
+    const { openCloseDuration, resetInAppNotification } = this.props;
     Animated.timing(animatedValue, {
       toValue: 0,
       duration: openCloseDuration,
     }).start(done);
+    resetInAppNotification();
   }
 
   render() {
@@ -164,6 +165,7 @@ Notification.propTypes = {
   notification: PropTypes.shape({
     onPress: PropTypes.func,
   }),
+  resetInAppNotification: PropTypes.func.isRequired,
 };
 
 Notification.defaultProps = {

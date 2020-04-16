@@ -35,6 +35,7 @@ const initState = new Map({
   passcode: undefined,
   isShowInAppNotification: false,
   inAppNotification: undefined,
+  fcmNavParams: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -117,9 +118,14 @@ export default function appReducer(state = initState, action) {
       return state.set('appLock', action.lock);
     case actions.UPDATE_PASSCODE:
       return state.set('passcode', action.passcode);
-    case actions.SHOW_INAPP_NOTIFICATON:
+    case actions.SHOW_INAPP_NOTIFICATION:
       return state.set('isShowInAppNotification', true)
         .set('inAppNotification', action.inAppNotification);
+    case actions.RESET_INAPP_NOTIFICATION:
+      return state.set('isShowInAppNotification', false)
+        .set('inAppNotification', null);
+    case actions.SET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', action.fcmNavParams);
     default:
       return state;
   }

@@ -82,27 +82,25 @@ class WalletList extends Component {
 
   componentDidMount() {
     const {
-      currency, walletManager, navigation, showInAppNotification,
+      currency, walletManager, navigation, fcmNavParams,
     } = this.props;
     const { wallets } = walletManager;
     const currencySymbol = getCurrencySymbol(currency);
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
     this.state = { currencySymbol, listData };
-    setTimeout(() => {
-      showInAppNotification({
-        onPress: () => {
-          const coin = wallets[0].coins[0];
-          navigation.navigate('WalletHistory', { coin });
-        },
-      });
-    }, 3);
+    // setTimeout(() => {
+    //   showInAppNotification({
+    //     onPress: () => {
+    //       const coin = wallets[0].coins[0];
+    //       navigation.navigate('WalletHistory', { coin });
+    //     },
+    //   });
+    // }, 3);
     // If fcmNavParams is not null, navigate to proper page.
-    // const fcmNavParams = fcmHelper.getNavigateParams();
-    // if (fcmNavParams) {
-    //   const { routeName, routeParams } = fcmHelper.getNavigateParams();
-    //   navigation.navigate(routeName, routeParams);
-    //   fcmHelper.resetOpenUrl();
-    // }
+    if (fcmNavParams) {
+      const { routeName, routeParams } = fcmNavParams;
+      navigation.navigate(routeName, routeParams);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -194,15 +192,20 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
-  showInAppNotification: PropTypes.func.isRequired,
+  fcmNavParams: PropTypes.shape({
+    routeName: PropTypes.string.isRequired,
+    routeParams: PropTypes.object,
+  }),
 };
 
 WalletList.defaultProps = {
   walletManager: undefined,
+  fcmNavParams: undefined,
 };
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
+  fcmNavParams: state.App.get('fcmNavParams'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
@@ -210,6 +213,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
   showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
+  resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

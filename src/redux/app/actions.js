@@ -38,7 +38,11 @@ const actions = {
   SET_PASSCODE: 'SET_PASSWORD',
   UPDATE_PASSCODE: 'UPDATE_PASSCODE',
 
-  SHOW_INAPP_NOTIFICATON: 'SHOW_INAPP_NOTIFICATON',
+  INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
+  SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
+  RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
+  SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
+  RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -115,8 +119,21 @@ const actions = {
     passcode,
   }),
   showInAppNotification: (inAppNotification) => ({
-    type: actions.SHOW_INAPP_NOTIFICATON,
+    type: actions.SHOW_INAPP_NOTIFICATION,
     inAppNotification,
+  }),
+  resetInAppNotification: () => ({
+    type: actions.RESET_INAPP_NOTIFICATION,
+  }),
+  initFcmChannel: () => ({
+    type: actions.INIT_FCM_CHANNEL,
+  }),
+  setFcmNavParams: (fcmNavParams) => ({
+    type: actions.SET_FCM_NAV_PARAMS,
+    fcmNavParams,
+  }),
+  resetFcmNavParams: () => ({
+    type: actions.RESET_FCM_NAV_PARAMS,
   }),
 };
 
