@@ -7,6 +7,7 @@ const { defaultSettings } = config;
 const initState = new Map({
   isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
   isInitWithParseDone: false, // Mark whether the second step, initalization with Parse done
+  isInitAppDone: false, // Mark whether the all steps done
 
   application: undefined,
   settings: undefined, // Settings instance
@@ -51,6 +52,10 @@ export default function appReducer(state = initState, action) {
     case actions.INIT_WITH_PARSE_DONE:
     {
       return state.set('isInitWithParseDone', true);
+    }
+    case actions.SET_INIT_APP_DONE:
+    {
+      return state.set('isInitAppDone', true);
     }
     case actions.GET_SERVER_INFO_RESULT:
     {

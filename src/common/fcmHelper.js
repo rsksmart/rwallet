@@ -76,6 +76,14 @@ class FcmHelper {
     this.onNotification = listener;
     await this.setMessagingListener();
   }
+
+  async onAppResume() {
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    console.log('notificationOpen: ', notificationOpen);
+    if (notificationOpen) {
+      this.onFireMessagingNotification(notificationOpen.notification, FcmType.LAUNCH);
+    }
+  }
 }
 
 export default new FcmHelper();

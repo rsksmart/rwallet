@@ -15,6 +15,7 @@ import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import InAppNotification from '../components/common/inapp.notification/notification';
+import fcmHelper from '../common/fcmHelper';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -40,10 +41,13 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-
+    const { isInitAppDone } = props;
+    // When the application resumes due to the background notification,
+    // isInitAppDone is true, set isStorageRead, isParseWritten to true
+    // otherwise execute the initialization process
     this.state = {
-      isStorageRead: false,
-      isParseWritten: false,
+      isStorageRead: isInitAppDone,
+      isParseWritten: isInitAppDone,
     };
   }
 
@@ -52,17 +56,23 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage } = this.props;
-
-    // Load Settings and Wallets from permenate storage
-    initializeFromStorage();
+    const { initializeFromStorage, isInitAppDone } = this.props;
+    // When the application resumes due to background notification,
+    // isInitAppDone is true, read notification from fcm,
+    // otherwise initialize From Storage
+    if (isInitAppDone) {
+      fcmHelper.onAppResume();
+    } else {
+      // Load Settings and Wallets from permenate storage
+      initializeFromStorage();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initFcmChannel,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initFcmChannel, setInitAppDone,
     } = nextProps;
 
     const {
@@ -114,6 +124,8 @@ class RootComponent extends Component {
         initFcmChannel();
 
         newState.isParseWritten = true;
+
+        setInitAppDone();
       }
     }
 
@@ -181,6 +193,8 @@ RootComponent.propTypes = {
   inAppNotification: PropTypes.shape({}),
   initFcmChannel: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
+  isInitAppDone: PropTypes.bool.isRequired,
+  setInitAppDone: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

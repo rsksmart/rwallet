@@ -43,6 +43,7 @@ const actions = {
   RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
   SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
   RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
+  SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -134,6 +135,9 @@ const actions = {
   }),
   resetFcmNavParams: () => ({
     type: actions.RESET_FCM_NAV_PARAMS,
+  }),
+  setInitAppDone: () => ({
+    type: actions.SET_INIT_APP_DONE,
   }),
 };
 

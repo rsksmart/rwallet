@@ -82,24 +82,17 @@ class WalletList extends Component {
 
   componentDidMount() {
     const {
-      currency, walletManager, navigation, fcmNavParams,
+      currency, walletManager, navigation, fcmNavParams, resetFcmNavParams,
     } = this.props;
     const { wallets } = walletManager;
     const currencySymbol = getCurrencySymbol(currency);
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
     this.state = { currencySymbol, listData };
-    // setTimeout(() => {
-    //   showInAppNotification({
-    //     onPress: () => {
-    //       const coin = wallets[0].coins[0];
-    //       navigation.navigate('WalletHistory', { coin });
-    //     },
-    //   });
-    // }, 3);
     // If fcmNavParams is not null, navigate to proper page.
     if (fcmNavParams) {
       const { routeName, routeParams } = fcmNavParams;
       navigation.navigate(routeName, routeParams);
+      resetFcmNavParams();
     }
   }
 
@@ -196,6 +189,7 @@ WalletList.propTypes = {
     routeName: PropTypes.string.isRequired,
     routeParams: PropTypes.object,
   }),
+  resetFcmNavParams: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
