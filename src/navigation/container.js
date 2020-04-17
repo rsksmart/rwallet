@@ -14,6 +14,7 @@ const mapStateToProps = (state) => ({
   passcodeFallback: state.App.get('passcodeFallback'),
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isInitWithParseDone: state.App.get('isInitWithParseDone'),
+  isInitAppDone: state.App.get('isInitAppDone'),
   walletManager: state.Wallet.get('walletManager'),
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
   initFcmChannel: () => dispatch(appActions.initFcmChannel()),
   resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
+  setInitAppDone: () => dispatch(appActions.setInitAppDone()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

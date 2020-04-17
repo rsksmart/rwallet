@@ -259,12 +259,14 @@ class WalletManager {
   }
 
   findToken = (symbol, type, address) => {
-    let coin = null;
     for (let i = 0; i < this.wallets.length; i += 1) {
       const wallet = this.wallets[i];
-      coin = _.find(wallet.coins, { address, symbol });
+      const coin = _.find(wallet.coins, { address, symbol, type });
+      if (coin) {
+        return coin;
+      }
     }
-    return coin;
+    return null;
   }
 }
 

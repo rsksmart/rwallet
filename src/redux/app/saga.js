@@ -111,6 +111,9 @@ function createFcmChannel() {
         case 'receivedTransction': {
           const { symbol, type, address } = params;
           const coin = walletManager.findToken(symbol, type, address);
+          if (!coin) {
+            return;
+          }
           switch (fcmType) {
             case FcmType.LAUNCH: {
               const action = actions.setFcmNavParams({
@@ -125,6 +128,8 @@ function createFcmChannel() {
                 onPress: () => {
                   common.currentNavigation.navigate('WalletHistory', { coin });
                 },
+                title,
+                body,
               };
               const action = actions.showInAppNotification(inAppNotification);
               emitter(action);

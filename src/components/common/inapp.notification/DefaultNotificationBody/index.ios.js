@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   TouchableOpacity, StatusBar, View, Text, Image, Vibration,
 } from 'react-native';
-import { getStatusBarHeight, isIphoneX } from 'react-native-iphone-x-helper';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+
+import screenHelper from '../../../../common/screenHelper';
 
 const styles = {
   root: {
@@ -13,7 +14,7 @@ const styles = {
   },
   container: {
     position: 'absolute',
-    top: isIphoneX() && getStatusBarHeight(),
+    top: screenHelper.topHeight,
     bottom: 0,
     left: 0,
     right: 0,
@@ -59,14 +60,7 @@ const styles = {
   },
 };
 
-class DefaultNotificationBody extends React.Component {
-  constructor() {
-    super();
-
-    this.onNotificationPress = this.onNotificationPress.bind(this);
-    this.onSwipe = this.onSwipe.bind(this);
-  }
-
+class DefaultNotificationBody extends Component {
   componentDidUpdate(prevProps) {
     const { vibrate, isOpen } = this.props;
     if (isOpen !== prevProps.isOpen) {
@@ -78,14 +72,14 @@ class DefaultNotificationBody extends React.Component {
     }
   }
 
-  onNotificationPress() {
+  onNotificationPress = () => {
     const { onPress, onClose } = this.props;
 
     onClose();
     onPress();
   }
 
-  onSwipe(direction) {
+  onSwipe = (direction) => {
     const { SWIPE_UP } = swipeDirections;
     const { onClose } = this.props;
 
@@ -95,10 +89,7 @@ class DefaultNotificationBody extends React.Component {
   }
 
   renderIcon() {
-    const {
-      iconApp,
-      icon,
-    } = this.props;
+    const { iconApp, icon } = this.props;
 
     if (icon) {
       return <Image source={icon} style={styles.icon} />;
@@ -110,10 +101,7 @@ class DefaultNotificationBody extends React.Component {
   }
 
   render() {
-    const {
-      title,
-      message,
-    } = this.props;
+    const { title, message } = this.props;
 
     return (
       <View style={styles.root}>

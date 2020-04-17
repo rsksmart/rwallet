@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Animated, StyleSheet, Image } from 'react-native';
-import { getStatusBarHeight, isIphoneX } from 'react-native-iphone-x-helper';
 
 // eslint-disable-next-line import/no-unresolved
 import DefaultNotificationBody from './DefaultNotificationBody';
+import screenHelper from '../../../common/screenHelper';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   notification: {
@@ -16,13 +17,7 @@ const styles = StyleSheet.create({
 class Notification extends Component {
   constructor() {
     super();
-
-    this.heightOffset = isIphoneX() ? getStatusBarHeight() : 0;
-
-    this.show = this.show.bind(this);
-    this.showNotification = this.showNotification.bind(this);
-    this.closeNotification = this.closeNotification.bind(this);
-
+    this.heightOffset = screenHelper.topHeight;
     this.state = {
       animatedValue: new Animated.Value(0),
       isOpen: false,
@@ -30,14 +25,18 @@ class Notification extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { isVisiable } = nextProps;
+    const { isVisiable, notification, resetInAppNotification } = nextProps;
     const { isVisiable: lastIsVisiable } = this.props;
     if (isVisiable !== lastIsVisiable && isVisiable) {
-      this.showNotification();
+      // Received a new notification
+      this.notification = notification;
+      const { title, body: message } = notification;
+      this.show({ title, message });
+      resetInAppNotification();
     }
   }
 
-  show(
+  show = (
     {
       title, message, icon, vibrate, additionalProps,
     } = {
@@ -47,13 +46,16 @@ class Notification extends Component {
       vibrate: true,
       additionalProps: {},
     },
-  ) {
+  ) => {
     const { closeInterval } = this.props;
     const { isOpen } = this.state;
 
     // Clear any currently showing notification timeouts so the new one doesn't get prematurely
     // closed
     clearTimeout(this.currentNotificationInterval);
+
+    // If notification bar is opened,
+    // close old notification bar, show new notification bar
 
     const showNotificationWithStateChanges = () => {
       this.setState({
@@ -88,7 +90,7 @@ class Notification extends Component {
     }
   }
 
-  showNotification(done) {
+  showNotification = (done) => {
     const { animatedValue } = this.state;
     const { openCloseDuration } = this.props;
     Animated.timing(animatedValue, {
@@ -97,27 +99,26 @@ class Notification extends Component {
     }).start(done);
   }
 
-  closeNotification(done) {
+  closeNotification = (done) => {
     const { animatedValue } = this.state;
-    const { openCloseDuration, resetInAppNotification } = this.props;
+    const { openCloseDuration } = this.props;
     Animated.timing(animatedValue, {
       toValue: 0,
       duration: openCloseDuration,
     }).start(done);
-    resetInAppNotification();
   }
 
   render() {
     const {
-      height: baseHeight, topOffset, backgroundColour, iconApp, notificationBodyComponent: NotificationBody, notification,
+      height: baseHeight, topOffset, backgroundColour, iconApp, notificationBodyComponent: NotificationBody,
     } = this.props;
+    const { notification } = this;
 
     const {
       animatedValue, title, message, isOpen, icon, vibrate, additionalProps,
     } = this.state;
 
     const height = baseHeight + this.heightOffset;
-
     const onPress = notification && notification.onPress ? notification.onPress : null;
 
     return (
@@ -164,6 +165,8 @@ Notification.propTypes = {
   isVisiable: PropTypes.bool,
   notification: PropTypes.shape({
     onPress: PropTypes.func,
+    title: PropTypes.string,
+    body: PropTypes.string,
   }),
   resetInAppNotification: PropTypes.func.isRequired,
 };
@@ -173,7 +176,7 @@ Notification.defaultProps = {
   openCloseDuration: 200,
   height: 80,
   topOffset: 0,
-  backgroundColour: 'white',
+  backgroundColour: color.white,
   notificationBodyComponent: DefaultNotificationBody,
   iconApp: null,
   isVisiable: false,
