@@ -96,6 +96,54 @@ function* initFromStorageRequest() {
   }
 }
 
+/**
+ * processNotificationRequest
+ * @param {*} notification
+ * @param {*} fcmType
+ */
+function* processNotificationRequest(action) {
+  const { notification, fcmType } = action.payload;
+  if (!notification) {
+    return null;
+  }
+  const { title, body, data } = notification;
+  console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+  const { event, eventParams } = data;
+  const params = JSON.parse(eventParams);
+  switch (event) {
+    case 'receivedTransction': {
+      const { symbol, type, address } = params;
+      const coin = walletManager.findToken(symbol, type, address);
+      if (!coin) {
+        return null;
+      }
+      switch (fcmType) {
+        case FcmType.INAPP: {
+          const inAppNotification = {
+            onPress: () => {
+              common.currentNavigation.navigate('WalletHistory', { coin });
+            },
+            title,
+            body,
+          };
+          const newAction = actions.showInAppNotification(inAppNotification);
+          yield put(newAction);
+          break;
+        }
+        case FcmType.LAUNCH:
+        case FcmType.BACKGROUND: {
+          common.currentNavigation.navigate('WalletHistory', { coin });
+          break;
+        }
+        default:
+      }
+      break;
+    }
+    default:
+  }
+  return null;
+}
+
 function createFcmChannel() {
   return eventChannel((emitter) => {
     // the subscriber must return an unsubscribe function
@@ -103,44 +151,8 @@ function createFcmChannel() {
     const unsubscribeHandler = () => {};
 
     fcmHelper.startListen((notification, fcmType) => {
-      const { title, body, data } = notification;
-      console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
-      const { event, eventParams } = data;
-      const params = JSON.parse(eventParams);
-      switch (event) {
-        case 'receivedTransction': {
-          const { symbol, type, address } = params;
-          const coin = walletManager.findToken(symbol, type, address);
-          if (!coin) {
-            return;
-          }
-          switch (fcmType) {
-            case FcmType.LAUNCH: {
-              const action = actions.setFcmNavParams({
-                routeName: 'WalletHistory',
-                routeParams: { coin },
-              });
-              emitter(action);
-              break;
-            }
-            case FcmType.INAPP: {
-              const inAppNotification = {
-                onPress: () => {
-                  common.currentNavigation.navigate('WalletHistory', { coin });
-                },
-                title,
-                body,
-              };
-              const action = actions.showInAppNotification(inAppNotification);
-              emitter(action);
-              break;
-            }
-            default:
-          }
-          break;
-        }
-        default:
-      }
+      const action = actions.processNotification(notification, fcmType);
+      emitter(action);
     });
 
     // unsubscribe function, this gets called when we close the channel
@@ -288,6 +300,7 @@ function* initFcmChannelRequest() {
   }
 }
 
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -301,5 +314,6 @@ export default function* () {
     takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
 
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
+    takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
   ]);
 }

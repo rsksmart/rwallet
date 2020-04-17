@@ -41,9 +41,8 @@ const actions = {
   INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
   SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
   RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
-  SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
-  RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
   SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
+  PROCESS_NOTIFICATON: 'PROCESS_NOTIFICATON',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -129,15 +128,12 @@ const actions = {
   initFcmChannel: () => ({
     type: actions.INIT_FCM_CHANNEL,
   }),
-  setFcmNavParams: (fcmNavParams) => ({
-    type: actions.SET_FCM_NAV_PARAMS,
-    fcmNavParams,
-  }),
-  resetFcmNavParams: () => ({
-    type: actions.RESET_FCM_NAV_PARAMS,
-  }),
   setInitAppDone: () => ({
     type: actions.SET_INIT_APP_DONE,
+  }),
+  processNotification: (notification, fcmType) => ({
+    type: actions.PROCESS_NOTIFICATON,
+    payload: { notification, fcmType },
   }),
 };
 

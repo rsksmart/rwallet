@@ -31,20 +31,16 @@ class FcmHelper {
     return fcmToken;
   }
 
-  /**
-   * getInitialNotification
-   * get initial notification and call onFireMessagingNotification with received notification
-   */
-  async getInitialNotification() {
-    // When a notification from FCM has triggered the application to open from a quit state,
-    // this method will return a RemoteMessage containing the notification data,
-    // or null if the app was opened via another method.
-    const notificationOpen = await firebase.notifications().getInitialNotification();
-    console.log('notificationOpen: ', notificationOpen);
-    if (notificationOpen) {
-      this.onFireMessagingNotification(notificationOpen.notification, FcmType.LAUNCH);
-    }
-  }
+   getInitialNotification = async () => {
+     // When a notification from FCM has triggered the application to open from a quit state,
+     // this method will return a RemoteMessage containing the notification data,
+     // or null if the app was opened via another method.
+     const notificationOpen = await firebase.notifications().getInitialNotification();
+     if (notificationOpen) {
+       return notificationOpen.notification;
+     }
+     return null;
+   }
 
   requestPermission = async () => {
     try {
@@ -62,13 +58,13 @@ class FcmHelper {
     }
   }
 
-  setMessagingListener = async () => {
+  setMessagingListener = () => {
     // App in foreground, onNotification triggered
     firebase.notifications().onNotification((notification) => {
       this.onFireMessagingNotification(notification, FcmType.INAPP);
     });
 
-    // App in background, onNotificationOpened Triggered if the notification is tapped
+    // App in background, onNotificationOpened Triggered if the notification is tapped (iOS)
     firebase.notifications().onNotificationOpened((notificationOpen) => {
       this.onFireMessagingNotification(notificationOpen.notification, FcmType.BACKGROUND);
     });
@@ -78,18 +74,9 @@ class FcmHelper {
     });
   }
 
-  async startListen(listener) {
+  startListen(listener) {
     this.onNotification = listener;
-    await this.setMessagingListener();
-    await this.getInitialNotification();
-  }
-
-  /**
-   * onAppResume
-   * When App resume from background, call this function
-   */
-  async onAppResume() {
-    await this.getInitialNotification();
+    this.setMessagingListener();
   }
 }
 

@@ -15,7 +15,6 @@ import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import InAppNotification from '../components/common/inapp.notification/notification';
-import fcmHelper from '../common/fcmHelper';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -58,11 +57,8 @@ class RootComponent extends Component {
   async componentWillMount() {
     const { initializeFromStorage, isInitAppDone } = this.props;
     // When the application resumes due to background notification,
-    // isInitAppDone is true, read notification from fcm,
-    // otherwise initialize From Storage
-    if (isInitAppDone) {
-      fcmHelper.onAppResume();
-    } else {
+    // isInitAppDone is true, otherwise initialize From Storage
+    if (!isInitAppDone) {
       // Load Settings and Wallets from permenate storage
       initializeFromStorage();
     }
