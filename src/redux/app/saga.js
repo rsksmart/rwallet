@@ -234,7 +234,7 @@ function* setPasscodeRequest(action) {
  * @param {*} fcmType
  */
 function* processNotificationRequest(action) {
-  const { notification } = action.payload;
+  const { notification } = action;
   if (!notification) {
     return null;
   }
@@ -273,7 +273,7 @@ function createFcmChannel() {
       if (fcmType === FcmType.INAPP) {
         action = actions.showInAppNotification(notification);
       } else {
-        action = actions.processNotification(notification, fcmType);
+        action = actions.processNotification(notification);
       }
       emitter(action);
     });

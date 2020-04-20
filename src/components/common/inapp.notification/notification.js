@@ -6,7 +6,6 @@ import { Animated, StyleSheet, Image } from 'react-native';
 import DefaultNotificationBody from './DefaultNotificationBody';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color.ts';
-import { FcmType } from '../../../common/fcmHelper';
 
 const styles = StyleSheet.create({
   notification: {
@@ -113,7 +112,7 @@ class Notification extends Component {
   onPressed = () => {
     const { processNotification } = this.props;
     const { notification } = this;
-    processNotification(notification, FcmType.INAPP);
+    processNotification(notification);
   }
 
   render() {

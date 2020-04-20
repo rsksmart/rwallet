@@ -8,7 +8,7 @@ import AddIndex from './add.index';
 import appActions from '../../../redux/app/actions';
 import timer from '../../../common/timer';
 import config from '../../../../config';
-import fcmHelper, { FcmType } from '../../../common/fcmHelper';
+import fcmHelper from '../../../common/fcmHelper';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -26,7 +26,7 @@ class Dashboard extends Component {
     async componentWillMount() {
       const { processNotification } = this.props;
       const notification = await fcmHelper.getInitialNotification();
-      processNotification(notification, FcmType.LAUNCH);
+      processNotification(notification);
     }
 
     componentDidMount() {
@@ -129,7 +129,7 @@ const mapDispatchToProps = (dispatch) => ({
   lockApp: (lock) => dispatch(
     appActions.lockApp(lock),
   ),
-  processNotification: (notification, fcmType) => dispatch(appActions.processNotification(notification, fcmType)),
+  processNotification: (notification) => dispatch(appActions.processNotification(notification)),
   resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
 });
 

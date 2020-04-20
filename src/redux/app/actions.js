@@ -130,9 +130,9 @@ const actions = {
   initFcmChannel: () => ({
     type: actions.INIT_FCM_CHANNEL,
   }),
-  processNotification: (notification, fcmType) => ({
+  processNotification: (notification) => ({
     type: actions.PROCESS_NOTIFICATON,
-    payload: { notification, fcmType },
+    notification,
   }),
   setFcmNavParams: (fcmNavParams) => ({
     type: actions.SET_FCM_NAV_PARAMS,
