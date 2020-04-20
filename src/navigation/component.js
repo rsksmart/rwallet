@@ -40,13 +40,9 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-    const { isInitAppDone } = props;
-    // When the application resumes due to the background notification,
-    // isInitAppDone is true, set isStorageRead, isParseWritten to true
-    // otherwise execute the initialization process
     this.state = {
-      isStorageRead: isInitAppDone,
-      isParseWritten: isInitAppDone,
+      isStorageRead: false,
+      isParseWritten: false,
     };
   }
 
@@ -55,20 +51,16 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage, isInitAppDone } = this.props;
-    // When the application resumes due to background notification,
-    // isInitAppDone is true, otherwise initialize From Storage
-    if (!isInitAppDone) {
-      // Load Settings and Wallets from permenate storage
-      initializeFromStorage();
-    }
+    const { initializeFromStorage } = this.props;
+    // Load Settings and Wallets from permenate storage
+    initializeFromStorage();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initFcmChannel, setInitAppDone,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initFcmChannel,
     } = nextProps;
 
     const {
@@ -120,8 +112,6 @@ class RootComponent extends Component {
         initFcmChannel();
 
         newState.isParseWritten = true;
-
-        setInitAppDone();
       }
     }
 
@@ -133,7 +123,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
-      isShowInAppNotification, inAppNotification, resetInAppNotification,
+      isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
     } = this.props;
 
     return (
@@ -145,7 +135,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
-          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} />
+          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} processNotification={processNotification} />
         </Root>
       </View>
     );
@@ -189,8 +179,7 @@ RootComponent.propTypes = {
   inAppNotification: PropTypes.shape({}),
   initFcmChannel: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
-  isInitAppDone: PropTypes.bool.isRequired,
-  setInitAppDone: PropTypes.func.isRequired,
+  processNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

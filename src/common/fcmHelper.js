@@ -64,7 +64,7 @@ class FcmHelper {
       this.onFireMessagingNotification(notification, FcmType.INAPP);
     });
 
-    // App in background, onNotificationOpened Triggered if the notification is tapped (iOS)
+    // App in background, onNotificationOpened Triggered if the notification is tapped
     firebase.notifications().onNotificationOpened((notificationOpen) => {
       this.onFireMessagingNotification(notificationOpen.notification, FcmType.BACKGROUND);
     });

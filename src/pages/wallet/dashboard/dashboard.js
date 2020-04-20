@@ -8,6 +8,7 @@ import AddIndex from './add.index';
 import appActions from '../../../redux/app/actions';
 import timer from '../../../common/timer';
 import config from '../../../../config';
+import fcmHelper, { FcmType } from '../../../common/fcmHelper';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -22,7 +23,13 @@ class Dashboard extends Component {
       this.lock = debounce(() => lockApp(true), config.appLock.timeout / 2);
     }
 
-    async componentDidMount() {
+    async componentWillMount() {
+      const { processNotification } = this.props;
+      const notification = await fcmHelper.getInitialNotification();
+      processNotification(notification, FcmType.LAUNCH);
+    }
+
+    componentDidMount() {
       const { navigation } = this.props;
       this.willFocusSubscription = navigation.addListener(
         'willFocus',
@@ -38,19 +45,41 @@ class Dashboard extends Component {
       );
     }
 
+    componentWillReceiveProps(nextProps) {
+      const { fcmNavParams, appLock } = nextProps;
+      if (!appLock) {
+        this.callFcmNavigate(fcmNavParams);
+      }
+    }
+
     componentWillUnmount() {
       this.willFocusSubscription.remove();
       this.didBlurSubscription.remove();
       timer.clearTimeout(this);
     }
 
-    callPasscodeInput() {
-      const {
-        wallets, showPasscode, appLock, lockApp,
-      } = this.props;
+    /**
+     * callFcmNavigate
+     * If fcmNavParams is exsisted, navigate to the proper page.
+     */
+    callFcmNavigate = (fcmNavParams) => {
+      const { resetFcmNavParams, navigation } = this.props;
+      if (fcmNavParams) {
+        const { routeName, routeParams } = fcmNavParams;
+        navigation.navigate(routeName, routeParams);
+        resetFcmNavParams();
+      }
+    }
 
+    callPasscodeInput = () => {
+      const {
+        wallets, showPasscode, appLock, lockApp, fcmNavParams,
+      } = this.props;
       if (!isEmpty(wallets) && appLock) {
-        showPasscode('verify', () => lockApp(false));
+        showPasscode('verify', () => {
+          lockApp(false);
+          this.callFcmNavigate(fcmNavParams);
+        });
       }
     }
 
@@ -73,16 +102,24 @@ Dashboard.propTypes = {
   showPasscode: PropTypes.func.isRequired,
   appLock: PropTypes.bool.isRequired,
   lockApp: PropTypes.func.isRequired,
+  processNotification: PropTypes.func.isRequired,
+  fcmNavParams: PropTypes.shape({
+    routeName: PropTypes.string.isRequired,
+    routeParams: PropTypes.object,
+  }),
+  resetFcmNavParams: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
   wallets: undefined,
+  fcmNavParams: undefined,
 };
 
 const mapStateToProps = (state) => ({
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   appLock: state.App.get('appLock'),
+  fcmNavParams: state.App.get('fcmNavParams'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -92,6 +129,8 @@ const mapDispatchToProps = (dispatch) => ({
   lockApp: (lock) => dispatch(
     appActions.lockApp(lock),
   ),
+  processNotification: (notification, fcmType) => dispatch(appActions.processNotification(notification, fcmType)),
+  resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

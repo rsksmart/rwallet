@@ -7,7 +7,6 @@ const { defaultSettings } = config;
 const initState = new Map({
   isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
   isInitWithParseDone: false, // Mark whether the second step, initalization with Parse done
-  isInitAppDone: false, // Mark whether the all steps done
 
   application: undefined,
   settings: undefined, // Settings instance
@@ -36,6 +35,7 @@ const initState = new Map({
   passcode: undefined,
   isShowInAppNotification: false,
   inAppNotification: undefined,
+  fcmNavParams: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -51,10 +51,6 @@ export default function appReducer(state = initState, action) {
     case actions.INIT_WITH_PARSE_DONE:
     {
       return state.set('isInitWithParseDone', true);
-    }
-    case actions.SET_INIT_APP_DONE:
-    {
-      return state.set('isInitAppDone', true);
     }
     case actions.GET_SERVER_INFO_RESULT:
     {
@@ -128,6 +124,10 @@ export default function appReducer(state = initState, action) {
     case actions.RESET_INAPP_NOTIFICATION:
       return state.set('isShowInAppNotification', false)
         .set('inAppNotification', null);
+    case actions.SET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', action.fcmNavParams);
+    case actions.RESET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', null);
     default:
       return state;
   }

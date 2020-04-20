@@ -6,6 +6,7 @@ import { Animated, StyleSheet, Image } from 'react-native';
 import DefaultNotificationBody from './DefaultNotificationBody';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color.ts';
+import { FcmType } from '../../../common/fcmHelper';
 
 const styles = StyleSheet.create({
   notification: {
@@ -108,18 +109,23 @@ class Notification extends Component {
     }).start(done);
   }
 
+
+  onPressed = () => {
+    const { processNotification } = this.props;
+    const { notification } = this;
+    processNotification(notification, FcmType.INAPP);
+  }
+
   render() {
     const {
       height: baseHeight, topOffset, backgroundColour, iconApp, notificationBodyComponent: NotificationBody,
     } = this.props;
-    const { notification } = this;
 
     const {
       animatedValue, title, message, isOpen, icon, vibrate, additionalProps,
     } = this.state;
 
     const height = baseHeight + this.heightOffset;
-    const onPress = notification && notification.onPress ? notification.onPress : null;
 
     return (
       <Animated.View
@@ -141,7 +147,7 @@ class Notification extends Component {
         <NotificationBody
           title={title}
           message={message}
-          onPress={onPress}
+          onPress={this.onPressed}
           isOpen={isOpen}
           iconApp={iconApp}
           icon={icon}
@@ -164,11 +170,11 @@ Notification.propTypes = {
   iconApp: Image.propTypes.source,
   isVisiable: PropTypes.bool,
   notification: PropTypes.shape({
-    onPress: PropTypes.func,
     title: PropTypes.string,
     body: PropTypes.string,
   }),
   resetInAppNotification: PropTypes.func.isRequired,
+  processNotification: PropTypes.func.isRequired,
 };
 
 Notification.defaultProps = {

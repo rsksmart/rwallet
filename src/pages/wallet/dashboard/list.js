@@ -17,8 +17,6 @@ import WalletPlaceholder from './wallet.carousel.page.wallet.placeholder';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
-import fcmHelper, { FcmType } from '../../../common/fcmHelper';
-// import fcmHelper from '../../../common/fcmHelper';
 
 const WALLET_PAGE_WIDTH = screen.width - 50;
 
@@ -79,12 +77,6 @@ class WalletList extends Component {
       listData: null,
     };
     this.onSwapPressed = this.onSwapPressed.bind(this);
-  }
-
-  async componentWillMount() {
-    const { processNotification } = this.props;
-    const notification = await fcmHelper.getInitialNotification();
-    processNotification(notification, FcmType.LAUNCH);
   }
 
   componentDidMount() {
@@ -186,7 +178,6 @@ WalletList.propTypes = {
   }),
   updateTimestamp: PropTypes.number.isRequired,
   resetSwap: PropTypes.func.isRequired,
-  processNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -202,7 +193,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
   showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
-  processNotification: (notification, fcmType) => dispatch(appActions.processNotification(notification, fcmType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
