@@ -171,7 +171,11 @@
         "createKey": "创建或导入一个密钥",
         "keys": "密钥",
         "anonymousUser": "匿名用户",
-        "wallets": "钱包"
+        "wallets": {
+          "zero": "0 钱包",
+          "one": "1 钱包",
+          "other": "{{count}} 钱包"
+        }
       },
       "language": {
         "title": "语言"

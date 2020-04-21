@@ -171,7 +171,11 @@
         "createKey": "Criar ou importar uma chave",
         "keys": "Chaves",
         "anonymousUser": "Usuário anônimo",
-        "wallets": "Carteiras"
+        "wallets": {
+          "zero": "0 carteira",
+          "one": "1 carteira",
+          "other": "{{count}} carteiras"
+        }
       },
       "language": {
         "title": "Língua"

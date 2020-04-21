@@ -172,7 +172,11 @@
         "createKey": "Create or Import a Key",
         "keys": "Keys",
         "anonymousUser": "Anonymous User",
-        "wallets": "Wallets"
+        "wallets": {
+          "zero": "0 Wallet",
+          "one": "1 Wallet",
+          "other": "{{count}} Wallets"
+        }
       },
       "language": {
         "title": "Language"
