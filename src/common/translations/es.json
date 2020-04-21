@@ -51,7 +51,7 @@
       "transfer": {
         "to": "Para",
         "memo": "Memo (opcional)",
-        "fee": "Tarifa del minero",
+        "fee": "Tarifa de transacción",
         "custom": "Personalizado",
         "feeQuestion": "¿Qué tan rápido quieres su transacción?",
         "slow": "Lento",
@@ -281,7 +281,7 @@
     },
     "unableRecover": {
       "title": "Incapaz de recuperarse",
-      "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."
+      "body": "No podemos importar una billetera con su frase de recuperación. Asegúrate de que la frase sea correcta."
     },
     "duplicatePhrase": {
       "title Phrase": "Frase duplicada",
@@ -345,7 +345,7 @@
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",
-      "incorrected": "El código de acceso está incorrecto"
+      "incorrect": "La contraseña es incorrecta"
     },
     "touchSensor": {
       "title": "Sensor tátil",
