@@ -56,6 +56,36 @@ const style = StyleSheet.create({
     height: 40,
     paddingHorizontal: 10,
   },
+  lastBlockMarginBottom: {
+    marginBottom: 15,
+  },
+  rskIcon: {
+    width: 75,
+    height: 47,
+    marginLeft: -5,
+    marginTop: -2,
+  },
+  listItemIndicator: {
+    color: color.component.listItemIndicator.color,
+  },
+  navBackIndicator: {
+    color: color.component.navBackIndicator.color,
+  },
+  board: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: '#FFF',
+  },
+  noBottomBorder: {
+    borderBottomColor: 'rgba(0,0,0,0)',
+  },
 });
 
 export default style;

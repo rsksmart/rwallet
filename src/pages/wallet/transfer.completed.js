@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity,
+  View, StyleSheet, Image, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions, NavigationActions } from 'react-navigation';
-import flex from '../../assets/styles/layout.flex';
-import Button from '../../components/common/button/button';
+import { StackActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
+import Header from '../../components/headers/header';
+import common from '../../common/common';
+import BasePageGereral from '../base/base.page.general';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -82,55 +83,49 @@ const styles = StyleSheet.create({
   },
 });
 
-const header = require('../../assets/images/misc/header.png');
-
 export default class TransferCompleted extends Component {
   static navigationOptions = () => ({
     header: null,
   });
 
-  render() {
-    const { navigation } = this.props;
-    return (
-      <View style={[flex.flex1]}>
+  constructor(props) {
+    super(props);
+    this.onBackPress = this.onBackPress.bind(this);
+    this.onExplorePress = this.onExplorePress.bind(this);
+  }
 
-        <View style={[{ height: 100 }]}>
-          <Image source={header} style={styles.headImage} />
+  onBackPress() {
+    const { navigation } = this.props;
+    const statckActions = StackActions.popToTop();
+    navigation.dispatch(statckActions);
+  }
+
+  onExplorePress() {
+    const { navigation } = this.props;
+    const { symbol, type, hash } = navigation.state.params;
+    const url = common.getTransactionUrl(symbol, type, hash);
+    Linking.openURL(url);
+  }
+
+  render() {
+    return (
+      <BasePageGereral
+        isSafeView
+        hasBottomBtn
+        bottomBtnText="button.goToWallet"
+        bottomBtnOnPress={this.onBackPress}
+        hasLoader={false}
+        headerComponent={<Header title="page.wallet.transferCompleted.title" onBackButtonPress={this.onBackPress} />}
+      >
+        <View style={styles.content}>
+          <Image style={styles.check} source={completed} />
+          <Loc style={[styles.title]} text="page.wallet.transferCompleted.body" />
+          <Loc style={[styles.text]} text="page.wallet.transferCompleted.note" />
+          <TouchableOpacity onPress={this.onExplorePress}>
+            <Loc style={[styles.text, styles.link]} text="page.wallet.transferCompleted.viewExplorer" />
+          </TouchableOpacity>
         </View>
-        <View style={styles.body}>
-          <View style={styles.content}>
-            <Image style={styles.check} source={completed} />
-            <Loc style={[styles.title]} text="Transfer Completed!" />
-            <Loc style={[styles.text]} text="TransferText" />
-            <TouchableOpacity onPress={() => {
-              const resetAction = StackActions.reset({
-                index: 0,
-                actions: [
-                  NavigationActions.navigate({ routeName: 'WalletList' }),
-                ],
-              });
-              navigation.dispatch(resetAction);
-            }}
-            >
-              <Text style={[styles.text, styles.link]}>Click to view in explorer</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="BACK TO WALLET"
-              onPress={() => {
-                const resetAction = StackActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'WalletList' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
-              }}
-            />
-          </View>
-        </View>
-      </View>
+      </BasePageGereral>
     );
   }
 }

@@ -4,16 +4,18 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ScrollView } from 'react-native-gesture-handler';
-import flex from '../../assets/styles/layout.flex';
+import _ from 'lodash';
 import SelectionList from '../../components/common/list/selectionList';
 import actions from '../../redux/app/actions';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import Header from '../../components/headers/header';
+import { strings } from '../../common/i18n';
+import BasePageGereral from '../base/base.page.general';
 
 import config from '../../../config';
 
-const { consts: { languages: locales } } = config;
+const { consts: { locales } } = config;
+
+const localeIds = _.map(locales, 'id');
 
 const styles = StyleSheet.create({
   listView: {
@@ -28,50 +30,55 @@ class Language extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        title: 'English',
-      },
-      {
-        title: 'French',
-      },
-      {
-        title: 'Hebrew',
-      },
-      {
-        title: 'Chinese',
-      },
-    ];
+    static createListData() {
+      const listData = _.map(locales, (row) => ({ title: strings(`language.${row.name}`) }));
+      return listData;
+    }
 
     constructor(props) {
       super(props);
       this.onChange = this.onChange.bind(this);
+      this.state = { listData: [] };
+    }
+
+    componentDidMount() {
+      const listData = Language.createListData();
+      this.setState({ listData });
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { currentLocale: nextLocale } = nextProps;
+      const { currentLocale } = this.props;
+      if (currentLocale !== nextLocale) {
+        const listData = Language.createListData();
+        this.setState({ listData });
+      }
     }
 
     onChange(index) {
       const { changeLanguage } = this.props;
-      changeLanguage(locales[index]);
+      changeLanguage(localeIds[index]);
     }
 
     render() {
-      const { navigation, language } = this.props;
-      const selected = {
-        en: 0, fr: 1, he: 2, zh: 3,
-      }[language];
+      const { navigation, currentLocale } = this.props;
+      const { listData } = this.state;
+
+      // Get index of current selected locale string; default 0
+      let selectedIndex = _.indexOf(localeIds, currentLocale);
+      selectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
+
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header
-            title="Language"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={screenHelper.styles.body}>
-            <View style={styles.listView}>
-              <SelectionList data={this.listData} onChange={this.onChange} selected={selected} />
-            </View>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.language.title" />}
+        >
+          <View style={styles.listView}>
+            <SelectionList data={listData} onChange={this.onChange} selected={selectedIndex} />
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }
@@ -84,20 +91,17 @@ Language.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   changeLanguage: PropTypes.func.isRequired,
-  language: PropTypes.string.isRequired,
+  currentLocale: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  language: state.App.get('language'),
+  currentLocale: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   changeLanguage: (value) => dispatch(
-    actions.setSingleSettings('language', value),
+    actions.changeLanguage(value),
   ),
 });
 
-export {
-  Language,
-};
 export default connect(mapStateToProps, mapDispatchToProps)(Language);

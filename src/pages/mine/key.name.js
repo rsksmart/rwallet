@@ -1,49 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ScrollView, TextInput,
+  View, StyleSheet, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import flex from '../../assets/styles/layout.flex';
-import screenHelper from '../../common/screenHelper';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
-import Button from '../../components/common/button/button';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
-import appActions from '../../redux/app/actions';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
-  },
-  headerTitle: {
-    fontSize: 25,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 65,
-    left: 24,
-    color: '#FFF',
-  },
-  headerText: {
-    fontSize: 15,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 45,
-    left: 24,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 9,
-    bottom: 97,
-  },
-  chevron: {
-    color: '#FFF',
-  },
   sectionContainer: {
     paddingHorizontal: 30,
   },
@@ -62,13 +29,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-  body: {
-    marginHorizontal: 22,
-  },
   buttonView: {
     alignSelf: 'center',
-    marginTop: 37,
-    marginBottom: 20,
+    paddingVertical: 15,
   },
   name: {
     marginTop: 17,
@@ -78,6 +41,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#DF5264',
     marginHorizontal: 5,
+  },
+  body: {
+    marginHorizontal: 25,
   },
 });
 
@@ -117,13 +83,11 @@ class KeyName extends Component {
     onPress() {
       const { name } = this.state;
       const { renameKey, walletManager } = this.props;
-      console.log(`Key name save! name: ${name}`);
       renameKey(this.key, name, walletManager);
       this.nameInput.focus();
     }
 
     onSubmitEditing() {
-      console.log('onSubmitEditing');
       const { name } = this.state;
       const submitText = name.trim();
       this.setState({ name: submitText });
@@ -137,12 +101,18 @@ class KeyName extends Component {
       const { navigation } = this.props;
       const { name } = this.state;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header goBack={() => navigation.goBack()} title="Key Name" />
-          <View style={[screenHelper.styles.body, styles.body]}>
-            <Loc style={[styles.title]} text="What do you call this key?" />
-            <Loc text="You can change the name displayed on the device below" />
-            <Loc style={[styles.title, styles.name]} text="Name" />
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          hasLoader={false}
+          bottomBtnText="button.save"
+          bottomBtnOnPress={this.onPress}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.keyName.title" />}
+        >
+          <View style={styles.body}>
+            <Loc style={[styles.title]} text="page.mine.keyName.question" />
+            <Loc text="page.mine.keyName.notice" />
+            <Loc style={[styles.title, styles.name]} text="page.mine.keyName.name" />
             <TextInput
               ref={(ref) => { this.nameInput = ref; }}
               style={[presetStyle.textInput, styles.nameInput]}
@@ -153,12 +123,9 @@ class KeyName extends Component {
               autoCorrect={false}
               blurOnSubmit={false}
             />
-            <Loc style={[styles.notice]} text="* Key name can contain letters (a-z), numbers (0-9), and space" />
-            <View style={styles.buttonView}>
-              <Button text="SAVE" onPress={this.onPress} />
-            </View>
+            <Loc style={[styles.notice]} text="page.mine.keyName.comment" />
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }
@@ -173,25 +140,21 @@ KeyName.propTypes = {
   renameKey: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({}),
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  notification: PropTypes.shape({}),
   resetWalletNameUpdated: PropTypes.func.isRequired,
 };
 
 KeyName.defaultProps = {
   walletManager: undefined,
-  notification: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
-  notification: state.App.get('notification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   renameKey: (key, name, walletManager) => dispatch(walletActions.renameKey(key, name, walletManager)),
   resetWalletNameUpdated: () => dispatch(walletActions.resetWalletNameUpdated()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeyName);

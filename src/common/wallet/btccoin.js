@@ -4,29 +4,33 @@ import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
+import config from '../../../config';
+import common from '../common';
 
 export default class Coin {
-  constructor(id, amount, address) {
-    this.id = id;
+  constructor(symbol, type, derivationPath) {
+    this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, queryKey, defaultName}
-    this.metadata = coinType[id];
-    this.amount = amount;
-    this.address = address;
+    this.metadata = coinType[this.id];
     this.chain = this.metadata.chain;
-    this.type = this.metadata.type;
-    this.symbol = this.metadata.symbol;
+    this.type = type;
+    this.symbol = symbol;
+    // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+    // m / purpose' / coin_type' / account' / change / address_index
+    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.networkId = this.metadata.networkId;
+    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.decimalPlaces = config.symbolDecimalPlaces[symbol];
   }
 
   derive(seed) {
     const network = this.metadata && this.metadata.network;
-    const networkId = this.metadata && this.metadata.networkId;
 
     try {
       const master = fromSeed(seed, network).toBase58();
-      const networkNode = Coin.getNetworkNode(master, network, networkId);
-      const accountNode = Coin.generateAccountNode(networkNode, network, 0);
-      const addressNode = Coin.generateAddressNode(accountNode, network, 0);
-      this.addressPath = addressNode.path;
+      const accountNode = Coin.generateAccountNode(master, network, this.networkId, this.account);
+      const changeNode = Coin.generateChangeNode(accountNode, network, 0);
+      const addressNode = Coin.generateAddressNode(changeNode, network, 0);
       this.address = Coin.generateAddress(addressNode, network);
       // this.addressPublicKey = addressNode.public_key;
       // console.log('this.addressPublicKey = addressNode.public_key;');
@@ -46,8 +50,8 @@ export default class Coin {
     return privateKey;
   }
 
-  static getNetworkNode(master, network, networkId) {
-    const path = `m/44'/${networkId}'/0'`;
+  static generateAccountNode(master, network, networkId, account) {
+    const path = `m/44'/${networkId}'/${account}'`;
     const pk = fromBase58(master, network)
       .derivePath(path)
       .neutered()
@@ -55,14 +59,14 @@ export default class Coin {
     return new PathKeyPair(path, pk);
   }
 
-  static generateAccountNode(networkNode, network, index) {
-    const path = `${networkNode.path}/${index}`;
-    const publickey = this.deriveChildFromNode(networkNode.public_key, network, index);
+  static generateChangeNode(accountNode, network, index) {
+    const path = `${accountNode.path}/${index}`;
+    const publickey = this.deriveChildFromNode(accountNode.public_key, network, index);
     return new PathKeyPair(path, publickey);
   }
 
-  static generateAddressNode(accountNode, network, index) {
-    const pk = accountNode;
+  static generateAddressNode(changeNode, network, index) {
+    const pk = changeNode;
     const path = `${pk.path}/${index}`;
     const result = this.deriveChildFromNode(pk.public_key, network, index);
     return new PathKeyPair(path, result);
@@ -94,8 +98,10 @@ export default class Coin {
   toJSON() {
     return {
       id: this.id,
+      symbol: this.symbol,
+      type: this.type,
       metadata: this.metadata,
-      amount: this.amount,
+      derivationPath: this.derivationPath,
       address: this.address,
       objectId: this.objectId,
     };
@@ -103,9 +109,9 @@ export default class Coin {
 
   static fromJSON(json) {
     const {
-      id, amount, address, objectId,
+      symbol, type, derivationPath, objectId,
     } = json;
-    const instance = new Coin(id, amount, address);
+    const instance = new Coin(symbol, type, derivationPath);
     instance.objectId = objectId;
     return instance;
   }

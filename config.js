@@ -1,29 +1,36 @@
-/** Store app level configurations */
-// serverURL list
-// product http://130.211.12.3/parse
-// dev1 http://10.0.2.2:1338/parse
-// dev2 http://192.168.31.177:1338/parse
+import { PARSE_SERVER_URL } from 'react-native-dotenv';
+import { isEmpty } from 'lodash';
+
+if (isEmpty(PARSE_SERVER_URL)) {
+  throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
+}
+
 const config = {
   parse: {
     appId: 'rwallet',
     javascriptKey: '',
-    masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
-    serverURL: 'http://10.0.2.2:1338/parse',
+    serverURL: PARSE_SERVER_URL,
   },
   defaultSettings: {
+    username: undefined,
     language: 'en',
     currency: 'USD',
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF'],
-    languages: ['en', 'fr', 'he', 'zh'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
+    locales: [
+      { name: 'English', id: 'en' },
+      { name: 'Spanish', id: 'es' },
+      { name: 'Portuguese', id: 'pt' },
+      { name: 'Chinese', id: 'zh' },
+    ],
     currencies: [
       { name: 'USD', fullName: 'US Dollar', symbol: '$' },
-      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
       { name: 'ARS', fullName: 'Argentine Peso', symbol: 'ARS$' },
-      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
       { name: 'JPY', fullName: 'Japanese Yen', symbol: '￥' },
+      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
+      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
       { name: 'GBP', fullName: 'Pound sterling', symbol: '£' },
     ],
   },
@@ -31,9 +38,50 @@ const config = {
     reduxLoggerEnabled: false,
   },
   interval: {
-    fetchPrice: 30000,
-    fetchBalance: 30000,
-    fetchTransaction: 30000,
+    fetchPrice: 8000,
+    fetchBalance: 8000,
+    fetchTransaction: 8000,
+    fetchLatestBlockHeight: 8000,
+  },
+  symbolDecimalPlaces: {
+    BTC: 6,
+    RBTC: 6,
+    RIF: 3,
+    DOC: 3,
+  },
+  assetValueDecimalPlaces: 2,
+  transactionUrls: {
+    BTC: {
+      Mainnet: 'https://live.blockcypher.com/btc/tx',
+      Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
+    },
+    RBTC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    RIF: {
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    DOC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+  },
+  defaultFontFamily: 'Roboto', // defaultFontFamily, for android
+  coinswitch: {
+    // Put the initPair here because
+    // 1. constrain the user to select the pair, which is only supported by coinswitch.
+    // 2. use it as a array, basically we need failback. Because always 2 precondition need to be fullfilled before useing going forward (1. coinswitch supporting 2. use has the specific coin)
+    // 3. Since based on the current logic, we will alwauys know one of them beforehand. So to take advantage of this, by using key-value
+    initPairs: {
+      BTC: ['RBTC', 'DOC'],
+      RBTC: ['BTC'],
+      DOC: ['BTC'],
+    },
+  },
+  appLock: {
+    timeout: 300000,
   },
 };
 

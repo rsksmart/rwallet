@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, Switch, TouchableOpacity, ScrollView,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import flex from '../../assets/styles/layout.flex';
-import Loader from '../../components/common/misc/loader';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
+import BasePageGereral from '../base/base.page.general';
 
 const styles = StyleSheet.create({
   body: {
@@ -41,49 +39,40 @@ class TwoFactorAuth extends Component {
     constructor(props) {
       super(props);
 
-      this.goBack = this.goBack.bind(this);
+      this.onResetPasscodePress = this.onResetPasscodePress.bind(this);
       this.setSingleSettings = this.setSingleSettings.bind(this);
+    }
+
+    onResetPasscodePress() {
+      const { passcode, showPasscode, navigation } = this.props;
+      if (passcode) {
+        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
+      } else {
+        showPasscode('create');
+      }
     }
 
     setSingleSettings(value) {
       const { setSingleSettings } = this.props;
-
       setSingleSettings('fingerprint', value);
     }
 
-    goBack() {
-      const { navigation } = this.props;
-      navigation.goBack();
-    }
-
     render() {
-      const { navigation, fingerprint, loading } = this.props;
+      const { navigation } = this.props;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <Header
-            title="Two-Factor Authentication"
-            goBack={this.goBack}
-          />
-          <View style={[screenHelper.styles.body, styles.body]}>
-            <Loader loading={loading} />
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => {
-                navigation.navigate('ResetPasscode');
-              }}
-            >
-              <Loc style={[styles.title]} text="Reset Passcode" />
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.2fa.title" />}
+        >
+          <View style={styles.body}>
+            <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
+              <Loc style={[styles.title]} text="page.mine.2fa.resetPasscode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
-            <View style={styles.row}>
-              <Loc style={[styles.title]} text="Use Fingerprint" />
-              <Switch
-                value={fingerprint}
-                onValueChange={this.setSingleSettings}
-              />
-            </View>
           </View>
-        </ScrollView>
+        </BasePageGereral>
       );
     }
 }
@@ -96,24 +85,26 @@ TwoFactorAuth.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   setSingleSettings: PropTypes.func,
-  fingerprint: PropTypes.bool,
-  loading: PropTypes.bool,
+  showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
-  fingerprint: undefined,
-  loading: false,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.App.get('isPageLoading'),
   fingerprint: state.App.get('fingerprint'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
+  showPasscode: (category, callback) => dispatch(
+    appActions.showPasscode(category, callback),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TwoFactorAuth);

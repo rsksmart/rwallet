@@ -21,16 +21,18 @@ const styles = StyleSheet.create({
   buttonText: {
     color: color.component.button.color,
     fontSize: 16,
-    fontFamily: 'Avenir Black',
+    fontFamily: 'Avenir-Black',
     fontWeight: '900',
   },
 });
 
-export default function Button({ text, onPress, disabled }) {
+export default function Button({
+  text, onPress, disabled, style,
+}) {
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
       <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
-        <Loc style={[styles.buttonText]} text={text} />
+        <Loc style={[styles.buttonText]} text={text} caseType="capitalize" />
       </View>
     </TouchableOpacity>
   );
@@ -40,8 +42,10 @@ Button.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Button.defaultProps = {
   disabled: false,
+  style: null,
 };

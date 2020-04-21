@@ -4,12 +4,9 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
-import flex from '../../assets/styles/layout.flex';
-import Button from '../../components/common/button/button';
-import appContext from '../../common/appContext';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
+import Header from '../../components/headers/header';
+import BasePageGereral from '../base/base.page.general';
 
 
 const completed = require('../../assets/images/icon/completed.png');
@@ -24,7 +21,7 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
-    marginTop: 200,
+    marginTop: 100,
   },
   check: {
     margin: 25,
@@ -41,47 +38,38 @@ export default class ResetPasscodeSuccess extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onBackButtonPress = this.onBackButtonPress.bind(this);
+    }
+
+    onBackButtonPress() {
       const { navigation } = this.props;
+      const resetAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: 'MineIndex' }),
+          NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
+    }
+
+    render() {
       return (
-        <View style={[flex.flex1]}>
-          <Header
-            title="Reset Passcode"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={screenHelper.styles.body}>
-            <View style={styles.content}>
-              <Image style={styles.check} source={completed} />
-              <Loc style={[styles.title]} text="Reset completed!" />
-            </View>
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          hasLoader={false}
+          bottomBtnText="button.backToSetting"
+          bottomBtnOnPress={this.onBackButtonPress}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="page.mine.resetPasscodeSuccess.title" />}
+        >
+          <View style={styles.content}>
+            <Image style={styles.check} source={completed} />
+            <Loc style={[styles.title]} text="page.mine.resetPasscodeSuccess.title" />
           </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="BACK TO SETTING"
-              onPress={async () => {
-                let page = null;
-                if (navigation.state.params) {
-                  page = navigation.state.params.page;
-                }
-                if (page && page === 'Transfer') {
-                  appContext.eventEmitter.emit('onFirstPasscode');
-                  navigation.navigate('Transfer');
-                } else {
-                  const resetAction = StackActions.reset({
-                    index: 1,
-                    actions: [
-                      NavigationActions.navigate({ routeName: 'MineIndex' }),
-                      NavigationActions.navigate({ routeName: 'TwoFactorAuth' }),
-                    ],
-                  });
-                  navigation.dispatch(resetAction);
-                }
-              }}
-            />
-          </View>
-        </View>
+        </BasePageGereral>
       );
     }
 }

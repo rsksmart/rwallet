@@ -1,17 +1,19 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Clipboard,
+  View, TouchableOpacity, StyleSheet, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import flex from '../../assets/styles/layout.flex';
 import Tags from '../../components/common/misc/tags';
-import Button from '../../components/common/button/button';
 import Loc from '../../components/common/misc/loc';
-import Header from '../../components/common/misc/header';
-import screenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
+import BasePageGereral from '../base/base.page.general';
+import Header from '../../components/headers/header';
+import common from '../../common/common';
+
+const bip39 = require('bip39');
 
 const styles = StyleSheet.create({
   text: {},
@@ -32,13 +34,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginHorizontal: 20,
   },
-  buttonView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 10,
-    width: '100%',
-  },
 });
 
 class RecoveryPhrase extends Component {
@@ -48,64 +43,88 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-      this.wallet = props.navigation.state.params.wallet;
-      const phrases = this.wallet.mnemonic.phrase.split(' ');
+      const { navigation } = props;
+      const { shouldVerifyPhrase } = navigation.state.params;
       this.state = {
-        phrases,
+        phrases: [],
       };
+      if (_.isNil(shouldVerifyPhrase)) {
+        throw new Error('shouldVerifyPhrase is undefined or null.');
+      }
+      this.bottomBtnText = shouldVerifyPhrase ? 'button.NEXT' : 'button.Finish';
+      this.onBottomBtnPress = (shouldVerifyPhrase ? this.onNextPressed : this.onFinishPressed).bind(this);
+      this.onCopyPressed = this.onCopyPressed.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+      const { addNotification, navigation } = this.props;
+
+      const { shouldCreatePhrase, phrase } = navigation.state.params;
+      if (_.isNil(shouldCreatePhrase)) {
+        throw new Error('shouldCreatePhrase is undefined or null.');
+      }
+
+      // the page will skip phrase creation if navigation.state.params.shouldCreatePhrase is false explicitly.
+      if (shouldCreatePhrase) {
+        const entropy = await common.getRandom(16);
+        this.phrase = bip39.entropyToMnemonic(entropy);
+      } else {
+        this.phrase = phrase;
+      }
+      const phrases = this.phrase.split(' ');
+      this.setState({ phrases }, () => {
+        const notification = createInfoNotification(
+          'modal.guardPhrase.title',
+          'modal.guardPhrase.body',
+        );
+        addNotification(notification);
+      });
+    }
+
+    onNextPressed() {
+      const { navigation } = this.props;
+      const params = { ...navigation.state.params, phrase: this.phrase };
+      navigation.navigate('VerifyPhrase', params);
+    }
+
+    onFinishPressed() {
+      const { navigation } = this.props;
+      navigation.goBack();
+    }
+
+    onCopyPressed() {
+      const { phrase } = this;
       const { addNotification } = this.props;
+      Clipboard.setString(phrase);
       const notification = createInfoNotification(
-        'Recovery Phrase',
-        'Safeguard your recovery phrase Text',
+        'modal.phraseCopied.title',
+        'modal.phraseCopied.body',
       );
       addNotification(notification);
     }
 
     render() {
-      const { phrase } = this.wallet.mnemonic;
       const { phrases } = this.state;
-      const { navigation, addNotification } = this.props;
+      const { navigation } = this.props;
       return (
-        <View style={[flex.flex1]}>
-          <Header
-            title="Recovery Phrase"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={[screenHelper.styles.body, flex.flex1]}>
-            <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
-            <Loc style={[styles.note]} text="in the right order and save them" />
-            <Loc style={[styles.note]} text="somewhere safe" />
-            <View style={styles.tagsView}>
-              <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
-            </View>
-            <TouchableOpacity
-              style={{ marginTop: 10 }}
-              onPress={() => {
-                Clipboard.setString(phrase);
-                const notification = createInfoNotification(
-                  'Copied',
-                  'The recovery phrase has been copied to clipboard',
-                );
-                addNotification(notification);
-              }}
-            >
-              <Text style={styles.copy}>Copy</Text>
-            </TouchableOpacity>
-            <View style={styles.buttonView}>
-              <Button
-                text="NEXT"
-                onPress={async () => {
-                  navigation.navigate('VerifyPhrase', { wallet: this.wallet });
-                }}
-              />
-            </View>
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          bottomBtnText={this.bottomBtnText}
+          bottomBtnOnPress={this.onBottomBtnPress}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recoveryPhrase.title" />}
+        >
+          <Loc style={[styles.note, { marginTop: 15 }]} text="page.wallet.recoveryPhrase.note1" />
+          <Loc style={[styles.note]} text="page.wallet.recoveryPhrase.note2" />
+          <Loc style={[styles.note]} text="page.wallet.recoveryPhrase.note3" />
+          <View style={styles.tagsView}>
+            <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
           </View>
-        </View>
+          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPressed}>
+            <Loc style={[styles.copy]} text="button.Copy" />
+          </TouchableOpacity>
+        </BasePageGereral>
       );
     }
 }

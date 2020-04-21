@@ -10,6 +10,7 @@ const initState = new Map({
 
   application: undefined,
   settings: undefined, // Settings instance
+  user: undefined, // user instance
 
   isPageLoading: false,
   serverVersion: undefined,
@@ -17,9 +18,21 @@ const initState = new Map({
   transactions: undefined,
   showNotification: false,
   notification: null,
+  confirmationCancelCallback: null,
+  showPasscode: false,
+  passcodeType: null,
+  passcodeCallback: null,
+  passcodeFallback: null,
   currency: defaultSettings.currency,
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
+  username: defaultSettings.username,
+  isShowConfirmation: false,
+  confirmation: null,
+  isUsernameUpdated: false,
+  confirmationCallback: null,
+  appLock: true,
+  passcode: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -52,11 +65,37 @@ export default function appReducer(state = initState, action) {
     case actions.ADD_NOTIFICATION:
       return state
         .set('showNotification', true)
-        .set('notification', action.notification);
+        .set('notification', action.notification)
+        .set('notificationCloseCallback', action.notification.notificationCloseCallback);
     case actions.REMOVE_NOTIFICATION:
       return state
         .set('showNotification', false)
-        .set('notification', null);
+        .set('notification', null)
+        .set('notificationCloseCallback', null);
+    case actions.ADD_CONFIRMATION:
+      return state
+        .set('isShowConfirmation', true)
+        .set('confirmation', action.confirmation)
+        .set('confirmationCallback', action.confirmation.confirmationCallback)
+        .set('confirmationCancelCallback', action.confirmation.confirmationCancelCallback);
+    case actions.REMOVE_CONFIRMATION:
+      return state
+        .set('isShowConfirmation', false)
+        .set('confirmation', null)
+        .set('confirmationCallback', null)
+        .set('confirmationCancelCallback', null);
+    case actions.SHOW_PASSCODE:
+      return state
+        .set('showPasscode', true)
+        .set('passcodeType', action.value.category)
+        .set('passcodeCallback', action.value.callback)
+        .set('passcodeFallback', action.value.fallback);
+    case actions.HIDE_PASSCODE:
+      return state
+        .set('showPasscode', false)
+        .set('passcodeType', null)
+        .set('passcodeCallback', null)
+        .set('passcodeFallback', null);
     case actions.SET_APPLICATION:
       return state.set('application', action.value);
     case actions.SET_SETTINGS:
@@ -65,8 +104,17 @@ export default function appReducer(state = initState, action) {
       return state.set('settings', settings)
         .set('currency', settings && settings.get('currency'))
         .set('language', settings && settings.get('language'))
-        .set('fingerprint', settings && settings.get('fingerprint'));
+        .set('fingerprint', settings && settings.get('fingerprint'))
+        .set('username', settings && settings.get('username'));
     }
+    case actions.USER_NAME_UPDATED:
+      return state.set('isUsernameUpdated', true);
+    case actions.RESET_USER_NAME_UPDATED:
+      return state.set('isUsernameUpdated', false);
+    case actions.LOCK_APP:
+      return state.set('appLock', action.lock);
+    case actions.UPDATE_PASSCODE:
+      return state.set('passcode', action.passcode);
     default:
       return state;
   }

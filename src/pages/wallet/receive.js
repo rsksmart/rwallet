@@ -1,19 +1,20 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, Clipboard,
+  View, Text, TouchableOpacity, StyleSheet, Image, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
-import Entypo from 'react-native-vector-icons/Entypo';
-import flex from '../../assets/styles/layout.flex';
 import color from '../../assets/styles/color.ts';
 // import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
-import ScreenHelper from '../../common/screenHelper';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
+import common from '../../common/common';
+import OperationHeader from '../../components/headers/header.operation';
+import BasePageGereral from '../base/base.page.general';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -32,17 +33,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   headerTitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Avenir-Medium',
     fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 25,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    bottom: 8,
+    marginLeft: -2,
+    marginBottom: 2,
   },
   chevron: {
     color: '#FFF',
@@ -90,10 +85,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  titleView: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    alignItems: 'center',
+  },
 });
 
-const header = require('../../assets/images/misc/header.png');
 const copyIcon = require('../../assets/images/icon/copy.png');
 // const refreshIcon = require('../../assets/images/icon/refresh.png');
 
@@ -102,55 +102,54 @@ class WalletReceive extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onCopyPress = this.onCopyPress.bind(this);
+    }
+
+    onCopyPress() {
       const { navigation, addNotification } = this.props;
       const { coin } = navigation.state.params;
-      const logo = navigation.state.params.icon;
+      const address = coin && coin.address;
+      if (_.isNil(address)) {
+        return;
+      }
+      Clipboard.setString(address);
+      const notification = createInfoNotification(
+        'modal.addressCopied.title',
+        'modal.addressCopied.body',
+      );
+      addNotification(notification);
+    }
+
+    render() {
+      const { navigation } = this.props;
+      const { coin } = navigation.state.params;
       const qrSize = 270;
       const qrLogoSize = qrSize * 0.2;
 
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
-
+      const type = coin && coin.type;
+      const symbolName = common.getSymbolFullName(symbol, type);
       const qrText = address;
-
-      let headerHeight = 100;
-      if (DEVICE.isIphoneX) {
-        headerHeight += ScreenHelper.iphoneXExtendedHeight;
-      }
+      const title = `${strings('button.Receive')} ${symbolName}`;
 
       return (
-        <View style={[flex.flex1]}>
-          <ImageBackground source={header} style={[{ height: headerHeight }]}>
-            <Text style={styles.headerTitle}>
-              <Loc text="Receive" />
-              {symbol}
-            </Text>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-            </TouchableOpacity>
-          </ImageBackground>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
+        >
           <View style={styles.body}>
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
-              <Loc style={[styles.sectionTitle]} text="Address" />
+              <Loc style={[styles.sectionTitle]} text="page.wallet.receive.address" />
               <View style={styles.address}>
-                <TouchableOpacity onPress={() => {
-                  Clipboard.setString(address);
-                  const notification = createInfoNotification(
-                    'Copied',
-                    'The address has been copied to clipboard',
-                  );
-                  addNotification(notification);
-                }}
-                >
+                <TouchableOpacity onPress={this.onCopyPress}>
                   <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
-                <Text style={styles.addressText} ellipsizeMode="tail" numberOfLines={1}>{address}</Text>
+                <Text style={styles.addressText}>{address}</Text>
                 {/* TODO: we hide the refresh icon for now
                 Coin should have a isChangable member to decide whether it could generate more addresses
                 Only BTC is allowed to do that.
@@ -162,14 +161,14 @@ class WalletReceive extends Component {
             <View style={[styles.sectionContainer, styles.qrView]}>
               <QRCode
                 value={qrText}
-                logo={logo}
+                logo={coin.icon}
                 logoMargin={5}
                 size={qrSize}
                 logoSize={qrLogoSize}
               />
             </View>
           </View>
-        </View>
+        </BasePageGereral>
       );
     }
 }
@@ -184,7 +183,9 @@ WalletReceive.propTypes = {
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(

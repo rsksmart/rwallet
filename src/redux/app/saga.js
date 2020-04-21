@@ -11,14 +11,20 @@ import walletActions from '../wallet/actions';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
+import common from '../../common/common';
+import definitions from '../../common/definitions';
+import storage from '../../common/storage';
+import fcmHelper from '../../common/fcmHelper';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
-function* updateUserRequest() {
+import { createErrorNotification } from '../../common/notification.controller';
+
+function* updateUserRequest(action) {
   // Upload wallets or settings to server
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings });
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken: action.fcmToken });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -43,10 +49,21 @@ function* initFromStorageRequest() {
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
+    // set language
+    common.setLanguage(settings.get('language'));
+    common.setMomentLocale(settings.get('language'));
+
     // Sets state in reducer for success
     yield put({
       type: actions.SET_SETTINGS,
       value: settings,
+    });
+
+    // Set passcode in reducer
+    const passcode = yield call(storage.getPasscode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
     });
 
     // 2. Deserialize Wallets from permenate storage
@@ -79,8 +96,19 @@ function* initFromStorageRequest() {
 }
 
 function* initWithParseRequest() {
+  const appId = application.get('id');
+
+  // 1. Sign in or sign up to get Parse.User object
+  // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    // 1. Test server connection and get Server info
+    yield call(ParseHelper.signInOrSignUp, appId);
+    console.log(`User found with appId ${appId}. Sign in successful.`);
+  } catch (err) {
+    yield call(ParseHelper.handleError, { err, appId });
+  }
+
+  // 2. Test server connection and get Server info
+  try {
     const response = yield call(ParseHelper.getServerInfo);
 
     // Sets state in reducer for success
@@ -88,42 +116,29 @@ function* initWithParseRequest() {
       type: actions.GET_SERVER_INFO_RESULT,
       value: response,
     });
-
-    const appId = application.get('id');
-
-    // 2. Sign in or sign up to get Parse.User object
-    // ParseHelper will have direct access to the User object so we don't need to pass it to state here
-    try {
-      yield call(ParseHelper.signIn, appId);
-      console.log(`User found with appId ${appId}. Sign in successful.`);
-    } catch (err) {
-      if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-        yield call(ParseHelper.signUp, appId);
-        console.log(`User NOT found with appId ${appId}. Signed up.`);
-      }
-    }
-
-    // 3. Upload wallets and settings to server
-    yield put({
-      type: actions.UPDATE_USER,
-      payload: { walletManager, settings },
-    });
-
-    // If we don't encounter error here, mark initialization finished
-    yield put({
-      type: actions.INIT_WITH_PARSE_DONE,
-    });
   } catch (err) {
-    const { message } = err;
-    console.error(message);
+    yield call(ParseHelper.handleError, { err, appId });
   }
+
+  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
+
+  // 3. Upload wallets and settings to server
+  yield put({
+    type: actions.UPDATE_USER,
+    fcmToken,
+  });
+
+  // If we don't encounter error here, mark initialization finished
+  yield put({
+    type: actions.INIT_WITH_PARSE_DONE,
+  });
 }
 
 function* createRawTransaction(action) {
   const { payload } = action;
   console.log('saga::createRawTransaction is triggered, payload: ', payload); // This is undefined
   try {
-    const response = yield call(ParseHelper.getTransactionsByAddress, payload);
+    const response = yield call(ParseHelper.createRawTransaction, payload);
     console.log('saga::createRawTransaction got response, response: ', response);
     yield put({
       type: actions.CREATE_RAW_TRANSATION_RESULT,
@@ -131,11 +146,7 @@ function* createRawTransaction(action) {
     });
   } catch (err) {
     console.log(err);
-    const message = yield call(ParseHelper.handleError, err);
-    yield put({
-      type: actions.SET_ERROR,
-      value: { message },
-    });
+    // TODO: need to add notification here if failed
   }
 }
 
@@ -156,11 +167,63 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    yield put(actions.addNotification(notification));
+  }
+}
 
+function* changeLanguageRequest(action) {
+  const { language } = action;
+  console.log('saga::changeLanguageRequest is triggered, language: ', language);
+  try {
+    // 1. Set language
+    common.setLanguage(language);
+    common.setMomentLocale(language);
+
+    // 2. Save setting
+    yield put(actions.setSingleSettings('language', language));
+  } catch (err) {
+    console.log(err);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    yield put(actions.addNotification(notification));
+  }
+}
+
+function* renameRequest(action) {
+  const { name } = action;
+  try {
+    settings.validateName(name);
+    yield put(actions.setSingleSettings('username', name));
+    yield put({ type: actions.USER_NAME_UPDATED });
+  } catch (err) {
+    let notification = null;
+    switch (err.message) {
+      case 'err.nametooshort':
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooShort');
+        break;
+      case 'err.nametoolong':
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooLong');
+        break;
+      case 'err.nameinvalid':
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
+        break;
+      default:
+        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    }
+    yield put(actions.addNotification(notification));
+  }
+}
+
+function* setPasscodeRequest(action) {
+  const { passcode } = action;
+  try {
+    yield call(storage.setPasscode, passcode);
     yield put({
-      type: actions.SET_ERROR,
-      value: { message: err.message },
+      type: actions.UPDATE_PASSCODE,
+      passcode,
     });
+  } catch (error) {
+    console.log('setPasscodeRequest, error: ', error);
   }
 }
 
@@ -172,5 +235,8 @@ export default function* () {
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
+    takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
+    takeEvery(actions.RENAME, renameRequest),
+    takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
   ]);
 }

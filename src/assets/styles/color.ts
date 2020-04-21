@@ -67,6 +67,7 @@ const color = {
             backgroundColor: '#080808',
             title: {
                 color: '#FFF',
+                alert: '#FC4349',
             },
             dot: {
                 borderColor: '#00B520'
@@ -122,6 +123,12 @@ const color = {
                 backgroundColor: '#FFF',
             }
         },
+        listItemIndicator: {
+            color: '#9B9B9B',
+        },
+        navBackIndicator: {
+            color: '#FFF',
+        },
         swipableButtonList: {
             backText: {
                 color: '#FFF',
@@ -155,6 +162,12 @@ const color = {
             }
         }
     },
+    black: '#000',
+    white: '#FFF',
+    midGrey: '#727372',
+    seporatorLineGrey: '#D8D8D8',
+    seporatorLineLightGrey: '#DCDCDC',
+    lightGreen: '#00B520',
     ...styleScript(),
 };
 

@@ -32,16 +32,7 @@ const styles = StyleSheet.create({
 });
 
 class UpdateModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showUpdate: props.showUpdate,
-      isMandatory: props.mandatory,
-    };
-  }
-
-  immediateUpdate() {
-    this.a = 1;
+  static immediateUpdate() {
     const url = Platform.OS === 'ios' ? 'itms-apps://https://itunes.apple.com/app/id414478124?action=write-review' : 'market://details?id=com.tencent.mm';
     Linking.canOpenURL(url)
       .then((supported) => {
@@ -52,6 +43,14 @@ class UpdateModal extends Component {
         return null;
       })
       .catch((err) => console.error('An error occurred', err));
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showUpdate: props.showUpdate,
+      isMandatory: props.mandatory,
+    };
   }
 
   render() {
@@ -137,9 +136,7 @@ class UpdateModal extends Component {
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
-                    onPress={() => {
-                      this.immediateUpdate();
-                    }}
+                    onPress={() => { UpdateModal.immediateUpdate(); }}
                     style={{
                       height: 40,
                       maxWidth: 0.5 * screen.width,

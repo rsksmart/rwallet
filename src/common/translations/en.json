@@ -3,124 +3,374 @@
     "Wallet": "Wallet",
     "Spend": "Spend",
     "Earn": "Earn",
-    "Me": "Me"
+    "Me": "Me",
+    "Exchange": "Swap"
   },
-  "test3": {
-    "text": "This is the test page 3",
-    "button": "Go to Setting"
+  "page": {
+    "start": {
+      "start": {
+        "button": "Get Started"
+      },
+      "terms": {
+        "term1": "I understand that my funds are held securely on this device, not by a company.",
+        "term2": "I understand that if this app is moved to another device or deleted, my funds can only be recovered with the recovery phrase.",
+        "term3": "I have read, understood, and agreed to the Terms of Use.",
+        "viewTerms": "View Complete Terms Of Use",
+        "button": "Confirm & Accept"
+      }
+    },
+    "wallet": {
+      "list": {
+        "title": "Your Wallet",
+        "myAssets": "My Assets",
+        "allAssets": "All Assets",
+        "addAsset": "Add Asset"
+      },
+      "history": {
+        "noTransNote": "There is no transaction found in this wallet",
+        "recent": "Recent",
+        "loading": "Loading..."
+      },
+      "transaction": {
+        "Sent Funds": "Sent Funds",
+        "Received Funds": "Received Funds",
+        "Sending Funds": "Sending Funds",
+        "Receiving Funds": "Receiving Funds",
+        "Failed Funds": "Failed Funds",
+        "date": "Date",
+        "confirmations": "Confirmations",
+        "memo": "Memo",
+        "noMemo": "No memo",
+        "transactionID": "Transaction ID",
+        "viewOnChain": "View on blockchain",
+        "Unconfirmed": "Unconfirmed"
+      },
+      "receive": {
+        "address": "Address"
+      },
+      "transfer": {
+        "to": "To",
+        "memo": "Memo (optional)",
+        "fee": "Mineer fee",
+        "custom": "Custom",
+        "feeQuestion": "How fast you want this done?",
+        "Slow": "Slow",
+        "Average": "Average",
+        "Fast": "Fast",
+        "CONFIRMED": "CONFIRMED",
+        "enterMemo": "Enter a transaction memo",
+        "slideConfirm": "Slide to confirm"
+      },
+      "add": {
+        "title": "Add Wallet",
+        "createWallet": "Create Basic Wallet",
+        "createWalletNote": "Recommended for first-time users",
+        "importWallet": "Import existing Wallet",
+        "importWalletNote": "Recover your wallet using your passphrase"
+      },
+      "selectCurrency": {
+        "title": "Select Wallet Currency",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Select Asset"
+      },
+      "recovery": {
+        "title": "Import Wallet",
+        "note": "Type the recovery phrase (usually 12 words)",
+        "advancedOptions": "Advanced Options",
+        "specifyPath": "Specify derivation path",
+        "coin": "Coin",
+        "derivationPath": "Derivation Path"
+      },
+      "recoveryPhrase": {
+        "title": "Recovery Phrase",
+        "note1": "Write down or copy these words",
+        "note2": "in the right order and save them",
+        "note3": "somewhere safe"
+      },
+      "backupPhrase": {
+        "title": "Backup Phrase",
+        "note": "Tap each word in the correct order",
+        "isCorrect": "Is this correct?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Verify Phrase Success",
+        "body": "Your recovery phrase is verified",
+        "note": "Be sure to store your recovery phrase in a safe and secure place"
+      },
+      "verifyFingerprint": {
+        "title": "Verify Fingerprint",
+        "noMatch": "No match"
+      },
+      "scan": {
+        "title": "Scan",
+        "cameraPermission": {
+          "title": "Permission to use camera",
+          "message": "We need your permission to use your camera"
+        },
+        "unauthorization": "Please turn on camera permissions to use this feature."
+      },
+      "transferCompleted": {
+        "title": "Send",
+        "body": "Transfer Completed!",
+        "note": "Your transaction is on its way.",
+        "viewExplorer": "Click to view in explorer"
+      },
+      "swap": {
+        "title": "Swap",
+        "wallet": "wallet",
+        "want": "I want %{symbol} in %{wallet}",
+        "errorAmountInRange": {
+          "tooBig": "The amount is higher than the exchange maximum of %{max} %{symbol}",
+          "tooSmall": "The amount is lower than the exchange minimum of %{min} %{symbol}"
+        },
+        "errorBalanceEnough": "Sorry, but you dont have enough balance",
+        "errorAmountInvalid": "The amount of %{symbol} is invalid.",
+        "have": "I have %{balance} in %{wallet}"
+      },
+      "swapSelection": {
+        "title": "Select Currency",
+        "noSwappableCoin": "Sorry, you dont have any Swappable Coin",
+        "please": "Please",
+        "create": "Create",
+        "or": "or",
+        "import": "Import",
+        "aWallet": "a wallet",
+        "startSwap": "to start using Swap"
+      },
+      "swapCompleted": {
+        "title": "Swap",
+        "body": "Exchange Completed!",
+        "note": "Your Exchange is on its way.",
+        "viewExplorer": "Click to view in explorer"
+      },
+      "addCustomToken": {
+        "title": "Add Custom Tokens",
+        "address": "Token Contract Address",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Add Custom Tokens",
+        "question": "Would you like to add these tokens?",
+        "token": "Token",
+        "symbol": "Token Symbol",
+        "decimals": "Decimals of Precision",
+        "balance": "Balance"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Enabled Assets",
+        "note": "Disable assets to hide them from your portfolio."
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "Join RSK's Community",
+        "settings": "Settings",
+        "createKey": "Create or Import a Key",
+        "keys": "Keys",
+        "anonymousUser": "Anonymous User",
+        "wallets": "Wallets"
+      },
+      "language": {
+        "title": "Language"
+      },
+      "currency": {
+        "title": "Currency"
+      },
+      "2fa": {
+        "title": "Two-Factor Authentication",
+        "resetPasscode": "Reset Passcode"
+      },
+      "resetPasscodeSuccess" :{
+        "title": "Reset Passcode Success"
+      },
+      "keySettings": {
+        "title": "Key Settings",
+        "keyContains": "This key contains",
+        "wallets": "wallets",
+        "security": "Security",
+        "advanced": "Advanced",
+        "Wallets": "Wallets",
+        "keyName": "Key Name",
+        "delete": "Delete",
+        "backup": "Backup"
+      },
+      "keyName": {
+        "title": "Key Name",
+        "question": "What do you call this key?",
+        "notice": "You can change the name displayed on the device below.",
+        "name": "Name",
+        "comment": "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space"
+      },
+      "rename": {
+        "title": "Your Name",
+        "question": "What's your name?",
+        "comment": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space"
+      },
+      "resetcompleted": {
+        "title": "Reset completed!"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "Earn cryptocurrency with ease",
+        "comingSoon": "Coming soon...",
+        "featuresTitle": "Below features are coming soon to Spend…",
+        "feature1": "- Earn cryptocurrency by completing tasks",
+        "feature2": "- Swap between any token in your wallet",
+        "feature3": "- \"Cash Back\" on purchases with cryptocurrency"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "Asset Management at Your Fingertips",
+        "featuresTitle": "Below features are coming soon to Spend…",
+        "feature1": "- Buy 100+ Gift Cards with cryptocurrency",
+        "feature2": "- Gain interests from a variety of Defi products",
+        "feature3": "- Multi-sign approval of transactions"
+      }
+    }
   },
-  "Language": "Language",
-  "2FA": "2FA",
-  "Reset Passcode": "Reset Passcode",
-  "Reset Passcode Success": "Reset Passcode Success",
-  "Add Wallet": "Add Wallet",
-  "Select Wallet Currency": "Select Wallet Currency",
-  "Recovery Phrase": "Recovery Phrase",
-  "Verify Your Phrase": "Verify Your Phrase",
-  "Verify Phrase Success": "Verify Phrase Success",
-  "Verify Fingerprint": "Verify Fingerprint",
-  "Verify Passcode": "Verify Passcode",
-  "Scan": "Scan",
-  "Your Wallet": "Your Wallet",
-  "My Assets": "My Assets",
-  "All Assets": "All Assets",
-  "Add Asset": "Add Asset",
-  "Create Basic Wallet": "Create Basic Wallet",
-  "Recommended for first-time user": "Recommended for first-time user",
-  "Import existing Wallet": "Import existing Wallet",
-  "Recover your wallet using your passphrase": "Recover your wallet using your passphrase",
-  "Mainnet": "Mainnet",
-  "Testnet": "Testnet",
-  "CREATE": "CREATE",
-  "Two-Factor Authentication": "Two-Factor Authentication",
-  "Currency": "Currency",
-  "Settings": "Settings",
-  "Use Fingerprint": "Use Fingerprint",
-  "Enter Old Passcode": "Enter Old Passcode",
-  "Enter New Passcode": "Enter New Passcode",
-  "Confirm Passcode": "Confirm Passcode",
-  "Cancel": "Cancel",
-  "BACK TO SETTING": "BACK TO SETTING",
-  "Reset completed!": "Reset completed!",
-  "COMFIRM": "COMFIRM",
-  "Address": "Address",
-  "Receive": "Receive",
-  "Receiving": "Receiving",
-  "Send": "Send",
-  "GET STARTED": "STARTED",
-  "COMFIRM & FINISH": "COMFIRM & FINISH",
-  "Sent": "Sent",
-  "Sending": "Sending",
-  "Received": "Received",
-  "To": "To",
-  "Memo": "Memo",
-  "Miner fee": "Miner fee",
-  "Custom": "Custom",
-  "Slow": "Slow",
-  "Average": "Average",
-  "Fast": "Fast",
-  "How fast you want this done?": "How fast you want this done?",
-  "NEXT": "NEXT",
-  "GOT IT": "GOT IT",
-  "Safeguard your recovery phrase": "Safeguard your recovery phrase",
-  "Safeguard your recovery phrase Text": "Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear.",
-  "Write down or copy these words": "Write down or copy these words",
-  "in the right order and save them": "in the right order and save them",
-  "somewhere safe": "somewhere safe",
-  "verifyPhraseAlertTitle": "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again.",
-  "Tap each word in the correct order": "Tap each word in the correct order",
-  "GO TO WALLET": "GO TO WALLET",
-  "BACK TO WALLET": "BACK TO WALLET",
-  "Your recovery phrase is verified": "Your recovery phrase is verified",
-  "Be sure to store your recovery phrase in a safe and secure place": "Be sure to store your recovery phrase in a safe and secure place",
-  "tip": "tip",
-  "Enter Passcode": "Enter Passcode",
-  "Transfer Completed!": "Transfer Completed!",
-  "TransferText": "Your transaction is on its way.",
-  "View Complete Terms Of Use": "View Complete Terms Of Use",
-  "TermsLine1": "I understand that my funds are held securely on this device, not by a company.",
-  "TermsLine2": "I understand that this app is moved to another device or deleted, my bitcoin can only be recoverd with the recovery phrase.",
-  "TermsLine3": "I have, read, understood, and agree to the Terms of use.",
-  "Use passcode": "Use passcode",
-  "Touch Sensor": "Touch Sensor",
-  "No match": "No match",
-  "Copied": "Copied",
-  "The recovery phrase has been copied to clipboard": "The recovery phrase has been copied to clipboard.",
-  "The address has been copied to clipboard": "The address has been copied to clipboard.",
-  "Type the recovery phrase(usually 12 words)": "Type the recovery phrase(usually 12 words)",
-  "IMPORT": "IMPORT",
-  "Too Many Words": "Too Many Words",
-  "The recovery phrase has to be 12 words": "The recovery phrase has to be 12 words.",
-  "Advanced Options": "Advanced Options",
-  "Specify derivation path": "Specify derivation path",
-  "Passcode Mismatch": "Passcode Mismatch",
-  "Passcode Mismatch Body": "The two passcodes entered are different. Please try again.",
-  "RETRY": "RETRY",
-  "Old Password": "Old Password",
-  "Old Password is wrong": "Old Password is wrong",
-  "Spend": "Spend",
-  "Buy Gift Cards": "Buy Gift Cards",
-  "This feature is coming soon": "This feature is coming soon.",
-  "Earn": "Earn",
-  "ShapeShift": "ShapeShift",
-  "Backup Phrase": "Backup Phrase",
-  "Incorrect backup phrase": "Incorrect backup phrase",
-  "Unable to recover": "Unable to recover",
-  "Unable to recover Body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct.",
-  "Key Settings": "Key Settings",
-  "SAVE": "SAVE",
-  "What do you call this key?": "What do you call this key?",
-  "You can change the name displayed on the device below": "You can change the name displayed on the device below.",
-  "Name": "Name",
-  "Security": "Security",
-  "Advanced": "Advanced",
-  "Wallets": "Wallets",
-  "wallets": "wallets",
-  "Key Name": "Key Name",
-  "Delete": "Delete",
-  "Backup": "Backup",
-  "Keys": "Keys",
-  "Join Community": "Join Community",
-  "This key contains": "This key contains",
-  "There is no transaction found in this wallet": "There is no transaction found in this wallet."
+  "language": {
+    "English": "English",
+    "Spanish": "Spanish",
+    "Portuguese": "Portuguese",
+    "Chinese": "Chinese"
+  },
+  "button": {
+    "save": "SAVE",
+    "NEXT": "NEXT",
+    "Next": "Next",
+    "gotIt": "GOT IT",
+    "create": "CREATE",
+    "CONFIRM": "CONFIRM",
+    "retry": "Retry",
+    "IMPORT": "IMPORT",
+    "Clear": "Clear",
+    "startOver": "START OVER",
+    "Copy": "Copy",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "Send All": "Send All",
+    "goToWallet": "GO TO WALLET",
+    "backToWallet": "BACK TO WALLET",
+    "backToSetting": "BACK TO SETTING",
+    "Send": "Send",
+    "Receive": "Receive",
+    "Swap": "Swap",
+    "Delete": "Delete",
+    "Reset": "Reset",
+    "Finish": "Finish",
+    "Exchange": "Exchange",
+    "addAsset": "Add Asset",
+    "ok": "Ok"
+  },
+  "txState": {
+    "Sent": "Sent",
+    "Sending": "Sending",
+    "Received": "Received",
+    "Receiving": "Receiving",
+    "Failed": "Failed"
+  },
+  "modal": {
+    "defaultError": {
+      "title": "Internal server error",
+      "body": "Please contact customer support"
+    },
+    "unableRecover": {
+      "title": "Unable to recover",
+      "body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
+    },
+    "duplicatePhrase": {
+      "title": "Duplicate Phrase",
+      "body": "This phrase is already imported in the app. Please try with a different phrase."
+    },
+    "tooManyPhrase": {
+      "title": "Too Many Words",
+      "body": "The recovery phrase has to be 12 words."
+    },
+    "txFailed": {
+      "title": "Transfer is failed",
+      "moreBTC": "You need more BTC balance to complete the transfer",
+      "moreRBTC": "You need more RBTC balance to complete the transfer",
+      "moreRIF": "You need more RIF balance to complete the transfer",
+      "moreBalance": "You need more balance to complete the transfer",
+      "serverTimeout": "Sorry, server timeout",
+      "contactService": "Please contact customer service"
+    },
+    "invalidAmount": {
+      "title": "Invalid amount",
+      "body": "Amount is not valid"
+    },
+    "invalidAddress": {
+      "title": "Invalid address",
+      "body": "Address is not valid"
+    },
+    "incorrectName": {
+      "title": "Incorrect name",
+      "tooShort": "Name is too short.",
+      "tooLong": "Name is too long.",
+      "invalid": "Name contains invalid characters."
+    },
+    "incorrectKeyName": {
+      "title": "Incorrect key name",
+      "tooShort": "Key name is too short.",
+      "tooLong": "Key name is too long.",
+      "invalid": "Key name contains invalid characters."
+    },
+    "guardPhrase": {
+      "title": "Safeguard your recovery phrase",
+      "body": "Your recovery phrase is composed of 12 randomly selected words. Please carefully write down each word in the order they appear."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Incorrect backup phrase",
+      "body": "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again."
+    },
+    "phraseCopied": {
+      "title": "Copied",
+      "body": "The recovery phrase has been copied to the clipboard."
+    },
+    "addressCopied": {
+      "title": "Copied",
+      "body": "The address has been copied to the clipboard."
+    },
+    "passcode": {
+      "typeOldPasscode": "Type your old passcode",
+      "typeNewPasscode": "Type your new passcode",
+      "confirmNewPasscode": "Confirm your new passcode",
+      "oldIncorrect": "Old Passcode is incorrect, try again",
+      "notMatched": "Passcode does not match. Please try again."
+    },
+    "verifyPasscode": {
+      "type": "Type your passcode",
+      "incorrected": "passcode is incorrected"
+    },
+    "touchSensor": {
+      "title": "Touch Sensor",
+      "usePasscode": "Use passcode"
+    },
+    "createPasscode": {
+      "title": "Please set a password",
+      "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+    },
+    "deleteKey": {
+      "title": "Warning!",
+      "body": "Are you sure you want to delete all wallets using this key?"
+    },
+    "swap": {
+      "title": "No swappable coin",
+      "body": "Swap supports BTC, RBTC and DOC. Please add asset."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contract Not Found",
+      "body": "We cannot find the input ERC20 token smart contract. Please check if it is right."
+    },
+    "duplicateToken": {
+      "title": "Duplicate Token",
+      "body": "This token is already added in the wallet. Please try with a different token."
+    }
+  }
 }

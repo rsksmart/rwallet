@@ -1,0 +1,375 @@
+{
+  "root": {
+    "Wallet": "Billetera",
+    "Spend": "Gastar",
+    "Earn": "Ganar",
+    "Me": "Yo",
+    "Exchange": "Intercambiar"
+  },
+  "page": {
+    "start": {
+      "start": {
+        "button": "Empezar"
+      },
+      "terms": {
+        "term1": "Entiendo que mis fondos se mantienen de forma segura en este dispositivo, no por una empresa.",
+        "term2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mis fondos solo se pueden recuperar con la frase de recuperación.",
+        "term3": "He leído, comprendido y acepto los términos de uso.",
+        "viewTerms": "Ver términos de uso completos",
+        "button": "Confirmar y aceptar"
+      }
+    },
+    "wallet": {
+      "list": {
+        "title": "Su Wallet",
+        "myAssets": "Mis activos",
+        "allAssets": "Todos los activos",
+        "addAsset": "Agregar activo"
+      },
+      "history": {
+        "noTransNote": "No se encontró ninguna transacción en esta wallet.",
+        "recent": "Reciente",
+        "loading": "cargando..."
+      },
+      "transaction": {
+        "Sent Funds": "Fondos enviados",
+        "Received Funds": "Fondos recibidos",
+        "Sending Funds": "Envío de fondos",
+        "Receiving Funds": "Recibiendo fondos",
+        "Failed Funds": "Fondos fallidos",
+        "date": "Fecha",
+        "confirmations": "Confirmaciones",
+        "memo": "Memorándum",
+        "noMemo": "Sin memo",
+        "transactionID": "ID de transacción",
+        "viewOnChain": "Ver en blockchain",
+        "Unconfirmed": "Inconfirmado"
+      },
+      "receive": {
+        "address": "Dirección"
+      },
+      "transfer": {
+        "to": "Para",
+        "memo": "Memo (opcional)",
+        "fee": "Tarifa del minero",
+        "custom": "Personalizado",
+        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "slow": "Lento",
+        "Average": "Promedio",
+        "Fast": "Rápido",
+        "CONFIRMED": "CONFIRMADO",
+        "enterMemo": "Ingrese una nota de transacción",
+        "slideConfirm": "Deslice para confirmar"
+      },
+      "add": {
+        "title": "Agregar Wallet",
+        "createWallet": "Crear Wallet básica",
+        "createWalletNote": "Recomendado para usuarios nuevos",
+        "importWallet": "Importar Wallet existente",
+        "importWalletNote": "Recupere su Wallet usando su frase de contraseña"
+      },
+      "selectCurrency": {
+        "title": "Seleccionar moneda de Wallet",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Seleccionar activo"
+      },
+      "recovery": {
+        "title": "Importar billetera",
+        "note": "Escriba la frase de recuperación (generalmente 12 palabras)",
+        "advancedOptions": "Opciones avanzadas",
+        "specifyPath": "Especificar ruta de derivación",
+        "coin": "Coin",
+        "derivationPath": "Ruta de derivación"
+      },
+      "recoveryPhrase": {
+        "title": "Recovery Phrase",
+        "note1": "Escriba o copie estas palabras",
+        "note2": "en el orden correcto y guárdelos",
+        "note3": "un lugar seguro"
+      },
+      "backupPhrase": {
+        "title": "Frase de respaldo",
+        "note": "Toca cada palabra en el orden correcto",
+        "isCorrect": "¿Es esto correcto?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Frase verificada exitosamente",
+        "body": "Tu frase de recuperación está verificada",
+        "note": "Asegúrese de guardar su frase de recuperación en un muy lugar seguro"
+      },
+      "verifyFingerprint": {
+        "title": "Verificar impressão digital"
+      },
+      "scan": {
+        "title": "Escanear",
+        "cameraPermission": {
+          "title": "Permiso para usar la cámara",
+          "message": "Necesitamos su permiso para usar su cámara"
+        },
+        "unauthorization": "Active los permisos de la cámara para usar esta función."
+      },
+      "transferCompleted": {
+        "title": "Enviar",
+        "body": "¡Transferencia completada!",
+        "note": "Su transacción está en proceso.",
+        "viewExplorer": "Haga clic para ver en el explorador"
+      },
+      "swap": {
+        "title": "Intercambiar",
+        "wallet": "billetera",
+        "want": "Quiero %{symbol} en %{wallet}",
+        "errorAmountInRange": {
+          "tooBig": "El monto es mayor que el intercambio máximo de %{max} %{symbol}",
+          "tooSmall": "El monto es inferior al mínimo de intercambio de %{min} %{symbol}"
+        },
+        "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
+        "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
+        "have": "Tengo %{balance} en %{wallet}"
+      },
+      "swapSelection": {
+        "title": "Seleccione el tipo de moneda",
+        "noSwappableCoin": "Lo sentimos, no tienes ninguna moneda intercambiable",
+        "please": "Por favor",
+        "create": "crear",
+        "or": "o",
+        "import": "Introducir",
+        "aWallet": "una billetera",
+        "startSwap": "para comenzar a usar Swap"
+      },
+      "swapCompleted": {
+        "title": "Intercambiar",
+        "body": "Intercambio completado!",
+        "note": "Su intercambio está en camino.",
+        "viewExplorer": "Haga clic para ver en el explorador"
+      },
+      "addCustomToken": {
+        "title": "Agregar tokens personalizados",
+        "address": "Dirección del contrato de token",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Agregar tokens personalizados",
+        "question": "¿Te gustaría agregar estos tokens?",
+        "token": "Simbólico",
+        "symbol": "Símbolo simbólico",
+        "decimals": "Decimales de precisión",
+        "balance": "Equilibrar"
+      },
+      "addToken": {
+        "title": "Add Tokens",
+        "enabledAssets": "Activos habilitados",
+        "note": "Inhabilite los activos para ocultarlos de su cartera."
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "Únete a la comunidad de RSK",
+        "settings": "Configuraciones",
+        "createKey": "Crear o importar una clave",
+        "keys": "Llaves",
+        "anonymousUser": "Usuario anónimo",
+        "wallets": "Carteras"
+      },
+      "language": {
+        "title": "Idioma"
+      },
+      "currency": {
+        "title": "Moneda"
+      },
+      "2fa": {
+        "title": "Autenticación de dos factores",
+        "resetPasscode": "Restablecer contraseña"
+      },
+      "resetPasscodeSuccess" :{
+        "title": "Contraseña restablecida exitosamente"
+      },
+      "keySettings": {
+        "title": "Configuraciones clave",
+        "keyContains": "Esta clave contiene",
+        "wallets": "billeteras",
+        "security": "Seguridad",
+        "advanced": "Avanzado",
+        "Wallets": "Carteras",
+        "keyName": "Nombre clave",
+        "delete": "Eliminar",
+        "backup": "Respaldo"
+      },
+      "keyName": {
+        "title": "Nombre clave",
+        "question": "¿Cómo llamas a esta llave?",
+        "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
+        "name": "Nombre",
+        "comment": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio"
+      },
+      "rename": {
+        "title": "Tu nombre",
+        "question": "¿Cuál es tu nombre?",
+        "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+      },
+      "resetcompleted": {
+        "title": "¡Reinicio completado!"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "Gana criptomonedas con facilidad",
+        "comingSoon": "Próximamente...",
+        "featuresTitle": "Las siguientes características estarán disponibles pronto para ganar ...",
+        "feature1": "- Gana criptomonedas completando tareas",
+        "feature2": "- Obtenga intereses de una variedad de productos Defi",
+        "feature3": "- \"Devolución de efectivo\" en compras con criptomoneda"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "estión de activos a su alcance",
+        "featuresTitle": "Las siguientes características estarán disponibles pronto para gastar ...",
+        "feature1": "- Compre más de 100 tarjetas de regalo con criptomoneda",
+        "feature2": "- Cambia entre cualquier ficha en tu billetera",
+        "feature3": "- Aprobación de transacciones con múltiples signos"
+      }
+    }
+  },
+  "language": {
+    "English": "Inglés",
+    "Spanish": "Español",
+    "Portuguese": "Portugués",
+    "Chinese": "Chino"
+  },
+  "button": {
+    "save": "GUARDAR",
+    "NEXT": "SIGUIENTE",
+    "Next": "Próximo",
+    "gotIt": "ENTENDIDO",
+    "create": "CREAR",
+    "CONFIRM": "CONFIRMAR",
+    "retry": "Procesar de nuevo",
+    "IMPORT": "IMPORTAR",
+    "Clear": "Claro",
+    "startOver": "COMENZAR DE NUEVO",
+    "Copy": "Copiar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "Send All": "Envia todo",
+    "goToWallet": "IR A LA WALLET",
+    "backToWallet": "VOLVER A LA WALLET",
+    "backToSetting": "VOLVER A LA CONFIGURACIÓN",
+    "Send": "Enviar",
+    "Receive": "Recibir",
+    "Swap": "Intercambiar",
+    "Delete": "Eliminar",
+    "Reset": "Reiniciar",
+    "Finish": "Terminar",
+    "Exchange": "Intercambiar",
+    "addAsset": "Agregar activo",
+    "ok": "Okay"
+  },
+  "txState": {
+    "Sent": "Enviado",
+    "Sending": "Enviando",
+    "Received": "Recibido",
+    "Receiving": "Recibiendo",
+    "Failed": "Ha fallado"
+  },
+  "modal": {
+    "defaultError": {
+      "title": "Error de servidor interno",
+      "body": "Por favor, póngase en contacto con atención al cliente."
+    },
+    "unableRecover": {
+      "title": "Incapaz de recuperarse",
+      "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."
+    },
+    "duplicatePhrase": {
+      "title Phrase": "Frase duplicada",
+      "body": "Esta frase ya está importada en la aplicación. Por favor, intente con una frase diferente."
+    },
+    "tooManyPhrase": {
+      "title": "Demasiadas palabras",
+      "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
+    },
+    "txFailed": {
+      "title": "La transferencia ha fallado",
+      "moreBTC": "Necesita más saldo de BTC para completar la transferencia",
+      "moreRBTC": "Necesita más saldo RBTC para completar la transferencia",
+      "moreRIF": "Necesita más saldo RIF para completar la transferencia",
+      "moreBalance": "Necesita más saldo para completar la transferencia",
+      "serverTimeout": "Disculpe, el tiempo de espera se ha excedido, trate de nuevo",
+      "contactService": "Por favor, póngase en contacto con el servicio al cliente"
+    },
+    "invalidAmount": {
+      "title": "Monto invalido",
+      "body": "El monto no es valido"
+    },
+    "invalidAddress": {
+      "title": "Dirección inválida",
+      "body": "La direccion no es valida"
+    },
+    "incorrectName": {
+      "title": "Nombre incorrecto",
+      "tooShort": "El nombre es muy corto.",
+      "tooLong": "El nombre es demasiado largo.",
+      "invalid": "Nombre contiene caracteres inválidos."
+    },
+    "incorrectKeyName": {
+      "title": "Nombre de clave incorrecto",
+      "tooShort": "El nombre de la clave es demasiado corto.",
+      "tooLong": "El nombre de la clave es demasiado largo.",
+      "invalid": "El nombre de la clave contiene caracteres no válidos."
+    },
+    "guardPhrase": {
+      "title": "Resguarde su frase de recuperación",
+      "body": "YSu frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Frase de respaldo incorrecta",
+      "body": "Es indispensable que escriba su frase de recuperación correctamente. Si algo le sucede a su wallet, la necesitará para recuperar su dinero. Por favor revise e intente nuevamente."
+    },
+    "phraseCopied": {
+      "title": "Copiado",
+      "body": "La frase de recuperación se ha copiado en el portapapeles."
+    },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "La dirección se ha copiado en el portapapeles."
+    },
+    "passcode": {
+      "typeOldPasscode": "Escriba su contraseña anterior",
+      "typeNewPasscode": "Escriba su nueva contraseña",
+      "confirmNewPasscode": "Confirme su nueva contraseña",
+      "oldIncorrect": "El código de acceso anterior es incorrecto, intente nuevamente",
+      "notMatched": "El código de acceso no coincide. Inténtalo de nuevo."
+    },
+    "verifyPasscode": {
+      "type": "Escribe tu contraseña",
+      "incorrected": "El código de acceso está incorrecto"
+    },
+    "touchSensor": {
+      "title": "Sensor tátil",
+      "usePasscode": "Usar contraseña"
+    },
+    "createPasscode": {
+      "title": "Por favor establezca una contraseña",
+      "body": "La contraseña puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
+    },
+    "deleteKey": {
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
+    },
+    "swap": {
+      "title": "No hay monedas intercambiables",
+      "body": "Swap admite BTC, RBTC y DOC. Por favor agregue el activo."
+    },
+    "contractNotFound": {
+      "title": "ERC20 Contrato no encontrado",
+      "body": "No podemos encontrar el contrato inteligente de token ERC20 de entrada. Por favor, compruebe si es correcto."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
+    }
+  }
+}

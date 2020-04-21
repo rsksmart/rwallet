@@ -23,6 +23,20 @@ const actions = {
   SET_SINGLE_SETTINGS: 'SET_SINGLE_SETTINGS',
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
+  SHOW_PASSCODE: 'SHOW_PASSCODE',
+  HIDE_PASSCODE: 'HIDE_PASSCODE',
+  CHANGE_LANGUAGE: 'CHANGE_LANGUAGE',
+  ADD_CONFIRMATION: 'ADD_CONFIRMATION',
+  REMOVE_CONFIRMATION: 'REMOVE_CONFIRMATION',
+  SET_USER: 'SET_USER',
+  RENAME: 'RENAME',
+  USER_NAME_UPDATED: 'USER_NAME_UPDATED',
+  RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
+
+  LOCK_APP: 'LOCK_APP',
+
+  SET_PASSCODE: 'SET_PASSWORD',
+  UPDATE_PASSCODE: 'UPDATE_PASSCODE',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -38,19 +52,23 @@ const actions = {
   removeNotification: () => ({
     type: actions.REMOVE_NOTIFICATION,
   }),
+  showPasscode: (category, callback, fallback) => ({
+    type: actions.SHOW_PASSCODE,
+    value: { category, callback, fallback },
+  }),
+  hidePasscode: () => ({
+    type: actions.HIDE_PASSCODE,
+  }),
   setPageLoading: (isLoading) => ({
     type: actions.IS_PAGE_LOADING,
     value: isLoading,
   }),
-  getTransactions: (symbol, type, address, page) => {
-    console.log('actions::getTransactions is called.');
-    return {
-      type: actions.GET_TRANSACTIONS,
-      payload: {
-        symbol, type, address, page,
-      },
-    };
-  },
+  getTransactions: (symbol, type, address, page) => ({
+    type: actions.GET_TRANSACTIONS,
+    payload: {
+      symbol, type, address, page,
+    },
+  }),
   createRawTransaction: (symbol, type, sender, receiver, value, data) => {
     console.log('actions::createRawTransaction is called.');
     return {
@@ -67,6 +85,32 @@ const actions = {
   }),
   updateUser: () => ({
     type: actions.UPDATE_USER,
+  }),
+  changeLanguage: (language) => ({
+    type: actions.CHANGE_LANGUAGE,
+    language,
+  }),
+  addConfirmation: (confirmation) => ({
+    type: actions.ADD_CONFIRMATION,
+    confirmation,
+  }),
+  removeConfirmation: () => ({
+    type: actions.REMOVE_CONFIRMATION,
+  }),
+  rename: (name) => ({
+    type: actions.RENAME,
+    name,
+  }),
+  resetUsernameUpdated: () => ({
+    type: actions.RESET_USER_NAME_UPDATED,
+  }),
+  lockApp: (lock) => ({
+    type: actions.LOCK_APP,
+    lock,
+  }),
+  setPasscode: (passcode) => ({
+    type: actions.SET_PASSCODE,
+    passcode,
   }),
 };
 

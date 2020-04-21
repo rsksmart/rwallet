@@ -5,7 +5,8 @@ import {
 import PropTypes from 'prop-types';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-import Header from '../../components/common/misc/header';
+import Header from '../../components/headers/header';
+
 import flex from '../../assets/styles/layout.flex';
 import TouchSensorModal from '../../components/common/modal/touchSensorModal';
 
@@ -26,7 +27,7 @@ export default class VerifyFingerprint extends Component {
       this.touchSensor.setModalVisible(true);
       const onAttempt = (error) => {
         console.log(`onAttempt: ${error}`);
-        this.setState({ errorMessage: 'No match' });
+        this.setState({ errorMessage: 'page.wallet.verifyFingerprint.noMatch' });
       };
       const params = {
         onAttempt,
@@ -54,12 +55,12 @@ export default class VerifyFingerprint extends Component {
       const { errorMessage } = this.state;
       return (
         <View style={[flex.flex1]}>
-          <Header title="Verify Fingerprint" goBack={() => { navigation.goBack(); }} />
+          <Header title="page.wallet.verifyFingerprint.title" goBack={() => { navigation.goBack(); }} />
           <TouchSensorModal
             ref={(ref) => { this.touchSensor = ref; }}
             onUsePasscodePress={() => {
               navigation.goBack();
-              navigation.navigate('VerifyPasscode', { verified: navigation.state.params.verified });
+              navigation.navigate('VerifyPasscode');
             }}
             onUserCancel={() => { navigation.goBack(); }}
             errorMessage={errorMessage}

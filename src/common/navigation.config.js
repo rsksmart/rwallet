@@ -6,35 +6,40 @@ import React from 'react';
 import common from './common';
 import BackBtn from '../components/common/buttons/back.btn.stateless';
 
-import WalletAddIndex from '../pages/wallet/add.index';
-import Dashboard from '../pages/wallet/dashboard';
+import WalletAddIndex from '../pages/wallet/dashboard/add.index';
+import Dashboard from '../pages/wallet/dashboard/dashboard';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
-import WalletCreate from '../pages/wallet/create';
 import WalletRecovery from '../pages/wallet/recovery';
 import RecoveryPhrase from '../pages/wallet/recovery.phrase';
-import WalletList from '../pages/wallet/list';
+import WalletList from '../pages/wallet/dashboard/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
-import VerifyPasscode from '../pages/wallet/verify.passcode';
 import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
+import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
+import Transaction from '../pages/wallet/transaction';
+import Swap from '../pages/wallet/swap/swap';
+import SwapSelection from '../pages/wallet/swap/swap.selection';
+import SwapCompleted from '../pages/wallet/swap.completed';
+import AddToken from '../pages/wallet/add.token';
+import AddCustomToken from '../pages/wallet/add.custom.token';
+import AddCustomTokenConfirm from '../pages/wallet/add.custom.token.confirm';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
-import SpendIndex from '../pages/spend/index';
-import EarnIndex from '../pages/earn/index';
+import ExchangeIndex from '../pages/wallet/swap';
+import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 /* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
-import ResetPasscode from '../pages/mine/reset.passcode';
-import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
+import Rename from '../pages/mine/rename';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -76,13 +81,6 @@ const routeConfigMap = {
         headerTitle: 'Select Wallet Currency',
       }),
     },
-    WalletCreate: {
-      screen: WalletCreate,
-      path: 'WalletCreate',
-      navigationOptions: () => ({
-        headerTitle: 'Create Wallet',
-      }),
-    },
     WalletRecovery: {
       screen: WalletRecovery,
       path: 'WalletRecovery',
@@ -102,6 +100,13 @@ const routeConfigMap = {
       path: 'WalletList',
       navigationOptions: () => ({
         headerTitle: 'Wallet List',
+      }),
+    },
+    SelectWallet: {
+      screen: SelectWallet,
+      path: 'SelectWallet',
+      navigationOptions: () => ({
+        headerTitle: 'Select Wallet',
       }),
     },
     StartPage: {
@@ -160,13 +165,7 @@ const routeConfigMap = {
         headerTitle: 'WalletHistory',
       }),
     },
-    VerifyPasscode: {
-      screen: VerifyPasscode,
-      path: 'VerifyPasscode',
-      navigationOptions: () => ({
-        headerTitle: 'VerifyPasscode',
-      }),
-    },
+
     VerifyFingerprint: {
       screen: VerifyFingerprint,
       path: 'VerifyFingerprint',
@@ -181,22 +180,62 @@ const routeConfigMap = {
         headerTitle: 'Scan',
       }),
     },
-  },
-  spend: {
-    SpendIndex: {
-      screen: SpendIndex,
-      path: 'SpendIndex',
+    Transaction: {
+      screen: Transaction,
+      path: 'Transaction',
       navigationOptions: () => ({
-        headerTitle: 'Spend',
+        headerTitle: 'Transaction',
+      }),
+    },
+    Swap: {
+      screen: Swap,
+      path: 'Swap',
+      navigationOptions: () => ({
+        headerTitle: 'Swap',
+      }),
+    },
+    SwapSelection: {
+      screen: SwapSelection,
+      path: 'SwapSelection',
+      navigationOptions: () => ({
+        headerTitle: 'SwapSelection',
+      }),
+    },
+    SwapCompleted: {
+      screen: SwapCompleted,
+      path: 'SwapCompleted',
+      navigationOptions: () => ({
+        headerTitle: 'SwapCompleted',
+      }),
+    },
+    AddToken: {
+      screen: AddToken,
+      path: 'AddToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddToken',
+      }),
+    },
+    AddCustomToken: {
+      screen: AddCustomToken,
+      path: 'AddCustomToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomToken',
+      }),
+    },
+    AddCustomTokenConfirm: {
+      screen: AddCustomTokenConfirm,
+      path: 'AddCustomTokenConfirm',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomTokenConfirm',
       }),
     },
   },
-  earn: {
-    EarnIndex: {
-      screen: EarnIndex,
-      path: 'EarnIndex',
+  exchange: {
+    ExchangeIndex: {
+      screen: ExchangeIndex,
+      path: 'ExchangeIndex',
       navigationOptions: () => ({
-        headerTitle: 'Earn',
+        header: null,
       }),
     },
   },
@@ -229,13 +268,6 @@ const routeConfigMap = {
         headerTitle: 'TwoFactorAuth',
       }),
     },
-    ResetPasscode: {
-      screen: ResetPasscode,
-      path: 'ResetPasscode',
-      navigationOptions: () => ({
-        headerTitle: 'ResetPasscode',
-      }),
-    },
     ResetPasscodeSuccess: {
       screen: ResetPasscodeSuccess,
       path: 'ResetPasscodeSuccess',
@@ -255,6 +287,13 @@ const routeConfigMap = {
       path: 'KeyName',
       navigationOptions: () => ({
         headerTitle: 'KeyName',
+      }),
+    },
+    Rename: {
+      screen: Rename,
+      path: 'Rename',
+      navigationOptions: () => ({
+        headerTitle: 'Rename',
       }),
     },
   },

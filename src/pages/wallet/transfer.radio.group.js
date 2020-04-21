@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color.ts';
 import Loc from '../../components/common/misc/loc';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 
 const styles = StyleSheet.create({
@@ -133,16 +134,24 @@ const styles = StyleSheet.create({
     width: '33%',
   },
   radioItemLeft: {},
-  radioItemText1: {
+  radioItemTitle: {
     color: '#000000',
     fontSize: 16,
     letterSpacing: 0.31,
+    fontWeight: '500',
+    marginBottom: 1,
   },
-  radioItemText2: {
+  radioItemTitleSelected: {
+    fontWeight: '700',
+  },
+  radioItemText: {
+    marginTop: 2,
+  },
+  radioItemTextFont: {
     color: '#4A4A4A',
-    fontSize: 12,
     fontWeight: '300',
     letterSpacing: 0.23,
+    marginTop: 2,
   },
   radioCheck: {
     fontSize: 20,
@@ -153,7 +162,7 @@ const styles = StyleSheet.create({
   },
   circle: {
     marginTop: 5,
-    marginRight: 10,
+    marginHorizontal: 7,
     height: 20,
     width: 20,
     borderRadius: 10,
@@ -172,12 +181,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  radioItemRight: {
+    flex: 1,
+  },
 });
 
-function Item({ data, onPress }) {
+function Item({
+  name, coin, value, isSelected, onPress,
+}) {
   const check = (
     <View style={styles.circle}>
-      {data.selected && <View style={styles.checkedCircle} />}
+      {isSelected && <View style={styles.checkedCircle} />}
     </View>
   );
   return (
@@ -185,91 +199,90 @@ function Item({ data, onPress }) {
       <View style={styles.radioItemLeft}>
         {check}
       </View>
-      <View>
-        <Loc style={[styles.radioItemText1]} text={data.name} />
-        <Text style={styles.radioItemText2}>
-          {data.coin}
-        </Text>
-        <Text style={styles.radioItemText2}>
-          {data.value}
-        </Text>
+      <View style={styles.radioItemRight}>
+        <Loc style={isSelected ? [styles.radioItemTitle, styles.radioItemTitleSelected] : [styles.radioItemTitle]} text={name} />
+        <ResponsiveText layoutStyle={styles.radioItemText} fontStyle={styles.radioItemTextFont} maxFontSize={12}>{coin}</ResponsiveText>
+        <ResponsiveText layoutStyle={styles.radioItemText} fontStyle={styles.radioItemTextFont} maxFontSize={12}>{value}</ResponsiveText>
       </View>
     </TouchableOpacity>
   );
 }
 
 Item.propTypes = {
-  data: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    coin: PropTypes.string.isRequired,
-    selected: PropTypes.bool.isRequired,
-  }).isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  coin: PropTypes.string.isRequired,
+  isSelected: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired,
 };
 
 export default class RadioGroup extends Component {
-  listData = [
-    {
-      name: 'Slow',
-      coin: '0.0046BTC',
-      value: '$ 0.46',
-      selected: false,
-    },
-    {
-      name: 'Average',
-      coin: '0.0048BTC',
-      value: '$ 0.68',
-      selected: false,
-    },
-    {
-      name: 'Fast',
-      coin: '0.0052BTC',
-      value: '$ 0.84',
-      selected: false,
-    },
-  ];
-
-  constructor(props) {
-    super(props);
-    const { selected } = this.props;
-    this.state = { selected };
-    const { data } = this.props;
-    if (!_.isEmpty(data)) {
-      for (let i = 0; i < data.length; i += 1) {
-        this.listData[i].coin = data[i].coin;
-      }
+  static createListData(data) {
+    const listData = [
+      { name: 'Slow' },
+      { name: 'Average' },
+      { name: 'Fast' },
+    ];
+    for (let i = 0; i < data.length; i += 1) {
+      listData[i].coin = data[i].coin;
+      listData[i].value = data[i].value;
     }
+    return listData;
   }
 
-  render() {
+  static renderItems(listData, selectIndex, onPress) {
     const items = [];
-    const { selected } = this.state;
-    const { onChange } = this.props;
-
-    if (!_.isEmpty(this.listData)) {
-      for (let i = 0; i < this.listData.length; i += 1) {
-        if (selected === i) {
-          this.listData[i].selected = true;
-        } else {
-          this.listData[i].selected = false;
-        }
+    if (!_.isEmpty(listData)) {
+      for (let i = 0; i < listData.length; i += 1) {
+        const item = listData[i];
         items.push(
           <Item
-            data={this.listData[i]}
-            key={`${Math.random()}`}
-            onPress={() => {
-              this.setState({ selected: i });
-              onChange(i);
-            }}
+            name={`page.wallet.transfer.${item.name}`}
+            coin={item.coin}
+            value={item.value}
+            key={i.toString()}
+            isSelected={selectIndex === i}
+            onPress={() => onPress(i)}
           />,
         );
       }
     }
+    return items;
+  }
 
+  constructor(props) {
+    super(props);
+    this.state = { listData: [] };
+    this.onPress = this.onPress.bind(this);
+  }
+
+  componentDidMount() {
+    const { data } = this.props;
+    if (!_.isEmpty(data)) {
+      const listData = RadioGroup.createListData(data);
+      this.setState({ listData });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { data } = nextProps;
+    if (!_.isEmpty(data)) {
+      const listData = RadioGroup.createListData(data);
+      this.setState({ listData });
+    }
+  }
+
+  onPress(i) {
+    const { onChange } = this.props;
+    onChange(i);
+  }
+
+  render() {
+    const { selectIndex } = this.props;
+    const { listData } = this.state;
     return (
       <View style={styles.RadioGroup}>
-        {items}
+        {RadioGroup.renderItems(listData, selectIndex, this.onPress)}
       </View>
     );
   }
@@ -277,13 +290,13 @@ export default class RadioGroup extends Component {
 
 RadioGroup.propTypes = {
   onChange: PropTypes.func.isRequired,
-  selected: PropTypes.number,
+  selectIndex: PropTypes.number,
   data: PropTypes.arrayOf(PropTypes.shape({
     coin: PropTypes.string.isRequired,
   })),
 };
 
 RadioGroup.defaultProps = {
-  selected: 0,
+  selectIndex: 0,
   data: [],
 };

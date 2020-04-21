@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import {
   View, StyleSheet, Image,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import flex from '../../assets/styles/layout.flex';
-import Header from '../../components/common/misc/header';
-import Button from '../../components/common/button/button';
+import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
-import screenHelper from '../../common/screenHelper';
+import BasePageGereral from '../base/base.page.general';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -58,38 +56,33 @@ export default class VerifyPhraseSuccess extends Component {
       header: null,
     });
 
-    render() {
+    constructor(props) {
+      super(props);
+      this.onBackPress = this.onBackPress.bind(this);
+    }
+
+    onBackPress() {
       const { navigation } = this.props;
+      const statckActions = StackActions.popToTop();
+      navigation.dispatch(statckActions);
+    }
+
+    render() {
       return (
-        <View style={[flex.flex1]}>
-          <Header
-            title="Verify Phrase Success"
-            goBack={() => {
-              navigation.goBack();
-            }}
-          />
-          <View style={[screenHelper.styles.body]}>
-            <View style={styles.content}>
-              <Image style={styles.check} source={completed} />
-              <Loc style={[styles.title]} text="Your recovery phrase is verified" />
-              <Loc style={[styles.text]} text="Be sure to store your recovery phrase in a safe and secure place" />
-            </View>
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          bottomBtnText="button.goToWallet"
+          bottomBtnOnPress={this.onBackPress}
+          hasLoader={false}
+          headerComponent={<Header title="page.wallet.verifyPhraseSuccess.title" onBackButtonPress={this.onBackPress} />}
+        >
+          <View style={styles.content}>
+            <Image style={styles.check} source={completed} />
+            <Loc style={[styles.title]} text="page.wallet.verifyPhraseSuccess.body" />
+            <Loc style={[styles.text]} text="page.wallet.verifyPhraseSuccess.note" />
           </View>
-          <View style={styles.buttonView}>
-            <Button
-              text="GO TO WALLET"
-              onPress={async () => {
-                const resetAction = StackActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({ routeName: 'WalletList' }),
-                  ],
-                });
-                navigation.dispatch(resetAction);
-              }}
-            />
-          </View>
-        </View>
+        </BasePageGereral>
       );
     }
 }

@@ -1,50 +1,22 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, ImageBackground, TouchableOpacity, ScrollView, Text, FlatList, Image,
+  View, StyleSheet, TouchableOpacity, Text, FlatList, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Entypo from 'react-native-vector-icons/Entypo';
-import flex from '../../assets/styles/layout.flex';
-import screenHelper from '../../common/screenHelper';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import { createInfoNotification } from '../../common/notification.controller';
+import { createInfoConfirmation } from '../../common/confirmation.controller';
+import KeysettingsHeader from '../../components/headers/header.keysettings';
+import BasePageGereral from '../base/base.page.general';
+import common from '../../common/common';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: screenHelper.headerHeight,
-    marginTop: screenHelper.headerMarginTop,
-  },
-  headerTitle: {
-    fontSize: 25,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 65,
-    left: 24,
-    color: '#FFF',
-  },
-  headerText: {
-    fontSize: 15,
-    fontWeight: '900',
-    position: 'absolute',
-    bottom: 45,
-    left: 24,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 9,
-    bottom: 97,
-  },
-  chevron: {
-    color: '#FFF',
-  },
   sectionContainer: {
     paddingHorizontal: 30,
+    marginTop: 30,
   },
   sectionTitle: {
     marginTop: 5,
@@ -95,18 +67,14 @@ const styles = StyleSheet.create({
   listRowTitle: {
     marginLeft: 5,
   },
+  warningText: {
+    color: '#DF5264',
+    fontWeight: '500',
+  },
+  advancedBlock: {
+    marginBottom: 60 + screenHelper.bottomHeight,
+  },
 });
-
-const header = require('../../assets/images/misc/header.png');
-const BTC = require('../../assets/images/icon/BTC.png');
-const RBTC = require('../../assets/images/icon/RBTC.png');
-const RIF = require('../../assets/images/icon/RIF.png');
-
-
-const getIcon = (symbol) => {
-  const icons = { BTC, RBTC, RIF };
-  return icons[symbol];
-};
 
 const ListRow = ({ title, onPress }) => {
   const listRow = (
@@ -125,14 +93,8 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const icon = getIcon(coin.symbol);
-        const item = {
-          icon,
-          title: coin.id,
-          onPress: () => {
-            console.log('onPress, coin: ', coin);
-          },
-        };
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
       return listData;
@@ -144,10 +106,10 @@ class KeySettings extends Component {
           data={listData}
           extraData={listData}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.walletRow} onPress={item.onPress}>
+            <View style={styles.walletRow}>
               <Image source={item.icon} />
               <Text style={styles.walletRowTitle}>{item.title}</Text>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -172,8 +134,14 @@ class KeySettings extends Component {
       this.state = {
         walletCount: 0,
         name: '',
-        isShowNotification: false,
+        isConfirmDeleteKey: false,
       };
+      this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
+      this.onBackupPress = this.onBackupPress.bind(this);
+      this.onKeyNamePress = this.onKeyNamePress.bind(this);
+      this.onDeletePress = this.onDeletePress.bind(this);
+      this.deleteKey = this.deleteKey.bind(this);
+      this.backup = this.backup.bind(this);
     }
 
     componentWillMount() {
@@ -181,61 +149,44 @@ class KeySettings extends Component {
       const { key } = navigation.state.params;
       const { coins, name } = key;
       const walletListData = KeySettings.createWalletListData(coins);
-      const advancedListData = this.createAdvancedListData(coins);
       this.key = key;
       this.setState({
         walletCount: coins.length,
         name,
         walletListData,
-        advancedListData,
       });
-      this.onBackupPress = this.onBackupPress.bind(this);
-      this.onKeyNamePress = this.onKeyNamePress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
       const {
-        isWalletsUpdated, navigation, addNotification, notification, resetWalletsUpdated, isWalletNameUpdated,
+        isWalletsUpdated, navigation, resetWalletsUpdated, isWalletNameUpdated,
       } = nextProps;
-      const { isShowNotification } = this.state;
+      const { key } = navigation.state.params;
+      const { name, coins } = key;
+      const { isConfirmDeleteKey } = this.state;
 
       // If isWalletsUpdated, wallet is deleted.
-      if (isWalletsUpdated && addNotification && resetWalletsUpdated) {
-        const infoNotification = createInfoNotification(
-          'Key deleted',
-          'Key has been deleted successfully.',
-        );
-        addNotification(infoNotification);
+      if (isWalletsUpdated && resetWalletsUpdated) {
+        const walletListData = KeySettings.createWalletListData(coins);
+        this.setState({ walletListData });
         resetWalletsUpdated();
-        this.setState({ isShowNotification: true });
+        if (isConfirmDeleteKey) {
+          navigation.goBack();
+        }
       }
 
       if (isWalletNameUpdated) {
-        this.setState({ name: this.key.name });
+        this.setState({ name });
       }
-
-      // If notification removed by user, go back
-      if (isShowNotification && notification === null) {
-        this.setState({ isShowNotification: false });
-        navigation.goBack();
-      }
-    }
-
-    static renderBackButton(navigation) {
-      const backButton = (
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
-        </TouchableOpacity>
-      );
-      return backButton;
     }
 
     onBackupPress() {
-      const { navigation } = this.props;
-      navigation.navigate('RecoveryPhrase', { wallet: this.key });
+      const { showPasscode, passcode } = this.props;
+      if (passcode) {
+        showPasscode('verify', this.backup, () => {});
+      } else {
+        this.backup();
+      }
     }
 
     onKeyNamePress() {
@@ -243,57 +194,77 @@ class KeySettings extends Component {
       navigation.navigate('KeyName', { key: this.key });
     }
 
-    createAdvancedListData() {
+    onDeleteConfirm() {
+      const {
+        passcode, showPasscode, resetSwapSource, resetSwapDest,
+      } = this.props;
+      if (passcode) {
+        showPasscode('verify', this.deleteKey, () => {
+          resetSwapSource();
+          resetSwapDest();
+        });
+      } else {
+        resetSwapSource();
+        resetSwapDest();
+        this.deleteKey();
+      }
+    }
+
+    onDeletePress() {
+      const { addConfirmation } = this.props;
+      const infoConfirmation = createInfoConfirmation(
+        'modal.deleteKey.title',
+        'modal.deleteKey.body',
+        () => this.onDeleteConfirm(),
+      );
+      addConfirmation(infoConfirmation);
+    }
+
+    backup() {
+      const { navigation } = this.props;
+      // Backup flow will skip phrase and wallet creation.
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldVerifyPhrase: false });
+    }
+
+    deleteKey() {
       const { deleteKey, walletManager } = this.props;
-      const listData = [
-        {
-          title: 'Delete',
-          onPress: () => {
-            console.log('Delete, key: ', this.key);
-            deleteKey(this.key, walletManager);
-          },
-        },
-      ];
-      return listData;
+      deleteKey(this.key, walletManager);
+      this.setState({ isConfirmDeleteKey: true });
     }
 
     render() {
       const { navigation } = this.props;
       const {
-        walletCount, name, walletListData, advancedListData,
+        walletCount, name, walletListData,
       } = this.state;
       return (
-        <ScrollView style={[flex.flex1]}>
-          <ImageBackground source={header} style={[styles.headerImage]}>
-            <Loc style={[styles.headerTitle]} text="Key Settings" />
-            <Text style={[styles.headerText]}>
-              <Loc text="This key contains" />
-              {` ${walletCount} `}
-              <Loc text="wallets" />
-            </Text>
-            { KeySettings.renderBackButton(navigation) }
-          </ImageBackground>
-          <View style={screenHelper.styles.body}>
-            <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-              <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
-                <Loc style={[styles.keyTitle]} text="Key Name" />
-                <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-              <Loc style={[styles.sectionTitle]} text="Wallets" />
-              {KeySettings.renderWalletList(walletListData)}
-            </View>
-            <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-              <Loc style={[styles.sectionTitle]} text="Security" />
-              <ListRow title="Backup" onPress={this.onBackupPress} />
-            </View>
-            <View style={[styles.sectionContainer, { marginTop: 10, marginBottom: 10 }]}>
-              <Loc style={[styles.sectionTitle]} text="Advanced" />
-              {KeySettings.renderAdvancedList(advancedListData)}
-            </View>
+        <BasePageGereral
+          isSafeView={false}
+          hasBottomBtn={false}
+          hasLoader={false}
+          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
+        >
+          <View style={styles.sectionContainer}>
+            <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
+              <Loc style={[styles.keyTitle]} text="page.mine.keySettings.keyName" />
+              <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Wallets" />
+            {KeySettings.renderWalletList(walletListData)}
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
+            <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
+          </View>
+          <View style={[styles.sectionContainer, styles.advancedBlock]}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
+            <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
+              <Loc style={[styles.listRowTitle, styles.warningText]} text="page.mine.keySettings.delete" />
+            </TouchableOpacity>
+          </View>
+        </BasePageGereral>
       );
     }
 }
@@ -308,28 +279,39 @@ KeySettings.propTypes = {
   walletManager: PropTypes.shape({}),
   deleteKey: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
-  isWalletNameUpdated: PropTypes.bool.isRequired,
-  addNotification: PropTypes.func.isRequired,
-  notification: PropTypes.shape({}),
+  addConfirmation: PropTypes.func.isRequired,
+  confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
+  isWalletNameUpdated: PropTypes.bool.isRequired,
+  showPasscode: PropTypes.func.isRequired,
+  resetSwapSource: PropTypes.func.isRequired,
+  resetSwapDest: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
-  notification: undefined,
+  confirmation: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
-  notification: state.App.get('notification'),
+  confirmation: state.App.get('confirmation'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
+  ),
+  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
+  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import Notification from './notification.wrapper';
-import actions from '../../../redux/app/actions';
 
 const Notifications = (props) => {
-  const { showNotification, notification, dispatch } = props;
+  const {
+    showNotification, notification, removeNotification, notificationCloseCallback,
+  } = props;
   return (
     <View>
       {showNotification && notification && (
@@ -14,7 +15,8 @@ const Notifications = (props) => {
         title={notification.title}
         message={notification.message}
         buttonText={notification.buttonText}
-        onClosePress={() => dispatch(actions.removeNotification())}
+        onClosePress={removeNotification}
+        notificationCloseCallback={notificationCloseCallback}
       />
       )}
     </View>
@@ -25,12 +27,14 @@ Notifications.propTypes = {
   showNotification: PropTypes.bool.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   notification: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
+  removeNotification: PropTypes.func.isRequired,
+  notificationCloseCallback: PropTypes.func,
 };
 
 Notifications.defaultProps = {
   // eslint-disable-next-line react/forbid-prop-types
   notification: null,
+  notificationCloseCallback: null,
 };
 
 export default Notifications;

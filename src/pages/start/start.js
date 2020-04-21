@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, StyleSheet } from 'react-native';
+import {
+  View, Image, StyleSheet, Text,
+} from 'react-native';
+import { isEmpty } from 'lodash';
+import VersionNumber from 'react-native-version-number';
 
+import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
-import Indicator from '../../components/common/misc/indicator';
+import SafeAreaView from '../../components/common/misc/safe.area.view';
+import color from '../../assets/styles/color.ts';
+import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -18,7 +25,16 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: '10%',
+    bottom: screenHelper.bottomButtonMargin,
+  },
+  versionText: {
+    color: color.midGrey,
+    fontFamily: 'Avenir-Black',
+    fontSize: 16,
+    fontWeight: '500',
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
 });
 
@@ -30,41 +46,38 @@ class StartPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      showButton: false,
+      version: '',
     };
   }
 
+  static getDerivedStateFromProps(nextProps) {
+    const { isInitWithParseDone, wallets, navigation } = nextProps;
+    if (isInitWithParseDone && !isEmpty(wallets)) {
+      navigation.navigate('PrimaryTabNavigator');
+    }
+    return null;
+  }
+
   async componentDidMount() {
-    console.log();
-    this.setState({ showButton: true });
+    const version = VersionNumber.appVersion;
+    this.setState({ version });
   }
 
   render() {
-    const { loading, showButton } = this.state;
-    const { navigation } = this.props;
-    let buttonView = null;
-    if (showButton) {
-      buttonView = (
-        <View style={styles.buttonView}>
-          <Button
-            text="GET STARTED"
-            onPress={async () => {
-              this.setState({ showButton: false });
-              navigation.navigate('TermsPage');
-            }}
-          />
-        </View>
-      );
-    }
+    const { navigation, isInitWithParseDone, wallets } = this.props;
+    const { version } = this.state;
     return (
-      <View style={styles.page}>
+      <SafeAreaView style={[styles.page]}>
         <View style={styles.logo}>
           <Image source={logo} />
-          <Indicator visible={loading} style={[{ marginTop: 20 }]} />
         </View>
-        {buttonView}
-      </View>
+        {(isInitWithParseDone && isEmpty(wallets)) && (
+        <View style={styles.buttonView}>
+          <Button text="page.start.start.button" onPress={() => navigation.navigate('TermsPage')} />
+        </View>
+        )}
+        <Text style={styles.versionText}>{`version: ${version}`}</Text>
+      </SafeAreaView>
     );
   }
 }
@@ -76,9 +89,17 @@ StartPage.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  wallets: PropTypes.arrayOf(PropTypes.object),
+  isInitWithParseDone: PropTypes.bool.isRequired,
 };
 
 StartPage.defaultProps = {
+  wallets: undefined,
 };
 
-export default StartPage;
+const mapStateToProps = (state) => ({
+  isInitWithParseDone: state.App.get('isInitWithParseDone'),
+  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+});
+
+export default connect(mapStateToProps, null)(StartPage);
