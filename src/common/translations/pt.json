@@ -159,7 +159,7 @@
         "balance": "Saldo"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Adicionar tokens",
         "enableAssets": "Ativar ativos",
         "note": "Desative ativos para ocultá-los do seu portfólio."
       }
