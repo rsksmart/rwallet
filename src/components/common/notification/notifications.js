@@ -4,7 +4,9 @@ import { View } from 'react-native';
 import Notification from './notification.wrapper';
 
 const Notifications = (props) => {
-  const { showNotification, notification, removeNotification } = props;
+  const {
+    showNotification, notification, removeNotification, notificationCloseCallback,
+  } = props;
   return (
     <View>
       {showNotification && notification && (
@@ -14,6 +16,7 @@ const Notifications = (props) => {
         message={notification.message}
         buttonText={notification.buttonText}
         onClosePress={removeNotification}
+        notificationCloseCallback={notificationCloseCallback}
       />
       )}
     </View>
@@ -25,11 +28,13 @@ Notifications.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   notification: PropTypes.object,
   removeNotification: PropTypes.func.isRequired,
+  notificationCloseCallback: PropTypes.func,
 };
 
 Notifications.defaultProps = {
   // eslint-disable-next-line react/forbid-prop-types
   notification: null,
+  notificationCloseCallback: null,
 };
 
 export default Notifications;

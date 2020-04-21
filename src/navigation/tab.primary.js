@@ -4,8 +4,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
-import SpendStackNavigator from './stack.spend';
-import EarnStackNavigator from './stack.earn';
+import ExchangeStackNavigator from './stack.exchange';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
 import { strings } from '../common/i18n';
@@ -14,7 +13,6 @@ import TabBar from './components/bottom.tab';
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
-import earnLight from '../assets/images/root/tab/earn.l.png';
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -22,33 +20,37 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: HomeStackNavigator,
       path: 'home',
       navigationOptions: {
-        title: strings('root/Wallet'),
+        title: strings('root.Wallet'),
       },
     },
-    Send: {
-      screen: SpendStackNavigator,
-      path: 'spend',
+    Exchange: {
+      screen: ExchangeStackNavigator,
+      path: 'exchange',
       navigationOptions: {
-        title: strings('root/Spend'),
-      },
-    },
-    Receive: {
-      screen: EarnStackNavigator,
-      path: 'earn',
-      navigationOptions: {
-        title: strings('root/Earn'),
+        title: strings('root.Exchange'),
       },
     },
     Mine: {
       screen: MineStackNavigator,
       path: 'mine',
       navigationOptions: {
-        title: strings('root/Me'),
+        title: strings('root.Me'),
       },
     },
   },
   {
-    tabBarComponent: TabBar,
+    tabBarComponent: (props) => (
+      <View style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+      >
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+        <TabBar {...props} />
+      </View>
+    ),
     defaultNavigationOptions: ({ navigation }) => ({
       // eslint-disable-next-line react/prop-types
       tabBarIcon: ({ focused }) => {
@@ -64,13 +66,8 @@ const PrimaryTabNavigator = createBottomTabNavigator(
             height = 22;
             img = MineLight;
             break;
-          case 'Send':
+          case 'Exchange':
             img = spendLight;
-            break;
-          case 'Receive':
-            width = 21;
-            height = 21;
-            img = earnLight;
             break;
           default:
             console.error(`unexpected tab：${navigation.state.routeName}`);
@@ -94,7 +91,7 @@ const PrimaryTabNavigator = createBottomTabNavigator(
     }),
     tabBarOptions: {
       activeTintColor: '#df394d', // 激活颜色
-      inactiveTintColor: 'gray', // 未激活颜色
+      inactiveTintColor: 'gray', // 未激活颜色,
     },
   },
 );

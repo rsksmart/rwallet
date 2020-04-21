@@ -44,8 +44,8 @@ class TwoFactorAuth extends Component {
     }
 
     onResetPasscodePress() {
-      const { showPasscode, navigation } = this.props;
-      if (global.passcode) {
+      const { passcode, showPasscode, navigation } = this.props;
+      if (passcode) {
         showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
       } else {
         showPasscode('create');
@@ -64,11 +64,11 @@ class TwoFactorAuth extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Two-Factor Authentication" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.mine.2fa.title" />}
         >
           <View style={styles.body}>
             <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
-              <Loc style={[styles.title]} text="Reset Passcode" />
+              <Loc style={[styles.title]} text="page.mine.2fa.resetPasscode" />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
           </View>
@@ -86,15 +86,18 @@ TwoFactorAuth.propTypes = {
   }).isRequired,
   setSingleSettings: PropTypes.func,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   fingerprint: state.App.get('fingerprint'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

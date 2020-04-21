@@ -4,7 +4,6 @@ import {
   View, StyleSheet, Text, Linking, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -48,6 +47,7 @@ const styles = StyleSheet.create({
   },
   linkView: {
     marginTop: 20,
+    marginBottom: 40,
   },
   amount: {
     flex: 1,
@@ -86,20 +86,20 @@ class Transaction extends Component {
 
   static processViewData(transation, latestBlockHeights) {
     const { rawTransaction } = transation;
-    let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
-    latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = `${common.getBalanceString(rawTransaction.symbol, amount)} ${rawTransaction.symbol}`;
+      amountText = `${common.getBalanceString(amount, transation.decimalPlaces)} ${rawTransaction.symbol}`;
     }
-    let datetimeText = null;
-    if (!_.isNil(transation.datetime)) {
-      datetimeText = moment(transation.datetime).format('DD/MM/YYYY hh:mm a');
+    const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : '';
+    let confirmations = strings('page.wallet.transaction.Unconfirmed');
+    if (transation.state === 'Sent' || transation.state === 'Received') {
+      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
+      latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
+      confirmations = latestBlockHeight - rawTransaction.blockHeight;
+      confirmations = confirmations < 0 ? 0 : confirmations;
+      confirmations = confirmations >= 6 ? '6+' : confirmations;
     }
-    let confirmations = latestBlockHeight - rawTransaction.blockHeight;
-    confirmations = confirmations < 0 ? 0 : confirmations;
-    confirmations = confirmations >= 6 ? '6+' : confirmations;
     return {
       transactionState: transation.state,
       transactionId: rawTransaction.hash,
@@ -107,7 +107,7 @@ class Transaction extends Component {
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: strings('No memo'),
+      memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
     };
   }
@@ -141,10 +141,10 @@ class Transaction extends Component {
     } = this.state;
     return (
       <BasePageGereral
-        isSafeView={false}
+        isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        headerComponent={<Header title={title} onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<Header title={`page.wallet.transaction.${title}`} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
@@ -155,24 +155,24 @@ class Transaction extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Date" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.date" />
             <Text>{datetime}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Confirmations" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.confirmations" />
             <Text>{confirmations}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, memo]} text="Memo" />
+            <Loc style={[styles.sectionTitle, memo]} text="page.wallet.transaction.memo" />
             <Text>{memo}</Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Transaction ID" />
-            <Text numberOfLines={1}>{transactionId}</Text>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
+            <Text selectable>{transactionId}</Text>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
-              <Loc style={styles.link} text="View on blockchain" />
+              <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>
           </View>
         </View>

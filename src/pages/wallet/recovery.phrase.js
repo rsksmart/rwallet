@@ -43,12 +43,17 @@ class RecoveryPhrase extends Component {
 
     constructor(props) {
       super(props);
-
+      const { navigation } = props;
+      const { shouldVerifyPhrase } = navigation.state.params;
       this.state = {
         phrases: [],
       };
-      this.onNextPress = this.onNextPress.bind(this);
-      this.onCopyPress = this.onCopyPress.bind(this);
+      if (_.isNil(shouldVerifyPhrase)) {
+        throw new Error('shouldVerifyPhrase is undefined or null.');
+      }
+      this.bottomBtnText = shouldVerifyPhrase ? 'button.NEXT' : 'button.Finish';
+      this.onBottomBtnPress = (shouldVerifyPhrase ? this.onNextPressed : this.onFinishPressed).bind(this);
+      this.onCopyPressed = this.onCopyPressed.bind(this);
     }
 
     async componentDidMount() {
@@ -69,26 +74,31 @@ class RecoveryPhrase extends Component {
       const phrases = this.phrase.split(' ');
       this.setState({ phrases }, () => {
         const notification = createInfoNotification(
-          'Recovery Phrase',
-          'Safeguard your recovery phrase Text',
+          'modal.guardPhrase.title',
+          'modal.guardPhrase.body',
         );
         addNotification(notification);
       });
     }
 
-    onNextPress() {
+    onNextPressed() {
       const { navigation } = this.props;
       const params = { ...navigation.state.params, phrase: this.phrase };
       navigation.navigate('VerifyPhrase', params);
     }
 
-    onCopyPress() {
+    onFinishPressed() {
+      const { navigation } = this.props;
+      navigation.goBack();
+    }
+
+    onCopyPressed() {
       const { phrase } = this;
       const { addNotification } = this.props;
       Clipboard.setString(phrase);
       const notification = createInfoNotification(
-        'Copied',
-        'The recovery phrase has been copied to clipboard',
+        'modal.phraseCopied.title',
+        'modal.phraseCopied.body',
       );
       addNotification(notification);
     }
@@ -100,19 +110,19 @@ class RecoveryPhrase extends Component {
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          bottomBtnText="NEXT"
-          bottomBtnOnPress={this.onNextPress}
+          bottomBtnText={this.bottomBtnText}
+          bottomBtnOnPress={this.onBottomBtnPress}
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="Recovery Phrase" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recoveryPhrase.title" />}
         >
-          <Loc style={[styles.note, { marginTop: 15 }]} text="Write down or copy these words" />
-          <Loc style={[styles.note]} text="in the right order and save them" />
-          <Loc style={[styles.note]} text="somewhere safe" />
+          <Loc style={[styles.note, { marginTop: 15 }]} text="page.wallet.recoveryPhrase.note1" />
+          <Loc style={[styles.note]} text="page.wallet.recoveryPhrase.note2" />
+          <Loc style={[styles.note]} text="page.wallet.recoveryPhrase.note3" />
           <View style={styles.tagsView}>
             <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
           </View>
-          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPress}>
-            <Loc style={[styles.copy]} text="Copy" />
+          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPressed}>
+            <Loc style={[styles.copy]} text="button.Copy" />
           </TouchableOpacity>
         </BasePageGereral>
       );

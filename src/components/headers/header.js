@@ -44,33 +44,37 @@ const styles = StyleSheet.create({
   },
 });
 
-function Header({ title, onBackButtonPress }) {
+function Header({
+  title, isShowBackButton, onBackButtonPress, rightBtn,
+}) {
   let backButton = null;
-  let titleStyle = null;
-  if (onBackButtonPress) {
+  if (isShowBackButton) {
     backButton = (
       <TouchableOpacity style={styles.backButton} onPress={onBackButtonPress}>
         <Entypo name="chevron-small-left" size={50} style={styles.chevron} />
       </TouchableOpacity>
     );
-  } else {
-    titleStyle = styles.noGobackTitleStyle;
   }
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
-      <ResponsiveText layoutStyle={[styles.headerTitle, titleStyle]} fontStyle={styles.headerTitleText} maxFontSize={32}>{strings(title)}</ResponsiveText>
+      <ResponsiveText layoutStyle={[styles.headerTitle]} fontStyle={styles.headerTitleText} maxFontSize={32}>{strings(title)}</ResponsiveText>
       { backButton }
+      { rightBtn && rightBtn() }
     </ImageBackground>
   );
 }
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
+  isShowBackButton: PropTypes.bool,
   onBackButtonPress: PropTypes.func,
+  rightBtn: PropTypes.func,
 };
 
 Header.defaultProps = {
+  isShowBackButton: true,
   onBackButtonPress: null,
+  rightBtn: null,
 };
 
 const mapStateToProps = (state) => ({

@@ -69,25 +69,21 @@ class Settings {
   }
 
   /*
-   * Rename
+   * validateName
    * @param {string} name, accept a-z, A-Z, 0-9 and space, max length is 32
    */
-  rename(name) {
+  // eslint-disable-next-line class-methods-use-this
+  validateName(name) {
     if (name.length < 1) {
-      // throw new Error('Name is too short.');
       throw new Error('err.nametooshort');
     } else if (name.length > 32) {
-      // throw new Error('Name is too long.');
       throw new Error('err.nametoolong');
     }
     const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
     const match = regex.exec(name);
     if (!match) {
-      console.log('rename, regex validatiton failed');
-      // throw new Error('Name contains invalid characters.');
       throw new Error('err.nameinvalid');
     }
-    this.set('name', name);
   }
 }
 

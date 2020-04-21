@@ -1,24 +1,24 @@
-/** App level configurations */
-// serverURL list
-// Dogfood http://130.211.12.3/parse
-// Dev Android Simulator http://10.0.2.2:1338/parse
-// Dev iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
+import { PARSE_SERVER_URL } from 'react-native-dotenv';
+import { isEmpty } from 'lodash';
+
+if (isEmpty(PARSE_SERVER_URL)) {
+  throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
+}
+
 const config = {
   parse: {
     appId: 'rwallet',
     javascriptKey: '',
-    masterKey: '5a269cfebfde46a9acec7b3273bf6c245a269cfebfde46a9acec7b3273bf6c24',
-    // serverURL: 'http://130.211.12.3/parse',
-    serverURL: 'http://10.0.2.2:1338/parse',
+    serverURL: PARSE_SERVER_URL,
   },
   defaultSettings: {
-    username: 'Anonymous User',
+    username: undefined,
     language: 'en',
     currency: 'USD',
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
@@ -47,6 +47,7 @@ const config = {
     BTC: 6,
     RBTC: 6,
     RIF: 3,
+    DOC: 3,
   },
   assetValueDecimalPlaces: 2,
   transactionUrls: {
@@ -59,11 +60,29 @@ const config = {
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
     RIF: {
-      Mainnet: 'https://explorer.rsk.co/tx/',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
+    },
+    DOC: {
+      Mainnet: 'https://explorer.rsk.co/tx',
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
   defaultFontFamily: 'Roboto', // defaultFontFamily, for android
+  coinswitch: {
+    // Put the initPair here because
+    // 1. constrain the user to select the pair, which is only supported by coinswitch.
+    // 2. use it as a array, basically we need failback. Because always 2 precondition need to be fullfilled before useing going forward (1. coinswitch supporting 2. use has the specific coin)
+    // 3. Since based on the current logic, we will alwauys know one of them beforehand. So to take advantage of this, by using key-value
+    initPairs: {
+      BTC: ['RBTC', 'DOC'],
+      RBTC: ['BTC'],
+      DOC: ['BTC'],
+    },
+  },
+  appLock: {
+    timeout: 300000,
+  },
 };
 
 export default config;

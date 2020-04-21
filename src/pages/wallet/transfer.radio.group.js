@@ -237,7 +237,7 @@ export default class RadioGroup extends Component {
         const item = listData[i];
         items.push(
           <Item
-            name={item.name}
+            name={`page.wallet.transfer.${item.name}`}
             coin={item.coin}
             value={item.value}
             key={i.toString()}

@@ -3,8 +3,8 @@ import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
 import _ from 'lodash';
-
 import PropTypes from 'prop-types';
+
 import UpdateModal from '../components/update/update.modal';
 import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
@@ -14,7 +14,6 @@ import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
-import common from '../common/common';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -40,12 +39,6 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-    global.functions = {
-      showToast: (wording) => {
-        // eslint-disable-next-line react/no-string-refs
-        this.toast.showToast(wording);
-      },
-    };
 
     this.state = {
       isStorageRead: false,
@@ -57,21 +50,18 @@ class RootComponent extends Component {
    * RootComponent is the main entrace of the App
    * Initialization jobs need to start here
    */
-  componentWillMount() {
+  async componentWillMount() {
     const { initializeFromStorage } = this.props;
 
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
   }
 
-  async componentDidMount() {
-    await common.updateInAppPasscode();
-  }
-
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
+      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
     } = nextProps;
 
     const {
@@ -79,6 +69,8 @@ class RootComponent extends Component {
     } = this.props;
 
     const { isStorageRead, isParseWritten } = this.state;
+
+    const tokens = walletManager.getTokens();
 
     const newState = this.state;
 
@@ -98,7 +90,7 @@ class RootComponent extends Component {
       }
 
       if (needUpdate) {
-        updateWalletAssetValue(currency);
+        updateWalletAssetValue(currency, prices);
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
@@ -110,10 +102,14 @@ class RootComponent extends Component {
       } else {
         // Start timer to get price frequently
         // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchPriceTimer();
         startFetchBalanceTimer(walletManager);
         startFetchTransactionTimer(walletManager);
         startFetchLatestBlockHeightTimer();
+
+        console.log('initLiveQueryPrice', initLiveQueryPrice);
+        initLiveQueryPrice();
+        initLiveQueryBalances(tokens);
+        initLiveQueryTransactions(tokens);
 
         newState.isParseWritten = true;
       }
@@ -124,7 +120,9 @@ class RootComponent extends Component {
 
   render() {
     const {
-      showNotification, notification, showPasscode, passcodeType, closePasscodeModal, removeNotification, passcodeCallback, passcodeFallback, isShowConfirmation, confirmation, removeConfirmation, confirmationCallback,
+      showNotification, notification, removeNotification, notificationCloseCallback,
+      showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
+      isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
     } = this.props;
 
     return (
@@ -132,8 +130,8 @@ class RootComponent extends Component {
         <Root>
           <SwitchNavi uriPrefix={uriPrefix} />
           {false && <UpdateModal showUpdate mandatory={false} />}
-          <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} />
-          <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} />
+          <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} notificationCloseCallback={notificationCloseCallback} />
+          <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
         </Root>
@@ -150,12 +148,13 @@ RootComponent.propTypes = {
   startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape({}),
+  walletManager: PropTypes.shape({
+    getTokens: PropTypes.func,
+  }),
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
-  startFetchPriceTimer: PropTypes.func.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -168,7 +167,12 @@ RootComponent.propTypes = {
   isShowConfirmation: PropTypes.bool.isRequired,
   confirmation: PropTypes.shape({}),
   removeConfirmation: PropTypes.func.isRequired,
+  notificationCloseCallback: PropTypes.func,
   confirmationCallback: PropTypes.func,
+  confirmationCancelCallback: PropTypes.func,
+  initLiveQueryPrice: PropTypes.func.isRequired,
+  initLiveQueryBalances: PropTypes.func.isRequired,
+  initLiveQueryTransactions: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
@@ -179,6 +183,8 @@ RootComponent.defaultProps = {
   passcodeFallback: null,
   confirmation: null,
   confirmationCallback: null,
+  confirmationCancelCallback: null,
+  notificationCloseCallback: null,
 };
 
 export default RootComponent;

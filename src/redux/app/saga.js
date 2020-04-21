@@ -11,21 +11,20 @@ import walletActions from '../wallet/actions';
 import application from '../../common/application';
 import settings from '../../common/settings';
 import walletManager from '../../common/wallet/walletManager';
-import I18n from '../../common/i18n';
+import common from '../../common/common';
+import definitions from '../../common/definitions';
+import storage from '../../common/storage';
+import fcmHelper from '../../common/fcmHelper';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
-// Define default error notification text
-const DEFAULT_ERROR_NOTIFICATION_TITLE = 'Internal server error';
-const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'Please contact customer support';
-
-function* updateUserRequest() {
+function* updateUserRequest(action) {
   // Upload wallets or settings to server
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings });
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken: action.fcmToken });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -50,13 +49,21 @@ function* initFromStorageRequest() {
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
-    // set I18n.locale
-    I18n.locale = settings.get('language');
+    // set language
+    common.setLanguage(settings.get('language'));
+    common.setMomentLocale(settings.get('language'));
 
     // Sets state in reducer for success
     yield put({
       type: actions.SET_SETTINGS,
       value: settings,
+    });
+
+    // Set passcode in reducer
+    const passcode = yield call(storage.getPasscode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
     });
 
     // 2. Deserialize Wallets from permenate storage
@@ -94,13 +101,10 @@ function* initWithParseRequest() {
   // 1. Sign in or sign up to get Parse.User object
   // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    yield call(ParseHelper.signIn, appId);
+    yield call(ParseHelper.signInOrSignUp, appId);
     console.log(`User found with appId ${appId}. Sign in successful.`);
   } catch (err) {
-    if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-      yield call(ParseHelper.signUp, appId);
-      console.log(`User NOT found with appId ${appId}. Signed up.`);
-    }
+    yield call(ParseHelper.handleError, { err, appId });
   }
 
   // 2. Test server connection and get Server info
@@ -113,14 +117,15 @@ function* initWithParseRequest() {
       value: response,
     });
   } catch (err) {
-    const { message } = err;
-    console.warn(message);
+    yield call(ParseHelper.handleError, { err, appId });
   }
+
+  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
 
   // 3. Upload wallets and settings to server
   yield put({
     type: actions.UPDATE_USER,
-    payload: { walletManager, settings },
+    fcmToken,
   });
 
   // If we don't encounter error here, mark initialization finished
@@ -162,7 +167,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -171,41 +176,54 @@ function* changeLanguageRequest(action) {
   const { language } = action;
   console.log('saga::changeLanguageRequest is triggered, language: ', language);
   try {
-    // 1. Set I18n.locale
-    I18n.locale = language;
+    // 1. Set language
+    common.setLanguage(language);
+    common.setMomentLocale(language);
 
     // 2. Save setting
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
 
 function* renameRequest(action) {
   const { name } = action;
-  console.log('saga::renameRequest is triggered, name: ', name);
   try {
-    settings.rename(name);
+    settings.validateName(name);
     yield put(actions.setSingleSettings('username', name));
     yield put({ type: actions.USER_NAME_UPDATED });
   } catch (err) {
     let notification = null;
     switch (err.message) {
       case 'err.nametooshort':
-        notification = createErrorNotification('Incorrect name', 'Name is too short.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooShort');
         break;
       case 'err.nametoolong':
-        notification = createErrorNotification('Incorrect name', 'Name is too long.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooLong');
         break;
       case 'err.nameinvalid':
-        notification = createErrorNotification('Incorrect name', 'Name contains invalid characters.');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
+  }
+}
+
+function* setPasscodeRequest(action) {
+  const { passcode } = action;
+  try {
+    yield call(storage.setPasscode, passcode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
+    });
+  } catch (error) {
+    console.log('setPasscodeRequest, error: ', error);
   }
 }
 
@@ -219,5 +237,6 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+    takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
   ]);
 }

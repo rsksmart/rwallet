@@ -1,9 +1,21 @@
-const createInfoConfirmation = (title, message, confirmationCallback) => ({
+const createInfoConfirmation = (title, message, confirmationCallback, confirmationCancelCallback) => ({
   id: Date.now(),
   type: 'info',
   title,
   message,
   confirmationCallback,
+  confirmationCancelCallback,
 });
 
-export default createInfoConfirmation;
+
+const createErrorConfirmation = (title, message, comfirmText, confirmationCallback, confirmationCancelCallback) => ({
+  id: Date.now(),
+  type: 'error',
+  title,
+  message,
+  comfirmText,
+  confirmationCallback,
+  confirmationCancelCallback,
+});
+
+export { createInfoConfirmation, createErrorConfirmation };

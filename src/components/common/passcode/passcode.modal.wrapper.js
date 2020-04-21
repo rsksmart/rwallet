@@ -2,25 +2,36 @@
 /* eslint "default-case": "off" */
 /* eslint "consistent-return": "off" */
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CreatePasscodeModal from './passcode.modal.create';
 import ResetPasscodeModal from './passcode.modal.reset';
 import VerifyPasscodeModal from './passcode.modal.verify';
 
 const PasscodeModalWrapper = (props) => {
-  const { type } = props;
+  const { type, passcode } = props;
   switch (type) {
     case 'create':
       return <CreatePasscodeModal {...props} />;
     case 'reset':
       return <ResetPasscodeModal {...props} />;
     case 'verify':
-      return global.passcode ? <VerifyPasscodeModal {...props} /> : null;
+      return passcode ? <VerifyPasscodeModal {...props} /> : null;
   }
 };
 
 PasscodeModalWrapper.propTypes = {
   type: PropTypes.oneOf(['create', 'reset', 'verify']).isRequired,
+  passcode: PropTypes.string,
 };
 
-export default PasscodeModalWrapper;
+
+PasscodeModalWrapper.defaultProps = {
+  passcode: undefined,
+};
+
+const mapStateToProps = (state) => ({
+  passcode: state.App.get('passcode'),
+});
+
+export default connect(mapStateToProps)(PasscodeModalWrapper);

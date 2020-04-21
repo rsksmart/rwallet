@@ -13,9 +13,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
-import config from '../../../config';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
+import presetStyles from '../../assets/styles/style';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -89,22 +89,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastBlockMarginBottom: {
-    marginBottom: 15,
+    marginBottom: 135,
   },
 });
 
-function Item({ data, title }) {
+function Item({ data, title, isHasBottomBorder }) {
   return (
-    <TouchableOpacity
-      style={[styles.row]}
-      onPress={() => {
-        if (data.onPress) {
-          data.onPress();
-        }
-      }}
-    >
+    <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
       {data.icon}
-      <View style={styles.right}>
+      <View style={[styles.right, isHasBottomBorder ? null : presetStyles.noBottomBorder]}>
         <Text>{title}</Text>
       </View>
     </TouchableOpacity>
@@ -118,6 +111,7 @@ Item.propTypes = {
     onPress: PropTypes.func,
   }),
   title: PropTypes.string.isRequired,
+  isHasBottomBorder: PropTypes.bool.isRequired,
 };
 
 Item.defaultProps = {
@@ -160,7 +154,7 @@ class MineIndex extends Component {
               <Text>{item.name}</Text>
               <Text style={styles.keyWallets}>
                 {`${item.walletCount} `}
-                <Loc text="Wallets" />
+                <Loc text="page.mine.index.wallets" />
               </Text>
             </View>
           </TouchableOpacity>
@@ -172,7 +166,7 @@ class MineIndex extends Component {
 
   settings = [
     {
-      title: 'Language',
+      title: 'page.mine.language.title',
       icon: <MaterialIcons name="language" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />,
       onPress: () => {
         const { navigation } = this.props;
@@ -180,7 +174,7 @@ class MineIndex extends Component {
       },
     },
     {
-      title: 'Currency',
+      title: 'page.mine.currency.title',
       icon: (
         <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />
       ),
@@ -190,7 +184,7 @@ class MineIndex extends Component {
       },
     },
     {
-      title: 'Two-Factor Authentication',
+      title: 'page.mine.2fa.title',
       icon: (
         <MaterialCommunityIcons
           name="two-factor-authentication"
@@ -286,9 +280,8 @@ class MineIndex extends Component {
   render() {
     const { language, navigation, username } = this.props;
     const { keyListData, settings, joins } = this.state;
-    const { defaultSettings: { username: defaultUsername } } = config;
     // Translate If username is default user name
-    const usernameText = username === defaultUsername ? strings(defaultUsername) : username;
+    const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
 
     return (
       <BasePageGereral
@@ -300,28 +293,28 @@ class MineIndex extends Component {
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Settings" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.settings" />
             <FlatList
               data={settings}
               extraData={language}
-              renderItem={({ item }) => <Item data={item} title={strings(item.title)} />}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index !== settings.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Keys" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
             <View style={styles.createWalletButtonView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Loc style={[styles.createWalletButtonText]} text="Create or Import a Key" />
+                <Loc style={[styles.createWalletButtonText]} text="page.mine.index.createKey" />
               </TouchableOpacity>
             </View>
           </View>
           <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Join RSK's Community" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
-              renderItem={({ item }) => <Item data={item} title={item.title} />}
+              renderItem={({ item, index }) => <Item data={item} title={item.title} isHasBottomBorder={index !== joins.length - 1} />}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
@@ -342,11 +335,12 @@ MineIndex.propTypes = {
   isWalletNameUpdated: PropTypes.bool.isRequired,
   language: PropTypes.string.isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
 };
 
 MineIndex.defaultProps = {
   wallets: undefined,
+  username: undefined,
 };
 
 const mapStateToProps = (state) => ({

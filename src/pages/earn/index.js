@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     marginHorizontal: 30,
-    marginBottom: 50,
+    marginBottom: 85,
   },
   title: {
     fontSize: 14,
@@ -46,14 +46,14 @@ export default class EarnIndex extends Component {
         hasBottomBtn={false}
         hasLoader={false}
         renderAccessory={() => <RSKad />}
-        headerComponent={<EarnHeader title="Earn cryptocurrency with ease" imageSource={headerImage} imageBgColor="#A2C4F7" />}
+        headerComponent={<EarnHeader title="page.earn.index.title" imageSource={headerImage} imageBgColor="#A2C4F7" />}
       >
         <View style={styles.body}>
-          <Loc style={[styles.title]} text="Below features are coming soon to Earn…" />
+          <Loc style={[styles.title]} text="page.earn.index.featuresTitle" />
           <View style={styles.greenLine} />
-          <Loc style={[styles.listText]} text="- Earn cryptocurrency by completing tasks" />
-          <Loc style={[styles.listText]} text="- Gain interests from a variety of Defi products" />
-          <Loc style={[styles.listText]} text="- Cash Back" />
+          <Loc style={[styles.listText]} text="page.earn.index.feature1" />
+          <Loc style={[styles.listText]} text="page.earn.index.feature2" />
+          <Loc style={[styles.listText]} text="page.earn.index.feature3" />
         </View>
       </BasePageGereral>
     );

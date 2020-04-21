@@ -41,7 +41,6 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
 
 # fastlane
 #
@@ -60,3 +59,11 @@ buck-out/
 coverage/
 
 *.snap
+
+# Fastlane log and output files
+fastlane/report.xml
+out.log
+*.dSYM.zip
+
+# Environment variable config for each developer
+.env 

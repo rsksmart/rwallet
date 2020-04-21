@@ -70,6 +70,18 @@ const styles = StyleSheet.create({
 });
 
 export default class SwipableButtonList extends Component {
+  constructor(props) {
+    super(props);
+    this.onSwapButtonPress = this.onSwapButtonPress.bind(this);
+  }
+
+  onSwapButtonPress(rowData) {
+    this.listView.safeCloseOpenRow();
+    if (rowData.item.onSwapButtonPress) {
+      rowData.item.onSwapButtonPress();
+    }
+  }
+
   render() {
     const { data } = this.props;
     return (
@@ -100,16 +112,16 @@ export default class SwipableButtonList extends Component {
             </View>
           </TouchableOpacity>
         )}
-        renderHiddenItem={(data1) => (
+        renderHiddenItem={(rowData) => (
           <View style={styles.rowBack}>
             <TouchableOpacity
               style={[
                 styles.backLeftBtn,
                 styles.backLeftBtnLeft,
               ]}
-              onPress={() => this.listView.safeCloseOpenRow()}
+              onPress={() => this.onSwapButtonPress(rowData)}
             >
-              <Loc style={[styles.backText]} text="Swap" />
+              <Loc style={[styles.backText]} text="button.Swap" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -118,12 +130,12 @@ export default class SwipableButtonList extends Component {
               ]}
               onPress={() => {
                 this.listView.safeCloseOpenRow();
-                if (data1.item.r1Press) {
-                  data1.item.r1Press();
+                if (rowData.item.r1Press) {
+                  rowData.item.r1Press();
                 }
               }}
             >
-              <Loc style={[styles.backText]} text="Send" />
+              <Loc style={[styles.backText]} text="button.Send" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -132,12 +144,12 @@ export default class SwipableButtonList extends Component {
               ]}
               onPress={() => {
                 this.listView.safeCloseOpenRow();
-                if (data1.item.r2Press) {
-                  data1.item.r2Press();
+                if (rowData.item.r2Press) {
+                  rowData.item.r2Press();
                 }
               }}
             >
-              <Loc style={[styles.backText]} text="Receive" />
+              <Loc style={[styles.backText]} text="button.Receive" />
             </TouchableOpacity>
           </View>
         )}

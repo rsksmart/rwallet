@@ -7,14 +7,16 @@ import { connect } from 'react-redux';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import createInfoConfirmation from '../../common/confirmation.controller';
+import { createInfoConfirmation } from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
+import common from '../../common/common';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionContainer: {
     paddingHorizontal: 30,
-    marginTop: 10,
+    marginTop: 30,
   },
   sectionTitle: {
     marginTop: 5,
@@ -69,17 +71,10 @@ const styles = StyleSheet.create({
     color: '#DF5264',
     fontWeight: '500',
   },
+  advancedBlock: {
+    marginBottom: 60 + screenHelper.bottomHeight,
+  },
 });
-
-const BTC = require('../../assets/images/icon/BTC.png');
-const RBTC = require('../../assets/images/icon/RBTC.png');
-const RIF = require('../../assets/images/icon/RIF.png');
-
-
-const getIcon = (symbol) => {
-  const icons = { BTC, RBTC, RIF };
-  return icons[symbol];
-};
 
 const ListRow = ({ title, onPress }) => {
   const listRow = (
@@ -98,14 +93,8 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const icon = getIcon(coin.symbol);
-        const item = {
-          icon,
-          title: coin.id,
-          onPress: () => {
-            console.log('onPress, coin: ', coin);
-          },
-        };
+        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
       return listData;
@@ -117,10 +106,10 @@ class KeySettings extends Component {
           data={listData}
           extraData={listData}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.walletRow} onPress={item.onPress}>
+            <View style={styles.walletRow}>
               <Image source={item.icon} />
               <Text style={styles.walletRowTitle}>{item.title}</Text>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -148,6 +137,11 @@ class KeySettings extends Component {
         isConfirmDeleteKey: false,
       };
       this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
+      this.onBackupPress = this.onBackupPress.bind(this);
+      this.onKeyNamePress = this.onKeyNamePress.bind(this);
+      this.onDeletePress = this.onDeletePress.bind(this);
+      this.deleteKey = this.deleteKey.bind(this);
+      this.backup = this.backup.bind(this);
     }
 
     componentWillMount() {
@@ -161,9 +155,6 @@ class KeySettings extends Component {
         name,
         walletListData,
       });
-      this.onBackupPress = this.onBackupPress.bind(this);
-      this.onKeyNamePress = this.onKeyNamePress.bind(this);
-      this.onDeletePress = this.onDeletePress.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -190,9 +181,12 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { navigation } = this.props;
-      // Backup flow will skip phrase and wallet creation.
-      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldCreateWallet: false });
+      const { showPasscode, passcode } = this.props;
+      if (passcode) {
+        showPasscode('verify', this.backup, () => {});
+      } else {
+        this.backup();
+      }
     }
 
     onKeyNamePress() {
@@ -201,20 +195,41 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const { deleteKey, walletManager } = this.props;
-      deleteKey(this.key, walletManager);
-      this.setState({ isConfirmDeleteKey: true });
-      console.log('Delete, key: ', this.key);
+      const {
+        passcode, showPasscode, resetSwapSource, resetSwapDest,
+      } = this.props;
+      if (passcode) {
+        showPasscode('verify', this.deleteKey, () => {
+          resetSwapSource();
+          resetSwapDest();
+        });
+      } else {
+        resetSwapSource();
+        resetSwapDest();
+        this.deleteKey();
+      }
     }
 
     onDeletePress() {
       const { addConfirmation } = this.props;
       const infoConfirmation = createInfoConfirmation(
-        'Warning!',
-        'Are you sure you want to delete all wallets using this key?',
-        this.onDeleteConfirm,
+        'modal.deleteKey.title',
+        'modal.deleteKey.body',
+        () => this.onDeleteConfirm(),
       );
       addConfirmation(infoConfirmation);
+    }
+
+    backup() {
+      const { navigation } = this.props;
+      // Backup flow will skip phrase and wallet creation.
+      navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldVerifyPhrase: false });
+    }
+
+    deleteKey() {
+      const { deleteKey, walletManager } = this.props;
+      deleteKey(this.key, walletManager);
+      this.setState({ isConfirmDeleteKey: true });
     }
 
     render() {
@@ -227,26 +242,26 @@ class KeySettings extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<KeysettingsHeader title="Key Settings" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
-              <Loc style={[styles.keyTitle]} text="Key Name" />
+              <Loc style={[styles.keyTitle]} text="page.mine.keySettings.keyName" />
               <View style={styles.keyNameLabel}><Text style={styles.keyName}>{name}</Text></View>
             </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Wallets" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Wallets" />
             {KeySettings.renderWalletList(walletListData)}
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="Security" />
-            <ListRow title="Backup" onPress={this.onBackupPress} />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
+            <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
           </View>
-          <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
-            <Loc style={[styles.sectionTitle]} text="Advanced" />
+          <View style={[styles.sectionContainer, styles.advancedBlock]}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
-              <Loc style={[styles.listRowTitle, styles.warningText]} text="Delete" />
+              <Loc style={[styles.listRowTitle, styles.warningText]} text="page.mine.keySettings.delete" />
             </TouchableOpacity>
           </View>
         </BasePageGereral>
@@ -268,11 +283,16 @@ KeySettings.propTypes = {
   confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
+  showPasscode: PropTypes.func.isRequired,
+  resetSwapSource: PropTypes.func.isRequired,
+  resetSwapDest: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
   confirmation: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -280,12 +300,18 @@ const mapStateToProps = (state) => ({
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
   confirmation: state.App.get('confirmation'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
+  ),
+  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
+  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

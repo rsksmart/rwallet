@@ -9,14 +9,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
+import { strings } from '../../common/i18n';
+import definitions from '../../common/definitions';
+import presetStyles from '../../assets/styles/style';
+import screenHelper from '../../common/screenHelper';
+import flex from '../../assets/styles/layout.flex';
 
 const { getCurrencySymbol } = common;
 
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
+    marginTop: -76,
   },
   myAssets: {
     marginTop: 17,
@@ -211,15 +215,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
   },
+  lastRow: {
+    marginBottom: 17 + screenHelper.bottomHeight,
+  },
 });
-
-const TRANSACTION_TIMEOUT_MINUTES = 15;
-
-const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y
-    >= contentSize.height - paddingToBottom;
-};
 
 const stateIcons = {
   Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />,
@@ -230,15 +229,15 @@ const stateIcons = {
 };
 
 function Item({
-  title, amount, datetime, onPress,
+  title, amount, datetime, onPress, isLastRow,
 }) {
   const icon = stateIcons[title];
   return (
-    <TouchableOpacity style={[styles.row]} onPress={onPress}>
+    <TouchableOpacity style={[styles.row, isLastRow ? styles.lastRow : null]} onPress={onPress}>
       <View style={styles.iconView}>{icon}</View>
-      <View style={styles.rowRight}>
+      <View style={[styles.rowRight, isLastRow ? presetStyles.noBottomBorder : null]}>
         <View style={[styles.rowRightR1]}>
-          <Loc style={[styles.title]} text={title} />
+          <Loc style={[styles.title]} text={`txState.${title}`} />
         </View>
         <View style={[styles.rowRightR2]}>
           <Text style={styles.amount}>{amount}</Text>
@@ -254,11 +253,7 @@ Item.propTypes = {
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
-};
-
-const isFailedTransaction = (createdAt) => {
-  const durationMinutes = moment.duration(moment().diff(createdAt)).asMinutes();
-  return durationMinutes >= TRANSACTION_TIMEOUT_MINUTES;
+  isLastRow: PropTypes.bool.isRequired,
 };
 
 class History extends Component {
@@ -275,7 +270,7 @@ class History extends Component {
   * @param {array} prices
   * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static processRawTransactions(rawTransactions, address, symbol, currency, prices) {
+  static processRawTransactions(rawTransactions, address, symbol, decimalPlaces, currency, prices) {
     if (_.isEmpty(rawTransactions)) {
       return { transactions: [], pendingBalance: null, pendingBalanceValue: null };
     }
@@ -284,41 +279,31 @@ class History extends Component {
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      let datetime = transaction.createdAt;
-      let isComfirmed = true;
-      let isSender = false;
-      let state = 'Receiving';
-      if (transaction.value) {
-        amount = common.convertUnitToCoinAmount(symbol, transaction.value);
-        amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
+      const isSender = address === transaction.from;
+      let state = 'Failed';
+      switch (transaction.status) {
+        case definitions.txStatus.PENDING:
+          state = isSender ? 'Sending' : 'Receiving';
+          break;
+        case definitions.txStatus.SUCCESS:
+          state = isSender ? 'Sent' : 'Received';
+          break;
+        default:
       }
-      if (address === transaction.from) {
-        isSender = true;
-      }
-      if (transaction.blockHeight === -1) {
-        isComfirmed = false;
-      }
-      if (isSender) {
-        if (isComfirmed) {
-          state = 'Sent';
-          datetime = transaction.confirmedAt;
-        } else {
-          state = 'Sending';
-          if (transaction.createdAt) {
-            const isFailed = isFailedTransaction(transaction.createdAt);
-            state = isFailed ? 'Failed' : state;
-          }
-        }
-      } else if (isComfirmed) {
-        state = 'Received';
-        datetime = transaction.confirmedAt;
-      } else if (transaction.createdAt) {
-        const isFailed = isFailedTransaction(transaction.createdAt);
-        state = isFailed ? 'Failed' : state;
-      }
+      const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
       let datetimeText = '';
       if (datetime) {
-        datetimeText = moment(datetime).format('MMM D. YYYY');
+        const daysElapsed = moment().diff(datetime, 'days');
+        if (daysElapsed < 1) {
+          datetimeText = datetime.fromNow();
+        } else {
+          datetimeText = datetime.format('MMM D. YYYY');
+        }
+      }
+
+      if (transaction.value) {
+        amount = common.convertUnitToCoinAmount(symbol, transaction.value);
+        amountText = `${common.getBalanceString(amount, decimalPlaces)} ${symbol}`;
       }
       transactions.push({
         state,
@@ -326,6 +311,7 @@ class History extends Component {
         datetimeText,
         amountText,
         rawTransaction: transaction,
+        decimalPlaces,
       });
       if (state === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
@@ -333,29 +319,6 @@ class History extends Component {
     });
     const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
     return { transactions, pendingBalance, pendingBalanceValue };
-  }
-
-  static listView(listData, onPress) {
-    if (!listData) {
-      return <ActivityIndicator size="small" color="#00ff00" />;
-    }
-    if (listData.length === 0) {
-      return <Loc style={[styles.noTransNotice]} text="There is no transaction found in this wallet" />;
-    }
-    return (
-      <FlatList
-        data={listData}
-        renderItem={({ item, index }) => (
-          <Item
-            title={item.state}
-            amount={item.amountText}
-            datetime={item.datetimeText}
-            onPress={() => { onPress(index); }}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
   }
 
   constructor(props) {
@@ -382,11 +345,11 @@ class History extends Component {
     this.onListItemPress = this.onListItemPress.bind(this);
   }
 
-  static getBalanceText(symbol, balance) {
+  static getBalanceText(symbol, balance, decimalPlaces) {
     let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(symbol, balance)}`;
+      balanceText = `${common.getBalanceString(balance, decimalPlaces)}`;
     }
 
     return balanceText;
@@ -402,11 +365,11 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency) {
     const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const balanceText = `${History.getBalanceText(symbol, balance, decimalPlaces)} ${symbol}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : null;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance, decimalPlaces)} ${symbol}` : null;
     const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
     return {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
@@ -417,10 +380,10 @@ class History extends Component {
     const { currency, prices, navigation } = this.props;
     const { coin } = navigation.state.params;
     const {
-      balance, balanceValue, transactions, address, symbol,
+      balance, balanceValue, transactions, address, symbol, decimalPlaces,
     } = coin;
-    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, decimalPlaces, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency, decimalPlaces);
     this.setState({ listData, ...balanceTexts });
   }
 
@@ -432,10 +395,10 @@ class History extends Component {
     const { coin } = navigation.state.params;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
       const {
-        balance, balanceValue, transactions, address, symbol,
+        balance, balanceValue, transactions, address, symbol, decimalPlaces,
       } = coin;
-      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, decimalPlaces, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, decimalPlaces, currency);
       this.setState({ listData, ...balanceTexts });
     }
   }
@@ -443,6 +406,10 @@ class History extends Component {
   onRefresh() {
     this.page = 1;
     this.setState({ isRefreshing: true });
+    // simulate 1s network delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   }
 
   onEndReached() {
@@ -462,12 +429,6 @@ class History extends Component {
   onReceiveButtonClick() {
     const { navigation } = this.props;
     navigation.navigate('WalletReceive', navigation.state.params);
-  }
-
-  static onScroll({ nativeEvent }) {
-    if (isCloseToBottom(nativeEvent)) {
-      // console.log('ScrollView isCloseToBottom');
-    }
   }
 
   onMomentumScrollEnd(e) {
@@ -492,6 +453,37 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  listView = (listData, onPress, isRefreshing) => {
+    if (!listData) {
+      return <ActivityIndicator size="small" color="#00ff00" />;
+    }
+    if (listData.length === 0) {
+      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
+    }
+    return (
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={listData}
+        renderItem={({ item, index }) => (
+          <Item
+            title={item.state}
+            amount={item.amountText}
+            datetime={item.datetimeText}
+            onPress={() => { onPress(index); }}
+            isLastRow={index === listData.length - 1}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={this.onRefresh}
+          />
+        )}
+      />
+    );
+  };
+
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -499,12 +491,12 @@ class History extends Component {
         style={styles.refreshControl}
         refreshing={isRefreshing}
         onRefresh={this.onRefresh}
-        title="Loading..."
+        title={strings('page.wallet.history.loading')}
       />
     );
   }
 
-  renderfooter() {
+  renderFooter() {
     const { isLoadMore } = this.state;
     let footer = null;
     if (isLoadMore) {
@@ -513,10 +505,9 @@ class History extends Component {
     return footer;
   }
 
-
   render() {
     const {
-      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing,
     } = this.state;
     const { navigation } = this.props;
     const { coin } = navigation.state.params;
@@ -526,12 +517,7 @@ class History extends Component {
     const symbolName = common.getSymbolFullName(symbol, type);
 
     return (
-      <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
-        headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
-      >
+      <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
@@ -540,7 +526,10 @@ class History extends Component {
               pendingBalanceText && (
                 <View style={styles.sendingView}>
                   <Image style={styles.sendingIcon} source={sending} />
-                  <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+                  <Text style={styles.sending}>
+                    {pendingBalanceText}
+                    {pendingBalanceValueText && `(${pendingBalanceValueText})`}
+                  </Text>
                 </View>
               )
             }
@@ -550,7 +539,7 @@ class History extends Component {
                 onPress={this.onSendButtonClick}
               >
                 <Image source={send} />
-                <Loc style={[styles.sendText]} text="Send" />
+                <Loc style={[styles.sendText]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -558,19 +547,19 @@ class History extends Component {
                 onPress={this.onReceiveButtonClick}
               >
                 <Image source={receive} />
-                <Loc style={[styles.receiveText]} text="Receive" />
+                <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
-          <Loc style={[styles.recent]} text="Recent" />
+          <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
-        <View style={styles.sectionContainer}>
-          {History.listView(listData, this.onListItemPress)}
+        <View style={[styles.sectionContainer, flex.flex1]}>
+          {this.listView(listData, this.onListItemPress, isRefreshing)}
         </View>
-        {this.renderfooter()}
-      </BasePageGereral>
+        {this.renderFooter()}
+      </BasePageSimple>
     );
   }
 }
@@ -596,7 +585,8 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = () => ({

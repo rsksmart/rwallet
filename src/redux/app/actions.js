@@ -33,6 +33,11 @@ const actions = {
   USER_NAME_UPDATED: 'USER_NAME_UPDATED',
   RESET_USER_NAME_UPDATED: 'RESET_USER_NAME_UPDATED',
 
+  LOCK_APP: 'LOCK_APP',
+
+  SET_PASSCODE: 'SET_PASSWORD',
+  UPDATE_PASSCODE: 'UPDATE_PASSCODE',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -98,6 +103,14 @@ const actions = {
   }),
   resetUsernameUpdated: () => ({
     type: actions.RESET_USER_NAME_UPDATED,
+  }),
+  lockApp: (lock) => ({
+    type: actions.LOCK_APP,
+    lock,
+  }),
+  setPasscode: (passcode) => ({
+    type: actions.SET_PASSCODE,
+    passcode,
   }),
 };
 

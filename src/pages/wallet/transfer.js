@@ -1,20 +1,18 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, Platform,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform, Image,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
+import rsk3 from 'rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
-
-// import ConfirmSlider from '../../components/wallet/confirm.slider';
-// import circleCheckIcon from '../../assets/images/misc/circle.check.png';
-// import circleIcon from '../../assets/images/misc/circle.png';
 import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
@@ -22,6 +20,11 @@ import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
+import CONSTANTS from '../../common/constants';
+import parseHelper from '../../common/parse';
+import definitions from '../../common/definitions';
+import config from '../../../config';
+import references from '../../assets/references';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -228,46 +231,73 @@ const styles = StyleSheet.create({
   },
 });
 
-const FEE_LEVEL_ADJUSTMENT = 0.25;
-const DEFAULT_RBTC_MIN_GAS = 21000;
-const DEFAULT_RIF_MIN_GAS = 23064;
-const DEFAULT_RBTC_MEDIUM_GAS = DEFAULT_RBTC_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_RIF_MEDIUM_GAS = DEFAULT_RIF_MIN_GAS / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_BTC_MIN_FEE = 60000;
-const DEFAULT_BTC_MEDIUM_FEE = DEFAULT_BTC_MIN_FEE / (1 - FEE_LEVEL_ADJUSTMENT);
-const DEFAULT_RBTC_GAS_PRICE = 600000000;
-const MAX_FEE_TIMES = 2;
-const PLACEHODLER_AMOUNT = 0.001;
-
-const addressIcon = require('../../assets/images/icon/address.png');
+const {
+  MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
+} = CONSTANTS;
 
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
-    // gesturesEnabled: false,
+    gesturesEnabled: false,
   });
 
-  static generateAmountPlaceholderText(symbol, currency, prices) {
-    const amountText = common.getBalanceString(symbol, PLACEHODLER_AMOUNT);
+  static generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices) {
+    const amountText = common.getBalanceString(PLACEHODLER_AMOUNT, decimalPlaces);
     let amountPlaceholderText = `${amountText} ${symbol}`;
-    if (prices) {
+    if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
-      const amountValueText = common.getAssetValueString(amountValue, amountValue);
-      amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+      if (amountValue) {
+        const amountValueText = common.getAssetValueString(amountValue, amountValue);
+        amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
+      }
     }
     return amountPlaceholderText;
   }
 
   constructor(props) {
     super(props);
+
+    const { navigation: { state: { params: { coin, toAddress } } } } = props;
+    this.coin = coin;
+
+    this.txFeesCache = {};
+    this.isRequestSendAll = false;
+
+    // BTC transfer data
+    this.minCustomFee = null;
+    this.maxCustomFee = null;
+
+    // Rsk transfer data
+    this.gas = null;
+    this.minCustomGasPrice = null;
+    this.maxCustomGasPrice = null;
+
+    // form data validation state
+    this.isAmountValid = false;
+    this.isAddressValid = !!toAddress;
+
+    this.confirm = this.confirm.bind(this);
+    this.validateConfirmControl = this.validateConfirmControl.bind(this);
+    this.onGroupSelect = this.onGroupSelect.bind(this);
+    this.inputAmount = this.inputAmount.bind(this);
+    // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
+    this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
+    this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
+    this.onSendAllPress = this.onSendAllPress.bind(this);
+    this.onConfirmPress = this.onConfirmPress.bind(this);
+    this.onAmountInputBlur = this.onAmountInputBlur.bind(this);
+    this.onToInputBlur = this.onToInputBlur.bind(this);
+    this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
+    this.onAmountInputChangeText = this.onAmountInputChangeText.bind(this);
+    this.requestFees = this.requestFees.bind(this);
+
     this.state = {
       loading: false,
-      to: null,
+      to: toAddress,
       amount: '',
       memo: null,
       feeLevel: 1,
-      preference: 'medium',
       // isConfirm: false,
       enableConfirm: false,
       isCustomFee: false,
@@ -276,18 +306,8 @@ class Transfer extends Component {
       feeSymbol: null,
       feeSliderValue: 0,
       amountPlaceholderText: '',
+      levelFees: null, // [ { fee, value }... ]
     };
-
-    this.confirm = this.confirm.bind(this);
-    this.validateConfirmControl = this.validateConfirmControl.bind(this);
-    this.onGroupSelect = this.onGroupSelect.bind(this);
-    this.inputAmount = this.inputAmount.bind(this);
-    this.onQrcodeScanPress = this.onQrcodeScanPress.bind(this);
-    // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
-    this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
-    this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
-    this.onSendAllPress = this.onSendAllPress.bind(this);
-    this.onConfirmPress = this.onConfirmPress.bind(this);
   }
 
   componentDidMount() {
@@ -295,34 +315,40 @@ class Transfer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { prices, currency, navigation } = nextProps;
+    const { prices, currency } = nextProps;
     const { prices: curPrices } = this.props;
-    const { coin } = navigation.state.params;
+    const { symbol, decimalPlaces } = this.coin;
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
 
-  onGroupSelect(index) {
-    const preferences = ['low', 'medium', 'high'];
-    const preference = preferences[index];
-    this.setState({ preference, feeLevel: index, isCustomFee: false });
+  componentWillUnmount() {
+    const { removeConfirmation } = this.props;
+    removeConfirmation();
   }
 
-  onQrcodeScanPress() {
+  onGroupSelect(index) {
+    this.setState({ feeLevel: index, isCustomFee: false });
+  }
+
+  onQrcodeScanPress = () => {
+    console.log('onQrcodeScanPress');
     const { navigation } = this.props;
     navigation.navigate('Scan', {
-      onQrcodeDetected: (data) => {
-        const parseUrl = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
-        const url = data;
-        const result = parseUrl.exec(url);
-        const host = result[3];
-        const [address2] = host.split('.');
-        this.setState({ to: address2 });
+      coin: this.coin,
+      onDetectedAction: 'backToTransfer',
+      onQrcodeDetected: (address) => {
+        console.log('onQrcodeDetected, address: ', address);
+        this.setState({ to: address }, () => {
+          this.requestFees(false);
+          this.isAddressValid = true;
+          this.validateConfirmControl();
+        });
       },
     });
   }
@@ -350,24 +376,7 @@ class Transfer extends Component {
    * @param {number} value slider value, 0-1
    */
   onCustomFeeSlideValueChange(value) {
-    // console.log('onCustomFeeSlideValueChange, value: ', value);
-    const { currency, prices, navigation } = this.props;
-    const { coin } = navigation.state.params;
-    const { feeSymbol } = this.state;
-    // maxFee = 2 times high fee
-    const maxFee = this.mediumFee.times(MAX_FEE_TIMES).times(1 + FEE_LEVEL_ADJUSTMENT);
-    // If feeSymbol is RBTC, fee must multiply DEFAULT_RBTC_GAS_PRICE
-    let minFee = null;
-    if (coin.symbol === 'RBTC') {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RBTC_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
-    } else if (coin.symbol === 'RIF') {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_RIF_MIN_GAS).times(DEFAULT_RBTC_GAS_PRICE);
-    } else {
-      minFee = common.convertUnitToCoinAmount(feeSymbol, DEFAULT_BTC_MIN_FEE);
-    }
-    // minFee + (maxFee-minFee) * value
-    const customFee = minFee.plus(maxFee.minus(minFee).times(value));
-    const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    const { customFee, customFeeValue } = this.calcCustomFee(value);
     this.setState({ customFee, customFeeValue });
   }
 
@@ -376,124 +385,291 @@ class Transfer extends Component {
   }
 
   onSendAllPress() {
-    const {
-      isCustomFee, customFee, feeLevel, feeData,
-    } = this.state;
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
+    const { symbol, balance, decimalPlaces } = this.coin;
     // If balance data have not received from server (user enter this page quickly), return without setState.
-    if (_.isNil(coin.balance)) {
+    if (_.isNil(balance)) {
       return;
     }
-    if (coin.symbol === 'RIF') {
-      const amount = common.getBalanceString(coin.symbol, coin.balance);
-      this.setState({ amount });
-    } else {
-      let fee = feeData[feeLevel].coin;
-      if (isCustomFee) {
-        fee = customFee;
+    const amount = common.getBalanceString(balance, decimalPlaces);
+    this.inputAmount(amount, () => {
+      if (symbol === 'BTC' || symbol === 'RBTC') {
+        this.txFeesCache = {};
       }
-      let balance = coin.balance.minus(fee);
-      balance = balance.gt(0) ? balance : 0;
-      const amountText = common.getBalanceString(coin.symbol, balance);
-      this.inputAmount(amountText);
-    }
+      this.isRequestSendAll = true;
+      this.isAmountValid = true;
+      this.requestFees(true);
+    });
   }
 
   async onConfirmPress() {
-    const { navigation: { state } } = this.props;
-    const { params } = state;
-    const { coin } = params;
-    let { amount, to } = this.state;
-    amount = amount.trim();
-    to = to.trim();
-    if (!this.validateFormData(amount, to, coin.symbol, coin.type)) {
-      // this.resetConfirm();
+    const { symbol, type, networkId } = this.coin;
+    const { amount, to } = this.state;
+    // This app use checksum address with chainId, but some third-party app use web3 address,
+    // so we need to convert input address to checksum address with chainId before validation and transfer
+    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
+    let toAddress = to;
+    if (symbol !== 'BTC') {
+      try {
+        toAddress = rsk3.utils.toChecksumAddress(to, networkId);
+      } catch (error) {
+        this.showInvalidAddressNotification();
+        return;
+      }
+    }
+
+    if (!common.isWalletAddress(toAddress, symbol, type, networkId)) {
+      this.showInvalidAddressNotification();
       return;
     }
-    const { showPasscode } = this.props;
-    if (global.passcode) {
+
+    if (!common.isAmount(amount)) {
+      this.showInvalidAmountNotification();
+      return;
+    }
+
+    const { showPasscode, passcode } = this.props;
+    if (passcode) {
       // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
-      showPasscode('verify', this.confirm, () => {});
+      showPasscode('verify', () => this.confirm(toAddress), () => {});
     } else {
       // await this.onConfirmSliderVerified();
-      await this.confirm();
+      await this.confirm(toAddress);
     }
+  }
+
+  onAmountInputBlur() {
+    const { amount } = this.state;
+    if (_.isEmpty(amount)) return;
+    this.isAmountValid = common.isAmount(amount);
+    if (!this.isAmountValid) {
+      this.showInvalidAmountNotification();
+      return;
+    }
+    this.requestFees(false);
+  }
+
+  onToInputBlur() {
+    const { to } = this.state;
+    const { symbol, type, networkId } = this.coin;
+    if (_.isEmpty(to)) return;
+    this.isAddressValid = common.isWalletAddress(to, symbol, type, networkId);
+    if (!this.isAddressValid) {
+      this.showInvalidAddressNotification();
+      return;
+    }
+    this.requestFees(false);
+  }
+
+  onMemoInputBlur() {
+    const { symbol } = this.coin;
+    // Because the fee of BTC transaction does not depend on memo,
+    // changes to memo do not require recalculation of fee.
+    if (symbol !== 'BTC') {
+      this.requestFees(false);
+    }
+  }
+
+  onAmountInputChangeText(text) {
+    this.isRequestSendAll = false;
+    this.inputAmount(text);
   }
 
   getFeeParams() {
     const {
-      feeSymbol, isCustomFee, customFee, preference,
+      levelFees, feeSymbol, isCustomFee, feeLevel, customFee,
     } = this.state;
-    const { navigation } = this.props;
-    const { coin } = navigation.state.params;
     let feeParams = null;
-    if (isCustomFee) {
-      if (feeSymbol === 'RBTC') {
-        const fee = customFee.div(DEFAULT_RBTC_GAS_PRICE);
-        const wei = common.rbtcToWei(fee);
-        feeParams = {
-          gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-          gas: wei.decimalPlaces(0).toNumber(),
-        };
-      } else {
-        // If BTC is costom fee, set fees field = customFee hex
-        feeParams = {
-          fees: common.btcToSatoshiHex(customFee),
-        };
-      }
-    } else if (feeSymbol === 'RBTC') {
-      const feeLevels = {
-        low: 1 - FEE_LEVEL_ADJUSTMENT,
-        medium: 1,
-        high: 1 + FEE_LEVEL_ADJUSTMENT,
-      };
-      const mediumGas = coin.symbol === 'RIF' ? DEFAULT_RIF_MEDIUM_GAS : DEFAULT_RBTC_MEDIUM_GAS;
-      feeParams = {
-        gasPrice: DEFAULT_RBTC_GAS_PRICE.toString(),
-        gas: mediumGas * feeLevels[preference],
-      };
-    } else if (feeSymbol === 'BTC') {
-      // If BTC is not costom fee, set preference field = high/medium/low
-      feeParams = { preference };
+    if (feeSymbol === 'BTC') {
+      const fee = isCustomFee ? customFee : levelFees[feeLevel].fee;
+      feeParams = { fees: common.btcToSatoshiHex(fee) };
+    } else {
+      const { gas, customGasPrice } = this;
+      const gasPrice = isCustomFee ? customGasPrice : levelFees[feeLevel].gasPrice;
+      feeParams = { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
     }
     return feeParams;
   }
 
-  initContext() {
-    const { navigation, prices, currency } = this.props;
-    const { coin } = navigation.state.params;
+  calcCustomFee(value) {
+    const { currency, prices } = this.props;
+    const { feeSymbol } = this.state;
+    let customFeeValue = null;
+    let customFee = null;
+    if (feeSymbol === 'BTC') {
+      const { minCustomFee, maxCustomFee } = this;
+      customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    } else {
+      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
+      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
+      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+    }
+    return { customFee, customFeeValue };
+  }
 
+  async loadTransactionFees(isAllBalance) {
+    const { navigation, addConfirmation } = this.props;
+    const { amount, to, memo } = this.state;
+    const { coin, txFeesCache } = this;
+    const {
+      symbol, type, transactions, privateKey, address,
+    } = coin;
+    const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
+    const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
+    console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
+
+    let isMatched = false;
+    if (amount === lastAmount && to === lastTo) {
+      if (symbol !== 'BTC') {
+        isMatched = memo === lastMemo;
+      } else {
+        isMatched = true;
+      }
+    }
+    if (isMatched) {
+      return null;
+    }
+
+    try {
+      this.setState({ loading: true });
+      let transactionFees = null;
+      if (symbol === 'BTC') {
+        const estimateParams = {
+          netType: type,
+          amount,
+          transactions,
+          fromAddress: address,
+          destAddress: to,
+          privateKey,
+          isSendAllBalance: isAllBalance,
+        };
+        const size = common.estimateBtcSize(estimateParams);
+        console.log('common.estimateBtcSize, size: ', size);
+        transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
+      } else {
+        transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
+      }
+      this.setState({ loading: false });
+      console.log('transactionFees: ', transactionFees);
+      this.txFeesCache = {
+        amount, to, memo, transactionFees,
+      };
+      return transactionFees;
+    } catch (error) {
+      // If error, let user try again or quit.
+      this.setState({ loading: false });
+      console.log('loadTransactionFees, error: ', error);
+      const confirmation = createErrorConfirmation(
+        definitions.defaultErrorNotification.title,
+        definitions.defaultErrorNotification.message,
+        'button.retry',
+        () => this.requestFees(isAllBalance),
+        () => navigation.goBack(),
+      );
+      addConfirmation(confirmation);
+      return null;
+    }
+  }
+
+  async requestFees(isAllBalance) {
+    const { amount, to } = this.state;
+    const { isAmountValid, isAddressValid } = this;
+    const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
+    console.log('requestFees, isValid: ', isValid);
+    if (!isValid) {
+      return;
+    }
+    const transactionFees = await this.loadTransactionFees(isAllBalance);
+    if (!transactionFees) {
+      return;
+    }
+    this.processFees(transactionFees);
+  }
+
+  processFees(transactionFees) {
+    console.log('processFees, transactionFees: ', transactionFees);
+    const { prices, currency } = this.props;
+    const {
+      feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount, customFee,
+    } = this.state;
+    const { isRequestSendAll, coin } = this;
+    const { symbol } = coin;
+
+    // Calculates levelFees
+    const levelFees = [];
+    if (feeSymbol === 'BTC') {
+      // Calculates BTC levelFees
+      const { fees: { low, medium, high } } = transactionFees;
+      for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
+        const txFees = [low, medium, high];
+        const fee = common.convertUnitToCoinAmount(feeSymbol, txFees[i]);
+        const value = common.getCoinValue(fee, feeSymbol, currency, prices);
+        levelFees.push({ fee, value });
+      }
+      this.minCustomFee = levelFees[0].fee;
+      this.maxCustomFee = levelFees[NUM_OF_FEE_LEVELS - 1].fee.times(MAX_FEE_TIMES);
+    } else {
+      // Calculates Rootstock tokens(RBTC, RIF, DOC...) levelFees
+      const { gas, gasPrice: { low, medium, high } } = transactionFees;
+      this.gas = new BigNumber(gas);
+      const txPrices = [low, medium, high];
+      for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
+        const gasPrice = new BigNumber(txPrices[i]);
+        const gasFee = this.gas.times(gasPrice);
+        const fee = common.convertUnitToCoinAmount(feeSymbol, gasFee);
+        const value = common.getCoinValue(fee, feeSymbol, currency, prices);
+        levelFees.push({ fee, value, gasPrice });
+      }
+      console.log('levelFees: ', levelFees);
+      this.minCustomGasPrice = levelFees[0].gasPrice;
+      this.maxCustomGasPrice = levelFees[NUM_OF_FEE_LEVELS - 1].gasPrice.times(MAX_FEE_TIMES);
+    }
+
+    this.setState({ levelFees });
+
+    let newCustomFee = customFee;
+
+    // Update custom fee
+    if (isCustomFee) {
+      const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      newCustomFee = newFee;
+      this.setState({ customFee: newCustomFee, customFeeValue });
+    }
+
+    // If user request send all, we need to adjust amount text.
+    // We can only use the rest money without fees for transfers
+    if (isRequestSendAll) {
+      if (symbol === 'BTC' || symbol === 'RBTC') {
+        this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee, amount);
+      }
+      this.isRequestSendAll = false;
+    }
+  }
+
+  adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount) {
+    const { feeSymbol } = this.state;
+    let restAmount = null;
+    if (isCustomFee) {
+      restAmount = new BigNumber(amount).minus(customFee);
+    } else {
+      restAmount = new BigNumber(amount).minus(levelFees[feeLevel].fee);
+    }
+    restAmount = restAmount.isGreaterThan(0) ? restAmount : new BigNumber(0);
+    const restAmountText = common.getBalanceString(restAmount, config.symbolDecimalPlaces[feeSymbol]);
+    this.inputAmount(restAmountText);
+    this.txFeesCache.amount = restAmountText;
+  }
+
+  initContext() {
+    const { prices, currency } = this.props;
+    const { symbol, decimalPlaces } = this.coin;
     console.log('prices: ', prices);
     console.log('currency: ', currency);
-
-    const feeLevels = [
-      1 - FEE_LEVEL_ADJUSTMENT,
-      1,
-      1 + FEE_LEVEL_ADJUSTMENT,
-    ];
-    const feeBase = { BTC: DEFAULT_BTC_MEDIUM_FEE, RBTC: DEFAULT_RBTC_MEDIUM_GAS, RIF: DEFAULT_RIF_MEDIUM_GAS };
-    let feeSymbol = coin.symbol;
-    if (feeSymbol === 'RIF') {
-      feeSymbol = 'RBTC';
-    }
-    const feeData = [];
-    for (let i = 0; i < 3; i += 1) {
-      const item = {};
-      const fee = feeLevels[i] * feeBase[coin.symbol];
-
-      let coinAmount = common.convertUnitToCoinAmount(feeSymbol, fee);
-      if (feeSymbol === 'RBTC') {
-        coinAmount = coinAmount.times(DEFAULT_RBTC_GAS_PRICE);
-      }
-      const coinValue = common.getCoinValue(coinAmount, feeSymbol, currency, prices);
-      item.value = coinValue;
-      item.coin = coinAmount;
-      feeData.push(item);
-    }
-    this.mediumFee = feeData[1].coin;
-    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(coin.symbol, currency, prices);
-    this.setState({ feeData, feeSymbol, amountPlaceholderText });
+    const feeSymbol = symbol === 'BTC' ? 'BTC' : 'RBTC';
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices);
+    this.setState({ feeSymbol, amountPlaceholderText });
   }
 
   // resetConfirm() {
@@ -501,49 +677,34 @@ class Transfer extends Component {
   //   this.confirmSlider.reset();
   // }
 
-  /**
-   * validateFormData, return true/false, indicates whether the form datas are valid.
-   * @param {string} amount, coin amount
-   * @param {string} address, wallet address
-   * @param {string} symbol, coin symbol
-   * @param {string} type, coin network type
-   */
-  validateFormData(amount, address, symbol, type) {
+  showInvalidAddressNotification() {
     const { addNotification } = this.props;
-    const isAmountNumber = common.isAmount(amount);
-    if (!isAmountNumber) {
-      const notification = createErrorNotification(
-        'Invalid amount',
-        'Amount is not valid',
-      );
-      addNotification(notification);
-      return false;
-    }
-    const isAddress = common.isWalletAddress(address, symbol, type);
-    if (!isAddress) {
-      const notification = createErrorNotification(
-        'Invalid address',
-        'Address is not valid',
-      );
-      addNotification(notification);
-      return false;
-    }
-    return true;
+    const notification = createErrorNotification(
+      'modal.invalidAddress.title',
+      'modal.invalidAddress.body',
+    );
+    addNotification(notification);
   }
 
-  async confirm() {
-    const { navigation, navigation: { state }, addNotification } = this.props;
-    const { params } = state;
-    const { coin } = params;
+  showInvalidAmountNotification() {
+    const { addNotification } = this.props;
+    const notification = createErrorNotification(
+      'modal.invalidAmount.title',
+      'modal.invalidAmount.body',
+    );
+    addNotification(notification);
+  }
+
+  async confirm(toAddress) {
+    const { navigation, addNotification } = this.props;
+    const { coin } = this;
     const { memo } = this.state;
-    let { amount, to } = this.state;
-    amount = amount.trim();
-    to = to.trim();
+    const { amount } = this.state;
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
-      let transaction = new Transaction(coin, to, amount, extraParams);
+      let transaction = new Transaction(coin, toAddress, amount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
@@ -558,43 +719,50 @@ class Transfer extends Component {
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
-      const buttonText = 'RETRY';
+      const buttonText = 'button.retry';
       let notification = null;
       if (error.code === 141) {
         const message = error.message.split('|');
         switch (message[0]) {
+          case 'err.notenoughbalance.btc':
+            notification = createErrorNotification(
+              'modal.txFailed.title',
+              'modal.txFailed.moreBTC',
+              buttonText,
+            );
+            break;
           case 'err.notenoughbalance.rbtc':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RBTC balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRBTC',
               buttonText,
             );
             break;
           case 'err.notenoughbalance.rif':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more RIF balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreRIF',
               buttonText,
             );
             break;
           case 'err.notenoughbalance':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'You need more balance to complete the transfer',
+              'modal.txFailed.title',
+              'modal.txFailed.moreBalance',
               buttonText,
             );
             break;
           case 'err.timeout':
             notification = createErrorNotification(
-              'Transfer is failed',
-              'Sorry server timeout',
+              'modal.txFailed.title',
+              'modal.txFailed.serverTimeout',
               buttonText,
             );
             addNotification(notification);
             break;
           case 'err.customized':
             notification = createErrorNotification(
-              'Transfer is failed',
+              'modal.txFailed.title',
               message[1],
               buttonText,
             );
@@ -606,8 +774,8 @@ class Transfer extends Component {
       // Default error notification
       if (!notification) {
         notification = createErrorNotification(
-          'Transfer is failed',
-          'Please contact customer service',
+          'modal.txFailed.title',
+          'modal.txFailed.contactService',
           buttonText,
         );
       }
@@ -621,10 +789,15 @@ class Transfer extends Component {
     this.setState({ enableConfirm: to && amount });
   }
 
-  inputAmount(text) {
+  inputAmount(text, callback) {
     this.setState({ amount: text });
     if (parseFloat(text) >= 0) {
-      this.setState({ amount: text }, this.validateConfirmControl.bind(this));
+      this.setState({ amount: text }, () => {
+        this.validateConfirmControl();
+        if (callback) {
+          callback();
+        }
+      });
     }
   }
 
@@ -650,7 +823,8 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(feeSymbol, customFee)} ${feeSymbol} = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
+              {`${common.getBalanceString(customFee, config.symbolDecimalPlaces[feeSymbol])} ${feeSymbol}`}
+              {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
         )}
@@ -662,22 +836,21 @@ class Transfer extends Component {
   renderFeeOptions() {
     const { currency } = this.props;
     const {
-      feeSymbol, feeData, feeLevel, isCustomFee,
+      feeSymbol, feeLevel, isCustomFee, levelFees,
     } = this.state;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
-    if (!feeData) {
-      return null;
-    }
-    for (let i = 0; i < feeData.length; i += 1) {
-      const item = {};
-      const fee = feeData[i];
-      const coinAmount = common.getBalanceString(feeSymbol, fee.coin);
-      item.coin = `${coinAmount} ${feeSymbol}`;
-      const coinValue = common.getAssetValueString(fee.value);
-      item.value = `${currencySymbol}${coinValue}`;
+    for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
+      let item = { coin: `0 ${feeSymbol}`, value: `${currencySymbol}0` };
+      if (levelFees) {
+        const { fee, value } = levelFees[i];
+        const amountText = common.getBalanceString(fee, config.symbolDecimalPlaces[feeSymbol]);
+        const valueText = value ? `${currencySymbol}${common.getAssetValueString(value)}` : '';
+        item = { coin: `${amountText} ${feeSymbol}`, value: valueText };
+      }
       items.push(item);
     }
+
     let selectIndex = null;
     if (!isCustomFee) {
       selectIndex = feeLevel;
@@ -697,12 +870,13 @@ class Transfer extends Component {
     return (
       <TextInput
         style={[styles.textInput, { textAlignVertical: 'top', paddingBottom }]}
-        placeholder={strings('Enter a transaction memo')}
+        placeholder={strings('page.wallet.transfer.enterMemo')}
         multiline
         numberOfLines={Platform.OS === 'ios' ? null : MEMO_NUM_OF_LINES}
         minHeight={(Platform.OS === 'ios' && MEMO_NUM_OF_LINES) ? (MEMO_LINE_HEIGHT * MEMO_NUM_OF_LINES + paddingBottom) : null}
         value={memo}
         onChange={(event) => this.setState({ memo: event.nativeEvent.text })}
+        onBlur={this.onMemoInputBlur}
       />
     );
   }
@@ -710,13 +884,14 @@ class Transfer extends Component {
   render() {
     const {
       loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
-      enableConfirm,
+      enableConfirm, levelFees,
     } = this.state;
     const { navigation } = this.props;
-    const { coin } = navigation.state.params;
+    const { coin } = this;
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolFullName(symbol, type);
+    const title = `${strings('button.Send')} ${symbolName}`;
 
     return (
       <BasePageGereral
@@ -724,12 +899,12 @@ class Transfer extends Component {
         hasBottomBtn={false}
         hasLoader
         isLoading={loading}
-        headerComponent={<OperationHeader operation="Send" symbolName={symbolName} onBackButtonPress={() => navigation.goBack()} />}
+        headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
       >
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>
-              <Loc style={[styles.title1]} text="Sending" />
+              <Loc style={[styles.title1]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
             <View style={styles.textInputView}>
@@ -738,43 +913,43 @@ class Transfer extends Component {
                 style={[styles.textInput]}
                 value={amount}
                 keyboardType="numeric"
-                onChangeText={this.inputAmount}
+                onChangeText={this.onAmountInputChangeText}
+                onBlur={this.onAmountInputBlur}
               />
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title2]} text="To" />
+            <Loc style={[styles.title2]} text="page.wallet.transfer.to" />
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
                 value={to}
                 onChangeText={(text) => {
-                  this.setState({ to: text }, this.validateConfirmControl.bind(this));
+                  this.setState({ to: text.trim() }, this.validateConfirmControl);
                 }}
+                onBlur={this.onToInputBlur}
               />
-              <TouchableOpacity
-                style={styles.textInputIcon}
-                onPress={this.onQrcodeScanPress}
-              >
-                <Image source={addressIcon} />
+              <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
+                <Image source={references.images.scanAddress} />
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="Memo (optional)" />
+            <Loc style={[styles.title3]} text="page.wallet.transfer.memo" />
             <View style={styles.textInputView}>
               {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
-            <Loc style={[styles.title2, { marginBottom: 5 }]} text="Miner fee" />
-            <Loc style={[styles.question]} text="How fast you want this done?" />
+            <Loc style={[styles.title2, { marginBottom: 5 }]} text="page.wallet.transfer.fee" />
+            <Loc style={[styles.question]} text="page.wallet.transfer.feeQuestion" />
             {this.renderFeeOptions()}
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.customTitle, { flex: 1 }]} text="Custom" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
               <Switch
+                disabled={!levelFees}
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
               />
@@ -816,9 +991,9 @@ class Transfer extends Component {
                     style={{ width: 32, height: 32 }}
                   />
                   )}
-                label={isConfirm ? strings('CONFIRMED') : strings('Slide to confirm')}
+                label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="Confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPress} />
         </View>
       </BasePageGereral>
     );
@@ -833,22 +1008,34 @@ Transfer.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
+  removeConfirmation: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
+};
+
+Transfer.defaultProps = {
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   language: state.App.get('language'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
   ),
+  addConfirmation: (confirmation) => dispatch(
+    appActions.addConfirmation(confirmation),
+  ),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),

@@ -13,7 +13,7 @@ export const getRawTransactionParam = ({
     value,
     data,
     gasPrice,
-    gas,
+    gas: Math.floor(gas), // gas must be integer
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
@@ -31,7 +31,7 @@ export const signTransaction = async (rawTransaction, privateKey) => {
   return signedTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo) => {
+export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
   const param = {
     name: 'Rootstock',
     hash: signedTransaction.rawTransaction,
@@ -39,6 +39,9 @@ export const getSignedTransactionParam = (signedTransaction, netType, memo) => {
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
+  }
+  if (coinSwitch) {
+    param.coinSwitch = coinSwitch;
   }
   return param;
 };

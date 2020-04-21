@@ -58,6 +58,7 @@ export default class ConfirmationPanel extends Component {
       transparent: true,
     };
     this.onConfirmPress = this.onConfirmPress.bind(this);
+    this.onCancelPress = this.onCancelPress.bind(this);
   }
 
   onConfirmPress() {
@@ -68,13 +69,21 @@ export default class ConfirmationPanel extends Component {
     }
   }
 
+  onCancelPress() {
+    const { onClosePress, confirmationCancelCallback } = this.props;
+    onClosePress();
+    if (confirmationCancelCallback) {
+      confirmationCancelCallback();
+    }
+  }
+
   startShow = () => {
   };
 
   render() {
     const { animationType, transparent } = this.state;
     const {
-      title, message, comfirmText, cancelText, onClosePress,
+      type, title, message, comfirmText, cancelText,
     } = this.props;
     return (
       <Modal
@@ -86,16 +95,16 @@ export default class ConfirmationPanel extends Component {
         <View style={{ justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
             <View style={{ paddingHorizontal: 20 }}>
-              <Loc style={[styles.title]} text={title} />
+              <Loc style={[styles.title, type === 'error' ? styles.errorButtonText : null]} text={title} />
               <Loc style={[styles.text]} text={message} />
             </View>
             <View style={styles.line} />
             <View style={styles.ButtonsView}>
-              <TouchableOpacity onPress={onClosePress}>
-                <Loc style={[styles.button]} text={cancelText} />
+              <TouchableOpacity onPress={this.onCancelPress}>
+                <Loc style={[styles.button]} text={cancelText} caseType="upper" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.onConfirmPress}>
-                <Loc style={[styles.button, { marginLeft: 70 }]} text={comfirmText} />
+              <TouchableOpacity style={{ marginLeft: 70 }} onPress={this.onConfirmPress}>
+                <Loc style={[styles.button]} text={comfirmText || 'button.confirm'} caseType="upper" />
               </TouchableOpacity>
             </View>
           </View>
@@ -106,17 +115,20 @@ export default class ConfirmationPanel extends Component {
 }
 
 ConfirmationPanel.propTypes = {
+  type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   onClosePress: PropTypes.func,
   message: PropTypes.string.isRequired,
   comfirmText: PropTypes.string,
   cancelText: PropTypes.string,
   confirmationCallback: PropTypes.func,
+  confirmationCancelCallback: PropTypes.func,
 };
 
 ConfirmationPanel.defaultProps = {
   onClosePress: null,
   confirmationCallback: null,
-  comfirmText: 'Confirm',
-  cancelText: 'Cancel',
+  confirmationCancelCallback: null,
+  comfirmText: 'button.confirm',
+  cancelText: 'button.cancel',
 };

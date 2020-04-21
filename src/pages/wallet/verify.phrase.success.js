@@ -72,15 +72,15 @@ export default class VerifyPhraseSuccess extends Component {
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          bottomBtnText="GO TO WALLET"
+          bottomBtnText="button.goToWallet"
           bottomBtnOnPress={this.onBackPress}
           hasLoader={false}
-          headerComponent={<Header title="Verify Phrase Success" onBackButtonPress={this.onBackPress} />}
+          headerComponent={<Header title="page.wallet.verifyPhraseSuccess.title" onBackButtonPress={this.onBackPress} />}
         >
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
-            <Loc style={[styles.title]} text="Your recovery phrase is verified" />
-            <Loc style={[styles.text]} text="Be sure to store your recovery phrase in a safe and secure place" />
+            <Loc style={[styles.title]} text="page.wallet.verifyPhraseSuccess.body" />
+            <Loc style={[styles.text]} text="page.wallet.verifyPhraseSuccess.note" />
           </View>
         </BasePageGereral>
       );
