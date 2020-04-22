@@ -288,12 +288,43 @@ class ParseHelper {
     const queryTo = new Parse.Query(ParseTransaction);
     queryTo.containedIn('to', addresses);
     const query = Parse.Query.or(queryFrom, queryTo).descending('receivedAt');
-    const results = await query.find();
+    const results = await this.fetchTotal(query);
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
       return transaction;
     });
     return transactions;
+  }
+
+
+  /**
+   * fetch total records for parse query
+   *
+   * @static
+   * @param {object} parseQuery
+   * @param {number} [eachQueryLimit=100]
+   * @returns
+   * @memberof ParseHelper
+   */
+  static async fetchTotal(parseQuery, eachQueryLimit = 100) {
+    const count = await parseQuery.count();
+    const tasks = [];
+
+    for (let i = 0; i < count; i += eachQueryLimit) {
+      tasks.push(async () => {
+        const clonedQuery = _.clone(parseQuery);
+        const records = await clonedQuery
+          .skip(i)
+          .limit(eachQueryLimit)
+          .find();
+        return records;
+      });
+    }
+
+    const recordArrs = await Promise.all(_.map(tasks, task => task()));
+    const totalRecords = recordArrs.flat();
+
+    return totalRecords;
   }
 
   /**
