@@ -84,6 +84,8 @@ const styles = StyleSheet.create({
   ButtonView: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   sendText: {
     color: '#6875B7',
@@ -119,8 +121,7 @@ const styles = StyleSheet.create({
     borderColor: '#D1D1D1',
     height: 15,
     marginBottom: 2,
-    marginLeft: 20,
-    marginRight: 20,
+    marginHorizontal: 12,
   },
   addWalletButtonView: {
     flex: 1,
