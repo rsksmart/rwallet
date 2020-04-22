@@ -253,7 +253,7 @@ class VerifyPhrase extends Component {
           onPress={() => this.onWordFieldPress(i)}
           key={(`${i}`)}
         >
-          <WordField text={text} />
+          <WordField text={text} index={i !== selectedWordIndexs.length - 1 ? null : i + 1} />
         </TouchableOpacity>,
       );
     }

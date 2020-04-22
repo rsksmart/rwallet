@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   textView: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    paddingTop: 30,
+    paddingTop: 50,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -39,16 +39,24 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
+    marginTop: 20,
+  },
+  index: {
+    position: 'absolute',
+    top: '18%',
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 16,
   },
 });
 
-export default function WordField({ text }) {
+export default function WordField({ text, index }) {
   return (
     <View style={styles.frame}>
       <View style={styles.dashView}>
         <DashLine />
       </View>
       <View style={styles.textView}>
+        { index && <Text style={styles.index}>{index}</Text> }
         <Text style={styles.text}>{text}</Text>
       </View>
     </View>
@@ -57,4 +65,9 @@ export default function WordField({ text }) {
 
 WordField.propTypes = {
   text: PropTypes.string.isRequired,
+  index: PropTypes.number,
+};
+
+WordField.defaultProps = {
+  index: undefined,
 };
