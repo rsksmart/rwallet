@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     borderColor: '#D1D1D1',
     height: 15,
     marginBottom: 2,
-    marginHorizontal: 12,
+    marginHorizontal: 10,
   },
   addWalletButtonView: {
     flex: 1,
