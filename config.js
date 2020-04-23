@@ -29,9 +29,9 @@ const config = {
       { name: 'USD', fullName: 'US Dollar', symbol: '$' },
       { name: 'ARS', fullName: 'Argentine Peso', symbol: 'ARS$' },
       { name: 'JPY', fullName: 'Japanese Yen', symbol: '￥' },
-      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
+      { name: 'KRW', fullName: 'South Korea Won', symbol: '₩' },
       { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
-      { name: 'GBP', fullName: 'Pound sterling', symbol: '£' },
+      { name: 'GBP', fullName: 'Pound Sterling', symbol: '£' },
     ],
   },
   development: {

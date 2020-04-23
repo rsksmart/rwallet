@@ -65,8 +65,8 @@
         "title": "Agregar Wallet",
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
-        "importWallet": "Importar Wallet existente",
-        "importWalletNote": "Recupere su Wallet usando su frase de contraseña"
+        "importWallet": "Importar billetera existente",
+        "importWalletNote": "Recupere su billetera usando su frase de contraseña"
       },
       "selectCurrency": {
         "title": "Seleccionar moneda de Wallet",
