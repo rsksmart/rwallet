@@ -375,5 +375,13 @@
       "title": "Token duplicado",
       "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
     }
+  },
+  "currency": {
+    "USD": "dólar estadounidense",
+    "ARS": "Peso argentino",
+    "JPY": "Yen japonés",
+    "KRW": "Corea del Sur ganó",
+    "CNY": "Yuan chino",
+    "GBP": "Libra esterlina"
   }
 }

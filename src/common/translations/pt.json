@@ -375,5 +375,13 @@
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
     }
+  },
+  "currency": {
+    "USD": "dólar americano",
+    "ARS": "peso argentino",
+    "JPY": "iene japonês",
+    "KRW": "Coréia do Sul ganhou",
+    "CNY": "yuan chinês",
+    "GBP": "libra esterlina"
   }
 }
