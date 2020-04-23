@@ -9,6 +9,7 @@ import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
+import CONSTANTS from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -122,6 +123,7 @@ class KeyName extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               blurOnSubmit={false}
+              maxLength={CONSTANTS.KEYNAME_MAX_LENGTH}
             />
             <Loc style={[styles.notice]} text="page.mine.keyName.comment" />
           </View>

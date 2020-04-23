@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import common from '../common';
+import CONSTANTS from '../constants';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -235,10 +236,10 @@ class WalletManager {
   async renameWallet(wallet, name) {
     if (name.length < 1) {
       throw new Error('modal.incorrectKeyName.tooShort');
-    } else if (name.length > 32) {
+    } else if (name.length > CONSTANTS.KEYNAME_MAX_LENGTH) {
       throw new Error('modal.incorrectKeyName.tooLong');
     }
-    const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
+    const regex = /^[a-zA-Z0-9 ]$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('modal.incorrectKeyName.invalid');

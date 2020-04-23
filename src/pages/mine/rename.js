@@ -9,6 +9,7 @@ import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
+import CONSTANTS from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -113,6 +114,7 @@ class Rename extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               blurOnSubmit={false}
+              maxLength={CONSTANTS.NAME_MAX_LENGTH}
             />
             <Loc style={[styles.notice]} text="page.mine.rename.comment" />
           </View>
