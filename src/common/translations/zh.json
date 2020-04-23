@@ -51,7 +51,7 @@
       "transfer": {
         "to": "接收地址",
         "memo": "备注（可选）",
-        "fee": "费用",
+        "fee": "转账费用",
         "custom": "自定义",
         "feeQuestion": "需要多快完成？",
         "Slow": "慢",
@@ -346,7 +346,7 @@
     },
     "verifyPasscode": {
       "type": "输入密码",
-      "incorrected": "密码不正确"
+      "incorrect": "密码不正确"
     },
     "touchSensor": {
       "title": "指纹验证",
