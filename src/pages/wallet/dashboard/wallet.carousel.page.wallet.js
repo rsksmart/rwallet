@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
   ButtonView: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    padding: 10,
   },
   sendText: {
     color: '#6875B7',
