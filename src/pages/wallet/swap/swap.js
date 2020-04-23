@@ -224,7 +224,6 @@ res.exchange = require('../../../assets/images/icon/exchange.png');
 res.BTC = require('../../../assets/images/icon/BTC.png');
 res.RBTC = require('../../../assets/images/icon/RBTC.png');
 res.RIF = require('../../../assets/images/icon/RIF.png');
-res.currencyExchange = require('../../../assets/images/icon/currencyExchange.png');
 res.error = require('../../../assets/images/icon/error.png');
 
 const switchItems = ['MIN', 'HALF', 'ALL'];
@@ -836,7 +835,6 @@ class Swap extends Component {
                 {swapSource && <Text style={styles.boardTokenName}>{swapSource.coin.symbol}</Text>}
                 <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
               </TouchableOpacity>
-              <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
             </View>
             <View style={styles.boardAmountView}>
               <View style={styles.sourceAmount}>
@@ -883,7 +881,6 @@ class Swap extends Component {
                 {swapDest && (<Text style={styles.boardTokenName}>{swapDest.coin.symbol}</Text>)}
                 <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
               </TouchableOpacity>
-              <Image style={styles.boardTokenExchangeIcon} source={res.currencyExchange} />
             </View>
             <View style={styles.boardAmountView}>
               <View style={styles.sourceAmount}>
