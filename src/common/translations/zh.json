@@ -185,10 +185,14 @@
       },
       "2fa": {
         "title": "双因素认证",
+        "setPasscode": "设置密码",
         "resetPasscode": "重置密码"
       },
       "resetPasscodeSuccess" :{
-        "title": "重置密码成功"
+        "title": {
+          "create": "设置密码成功",
+          "reset": "重置密码成功"
+        }
       },
       "keySettings": {
         "title": "密钥设置",

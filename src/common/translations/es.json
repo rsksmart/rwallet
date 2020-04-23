@@ -185,10 +185,14 @@
       },
       "2fa": {
         "title": "Autenticación de dos factores",
+        "setPasscode": "Código de acceso establecido",
         "resetPasscode": "Restablecer contraseña"
       },
       "resetPasscodeSuccess" :{
-        "title": "Contraseña restablecida exitosamente"
+        "title": {
+          "create": "Código de acceso establecido",
+          "reset": "Contraseña restablecida exitosamente"
+        }
       },
       "keySettings": {
         "title": "Configuraciones clave",

@@ -46,9 +46,9 @@ class TwoFactorAuth extends Component {
     onResetPasscodePress() {
       const { passcode, showPasscode, navigation } = this.props;
       if (passcode) {
-        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
+        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess', { operation: 'reset' }));
       } else {
-        showPasscode('create');
+        showPasscode('create', () => navigation.navigate('ResetPasscodeSuccess', { operation: 'create' }));
       }
     }
 
@@ -58,7 +58,8 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, passcode } = this.props;
+      const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
       return (
         <BasePageGereral
           isSafeView={false}
@@ -68,7 +69,7 @@ class TwoFactorAuth extends Component {
         >
           <View style={styles.body}>
             <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
-              <Loc style={[styles.title]} text="page.mine.2fa.resetPasscode" />
+              <Loc style={[styles.title]} text={setPasscodeText} />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
           </View>

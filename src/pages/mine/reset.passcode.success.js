@@ -56,6 +56,9 @@ export default class ResetPasscodeSuccess extends Component {
     }
 
     render() {
+      const { navigation } = this.props;
+      const { operation } = navigation.state.params;
+      const title = operation === 'create' ? 'page.mine.resetPasscodeSuccess.title.create' : 'page.mine.resetPasscodeSuccess.title.reset';
       return (
         <BasePageGereral
           isSafeView
@@ -63,11 +66,11 @@ export default class ResetPasscodeSuccess extends Component {
           hasLoader={false}
           bottomBtnText="button.backToSetting"
           bottomBtnOnPress={this.onBackButtonPress}
-          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="page.mine.resetPasscodeSuccess.title" />}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title={title} />}
         >
           <View style={styles.content}>
             <Image style={styles.check} source={completed} />
-            <Loc style={[styles.title]} text="page.mine.resetPasscodeSuccess.title" />
+            <Loc style={[styles.title]} text={title} />
           </View>
         </BasePageGereral>
       );
