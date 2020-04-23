@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
 class VerifyPhrase extends Component {
   static navigationOptions = () => ({
     header: null,
+    gesturesEnabled: false,
   });
 
   constructor(props) {
