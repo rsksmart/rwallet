@@ -100,7 +100,6 @@ class RootComponent extends Component {
 
         newState.isStorageRead = true;
       } else {
-        // Start timer to get price frequently
         // TODO: we will need to get rid of timer and replace with Push Notification
         startFetchLatestBlockHeightTimer();
 
