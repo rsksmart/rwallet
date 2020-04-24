@@ -377,10 +377,10 @@
     }
   },
   "currency": {
-    "USD": "dólar estadounidense",
+    "USD": "Dólar americano",
     "ARS": "Peso argentino",
     "JPY": "Yen japonés",
-    "KRW": "Corea del Sur ganó",
+    "KRW": "Won coreano",
     "CNY": "Yuan chino",
     "GBP": "Libra esterlina"
   }
