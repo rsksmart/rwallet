@@ -174,7 +174,7 @@
         "wallets": {
           "zero": "0 billetera",
           "one": "1 billetera",
-          "other": "{{count}} 5 carteras"
+          "other": "{{count}} carteras"
         }
       },
       "language": {
