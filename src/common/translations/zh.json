@@ -206,12 +206,12 @@
         "question": "你如何称呼这个密钥呢？",
         "notice": "在下面你可以改变显示的名字。",
         "name": "名字",
-        "comment": "* 密钥名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 密钥名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "rename": {
         "title": "名字",
         "question": "名字是什么？",
-        "comment": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "resetcompleted": {
         "title": "重置成功！"

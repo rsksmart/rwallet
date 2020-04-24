@@ -116,7 +116,7 @@ class Rename extends Component {
               blurOnSubmit={false}
               maxLength={CONSTANTS.NAME_MAX_LENGTH}
             />
-            <Loc style={[styles.notice]} text="page.mine.rename.comment" />
+            <Loc style={[styles.notice]} text="page.mine.rename.comment" interpolates={{ maxLength: CONSTANTS.NAME_MAX_LENGTH }} />
           </View>
         </BasePageGereral>
       );

@@ -125,7 +125,7 @@ class KeyName extends Component {
               blurOnSubmit={false}
               maxLength={CONSTANTS.KEYNAME_MAX_LENGTH}
             />
-            <Loc style={[styles.notice]} text="page.mine.keyName.comment" />
+            <Loc style={[styles.notice]} text="page.mine.keyName.comment" interpolates={{ maxLength: CONSTANTS.KEYNAME_MAX_LENGTH }} />
           </View>
         </BasePageGereral>
       );
