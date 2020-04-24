@@ -16,6 +16,8 @@ import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
+import WebViewModal from '../../components/common/webview.modal';
+import config from '../../../config';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -77,14 +79,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
-  createWalletButtonView: {
+  linkView: {
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
   },
-  createWalletButtonText: {
+  linkText: {
     color: '#00B520',
     fontSize: 16,
   },
@@ -249,6 +251,7 @@ class MineIndex extends Component {
       keyListData: [],
       settings: [],
       joins: [],
+      isTermsWebViewVisible: false,
     };
     this.onEditNamePress = this.onEditNamePress.bind(this);
   }
@@ -276,9 +279,15 @@ class MineIndex extends Component {
     navigation.navigate('Rename');
   }
 
+  onViewTermsPressed = () => {
+    this.setState({ isTermsWebViewVisible: true });
+  }
+
   render() {
     const { language, navigation, username } = this.props;
-    const { keyListData, settings, joins } = this.state;
+    const {
+      keyListData, settings, joins, isTermsWebViewVisible,
+    } = this.state;
     // Translate If username is default user name
     const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
 
@@ -303,13 +312,13 @@ class MineIndex extends Component {
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
-            <View style={styles.createWalletButtonView}>
+            <View style={styles.linkView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Loc style={[styles.createWalletButtonText]} text="page.mine.index.createKey" />
+                <Loc style={[styles.linkText]} text="page.mine.index.createKey" />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
@@ -317,7 +326,20 @@ class MineIndex extends Component {
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
+          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+            <View style={styles.linkView}>
+              <TouchableOpacity onPress={this.onViewTermsPressed}>
+                <Loc style={[styles.linkText]} text="page.start.terms.termsOfUse" />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+        <WebViewModal
+          title={strings('page.start.terms.termsOfUse')}
+          url={config.termsUrl}
+          visible={isTermsWebViewVisible}
+          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
+        />
       </BasePageGereral>
     );
   }

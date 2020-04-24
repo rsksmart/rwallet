@@ -16,7 +16,8 @@
         "term2": "I understand that if this app is moved to another device or deleted, my funds can only be recovered with the recovery phrase.",
         "term3": "I have read, understood, and agreed to the Terms of Use.",
         "viewTerms": "View Complete Terms Of Use",
-        "button": "Confirm & Accept"
+        "button": "Confirm & Accept",
+        "termsOfUse": "Terms Of Use"
       }
     },
     "wallet": {

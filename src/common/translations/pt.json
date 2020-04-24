@@ -16,7 +16,8 @@
         "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
         "term3": "Eu li, compreendi e concordo com os Termos de uso.",
         "viewTerms": "Ver Termos de Uso Completos",
-        "button": "Confirme e aceite"
+        "button": "Confirme e aceite",
+        "termsOfUse": "Termos de uso"
       }
     },
     "wallet": {
