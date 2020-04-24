@@ -376,5 +376,13 @@
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
     }
+  },
+  "currency": {
+    "USD": "US Dollar",
+    "ARS": "Argentine Peso",
+    "JPY": "Japanese Yen",
+    "KRW": "South Korea Won",
+    "CNY": "Chinese Yuan",
+    "GBP": "Pound Sterling"
   }
 }
