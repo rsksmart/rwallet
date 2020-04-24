@@ -3,6 +3,7 @@ import _ from 'lodash';
 import storage from './storage';
 import config from '../../config';
 import { getCurrentLanguage } from './i18n';
+import CONSTANTS from './constants';
 
 /**
 * defaultSettings
@@ -76,10 +77,10 @@ class Settings {
   validateName(name) {
     if (name.length < 1) {
       throw new Error('err.nametooshort');
-    } else if (name.length > 32) {
+    } else if (name.length > CONSTANTS.NAME_MAX_LENGTH) {
       throw new Error('err.nametoolong');
     }
-    const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
+    const regex = /^[a-zA-Z0-9 ]$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('err.nameinvalid');

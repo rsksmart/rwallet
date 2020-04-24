@@ -206,12 +206,12 @@
         "question": "Como você chama essa chave?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
-        "comment": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome da chave pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "rename": {
         "title": "Seu nome",
         "question": "Qual o seu nome?",
-        "comment": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "resetcompleted": {
         "title": "Redefinição concluída!"

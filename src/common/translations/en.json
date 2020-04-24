@@ -207,12 +207,12 @@
         "question": "What do you call this key?",
         "notice": "You can change the name displayed on the device below.",
         "name": "Name",
-        "comment": "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space"
+        "comment": "* Key name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
       },
       "rename": {
         "title": "Your Name",
         "question": "What's your name?",
-        "comment": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space"
+        "comment": "* Name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
       },
       "resetcompleted": {
         "title": "Reset completed!"

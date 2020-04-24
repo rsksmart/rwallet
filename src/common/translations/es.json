@@ -206,12 +206,12 @@
         "question": "¿Cómo llamas a esta llave?",
         "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
         "name": "Nombre",
-        "comment": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre de la clave puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "rename": {
         "title": "Tu nombre",
         "question": "¿Cuál es tu nombre?",
-        "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "resetcompleted": {
         "title": "¡Reinicio completado!"
