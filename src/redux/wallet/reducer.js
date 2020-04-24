@@ -51,8 +51,8 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_BALANCE_UPDATED: {
       return state.set('isBalanceUpdated', false);
     }
-    case actions.FETCH_TRANSACTION_RESULT: {
-      const transactions = action.value;
+    case actions.UPDATE_TRANSACTIONS: {
+      const { transactions, operation } = action.value;
       const walletManager = state.get('walletManager');
       const tokens = walletManager.getTokens();
 
@@ -65,7 +65,11 @@ export default function walletReducer(state = initState, action) {
           }
           const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
           if (txIndex === -1) {
-            newToken.transactions.unshift(transaction);
+            if (operation === 'unshift') {
+              newToken.transactions.unshift(transaction);
+            } else {
+              newToken.transactions.push(transaction);
+            }
           } else {
             newToken.transactions[txIndex] = transaction;
           }

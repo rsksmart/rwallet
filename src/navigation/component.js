@@ -60,7 +60,7 @@ class RootComponent extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
-      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
+      startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
       initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
     } = nextProps;
 
@@ -102,8 +102,6 @@ class RootComponent extends Component {
       } else {
         // Start timer to get price frequently
         // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchBalanceTimer(walletManager);
-        startFetchTransactionTimer(walletManager);
         startFetchLatestBlockHeightTimer();
 
         console.log('initLiveQueryPrice', initLiveQueryPrice);
@@ -143,8 +141,6 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-  startFetchBalanceTimer: PropTypes.func.isRequired,
-  startFetchTransactionTimer: PropTypes.func.isRequired,
   startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
