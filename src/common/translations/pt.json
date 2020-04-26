@@ -59,7 +59,8 @@
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Inserir uma nota de transação",
-        "slideConfirm": "Deslize para confirmar"
+        "slideConfirm": "Deslize para confirmar",
+        "balance": "Saldo"
       },
       "add": {
         "title": "Adicionar carteira",

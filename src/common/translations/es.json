@@ -59,7 +59,8 @@
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
-        "slideConfirm": "Deslice para confirmar"
+        "slideConfirm": "Deslice para confirmar",
+        "balance": "Equilibrar"
       },
       "add": {
         "title": "Agregar Wallet",
