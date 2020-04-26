@@ -186,10 +186,14 @@
       },
       "2fa": {
         "title": "Two-Factor Authentication",
+        "setPasscode": "Set Passcode",
         "resetPasscode": "Reset Passcode"
       },
       "resetPasscodeSuccess" :{
-        "title": "Reset Passcode Success"
+        "title": {
+          "create": "Set Passcode Success",
+          "reset": "Reset Passcode Success"
+        }
       },
       "keySettings": {
         "title": "Key Settings",

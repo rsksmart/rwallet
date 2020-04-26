@@ -185,10 +185,14 @@
       },
       "2fa": {
         "title": "Autenticação de dois fatores",
+        "setPasscode": "Definir código de acesso",
         "resetPasscode": "Redefinir senha"
       },
       "resetPasscodeSuccess" :{
-        "title": "Redefinir sucesso da senha"
+        "title": {
+          "create": "Definir código de acesso",
+          "reset": "Redefinir sucesso da senha"
+        }
       },
       "keySettings": {
         "title": "Configurações principais",
