@@ -3,6 +3,7 @@ import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
+import definitions from './definitions';
 
 const parseConfig = config && config.parse;
 
@@ -399,6 +400,21 @@ class ParseHelper {
     const priceObj = await query.equalTo('key', 'price').first();
     const prices = parseDataUtil.getPrices(priceObj);
     return prices;
+  }
+
+  static async subscribeBlockHeights() {
+    const query = new Parse.Query('Global');
+    query.containedIn('key', definitions.blockHeightKeys);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static async fetchBlockHeights() {
+    const query = new Parse.Query('Global');
+    query.containedIn('key', definitions.blockHeightKeys);
+    const rows = await query.find();
+    const blockHeights = rows.map(parseDataUtil.getBlockHeight);
+    return blockHeights;
   }
 
   static unsubscribe(subscription) {

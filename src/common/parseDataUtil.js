@@ -1,4 +1,5 @@
 import moment from 'moment';
+import definitions from './definitions';
 
 const parseDataUtil = {
   /**
@@ -40,6 +41,13 @@ const parseDataUtil = {
 
   getPrices(priceObj) {
     return priceObj ? priceObj.get('value') : [];
+  },
+
+  getBlockHeight(row) {
+    const key = row.get('key');
+    const value = row.get('value');
+    const { blockHeightKeyInfos } = definitions;
+    return { ...blockHeightKeyInfos[key], blockHeight: value[0] };
   },
 };
 

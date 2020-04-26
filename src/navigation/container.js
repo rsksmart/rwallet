@@ -29,7 +29,6 @@ const mapDispatchToProps = (dispatch) => ({
   closePasscodeModal: () => dispatch(appActions.hidePasscode()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  startFetchLatestBlockHeightTimer: () => dispatch(walletActions.startFetchLatestBlockHeightTimer()),
   resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
   updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),
   removeNotification: () => dispatch(appActions.removeNotification()),
@@ -37,6 +36,7 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
+  initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
