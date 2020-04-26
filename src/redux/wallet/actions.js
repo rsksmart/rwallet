@@ -12,7 +12,7 @@ const actions = {
   RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
 
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
-  FETCH_TRANSACTION_RESULT: 'FETCH_TRANSACTION_RESULT',
+  UPDATE_TRANSACTIONS: 'UPDATE_TRANSACTIONS',
 
   FETCH_LATEST_BLOCK_HEIGHT: 'FETCH_LATEST_BLOCK_HEIGHT',
   FETCH_LATEST_BLOCK_HEIGHT_RESULT: 'FETCH_LATEST_BLOCK_HEIGHT_RESULT',
@@ -79,14 +79,6 @@ const actions = {
   updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,
     payload: { currency, prices },
-  }),
-  startFetchBalanceTimer: (walletManager) => ({
-    type: actions.START_FETCH_BALANCE_TIMER,
-    payload: walletManager,
-  }),
-  startFetchTransactionTimer: (walletManager) => ({
-    type: actions.START_FETCH_TRANSACTION_TIMER,
-    payload: walletManager,
   }),
   startFetchLatestBlockHeightTimer: () => ({
     type: actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER,

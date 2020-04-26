@@ -280,7 +280,14 @@ function createTransactionsSubscriptionChannel(subscription) {
     const updateHandler = (item) => {
       console.log('createTransactionsSubscriptionChannel.updateHandler', item);
       const transaction = parseDataUtil.getTransaction(item);
-      return emitter({ type: actions.FETCH_TRANSACTION_RESULT, value: [transaction] });
+      return emitter({
+        type: actions.UPDATE_TRANSACTIONS,
+        value: {
+          transactions: [transaction],
+          // Because the transaction is updated by the subscription, it is inserted from the head of the list.
+          operation: 'unshift',
+        },
+      });
     };
     const errorHandler = (error) => {
       console.log('createTransactionsSubscriptionChannel.errorHandler', error);
@@ -303,8 +310,11 @@ function* fetchTransactions(tokens) {
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, tokens);
     yield put({
-      type: actions.FETCH_TRANSACTION_RESULT,
-      value: transactions,
+      type: actions.UPDATE_TRANSACTIONS,
+      value: {
+        transactions,
+        operation: 'push',
+      },
     });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
