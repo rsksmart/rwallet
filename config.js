@@ -37,12 +37,6 @@ const config = {
   development: {
     reduxLoggerEnabled: false,
   },
-  interval: {
-    fetchPrice: 8000,
-    fetchBalance: 8000,
-    fetchTransaction: 8000,
-    fetchLatestBlockHeight: 8000,
-  },
   symbolDecimalPlaces: {
     BTC: 6,
     RBTC: 6,

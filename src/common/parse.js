@@ -312,10 +312,6 @@ class ParseHelper {
     return subscription;
   }
 
-  static fetchLatestBlockHeight() {
-    return Parse.Cloud.run('getLatestBlockHeight');
-  }
-
   static requestCoinswitchAPI(type, coinswitchParams = {}) {
     const { deposit, destination } = coinswitchParams;
     let method; let path; let params;
