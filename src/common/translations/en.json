@@ -51,7 +51,7 @@
       "transfer": {
         "to": "To",
         "memo": "Memo (optional)",
-        "fee": "Mineer fee",
+        "fee": "Transaction fee",
         "custom": "Custom",
         "feeQuestion": "How fast you want this done?",
         "Slow": "Slow",
@@ -65,7 +65,7 @@
         "title": "Add Wallet",
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
-        "importWallet": "Import existing Wallet",
+        "importWallet": "Import Existing Wallet",
         "importWalletNote": "Recover your wallet using your passphrase"
       },
       "selectCurrency": {
@@ -126,13 +126,13 @@
           "tooBig": "The amount is higher than the exchange maximum of %{max} %{symbol}",
           "tooSmall": "The amount is lower than the exchange minimum of %{min} %{symbol}"
         },
-        "errorBalanceEnough": "Sorry, but you dont have enough balance",
+        "errorBalanceEnough": "Sorry, but you don't have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
         "have": "I have %{balance} in %{wallet}"
       },
       "swapSelection": {
         "title": "Select Currency",
-        "noSwappableCoin": "Sorry, you dont have any Swappable Coin",
+        "noSwappableCoin": "Sorry, you don't have any Swappable Coin",
         "please": "Please",
         "create": "Create",
         "or": "or",
@@ -172,7 +172,11 @@
         "createKey": "Create or Import a Key",
         "keys": "Keys",
         "anonymousUser": "Anonymous User",
-        "wallets": "Wallets"
+        "wallets": {
+          "zero": "0 Wallet",
+          "one": "1 Wallet",
+          "other": "{{count}} Wallets"
+        }
       },
       "language": {
         "title": "Language"
@@ -182,10 +186,14 @@
       },
       "2fa": {
         "title": "Two-Factor Authentication",
+        "setPasscode": "Set Passcode",
         "resetPasscode": "Reset Passcode"
       },
       "resetPasscodeSuccess" :{
-        "title": "Reset Passcode Success"
+        "title": {
+          "create": "Set Passcode Success",
+          "reset": "Reset Passcode Success"
+        }
       },
       "keySettings": {
         "title": "Key Settings",
@@ -203,12 +211,12 @@
         "question": "What do you call this key?",
         "notice": "You can change the name displayed on the device below.",
         "name": "Name",
-        "comment": "* Key name can contain 1-32 letters (a-z), numbers (0-9), and space"
+        "comment": "* Key name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
       },
       "rename": {
         "title": "Your Name",
         "question": "What's your name?",
-        "comment": "* Name can contain 1-32 letters (a-z), numbers (0-9), and space"
+        "comment": "* Name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
       },
       "resetcompleted": {
         "title": "Reset completed!"
@@ -282,7 +290,7 @@
     },
     "unableRecover": {
       "title": "Unable to recover",
-      "body": "We are unable to import a wallet with your recovery pharse. Please make sure the phrase is correct."
+      "body": "We are unable to import a wallet with your recovery phrase. Please make sure the phrase is correct."
     },
     "duplicatePhrase": {
       "title": "Duplicate Phrase",
@@ -327,7 +335,7 @@
     },
     "incorrectBackupPhrase": {
       "title": "Incorrect backup phrase",
-      "body": "It's important that you write your recovery phrase down corretly. If something happens to your wallet, you'll need it to recover your money. Please review and try again."
+      "body": "It's important that you write your recovery phrase down correctly. If something happens to your wallet, you'll need it to recover your money. Please review and try again."
     },
     "phraseCopied": {
       "title": "Copied",
@@ -346,7 +354,7 @@
     },
     "verifyPasscode": {
       "type": "Type your passcode",
-      "incorrected": "passcode is incorrected"
+      "incorrect": "Passcode is incorrect"
     },
     "touchSensor": {
       "title": "Touch Sensor",
@@ -372,5 +380,13 @@
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
     }
+  },
+  "currency": {
+    "USD": "US Dollar",
+    "ARS": "Argentine Peso",
+    "JPY": "Japanese Yen",
+    "KRW": "South Korea Won",
+    "CNY": "Chinese Yuan",
+    "GBP": "Pound Sterling"
   }
 }

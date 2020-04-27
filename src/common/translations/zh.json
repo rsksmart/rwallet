@@ -51,7 +51,7 @@
       "transfer": {
         "to": "接收地址",
         "memo": "备注（可选）",
-        "fee": "费用",
+        "fee": "转账费用",
         "custom": "自定义",
         "feeQuestion": "需要多快完成？",
         "Slow": "慢",
@@ -171,7 +171,11 @@
         "createKey": "创建或导入一个密钥",
         "keys": "密钥",
         "anonymousUser": "匿名用户",
-        "wallets": "钱包"
+        "wallets": {
+          "zero": "0 钱包",
+          "one": "1 钱包",
+          "other": "{{count}} 钱包"
+        }
       },
       "language": {
         "title": "语言"
@@ -181,10 +185,14 @@
       },
       "2fa": {
         "title": "双因素认证",
+        "setPasscode": "设置密码",
         "resetPasscode": "重置密码"
       },
       "resetPasscodeSuccess" :{
-        "title": "重置密码成功"
+        "title": {
+          "create": "设置密码成功",
+          "reset": "重置密码成功"
+        }
       },
       "keySettings": {
         "title": "密钥设置",
@@ -202,12 +210,12 @@
         "question": "你如何称呼这个密钥呢？",
         "notice": "在下面你可以改变显示的名字。",
         "name": "名字",
-        "comment": "* 密钥名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 密钥名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "rename": {
         "title": "名字",
         "question": "名字是什么？",
-        "comment": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "resetcompleted": {
         "title": "重置成功！"
@@ -346,7 +354,7 @@
     },
     "verifyPasscode": {
       "type": "输入密码",
-      "incorrected": "密码不正确"
+      "incorrect": "密码不正确"
     },
     "touchSensor": {
       "title": "指纹验证",
@@ -372,5 +380,13 @@
       "title": "重复的代币",
       "body": "这个代币已经被加入钱包。请尝试不同的代币。"
     }
+  },
+  "currency": {
+    "USD": "美元",
+    "ARS": "阿根廷比索",
+    "JPY": "日元",
+    "KRW": "韩元",
+    "CNY": "人民币",
+    "GBP": "英镑"
   }
 }

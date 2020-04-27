@@ -51,7 +51,7 @@
       "transfer": {
         "to": "Para",
         "memo": "Memorando (opcional)",
-        "fee": "Taxa do mineiro",
+        "fee": "Taxa de transação",
         "custom": "Personalizados",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
         "Slow": "Lento",
@@ -159,7 +159,7 @@
         "balance": "Saldo"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Adicionar tokens",
         "enableAssets": "Ativar ativos",
         "note": "Desative ativos para ocultá-los do seu portfólio."
       }
@@ -171,7 +171,11 @@
         "createKey": "Criar ou importar uma chave",
         "keys": "Chaves",
         "anonymousUser": "Usuário anônimo",
-        "wallets": "Carteiras"
+        "wallets": {
+          "zero": "0 carteira",
+          "one": "1 carteira",
+          "other": "{{count}} carteiras"
+        }
       },
       "language": {
         "title": "Língua"
@@ -181,10 +185,14 @@
       },
       "2fa": {
         "title": "Autenticação de dois fatores",
+        "setPasscode": "Definir código de acesso",
         "resetPasscode": "Redefinir senha"
       },
       "resetPasscodeSuccess" :{
-        "title": "Redefinir sucesso da senha"
+        "title": {
+          "create": "Definir código de acesso",
+          "reset": "Redefinir sucesso da senha"
+        }
       },
       "keySettings": {
         "title": "Configurações principais",
@@ -202,12 +210,12 @@
         "question": "Como você chama essa chave?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
-        "comment": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome da chave pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "rename": {
         "title": "Seu nome",
         "question": "Qual o seu nome?",
-        "comment": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "resetcompleted": {
         "title": "Redefinição concluída!"
@@ -281,7 +289,7 @@
     },
     "unableRecover": {
       "title": "Não foi possível recuperar",
-      "body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta."
+      "body": "Não podemos importar uma carteira com sua frase de recuperação. Verifique se a frase está correta."
     },
     "duplicatePhrase": {
       "title Phrase": "Frase duplicada",
@@ -345,7 +353,7 @@
     },
     "verifyPasscode": {
       "type": "Digite sua senha",
-      "incorrected": "A senha está incorreta"
+      "incorrect": "A senha está incorreta"
     },
     "touchSensor": {
       "title": "Usar senha",
@@ -371,5 +379,13 @@
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
     }
+  },
+  "currency": {
+    "USD": "Dólar americano",
+    "ARS": "Peso argentino",
+    "JPY": "Iene japonês",
+    "KRW": "Won de coréia do sul",
+    "CNY": "Yuan chinês",
+    "GBP": "Libra esterlina"
   }
 }

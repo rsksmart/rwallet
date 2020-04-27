@@ -16,4 +16,29 @@ const defaultErrorNotification = {
   message: 'modal.defaultError.body',
 };
 
-export default { txStatus, btcPreferenceFee, defaultErrorNotification };
+// predefined info for every blockHeightKey
+// (blockHeightRootstockMainnet, blockHeightRootstockTestnet, blockHeightBitcoinMainnet, blockHeightBitcoinTestnet)
+const blockHeightKeyInfos = {
+  blockHeightRootstockMainnet: {
+    chain: 'Rootstock',
+    type: 'Mainnet',
+  },
+  blockHeightRootstockTestnet: {
+    chain: 'Rootstock',
+    type: 'Testnet',
+  },
+  blockHeightBitcoinMainnet: {
+    chain: 'Bitcoin',
+    type: 'Mainnet',
+  },
+  blockHeightBitcoinTestnet: {
+    chain: 'Bitcoin',
+    type: 'Testnet',
+  },
+};
+
+const blockHeightKeys = Object.keys(blockHeightKeyInfos);
+
+export default {
+  txStatus, btcPreferenceFee, defaultErrorNotification, blockHeightKeyInfos, blockHeightKeys,
+};

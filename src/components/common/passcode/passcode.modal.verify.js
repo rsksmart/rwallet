@@ -10,7 +10,7 @@ class VerifyPasscodeModal extends PureComponent {
     super(props);
     this.flows = [
       { index: 0, title: 'modal.verifyPasscode.type' },
-      { index: 1, title: 'modal.verifyPasscode.incorrected' },
+      { index: 1, title: 'modal.verifyPasscode.incorrect' },
     ];
     this.flowIndex = 0;
     this.title = this.flows[0].title;

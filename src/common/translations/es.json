@@ -51,7 +51,7 @@
       "transfer": {
         "to": "Para",
         "memo": "Memo (opcional)",
-        "fee": "Tarifa del minero",
+        "fee": "Tarifa de transacción",
         "custom": "Personalizado",
         "feeQuestion": "¿Qué tan rápido quieres su transacción?",
         "slow": "Lento",
@@ -65,8 +65,8 @@
         "title": "Agregar Wallet",
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
-        "importWallet": "Importar Wallet existente",
-        "importWalletNote": "Recupere su Wallet usando su frase de contraseña"
+        "importWallet": "Importar billetera existente",
+        "importWalletNote": "Recupere su billetera usando su frase de contraseña"
       },
       "selectCurrency": {
         "title": "Seleccionar moneda de Wallet",
@@ -159,7 +159,7 @@
         "balance": "Equilibrar"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Agregar tokens",
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera."
       }
@@ -171,7 +171,11 @@
         "createKey": "Crear o importar una clave",
         "keys": "Llaves",
         "anonymousUser": "Usuario anónimo",
-        "wallets": "Carteras"
+        "wallets": {
+          "zero": "0 billetera",
+          "one": "1 billetera",
+          "other": "{{count}} carteras"
+        }
       },
       "language": {
         "title": "Idioma"
@@ -181,10 +185,14 @@
       },
       "2fa": {
         "title": "Autenticación de dos factores",
+        "setPasscode": "Código de acceso establecido",
         "resetPasscode": "Restablecer contraseña"
       },
       "resetPasscodeSuccess" :{
-        "title": "Contraseña restablecida exitosamente"
+        "title": {
+          "create": "Código de acceso establecido",
+          "reset": "Contraseña restablecida exitosamente"
+        }
       },
       "keySettings": {
         "title": "Configuraciones clave",
@@ -202,12 +210,12 @@
         "question": "¿Cómo llamas a esta llave?",
         "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
         "name": "Nombre",
-        "comment": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre de la clave puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "rename": {
         "title": "Tu nombre",
         "question": "¿Cuál es tu nombre?",
-        "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "resetcompleted": {
         "title": "¡Reinicio completado!"
@@ -281,7 +289,7 @@
     },
     "unableRecover": {
       "title": "Incapaz de recuperarse",
-      "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."
+      "body": "No podemos importar una billetera con su frase de recuperación. Asegúrate de que la frase sea correcta."
     },
     "duplicatePhrase": {
       "title Phrase": "Frase duplicada",
@@ -345,7 +353,7 @@
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",
-      "incorrected": "El código de acceso está incorrecto"
+      "incorrect": "La contraseña es incorrecta"
     },
     "touchSensor": {
       "title": "Sensor tátil",
@@ -371,5 +379,13 @@
       "title": "Token duplicado",
       "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
     }
+  },
+  "currency": {
+    "USD": "Dólar americano",
+    "ARS": "Peso argentino",
+    "JPY": "Yen japonés",
+    "KRW": "Won coreano",
+    "CNY": "Yuan chino",
+    "GBP": "Libra esterlina"
   }
 }

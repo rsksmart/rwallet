@@ -51,8 +51,8 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_BALANCE_UPDATED: {
       return state.set('isBalanceUpdated', false);
     }
-    case actions.FETCH_TRANSACTION_RESULT: {
-      const transactions = action.value;
+    case actions.UPDATE_TRANSACTIONS: {
+      const { transactions, operation } = action.value;
       const walletManager = state.get('walletManager');
       const tokens = walletManager.getTokens();
 
@@ -65,7 +65,11 @@ export default function walletReducer(state = initState, action) {
           }
           const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
           if (txIndex === -1) {
-            newToken.transactions.unshift(transaction);
+            if (operation === 'unshift') {
+              newToken.transactions.unshift(transaction);
+            } else {
+              newToken.transactions.push(transaction);
+            }
           } else {
             newToken.transactions[txIndex] = transaction;
           }
@@ -77,6 +81,13 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT: {
       return state.set('latestBlockHeights', action.value);
+    }
+    case actions.UPDATE_LATEST_BLOCK_HEIGHT: {
+      const blockHeightObj = action.value;
+      const latestBlockHeights = state.get('latestBlockHeights');
+      const txIndex = _.findIndex(latestBlockHeights, { chain: blockHeightObj.chain, type: blockHeightObj.type });
+      latestBlockHeights[txIndex] = blockHeightObj;
+      return state.set('latestBlockHeights', latestBlockHeights);
     }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');

@@ -26,22 +26,16 @@ const config = {
       { name: 'Chinese', id: 'zh' },
     ],
     currencies: [
-      { name: 'USD', fullName: 'US Dollar', symbol: '$' },
-      { name: 'ARS', fullName: 'Argentine Peso', symbol: 'ARS$' },
-      { name: 'JPY', fullName: 'Japanese Yen', symbol: '￥' },
-      { name: 'KRW', fullName: 'South Korea won', symbol: '₩' },
-      { name: 'CNY', fullName: 'Chinese Yuan', symbol: '￥' },
-      { name: 'GBP', fullName: 'Pound sterling', symbol: '£' },
+      { name: 'USD', symbol: '$' },
+      { name: 'ARS', symbol: 'ARS$' },
+      { name: 'JPY', symbol: '￥' },
+      { name: 'KRW', symbol: '₩' },
+      { name: 'CNY', symbol: '￥' },
+      { name: 'GBP', symbol: '£' },
     ],
   },
   development: {
     reduxLoggerEnabled: false,
-  },
-  interval: {
-    fetchPrice: 8000,
-    fetchBalance: 8000,
-    fetchTransaction: 8000,
-    fetchLatestBlockHeight: 8000,
   },
   symbolDecimalPlaces: {
     BTC: 6,

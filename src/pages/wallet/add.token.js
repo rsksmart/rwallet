@@ -123,11 +123,16 @@ class AddToken extends Component {
   }
 
   onSwitchValueChanged(index, value) {
-    const { walletManager, addToken, deleteToken } = this.props;
+    const {
+      walletManager, addToken, deleteToken, resetWalletsUpdated,
+    } = this.props;
     const { listData } = this.state;
     listData[index].selected = value;
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.setState({ listData, selectedTokenCount });
+    // Before changing the token, force to reset the isWalletsUpdated state.
+    // Avoid other pages not being able to detect the change of state.
+    resetWalletsUpdated();
     if (listData[index].selected) {
       addToken(walletManager, this.wallet, listData[index].token);
     } else {
