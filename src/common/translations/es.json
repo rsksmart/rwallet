@@ -90,8 +90,8 @@
         "note2": "en el orden correcto y guárdelos",
         "note3": "un lugar seguro"
       },
-      "backupPhrase": {
-        "title": "Frase de respaldo",
+      "verifyPhrase": {
+        "title": "Verifica tu frase",
         "note": "Toca cada palabra en el orden correcto",
         "isCorrect": "¿Es esto correcto?"
       },
