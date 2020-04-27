@@ -98,6 +98,7 @@ export default class TransferCompleted extends Component {
     const { navigation } = this.props;
     const statckActions = StackActions.popToTop();
     navigation.dispatch(statckActions);
+    navigation.navigate('Home');
   }
 
   onExplorePress() {

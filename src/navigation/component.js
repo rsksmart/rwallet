@@ -14,6 +14,7 @@ import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
+import InAppNotification from '../components/common/inapp.notification/notification';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -39,7 +40,6 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isStorageRead: false,
       isParseWritten: false,
@@ -52,7 +52,6 @@ class RootComponent extends Component {
    */
   async componentWillMount() {
     const { initializeFromStorage } = this.props;
-
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
   }
@@ -62,6 +61,7 @@ class RootComponent extends Component {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       walletManager, currency, prices, isBalanceUpdated,
       initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
+      initFcmChannel,
     } = nextProps;
 
     const {
@@ -105,6 +105,7 @@ class RootComponent extends Component {
         initLiveQueryBalances(tokens);
         initLiveQueryTransactions(tokens);
         initLiveQueryBlockHeights();
+        initFcmChannel();
 
         newState.isParseWritten = true;
       }
@@ -118,6 +119,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
+      isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
     } = this.props;
 
     return (
@@ -129,6 +131,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
+          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} processNotification={processNotification} />
         </Root>
       </View>
     );
@@ -166,6 +169,11 @@ RootComponent.propTypes = {
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
   initLiveQueryBlockHeights: PropTypes.func.isRequired,
+  isShowInAppNotification: PropTypes.bool.isRequired,
+  inAppNotification: PropTypes.shape({}),
+  initFcmChannel: PropTypes.func.isRequired,
+  resetInAppNotification: PropTypes.func.isRequired,
+  processNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
@@ -178,6 +186,7 @@ RootComponent.defaultProps = {
   confirmationCallback: null,
   confirmationCancelCallback: null,
   notificationCloseCallback: null,
+  inAppNotification: undefined,
 };
 
 export default RootComponent;

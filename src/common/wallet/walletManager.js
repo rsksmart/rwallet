@@ -258,6 +258,17 @@ class WalletManager {
     symbols.push('BTC');
     return _.uniq(symbols);
   }
+
+  findToken = (symbol, type, address) => {
+    for (let i = 0; i < this.wallets.length; i += 1) {
+      const wallet = this.wallets[i];
+      const coin = _.find(wallet.coins, { address, symbol, type });
+      if (coin) {
+        return coin;
+      }
+    }
+    return null;
+  }
 }
 
 export default new WalletManager();

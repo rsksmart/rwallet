@@ -1,5 +1,11 @@
 import firebase from 'react-native-firebase';
 
+export const FcmType = {
+  LAUNCH: 'LAUNCH',
+  INAPP: 'INAPP',
+  BACKGROUND: 'BACKGROUND',
+};
+
 /**
  * Firebase Cloud Messaging Helper
  */
@@ -12,7 +18,6 @@ class FcmHelper {
     try {
       await this.requestPermission();
       const fcmToken = await this.getFcmToken();
-      this.setMessagingListener();
       return fcmToken;
     } catch (error) {
       console.log('initFirebaseMessaging, error: ', error);
@@ -26,6 +31,17 @@ class FcmHelper {
     return fcmToken;
   }
 
+   getInitialNotification = async () => {
+     // When a notification from FCM has triggered the application to open from a quit state,
+     // this method will return a RemoteMessage containing the notification data,
+     // or null if the app was opened via another method.
+     const notificationOpen = await firebase.notifications().getInitialNotification();
+     if (notificationOpen) {
+       return notificationOpen.notification;
+     }
+     return null;
+   }
+
   requestPermission = async () => {
     try {
       await firebase.messaging().requestPermission();
@@ -36,33 +52,31 @@ class FcmHelper {
     }
   }
 
-  onFireMessagingNotification = (notification) => {
-    const { title, body } = notification;
-    console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+  onFireMessagingNotification = (notification, fcmType) => {
+    if (this.onNotification && notification) {
+      this.onNotification(notification, fcmType);
+    }
   }
 
-  setMessagingListener = async () => {
+  setMessagingListener = () => {
     // App in foreground, onNotification triggered
-    this.notificationListener = firebase.notifications().onNotification((notification) => {
-      this.onFireMessagingNotification(notification);
+    firebase.notifications().onNotification((notification) => {
+      this.onFireMessagingNotification(notification, FcmType.INAPP);
     });
 
     // App in background, onNotificationOpened Triggered if the notification is tapped
-    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-      this.onFireMessagingNotification(notificationOpen.notification);
+    firebase.notifications().onNotificationOpened((notificationOpen) => {
+      this.onFireMessagingNotification(notificationOpen.notification, FcmType.BACKGROUND);
     });
 
-    // When a notification from FCM has triggered the application to open from a quit state,
-    // this method will return a RemoteMessage containing the notification data,
-    // or null if the app was opened via another method.
-    const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-      this.onFireMessagingNotification(notificationOpen.notification);
-    }
-
-    this.messageListener = firebase.messaging().onMessage((message) => {
+    firebase.messaging().onMessage((message) => {
       console.log('firebaseMessaging, onMessage, message: ', message);
     });
+  }
+
+  startListen(listener) {
+    this.onNotification = listener;
+    this.setMessagingListener();
   }
 }
 

@@ -14,15 +14,19 @@ const mapStateToProps = (state) => ({
   passcodeFallback: state.App.get('passcodeFallback'),
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isInitWithParseDone: state.App.get('isInitWithParseDone'),
+  isInitAppDone: state.App.get('isInitAppDone'),
   walletManager: state.Wallet.get('walletManager'),
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
   isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
   currency: state.App.get('currency'),
   prices: state.Price.get('prices'),
-  isShowConfirmation: state.App.get('isShowConfirmation'),
+  isShowInAppNotification: state.App.get('isShowInAppNotification'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
   confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
+  isShowConfirmation: state.App.get('isShowConfirmation'),
+  isInAppNotification: state.App.get('isInAppNotification'),
+  inAppNotification: state.App.get('inAppNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -37,6 +41,9 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
   initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
+  initFcmChannel: () => dispatch(appActions.initFcmChannel()),
+  resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
+  processNotification: (notification) => dispatch(appActions.processNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
