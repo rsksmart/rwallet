@@ -82,6 +82,13 @@ export default function walletReducer(state = initState, action) {
     case actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT: {
       return state.set('latestBlockHeights', action.value);
     }
+    case actions.UPDATE_LATEST_BLOCK_HEIGHT: {
+      const blockHeightObj = action.value;
+      const latestBlockHeights = state.get('latestBlockHeights');
+      const txIndex = _.findIndex(latestBlockHeights, { chain: blockHeightObj.chain, type: blockHeightObj.type });
+      latestBlockHeights[txIndex] = blockHeightObj;
+      return state.set('latestBlockHeights', latestBlockHeights);
+    }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
       const { currency, prices } = action.payload;

@@ -11,67 +11,6 @@ import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
 
 import { createErrorNotification } from '../../common/notification.controller';
-import config from '../../../config';
-
-const {
-  interval: {
-    fetchLatestBlockHeight: FETCH_LATEST_BLOCK_HEIGHT_INTERVAL,
-  },
-} = config;
-
-/**
- * Utility function to create a channel to emit an event periodically
- * @param {number} interval interval between invoke in milliseconds
- */
-function createTimer(interval) {
-  return eventChannel((emitter) => {
-    const intervalInstance = setInterval(() => {
-      emitter((new Date()).getTime());
-
-      // To close this channel, user emitter(END);
-    }, interval);
-    return () => {
-      clearInterval(intervalInstance);
-    };
-  });
-}
-
-/**
- * Start the timer to call actions.FETCH_LATEST_BLOCK_HEIGHT periodically
- */
-export function* startFetchLatestBlockHeightTimerRequest() {
-  // Call actions.FETCH_LATEST_BLOCK_HEIGHT once to start off
-  yield put({
-    type: actions.FETCH_LATEST_BLOCK_HEIGHT,
-  });
-
-  const chan = yield call(createTimer, FETCH_LATEST_BLOCK_HEIGHT_INTERVAL);
-
-  try {
-    while (true) {
-      // take(END) will cause the saga to terminate by jumping to the finally block
-      yield take(chan);
-      yield put({
-        type: actions.FETCH_LATEST_BLOCK_HEIGHT,
-      });
-    }
-  } finally {
-    console.log('fetchLatestBlockHeight Channel closed.');
-  }
-}
-
-function* fetchLatestBlockHeight() {
-  try {
-    const response = yield call(ParseHelper.fetchLatestBlockHeight);
-    yield put({
-      type: actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT,
-      value: response,
-    });
-  } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.warn(message);
-  }
-}
 
 function* createKeyRequest(action) {
   const {
@@ -364,12 +303,85 @@ function* initLiveQueryTransactionsRequest(action) {
   yield call(subscribeTransactions, tokens);
 }
 
+
+/**
+ * create block height subscription channel
+ * @param {object} subscription parse subscription
+ * @returns unsubscribe handler
+ */
+function createBlockHeightSubscriptionChannel(subscription) {
+  return eventChannel((emitter) => {
+    const unsubscribeHandler = () => {
+      ParseHelper.unsubscribe(subscription);
+      console.log('createBlockHeightSubscriptionChannel.unsubscribeHandler.');
+    };
+    const updateHandler = (item) => {
+      console.log('createBlockHeightSubscriptionChannel.updateHandler', item);
+      const blockHeight = parseDataUtil.getBlockHeight(item);
+      return emitter({
+        type: actions.UPDATE_LATEST_BLOCK_HEIGHT,
+        value: blockHeight,
+      });
+    };
+    subscription.on('update', updateHandler);
+
+    // unsubscribe function, this gets called when we close the channel
+    return unsubscribeHandler;
+  });
+}
+
+/**
+ * Fetch block heights
+ */
+function* fetchBlockHeights() {
+  try {
+    const blockHeights = yield call(ParseHelper.fetchBlockHeights);
+    yield put({
+      type: actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT,
+      value: blockHeights,
+    });
+  } catch (error) {
+    console.log('initLiveQueryTransactionsRequest.fetchBlockHeights, error:', error);
+  }
+}
+
+/**
+ * Subscribe block heights
+ */
+function* subscribeBlockHeights() {
+  let subscription;
+  let subscriptionChannel;
+  try {
+    subscription = yield call(ParseHelper.subscribeBlockHeights);
+    subscriptionChannel = yield call(createBlockHeightSubscriptionChannel, subscription);
+    yield put({ type: actions.SET_TRANSACTIONS_CHANNEL, value: subscriptionChannel });
+    while (true) {
+      const payload = yield take(subscriptionChannel);
+      yield put(payload);
+    }
+  } catch (err) {
+    console.log('Subscription error:', err);
+  } finally {
+    if (yield cancelled()) {
+      subscriptionChannel.close();
+      subscription.close();
+    } else {
+      console.log('Subscription disconnected: Transactions');
+    }
+  }
+}
+
+/**
+ * initialize LiveQuery for block heights
+ */
+function* initLiveQueryBlockHeightsRequest() {
+  yield call(fetchBlockHeights);
+  yield call(subscribeBlockHeights);
+}
+
+
 export default function* () {
   yield all([
-    takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchLatestBlockHeight),
-
-    takeEvery(actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER, startFetchLatestBlockHeightTimerRequest),
-
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
     takeEvery(actions.RENAME_KEY, renameKeyRequest),
     takeEvery(actions.CREATE_KEY, createKeyRequest),
@@ -380,5 +392,6 @@ export default function* () {
 
     takeEvery(actions.INIT_LIVE_QUERY_BALANCES, initLiveQueryBalancesRequest),
     takeEvery(actions.INIT_LIVE_QUERY_TRANSACTIONS, initLiveQueryTransactionsRequest),
+    takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
   ]);
 }

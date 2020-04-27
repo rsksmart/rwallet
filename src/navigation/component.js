@@ -60,8 +60,8 @@ class RootComponent extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
-      startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions,
+      walletManager, currency, prices, isBalanceUpdated,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
     } = nextProps;
 
     const {
@@ -100,13 +100,11 @@ class RootComponent extends Component {
 
         newState.isStorageRead = true;
       } else {
-        // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchLatestBlockHeightTimer();
-
         console.log('initLiveQueryPrice', initLiveQueryPrice);
         initLiveQueryPrice();
         initLiveQueryBalances(tokens);
         initLiveQueryTransactions(tokens);
+        initLiveQueryBlockHeights();
 
         newState.isParseWritten = true;
       }
@@ -140,7 +138,6 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-  startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({
@@ -168,6 +165,7 @@ RootComponent.propTypes = {
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
+  initLiveQueryBlockHeights: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

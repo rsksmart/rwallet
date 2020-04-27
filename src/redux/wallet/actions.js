@@ -14,8 +14,8 @@ const actions = {
   FETCH_TRANSACTION: 'FETCH_TRANSACTION',
   UPDATE_TRANSACTIONS: 'UPDATE_TRANSACTIONS',
 
-  FETCH_LATEST_BLOCK_HEIGHT: 'FETCH_LATEST_BLOCK_HEIGHT',
   FETCH_LATEST_BLOCK_HEIGHT_RESULT: 'FETCH_LATEST_BLOCK_HEIGHT_RESULT',
+  UPDATE_LATEST_BLOCK_HEIGHT: 'UPDATE_LATEST_BLOCK_HEIGHT',
 
   DELETE_KEY: 'DELETE_KEY',
   RENAME_KEY: 'RENAME_KEY',
@@ -23,11 +23,6 @@ const actions = {
 
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
   WALLETS_UPDATED: 'WALLETS_UPDATED',
-
-  START_FETCH_PRICE_TIMER: 'START_FETCH_PRICE_TIMER',
-  START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
-  START_FETCH_TRANSACTION_TIMER: 'START_FETCH_TRANSACTION_TIMER',
-  START_FETCH_LATEST_BLOCK_HEIGHT_TIMER: 'START_FETCH_LATEST_BLOCK_HEIGHT_TIMER',
 
   WALLTES_UPDATED: 'WALLTES_UPDATED',
   RESET_WALLETS_UPDATED: 'RESET_WALLETS_UPDATED',
@@ -57,6 +52,8 @@ const actions = {
   INIT_LIVE_QUERY_TRANSACTIONS: 'INIT_LIVE_QUERY_TRANSACTIONS',
   SET_TRANSACTIONS_CHANNEL: 'SET_TRANSACTIONS_CHANNEL',
 
+  INIT_LIVE_QUERY_BLOCK_HEIGHTS: 'INIT_LIVE_QUERY_BLOCK_HEIGHTS',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -79,9 +76,6 @@ const actions = {
   updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,
     payload: { currency, prices },
-  }),
-  startFetchLatestBlockHeightTimer: () => ({
-    type: actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER,
   }),
   deleteKey: (key, walletManager) => ({
     type: actions.DELETE_KEY,
@@ -161,6 +155,9 @@ const actions = {
   initLiveQueryTransactions: (tokens) => ({
     type: actions.INIT_LIVE_QUERY_TRANSACTIONS,
     tokens,
+  }),
+  initLiveQueryBlockHeights: () => ({
+    type: actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS,
   }),
 };
 
