@@ -176,7 +176,10 @@
           "zero": "0 钱包",
           "one": "1 钱包",
           "other": "{{count}} 钱包"
-        }
+        },
+        "support": "支持",
+        "contactUs": "联系我们",
+        "developerPortal": "开发者门户"
       },
       "language": {
         "title": "语言"

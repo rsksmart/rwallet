@@ -10,6 +10,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
@@ -245,6 +246,30 @@ class MineIndex extends Component {
     },
   ];
 
+  supports = [
+    {
+      title: 'page.mine.index.contactUs',
+      icon: <MaterialCommunityIcons name="email-outline" size={30} style={[styles.communityIcon]} />,
+      onPress: () => {
+        Linking.openURL('mailto:app@iovlabs.org');
+      },
+    },
+    {
+      title: 'page.mine.index.developerPortal',
+      icon: <AntDesign name="home" size={28} style={[styles.communityIcon]} />,
+      onPress: () => {
+        Linking.openURL('https://developers.rsk.co');
+      },
+    },
+    {
+      title: 'page.start.terms.termsOfUse',
+      icon: <AntDesign name="filetext1" size={25} style={[styles.communityIcon]} />,
+      onPress: () => {
+        this.setState({ isTermsWebViewVisible: true });
+      },
+    },
+  ];
+
   constructor(props) {
     super(props);
     this.state = {
@@ -327,11 +352,13 @@ class MineIndex extends Component {
             />
           </View>
           <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
-            <View style={styles.linkView}>
-              <TouchableOpacity onPress={this.onViewTermsPressed}>
-                <Loc style={[styles.linkText]} text="page.start.terms.termsOfUse" />
-              </TouchableOpacity>
-            </View>
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.support" />
+            <FlatList
+              data={this.supports}
+              extraData={language}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index !== this.supports.length - 1} />}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
         </View>
         <WebViewModal

@@ -176,7 +176,10 @@
           "zero": "0 billetera",
           "one": "1 billetera",
           "other": "{{count}} carteras"
-        }
+        },
+        "support": "Apoyo",
+        "contactUs": "Contacta con nosotros",
+        "developerPortal": "Portal del desarrollador"
       },
       "language": {
         "title": "Idioma"
