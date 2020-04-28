@@ -15,8 +15,9 @@
         "term1": "I understand that my funds are held securely on this device, not by a company.",
         "term2": "I understand that if this app is moved to another device or deleted, my funds can only be recovered with the recovery phrase.",
         "term3": "I have read, understood, and agreed to the Terms of Use.",
-        "viewTerms": "View Complete Terms Of Use",
-        "button": "Confirm & Accept"
+        "viewTerms": "View Complete Terms of Use",
+        "button": "Confirm & Accept",
+        "termsOfUse": "Terms of Use"
       }
     },
     "wallet": {
@@ -176,7 +177,10 @@
           "zero": "0 Wallet",
           "one": "1 Wallet",
           "other": "{{count}} Wallets"
-        }
+        },
+        "support": "Support",
+        "contactUs": "Contact Us",
+        "developerPortal": "Developer Portal"
       },
       "language": {
         "title": "Language"

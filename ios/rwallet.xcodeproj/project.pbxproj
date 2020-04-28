@@ -42,6 +42,7 @@
 		3A4A4CA2AEC7432A8B602D08 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E9141DC28F7435DA2CF705A /* Octicons.ttf */; };
 		3E69677E01BB40208757CAD0 /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 695867629428482FA3A90241 /* libRNI18n-tvOS.a */; };
 		423B5CD5C1BD4962B4278E9D /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B0EDAA103AD04DA7AC70E4A2 /* MaterialCommunityIcons.ttf */; };
+		4FC233DA642C41248AB1F0D0 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A47A33154794901A7FCB047 /* libRNCWebView.a */; };
 		503F3981782C411F9F5313FF /* antoutline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 811A201ED08D4A01BF16B305 /* antoutline.ttf */; };
 		51AC0CC4A2014752A4944468 /* libRNVersionNumber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 730CF1A67A584AC9B0C5A2A3 /* libRNVersionNumber.a */; };
 		548211A1EFD64C07A2FCBCE8 /* libRNSecureStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E5E65B599004351BB86186D /* libRNSecureStorage.a */; };
@@ -554,6 +555,13 @@
 			remoteGlobalIDString = 2858ECD01F8B91B400610575;
 			remoteInfo = "RNVersionNumber-tvOS";
 		};
+		F8F1B50F24565C7E00F79687 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC60BF4FC6FB42608AD35F68 /* RNCWebView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNCWebView;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -565,6 +573,7 @@
 		00E356EE1AD99517003FC87E /* rwalletTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rwalletTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* rwalletTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rwalletTests.m; sourceTree = "<group>"; };
+		0A47A33154794901A7FCB047 /* libRNCWebView.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCWebView.a; sourceTree = "<group>"; };
 		0AFC2866D1F743AE8BB185D9 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		0E96F9433A79422CBCCB6B6B /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
@@ -634,6 +643,7 @@
 		E4D12A0F046F427E94EE491D /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		E7BD221D9186441B819657CD /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCSlider.xcodeproj; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; };
 		EC58271B0D184818B780C72C /* libUdpSockets.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libUdpSockets.a; sourceTree = "<group>"; };
+		EC60BF4FC6FB42608AD35F68 /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCWebView.xcodeproj; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F3AA2513C79C4BF28F9CFA74 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -729,6 +739,7 @@
 				51AC0CC4A2014752A4944468 /* libRNVersionNumber.a in Frameworks */,
 				F8F13CD02441559B0034D167 /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				DB1FF7AB29C94F7FB9094261 /* libRNFirebase.a in Frameworks */,
+				4FC233DA642C41248AB1F0D0 /* libRNCWebView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +956,7 @@
 				808C863E22404EA6A8CD6EBB /* BVLinearGradient.xcodeproj */,
 				80D9FCE2F53C4818AC90A1E6 /* RNVersionNumber.xcodeproj */,
 				E4D12A0F046F427E94EE491D /* RNFirebase.xcodeproj */,
+				EC60BF4FC6FB42608AD35F68 /* RNCWebView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1079,6 +1091,7 @@
 				730CF1A67A584AC9B0C5A2A3 /* libRNVersionNumber.a */,
 				96642DFA0845434CBD00EDCB /* libRNVersionNumber-tvOS.a */,
 				DCBC3E629E444545B1706E39 /* libRNFirebase.a */,
+				0A47A33154794901A7FCB047 /* libRNCWebView.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1227,6 +1240,14 @@
 				F8F13C902441559B0034D167 /* FirebaseCoreDiagnostics.framework */,
 			);
 			path = Firebase;
+			sourceTree = "<group>";
+		};
+		F8F1B50C24565C7D00F79687 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8F1B51024565C7E00F79687 /* libRNCWebView.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1410,6 +1431,10 @@
 				{
 					ProductGroup = F84506ED23B1A3600075F0DF /* Products */;
 					ProjectRef = E7BD221D9186441B819657CD /* RNCSlider.xcodeproj */;
+				},
+				{
+					ProductGroup = F8F1B50C24565C7D00F79687 /* Products */;
+					ProjectRef = EC60BF4FC6FB42608AD35F68 /* RNCWebView.xcodeproj */;
 				},
 				{
 					ProductGroup = F8BF5C43243F119800CFC3FF /* Products */;
@@ -1898,6 +1923,13 @@
 			remoteRef = F8EC6D0924246D4D0024A7D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F8F1B51024565C7E00F79687 /* libRNCWebView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCWebView.a;
+			remoteRef = F8F1B50F24565C7E00F79687 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -2091,6 +2123,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = rwalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2134,6 +2167,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = rwalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2186,6 +2220,7 @@
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = rwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2235,6 +2270,7 @@
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = rwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2283,6 +2319,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = "rwallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2334,6 +2371,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = "rwallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2384,6 +2422,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = "rwallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2434,6 +2473,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-version-number/ios",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios/**",
 				);
 				INFOPLIST_FILE = "rwallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

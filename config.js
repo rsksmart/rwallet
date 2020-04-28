@@ -77,6 +77,7 @@ const config = {
   appLock: {
     timeout: 300000,
   },
+  termsUrl: 'https://www.rsk.co/terms-conditions',
 };
 
 export default config;

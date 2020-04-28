@@ -10,12 +10,15 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
+import WebViewModal from '../../components/common/webview.modal';
+import config from '../../../config';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -77,14 +80,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
-  createWalletButtonView: {
+  linkView: {
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
   },
-  createWalletButtonText: {
+  linkText: {
     color: '#00B520',
     fontSize: 16,
   },
@@ -243,12 +246,37 @@ class MineIndex extends Component {
     },
   ];
 
+  supports = [
+    {
+      title: 'page.mine.index.contactUs',
+      icon: <MaterialCommunityIcons name="email-outline" size={30} style={[styles.communityIcon]} />,
+      onPress: () => {
+        Linking.openURL('mailto:app@iovlabs.org');
+      },
+    },
+    {
+      title: 'page.mine.index.developerPortal',
+      icon: <AntDesign name="home" size={28} style={[styles.communityIcon]} />,
+      onPress: () => {
+        Linking.openURL('https://developers.rsk.co');
+      },
+    },
+    {
+      title: 'page.start.terms.termsOfUse',
+      icon: <AntDesign name="filetext1" size={25} style={[styles.communityIcon]} />,
+      onPress: () => {
+        this.setState({ isTermsWebViewVisible: true });
+      },
+    },
+  ];
+
   constructor(props) {
     super(props);
     this.state = {
       keyListData: [],
       settings: [],
       joins: [],
+      isTermsWebViewVisible: false,
     };
     this.onEditNamePress = this.onEditNamePress.bind(this);
   }
@@ -276,9 +304,15 @@ class MineIndex extends Component {
     navigation.navigate('Rename');
   }
 
+  onViewTermsPressed = () => {
+    this.setState({ isTermsWebViewVisible: true });
+  }
+
   render() {
     const { language, navigation, username } = this.props;
-    const { keyListData, settings, joins } = this.state;
+    const {
+      keyListData, settings, joins, isTermsWebViewVisible,
+    } = this.state;
     // Translate If username is default user name
     const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
 
@@ -303,13 +337,13 @@ class MineIndex extends Component {
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
-            <View style={styles.createWalletButtonView}>
+            <View style={styles.linkView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Loc style={[styles.createWalletButtonText]} text="page.mine.index.createKey" />
+                <Loc style={[styles.linkText]} text="page.mine.index.createKey" />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
@@ -317,7 +351,22 @@ class MineIndex extends Component {
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
+          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.support" />
+            <FlatList
+              data={this.supports}
+              extraData={language}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index !== this.supports.length - 1} />}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
         </View>
+        <WebViewModal
+          title={strings('page.start.terms.termsOfUse')}
+          url={config.termsUrl}
+          visible={isTermsWebViewVisible}
+          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
+        />
       </BasePageGereral>
     );
   }

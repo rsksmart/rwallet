@@ -16,7 +16,8 @@
         "term2": "我理解当我卸载或移动App到另外的设备时，我的资金只能通过助记词去恢复。",
         "term3": "我已经阅读并理解使用协议。",
         "viewTerms": "查看完成协议",
-        "button": "确认接受"
+        "button": "确认接受",
+        "termsOfUse": "使用条款"
       }
     },
     "wallet": {
@@ -175,7 +176,10 @@
           "zero": "0 钱包",
           "one": "1 钱包",
           "other": "{{count}} 钱包"
-        }
+        },
+        "support": "支持",
+        "contactUs": "联系我们",
+        "developerPortal": "开发者教程"
       },
       "language": {
         "title": "语言"
