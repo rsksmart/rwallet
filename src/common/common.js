@@ -280,12 +280,12 @@ const common = {
   },
 
   /**
-   * getSymbolFullName
-   * @param {string} symbol, BTC, RBTC, RIF
+   * getSymbolName
+   * @param {string} symbol, BTC, RBTC, RIF...
    * @param {string} type, MainTest or Testnet
    */
-  getSymbolFullName(symbol, type) {
-    return `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+  getSymbolName(symbol, type) {
+    return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
   getRandom(count) {

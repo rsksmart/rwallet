@@ -15,6 +15,7 @@ import Header from '../../components/headers/header';
 import { createInfoNotification } from '../../common/notification.controller';
 import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -50,7 +51,7 @@ class WalletSelectCurrency extends Component {
         const item = { title: token, icon: coinType[token].icon };
         item.selected = true;
         this.mainnet.push(item);
-        const testnetItem = _.clone(item);
+        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), icon: coinType[`${token}Testnet`].icon };
         testnetItem.selected = false;
         this.testnet.push(testnetItem);
       });
