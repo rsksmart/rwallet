@@ -57,14 +57,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 16,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     flexDirection: 'row',
     alignItems: 'center',
     height: 60,
   },
   addressText: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 5,
     marginRight: 10,
   },
   copyIcon: {
@@ -90,6 +90,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 8,
     left: 10,
+    alignItems: 'center',
+  },
+  copyIconView: {
+    width: 30,
+    height: 40,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });
@@ -146,7 +152,7 @@ class WalletReceive extends Component {
             <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
               <Loc style={[styles.sectionTitle]} text="page.wallet.receive.address" />
               <View style={styles.address}>
-                <TouchableOpacity onPress={this.onCopyPress}>
+                <TouchableOpacity style={styles.copyIconView} onPress={this.onCopyPress}>
                   <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
                 <Text style={styles.addressText}>{address}</Text>
