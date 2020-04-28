@@ -24,8 +24,10 @@ const WORD_FIELD_HEIGHT = 150;
 const styles = StyleSheet.create({
   wordFieldView: {
     height: WORD_FIELD_HEIGHT,
-    marginTop: '23%',
     overflow: 'hidden',
+    position: 'absolute',
+    bottom: '57%',
+    width: '100%',
   },
   tags: {
     justifyContent: 'center',
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
   },
   tagsView: {
     position: 'absolute',
-    bottom: '13%',
+    bottom: '9%',
   },
   cancelIcon: {
     fontSize: 20,
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 21,
   },
   cancelButtonView: {
     position: 'absolute',
@@ -294,7 +297,7 @@ class VerifyPhrase extends Component {
           <WordField text={text} />
           <View style={styles.wordIndexView}>
             <Text style={styles.wordIndex}>
-              {`${i} / ${MNEMONIC_PHRASE_LENGTH}`}
+              {`${i + 1} / ${MNEMONIC_PHRASE_LENGTH}`}
             </Text>
           </View>
         </View>,

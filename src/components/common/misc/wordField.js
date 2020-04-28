@@ -39,14 +39,9 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: 'Avenir-Black',
     fontSize: 21,
-  },
-  index: {
-    position: 'absolute',
-    top: '18%',
-    fontFamily: 'Avenir-Heavy',
-    fontSize: 16,
+    color: color.word,
   },
 });
 
