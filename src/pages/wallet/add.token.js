@@ -188,6 +188,7 @@ class AddToken extends Component {
 
   renderList() {
     const { listData } = this.state;
+    const selectedItems = _.filter(listData, { selected: true });
     return (
       <FlatList
         style={space.marginBottom_4}
@@ -201,6 +202,8 @@ class AddToken extends Component {
               style={styles.switch}
               value={item.selected}
               onValueChange={(value) => this.onSwitchValueChanged(index, value)}
+              // Restrict the deletion of the last token
+              disabled={selectedItems.length === 1 && item.selected}
             />
           </View>
         )}
