@@ -414,6 +414,7 @@ const common = {
         return b.type === 'Testnet' ? -1 : 1;
       }
       let symbolIndexA = _.findIndex(supportedTokens, (token) => a.symbol === token);
+      // If token is not found in supportedTokens, indicating it is a custom token, Should be at the end of the list
       symbolIndexA = symbolIndexA !== -1 ? symbolIndexA : Number.MAX_SAFE_INTEGER;
       let symbolIndexB = _.findIndex(supportedTokens, (token) => b.symbol === token);
       symbolIndexB = symbolIndexB !== -1 ? symbolIndexB : Number.MAX_SAFE_INTEGER;
