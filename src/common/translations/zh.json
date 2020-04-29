@@ -60,7 +60,8 @@
         "Fast": "快",
         "CONFIRMED": "已确认",
         "enterMemo": "请输入转账备注",
-        "slideConfirm": "滑动以确认"
+        "slideConfirm": "滑动以确认",
+        "balance": "余额"
       },
       "add": {
         "title": "创建钱包",

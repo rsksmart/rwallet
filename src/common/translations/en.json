@@ -60,7 +60,8 @@
         "Fast": "Fast",
         "CONFIRMED": "CONFIRMED",
         "enterMemo": "Enter a transaction memo",
-        "slideConfirm": "Slide to confirm"
+        "slideConfirm": "Slide to Confirm",
+        "balance": "Balance"
       },
       "add": {
         "title": "Add Wallet",
