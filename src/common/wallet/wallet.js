@@ -4,6 +4,7 @@ import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
 import storage from '../storage';
 import coinType from './cointype';
+import common from '../common';
 
 const bip39 = require('bip39');
 
@@ -301,6 +302,7 @@ export default class Wallet {
       coin.objectId = objectId;
     }
     this.coins.push(coin);
+    this.coins = common.sortTokens(this.coins);
     return coin;
   }
 
