@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   textView: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    paddingTop: 30,
+    paddingTop: 40,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
+    fontFamily: 'Avenir-Black',
+    fontSize: 21,
+    color: color.word,
   },
 });
 
