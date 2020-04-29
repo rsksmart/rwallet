@@ -907,7 +907,7 @@ class Transfer extends Component {
               <Loc style={[styles.sending]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
-            <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${symbol} (${balanceValueText} ${currency})`}</Text></View>
+            <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${symbol} (${common.getCurrencySymbol(currency)}${balanceValueText})`}</Text></View>
             <View style={styles.textInputView}>
               <TextInput
                 placeholder={amountPlaceholderText}
