@@ -12,5 +12,7 @@ images.receive = require('./images/icon/receive.png');
 images.swap = require('./images/icon/swap.png');
 images.scan = require('./images/icon/scan.png');
 images.scanAddress = require('./images/icon/address.png');
+images.passcodeDelete = require('./images/icon/passcode.delete.png');
+images.passcodeReset = require('./images/icon/passcode.reset.png');
 
 export default { images };
