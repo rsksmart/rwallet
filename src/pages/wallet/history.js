@@ -460,14 +460,6 @@ class History extends Component {
     if (listData.length === 0) {
       return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
     }
-
-    const refreshControl = (
-      <RefreshControl
-        refreshing={isRefreshing}
-        onRefresh={this.onRefresh}
-      />
-    );
-
     return (
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -482,7 +474,12 @@ class History extends Component {
           />
         )}
         keyExtractor={(item, index) => index.toString()}
-        refreshControl={refreshControl}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={this.onRefresh}
+          />
+        )}
       />
     );
   };

@@ -149,6 +149,14 @@ class Transaction extends Component {
     const {
       transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing,
     } = this.state;
+
+    const refreshControl = (
+      <RefreshControl
+        refreshing={isRefreshing}
+        onRefresh={this.onRefresh}
+      />
+    );
+
     return (
       <BasePageGereral
         isSafeView
@@ -159,12 +167,7 @@ class Transaction extends Component {
         <ScrollView
           style={styles.body}
           showsVerticalScrollIndicator={false}
-          refreshControl={(
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={this.onRefresh}
-            />
-          )}
+          refreshControl={refreshControl}
         >
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
