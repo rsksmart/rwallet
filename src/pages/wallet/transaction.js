@@ -128,7 +128,6 @@ class Transaction extends Component {
   }
 
   onRefresh = () => {
-    this.page = 1;
     this.setState({ isRefreshing: true });
     // simulate 1s network delay
     setTimeout(() => {
