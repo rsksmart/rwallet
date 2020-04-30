@@ -171,8 +171,8 @@ const WalletItem = (item) => (
         <Text style={coinListItemStyles.text}>{item.text}</Text>
       </View>
       <View style={coinListItemStyles.rowAmountView}>
-        <Text style={coinListItemStyles.worth}>{item.worth}</Text>
-        <Text style={coinListItemStyles.amount}>{item.amount}</Text>
+        <Text style={coinListItemStyles.worth}>{item.amount}</Text>
+        <Text style={coinListItemStyles.amount}>{item.worth}</Text>
       </View>
     </View>
   </TouchableOpacity>
