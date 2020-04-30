@@ -405,6 +405,8 @@ const common = {
   },
   /**
    * sortTokens
+   * sort tokens by config.supportedTokens. If token is custom token, Should be at the end of the list.
+   * If two tokens are custom token, compare by unicode of symbol.
    * @param {Array} tokens, array of objects {symbol, token}
    * @returns array of sorted objects
    */
@@ -418,6 +420,10 @@ const common = {
       symbolIndexA = symbolIndexA !== -1 ? symbolIndexA : Number.MAX_SAFE_INTEGER;
       let symbolIndexB = _.findIndex(supportedTokens, (token) => b.symbol === token);
       symbolIndexB = symbolIndexB !== -1 ? symbolIndexB : Number.MAX_SAFE_INTEGER;
+      if (symbolIndexA === symbolIndexB) {
+        // compare by unicode of symbol
+        return a.symbol < b.symbol ? -1 : 1;
+      }
       return symbolIndexA - symbolIndexB;
     });
   },
