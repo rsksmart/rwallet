@@ -60,7 +60,7 @@ class WalletList extends Component {
       });
       wal.assetValue = wallet.assetValue;
       wal.wallet = wallet;
-      listData.unshift(wal);
+      listData.push(wal);
     });
 
     return listData;

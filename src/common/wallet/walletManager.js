@@ -42,7 +42,7 @@ class WalletManager {
       id: this.currentKeyId, name, phrase, coins, derivationPaths,
     });
 
-    this.wallets.push(wallet);
+    this.wallets.unshift(wallet);
 
     // Increment current pointer
     this.currentKeyId += 1;

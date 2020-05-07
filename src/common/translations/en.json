@@ -60,7 +60,8 @@
         "Fast": "Fast",
         "CONFIRMED": "CONFIRMED",
         "enterMemo": "Enter a transaction memo",
-        "slideConfirm": "Slide to confirm"
+        "slideConfirm": "Slide to Confirm",
+        "balance": "Balance"
       },
       "add": {
         "title": "Add Wallet",
@@ -91,8 +92,8 @@
         "note2": "in the right order and save them",
         "note3": "somewhere safe"
       },
-      "backupPhrase": {
-        "title": "Backup Phrase",
+      "verifyPhrase": {
+        "title": "Verify Your Phrase",
         "note": "Tap each word in the correct order",
         "isCorrect": "Is this correct?"
       },

@@ -60,7 +60,8 @@
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
-        "slideConfirm": "Deslice para confirmar"
+        "slideConfirm": "Deslice para confirmar",
+        "balance": "Equilibrar"
       },
       "add": {
         "title": "Agregar Wallet",
@@ -91,8 +92,8 @@
         "note2": "en el orden correcto y guárdelos",
         "note3": "un lugar seguro"
       },
-      "backupPhrase": {
-        "title": "Frase de respaldo",
+      "verifyPhrase": {
+        "title": "Verifica tu frase",
         "note": "Toca cada palabra en el orden correcto",
         "isCorrect": "¿Es esto correcto?"
       },

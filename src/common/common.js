@@ -15,7 +15,7 @@ import config from '../../config';
 import I18n from './i18n';
 import definitions from './definitions';
 
-const { consts: { currencies } } = config;
+const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
 
 // Default BTC transaction size
@@ -402,6 +402,30 @@ const common = {
       }
     }
     return '0';
+  },
+  /**
+   * sortTokens
+   * sort tokens by config.supportedTokens. If token is custom token, Should be at the end of the list.
+   * If two tokens are custom token, compare by unicode of symbol.
+   * @param {Array} tokens, array of objects {symbol, token}
+   * @returns array of sorted objects
+   */
+  sortTokens(tokens) {
+    return tokens.sort((a, b) => {
+      if (a.type !== b.type) {
+        return b.type === 'Testnet' ? -1 : 1;
+      }
+      let symbolIndexA = _.findIndex(supportedTokens, (token) => a.symbol === token);
+      // If token is not found in supportedTokens, indicating it is a custom token, Should be at the end of the list
+      symbolIndexA = symbolIndexA !== -1 ? symbolIndexA : Number.MAX_SAFE_INTEGER;
+      let symbolIndexB = _.findIndex(supportedTokens, (token) => b.symbol === token);
+      symbolIndexB = symbolIndexB !== -1 ? symbolIndexB : Number.MAX_SAFE_INTEGER;
+      if (symbolIndexA === symbolIndexB) {
+        // compare by unicode of symbol
+        return a.symbol < b.symbol ? -1 : 1;
+      }
+      return symbolIndexA - symbolIndexB;
+    });
   },
 };
 

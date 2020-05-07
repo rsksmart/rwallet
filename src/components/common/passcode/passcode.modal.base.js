@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Modal,
+  View, Text, StyleSheet, TouchableOpacity, Modal, Image,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
+import references from '../../../assets/references';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -187,12 +188,12 @@ class PasscodeModalBase extends PureComponent {
               )}
               {showCancel && (
                 <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                  <Loc style={[styles.buttonText]} text="button.cancel" />
+                  <Image source={references.images.passcodeReset} />
                 </TouchableOpacity>
               )}
               {this.renderButtons()}
               <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
-                <Loc style={[styles.buttonText]} text="button.Delete" />
+                <Image source={references.images.passcodeDelete} />
               </TouchableOpacity>
             </View>
           </View>

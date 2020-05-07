@@ -148,7 +148,7 @@ class AddToken extends Component {
 
   createListData() {
     const { coins } = this.wallet;
-    const listData = [];
+    let listData = [];
     const { consts: { supportedTokens } } = config;
 
     const createItem = (token, type) => {
@@ -156,7 +156,7 @@ class AddToken extends Component {
       const { icon } = coinType[coinId];
       const name = common.getSymbolName(token, type);
       const item = {
-        name, icon, selected: false, token: { symbol: token, type },
+        name, icon, selected: false, symbol: token, type, token: { symbol: token, type },
       };
       const coin = _.find(coins, { symbol: token, type });
       if (coin) {
@@ -172,7 +172,7 @@ class AddToken extends Component {
       if (!foundToken) {
         const name = common.getSymbolName(coin.symbol, coin.type);
         listData.push({
-          name, icon: coin.metadata.icon, selected: true, token: coin,
+          name, icon: coin.icon, symbol: coin.symbol, type: coin.type, selected: true, token: coin,
         });
       }
     });
@@ -182,6 +182,8 @@ class AddToken extends Component {
       listData.push(createItem(token, 'Mainnet'));
       listData.push(createItem(token, 'Testnet'));
     });
+
+    listData = common.sortTokens(listData);
 
     return listData;
   }

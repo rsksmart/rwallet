@@ -43,13 +43,6 @@ const styles = StyleSheet.create({
   headImage: {
     position: 'absolute',
   },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 10,
-    marginLeft: 10,
-  },
   sectionContainer: {
     paddingHorizontal: 20,
     marginTop: 15,
@@ -68,11 +61,6 @@ const styles = StyleSheet.create({
   check: {
     margin: 25,
   },
-  title: {
-    fontSize: 17,
-    fontWeight: '900',
-    color: '#000000',
-  },
   text: {
     color: '#4A4A4A',
     fontSize: 15,
@@ -88,15 +76,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  title1: {
+  sending: {
     color: '#000000',
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.39,
-    marginBottom: 15,
     marginTop: 20,
   },
-  title2: {
+  sectionTitle: {
     color: '#000000',
     fontSize: 15,
     fontWeight: '900',
@@ -104,7 +91,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-  title3: {
+  memo: {
     color: '#000000',
     fontSize: 15,
     fontWeight: '900',
@@ -211,7 +198,7 @@ const styles = StyleSheet.create({
   sendAll: {
     position: 'absolute',
     right: 10,
-    bottom: 15,
+    bottom: 3,
   },
   sendAllText: {
     color: '#00B520',
@@ -228,6 +215,12 @@ const styles = StyleSheet.create({
     bottom: 8,
     left: 10,
     alignItems: 'center',
+  },
+  balance: {
+    fontFamily: 'Avenir-Roman',
+    color: color.midGrey,
+    marginTop: 12,
+    marginBottom: 5,
   },
 });
 
@@ -248,7 +241,7 @@ class Transfer extends Component {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
       if (amountValue) {
-        const amountValueText = common.getAssetValueString(amountValue, amountValue);
+        const amountValueText = common.getAssetValueString(amountValue);
         amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
       }
     }
@@ -888,12 +881,19 @@ class Transfer extends Component {
       loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
       enableConfirm, levelFees,
     } = this.state;
-    const { navigation } = this.props;
+    const { navigation, currency, prices } = this.props;
     const { coin } = this;
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolName(symbol, type);
     const title = `${strings('button.Send')} ${symbolName}`;
+    let balanceText = '-';
+    let balanceValueText = '-';
+    if (coin && coin.balance) {
+      balanceText = common.getBalanceString(coin.balance, config.symbolDecimalPlaces[symbol]);
+      const balanceValue = common.getCoinValue(coin.balance, symbol, currency, prices);
+      balanceValueText = common.getAssetValueString(balanceValue);
+    }
 
     return (
       <BasePageGereral
@@ -906,9 +906,10 @@ class Transfer extends Component {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>
-              <Loc style={[styles.title1]} text="txState.Sending" />
+              <Loc style={[styles.sending]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
+            <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${symbol} (${common.getCurrencySymbol(currency)}${balanceValueText})`}</Text></View>
             <View style={styles.textInputView}>
               <TextInput
                 placeholder={amountPlaceholderText}
@@ -921,7 +922,7 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title2]} text="page.wallet.transfer.to" />
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transfer.to" />
             <View style={styles.textInputView}>
               <TextInput
                 style={[styles.textInput]}
@@ -937,13 +938,13 @@ class Transfer extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.title3]} text="page.wallet.transfer.memo" />
+            <Loc style={[styles.memo]} text="page.wallet.transfer.memo" />
             <View style={styles.textInputView}>
               {this.renderMemo(memo)}
             </View>
           </View>
           <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
-            <Loc style={[styles.title2, { marginBottom: 5 }]} text="page.wallet.transfer.fee" />
+            <Loc style={[styles.sectionTitle, { marginBottom: 5 }]} text="page.wallet.transfer.fee" />
             <Loc style={[styles.question]} text="page.wallet.transfer.feeQuestion" />
             {this.renderFeeOptions()}
           </View>
