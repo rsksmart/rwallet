@@ -44,13 +44,13 @@ class WalletList extends Component {
       const wal = { name: wallet.name, coins: [] };
       // Create element for each Token (e.g. BTC, RBTC, RIF, DOC)
       wallet.coins.forEach((coin, index) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const symbolName = common.getSymbolName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.decimalPlaces) : '';
         const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
         const item = {
           key: `${index}`,
-          title: coin.defaultName,
-          text: coinType,
+          title: symbolName,
+          text: coin.defaultName,
           worth: worthText,
           amount: amountText,
           icon: coin.icon,
@@ -60,7 +60,7 @@ class WalletList extends Component {
       });
       wal.assetValue = wallet.assetValue;
       wal.wallet = wallet;
-      listData.unshift(wal);
+      listData.push(wal);
     });
 
     return listData;

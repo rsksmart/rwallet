@@ -163,8 +163,12 @@ class AddCustomToken extends Component {
     render() {
       const { navigation } = this.props;
       const { isLoading, balance, isLoadingBalance } = this.state;
-      const { symbol, decimals } = this;
+      const { symbol, type, decimals } = this;
       const balanceText = balance ? common.getBalanceString(balance, decimals) : '-';
+
+      const symbolName = common.getSymbolName(symbol, type);
+      const icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;
+
       return (
         <BasePageGereral
           isSafeView
@@ -180,8 +184,8 @@ class AddCustomToken extends Component {
             <View style={styles.tokenView}>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.token" />
-                <Image style={[styles.tokenLogo, space.marginRight_10]} source={references.images.customToken} />
-                <Text style={styles.symbol}>{symbol}</Text>
+                <Image style={[styles.tokenLogo, space.marginRight_10]} source={icon} />
+                <Text style={styles.symbol}>{symbolName}</Text>
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.decimals" />
@@ -190,7 +194,7 @@ class AddCustomToken extends Component {
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
                 { isLoadingBalance && (<ActivityIndicator size="small" animating={isLoadingBalance} />)}
-                { !isLoadingBalance && (<Text style={styles.rowText}>{`${balanceText} ${symbol}`}</Text>)}
+                { !isLoadingBalance && (<Text style={styles.rowText}>{`${balanceText} ${symbolName}`}</Text>)}
               </View>
             </View>
           </View>

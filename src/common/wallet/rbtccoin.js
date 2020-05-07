@@ -56,7 +56,7 @@ export default class RBTCCoin {
     if (!this.metadata) {
       const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
       this.metadata = _.clone(metadata);
-      this.metadata.icon = references.images.customToken;
+      this.metadata.icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;
       this.metadata.defaultName = name;
     }
 

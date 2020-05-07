@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, Linking, Image,
+  View, StyleSheet, Text, Linking, Image, ScrollView, RefreshControl,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -89,7 +89,7 @@ class Transaction extends Component {
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
       const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = `${common.getBalanceString(amount, transation.decimalPlaces)} ${rawTransaction.symbol}`;
+      amountText = `${common.getBalanceString(amount, transation.decimalPlaces)} ${common.getSymbolName(rawTransaction.symbol, rawTransaction.type)}`;
     }
     const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
@@ -109,6 +109,7 @@ class Transaction extends Component {
       confirmations,
       memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
+      isRefreshing: false,
     };
   }
 
@@ -126,6 +127,14 @@ class Transaction extends Component {
     this.setState(Transaction.processViewData(transation, latestBlockHeights));
   }
 
+  onRefresh = () => {
+    this.setState({ isRefreshing: true });
+    // simulate 1s network delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
+  }
+
   onLinkPress() {
     const { navigation } = this.props;
     const transation = navigation.state.params;
@@ -137,8 +146,16 @@ class Transaction extends Component {
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon,
+      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing,
     } = this.state;
+
+    const refreshControl = (
+      <RefreshControl
+        refreshing={isRefreshing}
+        onRefresh={this.onRefresh}
+      />
+    );
+
     return (
       <BasePageGereral
         isSafeView
@@ -146,7 +163,11 @@ class Transaction extends Component {
         hasLoader={false}
         headerComponent={<Header title={`page.wallet.transaction.${title}`} onBackButtonPress={() => navigation.goBack()} />}
       >
-        <View style={styles.body}>
+        <ScrollView
+          style={styles.body}
+          showsVerticalScrollIndicator={false}
+          refreshControl={refreshControl}
+        >
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
             <View style={styles.amountView}>
@@ -175,7 +196,7 @@ class Transaction extends Component {
               <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </BasePageGereral>
     );
   }

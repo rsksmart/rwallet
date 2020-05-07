@@ -137,7 +137,7 @@ class WalletReceive extends Component {
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
       const type = coin && coin.type;
-      const symbolName = common.getSymbolFullName(symbol, type);
+      const symbolName = common.getSymbolName(symbol, type);
       const qrText = address;
       const title = `${strings('button.Receive')} ${symbolName}`;
 

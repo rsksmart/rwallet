@@ -234,9 +234,9 @@ class Transfer extends Component {
     gesturesEnabled: false,
   });
 
-  static generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices) {
+  static generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices) {
     const amountText = common.getBalanceString(PLACEHODLER_AMOUNT, decimalPlaces);
-    let amountPlaceholderText = `${amountText} ${symbol}`;
+    let amountPlaceholderText = `${amountText} ${common.getSymbolName(symbol, type)}`;
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
       const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
@@ -310,12 +310,12 @@ class Transfer extends Component {
   componentWillReceiveProps(nextProps) {
     const { prices, currency } = nextProps;
     const { prices: curPrices } = this.props;
-    const { symbol, decimalPlaces } = this.coin;
+    const { symbol, type, decimalPlaces } = this.coin;
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
-      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices);
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
@@ -657,11 +657,11 @@ class Transfer extends Component {
 
   initContext() {
     const { prices, currency } = this.props;
-    const { symbol, decimalPlaces } = this.coin;
+    const { symbol, type, decimalPlaces } = this.coin;
     console.log('prices: ', prices);
     console.log('currency: ', currency);
     const feeSymbol = symbol === 'BTC' ? 'BTC' : 'RBTC';
-    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, decimalPlaces, currency, prices);
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices);
     this.setState({ feeSymbol, amountPlaceholderText });
   }
 
@@ -798,6 +798,7 @@ class Transfer extends Component {
     const {
       customFee, feeSymbol, customFeeValue, feeSliderValue,
     } = this.state;
+    const { type } = this.coin;
     const { currency } = this.props;
     const currencySymbol = common.getCurrencySymbol(currency);
     return (
@@ -816,7 +817,7 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(customFee, config.symbolDecimalPlaces[feeSymbol])} ${feeSymbol}`}
+              {`${common.getBalanceString(customFee, config.symbolDecimalPlaces[feeSymbol])} ${common.getSymbolName(feeSymbol, type)}`}
               {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
@@ -831,15 +832,16 @@ class Transfer extends Component {
     const {
       feeSymbol, feeLevel, isCustomFee, levelFees,
     } = this.state;
+    const { type } = this.coin;
     const currencySymbol = common.getCurrencySymbol(currency);
     const items = [];
     for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
-      let item = { coin: `0 ${feeSymbol}`, value: `${currencySymbol}0` };
+      let item = { coin: `0 ${common.getSymbolName(feeSymbol, type)}`, value: `${currencySymbol}0` };
       if (levelFees) {
         const { fee, value } = levelFees[i];
         const amountText = common.getBalanceString(fee, config.symbolDecimalPlaces[feeSymbol]);
         const valueText = value ? `${currencySymbol}${common.getAssetValueString(value)}` : '';
-        item = { coin: `${amountText} ${feeSymbol}`, value: valueText };
+        item = { coin: `${amountText} ${common.getSymbolName(feeSymbol, type)}`, value: valueText };
       }
       items.push(item);
     }
@@ -883,7 +885,7 @@ class Transfer extends Component {
     const { coin } = this;
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
-    const symbolName = common.getSymbolFullName(symbol, type);
+    const symbolName = common.getSymbolName(symbol, type);
     const title = `${strings('button.Send')} ${symbolName}`;
     let balanceText = '-';
     let balanceValueText = '-';

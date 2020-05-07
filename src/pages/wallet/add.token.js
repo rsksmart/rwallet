@@ -154,8 +154,7 @@ class AddToken extends Component {
     const createItem = (token, type) => {
       const coinId = type === 'Mainnet' ? token : token + type;
       const { icon } = coinType[coinId];
-      const name = common.getSymbolFullName(token, type);
-      // the properties of symbol, type are used by common.sortTokens
+      const name = common.getSymbolName(token, type);
       const item = {
         name, icon, selected: false, symbol: token, type, token: { symbol: token, type },
       };
@@ -171,8 +170,7 @@ class AddToken extends Component {
     _.each(coins, (coin) => {
       const foundToken = _.find(supportedTokens, (token) => coin.symbol === token);
       if (!foundToken) {
-        const name = common.getSymbolFullName(coin.symbol, coin.type);
-        // the properties of symbol, type are used by common.sortTokens
+        const name = common.getSymbolName(coin.symbol, coin.type);
         listData.push({
           name, icon: coin.icon, symbol: coin.symbol, type: coin.type, selected: true, token: coin,
         });

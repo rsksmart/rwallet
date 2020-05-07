@@ -49,7 +49,7 @@ export default class SelectWallet extends Component {
     const listData = [];
     // Create element for each Token (e.g. BTC, RBTC, RIF)
     _.each(wallet.coins, (coin) => {
-      const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+      const coinType = common.getSymbolName(coin.symbol, coin.type);
       const item = {
         title: coin.defaultName,
         text: coinType,

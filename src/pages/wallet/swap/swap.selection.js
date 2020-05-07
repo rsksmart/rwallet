@@ -261,7 +261,7 @@ class SwapSelection extends Component {
         if (filters && (filters.length === 0 || !filters.includes(coin.id.toLowerCase()))) {
           return;
         }
-        const coinType = common.getSymbolFullName(coin.id, coin.type);
+        const coinType = common.getSymbolName(coin.id, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.decimalPlaces) : '';
         const item = {
           title: coinType,
