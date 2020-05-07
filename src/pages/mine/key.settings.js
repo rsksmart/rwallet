@@ -93,7 +93,7 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const coinType = common.getSymbolName(coin.symbol, coin.type);
         const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
