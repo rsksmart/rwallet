@@ -60,9 +60,7 @@ export default function walletReducer(state = initState, action) {
       const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
       _.each(foundTokens, (token) => {
         const newToken = token;
-        if (!token.transactions) {
-          newToken.transactions = [];
-        }
+        newToken.transactions = token.transactions || [];
         const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
         if (txIndex === -1) {
           newToken.transactions.unshift(transaction);

@@ -244,14 +244,11 @@ function* fetchTransactions(action) {
   const {
     token, fetchCount, skipCount, timestamp,
   } = action.payload;
-  const newToken = token;
   const { symbol, address } = token;
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
-    if (!token.transactions) {
-      token.transactions = [];
-    }
-    newToken.transactions = token.transactions.concat(transactions);
+    token.transactions = token.transactions || [];
+    token.transactions = token.transactions.concat(transactions);
     yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
     yield put({ type: actions.WALLETS_UPDATED });
   } catch (error) {

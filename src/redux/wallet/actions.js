@@ -70,14 +70,9 @@ const actions = {
   resetBalanceUpdated: () => ({
     type: actions.RESET_BALANCE_UPDATED,
   }),
-  fetchTransactions: (token, fetchCount, skipCount, timestamp) => ({
+  fetchTransactions: (params) => ({
     type: actions.FETCH_TRANSACTIONS,
-    payload: {
-      token,
-      fetchCount,
-      skipCount,
-      timestamp,
-    },
+    payload: params,
   }),
   updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,

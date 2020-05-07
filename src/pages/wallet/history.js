@@ -392,7 +392,13 @@ class History extends Component {
     this.setState({ listData, ...balanceTexts });
     if (_.isEmpty(transactions)) {
       this.setState({ isRefreshing: true });
-      fetchTransactions(this.coin, 10, 0, (new Date()).getTime());
+      const params = {
+        token: this.coin,
+        fetchCount: 10,
+        skipCount: 0,
+        timestamp: (new Date()).getTime(),
+      };
+      fetchTransactions(params);
     }
   }
 
@@ -424,10 +430,6 @@ class History extends Component {
   }
 
   onRefresh = () => {
-    const { listData } = this.state;
-    if (!listData) {
-      return;
-    }
     this.setState({ isRefreshing: true });
     // simulate 1s network delay
     setTimeout(() => {
@@ -437,8 +439,11 @@ class History extends Component {
 
   onEndReached = () => {
     const { fetchTransactions } = this.props;
-    const { transactions } = this.coin;
     const { isLoadMore, listData } = this.state;
+    // In these cases, the operation of loading more should not be executed.
+    // 1. the list data is empty
+    // 2. It's loading more
+    // 3. When FlatList momentum scroll, the onEndReached function is called before.
     if (_.isEmpty(listData) || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
       return;
     }
@@ -446,7 +451,13 @@ class History extends Component {
     // Record the request time so that you can check whether it is the latest request during the callback
     const timestamp = (new Date()).getTime();
     this.setState({ fetchTxTimestamp: timestamp, isLoadMore: true }, () => {
-      fetchTransactions(this.coin, 10, transactions.length, timestamp);
+      const params = {
+        token: this.coin,
+        fetchCount: 10,
+        skipCount: 0,
+        timestamp,
+      };
+      fetchTransactions(params);
     });
   }
 
@@ -623,7 +634,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchTransactions: (token, fetchCount, skipCount, timestamp) => dispatch(walletActions.fetchTransactions(token, fetchCount, skipCount, timestamp)),
+  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
