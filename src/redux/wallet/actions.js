@@ -11,8 +11,9 @@ const actions = {
   FETCH_BALANCE_RESULT: 'FETCH_BALANCE_RESULT',
   RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
 
-  FETCH_TRANSACTION: 'FETCH_TRANSACTION',
-  UPDATE_TRANSACTIONS: 'UPDATE_TRANSACTIONS',
+  FETCH_TRANSACTIONS: 'FETCH_TRANSACTIONS',
+  FETCH_TRANSACTIONS_RESULT: 'FETCH_TRANSACTIONS_RESULT',
+  UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
 
   FETCH_LATEST_BLOCK_HEIGHT_RESULT: 'FETCH_LATEST_BLOCK_HEIGHT_RESULT',
   UPDATE_LATEST_BLOCK_HEIGHT: 'UPDATE_LATEST_BLOCK_HEIGHT',
@@ -69,9 +70,14 @@ const actions = {
   resetBalanceUpdated: () => ({
     type: actions.RESET_BALANCE_UPDATED,
   }),
-  fetchTransaction: (walletManager) => ({
-    type: actions.FETCH_TRANSACTION,
-    payload: walletManager,
+  fetchTransactions: (token, fetchCount, skipCount, timestamp) => ({
+    type: actions.FETCH_TRANSACTIONS,
+    payload: {
+      token,
+      fetchCount,
+      skipCount,
+      timestamp,
+    },
   }),
   updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,

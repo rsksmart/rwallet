@@ -2,7 +2,6 @@
 import {
   take, call, all, takeEvery, put, select, cancelled,
 } from 'redux-saga/effects';
-
 import { eventChannel /* END */ } from 'redux-saga';
 import actions from './actions';
 import appActions from '../app/actions';
@@ -220,12 +219,8 @@ function createTransactionsSubscriptionChannel(subscription) {
       console.log('createTransactionsSubscriptionChannel.updateHandler', item);
       const transaction = parseDataUtil.getTransaction(item);
       return emitter({
-        type: actions.UPDATE_TRANSACTIONS,
-        value: {
-          transactions: [transaction],
-          // Because the transaction is updated by the subscription, it is inserted from the head of the list.
-          operation: 'unshift',
-        },
+        type: actions.UPDATE_TRANSACTION,
+        transaction,
       });
     };
     const errorHandler = (error) => {
@@ -245,16 +240,20 @@ function createTransactionsSubscriptionChannel(subscription) {
  * Fetch transactions of token sand update property of each addresss
  * @param {array} tokens Array of Coin class instance
  */
-function* fetchTransactions(tokens) {
+function* fetchTransactions(action) {
+  const {
+    token, fetchCount, skipCount, timestamp,
+  } = action.payload;
+  const newToken = token;
+  const { symbol, address } = token;
   try {
-    const transactions = yield call(ParseHelper.fetchTransactions, tokens);
-    yield put({
-      type: actions.UPDATE_TRANSACTIONS,
-      value: {
-        transactions,
-        operation: 'push',
-      },
-    });
+    const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
+    if (!token.transactions) {
+      token.transactions = [];
+    }
+    newToken.transactions = token.transactions.concat(transactions);
+    yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
+    yield put({ type: actions.WALLETS_UPDATED });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
   }
@@ -299,10 +298,8 @@ function* subscribeTransactions(tokens) {
  */
 function* initLiveQueryTransactionsRequest(action) {
   const { tokens } = action;
-  yield call(fetchTransactions, tokens);
   yield call(subscribeTransactions, tokens);
 }
-
 
 /**
  * create block height subscription channel
@@ -393,5 +390,7 @@ export default function* () {
     takeEvery(actions.INIT_LIVE_QUERY_BALANCES, initLiveQueryBalancesRequest),
     takeEvery(actions.INIT_LIVE_QUERY_TRANSACTIONS, initLiveQueryTransactionsRequest),
     takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
+
+    takeEvery(actions.FETCH_TRANSACTIONS, fetchTransactions),
   ]);
 }

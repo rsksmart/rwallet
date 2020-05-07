@@ -17,6 +17,7 @@ const initState = new Map({
   swapRatesError: null,
   balancesChannel: undefined,
   transactionsChannel: undefined,
+  txTimestamp: undefined,
 });
 
 /**
@@ -51,33 +52,29 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_BALANCE_UPDATED: {
       return state.set('isBalanceUpdated', false);
     }
-    case actions.UPDATE_TRANSACTIONS: {
-      const { transactions, operation } = action.value;
+    case actions.UPDATE_TRANSACTION: {
+      const { transaction } = action;
       const walletManager = state.get('walletManager');
       const tokens = walletManager.getTokens();
 
-      _.each(transactions, (transaction) => {
-        const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
-        _.each(foundTokens, (token) => {
-          const newToken = token;
-          if (!token.transactions) {
-            newToken.transactions = [];
-          }
-          const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
-          if (txIndex === -1) {
-            if (operation === 'unshift') {
-              newToken.transactions.unshift(transaction);
-            } else {
-              newToken.transactions.push(transaction);
-            }
-          } else {
-            newToken.transactions[txIndex] = transaction;
-          }
-        });
+      const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
+      _.each(foundTokens, (token) => {
+        const newToken = token;
+        if (!token.transactions) {
+          newToken.transactions = [];
+        }
+        const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
+        if (txIndex === -1) {
+          newToken.transactions.unshift(transaction);
+        } else {
+          newToken.transactions[txIndex] = transaction;
+        }
       });
 
-      console.log('ParseHelper.fetchTransactions, tokens: ', tokens);
       return state.set('updateTimestamp', getUpdateTimestamp());
+    }
+    case actions.FETCH_TRANSACTIONS_RESULT: {
+      return state.set('txTimestamp', action.timestamp);
     }
     case actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT: {
       return state.set('latestBlockHeights', action.value);
