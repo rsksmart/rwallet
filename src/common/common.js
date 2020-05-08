@@ -149,9 +149,12 @@ const common = {
     }
     return null;
   },
-  getCoinValue(amount, symbol, currency, prices) {
+  getCoinValue(amount, symbol, type, currency, prices) {
     if (!amount || !prices || prices.length === 0) {
       return null;
+    }
+    if (type === 'Testnet') {
+      return new BigNumber(0);
     }
     try {
       const price = this.getCoinPrice(symbol, currency, prices);
