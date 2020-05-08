@@ -1,4 +1,4 @@
-import { PARSE_SERVER_URL } from 'react-native-dotenv';
+import { PARSE_SERVER_URL, RWALLET_API_KEY } from 'react-native-dotenv';
 import { isEmpty } from 'lodash';
 
 if (isEmpty(PARSE_SERVER_URL)) {
@@ -10,6 +10,7 @@ const config = {
     appId: 'rwallet',
     javascriptKey: '',
     serverURL: PARSE_SERVER_URL,
+    rwalletApiKey: RWALLET_API_KEY,
   },
   defaultSettings: {
     username: undefined,
