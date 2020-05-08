@@ -400,7 +400,7 @@ class History extends Component {
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
     const { fetchTxTimestamp } = this.state;
-    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && this.coin) {
+    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency || txTimestamp === fetchTxTimestamp) && this.coin) {
       const {
         balance, balanceValue, transactions, address, symbol, type, decimalPlaces,
       } = this.coin;

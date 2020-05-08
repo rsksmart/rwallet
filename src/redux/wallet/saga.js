@@ -274,13 +274,13 @@ function* fetchTransactions(action) {
   const { symbol, address } = token;
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
-    yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
     _.each(transactions, (transaction) => {
       addTokenTransaction(token, transaction, 'push');
     });
-    yield put({ type: actions.WALLETS_UPDATED });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
+  } finally {
+    yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
   }
 }
 
