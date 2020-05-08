@@ -384,23 +384,14 @@ class History extends Component {
   }
 
   componentDidMount() {
-    const { currency, prices, fetchTransactions } = this.props;
+    const { currency, prices } = this.props;
     const {
       balance, balanceValue, transactions, address, symbol, type, decimalPlaces,
     } = this.coin;
     const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, decimalPlaces, currency, prices);
     const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, decimalPlaces, currency);
-    this.setState({ listData, ...balanceTexts });
-    if (_.isEmpty(transactions)) {
-      this.setState({ isRefreshing: true });
-      const params = {
-        token: this.coin,
-        fetchCount: 10,
-        skipCount: 0,
-        timestamp: (new Date()).getTime(),
-      };
-      fetchTransactions(params);
-    }
+    this.setState({ listData, ...balanceTexts, isRefreshing: true });
+    this.fetchTokenTransactions(0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -416,49 +407,42 @@ class History extends Component {
       const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, decimalPlaces, currency, prices);
       const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, decimalPlaces, currency);
 
-      // When txTimestamp === fetchTxTimestamp, the new data is retrieved and isLoadMore is marked as false.
+      // When txTimestamp === fetchTxTimestamp, the new data is retrieved,
+      // Set isLoadMore and isRefreshing to false.
       if (txTimestamp === fetchTxTimestamp) {
         this.setState({ isLoadMore: false });
+        this.setState({ isRefreshing: false });
       }
 
       this.setState({
         listData,
         ...balanceTexts,
-        isRefreshing: updateTimestamp === lastUpdateTimestamp,
       });
     }
   }
 
   onRefresh = () => {
+    const { isRefreshing, isLoadMore } = this.state;
+    if (isRefreshing || isLoadMore) {
+      return;
+    }
     this.setState({ isRefreshing: true });
-    // simulate 1s network delay
-    setTimeout(() => {
-      this.setState({ isRefreshing: false });
-    }, 1000);
+    this.fetchTokenTransactions(0);
   }
 
   onEndReached = () => {
-    const { fetchTransactions } = this.props;
-    const { isLoadMore, listData } = this.state;
+    const { isLoadMore, isRefreshing, listData } = this.state;
     // In these cases, the operation of loading more should not be executed.
     // 1. the list data is empty
     // 2. It's loading more
     // 3. When FlatList momentum scroll, the onEndReached function is called before.
-    if (_.isEmpty(listData) || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
+    if (_.isEmpty(listData) || isRefreshing || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
       return;
     }
     this.isOnEndReachedCalledDuringMomentum = true;
     // Record the request time so that you can check whether it is the latest request during the callback
-    const timestamp = (new Date()).getTime();
-    this.setState({ fetchTxTimestamp: timestamp, isLoadMore: true }, () => {
-      const params = {
-        token: this.coin,
-        fetchCount: 10,
-        skipCount: 0,
-        timestamp,
-      };
-      fetchTransactions(params);
-    });
+    this.setState({ isLoadMore: true });
+    this.fetchTokenTransactions(this.coin.transactions.length);
   }
 
   onSendButtonClick() {
@@ -488,6 +472,20 @@ class History extends Component {
     const { navigation } = this.props;
     const item = listData[index];
     navigation.navigate('Transaction', item);
+  }
+
+  fetchTokenTransactions = (skipCount) => {
+    const { fetchTransactions } = this.props;
+    const timestamp = (new Date()).getTime();
+    this.setState({ fetchTxTimestamp: timestamp }, () => {
+      const params = {
+        token: this.coin,
+        fetchCount: 10,
+        skipCount,
+        timestamp,
+      };
+      fetchTransactions(params);
+    });
   }
 
   renderHeader = (listData, isRefreshing) => {

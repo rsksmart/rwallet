@@ -52,25 +52,6 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_BALANCE_UPDATED: {
       return state.set('isBalanceUpdated', false);
     }
-    case actions.UPDATE_TRANSACTION: {
-      const { transaction } = action;
-      const walletManager = state.get('walletManager');
-      const tokens = walletManager.getTokens();
-
-      const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
-      _.each(foundTokens, (token) => {
-        const newToken = token;
-        newToken.transactions = token.transactions || [];
-        const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
-        if (txIndex === -1) {
-          newToken.transactions.unshift(transaction);
-        } else {
-          newToken.transactions[txIndex] = transaction;
-        }
-      });
-
-      return state.set('updateTimestamp', getUpdateTimestamp());
-    }
     case actions.FETCH_TRANSACTIONS_RESULT: {
       return state.set('txTimestamp', action.timestamp);
     }
@@ -101,7 +82,7 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_WALLETS_UPDATED: {
       return state.set('isWalletsUpdated', false);
     }
-    case actions.WALLTE_NAME_UPDATED: {
+    case actions.WALLET_NAME_UPDATED: {
       return state.set('isWalletNameUpdated', true)
         .set('updateTimestamp', getUpdateTimestamp());
     }

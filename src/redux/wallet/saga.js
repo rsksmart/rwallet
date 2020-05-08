@@ -3,6 +3,7 @@ import {
   take, call, all, takeEvery, put, select, cancelled,
 } from 'redux-saga/effects';
 import { eventChannel /* END */ } from 'redux-saga';
+import _ from 'lodash';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
@@ -51,7 +52,7 @@ function* renameKeyRequest(action) {
   const { walletManager, key, name } = action.payload;
   try {
     yield call(walletManager.renameWallet, key, name);
-    yield put({ type: actions.WALLTE_NAME_UPDATED });
+    yield put({ type: actions.WALLET_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -202,6 +203,35 @@ function* initLiveQueryBalancesRequest(action) {
   yield call(subscribeBalances, tokens);
 }
 
+
+function addTokenTransaction(token, transaction, operation) {
+  const newToken = token;
+  newToken.transactions = newToken.transactions || [];
+  const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
+  if (txIndex === -1) {
+    if (operation === 'unshift') {
+      newToken.transactions.unshift(transaction);
+    } else {
+      newToken.transactions.push(transaction);
+    }
+  } else {
+    newToken.transactions[txIndex] = transaction;
+  }
+}
+
+function* updateTransactionRequest(action) {
+  const { transaction } = action;
+  const state = yield select();
+  const walletManager = state.get('walletManager');
+  const tokens = walletManager.getTokens();
+
+  const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
+  _.each(foundTokens, (token) => {
+    addTokenTransaction(token, transaction, 'unshift');
+  });
+  return put({ type: actions.WALLETS_UPDATED });
+}
+
 /**
  * Subscribe transactions of tokens
  * @param {object} subscription parse subscription
@@ -218,10 +248,7 @@ function createTransactionsSubscriptionChannel(subscription) {
     const updateHandler = (item) => {
       console.log('createTransactionsSubscriptionChannel.updateHandler', item);
       const transaction = parseDataUtil.getTransaction(item);
-      return emitter({
-        type: actions.UPDATE_TRANSACTION,
-        transaction,
-      });
+      return emitter({ type: actions.UPDATE_TRANSACTION, transaction });
     };
     const errorHandler = (error) => {
       console.log('createTransactionsSubscriptionChannel.errorHandler', error);
@@ -247,9 +274,10 @@ function* fetchTransactions(action) {
   const { symbol, address } = token;
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
-    token.transactions = token.transactions || [];
-    token.transactions = token.transactions.concat(transactions);
     yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
+    _.each(transactions, (transaction) => {
+      addTokenTransaction(token, transaction, 'push');
+    });
     yield put({ type: actions.WALLETS_UPDATED });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
@@ -389,5 +417,7 @@ export default function* () {
     takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
 
     takeEvery(actions.FETCH_TRANSACTIONS, fetchTransactions),
+
+    takeEvery(actions.UPDATE_TRANSACTION, updateTransactionRequest),
   ]);
 }
