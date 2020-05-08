@@ -38,6 +38,7 @@ The first three steps are needed for both Android and iOS devices.
     # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
     # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
     PARSE_SERVER_URL=
+    RWALLET_API_KEY=
     ```
     If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
 

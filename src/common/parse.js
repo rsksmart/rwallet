@@ -13,6 +13,7 @@ if (_.isUndefined(parseConfig)) {
 }
 
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
+Parse.CoreManager.set('REQUEST_HEADERS', { 'Rwallet-API-Key': parseConfig.rwalletApiKey });
 Parse.serverURL = parseConfig.serverURL;
 Parse.setAsyncStorage(AsyncStorage);
 
@@ -358,6 +359,7 @@ class ParseHelper {
   }
 
   static saveToken(type, chain, address) {
+    console.log(`saveToken, type: ${type}, chain: ${chain}, address: ${address}`);
     return Parse.Cloud.run('saveToken', { type, chain, address });
   }
 
