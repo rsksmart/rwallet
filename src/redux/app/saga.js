@@ -244,6 +244,7 @@ function* processNotificationRequest(action) {
   const params = JSON.parse(eventParams);
   switch (event) {
     case 'sentTransaction':
+    case 'receivingTransaction':
     case 'receivedTransaction': {
       const { symbol, type, address } = params;
       const coin = walletManager.findToken(symbol, type, address);
