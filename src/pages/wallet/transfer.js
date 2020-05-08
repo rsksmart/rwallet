@@ -239,7 +239,7 @@ class Transfer extends Component {
     let amountPlaceholderText = `${amountText} ${common.getSymbolName(symbol, type)}`;
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
-      const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, currency, prices);
+      const amountValue = common.getCoinValue(PLACEHODLER_AMOUNT, symbol, type, currency, prices);
       if (amountValue) {
         const amountValueText = common.getAssetValueString(amountValue);
         amountPlaceholderText += ` (${currencySymbol}${amountValueText})`;
@@ -314,7 +314,7 @@ class Transfer extends Component {
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
-      const customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+      const customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
       const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
@@ -486,17 +486,18 @@ class Transfer extends Component {
   calcCustomFee(value) {
     const { currency, prices } = this.props;
     const { feeSymbol } = this.state;
+    const { type } = this.coin;
     let customFeeValue = null;
     let customFee = null;
     if (feeSymbol === 'BTC') {
       const { minCustomFee, maxCustomFee } = this;
       customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
     } else {
       const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
       this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
       customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, currency, prices);
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
     }
     return { customFee, customFeeValue };
   }
@@ -588,7 +589,7 @@ class Transfer extends Component {
       feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount, customFee,
     } = this.state;
     const { isRequestSendAll, coin } = this;
-    const { symbol } = coin;
+    const { symbol, type } = coin;
 
     // Calculates levelFees
     const levelFees = [];
@@ -598,7 +599,7 @@ class Transfer extends Component {
       for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
         const txFees = [low, medium, high];
         const fee = common.convertUnitToCoinAmount(feeSymbol, txFees[i]);
-        const value = common.getCoinValue(fee, feeSymbol, currency, prices);
+        const value = common.getCoinValue(fee, feeSymbol, type, currency, prices);
         levelFees.push({ fee, value });
       }
       this.minCustomFee = levelFees[0].fee;
@@ -612,7 +613,7 @@ class Transfer extends Component {
         const gasPrice = new BigNumber(txPrices[i]);
         const gasFee = this.gas.times(gasPrice);
         const fee = common.convertUnitToCoinAmount(feeSymbol, gasFee);
-        const value = common.getCoinValue(fee, feeSymbol, currency, prices);
+        const value = common.getCoinValue(fee, feeSymbol, type, currency, prices);
         levelFees.push({ fee, value, gasPrice });
       }
       console.log('levelFees: ', levelFees);
@@ -891,7 +892,7 @@ class Transfer extends Component {
     let balanceValueText = '-';
     if (coin && coin.balance) {
       balanceText = common.getBalanceString(coin.balance, config.symbolDecimalPlaces[symbol]);
-      const balanceValue = common.getCoinValue(coin.balance, symbol, currency, prices);
+      const balanceValue = common.getCoinValue(coin.balance, symbol, type, currency, prices);
       balanceValueText = common.getAssetValueString(balanceValue);
     }
 
@@ -909,7 +910,7 @@ class Transfer extends Component {
               <Loc style={[styles.sending]} text="txState.Sending" />
               <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
             </View>
-            <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${symbol} (${common.getCurrencySymbol(currency)}${balanceValueText})`}</Text></View>
+            <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${common.getSymbolName(symbol, type)} (${common.getCurrencySymbol(currency)}${balanceValueText})`}</Text></View>
             <View style={styles.textInputView}>
               <TextInput
                 placeholder={amountPlaceholderText}
