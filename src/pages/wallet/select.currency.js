@@ -138,6 +138,7 @@ class WalletSelectCurrency extends Component {
     }
 
     renderList = (data, isDisabled) => (
+      // Restrict the deletion of the last token
       <FlatList
         extraData={isDisabled}
         data={data}
