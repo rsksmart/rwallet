@@ -164,7 +164,9 @@
       "addToken": {
         "title": "Add Tokens",
         "enabledAssets": "Enabled Assets",
-        "note": "Disable assets to hide them from your portfolio."
+        "note": "Disable assets to hide them from your portfolio.",
+        "addCustomToken": "Add Custom Token",
+        "custom": "Custom"
       }
     },
     "mine": {

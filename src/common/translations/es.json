@@ -163,7 +163,9 @@
       "addToken": {
         "title": "Agregar tokens",
         "enabledAssets": "Activos habilitados",
-        "note": "Inhabilite los activos para ocultarlos de su cartera."
+        "note": "Inhabilite los activos para ocultarlos de su cartera.",
+        "addCustomToken": "Agregar token personalizado",
+        "custom": "Personalizado"
       }
     },
     "mine": {
