@@ -222,7 +222,7 @@ function addTokenTransaction(token, transaction, operation) {
 function* updateTransactionRequest(action) {
   const { transaction } = action;
   const state = yield select();
-  const walletManager = state.get('walletManager');
+  const walletManager = state.Wallet.get('walletManager');
   const tokens = walletManager.getTokens();
 
   const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
