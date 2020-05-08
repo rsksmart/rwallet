@@ -29,7 +29,7 @@
     "moment": "^2.24.0",
     "native-base": "^2.13.0",
     "node-libs-browser": "^2.2.1",
-    "parse": "^2.8.0",
+    "parse": "^2.13.0",
     "prop-types": "^15.7.2",
     "react": "16.8.3",
     "react-native": "0.59.10",
