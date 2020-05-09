@@ -77,6 +77,18 @@ const coinType = {
     type: 'Testnet',
     symbol: 'DOC',
   },
+  CustomToken: {
+    networkId: 137,
+    icon: references.images.customToken,
+    chain: 'Rootstock',
+    type: 'Mainnet',
+  },
+  CustomTokenTestnet: {
+    networkId: 37310,
+    icon: references.images.customToken_grey,
+    chain: 'Rootstock',
+    type: 'Testnet',
+  },
 };
 
 export default coinType;
