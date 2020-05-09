@@ -319,7 +319,7 @@ class History extends Component {
         pendingBalance = pendingBalance.plus(amount);
       }
     });
-    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
+    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, type, currency, prices);
     return { transactions, pendingBalance, pendingBalanceValue };
   }
 
