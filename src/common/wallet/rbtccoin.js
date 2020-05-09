@@ -50,15 +50,10 @@ export default class RBTCCoin {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
-    // If coinType does not contain this.id, use RBTC metadata;
-    this.metadata = coinType[this.id];
-    if (!this.metadata) {
-      const metadata = type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet;
-      this.metadata = _.clone(metadata);
-    }
-
-    this.contractAddress = contractAddress;
+    // If coinType does not contain this.id, use custom token metadata;
+    this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.decimalPlaces = config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
+    this.contractAddress = contractAddress;
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
