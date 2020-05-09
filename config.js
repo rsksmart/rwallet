@@ -43,6 +43,7 @@ const config = {
     RBTC: 6,
     RIF: 3,
     DOC: 3,
+    CustomToken: 3,
   },
   assetValueDecimalPlaces: 2,
   transactionUrls: {

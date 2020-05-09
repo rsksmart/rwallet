@@ -3,7 +3,6 @@ import { Buffer } from 'buffer';
 import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
-import references from '../../assets/references';
 import config from '../../../config';
 import common from '../common';
 
@@ -47,21 +46,14 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, derivationPath, contractAddress, decimalPlaces, name) {
+  constructor(symbol, type, derivationPath, contractAddress, name) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, queryKey, defaultName}
-    // If coinType does not contain this.id, use RBTC metadata;
-    this.metadata = coinType[this.id];
-    if (!this.metadata) {
-      const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
-      this.metadata = _.clone(metadata);
-      this.metadata.icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;
-      this.metadata.defaultName = name;
-    }
-
+    // If coinType does not contain this.id, use custom token metadata;
+    this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
+    this.decimalPlaces = config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
     this.contractAddress = contractAddress;
-    this.decimalPlaces = decimalPlaces || config.symbolDecimalPlaces[symbol];
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
@@ -70,7 +62,7 @@ export default class RBTCCoin {
     this.account = common.parseAccountFromDerivationPath(derivationPath);
     this.networkId = this.metadata.networkId;
     this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
-    this.name = this.metadata.defaultName;
+    this.name = name || this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
 
