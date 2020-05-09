@@ -100,7 +100,6 @@ class RootComponent extends Component {
 
         newState.isStorageRead = true;
       } else {
-        console.log('initLiveQueryPrice', initLiveQueryPrice);
         initLiveQueryPrice();
         initLiveQueryBalances(tokens);
         initLiveQueryTransactions(tokens);

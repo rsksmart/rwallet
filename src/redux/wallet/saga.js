@@ -339,6 +339,7 @@ function* initLiveQueryTransactionsRequest(action) {
  */
 function createBlockHeightSubscriptionChannel(subscription) {
   return eventChannel((emitter) => {
+    const subscribeHandler = () => emitter({ type: actions.FETCH_LATEST_BLOCK_HEIGHT });
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(subscription);
       console.log('createBlockHeightSubscriptionChannel.unsubscribeHandler.');
@@ -351,8 +352,8 @@ function createBlockHeightSubscriptionChannel(subscription) {
         value: blockHeight,
       });
     };
+    subscription.on('open', subscribeHandler);
     subscription.on('update', updateHandler);
-
     // unsubscribe function, this gets called when we close the channel
     return unsubscribeHandler;
   });
@@ -361,7 +362,7 @@ function createBlockHeightSubscriptionChannel(subscription) {
 /**
  * Fetch block heights
  */
-function* fetchBlockHeights() {
+function* fetchBlockHeightsRequest() {
   try {
     const blockHeights = yield call(ParseHelper.fetchBlockHeights);
     yield put({
@@ -403,7 +404,6 @@ function* subscribeBlockHeights() {
  * initialize LiveQuery for block heights
  */
 function* initLiveQueryBlockHeightsRequest() {
-  yield call(fetchBlockHeights);
   yield call(subscribeBlockHeights);
 }
 
@@ -426,5 +426,6 @@ export default function* () {
     takeEvery(actions.UPDATE_TRANSACTION, updateTransactionRequest),
 
     takeEvery(actions.FETCH_BALANCES, fetchBalancesRequest),
+    takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
   ]);
 }
