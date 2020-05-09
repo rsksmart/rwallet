@@ -15,6 +15,7 @@ import common from '../../common/common';
 import config from '../../../config';
 import references from '../../assets/references';
 import walletActions from '../../redux/wallet/actions';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -220,7 +221,7 @@ class AddToken extends Component {
 
     const customButton = (
       <TouchableOpacity style={styles.addCustomTokenView} onPress={this.onAddCustomTokenPressed}>
-        <Text style={styles.addCustomTokenText}>+ Add Custom Tokens</Text>
+        <Text style={styles.addCustomTokenText}>{`+ ${strings('page.wallet.addToken.addCustomToken')}`}</Text>
       </TouchableOpacity>
     );
 
@@ -229,7 +230,7 @@ class AddToken extends Component {
         <ImageBackground source={references.images.cornerButton} style={styles.cornerButton}>
           <Text style={styles.cornerButtonText}>
             <Text style={styles.cornerButtonPlus}>+ </Text>
-            Custom
+            {strings('page.wallet.addToken.custom')}
           </Text>
         </ImageBackground>
       </TouchableOpacity>
@@ -284,6 +285,7 @@ AddToken.propTypes = {
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
