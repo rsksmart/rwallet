@@ -162,8 +162,10 @@
       },
       "addToken": {
         "title": "添加代币",
-        "enableAssets": "开启的资产",
-        "note": "禁用资产以将其从投资组合中隐藏。"
+        "enabledAssets": "开启的资产",
+        "note": "禁用资产以将其从投资组合中隐藏。",
+        "addCustomToken": "添加自定义代币",
+        "custom": "自定义"
       }
     },
     "mine": {

@@ -9,11 +9,17 @@ import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
 import coinListItemStyles from '../../assets/styles/coin.listitem.styles';
+import space from '../../assets/styles/space';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   body: {
     marginTop: 5,
     marginHorizontal: 18,
+    flex: 1,
+  },
+  listFooter: {
+    marginBottom: 10 + screenHelper.bottomHeight,
   },
 });
 
@@ -40,6 +46,7 @@ export default class SelectWallet extends Component {
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={<View style={space.marginBottom_20} />}
       />
     );
   }
@@ -51,8 +58,8 @@ export default class SelectWallet extends Component {
     _.each(wallet.coins, (coin) => {
       const coinType = common.getSymbolName(coin.symbol, coin.type);
       const item = {
-        title: coin.defaultName,
-        text: coinType,
+        title: coinType,
+        text: coin.defaultName,
         icon: coin.icon,
         onPress: () => {
           if (operation === 'send') {
@@ -84,7 +91,6 @@ export default class SelectWallet extends Component {
     const { listData } = this.state;
     return (
       <BasePageSimple
-        isSafeView
         headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.selectWallet.title" />}
       >
         <View style={styles.body}>

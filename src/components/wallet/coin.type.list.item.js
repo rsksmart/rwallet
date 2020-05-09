@@ -35,8 +35,15 @@ export default class Item extends Component {
     this.state = { value: data.selected };
   }
 
+  onValueChange = (value) => {
+    const { data, onValueChange } = this.props;
+    this.setState({ value });
+    data.selected = value;
+    onValueChange();
+  }
+
   render() {
-    const { data } = this.props;
+    const { data, isDisabled } = this.props;
     const { value } = this.state;
     return (
       <View style={styles.item}>
@@ -45,10 +52,8 @@ export default class Item extends Component {
           <Text style={[styles.title]}>{data.title}</Text>
           <Switch
             value={value}
-            onValueChange={(v) => {
-              this.setState({ value: v });
-              data.selected = v;
-            }}
+            onValueChange={this.onValueChange}
+            disabled={isDisabled}
           />
         </View>
       </View>
@@ -63,4 +68,6 @@ Item.propTypes = {
     coin: PropTypes.string,
     selected: PropTypes.bool.isRequired,
   }).isRequired,
+  isDisabled: PropTypes.bool.isRequired,
+  onValueChange: PropTypes.func.isRequired,
 };

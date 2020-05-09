@@ -162,8 +162,10 @@
       },
       "addToken": {
         "title": "Adicionar tokens",
-        "enableAssets": "Ativar ativos",
-        "note": "Desative ativos para ocultá-los do seu portfólio."
+        "enabledAssets": "Ativos ativados",
+        "note": "Desative ativos para ocultá-los do seu portfólio.",
+        "addCustomToken": "Adicionar token personalizado",
+        "custom": "Personalizados"
       }
     },
     "mine": {

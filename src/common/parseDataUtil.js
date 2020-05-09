@@ -40,14 +40,14 @@ const parseDataUtil = {
   },
 
   getPrices(priceObj) {
-    return priceObj ? priceObj.get('value') : [];
+    return priceObj ? priceObj.get('valObj').value : [];
   },
 
   getBlockHeight(row) {
     const key = row.get('key');
-    const value = row.get('value');
+    const { value } = row.get('valObj');
     const { blockHeightKeyInfos } = definitions;
-    return { ...blockHeightKeyInfos[key], blockHeight: value[0] };
+    return { ...blockHeightKeyInfos[key], blockHeight: value };
   },
 };
 
