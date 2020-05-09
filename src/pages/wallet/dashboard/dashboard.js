@@ -66,7 +66,7 @@ class Dashboard extends Component {
       const { resetFcmNavParams, navigation } = this.props;
       if (fcmNavParams) {
         const { routeName, routeParams } = fcmNavParams;
-        navigation.navigate(routeName, routeParams);
+        navigation.push(routeName, routeParams);
         resetFcmNavParams();
       }
     }
@@ -97,6 +97,7 @@ Dashboard.propTypes = {
     pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
     addListener: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
   showPasscode: PropTypes.func.isRequired,
