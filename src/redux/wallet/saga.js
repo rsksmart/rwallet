@@ -417,7 +417,6 @@ export default function* () {
     takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
 
     takeEvery(actions.FETCH_TRANSACTIONS, fetchTransactions),
-
     takeEvery(actions.UPDATE_TRANSACTION, updateTransactionRequest),
   ]);
 }

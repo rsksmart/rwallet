@@ -22,6 +22,8 @@ import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
 
+const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
+
 const { getCurrencySymbol } = common;
 
 const sending = require('../../assets/images/icon/sending.png');
@@ -480,7 +482,7 @@ class History extends Component {
     this.setState({ fetchTxTimestamp: timestamp }, () => {
       const params = {
         token: this.coin,
-        fetchCount: 10,
+        fetchCount: NUMBER_OF_FETCHING_TRANSACTIONS,
         skipCount,
         timestamp,
       };
