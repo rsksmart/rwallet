@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StackActions } from 'react-navigation';
 import _ from 'lodash';
-import CoinTypeList from '../../components/wallet/coin.type.list';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
@@ -16,6 +15,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
+import Item from '../../components/wallet/coin.type.list.item';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -39,7 +39,10 @@ class WalletSelectCurrency extends Component {
     constructor(props) {
       super(props);
       const { navigation } = this.props;
-      this.state = { isLoading: false };
+      this.state = {
+        isLoading: false,
+        isDisabledSwitch: false,
+      };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
       this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
@@ -96,6 +99,13 @@ class WalletSelectCurrency extends Component {
       }
     }
 
+    onSwitchValueChanged = () => {
+      const selectedMainnetItems = _.filter(this.mainnet, { selected: true });
+      const selectedTestnetItems = _.filter(this.testnet, { selected: true });
+      const selectedCount = selectedMainnetItems.length + selectedTestnetItems.length;
+      this.setState({ isDisabledSwitch: selectedCount === 1 });
+    }
+
     requestCreateWallet(phrase, coins) {
       const { addNotification, showPasscode, passcode } = this.props;
       if (passcode) {
@@ -127,9 +137,20 @@ class WalletSelectCurrency extends Component {
       });
     }
 
+    renderList = (data, isDisabled) => (
+      // Restrict the deletion of the last token
+      <FlatList
+        extraData={isDisabled}
+        data={data}
+        renderItem={({ item }) => <Item data={item} isDisabled={isDisabled && item.selected} onValueChange={this.onSwitchValueChanged} />}
+        keyExtractor={(item) => item.title}
+      />
+    )
+
     render() {
-      const { isLoading } = this.state;
+      const { isLoading, isDisabledSwitch } = this.state;
       const { navigation } = this.props;
+
       return (
         <BasePageGereral
           isSafeView
@@ -142,11 +163,11 @@ class WalletSelectCurrency extends Component {
         >
           <View style={[styles.sectionContainer]}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.mainnet" />
-            <CoinTypeList data={this.mainnet} />
+            { this.renderList(this.mainnet, isDisabledSwitch) }
           </View>
           <View style={[styles.sectionContainer]}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.testnet" />
-            <CoinTypeList data={this.testnet} />
+            { this.renderList(this.testnet, isDisabledSwitch) }
           </View>
         </BasePageGereral>
       );
