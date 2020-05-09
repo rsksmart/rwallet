@@ -274,6 +274,7 @@ function* fetchTransactions(action) {
   const { symbol, address } = token;
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
+    token.transactions = token.transactions || [];
     _.each(transactions, (transaction) => {
       addTokenTransaction(token, transaction, 'push');
     });
