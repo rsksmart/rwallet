@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  TouchableOpacity, View, Text, Vibration,
+  StyleSheet, TouchableOpacity, View, Text, Vibration,
 } from 'react-native';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import color from '../../../assets/styles/color.ts';
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -13,32 +14,23 @@ const styles = {
     flex: 1,
     flexDirection: 'row',
   },
-  iconContainer: {
-    width: 60,
-    height: 70,
-    marginTop: 5,
-    marginLeft: 10,
-  },
-  icon: {
-    resizeMode: 'contain',
-    width: 60,
-    height: 70,
-  },
   textContainer: {
-    alignSelf: 'center',
-    marginLeft: 20,
+    flex: 1,
+    alignSelf: 'flex-end',
+    marginHorizontal: 20,
+    marginBottom: 13,
   },
   title: {
-    color: '#000',
+    color: color.black,
     fontWeight: 'bold',
   },
   message: {
-    color: '#000',
+    color: color.black,
     marginTop: 5,
   },
-};
+});
 
-class DefaultNotificationBody extends React.Component {
+class NotificationBar extends React.Component {
   componentDidUpdate(prevProps) {
     const { vibrate, isOpen } = this.props;
     if ((prevProps.vibrate || vibrate) && isOpen && !prevProps.isOpen) {
@@ -82,7 +74,7 @@ class DefaultNotificationBody extends React.Component {
   }
 }
 
-DefaultNotificationBody.propTypes = {
+NotificationBar.propTypes = {
   title: PropTypes.string,
   message: PropTypes.string,
   vibrate: PropTypes.bool,
@@ -91,7 +83,7 @@ DefaultNotificationBody.propTypes = {
   onClose: PropTypes.func,
 };
 
-DefaultNotificationBody.defaultProps = {
+NotificationBar.defaultProps = {
   title: 'Notification',
   message: 'This is a test notification',
   vibrate: true,
@@ -100,4 +92,4 @@ DefaultNotificationBody.defaultProps = {
   onClose: () => null,
 };
 
-export default DefaultNotificationBody;
+export default NotificationBar;

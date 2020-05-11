@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { Animated, StyleSheet, Image } from 'react-native';
 
 // eslint-disable-next-line import/no-unresolved
-import DefaultNotificationBody from './DefaultNotificationBody';
+import NotificationBar from './notification.bar';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color.ts';
+import { DEVICE } from '../../../common/info';
 
 const styles = StyleSheet.create({
   notification: {
@@ -17,7 +18,10 @@ const styles = StyleSheet.create({
 class Notification extends Component {
   constructor() {
     super();
-    this.heightOffset = screenHelper.topHeight;
+    this.heightOffset = 0;
+    if (DEVICE.ios) {
+      this.heightOffset = DEVICE.isIphoneX ? screenHelper.iphoneXTopHeight + 7 : 15;
+    }
     this.state = {
       animatedValue: new Animated.Value(0),
       isOpen: false,
@@ -179,10 +183,10 @@ Notification.propTypes = {
 Notification.defaultProps = {
   closeInterval: 4000,
   openCloseDuration: 200,
-  height: 80,
+  height: 69,
   topOffset: 0,
   backgroundColour: color.white,
-  notificationBodyComponent: DefaultNotificationBody,
+  notificationBodyComponent: NotificationBar,
   iconApp: null,
   isVisiable: false,
   notification: undefined,
