@@ -230,7 +230,9 @@ function* updateTransactionRequest(action) {
   const walletManager = state.Wallet.get('walletManager');
   const tokens = walletManager.getTokens();
 
-  const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
+  const foundTokens = _.filter(tokens, (item) => item.symbol === transaction.symbol
+   && item.type === transaction.type
+   && (item.address === transaction.from || item.address === transaction.to));
   _.each(foundTokens, (token) => {
     addTokenTransaction(token, transaction, 'unshift');
   });
