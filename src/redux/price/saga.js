@@ -12,7 +12,7 @@ function createSocketChannel(socket) {
   return eventChannel((emitter) => {
     const subscribeHandler = () => {
       console.log('createSocketChannel.subscribeHandler.');
-      return emitter({ type: actions.PRICE_SUBSCRIBED });
+      return emitter({ type: actions.FETCH_PRICE });
     };
 
     // the subscriber must return an unsubscribe function
@@ -38,8 +38,6 @@ function createSocketChannel(socket) {
       return emitter({ type: actions.PRICE_CHANNEL_ERROR, error });
     };
 
-    console.log('socket: ', socket);
-
     socket.on('open', subscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
@@ -52,7 +50,7 @@ function createSocketChannel(socket) {
 /**
  * Fetch prices of token sand update tokens
  */
-function* fetchPrices() {
+function* fetchPricesRequest() {
   try {
     const prices = yield call(ParseHelper.fetchPrices);
     yield put({ type: actions.PRICE_OBJECT_UPDATED, data: prices });
@@ -92,12 +90,12 @@ function* subscribePrices() {
  * @param {array} tokens Array of Coin class instance
  */
 function* initPriceSocketRequest() {
-  yield call(fetchPrices);
   yield call(subscribePrices);
 }
 
 export default function* topicSaga() {
   yield all([
     takeEvery(actions.INIT_SOCKET_PRICE, initPriceSocketRequest),
+    takeEvery(actions.FETCH_PRICE, fetchPricesRequest),
   ]);
 }

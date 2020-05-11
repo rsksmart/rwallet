@@ -2,8 +2,8 @@
 import {
   take, call, all, takeEvery, put, select, cancelled,
 } from 'redux-saga/effects';
-
 import { eventChannel /* END */ } from 'redux-saga';
+import _ from 'lodash';
 import actions from './actions';
 import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
@@ -52,7 +52,7 @@ function* renameKeyRequest(action) {
   const { walletManager, key, name } = action.payload;
   try {
     yield call(walletManager.renameWallet, key, name);
-    yield put({ type: actions.WALLTE_NAME_UPDATED });
+    yield put({ type: actions.WALLET_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -128,6 +128,7 @@ function* getSwapRateRequest(action) {
  */
 function createBalancesSubscriptionChannel(subscription) {
   return eventChannel((emitter) => {
+    const subscribeHandler = () => emitter({ type: actions.FETCH_BALANCES });
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(subscription);
       console.log('createBalancesSubscriptionChannel.unsubscribeHandler.');
@@ -137,6 +138,8 @@ function createBalancesSubscriptionChannel(subscription) {
       const balance = parseDataUtil.getBalance(object);
       return emitter({ type: actions.FETCH_BALANCE_RESULT, value: [balance] });
     };
+
+    subscription.on('open', subscribeHandler);
     subscription.on('update', updateHandler);
     subscription.on('create', updateHandler);
     // unsubscribe function, this gets called when we close the channel
@@ -148,8 +151,11 @@ function createBalancesSubscriptionChannel(subscription) {
  * Fetch balances of tokens and update property of each addresss
  * @param {object} subscription parse subscription
  */
-function* fetchBalances(tokens) {
+function* fetchBalancesRequest() {
   try {
+    const state = yield select();
+    const walletManager = state.Wallet.get('walletManager');
+    const tokens = walletManager.getTokens();
     const response = yield call(ParseHelper.fetchBalances, tokens);
     yield put({
       type: actions.FETCH_BALANCE_RESULT,
@@ -199,8 +205,36 @@ function* subscribeBalances(tokens) {
  */
 function* initLiveQueryBalancesRequest(action) {
   const { tokens } = action;
-  yield call(fetchBalances, tokens);
   yield call(subscribeBalances, tokens);
+}
+
+
+function addTokenTransaction(token, transaction, operation) {
+  const newToken = token;
+  newToken.transactions = newToken.transactions || [];
+  const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
+  if (txIndex === -1) {
+    if (operation === 'unshift') {
+      newToken.transactions.unshift(transaction);
+    } else {
+      newToken.transactions.push(transaction);
+    }
+  } else {
+    newToken.transactions[txIndex] = transaction;
+  }
+}
+
+function* updateTransactionRequest(action) {
+  const { transaction } = action;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
+  const tokens = walletManager.getTokens();
+
+  const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
+  _.each(foundTokens, (token) => {
+    addTokenTransaction(token, transaction, 'unshift');
+  });
+  return put({ type: actions.WALLETS_UPDATED });
 }
 
 /**
@@ -219,14 +253,7 @@ function createTransactionsSubscriptionChannel(subscription) {
     const updateHandler = (item) => {
       console.log('createTransactionsSubscriptionChannel.updateHandler', item);
       const transaction = parseDataUtil.getTransaction(item);
-      return emitter({
-        type: actions.UPDATE_TRANSACTIONS,
-        value: {
-          transactions: [transaction],
-          // Because the transaction is updated by the subscription, it is inserted from the head of the list.
-          operation: 'unshift',
-        },
-      });
+      return emitter({ type: actions.UPDATE_TRANSACTION, transaction });
     };
     const errorHandler = (error) => {
       console.log('createTransactionsSubscriptionChannel.errorHandler', error);
@@ -245,18 +272,21 @@ function createTransactionsSubscriptionChannel(subscription) {
  * Fetch transactions of token sand update property of each addresss
  * @param {array} tokens Array of Coin class instance
  */
-function* fetchTransactions(tokens) {
+function* fetchTransactions(action) {
+  const {
+    token, fetchCount, skipCount, timestamp,
+  } = action.payload;
+  const { symbol, address } = token;
   try {
-    const transactions = yield call(ParseHelper.fetchTransactions, tokens);
-    yield put({
-      type: actions.UPDATE_TRANSACTIONS,
-      value: {
-        transactions,
-        operation: 'push',
-      },
+    const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
+    token.transactions = token.transactions || [];
+    _.each(transactions, (transaction) => {
+      addTokenTransaction(token, transaction, 'push');
     });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
+  } finally {
+    yield put({ type: actions.FETCH_TRANSACTIONS_RESULT, timestamp });
   }
 }
 
@@ -299,10 +329,8 @@ function* subscribeTransactions(tokens) {
  */
 function* initLiveQueryTransactionsRequest(action) {
   const { tokens } = action;
-  yield call(fetchTransactions, tokens);
   yield call(subscribeTransactions, tokens);
 }
-
 
 /**
  * create block height subscription channel
@@ -311,6 +339,7 @@ function* initLiveQueryTransactionsRequest(action) {
  */
 function createBlockHeightSubscriptionChannel(subscription) {
   return eventChannel((emitter) => {
+    const subscribeHandler = () => emitter({ type: actions.FETCH_LATEST_BLOCK_HEIGHT });
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(subscription);
       console.log('createBlockHeightSubscriptionChannel.unsubscribeHandler.');
@@ -323,8 +352,8 @@ function createBlockHeightSubscriptionChannel(subscription) {
         value: blockHeight,
       });
     };
+    subscription.on('open', subscribeHandler);
     subscription.on('update', updateHandler);
-
     // unsubscribe function, this gets called when we close the channel
     return unsubscribeHandler;
   });
@@ -333,7 +362,7 @@ function createBlockHeightSubscriptionChannel(subscription) {
 /**
  * Fetch block heights
  */
-function* fetchBlockHeights() {
+function* fetchBlockHeightsRequest() {
   try {
     const blockHeights = yield call(ParseHelper.fetchBlockHeights);
     yield put({
@@ -375,7 +404,6 @@ function* subscribeBlockHeights() {
  * initialize LiveQuery for block heights
  */
 function* initLiveQueryBlockHeightsRequest() {
-  yield call(fetchBlockHeights);
   yield call(subscribeBlockHeights);
 }
 
@@ -393,5 +421,11 @@ export default function* () {
     takeEvery(actions.INIT_LIVE_QUERY_BALANCES, initLiveQueryBalancesRequest),
     takeEvery(actions.INIT_LIVE_QUERY_TRANSACTIONS, initLiveQueryTransactionsRequest),
     takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
+
+    takeEvery(actions.FETCH_TRANSACTIONS, fetchTransactions),
+    takeEvery(actions.UPDATE_TRANSACTION, updateTransactionRequest),
+
+    takeEvery(actions.FETCH_BALANCES, fetchBalancesRequest),
+    takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
   ]);
 }
