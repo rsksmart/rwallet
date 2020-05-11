@@ -9,6 +9,7 @@ import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
 import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
+import common from '../../common/common';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
@@ -209,16 +210,12 @@ function* initLiveQueryBalancesRequest(action) {
 }
 
 
-function addTokenTransaction(token, transaction, operation) {
+function addTokenTransaction(token, transaction) {
   const newToken = token;
   newToken.transactions = newToken.transactions || [];
   const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
   if (txIndex === -1) {
-    if (operation === 'unshift') {
-      newToken.transactions.unshift(transaction);
-    } else {
-      newToken.transactions.push(transaction);
-    }
+    newToken.transactions.push(transaction);
   } else {
     newToken.transactions[txIndex] = transaction;
   }
@@ -234,7 +231,9 @@ function* updateTransactionRequest(action) {
    && item.type === transaction.type
    && (item.address === transaction.from || item.address === transaction.to));
   _.each(foundTokens, (token) => {
-    addTokenTransaction(token, transaction, 'unshift');
+    const newToken = token;
+    addTokenTransaction(token, transaction);
+    newToken.transactions = common.sortTransactions(newToken.transactions);
   });
   return put({ type: actions.WALLETS_UPDATED });
 }
@@ -283,8 +282,9 @@ function* fetchTransactions(action) {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
     token.transactions = token.transactions || [];
     _.each(transactions, (transaction) => {
-      addTokenTransaction(token, transaction, 'push');
+      addTokenTransaction(token, transaction);
     });
+    token.transactions = common.sortTransactions(token.transactions);
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
   } finally {

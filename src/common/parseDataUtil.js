@@ -9,9 +9,11 @@ const parseDataUtil = {
   getTransaction(txOjbect) {
     const createdAt = txOjbect.get('createdAt');
     const confirmedAt = txOjbect.get('confirmedAt');
+    const receivedAt = txOjbect.get('receivedAt');
     const transaction = {
       createdAt: createdAt ? moment(createdAt) : null,
       confirmedAt: confirmedAt ? moment(confirmedAt) : null,
+      receivedAt,
       chain: txOjbect.get('chain'),
       type: txOjbect.get('type'),
       from: txOjbect.get('from'),
