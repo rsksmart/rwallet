@@ -133,7 +133,7 @@ class AddCustomToken extends Component {
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
         addToken(walletManager, wallet, {
-          symbol, type, contractAddress: address, decimalPlaces: decimals, chain, name,
+          symbol, type, contractAddress: address, precision: decimals, chain, name,
         });
       } catch (error) {
         const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
@@ -164,7 +164,7 @@ class AddCustomToken extends Component {
       const { navigation } = this.props;
       const { isLoading, balance, isLoadingBalance } = this.state;
       const { symbol, type, decimals } = this;
-      const balanceText = balance ? common.getBalanceString(balance, decimals) : '-';
+      const balanceText = balance ? common.getBalanceString(balance, symbol) : '-';
 
       const symbolName = common.getSymbolName(symbol, type);
       const icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;

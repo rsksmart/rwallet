@@ -23,7 +23,6 @@ import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
-import config from '../../../config';
 import references from '../../assets/references';
 
 const MEMO_NUM_OF_LINES = 8;
@@ -234,8 +233,8 @@ class Transfer extends Component {
     gesturesEnabled: false,
   });
 
-  static generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices) {
-    const amountText = common.getBalanceString(PLACEHODLER_AMOUNT, decimalPlaces);
+  static generateAmountPlaceholderText(symbol, type, currency, prices) {
+    const amountText = common.getBalanceString(PLACEHODLER_AMOUNT, symbol);
     let amountPlaceholderText = `${amountText} ${common.getSymbolName(symbol, type)}`;
     if (!_.isEmpty(prices)) {
       const currencySymbol = common.getCurrencySymbol(currency);
@@ -310,12 +309,12 @@ class Transfer extends Component {
   componentWillReceiveProps(nextProps) {
     const { prices, currency } = nextProps;
     const { prices: curPrices } = this.props;
-    const { symbol, type, decimalPlaces } = this.coin;
+    const { symbol, type } = this.coin;
 
     if (prices && prices !== curPrices) {
       const { customFee, feeSymbol } = this.state;
       const customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
-      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices);
+      const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, currency, prices);
       this.setState({ customFeeValue, amountPlaceholderText });
     }
   }
@@ -378,12 +377,12 @@ class Transfer extends Component {
   }
 
   onSendAllPress() {
-    const { symbol, balance, decimalPlaces } = this.coin;
+    const { symbol, balance } = this.coin;
     // If balance data have not received from server (user enter this page quickly), return without setState.
     if (_.isNil(balance)) {
       return;
     }
-    const amount = common.getBalanceString(balance, decimalPlaces);
+    const amount = common.getBalanceString(balance, symbol);
     this.inputAmount(amount, () => {
       if (symbol === 'BTC' || symbol === 'RBTC') {
         this.txFeesCache = {};
@@ -651,18 +650,18 @@ class Transfer extends Component {
       restAmount = new BigNumber(amount).minus(levelFees[feeLevel].fee);
     }
     restAmount = restAmount.isGreaterThan(0) ? restAmount : new BigNumber(0);
-    const restAmountText = common.getBalanceString(restAmount, config.symbolDecimalPlaces[feeSymbol]);
+    const restAmountText = common.getBalanceString(restAmount, feeSymbol);
     this.inputAmount(restAmountText);
     this.txFeesCache.amount = restAmountText;
   }
 
   initContext() {
     const { prices, currency } = this.props;
-    const { symbol, type, decimalPlaces } = this.coin;
+    const { symbol, type } = this.coin;
     console.log('prices: ', prices);
     console.log('currency: ', currency);
     const feeSymbol = symbol === 'BTC' ? 'BTC' : 'RBTC';
-    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, decimalPlaces, currency, prices);
+    const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, currency, prices);
     this.setState({ feeSymbol, amountPlaceholderText });
   }
 
@@ -818,7 +817,7 @@ class Transfer extends Component {
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />
             <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(customFee, config.symbolDecimalPlaces[feeSymbol])} ${common.getSymbolName(feeSymbol, type)}`}
+              {`${common.getBalanceString(customFee, feeSymbol)} ${common.getSymbolName(feeSymbol, type)}`}
               {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
             </Text>
           </View>
@@ -840,7 +839,7 @@ class Transfer extends Component {
       let item = { coin: `0 ${common.getSymbolName(feeSymbol, type)}`, value: `${currencySymbol}0` };
       if (levelFees) {
         const { fee, value } = levelFees[i];
-        const amountText = common.getBalanceString(fee, config.symbolDecimalPlaces[feeSymbol]);
+        const amountText = common.getBalanceString(fee, feeSymbol);
         const valueText = value ? `${currencySymbol}${common.getAssetValueString(value)}` : '';
         item = { coin: `${amountText} ${common.getSymbolName(feeSymbol, type)}`, value: valueText };
       }
@@ -891,7 +890,7 @@ class Transfer extends Component {
     let balanceText = '-';
     let balanceValueText = '-';
     if (coin && coin.balance) {
-      balanceText = common.getBalanceString(coin.balance, config.symbolDecimalPlaces[symbol]);
+      balanceText = common.getBalanceString(coin.balance, symbol);
       const balanceValue = common.getCoinValue(coin.balance, symbol, type, currency, prices);
       balanceValueText = common.getAssetValueString(balanceValue);
     }

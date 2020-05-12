@@ -86,12 +86,12 @@ const common = {
   /**
    * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The result will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} amount
+   * @param {string} symbol
    * @returns number
    */
-  getAmountBigNumber(amount, decimalPlaces) {
-    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
+  getAmountBigNumber(amount, symbol) {
+    const decimalPlaces = this.getSymbolDecimalPlaces(symbol);
     if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
       return null;
     }
@@ -105,23 +105,23 @@ const common = {
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} balance
+   * @param {string} symbol
    */
-  getBalanceString(balance, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(balance, decimalPlaces);
+  getBalanceString(balance, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(balance, symbol);
     return amountBigNumber.toFixed();
   },
 
   /**
    * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The result will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} amount
+   * @param {string} symbol
    * @returns number
    */
-  formatAmount(amount, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(amount, decimalPlaces);
+  formatAmount(amount, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(amount, symbol);
     return amountBigNumber.toNumber();
   },
 
@@ -429,6 +429,10 @@ const common = {
       }
       return symbolIndexA - symbolIndexB;
     });
+  },
+
+  getSymbolDecimalPlaces(symbol) {
+    return config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
   },
 };
 
