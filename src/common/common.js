@@ -430,16 +430,6 @@ const common = {
       return symbolIndexA - symbolIndexB;
     });
   },
-
-  /**
-   * sortTransactions
-   * sort transactions by receivedAt.
-   * @param {Array} transactions, array of objects { receivedAt }
-   * @returns array of sorted transactions
-   */
-  sortTransactions(transactions) {
-    return transactions.sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
-  },
 };
 
 export default common;
