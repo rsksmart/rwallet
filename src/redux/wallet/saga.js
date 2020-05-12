@@ -208,20 +208,18 @@ function* initLiveQueryBalancesRequest(action) {
   yield call(subscribeBalances, tokens);
 }
 
-
-function addTokenTransaction(token, transaction, operation) {
+function addTokenTransactions(token, transactions) {
   const newToken = token;
   newToken.transactions = newToken.transactions || [];
-  const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
-  if (txIndex === -1) {
-    if (operation === 'unshift') {
-      newToken.transactions.unshift(transaction);
-    } else {
+  _.each(transactions, (transaction) => {
+    const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
+    if (txIndex === -1) {
       newToken.transactions.push(transaction);
+    } else {
+      newToken.transactions[txIndex] = transaction;
     }
-  } else {
-    newToken.transactions[txIndex] = transaction;
-  }
+  });
+  newToken.transactions = newToken.transactions.sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
 }
 
 function* updateTransactionRequest(action) {
@@ -234,7 +232,7 @@ function* updateTransactionRequest(action) {
    && item.type === transaction.type
    && (item.address === transaction.from || item.address === transaction.to));
   _.each(foundTokens, (token) => {
-    addTokenTransaction(token, transaction, 'unshift');
+    addTokenTransactions(token, [transaction]);
   });
   return put({ type: actions.WALLETS_UPDATED });
 }
@@ -282,9 +280,7 @@ function* fetchTransactions(action) {
   try {
     const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
     token.transactions = token.transactions || [];
-    _.each(transactions, (transaction) => {
-      addTokenTransaction(token, transaction, 'push');
-    });
+    addTokenTransactions(token, transactions);
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
   } finally {
