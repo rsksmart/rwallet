@@ -95,12 +95,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     marginHorizontal: 5,
+    height: 30,
+    justifyContent: 'center',
   },
   pathInput: {
     fontSize: 15,
     textAlign: 'center',
     paddingVertical: 0,
     paddingHorizontal: 3,
+    minWidth: 27,
   },
   switchLabel: {
     fontFamily: 'Avenir-Book',
