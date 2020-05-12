@@ -164,7 +164,7 @@ class AddCustomToken extends Component {
       const { navigation } = this.props;
       const { isLoading, balance, isLoadingBalance } = this.state;
       const { symbol, type, decimals } = this;
-      const balanceText = balance ? common.getBalanceString(balance, decimals) : '-';
+      const balanceText = balance ? common.getBalanceString(balance, symbol) : '-';
 
       const symbolName = common.getSymbolName(symbol, type);
       const icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;

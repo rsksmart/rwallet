@@ -45,7 +45,7 @@ class WalletList extends Component {
       // Create element for each Token (e.g. BTC, RBTC, RIF, DOC)
       wallet.coins.forEach((coin, index) => {
         const symbolName = common.getSymbolName(coin.symbol, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.decimalPlaces) : '';
+        const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.symbol) : '';
         const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
         const item = {
           key: `${index}`,

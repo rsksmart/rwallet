@@ -272,7 +272,7 @@ class History extends Component {
   * @param {array} prices
   * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static processRawTransactions(rawTransactions, address, symbol, type, decimalPlaces, currency, prices) {
+  static processRawTransactions(rawTransactions, address, symbol, type, currency, prices) {
     if (_.isEmpty(rawTransactions)) {
       const result = { pendingBalance: null, pendingBalanceValue: null };
       result.transactions = rawTransactions ? [] : null;
@@ -307,7 +307,7 @@ class History extends Component {
 
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
-        amountText = `${common.getBalanceString(amount, decimalPlaces)} ${common.getSymbolName(symbol, type)}`;
+        amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
       }
       transactions.push({
         state,
@@ -315,7 +315,6 @@ class History extends Component {
         datetimeText,
         amountText,
         rawTransaction: transaction,
-        decimalPlaces,
       });
       if (state === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
@@ -353,11 +352,11 @@ class History extends Component {
     this.isOnEndReachedCalledDuringMomentum = false;
   }
 
-  static getBalanceText(symbol, balance, decimalPlaces) {
+  static getBalanceText(symbol, balance) {
     let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(balance, decimalPlaces)}`;
+      balanceText = `${common.getBalanceString(balance, symbol)}`;
     }
 
     return balanceText;
@@ -373,12 +372,12 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, decimalPlaces, currency) {
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency) {
     const symbolName = common.getSymbolName(symbol, type);
     const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance, decimalPlaces)} ${symbolName}`;
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbolName}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance, decimalPlaces)} ${symbolName}` : null;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbolName}` : null;
     const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
     return {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
@@ -388,10 +387,10 @@ class History extends Component {
   componentDidMount() {
     const { currency, prices } = this.props;
     const {
-      balance, balanceValue, transactions, address, symbol, type, decimalPlaces,
+      balance, balanceValue, transactions, address, symbol, type,
     } = this.coin;
-    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, decimalPlaces, currency, prices);
-    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, decimalPlaces, currency);
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
   }
@@ -404,10 +403,10 @@ class History extends Component {
     const { fetchTxTimestamp } = this.state;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency || txTimestamp === fetchTxTimestamp) && this.coin) {
       const {
-        balance, balanceValue, transactions, address, symbol, type, decimalPlaces,
+        balance, balanceValue, transactions, address, symbol, type,
       } = this.coin;
-      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, decimalPlaces, currency, prices);
-      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, decimalPlaces, currency);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
 
       // When txTimestamp === fetchTxTimestamp, the new data is retrieved,
       // Set isLoadMore and isRefreshing to false.

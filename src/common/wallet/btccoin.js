@@ -4,7 +4,6 @@ import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
-import config from '../../../config';
 import common from '../common';
 
 export default class Coin {
@@ -20,7 +19,6 @@ export default class Coin {
     this.account = common.parseAccountFromDerivationPath(derivationPath);
     this.networkId = this.metadata.networkId;
     this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
-    this.decimalPlaces = config.symbolDecimalPlaces[symbol];
   }
 
   derive(seed) {

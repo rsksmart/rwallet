@@ -3,7 +3,6 @@ import { Buffer } from 'buffer';
 import rsk3 from 'rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
-import config from '../../../config';
 import common from '../common';
 
 const HDNode = require('hdkey');
@@ -52,7 +51,6 @@ export default class RBTCCoin {
     // metadata:{network, networkId, icon, queryKey, defaultName}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
-    this.decimalPlaces = config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
     this.contractAddress = contractAddress;
     this.chain = this.metadata.chain;
     this.type = type;
@@ -154,7 +152,6 @@ export default class RBTCCoin {
       address: this.address,
       objectId: this.objectId,
       contractAddress: this.contractAddress,
-      decimalPlaces: this.decimalPlaces,
       chain: this.chain,
       name: this.name,
     };

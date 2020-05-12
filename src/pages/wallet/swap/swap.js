@@ -23,7 +23,6 @@ import Loc from '../../../components/common/misc/loc';
 import definitions from '../../../common/definitions';
 import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
-import config from '../../../../config';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 
 
@@ -391,14 +390,14 @@ class Swap extends Component {
         sourceAmount: null, destAmount: null, isBalanceEnough: false, ...textValue,
       };
     }
-    const decimalPlaces = config.symbolDecimalPlaces[type === 'source' ? swapDest.coin.symbol : swapSource.coin.symbol];
+    const symbol = type === 'source' ? swapDest.coin.symbol : swapSource.coin.symbol;
     if (type === 'source') {
       sourceAmount = amount;
-      destAmount = swapDest && rate ? common.formatAmount(sourceAmount * rate, decimalPlaces) : null;
+      destAmount = swapDest && rate ? common.formatAmount(sourceAmount * rate, symbol) : null;
       textValue = { destText: destAmount.toString() };
     } else {
       destAmount = amount;
-      sourceAmount = swapSource && rate ? common.formatAmount(destAmount / rate, decimalPlaces) : null;
+      sourceAmount = swapSource && rate ? common.formatAmount(destAmount / rate, symbol) : null;
       textValue = { sourceText: sourceAmount.toString() };
     }
     const isAmountInRange = sourceAmount >= limitMinDepositCoin && sourceAmount <= limitMaxDepositCoin;
@@ -612,9 +611,9 @@ class Swap extends Component {
     const { swapSource } = this.props;
     let limitMaxDepositCoin = null;
     if (swapSource.coin.symbol === 'BTC' || swapSource.coin.symbol === 'RBTC') {
-      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance.minus(fee), swapSource.coin.decimalPlaces);
+      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance.minus(fee), swapSource.coin.symbol);
     } else {
-      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance, swapSource.coin.decimalPlaces);
+      limitMaxDepositCoin = common.formatAmount(swapSource.coin.balance, swapSource.coin.symbol);
     }
     limitMaxDepositCoin = Math.max(limitMaxDepositCoin, 0);
     return limitMaxDepositCoin;
@@ -700,8 +699,8 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.decimalPlaces);
-      const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.decimalPlaces);
+      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.symbol);
+      const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.symbol);
       this.setState({ limitHalfDepositCoin, limitMaxDepositCoin });
       this.updateRateInfoAndMaxDeposit();
     } else if (!swapSource || !swapDest) {
@@ -802,7 +801,7 @@ class Swap extends Component {
     const sourceValueText = sourceAmount && sourceUsdRate ? currencySymbol + (sourceAmount * sourceUsdRate).toFixed(2) : '';
     const destValueText = destAmount && destUsdRate ? currencySymbol + (destAmount * destUsdRate).toFixed(2) : '';
 
-    const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.balance, swapSource.coin.decimalPlaces) : '';
+    const balanceText = swapSource && swapSource.coin.balance ? common.getBalanceString(swapSource.coin.balance, swapSource.coin.symbol) : '';
 
     const isCanSwitchSourceDest = swapSource && swapDest && !coinLoading;
 
