@@ -88,13 +88,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  pathInput: {
+  pathInputView: {
+    borderColor: color.component.input.borderColor,
+    backgroundColor: color.component.input.backgroundColor,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
     marginHorizontal: 5,
-    fontSize: 14,
-    height: 30,
-    minWidth: 30,
-    paddingHorizontal: 5,
+  },
+  pathInput: {
+    fontSize: 15,
     textAlign: 'center',
+    paddingVertical: 0,
+    paddingHorizontal: 3,
   },
   switchLabel: {
     fontFamily: 'Avenir-Book',
@@ -372,14 +378,16 @@ class WalletRecovery extends Component {
                   <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.derivationPath')}</Text>
                   <View style={[styles.row]}>
                     <Text style={styles.fieldText}>{prefix}</Text>
-                    <TextInput
-                      style={[presetStyles.textInput, styles.pathInput]}
-                      value={accountIndexText}
-                      onChangeText={this.onAccountIndexChanged}
-                      multiline={false}
-                      placeholder="0"
-                      placeholderTextColor="#555"
-                    />
+                    <View style={styles.pathInputView}>
+                      <TextInput
+                        style={styles.pathInput}
+                        value={accountIndexText}
+                        onChangeText={this.onAccountIndexChanged}
+                        multiline={false}
+                        placeholder="0"
+                        placeholderTextColor="#555"
+                      />
+                    </View>
                     <Text>{'\''}</Text>
                   </View>
                 </View>
