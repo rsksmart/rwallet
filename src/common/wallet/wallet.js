@@ -280,7 +280,7 @@ export default class Wallet {
    */
   addToken = (token) => {
     const {
-      symbol, type, contractAddress, objectId, name,
+      symbol, type, contractAddress, objectId, name, precision,
     } = token;
 
     let coin = null;
@@ -294,7 +294,7 @@ export default class Wallet {
     if (symbol === 'BTC') {
       coin = new Coin(symbol, type, derivation.path);
     } else {
-      coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, name);
+      coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, name, precision);
     }
     coin.privateKey = derivation.privateKey;
     coin.address = derivation.address;

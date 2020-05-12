@@ -133,7 +133,7 @@ class AddCustomToken extends Component {
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
         addToken(walletManager, wallet, {
-          symbol, type, contractAddress: address, decimalPlaces: decimals, chain, name,
+          symbol, type, contractAddress: address, precision: decimals, chain, name,
         });
       } catch (error) {
         const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
