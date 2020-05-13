@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
-import { Rsk3 } from '@rsksmart/rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import common from '../common';

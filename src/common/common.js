@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
-import { Rsk3 } from '@rsksmart/rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import { randomBytes } from 'react-native-randombytes';
 import moment from 'moment';
 // import moment locales

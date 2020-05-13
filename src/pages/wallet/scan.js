@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
-import { Rsk3 } from '@rsksmart/rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import { StackActions, NavigationActions } from 'react-navigation';
 import color from '../../assets/styles/color.ts';
 import OperationHeader from '../../components/headers/header.operation';

@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Rsk3 } from '@rsksmart/rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
