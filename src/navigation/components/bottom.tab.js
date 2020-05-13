@@ -2,9 +2,10 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
-
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
 
 const TABCOUNT = 3; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
@@ -84,7 +85,7 @@ const TabBar = (props) => {
               {renderIcon({ route, focused: isRouteActive, tintColor })}
             </Scaler>
 
-            <Text style={[styles.tabButtonText, { opacity }]}>{getLabelText({ route })}</Text>
+            <Text style={[styles.tabButtonText, { opacity }]}>{strings(getLabelText({ route }))}</Text>
           </TouchableOpacity>
         );
       })}
@@ -109,4 +110,8 @@ TabBar.propTypes = {
   }).isRequired,
 };
 
-export default TabBar;
+const mapStateToProps = (state) => ({
+  language: state.Wallet.get('language'),
+});
+
+export default connect(mapStateToProps)(TabBar);
