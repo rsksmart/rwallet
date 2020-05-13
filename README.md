@@ -94,14 +94,7 @@ The first three steps are needed for both Android and iOS devices.
 </table>
 
 ### Build on iOS
-1. <a href="https://developer.apple.com/news/?id=12232019b">The App Store will no longer accept new apps using UIWebView as of April 2020 and app updates using UIWebView as of December 2020. </a>
-Remove these files in Xcode to remove UIWebView.
-    ```
-    node_modules/react-native/React/Views/RCTWebView/RCTWebView.h
-    node_modules/react-native/React/Views/RCTWebView/RCTWebView.m
-    node_modules/react-native/React/Views/RCTWebView/RCTWebViewManager.h
-    node_modules/react-native/React/Views/RCTWebView/RCTWebViewManager.m 
-    ```
+1. <a href="https://developer.apple.com/news/?id=12232019b">The App Store will no longer accept new apps using UIWebView as of April 2020 and app updates using UIWebView as of December 2020.</a> Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
 1. Make sure you have the latest version of the Xcode command line tools installed:
     ```
     xcode-select --install
@@ -154,17 +147,11 @@ TODO: How to debug android app with Mac OS is to be added
     1. Modify keystore setting in ./android/gradle.properties
     1. Run `npm run android` to build android apk. the apk file will be generated at the path: ./android/app/build/outputs/apk/release
 1. iOS
-    1. Remove these files in Xcode to remove UIWebView.
-        ```
-        node_modules/react-native/React/Views/RCTWebView/RCTWebView.h
-        node_modules/react-native/React/Views/RCTWebView/RCTWebView.m
-        node_modules/react-native/React/Views/RCTWebView/RCTWebViewManager.h
-        node_modules/react-native/React/Views/RCTWebView/RCTWebViewManager.m 
-        ```
-    1. Change signing team in the project settings
+    1. Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
+    2. Change signing team in the project settings
     ![signingTeam](https://user-images.githubusercontent.com/16951509/71573427-c7d72380-2b1e-11ea-9164-8d051b458570.png)
     1. Build ios app via Product -> Archive in Xcode
-    1. Window -> Organizer, Distribute app to App Store Connect
+    2. Window -> Organizer, Distribute app to App Store Connect
     ![Distribute](https://user-images.githubusercontent.com/16951509/71651686-85018f80-2d5a-11ea-80ab-edb476400184.jpg) 
     1. Login App Store Connect, add new build to TestFlight 
     ![AddBuildToTestFlight](https://user-images.githubusercontent.com/16951509/71652854-b763ba80-2d63-11ea-8d8f-677ffd8e2d17.jpg)
