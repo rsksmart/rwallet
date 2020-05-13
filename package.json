@@ -22,6 +22,7 @@
     "bip32": "^2.0.4",
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "^5.1.6",
+    "es5-ext": "^0.10.53",
     "ethereumjs-util": "^6.2.0",
     "hdkey": "^1.1.1",
     "immutable": "^4.0.0-rc.12",
@@ -70,7 +71,7 @@
     "redux-saga": "^1.1.3",
     "redux-thunk": "^2.3.0",
     "rn-placeholder": "^3.0.0",
-    "rn-secure-storage": "^1.1.11",
+    "rn-secure-storage": "^1.1.1",
     "rsk3": "^0.1.2"
   },
   "devDependencies": {
