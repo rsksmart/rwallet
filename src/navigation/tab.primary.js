@@ -7,7 +7,6 @@ import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
-import { strings } from '../common/i18n';
 import TabBar from './components/bottom.tab';
 
 import homeLight from '../assets/images/root/tab/wallet.l.png';
@@ -20,21 +19,21 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: HomeStackNavigator,
       path: 'home',
       navigationOptions: {
-        title: strings('root.Wallet'),
+        title: 'root.Wallet',
       },
     },
     Exchange: {
       screen: ExchangeStackNavigator,
       path: 'exchange',
       navigationOptions: {
-        title: strings('root.Exchange'),
+        title: 'root.Exchange',
       },
     },
     Mine: {
       screen: MineStackNavigator,
       path: 'mine',
       navigationOptions: {
-        title: strings('root.Me'),
+        title: 'root.Me',
       },
     },
   },
