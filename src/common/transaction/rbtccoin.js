@@ -1,4 +1,4 @@
-import Rsk3 from 'rsk3';
+import { Rsk3 } from '@rsksmart/rsk3';
 import _ from 'lodash';
 
 export const getRawTransactionParam = ({

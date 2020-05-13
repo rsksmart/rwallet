@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import rsk3 from 'rsk3';
+import { Rsk3 } from '@rsksmart/rsk3';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
@@ -111,7 +111,7 @@ class AddCustomToken extends Component {
       const { address } = this.state;
       const { type, chain } = this;
       try {
-        const contractAddress = rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
+        const contractAddress = Rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
         const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type, coinType.RBTC.networkId);
         if (!isWalletAddress) {
           throw new Error();

@@ -7,7 +7,7 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
-import rsk3 from 'rsk3';
+import { Rsk3 } from '@rsksmart/rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
@@ -20,7 +20,7 @@ import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
-import CONSTANTS from '../../common/constants';
+import CONSTANTS from '../../common/constants.json';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import references from '../../assets/references';
@@ -402,7 +402,7 @@ class Transfer extends Component {
     let toAddress = to;
     if (symbol !== 'BTC') {
       try {
-        toAddress = rsk3.utils.toChecksumAddress(to, networkId);
+        toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
       } catch (error) {
         this.showInvalidAddressNotification();
         return;

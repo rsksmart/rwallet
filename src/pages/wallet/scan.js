@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
-import rsk3 from 'rsk3';
+import { Rsk3 } from '@rsksmart/rsk3';
 import { StackActions, NavigationActions } from 'react-navigation';
 import color from '../../assets/styles/color.ts';
 import OperationHeader from '../../components/headers/header.operation';
@@ -64,7 +64,7 @@ class Scan extends Component {
       let toAddress = address;
       if (symbol !== 'BTC') {
         try {
-          toAddress = rsk3.utils.toChecksumAddress(address, networkId);
+          toAddress = Rsk3.utils.toChecksumAddress(address, networkId);
         } catch (error) {
           return false;
         }

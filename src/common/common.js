@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
-import rsk3 from 'rsk3';
+import { Rsk3 } from '@rsksmart/rsk3';
 import { randomBytes } from 'react-native-randombytes';
 import moment from 'moment';
 // import moment locales
@@ -248,7 +248,7 @@ const common = {
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
-      isAdress = rsk3.utils.isAddress(address, networkId);
+      isAdress = Rsk3.utils.isAddress(address, networkId);
     }
     return isAdress;
   },
