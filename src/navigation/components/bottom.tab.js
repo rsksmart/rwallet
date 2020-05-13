@@ -111,7 +111,7 @@ TabBar.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
+  language: state.Wallet.get('language'),
 });
 
 export default connect(mapStateToProps)(TabBar);
