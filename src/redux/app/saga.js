@@ -1,7 +1,8 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  call, all, takeEvery, put, select,
+  call, all, takeEvery, put, select, take,
 } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
 
 /* Actions */
@@ -12,21 +13,19 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import common from '../../common/common';
 import walletManager from '../../common/wallet/walletManager';
-import I18n from '../../common/i18n';
+import definitions from '../../common/definitions';
+import storage from '../../common/storage';
+import fcmHelper, { FcmType } from '../../common/fcmHelper';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
-// Define default error notification text
-const DEFAULT_ERROR_NOTIFICATION_TITLE = 'modal.defaultError.title';
-const DEFAULT_ERROR_NOTIFICATION_MESSAGE = 'modal.defaultError.body';
-
-function* updateUserRequest() {
+function* updateUserRequest(action) {
   // Upload wallets or settings to server
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings });
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken: action.fcmToken });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -51,13 +50,21 @@ function* initFromStorageRequest() {
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
-    // set I18n.locale
-    I18n.locale = settings.get('language');
+    // set language
+    common.setLanguage(settings.get('language'));
+    common.setMomentLocale(settings.get('language'));
 
     // Sets state in reducer for success
     yield put({
       type: actions.SET_SETTINGS,
       value: settings,
+    });
+
+    // Set passcode in reducer
+    const passcode = yield call(storage.getPasscode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
     });
 
     // 2. Deserialize Wallets from permenate storage
@@ -95,13 +102,10 @@ function* initWithParseRequest() {
   // 1. Sign in or sign up to get Parse.User object
   // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    yield call(ParseHelper.signIn, appId);
+    yield call(ParseHelper.signInOrSignUp, appId);
     console.log(`User found with appId ${appId}. Sign in successful.`);
   } catch (err) {
-    if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-      yield call(ParseHelper.signUp, appId);
-      console.log(`User NOT found with appId ${appId}. Signed up.`);
-    }
+    yield call(ParseHelper.handleError, { err, appId });
   }
 
   // 2. Test server connection and get Server info
@@ -114,14 +118,15 @@ function* initWithParseRequest() {
       value: response,
     });
   } catch (err) {
-    const { message } = err;
-    console.warn(message);
+    yield call(ParseHelper.handleError, { err, appId });
   }
+
+  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
 
   // 3. Upload wallets and settings to server
   yield put({
     type: actions.UPDATE_USER,
-    payload: { walletManager, settings },
+    fcmToken,
   });
 
   // If we don't encounter error here, mark initialization finished
@@ -163,7 +168,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -172,14 +177,15 @@ function* changeLanguageRequest(action) {
   const { language } = action;
   console.log('saga::changeLanguageRequest is triggered, language: ', language);
   try {
-    // 1. Set I18n.locale
-    I18n.locale = language;
+    // 1. Set language
+    common.setLanguage(language);
+    common.setMomentLocale(language);
 
     // 2. Save setting
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -187,14 +193,14 @@ function* changeLanguageRequest(action) {
 function* renameRequest(action) {
   const { name } = action;
   try {
-    settings.rename(name);
+    settings.validateName(name);
     yield put(actions.setSingleSettings('username', name));
     yield put({ type: actions.USER_NAME_UPDATED });
   } catch (err) {
     let notification = null;
     switch (err.message) {
       case 'err.nametooshort':
-        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.toShort');
+        notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooShort');
         break;
       case 'err.nametoolong':
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.tooLong');
@@ -203,7 +209,7 @@ function* renameRequest(action) {
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(DEFAULT_ERROR_NOTIFICATION_TITLE, DEFAULT_ERROR_NOTIFICATION_MESSAGE);
+        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
   }
@@ -224,12 +230,91 @@ function* authVerifyRequest(action) {
   const { callback, fallback } = action.value;
   const state = yield select();
   const isFingerprint = state.App.get('fingerprint');
+  const passcode = state.App.get('passcode');
   if (isFingerprint && common.isFingerprintAvailable()) {
     yield put(actions.showFingerprintModal(callback, fallback));
-  } else if (global.passcode) {
+  } else if (passcode) {
     yield put(actions.showPasscode('verify', callback, fallback));
   } else if (callback) {
     yield call(callback);
+  }
+}
+
+function* setPasscodeRequest(action) {
+  const { passcode } = action;
+  try {
+    yield call(storage.setPasscode, passcode);
+    yield put({
+      type: actions.UPDATE_PASSCODE,
+      passcode,
+    });
+  } catch (error) {
+    console.log('setPasscodeRequest, error: ', error);
+  }
+}
+
+/**
+ * processNotificationRequest
+ * @param {*} notification
+ * @param {*} fcmType
+ */
+function* processNotificationRequest(action) {
+  const { notification } = action;
+  if (!notification) {
+    return null;
+  }
+  const { title, body, data } = notification;
+  console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+  const { event, eventParams } = data;
+  const params = JSON.parse(eventParams);
+  switch (event) {
+    case 'sentTransaction':
+    case 'receivingTransaction':
+    case 'receivedTransaction': {
+      const { symbol, type, address } = params;
+      const coin = walletManager.findToken(symbol, type, address);
+      if (!coin) {
+        return null;
+      }
+      common.currentNavigation.navigate('Home');
+      const newAction = actions.setFcmNavParams({
+        routeName: 'WalletHistory',
+        routeParams: { coin },
+      });
+      yield put(newAction);
+      break;
+    }
+    default:
+  }
+  return null;
+}
+
+function createFcmChannel() {
+  return eventChannel((emitter) => {
+    // the subscriber must return an unsubscribe function
+    // this will be invoked when the saga calls `channel.close` method
+    const unsubscribeHandler = () => {};
+
+    fcmHelper.startListen((notification, fcmType) => {
+      let action = null;
+      if (fcmType === FcmType.INAPP) {
+        action = actions.showInAppNotification(notification);
+      } else {
+        action = actions.processNotification(notification);
+      }
+      emitter(action);
+    });
+
+    // unsubscribe function, this gets called when we close the channel
+    return unsubscribeHandler;
+  });
+}
+
+function* initFcmChannelRequest() {
+  const fcmChannel = yield call(createFcmChannel);
+  while (true) {
+    const payload = yield take(fcmChannel);
+    yield put(payload);
   }
 }
 
@@ -243,7 +328,12 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+
     takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscodeRequest),
     takeEvery(actions.AUTH_VERIFY, authVerifyRequest),
+    takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
+
+    takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
+    takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
   ]);
 }

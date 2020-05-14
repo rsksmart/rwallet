@@ -4,14 +4,13 @@ import {
   View, Image, StyleSheet, Text,
 } from 'react-native';
 import { isEmpty } from 'lodash';
-import DeviceInfo from 'react-native-device-info';
+import VersionNumber from 'react-native-version-number';
 
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
-
-// eslint-disable-next-line import/no-unresolved
-const EventEmitter = require('EventEmitter');
+import color from '../../assets/styles/color.ts';
+import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -26,15 +25,16 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    bottom: '10%',
+    bottom: screenHelper.bottomButtonMargin,
   },
   versionText: {
+    color: color.midGrey,
+    fontFamily: 'Avenir-Black',
+    fontSize: 16,
+    fontWeight: '500',
     position: 'absolute',
     bottom: 10,
     right: 10,
-    fontSize: 16,
-    color: '#565c66',
-    fontWeight: 'bold',
   },
 });
 
@@ -59,9 +59,8 @@ class StartPage extends Component {
   }
 
   async componentDidMount() {
-    const version = await DeviceInfo.getVersion();
+    const version = VersionNumber.appVersion;
     this.setState({ version });
-    global.eventEmitter = new EventEmitter();
   }
 
   render() {

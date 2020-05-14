@@ -4,15 +4,27 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
-import rsk3 from 'rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
+import moment from 'moment';
+// import moment locales
+import 'moment/locale/zh-cn';
+import 'moment/locale/es';
+import 'moment/locale/pt';
 import config from '../../config';
-import store from './storage';
+import I18n from './i18n';
+import definitions from './definitions';
 
-
-const { consts: { currencies } } = config;
+const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+
+// Default BTC transaction size
+const DEFAULT_BTC_TX_SIZE = 400;
+
+// more than 24 hours is considered a day
+// https://momentjs.com/docs/#/customization/relative-time/
+moment.relativeTimeThreshold('h', 24);
 
 // Extract currency symbols from config
 // Generate {USD: '$', RMB: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
@@ -37,23 +49,15 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rbtcToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').decimalPlaces(0).toString(16)}`;
+  rskCoinToWeiHex(amount) {
+    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
     return result;
   },
-  rbtcToWei(amount) {
+  rskCoinToWei(amount) {
     const result = new BigNumber(amount).times('1e18');
     return result;
   },
-  weiToRbtc(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
-  },
-  rifToWeiHex(amount) {
-    const result = `0x${new BigNumber(amount).times('1e18').decimalPlaces(0).toString(16)}`;
-    return result;
-  },
-  weiToRif(wei) {
+  weiToCoin(wei) {
     const result = new BigNumber(wei).div('1e18');
     return result;
   },
@@ -73,41 +77,55 @@ const common = {
    * @param {*} unitNumber
    */
   convertUnitToCoinAmount(symbol, unitNumber) {
-    let amount = null;
     if (_.isNil(unitNumber)) {
       return null;
     }
-    switch (symbol) {
-      case 'BTC':
-        amount = common.satoshiToBtc(unitNumber);
-        break;
-      case 'RBTC':
-        amount = common.weiToRbtc(unitNumber);
-        break;
-      case 'RIF':
-        amount = common.weiToRif(unitNumber);
-        break;
-      default:
-    }
+    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
     return amount;
   },
+
+  /**
+   * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {BigNumber | number | string} amount
+   * @param {string} symbol
+   * @returns number
+   */
+  getAmountBigNumber(amount, symbol) {
+    const decimalPlaces = this.getSymbolDecimalPlaces(symbol);
+    if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
+      return null;
+    }
+    let amountBigNumber = amount;
+    if (typeof amount === 'number' || typeof amount === 'string') {
+      amountBigNumber = new BigNumber(amount);
+    }
+    return amountBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN);
+  },
+
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} balance
+   * @param {string} symbol
    */
-  getBalanceString(symbol, balance) {
-    const decimalPlaces = config.symbolDecimalPlaces[symbol];
-    if (!_.isNull(balance)) {
-      let balanceBigNumber = balance;
-      if (typeof balance === 'number' || typeof value === 'string') {
-        balanceBigNumber = new BigNumber(balance);
-      }
-      return balanceBigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_DOWN).toFixed();
-    }
-    return null;
+  getBalanceString(balance, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(balance, symbol);
+    return amountBigNumber.toFixed();
   },
+
+  /**
+   * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
+   * The result will be round down by default.
+   * @param {BigNumber | number | string} amount
+   * @param {string} symbol
+   * @returns number
+   */
+  formatAmount(amount, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(amount, symbol);
+    return amountBigNumber.toNumber();
+  },
+
   /**
    * getAssetValueString, value apply default decimalPlaces, subfix 0 will be omitted.
    * @param {BigNumber | number | string} value
@@ -132,12 +150,18 @@ const common = {
     }
     return null;
   },
-  getCoinValue(amount, symbol, currency, prices) {
+  getCoinValue(amount, symbol, type, currency, prices) {
+    if (type === 'Testnet') {
+      return new BigNumber(0);
+    }
     if (!amount || !prices || prices.length === 0) {
       return null;
     }
     try {
       const price = this.getCoinPrice(symbol, currency, prices);
+      if (!price) {
+        return null;
+      }
       const amountBigNumber = new BigNumber(amount);
       const value = amountBigNumber.times(price);
       return value;
@@ -163,19 +187,6 @@ const common = {
     return DEFAULT_CURRENCY_SYMBOL;
   },
 
-  async updateInAppPasscode(input) {
-    let passcode = null;
-    if (input) {
-      await store.setPasscode(input);
-      // eslint-disable-next-line no-multi-assign
-      global.passcode = passcode = input;
-    } else {
-      // eslint-disable-next-line no-multi-assign
-      global.passcode = passcode = await store.getPasscode();
-    }
-    return passcode;
-  },
-
   /**
    * getTransactionUrl, returns transaction url
    * @param {*} symbol, coin symbol
@@ -183,11 +194,12 @@ const common = {
    * @param {*} hash, transaction hash
    */
   getTransactionUrl(symbol, type, hash) {
-    let url = '';
-    if (config.transactionUrls[symbol] && config.transactionUrls[symbol][type]) {
-      url = config.transactionUrls[symbol][type];
-    }
-    url = `${url}/${hash}/`;
+    let url = symbol === 'BTC' ? config.transactionUrls[symbol][type] : config.transactionUrls.RBTC[type];
+    // BTC has / suffix, RSK does not.
+    // For example:
+    // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
+    // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
+    url = `${url}/${hash}${symbol === 'BTC' ? '/' : ''}`;
     return url;
   },
 
@@ -237,7 +249,7 @@ const common = {
     if (symbol === 'BTC') {
       isAdress = this.isBtcAddress(address, type);
     } else {
-      isAdress = rsk3.utils.isAddress(address, networkId);
+      isAdress = Rsk3.utils.isAddress(address, networkId);
     }
     return isAdress;
   },
@@ -272,12 +284,12 @@ const common = {
   },
 
   /**
-   * getSymbolFullName
-   * @param {string} symbol, BTC, RBTC, RIF
+   * getSymbolName
+   * @param {string} symbol, BTC, RBTC, RIF...
    * @param {string} type, MainTest or Testnet
    */
-  getSymbolFullName(symbol, type) {
-    return `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+  getSymbolName(symbol, type) {
+    return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
   isFingerprintAvailable() {
@@ -289,6 +301,143 @@ const common = {
       if (err) reject(err);
       else resolve(bytes);
     }));
+  },
+
+  /**
+   * Add or update tokens' price
+   * Returns new prices array
+   * @param {*} prices
+   */
+  addPriceData(prices) {
+    if (_.isEmpty(prices)) {
+      return [];
+    }
+    // DOC value is 1 dollar, convert to other currencies by btc price
+    const newPrice = _.clone(prices);
+    const btcPrice = _.find(newPrice, { symbol: 'BTC' });
+    const usdPrice = parseFloat(btcPrice.price.USD);
+    const btcPriceKeys = _.keys(btcPrice.price);
+    let docPrice = _.find(newPrice, { symbol: 'DOC' });
+    if (_.isUndefined(docPrice)) {
+      docPrice = { symbol: 'DOC' };
+      newPrice.push(docPrice);
+    }
+    if (_.isUndefined(docPrice.price)) {
+      docPrice.price = {};
+    }
+    docPrice.price.USD = '1';
+    _.each(btcPriceKeys, (key) => {
+      if (key !== 'USD') {
+        const currency = parseFloat(btcPrice.price[key]);
+        docPrice.price[key] = (currency / usdPrice).toString();
+      }
+    });
+    return newPrice;
+  },
+
+  setLanguage(language) {
+    I18n.locale = language;
+  },
+
+  setMomentLocale(locale) {
+    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    moment.locale(newLocale);
+  },
+
+  estimateBtcSize({
+    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  }) {
+    console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
+    const inputTxs = [];
+    let sum = new BigNumber(0);
+
+    // If the transactions is empty, returns the default size
+    if (_.isEmpty(transactions)) {
+      return DEFAULT_BTC_TX_SIZE;
+    }
+
+    // Find out transactions which combines amount
+    for (let i = 0; i < transactions.length; i += 1) {
+      const tx = transactions[i];
+      if (tx.status === definitions.txStatus.SUCCESS) {
+        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
+        sum = sum.plus(txAmount);
+        inputTxs.push(tx.hash);
+      }
+      if (sum.isGreaterThanOrEqualTo(amount)) {
+        break;
+      }
+    }
+    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
+
+    const outputSize = isSendAllBalance ? 1 : 2;
+    const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+    const exParams = { network };
+    const key = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), exParams);
+    const tx = new bitcoin.TransactionBuilder(network);
+    _.each(inputTxs, (inputTx) => {
+      tx.addInput(inputTx, outputSize);
+    });
+    tx.addOutput(destAddress, 0);
+    if (isSendAllBalance) {
+      tx.addOutput(fromAddress, 0);
+    }
+    _.each(inputTxs, (inputTx, index) => {
+      tx.sign(index, key);
+    });
+    const result = tx.build().toHex();
+    const size = result.length / 2;
+    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    return size;
+  },
+
+  /**
+   * parse account from derivation path.
+   * derivation path, // m / purpose' / coin_type' / account' / change / address_index
+   * @param {*} derivationPath
+   * @returns If derivationPath is valid, returns account, else returns '0'.
+   */
+  parseAccountFromDerivationPath(derivationPath) {
+    if (derivationPath) {
+      try {
+        const accountField = derivationPath.split('/')[3];
+        // BTC: "m/44'/0'/1'/0/0"
+        // accountField.length - 1 is for removing the quote in 1'
+        return accountField.substr(0, accountField.length - 1);
+      } catch (error) {
+        console.warn(`derivationPath can't be parsed, derivationPath: ${derivationPath}, error: `, error);
+        return '0';
+      }
+    }
+    return '0';
+  },
+  /**
+   * sortTokens
+   * sort tokens by config.supportedTokens. If token is custom token, Should be at the end of the list.
+   * If two tokens are custom token, compare by unicode of symbol.
+   * @param {Array} tokens, array of objects {symbol, token}
+   * @returns array of sorted objects
+   */
+  sortTokens(tokens) {
+    return tokens.sort((a, b) => {
+      if (a.type !== b.type) {
+        return b.type === 'Testnet' ? -1 : 1;
+      }
+      let symbolIndexA = _.findIndex(supportedTokens, (token) => a.symbol === token);
+      // If token is not found in supportedTokens, indicating it is a custom token, Should be at the end of the list
+      symbolIndexA = symbolIndexA !== -1 ? symbolIndexA : Number.MAX_SAFE_INTEGER;
+      let symbolIndexB = _.findIndex(supportedTokens, (token) => b.symbol === token);
+      symbolIndexB = symbolIndexB !== -1 ? symbolIndexB : Number.MAX_SAFE_INTEGER;
+      if (symbolIndexA === symbolIndexB) {
+        // compare by unicode of symbol
+        return a.symbol < b.symbol ? -1 : 1;
+      }
+      return symbolIndexA - symbolIndexB;
+    });
+  },
+
+  getSymbolDecimalPlaces(symbol) {
+    return config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
   },
 };
 

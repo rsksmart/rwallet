@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: color.component.button.color,
     fontSize: 16,
-    fontFamily: 'Avenir Black',
+    fontFamily: 'Avenir-Black',
     fontWeight: '900',
   },
 });
@@ -32,7 +32,7 @@ export default function Button({
   return (
     <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
       <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
-        <Loc style={[styles.buttonText]} text={text} />
+        <Loc style={[styles.buttonText]} text={text} caseType="capitalize" />
       </View>
     </TouchableOpacity>
   );

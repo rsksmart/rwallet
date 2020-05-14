@@ -197,7 +197,7 @@ export default class TouchSensorModal extends Component {
             {
               fingerprintFallback && (
                 <TouchableOpacity style={[styles.cancelView]} onPress={this.onCancelPress}>
-                  <Loc style={[styles.cancelText]} text="button.Cancel" />
+                  <Loc style={[styles.cancelText]} text="button.cancel" />
                 </TouchableOpacity>
               )
             }

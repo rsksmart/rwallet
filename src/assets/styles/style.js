@@ -68,9 +68,6 @@ const style = StyleSheet.create({
   listItemIndicator: {
     color: color.component.listItemIndicator.color,
   },
-  navBackIndicator: {
-    color: color.component.navBackIndicator.color,
-  },
   board: {
     borderRadius: 12,
     borderWidth: 1,
@@ -82,6 +79,9 @@ const style = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
     backgroundColor: '#FFF',
+  },
+  noBottomBorder: {
+    borderBottomColor: 'rgba(0,0,0,0)',
   },
 });
 

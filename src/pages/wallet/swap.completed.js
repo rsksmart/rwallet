@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity,
-  // Linking,
+  View, StyleSheet, Image, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions, NavigationActions } from 'react-navigation';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
 import SwapHeader from '../../components/headers/header.swap';
-// import common from '../../common/common';
+import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
 
 const completed = require('../../assets/images/icon/completed.png');
@@ -115,48 +113,29 @@ export default class SwapCompleted extends Component {
     header: null,
   });
 
-  static onExplorePress() {
-    // const { navigation } = this.props;
-    // const { symbol, type, hash } = navigation.state.params;
-    // const url = common.getTransactionUrl(symbol, type, hash);
-    // Linking.openURL(url);
-  }
-
   constructor(props) {
     super(props);
-    this.onBackPress = this.onBackPress.bind(this);
-    this.onHistoryPress = this.onHistoryPress.bind(this);
+    this.onExplorePress = this.onExplorePress.bind(this);
     const { navigation } = props;
     const { coin } = navigation.state.params;
     this.coin = coin;
-    // this.onExplorePress = this.onExplorePress.bind(this);
   }
 
-  onHistoryPress() {
+  onExplorePress() {
     const { navigation } = this.props;
-    const resetAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Dashboard' }),
-        NavigationActions.navigate({ routeName: 'WalletHistory', params: { coin: this.coin } }),
-      ],
-    });
-    navigation.dispatch(resetAction);
+    const { symbol, type, hash } = navigation.state.params;
+    const url = common.getTransactionUrl(symbol, type, hash);
+    Linking.openURL(url);
   }
 
-  onBackPress() {
+  onBackPress = () => {
     const { navigation } = this.props;
     const statckActions = StackActions.popToTop();
     navigation.dispatch(statckActions);
+    navigation.navigate('Home');
   }
 
   render() {
-    const { navigation } = this.props;
-    const rightButton = (
-      <TouchableOpacity onPress={this.onHistoryPress}>
-        <MaterialCommunityIcons style={styles.rightButton} name="progress-clock" size={30} />
-      </TouchableOpacity>
-    );
     return (
       <BasePageGereral
         isSafeView
@@ -164,13 +143,13 @@ export default class SwapCompleted extends Component {
         bottomBtnText="button.goToWallet"
         bottomBtnOnPress={this.onBackPress}
         hasLoader={false}
-        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={() => navigation.goBack()} rightButton={rightButton} />}
+        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={this.onBackPress} />}
       >
         <View style={styles.content}>
           <Image style={styles.check} source={completed} />
           <Loc style={[styles.title]} text="page.wallet.swapCompleted.body" />
           <Loc style={[styles.text]} text="page.wallet.swapCompleted.note" />
-          <TouchableOpacity style={styles.viewExplorer} onPress={SwapCompleted.onExplorePress}>
+          <TouchableOpacity style={styles.viewExplorer} onPress={this.onExplorePress}>
             <Loc style={[styles.link]} text="page.wallet.swapCompleted.viewExplorer" />
           </TouchableOpacity>
           <View style={[styles.bottomView]} />

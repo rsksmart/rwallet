@@ -31,7 +31,17 @@ These instructions will get you a copy of the project up and running on your loc
 The first three steps are needed for both Android and iOS devices.
 
 1. `npm install` to install dependencies
-1. `./node_modules/.bin/rn-nodeify --hack --install`
+1. Create an environment variable file named `.env` in the root directory
+    ```
+    # Parse server configuration
+    # Dogfood Server URL http://130.211.12.3/parse
+    # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
+    # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
+    PARSE_SERVER_URL=
+    RWALLET_API_KEY=
+    ```
+    If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
+
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
     > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
@@ -61,6 +71,42 @@ The first three steps are needed for both Android and iOS devices.
     * For iOS device, `npm run ios` will start the App in iOS physical or virtual device.
 
 1. Hot reload code change - Press Command + m on virtual device and select `Enable Hot Reloading` to hot reload file changes.
+
+## Fastlane
+
+### Set up Fastlane
+<table width="100%" >
+<tr>
+<th width="33%"><a href="http://brew.sh">Homebrew</a></td>
+<th width="33%">Installer Script</td>
+<th width="33%">Rubygems</td>
+</tr>
+<tr>
+<td width="33%" align="center">macOS</td>
+<td width="33%" align="center">macOS</td>
+<td width="33%" align="center">macOS or Linux with Ruby 2.0.0 or above</td>
+</tr>
+<tr>
+<td width="33%"><code>brew cask install fastlane</code></td>
+<td width="33%"><a href="https://download.fastlane.tools">Download the zip file</a>. Then double click on the <code>install</code> script (or run it in a terminal window).</td>
+<td width="33%"><code>sudo gem install fastlane -NV</code></td>
+</tr>
+</table>
+
+### Build on iOS
+1. <a href="https://developer.apple.com/news/?id=12232019b">The App Store will no longer accept new apps using UIWebView as of April 2020 and app updates using UIWebView as of December 2020.</a> Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
+1. Make sure you have the latest version of the Xcode command line tools installed:
+    ```
+    xcode-select --install
+    ```
+1. Set up fastlane match by running `fastlane match init`. __match__ is the alias for the `sync_code_signing` action. It creates all required certificates & provisioning profiles and stores them in a separate git repository. 
+1. Gernerate certificates by `fastlane match appstore`
+1. Once match is set, run `fastlane ios beta version:<version_number> build:<build_number>` to push to TestFlight.
+    For example, `fastlane ios beta version:0.8.1 build:3` (build parameter can be omitted for auto-increment)
+
+### build on Android
+1. Make sure you have Android Studio installed, so that it is easy to sync the gradle build config.
+1. To build the APK, run `fastlane android build_apk version:<version_number> code:<version_code>`
 
 ## Devleopment
 ### Remote Debugging
@@ -101,7 +147,7 @@ TODO: How to debug android app with Mac OS is to be added
     1. Modify keystore setting in ./android/gradle.properties
     1. Run `npm run android` to build android apk. the apk file will be generated at the path: ./android/app/build/outputs/apk/release
 1. iOS
-    
+    1. Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
     1. Change signing team in the project settings
     ![signingTeam](https://user-images.githubusercontent.com/16951509/71573427-c7d72380-2b1e-11ea-9164-8d051b458570.png)
     1. Build ios app via Product -> Archive in Xcode
@@ -109,8 +155,6 @@ TODO: How to debug android app with Mac OS is to be added
     ![Distribute](https://user-images.githubusercontent.com/16951509/71651686-85018f80-2d5a-11ea-80ab-edb476400184.jpg) 
     1. Login App Store Connect, add new build to TestFlight 
     ![AddBuildToTestFlight](https://user-images.githubusercontent.com/16951509/71652854-b763ba80-2d63-11ea-8d8f-677ffd8e2d17.jpg)
-
-
 
 ## Testing Procedure
 

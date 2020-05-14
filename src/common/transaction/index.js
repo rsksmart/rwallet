@@ -6,73 +6,28 @@ import * as rbtc from './rbtccoin';
 
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
-  switch (symbol) {
-    case 'BTC':
-      // eslint-disable-next-line no-return-await
-      return await btc.signTransaction(rawTransaction, privateKey);
-    case 'RBTC':
-    case 'RIF':
-      // eslint-disable-next-line no-return-await
-      return await rbtc.signTransaction(rawTransaction, privateKey);
-    default:
-      return null;
-  }
+  const signedTransaction = await symbol === 'BTC' ? btc.signTransaction(rawTransaction, privateKey) : rbtc.signTransaction(rawTransaction, privateKey);
+  return signedTransaction;
 };
 
-const createRawTransactionParam = (params) => {
-  switch (params.symbol) {
-    case 'BTC':
-      return btc.getRawTransactionParam(params);
-    case 'RBTC':
-    case 'RIF':
-      return rbtc.getRawTransactionParam(params);
-    default:
-      return null;
-  }
-};
+const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));
 
-const convertTransferValue = (symbol, value) => {
-  switch (symbol) {
-    case 'BTC':
-      return common.btcToSatoshiHex(value);
-    case 'RBTC':
-    case 'RIF':
-      return common.rbtcToWeiHex(value);
-    default:
-      return null;
-  }
-};
+const convertTransferValue = (symbol, value) => (symbol === 'BTC' ? common.btcToSatoshiHex(value) : common.rskCoinToWeiHex(value));
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo) => {
-  switch (symbol) {
-    case 'BTC':
-      return btc.getSignedTransactionParam(signedTransaction, netType, memo);
-    case 'RBTC':
-    case 'RIF':
-      return rbtc.getSignedTransactionParam(signedTransaction, netType, memo);
-    default:
-      return null;
-  }
-};
+const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
+  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
+  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
 
-const getTxHash = (symbol, txResult) => {
-  switch (symbol) {
-    case 'BTC':
-      return btc.getTxHash(txResult);
-    case 'RBTC':
-    case 'RIF':
-      return rbtc.getTxHash(txResult);
-    default:
-      return null;
-  }
-};
+const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
 class Transaction {
   constructor(coin, receiver, value, extraParams) {
     const {
       symbol, type, privateKey, address,
     } = coin;
-    const { data, memo, gasFee } = extraParams;
+    const {
+      data, memo, gasFee, coinswitch,
+    } = extraParams;
     this.symbol = symbol;
     this.netType = type;
     this.sender = address;
@@ -85,6 +40,7 @@ class Transaction {
     this.rawTransaction = null;
     this.signedTransaction = null;
     this.txHash = null;
+    this.coinswitch = coinswitch;
   }
 
   async processRawTransaction() {
@@ -97,7 +53,7 @@ class Transaction {
       const param = createRawTransactionParam({
         symbol, netType, sender, receiver, value, data, memo, gasFee,
       });
-      console.log(`Transaction.processRawTransaction, rawTransactionParams: ${JSON.stringify(param)}`);
+      console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawTransaction', param);
     } catch (e) {
       console.log('Transaction.processRawTransaction err: ', e.message);
@@ -130,7 +86,7 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo);
+        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);

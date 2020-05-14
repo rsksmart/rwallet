@@ -2,27 +2,32 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity, Animated, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Tags from '../../components/common/misc/tags';
-import WordField from '../../components/common/misc/wordField';
+import WordField, { wordFieldWidth } from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification, createInfoNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
-
+import color from '../../assets/styles/color.ts';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
+const WORD_FIELD_MARGIN = 37;
+const WORD_FIELD_HEIGHT = 150;
 
 const styles = StyleSheet.create({
   wordFieldView: {
-    height: 150,
-    marginTop: 15,
+    height: WORD_FIELD_HEIGHT,
     overflow: 'hidden',
+    position: 'absolute',
+    bottom: '57%',
+    width: '100%',
   },
   tags: {
     justifyContent: 'center',
@@ -62,11 +67,58 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  wordsView: {
+    flexDirection: 'row',
+  },
+  wordsWrapper: {
+    marginTop: 10,
+    marginLeft: '50%',
+  },
+  wordField: {
+    marginLeft: WORD_FIELD_MARGIN,
+  },
+  firstWordField: {
+    marginLeft: -wordFieldWidth / 2,
+  },
+  tagsView: {
+    position: 'absolute',
+    bottom: '9%',
+  },
+  cancelIcon: {
+    fontSize: 20,
+    color: color.midGrey,
+  },
+  cancelButton: {
+    position: 'relative',
+    marginLeft: -200,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 21,
+  },
+  cancelButtonView: {
+    position: 'absolute',
+    width: '100%',
+    height: WORD_FIELD_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wordIndexView: {
+    alignItems: 'center',
+  },
+  wordIndex: {
+    marginTop: 12,
+    color: color.midGrey,
+    fontFamily: 'Avenir-Medium',
+  },
 });
 
 class VerifyPhrase extends Component {
   static navigationOptions = () => ({
     header: null,
+    gesturesEnabled: false,
   });
 
   constructor(props) {
@@ -75,7 +127,17 @@ class VerifyPhrase extends Component {
     const { phrase } = navigation.state.params;
     this.notificationReason = null;
     this.correctPhrases = phrase.split(' ');
-    this.reset(true);
+    // Shuffle the 12-word here so user need to choose from a different order than the last time
+    // We want to make sure they really write down the phrase
+    const shuffleWords = _.shuffle(this.correctPhrases);
+    this.state = {
+      selectedWordIndexs: [],
+      shuffleWords,
+      isLoading: false,
+      isShowConfirmation: false,
+      wordsOffset: new Animated.Value(0),
+      isAnimating: true,
+    };
 
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
     this.onTagsPressed = this.onTagsPressed.bind(this);
@@ -103,13 +165,13 @@ class VerifyPhrase extends Component {
     }
   }
 
-  onWordFieldPress(i) {
+  onCancelPressed = (cancelIndex) => {
     const { isShowConfirmation } = this.state;
     // Avoid user press world field when confirmation
     if (isShowConfirmation) {
       return;
     }
-    this.revert(i);
+    this.revert(cancelIndex);
   }
 
   onPhraseValid() {
@@ -156,11 +218,30 @@ class VerifyPhrase extends Component {
     if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
       this.setState({ isShowConfirmation: true });
     }
+    this.calculateOffsetAndMove();
+  }
+
+  calculateOffsetAndMove() {
+    this.setState({ isAnimating: false });
+    const { selectedWordIndexs, wordsOffset } = this.state;
+    let offset = 0;
+    if (selectedWordIndexs.length > 1) {
+      offset = -(wordFieldWidth + WORD_FIELD_MARGIN) * (selectedWordIndexs.length - 1);
+    }
+    Animated.timing(
+      wordsOffset,
+      {
+        toValue: offset,
+        duration: 300,
+      },
+    ).start(() => {
+      this.setState({ isAnimating: true });
+    });
   }
 
   requestCreateWallet(phrase, coins) {
-    const { addNotification, showPasscode } = this.props;
-    if (global.passcode) {
+    const { addNotification, showPasscode, passcode } = this.props;
+    if (passcode) {
       this.createWallet(phrase, coins);
     } else {
       this.notificationReason = 'createPassword';
@@ -185,17 +266,8 @@ class VerifyPhrase extends Component {
     });
   }
 
-  reset(isInitialize = false) {
-    if (isInitialize) {
-      // Shuffle the 12-word here so user need to choose from a different order than the last time
-      // We want to make sure they really write down the phrase
-      const shuffleWords = _.shuffle(this.correctPhrases);
-      this.state = {
-        selectedWordIndexs: [], shuffleWords, isLoading: false, isShowConfirmation: false,
-      };
-    } else {
-      this.setState({ selectedWordIndexs: [], isShowConfirmation: false });
-    }
+  reset() {
+    this.setState({ selectedWordIndexs: [], isShowConfirmation: false, wordsOffset: new Animated.Value(0) });
   }
 
   revert() {
@@ -204,46 +276,49 @@ class VerifyPhrase extends Component {
     this.setState({
       selectedWordIndexs,
     });
+    this.calculateOffsetAndMove();
   }
 
   renderSelectedWords() {
-    const startX = -82;
+    const { wordsOffset } = this.state;
     const words = [];
-    const margin = 200;
-    let offset = 0;
     const { shuffleWords, selectedWordIndexs } = this.state;
-    if (selectedWordIndexs.length > 1) {
-      offset = -margin * (selectedWordIndexs.length - 1);
-    }
     for (let i = 0; i < MNEMONIC_PHRASE_LENGTH; i += 1) {
-      const marginLeft = startX + i * margin + offset;
-      const style = {
-        position: 'absolute', left: '50%', top: 10, marginLeft,
-      };
       let text = '';
       if (i < selectedWordIndexs.length) {
         const index = selectedWordIndexs[i];
         text = shuffleWords[index];
       }
-      let isDisabled = false;
-      if (i !== selectedWordIndexs.length - 1) {
-        isDisabled = true;
-      }
       words.push(
-        <TouchableOpacity style={style} key={(`${i}`)} disabled={isDisabled} onPress={() => this.onWordFieldPress(i)}>
+        <View
+          style={i === 0 ? styles.firstWordField : styles.wordField}
+          key={(`${i}`)}
+        >
           <WordField text={text} />
-        </TouchableOpacity>,
+          <View style={styles.wordIndexView}>
+            <Text style={styles.wordIndex}>
+              {`${i + 1} / ${MNEMONIC_PHRASE_LENGTH}`}
+            </Text>
+          </View>
+        </View>,
       );
     }
-    return words;
+    const wordsView = (
+      <View style={styles.wordsWrapper}>
+        <Animated.View style={[styles.wordsView, { marginLeft: wordsOffset }]}>
+          {words}
+        </Animated.View>
+      </View>
+    );
+    return wordsView;
   }
 
   renderConfirmation() {
     const { isShowConfirmation } = this.state;
     return !isShowConfirmation ? null : (
       <View style={styles.confirmationView}>
-        <Loc style={[styles.confirmationTitle]} text="page.wallet.backupPhrase.isCorrect" />
-        <Button style={[styles.confirmationButton]} text="button.Confirm" onPress={this.onConfirmPress} />
+        <Loc style={[styles.confirmationTitle]} text="page.wallet.verifyPhrase.isCorrect" />
+        <Button style={[styles.confirmationButton]} text="button.confirm" onPress={this.onConfirmPress} />
         <TouchableOpacity style={styles.confirmationClearButton} onPress={this.onClearPress}><Loc style={[styles.confirmationClearButtonText]} text="button.Clear" /></TouchableOpacity>
       </View>
     );
@@ -251,26 +326,43 @@ class VerifyPhrase extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { shuffleWords, selectedWordIndexs, isLoading } = this.state;
+    const {
+      shuffleWords, selectedWordIndexs, isLoading, isAnimating, isShowConfirmation,
+    } = this.state;
+    const isShowBackButton = isAnimating && (selectedWordIndexs.length - 1 >= 0);
     return (
-      <BasePageGereral
+      <BasePageSimple
         isSafeView
         hasBottomBtn={false}
         hasLoader
         isLoading={isLoading}
         renderAccessory={this.renderConfirmation}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.backupPhrase.title" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.verifyPhrase.title" />}
       >
-        <View style={[styles.wordFieldView]}>{this.renderSelectedWords()}</View>
-        <Loc style={[styles.tip]} text="page.wallet.backupPhrase.note" />
-        <Tags
-          data={shuffleWords}
-          style={[styles.tags]}
-          showNumber={false}
-          onPress={this.onTagsPressed}
-          disableIndexs={selectedWordIndexs}
-        />
-      </BasePageGereral>
+        <View style={[styles.wordFieldView]}>
+          {this.renderSelectedWords()}
+          <View style={styles.cancelButtonView}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => this.onCancelPressed(selectedWordIndexs.length - 1)}
+            >
+              {isShowBackButton && <AntDesign style={styles.cancelIcon} name="left" />}
+            </TouchableOpacity>
+          </View>
+        </View>
+        {!isShowConfirmation && (
+          <View style={[styles.tagsView]}>
+            <Loc style={[styles.tip]} text="page.wallet.verifyPhrase.note" />
+            <Tags
+              data={shuffleWords}
+              style={[styles.tags]}
+              showNumber={false}
+              onPress={this.onTagsPressed}
+              disableIndexs={selectedWordIndexs}
+            />
+          </View>
+        )}
+      </BasePageSimple>
     );
   }
 }
@@ -288,15 +380,18 @@ VerifyPhrase.propTypes = {
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
   showPasscode: PropTypes.func.isRequired,
+  passcode: PropTypes.string,
 };
 
 VerifyPhrase.defaultProps = {
   walletManager: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

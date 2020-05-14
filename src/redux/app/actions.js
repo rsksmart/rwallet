@@ -37,6 +37,19 @@ const actions = {
   FINGERPRINT_USE_PASSCODE: 'FINGERPRINT_USE_FINGERPRINT',
   AUTH_VERIFY: 'AUTH_VERIFY',
 
+  LOCK_APP: 'LOCK_APP',
+
+  SET_PASSCODE: 'SET_PASSWORD',
+  UPDATE_PASSCODE: 'UPDATE_PASSCODE',
+
+  INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
+  SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
+  RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
+  SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
+  PROCESS_NOTIFICATON: 'PROCESS_NOTIFICATON',
+  SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
+  RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -121,6 +134,35 @@ const actions = {
   callAuthVerify: (callback, fallback) => ({
     type: actions.AUTH_VERIFY,
     value: { callback, fallback },
+  }),
+  lockApp: (lock) => ({
+    type: actions.LOCK_APP,
+    lock,
+  }),
+  setPasscode: (passcode) => ({
+    type: actions.SET_PASSCODE,
+    passcode,
+  }),
+  showInAppNotification: (inAppNotification) => ({
+    type: actions.SHOW_INAPP_NOTIFICATION,
+    inAppNotification,
+  }),
+  resetInAppNotification: () => ({
+    type: actions.RESET_INAPP_NOTIFICATION,
+  }),
+  initFcmChannel: () => ({
+    type: actions.INIT_FCM_CHANNEL,
+  }),
+  processNotification: (notification) => ({
+    type: actions.PROCESS_NOTIFICATON,
+    notification,
+  }),
+  setFcmNavParams: (fcmNavParams) => ({
+    type: actions.SET_FCM_NAV_PARAMS,
+    fcmNavParams,
+  }),
+  resetFcmNavParams: () => ({
+    type: actions.RESET_FCM_NAV_PARAMS,
   }),
 };
 

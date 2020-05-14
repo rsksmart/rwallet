@@ -7,15 +7,16 @@ import { connect } from 'react-redux';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
 import appActions from '../../redux/app/actions';
-import createInfoConfirmation from '../../common/confirmation.controller';
+import { createInfoConfirmation } from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
+import screenHelper from '../../common/screenHelper';
 
 const styles = StyleSheet.create({
   sectionContainer: {
     paddingHorizontal: 30,
-    marginTop: 10,
+    marginTop: 30,
   },
   sectionTitle: {
     marginTop: 5,
@@ -70,6 +71,9 @@ const styles = StyleSheet.create({
     color: '#DF5264',
     fontWeight: '500',
   },
+  advancedBlock: {
+    marginBottom: 60 + screenHelper.bottomHeight,
+  },
 });
 
 const ListRow = ({ title, onPress }) => {
@@ -89,7 +93,7 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const coinType = common.getSymbolName(coin.symbol, coin.type);
         const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
@@ -178,11 +182,7 @@ class KeySettings extends Component {
 
     onBackupPress() {
       const { callAuthVerify } = this.props;
-      if (global.passcode) {
-        callAuthVerify(this.backup, () => {});
-      } else {
-        this.backup();
-      }
+      callAuthVerify(this.backup, () => {});
     }
 
     onKeyNamePress() {
@@ -192,11 +192,7 @@ class KeySettings extends Component {
 
     onDeleteConfirm() {
       const { callAuthVerify } = this.props;
-      if (global.passcode) {
-        callAuthVerify(this.deleteKey, () => {});
-      } else {
-        this.deleteKey();
-      }
+      callAuthVerify(this.deleteKey, () => {});
     }
 
     onDeletePress() {
@@ -247,7 +243,7 @@ class KeySettings extends Component {
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
             <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
           </View>
-          <View style={[styles.sectionContainer, { marginBottom: 10 }]}>
+          <View style={[styles.sectionContainer, styles.advancedBlock]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
               <Loc style={[styles.listRowTitle, styles.warningText]} text="page.mine.keySettings.delete" />
@@ -285,6 +281,7 @@ const mapStateToProps = (state) => ({
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
   confirmation: state.App.get('confirmation'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -292,6 +289,9 @@ const mapDispatchToProps = (dispatch) => ({
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
+  showPasscode: (category, callback, fallback) => dispatch(
+    appActions.showPasscode(category, callback, fallback),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

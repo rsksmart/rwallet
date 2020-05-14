@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Modal,
+  View, Text, StyleSheet, TouchableOpacity, Modal, Image,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
+import references from '../../../assets/references';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -68,23 +69,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 320,
   },
-  cancelButton: {
+  operationButton: {
     position: 'absolute',
-    right: 60,
-    bottom: 80,
+    width: buttonSize,
+    height: buttonSize,
+    bottom: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  cancel: {
-    fontSize: 18,
-    color: color.component.passcodeModal.cancel.color,
+  leftBottomButton: {
+    left: 16,
+  },
+  deleteButton: {
+    right: 16,
+  },
+  buttonText: {
+    fontFamily: 'Avenir-Medium',
+    fontSize: 19,
+    color: color.component.passcodeModal.number.color,
   },
   number: {
     color: color.component.passcodeModal.number.color,
     fontSize: 35,
-  },
-  char: {
-    color: color.component.passcodeModal.char.color,
-    fontSize: 13,
-    letterSpacing: 1,
   },
 });
 
@@ -97,6 +103,7 @@ class PasscodeModalBase extends PureComponent {
       input: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
+    this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
   onPressButton(i) {
@@ -108,6 +115,15 @@ class PasscodeModalBase extends PureComponent {
         passcodeOnFill(input);
       }
     });
+  }
+
+  onDeletePressed() {
+    const { input } = this.state;
+    if (input.length === 0) {
+      return;
+    }
+    const newInput = input.substr(0, input.length - 1);
+    this.setState({ input: newInput });
   }
 
   resetModal = (title) => {
@@ -152,7 +168,9 @@ class PasscodeModalBase extends PureComponent {
     const {
       title,
     } = this.state;
-    const { cancelBtnOnPress, showCancel } = this.props;
+    const {
+      cancelBtnOnPress, showCancel, onResetPressed, isShowReset,
+    } = this.props;
 
     return (
       <Modal animationType="fade" transparent>
@@ -163,14 +181,22 @@ class PasscodeModalBase extends PureComponent {
               {this.renderDots()}
             </Animatable.View>
             <View style={styles.buttonView}>
+              {isShowReset && (
+                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
+                  <Loc style={[styles.buttonText]} text="button.Reset" />
+                </TouchableOpacity>
+              )}
+              {showCancel && (
+                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
+                  <Image source={references.images.passcodeReset} />
+                </TouchableOpacity>
+              )}
               {this.renderButtons()}
+              <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
+                <Image source={references.images.passcodeDelete} />
+              </TouchableOpacity>
             </View>
           </View>
-          {showCancel && (
-            <TouchableOpacity style={styles.cancelButton} onPress={cancelBtnOnPress}>
-              <Text style={styles.cancel}><Loc style={[styles.title]} text="Cancel" /></Text>
-            </TouchableOpacity>
-          )}
         </View>
       </Modal>
     );
@@ -181,12 +207,16 @@ PasscodeModalBase.propTypes = {
   title: PropTypes.string.isRequired,
   passcodeOnFill: PropTypes.func.isRequired,
   cancelBtnOnPress: PropTypes.func,
+  onResetPressed: PropTypes.func,
   showCancel: PropTypes.bool,
+  isShowReset: PropTypes.bool,
 };
 
 PasscodeModalBase.defaultProps = {
   showCancel: true,
+  isShowReset: false,
   cancelBtnOnPress: null,
+  onResetPressed: null,
 };
 
 export default PasscodeModalBase;

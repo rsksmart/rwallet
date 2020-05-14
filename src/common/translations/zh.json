@@ -3,7 +3,8 @@
     "Wallet": "钱包",
     "Spend": "消费",
     "Earn": "收入",
-    "Me": "我的"
+    "Me": "我的",
+    "Exchange": "交换"
   },
   "page": {
     "start": {
@@ -12,10 +13,11 @@
       },
       "terms": {
         "term1": "我理解我的资产安全地保存在本地设备，并非在公司。",
-        "term2": "我理解当我卸载或移动App到另外的设备时，我的比特币只能通过助记词去恢复。",
+        "term2": "我理解当我卸载或移动App到另外的设备时，我的资金只能通过助记词去恢复。",
         "term3": "我已经阅读并理解使用协议。",
         "viewTerms": "查看完成协议",
-        "button": "确认接受"
+        "button": "确认接受",
+        "termsOfUse": "使用条款"
       }
     },
     "wallet": {
@@ -35,12 +37,14 @@
         "Received Funds": "已接收资金",
         "Sending Funds": "发送中资金",
         "Receiving Funds": "接收中资金",
+        "Failed Funds": "失败的资金",
         "date": "日期",
         "confirmations": "确认",
         "memo": "备注",
         "noMemo": "无备注",
         "transactionID": "交易ID",
-        "viewOnChain": "在区块链上查看"
+        "viewOnChain": "在区块链上查看",
+        "Unconfirmed": "未确认"
       },
       "receive": {
         "address": "地址"
@@ -48,7 +52,7 @@
       "transfer": {
         "to": "接收地址",
         "memo": "备注（可选）",
-        "fee": "费用",
+        "fee": "转账费用",
         "custom": "自定义",
         "feeQuestion": "需要多快完成？",
         "Slow": "慢",
@@ -56,7 +60,8 @@
         "Fast": "快",
         "CONFIRMED": "已确认",
         "enterMemo": "请输入转账备注",
-        "slideConfirm": "滑动以确认"
+        "slideConfirm": "滑动以确认",
+        "balance": "余额"
       },
       "add": {
         "title": "创建钱包",
@@ -71,13 +76,15 @@
         "testnet": "测试网络"
       },
       "selectWallet": {
-        "title": "选择钱包"
+        "title": "选择资产"
       },
       "recovery": {
-        "title": "恢复助记词",
+        "title": "导入钱包",
         "note": "输入恢复助记词（通常是12个单词）",
         "advancedOptions": "高级选项",
-        "specifyPath": "指定派生路径"
+        "specifyPath": "指定派生路径",
+        "coin": "代币",
+        "derivationPath": "派生路径"
       },
       "recoveryPhrase": {
         "title": "恢复助记词",
@@ -86,7 +93,7 @@
         "note3": "到安全的地方"
       },
       "backupPhrase": {
-        "title": "备份助记词",
+        "title": "验证你的助记词",
         "note": "按顺序点击助记词标签",
         "isCorrect": "这是正确的助记词？"
       },
@@ -99,13 +106,66 @@
         "title": "验证指纹"
       },
       "scan": {
-        "title": "扫码"
+        "title": "扫码",
+        "cameraPermission": {
+          "title": "允许使用相机",
+          "message": "我们需要您的许可才能使用您的相机"
+        },
+        "unauthorization": "请打开摄像头权限以使用此功能"
       },
       "transferCompleted": {
         "title": "发送",
         "body": "转账成功！",
         "note": "您的转账正在进行中。",
         "viewExplorer": "单击以在浏览器中查看"
+      },
+      "swap": {
+        "title": "交换",
+        "wallet": "钱包",
+        "want": "我想要%{symbol}在%{wallet}",
+        "errorAmountInRange": {
+          "tooBig": "该金额大于最大交易额 %{max} %{symbol}",
+          "tooSmall": "该金额低于的最低交易金额 %{min} %{symbol}"
+        },
+        "errorBalanceEnough": "抱歉，您的余额不足",
+        "errorAmountInvalid": "%{symbol}的余额无效。",
+        "have": "我有%{balance}在%{wallet}"
+      },
+      "swapSelection": {
+        "title": "选择货币",
+        "noSwappableCoin": "抱歉，您没有任何可交换币",
+        "please": "请",
+        "create": "创建",
+        "or": "或者",
+        "import": "引入",
+        "aWallet": "钱包",
+        "startSwap": "开始使用交换"
+      },
+      "swapCompleted": {
+        "title": "交换",
+        "body": "交换完成！",
+        "note": "您的交换正在进行中。",
+        "viewExplorer": "单击以在rsk explorer中查看"
+      },
+      "addCustomToken": {
+        "title": "添加自定义代币",
+        "address": "代币合约地址",
+        "mainnet": "正式网络"
+      },
+      "addCustomTokenConfirm": {
+        "title": "添加自定义代币",
+        "question": "你想要添加这个代币吗？",
+        "token": "代币",
+        "symbol": "代币符号",
+        "decimals": "小数精度",
+        "balance": "余额"
+      },
+      "addToken": {
+        "title": "添加代币",
+        "enabledAssets": "开启的资产",
+        "note": "禁用资产以将其从投资组合中隐藏。",
+        "addCustomToken": "添加自定义代币",
+        "custom": "自定义"
       }
     },
     "mine": {
@@ -115,7 +175,14 @@
         "createKey": "创建或导入一个密钥",
         "keys": "密钥",
         "anonymousUser": "匿名用户",
-        "wallets": "钱包"
+        "wallets": {
+          "zero": "0 钱包",
+          "one": "1 钱包",
+          "other": "{{count}} 钱包"
+        },
+        "support": "支持",
+        "contactUs": "联系我们",
+        "developerPortal": "开发者教程"
       },
       "language": {
         "title": "语言"
@@ -125,10 +192,14 @@
       },
       "2fa": {
         "title": "双因素认证",
+        "setPasscode": "设置密码",
         "resetPasscode": "重置密码"
       },
       "resetPasscodeSuccess" :{
-        "title": "重置密码成功"
+        "title": {
+          "create": "设置密码成功",
+          "reset": "重置密码成功"
+        }
       },
       "keySettings": {
         "title": "密钥设置",
@@ -146,12 +217,12 @@
         "question": "你如何称呼这个密钥呢？",
         "notice": "在下面你可以改变显示的名字。",
         "name": "名字",
-        "comment": "* 密钥名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 密钥名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "rename": {
         "title": "名字",
         "question": "名字是什么？",
-        "comment": "* 名字可以包含1-32个字符（a-z），数字（0-9）和空格"
+        "comment": "* 名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "resetcompleted": {
         "title": "重置成功！"
@@ -186,16 +257,17 @@
   "button": {
     "save": "保存",
     "NEXT": "下一步",
+    "Next": "下一步",
     "gotIt": "好的",
     "create": "创建",
     "CONFIRM": "确认",
-    "RETRY": "重试",
+    "retry": "重试",
     "IMPORT": "导入",
     "Clear": "清除",
-    "START OVER": "重新开始",
+    "startOver": "重新开始",
     "Copy": "复制",
-    "Confirm": "确认",
-    "Cancel": "取消",
+    "confirm": "确认",
+    "cancel": "取消",
     "Send All": "全部发送",
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
@@ -204,8 +276,12 @@
     "Send": "发送",
     "Receive": "接收",
     "Swap": "交换",
+    "Delete": "删除",
+    "Reset": "重置",
     "Finish": "完成",
-    "Exchange": "兑换"
+    "Exchange": "兑换",
+    "addAsset": "添加资产",
+    "ok": "好的"
   },
   "txState": {
     "Sent": "已发送",
@@ -233,6 +309,7 @@
     },
     "txFailed": {
       "title": "转账失败",
+      "moreBTC": "您需要更多BTC余额才能完成转帐",
       "moreRBTC": "您需要更多RBTC余额才能完成转帐",
       "moreRIF": "您需要更多RIF余额才能完成转帐",
       "moreBalance": "您需要更多余额才能完成转帐",
@@ -249,9 +326,9 @@
     },
     "incorrectName": {
       "title": "不正确的名字",
-      "tooShort": "密钥名字太短。",
-      "tooLong": "密钥名字太长。",
-      "invalid": "密钥名字含有不合法字符。"
+      "tooShort": "名字太短。",
+      "tooLong": "名字太长。",
+      "invalid": "名字含有不合法字符。"
     },
     "incorrectKeyName": {
       "title": "不正确的密钥名字",
@@ -280,11 +357,11 @@
       "typeNewPasscode": "输入新密码",
       "confirmNewPasscode": "确认新密码",
       "oldIncorrect": "旧密码不正确，请重试",
-      "notMatch": "密码不匹配，请重试"
+      "notMatched": "密码不匹配，请重试。"
     },
     "verifyPasscode": {
       "type": "输入密码",
-      "incorrected": "密码不正确"
+      "incorrect": "密码不正确"
     },
     "touchSensor": {
       "title": "指纹验证",
@@ -302,6 +379,26 @@
     "deleteKey": {
       "title": "警告!",
       "body": "您确定要删除使用此密钥的所有钱包吗？"
+    },
+    "swap": {
+      "title": "没有可交换币",
+      "body": "交换支持BTC，RBTC和DOC。请添加资产."
+    },
+    "contractNotFound": {
+      "title": "找不到ERC20合约",
+      "body": "我们找不到输入的ERC20令牌智能合约。请检查是否正确。"
+    },
+    "duplicateToken": {
+      "title": "重复的代币",
+      "body": "这个代币已经被加入钱包。请尝试不同的代币。"
     }
+  },
+  "currency": {
+    "USD": "美元",
+    "ARS": "阿根廷比索",
+    "JPY": "日元",
+    "KRW": "韩元",
+    "CNY": "人民币",
+    "GBP": "英镑"
   }
 }

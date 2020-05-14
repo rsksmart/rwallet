@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import moment from 'moment';
-import DeviceInfo from 'react-native-device-info';
 import config from '../../config';
+import parseDataUtil from './parseDataUtil';
+import definitions from './definitions';
 
 const parseConfig = config && config.parse;
 
@@ -12,9 +12,9 @@ if (_.isUndefined(parseConfig)) {
   throw new Error('Unable to find config for Parse init. Check config file path!');
 }
 
-Parse.initialize(parseConfig.appId, parseConfig.javascriptKey, parseConfig.masterKey);
+Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
+Parse.CoreManager.set('REQUEST_HEADERS', { 'Rwallet-API-Key': parseConfig.rwalletApiKey });
 Parse.serverURL = parseConfig.serverURL;
-Parse.masterKey = parseConfig.masterKey;
 Parse.setAsyncStorage(AsyncStorage);
 
 /** Parse Class definition */
@@ -26,22 +26,29 @@ const ParseTransaction = Parse.Object.extend('Transaction');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
-  static signUp(appId) {
-    const user = new Parse.User();
-
+  static signInOrSignUp(appId) {
     // Set appId as username and password.
-    // No real password is needed because we only want to get access to Parse.User here to access related data
-    user.set('username', appId);
-    user.set('password', appId);
-    console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
-    user.set('deviceId', DeviceInfo.getDeviceId());
+    // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
+    const username = appId;
+    const password = appId;
 
-    // TODO: other information needed to be set here.
-    return user.signUp();
-  }
+    return Parse.User.logIn(username, password)
+      .catch((err) => {
+        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+          console.log(`User not found with appId ${username}. Signing up ...`);
+          const user = new Parse.User();
 
-  static signIn(appId) {
-    return Parse.User.logIn(appId, appId);
+          user.set('username', username);
+          user.set('password', password);
+          // console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
+          // user.set('deviceId', DeviceInfo.getDeviceId());
+
+          // TODO: other information needed to be set here.
+          return user.signUp();
+        }
+
+        return Promise.reject();
+      });
   }
 
   /**
@@ -53,14 +60,16 @@ class ParseHelper {
    * @param {array} param0.settings
    * @returns {parseUser} saved User
    */
-  static async updateUser({ wallets, settings }) {
-    const parseUser = Parse.User.current();
+  static async updateUser({ wallets, settings, fcmToken }) {
+    const parseUser = await Parse.User.currentAsync();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
     if (_.isObject(settings)) {
       parseUser.set('settings', settings);
     }
+
+    parseUser.set('fcmToken', fcmToken);
 
     // Only set wallets when it's defined.
     if (_.isArray(wallets)) {
@@ -168,6 +177,7 @@ class ParseHelper {
   }
 
   static getPrice({ symbols, currencies }) {
+    console.log('getPrice, symbols: ', symbols);
     return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
@@ -177,13 +187,21 @@ class ParseHelper {
    * @returns {object}  error object defined by this app
    * @method handleError
    */
-  static handleError(err) {
+  static async handleError({ err, appId }) {
+    console.log('handleError', err);
+
     const message = err.message || 'error.parse.default';
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
-        return Parse.User.logOut();
-      // Other Parse API errors that you want to explicitly handle
+        console.log('INVALID_SESSION_TOKEN. Logging out');
+        await Parse.User.logOut();
+        if (appId) {
+          console.log('Re-signing in. appId: ', appId);
+          await Parse.user.signIn(appId);
+        }
+        // Other Parse API errors that you want to explicitly handle
+        break;
       default:
         break;
     }
@@ -210,7 +228,7 @@ class ParseHelper {
    */
   static async getWallets() {
     // Get current Parse.User
-    const parseUser = Parse.User.current();
+    const parseUser = await Parse.User.currentAsync();
 
     if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
       return [];
@@ -237,96 +255,170 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @returns {array} e.g. [{objectId, balance(hex string)}]
    */
-  static async fetchBalance(tokens) {
-    const validObjects = _.filter(tokens, (item) => !_.isUndefined(item.objectId));
-    const promises = _.map(validObjects, (token) => {
-      const { objectId } = token;
-      const query = new Parse.Query(ParseAddress);
-      return query.get(objectId)
-        .then((parseObject) => {
-          // Update address if the object was retrieved successfully.
-          // This address is hex string which needs to be procced during either here or rendering
-          const balance = parseObject.get('balance');
-
-          return Promise.resolve({
-            objectId,
-            balance,
-          });
-        }, (err) => {
-          console.warn(`fetchBalance, ${objectId}, ${token.symbol}, ${token.address} err: ${err.message}`);
-          return Promise.resolve();
-        });
-    });
-
-    const results = await Promise.all(promises);
-    console.log('fetchBalance, results:', results);
-
-    // Only return items with valid value
-    return _.filter(results, (item) => !_.isUndefined(item));
+  static async fetchBalances(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('address', addresses);
+    let results = await query.find();
+    results = _.map(results, (token) => parseDataUtil.getBalance(token));
+    console.log('fetchBalances, results: ', results);
+    return results;
   }
 
   /**
-   * Get transactions of parseObject and update property of each addresss
-   *
-   * @static
-   * @param {array} addresses Array of Coin class instance
-   * @memberof ParseHelper
+   * Subscribe to balances Live Query channel
    */
-  static fetchTransaction(tokens) {
-    const promises = _.map(tokens, (token) => {
-      const {
-        address, symbol, chain, type,
-      } = token;
-      const newToken = token;
-
-      // Find relavent transactions of which token.address is either from or to
-      const queryTo = new Parse.Query(ParseTransaction);
-      queryTo.equalTo('to', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      const queryFrom = new Parse.Query(ParseTransaction);
-      queryFrom.equalTo('from', address)
-        .equalTo('symbol', symbol)
-        .equalTo('chain', chain)
-        .equalTo('type', type);
-
-      return Parse.Query.or(queryTo, queryFrom).descending('receivedAt').find()
-        .then((results) => {
-          newToken.transactions = _.map(results, (item) => {
-            const createdAt = item.get('createdAt');
-            const confirmedAt = item.get('confirmedAt');
-            const transaction = {
-              createdAt: createdAt ? moment(createdAt) : null,
-              confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-              chain: item.get('chain'),
-              type: item.get('type'),
-              from: item.get('from'),
-              hash: item.get('hash'),
-              value: item.get('value'),
-              blockHeight: item.get('blockHeight'),
-              symbol: item.get('symbol'),
-              to: item.get('to'),
-              confirmations: item.get('confirmations'),
-              memo: item.get('memo'),
-              objectId: item.id,
-            };
-            return transaction;
-          });
-          if (!_.isEmpty(newToken.transactions)) {
-            console.log(`fetchTransaction, token ${symbol} transactions: `, newToken.transactions);
-          }
-        }, (err) => {
-          console.warn(`fetchTransaction, token ${symbol}`, err.message);
-        });
-    });
-
-    return Promise.all(promises);
+  static async subscribeBalances(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const query = new Parse.Query(ParseAddress);
+    query.containedIn('address', addresses);
+    const subscription = await query.subscribe();
+    return subscription;
   }
 
-  static fetchLatestBlockHeight() {
-    return Parse.Cloud.run('getLatestBlockHeight');
+  /**
+   * Fetch transactions of parseObject and update property of each addresss
+   *
+   * @static
+   * @param {array} tokens Array of Coin class instance
+   * @memberof ParseHelper
+   */
+  static async fetchTransactions(symbol, address, skipCount, fetchCount) {
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.equalTo('from', address);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.equalTo('to', address);
+    const querySymbol = new Parse.Query(ParseTransaction);
+    querySymbol.equalTo('symbol', symbol);
+    const query = Parse.Query.and(Parse.Query.or(queryFrom, queryTo), querySymbol).descending('receivedAt');
+    const results = await query.skip(skipCount).limit(fetchCount).find();
+    const transactions = _.map(results, (item) => {
+      const transaction = parseDataUtil.getTransaction(item);
+      return transaction;
+    });
+    return transactions;
+  }
+
+  /**
+   * Subscribe to transactions Live Query channel
+   * @param {*} tokens
+   */
+  static async subscribeTransactions(tokens) {
+    const addresses = _.uniq(_.map(tokens, 'address'));
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.containedIn('from', addresses);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.containedIn('to', addresses);
+    const query = Parse.Query.or(queryFrom, queryTo);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static requestCoinswitchAPI(type, coinswitchParams = {}) {
+    const { deposit, destination } = coinswitchParams;
+    let method; let path; let params;
+    // eslint-disable-next-line default-case
+    switch (type) {
+      case 'coins':
+        method = 'get';
+        path = 'coins';
+        break;
+      case 'pairs':
+        method = 'post';
+        path = 'pairs';
+        params = [];
+        // eslint-disable-next-line no-unused-expressions
+        deposit && params.push({ key: 'depositCoin', value: deposit });
+        // eslint-disable-next-line no-unused-expressions
+        destination && params.push({ key: 'destinationCoin', value: destination });
+        break;
+      case 'rate':
+        method = 'post';
+        path = 'rate';
+        params = [{ key: 'depositCoin', value: deposit }, { key: 'destinationCoin', value: destination }];
+        break;
+      case 'order':
+        method = 'post';
+        path = 'order';
+        params = [{ key: 'depositCoin', value: deposit },
+          { key: 'destinationCoin', value: destination },
+          { key: 'depositCoinAmount', value: coinswitchParams.amount },
+          { key: 'destinationAddress', value: coinswitchParams.destinationAddress },
+          { key: 'refundAddress', value: coinswitchParams.refundAddress },
+        ];
+        break;
+    }
+    const options = { method, path };
+    // eslint-disable-next-line no-unused-expressions
+    params && (options.params = params);
+    return Parse.Cloud.run('coinswitch', options);
+  }
+
+  static getTokenBasicInfo(type, chain, address) {
+    console.log(`getTokenBasicInfo, type: ${type}, chain: ${chain}, address: ${address}`);
+    return Parse.Cloud.run('getTokenBasicInfo', { type, chain, address });
+  }
+
+  static saveToken(type, chain, address) {
+    return Parse.Cloud.run('saveToken', { type, chain, address });
+  }
+
+  static getTransactionFees(symbol, type, sender, receiver, value, memo) {
+    return Parse.Cloud.run('getTransactionFees', {
+      symbol, type, sender, receiver, value, memo,
+    });
+  }
+
+  static getBtcTransactionFees(symbol, type, size) {
+    return Parse.Cloud.run('getTransactionFees', {
+      symbol, type, size,
+    });
+  }
+
+  static getUserTokenBalance(type, chain, constractAddress, address) {
+    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, constractAddress: ${constractAddress}, address: ${address}`);
+    return Parse.Cloud.run('getUserTokenBalance', {
+      type, chain, tokenAddress: constractAddress, userAddress: address,
+    });
+  }
+
+  /**
+   * Subscribe to a Live Query channel also-known-as Parse Class
+   * @param {*} collection
+   */
+  static async subscribePrice() {
+    const query = new Parse.Query('Global');
+    query.equalTo('key', 'price');
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static async fetchPrices() {
+    const query = new Parse.Query('Global');
+    const priceObj = await query.equalTo('key', 'price').first();
+    const prices = parseDataUtil.getPrices(priceObj);
+    return prices;
+  }
+
+  static async subscribeBlockHeights() {
+    const query = new Parse.Query('Global');
+    query.containedIn('key', definitions.blockHeightKeys);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static async fetchBlockHeights() {
+    const query = new Parse.Query('Global');
+    query.containedIn('key', definitions.blockHeightKeys);
+    const rows = await query.find();
+    const blockHeights = rows.map(parseDataUtil.getBlockHeight);
+    return blockHeights;
+  }
+
+  static unsubscribe(subscription) {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 }
 

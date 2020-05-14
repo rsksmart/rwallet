@@ -9,15 +9,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import Loc from '../../components/common/misc/loc';
-import { DEVICE } from '../../common/info';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
 import { strings } from '../../common/i18n';
+import definitions from '../../common/definitions';
+import screenHelper from '../../common/screenHelper';
+import flex from '../../assets/styles/layout.flex';
+import walletActions from '../../redux/wallet/actions';
+
+const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
 const { getCurrencySymbol } = common;
 
@@ -62,7 +67,7 @@ const styles = StyleSheet.create({
   },
   headerBoardView: {
     alignItems: 'center',
-    marginTop: DEVICE.isIphoneX ? 115 + 24 : 115,
+    marginTop: -76,
   },
   myAssets: {
     marginTop: 17,
@@ -187,8 +192,12 @@ const styles = StyleSheet.create({
   refreshControl: {
     zIndex: 10000,
   },
-  footerIndicator: {
-    marginVertical: 20,
+  footer: {
+    paddingTop: 10,
+    paddingBottom: 10 + screenHelper.topHeight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   noTransNotice: {
     textAlign: 'center',
@@ -214,14 +223,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const TRANSACTION_TIMEOUT_MINUTES = 15;
-
-const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y
-    >= contentSize.height - paddingToBottom;
-};
-
 const stateIcons = {
   Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />,
   Sending: <Image source={sending} />,
@@ -237,7 +238,7 @@ function Item({
   return (
     <TouchableOpacity style={[styles.row]} onPress={onPress}>
       <View style={styles.iconView}>{icon}</View>
-      <View style={styles.rowRight}>
+      <View style={[styles.rowRight]}>
         <View style={[styles.rowRightR1]}>
           <Loc style={[styles.title]} text={`txState.${title}`} />
         </View>
@@ -257,11 +258,6 @@ Item.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-const isFailedTransaction = (createdAt) => {
-  const durationMinutes = moment.duration(moment().diff(createdAt)).asMinutes();
-  return durationMinutes >= TRANSACTION_TIMEOUT_MINUTES;
-};
-
 class History extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -276,32 +272,42 @@ class History extends Component {
   * @param {array} prices
   * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static processRawTransactions(rawTransactions, address, symbol, currency, prices) {
+  static processRawTransactions(rawTransactions, address, symbol, type, currency, prices) {
     if (_.isEmpty(rawTransactions)) {
-      return { transactions: [], pendingBalance: null, pendingBalanceValue: null };
+      const result = { pendingBalance: null, pendingBalanceValue: null };
+      result.transactions = rawTransactions ? [] : null;
+      return result;
     }
     let pendingBalance = new BigNumber(0);
     const transactions = [];
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      let state = null;
-      const isComfirmed = transaction.blockHeight !== -1;
       const isSender = address === transaction.from;
-      const datetime = isComfirmed ? transaction.confirmedAt : transaction.createdAt;
-      const datetimeText = datetime ? datetime.format('MMM D. YYYY') : '';
+      let state = 'Failed';
+      switch (transaction.status) {
+        case definitions.txStatus.PENDING:
+          state = isSender ? 'Sending' : 'Receiving';
+          break;
+        case definitions.txStatus.SUCCESS:
+          state = isSender ? 'Sent' : 'Received';
+          break;
+        default:
+      }
+      const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
+      let datetimeText = '';
+      if (datetime) {
+        const daysElapsed = moment().diff(datetime, 'days');
+        if (daysElapsed < 1) {
+          datetimeText = datetime.fromNow();
+        } else {
+          datetimeText = datetime.format('MMM D. YYYY');
+        }
+      }
+
       if (transaction.value) {
         amount = common.convertUnitToCoinAmount(symbol, transaction.value);
-        amountText = `${common.getBalanceString(symbol, amount)} ${symbol}`;
-      }
-      if (isComfirmed) {
-        state = isSender ? 'Sent' : 'Received';
-      } else {
-        state = isSender ? 'Sending' : 'Receiving';
-        if (transaction.createdAt) {
-          const isFailed = isFailedTransaction(transaction.createdAt);
-          state = isFailed ? 'Failed' : state;
-        }
+        amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
       }
       transactions.push({
         state,
@@ -314,35 +320,15 @@ class History extends Component {
         pendingBalance = pendingBalance.plus(amount);
       }
     });
-    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, currency, prices);
+    const pendingBalanceValue = common.getCoinValue(pendingBalance, symbol, type, currency, prices);
     return { transactions, pendingBalance, pendingBalanceValue };
-  }
-
-  static listView(listData, onPress) {
-    if (!listData) {
-      return <ActivityIndicator size="small" color="#00ff00" />;
-    }
-    if (listData.length === 0) {
-      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
-    }
-    return (
-      <FlatList
-        data={listData}
-        renderItem={({ item, index }) => (
-          <Item
-            title={item.state}
-            amount={item.amountText}
-            datetime={item.datetimeText}
-            onPress={() => { onPress(index); }}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
   }
 
   constructor(props) {
     super(props);
+
+    const { navigation } = props;
+    this.coin = navigation.state.params.coin;
 
     this.state = {
       isRefreshing: false,
@@ -352,24 +338,25 @@ class History extends Component {
       balanceValueText: null,
       pendingBalanceText: null,
       pendingBalanceValueText: null,
+      fetchTxTimestamp: undefined, // Record the timestamp of the request
     };
 
-    this.page = 1;
-
-    this.onRefresh = this.onRefresh.bind(this);
     this.refreshControl = this.refreshControl.bind(this);
     this.onSendButtonClick = this.onSendButtonClick.bind(this);
     this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
     this.onbackClick = this.onbackClick.bind(this);
-    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
     this.onListItemPress = this.onListItemPress.bind(this);
+
+    // Avoid triggering onEndReached multiple times
+    // https://github.com/facebook/react-native/issues/14015
+    this.isOnEndReachedCalledDuringMomentum = false;
   }
 
   static getBalanceText(symbol, balance) {
     let balanceText = '0';
 
     if (!_.isUndefined(balance)) {
-      balanceText = `${common.getBalanceString(symbol, balance)}`;
+      balanceText = `${common.getBalanceString(balance, symbol)}`;
     }
 
     return balanceText;
@@ -385,11 +372,12 @@ class History extends Component {
     return assetValueText;
   }
 
-  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency) {
+  static getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency) {
+    const symbolName = common.getSymbolName(symbol, type);
     const currencySymbol = getCurrencySymbol(currency);
-    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbol}`;
+    const balanceText = `${History.getBalanceText(symbol, balance)} ${symbolName}`;
     const balanceValueText = `${currencySymbol}${History.getAssetValueText(balanceValue)}`;
-    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbol}` : null;
+    const pendingBalanceText = pendingBalance && !pendingBalance.isEqualTo(0) ? `${History.getBalanceText(symbol, pendingBalance)} ${symbolName}` : null;
     const pendingBalanceValueText = pendingBalanceValue ? `${currencySymbol}${History.getAssetValueText(pendingBalanceValue)}` : null;
     return {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText,
@@ -397,48 +385,65 @@ class History extends Component {
   }
 
   componentDidMount() {
-    const { currency, prices, navigation } = this.props;
-    const { coin } = navigation.state.params;
+    const { currency, prices } = this.props;
     const {
-      balance, balanceValue, transactions, address, symbol,
-    } = coin;
-    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
-    this.setState({ listData, ...balanceTexts });
+      balance, balanceValue, transactions, address, symbol, type,
+    } = this.coin;
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+    const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
+    this.setState({ listData, ...balanceTexts, isRefreshing: true });
+    this.fetchTokenTransactions(0);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      updateTimestamp, navigation, currency, prices,
+      updateTimestamp, currency, prices, txTimestamp,
     } = nextProps;
     const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
-    const { coin } = navigation.state.params;
-    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency) && coin) {
+    const { fetchTxTimestamp } = this.state;
+    if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency || txTimestamp === fetchTxTimestamp) && this.coin) {
       const {
-        balance, balanceValue, transactions, address, symbol,
-      } = coin;
-      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, currency, prices);
-      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, currency);
-      this.setState({ listData, ...balanceTexts });
+        balance, balanceValue, transactions, address, symbol, type,
+      } = this.coin;
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+      const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
+
+      // When txTimestamp === fetchTxTimestamp, the new data is retrieved,
+      // Set isLoadMore and isRefreshing to false.
+      if (txTimestamp === fetchTxTimestamp) {
+        this.setState({ isLoadMore: false });
+        this.setState({ isRefreshing: false });
+      }
+
+      this.setState({
+        listData,
+        ...balanceTexts,
+      });
     }
   }
 
-  onRefresh() {
-    this.page = 1;
-    this.setState({ isRefreshing: true });
-    // simulate 1s network delay
-    setTimeout(() => {
-      this.setState({ isRefreshing: false });
-    }, 1000);
-  }
-
-  onEndReached() {
-    console.log('history::onEndReached');
-    const { isLoadMore } = this.state;
-    if (isLoadMore) {
+  onRefresh = () => {
+    const { isRefreshing, isLoadMore } = this.state;
+    if (isRefreshing || isLoadMore) {
       return;
     }
+    this.setState({ isRefreshing: true });
+    this.fetchTokenTransactions(0);
+  }
+
+  onEndReached = () => {
+    const { isLoadMore, isRefreshing, listData } = this.state;
+    // In these cases, the operation of loading more should not be executed.
+    // 1. the list data is empty
+    // 2. It's loading more
+    // 3. When FlatList momentum scroll, the onEndReached function is called before.
+    if (_.isEmpty(listData) || isRefreshing || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
+      return;
+    }
+    this.isOnEndReachedCalledDuringMomentum = true;
+    // Record the request time so that you can check whether it is the latest request during the callback
     this.setState({ isLoadMore: true });
+    this.fetchTokenTransactions(this.coin.transactions.length);
   }
 
   onSendButtonClick() {
@@ -451,19 +456,10 @@ class History extends Component {
     navigation.navigate('WalletReceive', navigation.state.params);
   }
 
-  static onScroll({ nativeEvent }) {
-    if (isCloseToBottom(nativeEvent)) {
-      // console.log('ScrollView isCloseToBottom');
-    }
-  }
-
-  onMomentumScrollEnd(e) {
-    // console.log('ScrollView onMomentumScrollEnd');
-    const offsetY = e.nativeEvent.contentOffset.y; // scroll distance
-    const contentSizeHeight = e.nativeEvent.contentSize.height; // scrollView contentSize height
-    const oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; // scrollView height
-    if (offsetY + oriageScrollHeight >= contentSizeHeight) {
-      this.onEndReached();
+  onMomentumScrollBegin = () => {
+    const { isLoadMore } = this.state;
+    if (!isLoadMore) {
+      this.isOnEndReachedCalledDuringMomentum = false;
     }
   }
 
@@ -479,6 +475,54 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  fetchTokenTransactions = (skipCount) => {
+    const { fetchTransactions } = this.props;
+    const timestamp = (new Date()).getTime();
+    this.setState({ fetchTxTimestamp: timestamp }, () => {
+      const params = {
+        token: this.coin,
+        fetchCount: NUMBER_OF_FETCHING_TRANSACTIONS,
+        skipCount,
+        timestamp,
+      };
+      fetchTransactions(params);
+    });
+  }
+
+  renderHeader = (listData, isRefreshing) => {
+    if (listData && listData.length === 0 && !isRefreshing) {
+      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
+    }
+    return null;
+  }
+
+  listView = (listData, onPress, isRefreshing) => (
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      data={listData}
+      renderItem={({ item, index }) => (
+        <Item
+          title={item.state}
+          amount={item.amountText}
+          datetime={item.datetimeText}
+          onPress={() => { onPress(index); }}
+        />
+      )}
+      keyExtractor={(item, index) => index.toString()}
+      refreshControl={(
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={this.onRefresh}
+        />
+        )}
+      ListHeaderComponent={this.renderHeader(listData, isRefreshing)}
+      ListFooterComponent={this.renderFooter}
+      onEndReached={this.onEndReached}
+      onEndReachedThreshold={0.5}
+      onMomentumScrollBegin={this.onMomentumScrollBegin}
+    />
+  );
+
   refreshControl() {
     const { isRefreshing } = this.state;
     return (
@@ -491,35 +535,29 @@ class History extends Component {
     );
   }
 
-  renderfooter() {
+  renderFooter = () => {
     const { isLoadMore } = this.state;
-    let footer = null;
-    if (isLoadMore) {
-      footer = <ActivityIndicator style={styles.footerIndicator} size="small" color="#00ff00" />;
-    }
-    return footer;
+    return (
+      <View style={styles.footer}>
+        {isLoadMore && (
+          <ActivityIndicator size="small" />
+        )}
+      </View>
+    );
   }
-
 
   render() {
     const {
-      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing,
     } = this.state;
     const { navigation } = this.props;
-    const { coin } = navigation.state.params;
 
-    const symbol = coin && coin.symbol;
-    const type = coin && coin.type;
-    const symbolName = common.getSymbolFullName(symbol, type);
+    const symbol = this.coin && this.coin.symbol;
+    const type = this.coin && this.coin.type;
+    const symbolName = common.getSymbolName(symbol, type);
 
     return (
-      <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
-        refreshControl={this.refreshControl()}
-        headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}
-      >
+      <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
             <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
@@ -528,7 +566,10 @@ class History extends Component {
               pendingBalanceText && (
                 <View style={styles.sendingView}>
                   <Image style={styles.sendingIcon} source={sending} />
-                  <Text style={styles.sending}>{`${pendingBalanceText} (${pendingBalanceValueText})`}</Text>
+                  <Text style={styles.sending}>
+                    {pendingBalanceText}
+                    {pendingBalanceValueText && `(${pendingBalanceValueText})`}
+                  </Text>
                 </View>
               )
             }
@@ -554,11 +595,10 @@ class History extends Component {
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
-        <View style={styles.sectionContainer}>
-          {History.listView(listData, this.onListItemPress)}
+        <View style={[styles.sectionContainer, flex.flex1]}>
+          {this.listView(listData, this.onListItemPress, isRefreshing)}
         </View>
-        {this.renderfooter()}
-      </BasePageGereral>
+      </BasePageSimple>
     );
   }
 }
@@ -574,21 +614,26 @@ History.propTypes = {
   walletManager: PropTypes.shape({}),
   updateTimestamp: PropTypes.number.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  fetchTransactions: PropTypes.func.isRequired,
+  txTimestamp: PropTypes.number,
 };
 
 History.defaultProps = {
   walletManager: undefined,
+  txTimestamp: undefined,
 };
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
-  prices: state.Wallet.get('prices'),
+  prices: state.Price.get('prices'),
   language: state.App.get('language'),
+  txTimestamp: state.Wallet.get('txTimestamp'),
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

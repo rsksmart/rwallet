@@ -10,6 +10,7 @@ import appActions from '../../redux/app/actions';
 import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 import config from '../../../config';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   listView: {
@@ -44,28 +45,11 @@ class Currency extends Component {
         currencyIndex: Currency.getCurrencyIndex(props.currency, currencies),
       };
 
-      // [
-      //   {
-      //     title: 'ARS - Argentine Peso',
-      //   },
-      //   {
-      //     title: 'USD - US Dollar',
-      //   },
-      //   {
-      //     title: 'CNY - Chinese Yuan',
-      //   },
-      //   {
-      //     title: 'KRW - South Korea won',
-      //   },
-      //   {
-      //     title: 'JPY - Japanese Yen',
-      //   },
-      //   {
-      //     title: 'GBP - Pound sterling',
-      //   },
-      // ];
       this.currencies = currencies;
-      this.listData = _.map(config.consts.currencies, (item) => ({ title: `${item.name} - ${item.fullName}` }));
+      this.listData = _.map(config.consts.currencies, (item) => {
+        const fullName = `currency.${item.name}`;
+        return { title: `${item.name} - ${strings(fullName)}` };
+      });
 
       this.onChange = this.onChange.bind(this);
     }
@@ -121,6 +105,7 @@ Currency.propTypes = {
 
 const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

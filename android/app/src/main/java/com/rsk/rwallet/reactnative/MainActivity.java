@@ -25,4 +25,11 @@ public class MainActivity extends ReactActivity {
             }
         };
     }
+
+    // Prevent the return key from re-mounting of the root component
+    // https://github.com/facebook/react-native/issues/13775
+    @Override
+    public void invokeDefaultOnBackPressed() {
+        moveTaskToBack(true);
+    }
 }

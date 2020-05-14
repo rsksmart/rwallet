@@ -3,7 +3,8 @@
     "Wallet": "Carteira",
     "Spend": "Gastar",
     "Earn": "Ganhar",
-    "Me": "Eu"
+    "Me": "Eu",
+    "Exchange": "Troca"
   },
   "page": {
     "start": {
@@ -12,10 +13,11 @@
       },
       "terms": {
         "term1": "Entendo que meus fundos estão retidos com segurança neste dispositivo, não por uma empresa.",
-        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meu Bitcoin poderá ser recuperado apenas com a frase de recuperação.",
+        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
         "term3": "Eu li, compreendi e concordo com os Termos de uso.",
         "viewTerms": "Ver Termos de Uso Completos",
-        "button": "Confirme e aceite"
+        "button": "Confirme e aceite",
+        "termsOfUse": "Termos de uso"
       }
     },
     "wallet": {
@@ -35,12 +37,14 @@
         "Received Funds": "Fundos Recebidos",
         "Sending Funds": "Envio de fundos",
         "Receiving Funds": "Recebimento de fundos",
+        "Failed Funds": "Fundos falidos",
         "date": "Encontro",
         "confirmations": "Confirmações",
         "memo": "Memorando",
         "noMemo": "Nenhuma nota",
         "transactionID": "ID da transação",
-        "viewOnChain": "Ver na blockchain"
+        "viewOnChain": "Ver na blockchain",
+        "Unconfirmed": "Não confirmado"
       },
       "receive": {
         "address": "Endereço"
@@ -48,7 +52,7 @@
       "transfer": {
         "to": "Para",
         "memo": "Memorando (opcional)",
-        "fee": "Taxa do mineiro",
+        "fee": "Taxa de transação",
         "custom": "Personalizados",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
         "Slow": "Lento",
@@ -56,7 +60,8 @@
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Inserir uma nota de transação",
-        "slideConfirm": "Deslize para confirmar"
+        "slideConfirm": "Deslize para confirmar",
+        "balance": "Saldo"
       },
       "add": {
         "title": "Adicionar carteira",
@@ -71,13 +76,15 @@
         "testnet": "Testnet"
       },
       "selectWallet": {
-        "title": "Selecionar carteira"
+        "title": "Selecione Ativo"
       },
       "recovery": {
-        "title": "Frase de recuperação",
+        "title": "Importar carteira",
         "note": "Digite a frase de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
-        "specifyPath": "Especificar caminho de derivação"
+        "specifyPath": "Especificar caminho de derivação",
+        "coin": "Coin",
+        "derivationPath": "Caminho de derivação"
       },
       "recoveryPhrase": {
         "title": "Frase de recuperação",
@@ -85,8 +92,8 @@
         "note2": "na ordem certa e salve-os",
         "note3": "em algum lugar seguro"
       },
-      "backupPhrase": {
-        "title": "Frase de backup",
+      "verifyPhrase": {
+        "title": "Verifique sua frase",
         "note": "Toque em cada palavra na ordem correta",
         "isCorrect": "Isso está correto?"
       },
@@ -99,13 +106,66 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Varredura"
+        "title": "Varredura",
+        "cameraPermission": {
+          "title": "Permissão para usar a câmera",
+          "message": "Precisamos da sua permissão para usar sua câmera"
+        },
+        "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
         "title": "Mandar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
+      },
+      "swap": {
+        "title": "Troca",
+        "wallet": "carteira",
+        "want": "Quero %{symbol} no %{wallet}",
+        "errorAmountInRange": {
+          "tooBig": "O valor é superior ao máximo de troca de %{max} %{symbol}",
+          "tooSmall": "O valor é menor que o mínimo de troca de %{min} %{symbol}"
+        },
+        "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
+        "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
+        "have": "Eu tenho %{balance} no %{wallet}"
+      },
+      "swapSelection": {
+        "title": "Escolha a moeda",
+        "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
+        "please": "por favor",
+        "create": "crio",
+        "or": "ou",
+        "import": "Introduzir",
+        "aWallet": "uma carteira",
+        "startSwap": "para começar a usar Swap"
+      },
+      "swapCompleted": {
+        "title": "Troca",
+        "body": "Troca concluída!",
+        "note": "Seu Exchange está a caminho.",
+        "viewExplorer": "Clique para ver no explorer"
+      },
+      "addCustomToken": {
+        "title": "Adicionar tokens personalizados",
+        "address": "Endereço do Contrato do Token",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Adicionar tokens personalizados",
+        "question": "Deseja adicionar esses tokens?",
+        "token": "Símbolo",
+        "symbol": "Símbolo de Token",
+        "decimals": "Decimais de precisão",
+        "balance": "Saldo"
+      },
+      "addToken": {
+        "title": "Adicionar tokens",
+        "enabledAssets": "Ativos ativados",
+        "note": "Desative ativos para ocultá-los do seu portfólio.",
+        "addCustomToken": "Adicionar token personalizado",
+        "custom": "Personalizados"
       }
     },
     "mine": {
@@ -115,7 +175,14 @@
         "createKey": "Criar ou importar uma chave",
         "keys": "Chaves",
         "anonymousUser": "Usuário anônimo",
-        "wallets": "Carteiras"
+        "wallets": {
+          "zero": "0 carteira",
+          "one": "1 carteira",
+          "other": "{{count}} carteiras"
+        },
+        "support": "Apoio, suporte",
+        "contactUs": "Contate-Nos",
+        "developerPortal": "Portal do desenvolvedor"
       },
       "language": {
         "title": "Língua"
@@ -125,10 +192,14 @@
       },
       "2fa": {
         "title": "Autenticação de dois fatores",
+        "setPasscode": "Definir código de acesso",
         "resetPasscode": "Redefinir senha"
       },
       "resetPasscodeSuccess" :{
-        "title": "Redefinir sucesso da senha"
+        "title": {
+          "create": "Definir código de acesso",
+          "reset": "Redefinir sucesso da senha"
+        }
       },
       "keySettings": {
         "title": "Configurações principais",
@@ -146,12 +217,12 @@
         "question": "Como você chama essa chave?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
-        "comment": "* O nome da chave pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome da chave pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "rename": {
         "title": "Seu nome",
         "question": "Qual o seu nome?",
-        "comment": "* O nome pode conter de 1 a 32 letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "resetcompleted": {
         "title": "Redefinição concluída!"
@@ -186,16 +257,17 @@
   "button": {
     "save": "GUARDAR",
     "NEXT": "PRÓXIMO",
+    "Next": "Próximo",
     "gotIt": "ENTENDI",
     "create": "CRIO",
     "CONFIRM": "CONFIRME",
-    "RETRY": "RETRY",
+    "retry": "Repetir",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
-    "START OVER": "RECOMEÇAR",
+    "startOver": "RECOMEÇAR",
     "Copy": "cópia de",
-    "Confirm": "confirme",
-    "Cancel": "Cancelar",
+    "confirm": "confirme",
+    "cancel": "Cancelar",
     "Send All": "Envie todos",
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
@@ -203,8 +275,12 @@
     "Send": "Mandar",
     "Receive": "Receber",
     "Swap": "Troca",
+    "Delete": "Excluir",
+    "Reset": "Redefinir",
     "Finish": "Terminar",
-    "Exchange": "Troca"
+    "Exchange": "Troca",
+    "addAsset": "Adicionar ativo",
+    "ok": "Está bem"
   },
   "txState": {
     "Sent": "Enviei",
@@ -220,7 +296,7 @@
     },
     "unableRecover": {
       "title": "Não foi possível recuperar",
-      "body": "Não podemos importar uma carteira com o seu recuperador. Verifique se a frase está correta."
+      "body": "Não podemos importar uma carteira com sua frase de recuperação. Verifique se a frase está correta."
     },
     "duplicatePhrase": {
       "title Phrase": "Frase duplicada",
@@ -232,6 +308,7 @@
     },
     "txFailed": {
       "title": "A transferência falhou",
+      "moreBTC": "Você precisa de mais saldo do BTC para concluir a transferência",
       "moreRBTC": "Você precisa de mais saldo RBTC para concluir a transferência",
       "moreRIF": "Você precisa de mais saldo RIF para concluir a transferência",
       "moreBalance": "Você precisa de mais saldo para concluir a transferência",
@@ -279,11 +356,11 @@
       "typeNewPasscode": "Digite sua nova senha",
       "confirmNewPasscode": "Confirme sua nova senha",
       "oldIncorrect": "A senha antiga está incorreta. Tente novamente",
-      "notMatch": "A senha não corresponde, tente novamente"
+      "notMatched": "A senha não corresponde. Por favor, tente novamente."
     },
     "verifyPasscode": {
       "type": "Digite sua senha",
-      "incorrected": "A senha está incorreta"
+      "incorrect": "A senha está incorreta"
     },
     "touchSensor": {
       "title": "Usar senha",
@@ -301,6 +378,26 @@
     "deleteKey": {
       "title": "Atenção!",
       "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
+    },
+    "swap": {
+      "title": "Nenhuma moeda trocável",
+      "body": "O swap suporta BTC, RBTC e DOC. Adicione recurso."
+    },
+    "contractNotFound": {
+      "title": "Contrato ERC20 não encontrado",
+      "body": "Não conseguimos encontrar o contrato inteligente de token ERC20 de entrada. Por favor, verifique se está certo."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
     }
+  },
+  "currency": {
+    "USD": "Dólar americano",
+    "ARS": "Peso argentino",
+    "JPY": "Iene japonês",
+    "KRW": "Won de coréia do sul",
+    "CNY": "Yuan chinês",
+    "GBP": "Libra esterlina"
   }
 }

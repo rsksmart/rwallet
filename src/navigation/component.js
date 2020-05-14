@@ -3,8 +3,8 @@ import { View, Platform } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
 import _ from 'lodash';
-
 import PropTypes from 'prop-types';
+
 import UpdateModal from '../components/update/update.modal';
 import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
@@ -15,7 +15,7 @@ import PasscodeModals from '../components/common/passcode/passcode.modals';
 import TouchSensorModal from '../components/common/modal/touchSensorModal';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
-import common from '../common/common';
+import InAppNotification from '../components/common/inapp.notification/notification';
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -41,13 +41,6 @@ const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://
 class RootComponent extends Component {
   constructor(props) {
     super(props);
-    global.functions = {
-      showToast: (wording) => {
-        // eslint-disable-next-line react/no-string-refs
-        this.toast.showToast(wording);
-      },
-    };
-
     this.state = {
       isStorageRead: false,
       isParseWritten: false,
@@ -58,21 +51,18 @@ class RootComponent extends Component {
    * RootComponent is the main entrace of the App
    * Initialization jobs need to start here
    */
-  componentWillMount() {
+  async componentWillMount() {
     const { initializeFromStorage } = this.props;
-
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
   }
 
-  async componentDidMount() {
-    await common.updateInAppPasscode();
-  }
-
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse, startFetchPriceTimer,
-      startFetchBalanceTimer, startFetchTransactionTimer, startFetchLatestBlockHeightTimer, walletManager, currency, prices, isBalanceUpdated,
+      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
+      walletManager, currency, prices, isBalanceUpdated,
+      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
+      initFcmChannel,
     } = nextProps;
 
     const {
@@ -80,6 +70,8 @@ class RootComponent extends Component {
     } = this.props;
 
     const { isStorageRead, isParseWritten } = this.state;
+
+    const tokens = walletManager.getTokens();
 
     const newState = this.state;
 
@@ -99,7 +91,7 @@ class RootComponent extends Component {
       }
 
       if (needUpdate) {
-        updateWalletAssetValue(currency);
+        updateWalletAssetValue(currency, prices);
       }
     } else if (isInitFromStorageDone) { // Initialization logic
       if (!isInitWithParseDone) {
@@ -109,12 +101,11 @@ class RootComponent extends Component {
 
         newState.isStorageRead = true;
       } else {
-        // Start timer to get price frequently
-        // TODO: we will need to get rid of timer and replace with Push Notification
-        startFetchPriceTimer();
-        startFetchBalanceTimer(walletManager);
-        startFetchTransactionTimer(walletManager);
-        startFetchLatestBlockHeightTimer();
+        initLiveQueryPrice();
+        initLiveQueryBalances(tokens);
+        initLiveQueryTransactions(tokens);
+        initLiveQueryBlockHeights();
+        initFcmChannel();
 
         newState.isParseWritten = true;
       }
@@ -129,6 +120,7 @@ class RootComponent extends Component {
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
       isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
+      isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
     } = this.props;
 
     return (
@@ -147,6 +139,7 @@ class RootComponent extends Component {
             fingerprintUsePasscode={fingerprintUsePasscode}
           />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
+          <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} processNotification={processNotification} />
         </Root>
       </View>
     );
@@ -156,17 +149,15 @@ class RootComponent extends Component {
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
   initializeWithParse: PropTypes.func.isRequired,
-  startFetchBalanceTimer: PropTypes.func.isRequired,
-  startFetchTransactionTimer: PropTypes.func.isRequired,
-  startFetchLatestBlockHeightTimer: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
-  walletManager: PropTypes.shape({}),
+  walletManager: PropTypes.shape({
+    getTokens: PropTypes.func,
+  }),
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isInitWithParseDone: PropTypes.bool.isRequired,
-  startFetchPriceTimer: PropTypes.func.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -187,6 +178,15 @@ RootComponent.propTypes = {
   fingerprintCallback: PropTypes.func,
   fingerprintFallback: PropTypes.func,
   fingerprintUsePasscode: PropTypes.func,
+  initLiveQueryPrice: PropTypes.func.isRequired,
+  initLiveQueryBalances: PropTypes.func.isRequired,
+  initLiveQueryTransactions: PropTypes.func.isRequired,
+  initLiveQueryBlockHeights: PropTypes.func.isRequired,
+  isShowInAppNotification: PropTypes.bool.isRequired,
+  inAppNotification: PropTypes.shape({}),
+  initFcmChannel: PropTypes.func.isRequired,
+  resetInAppNotification: PropTypes.func.isRequired,
+  processNotification: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {
@@ -202,6 +202,7 @@ RootComponent.defaultProps = {
   fingerprintCallback: null,
   fingerprintFallback: null,
   fingerprintUsePasscode: null,
+  inAppNotification: undefined,
 };
 
 export default RootComponent;

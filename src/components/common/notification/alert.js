@@ -88,7 +88,7 @@ export default class Alert extends Component {
             </View>
             <View style={styles.line} />
             <TouchableOpacity onPress={this.onCloseButtonPress}>
-              <Loc style={type === 'error' ? [styles.button, styles.errorButtonText] : [styles.button]} text={closeButtonText} />
+              <Loc style={type === 'error' ? [styles.button, styles.errorButtonText] : [styles.button]} text={closeButtonText} caseType="upper" />
             </TouchableOpacity>
           </View>
         </View>

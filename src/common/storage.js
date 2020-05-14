@@ -6,6 +6,7 @@ import RNSecureStorage from 'rn-secure-storage';
 const KEY_WALLETS = 'WALLETS';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
+const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
 
 class RNStorage {
   constructor() {
@@ -218,6 +219,14 @@ class RNStorage {
    */
   getMnemonicPhrase(id) {
     return RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`);
+  }
+
+  setPrivateKey(id, symbol, type, privateKey) {
+    return RNStorage.secureSet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`, privateKey);
+  }
+
+  getPrivateKey(id, symbol, type) {
+    return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
   }
 }
 

@@ -34,6 +34,11 @@ const initState = new Map({
   isShowFingerprintModal: false,
   fingerprintCallback: null,
   fingerprintFallback: null,
+  appLock: true,
+  passcode: undefined,
+  isShowInAppNotification: false,
+  inAppNotification: undefined,
+  fcmNavParams: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -120,6 +125,20 @@ export default function appReducer(state = initState, action) {
       return state.set('isShowFingerprintModal', false)
         .set('fingerprintCallback', null)
         .set('fingerprintFallback', null);
+    case actions.LOCK_APP:
+      return state.set('appLock', action.lock);
+    case actions.UPDATE_PASSCODE:
+      return state.set('passcode', action.passcode);
+    case actions.SHOW_INAPP_NOTIFICATION:
+      return state.set('isShowInAppNotification', true)
+        .set('inAppNotification', action.inAppNotification);
+    case actions.RESET_INAPP_NOTIFICATION:
+      return state.set('isShowInAppNotification', false)
+        .set('inAppNotification', null);
+    case actions.SET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', action.fcmNavParams);
+    case actions.RESET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', null);
     default:
       return state;
   }

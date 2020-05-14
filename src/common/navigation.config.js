@@ -6,12 +6,12 @@ import React from 'react';
 import common from './common';
 import BackBtn from '../components/common/buttons/back.btn.stateless';
 
-import WalletAddIndex from '../pages/wallet/add.index';
-import Dashboard from '../pages/wallet/dashboard';
+import WalletAddIndex from '../pages/wallet/dashboard/add.index';
+import Dashboard from '../pages/wallet/dashboard/dashboard';
 import WalletSelectCurrency from '../pages/wallet/select.currency';
 import WalletRecovery from '../pages/wallet/recovery';
 import RecoveryPhrase from '../pages/wallet/recovery.phrase';
-import WalletList from '../pages/wallet/list';
+import WalletList from '../pages/wallet/dashboard/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
 import Transfer from '../pages/wallet/transfer';
@@ -21,14 +21,16 @@ import WalletHistory from '../pages/wallet/history';
 import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
 import Transaction from '../pages/wallet/transaction';
-import Swap from '../pages/wallet/swap';
-import SwapSelection from '../pages/wallet/swap.selection';
+import Swap from '../pages/wallet/swap/swap';
+import SwapSelection from '../pages/wallet/swap/swap.selection';
 import SwapCompleted from '../pages/wallet/swap.completed';
+import AddToken from '../pages/wallet/add.token';
+import AddCustomToken from '../pages/wallet/add.custom.token';
+import AddCustomTokenConfirm from '../pages/wallet/add.custom.token.confirm';
 import StartPage from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
-import SpendIndex from '../pages/spend/index';
-import EarnIndex from '../pages/earn/index';
+import ExchangeIndex from '../pages/wallet/swap';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
 /* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
@@ -197,22 +199,34 @@ const routeConfigMap = {
         headerTitle: 'SwapCompleted',
       }),
     },
-  },
-  spend: {
-    SpendIndex: {
-      screen: SpendIndex,
-      path: 'SpendIndex',
+    AddToken: {
+      screen: AddToken,
+      path: 'AddToken',
       navigationOptions: () => ({
-        headerTitle: 'Spend',
+        headerTitle: 'AddToken',
+      }),
+    },
+    AddCustomToken: {
+      screen: AddCustomToken,
+      path: 'AddCustomToken',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomToken',
+      }),
+    },
+    AddCustomTokenConfirm: {
+      screen: AddCustomTokenConfirm,
+      path: 'AddCustomTokenConfirm',
+      navigationOptions: () => ({
+        headerTitle: 'AddCustomTokenConfirm',
       }),
     },
   },
-  earn: {
-    EarnIndex: {
-      screen: EarnIndex,
-      path: 'EarnIndex',
+  exchange: {
+    ExchangeIndex: {
+      screen: ExchangeIndex,
+      path: 'ExchangeIndex',
       navigationOptions: () => ({
-        headerTitle: 'Earn',
+        header: null,
       }),
     },
   },

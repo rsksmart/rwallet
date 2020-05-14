@@ -45,11 +45,11 @@ class TwoFactorAuth extends Component {
     }
 
     onResetPasscodePress() {
-      const { showPasscode, navigation } = this.props;
-      if (global.passcode) {
-        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess'));
+      const { passcode, showPasscode, navigation } = this.props;
+      if (passcode) {
+        showPasscode('reset', () => navigation.navigate('ResetPasscodeSuccess', { operation: 'reset' }));
       } else {
-        showPasscode('create');
+        showPasscode('create', () => navigation.navigate('ResetPasscodeSuccess', { operation: 'create' }));
       }
     }
 
@@ -59,7 +59,8 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation, fingerprint } = this.props;
+      const { navigation, passcode, fingerprint } = this.props;
+      const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
 
       let useFingerSwitchRow = null;
       // Show use fingerprint switch row if fingerprint is available.
@@ -81,7 +82,7 @@ class TwoFactorAuth extends Component {
         >
           <View style={styles.body}>
             <TouchableOpacity style={styles.row} onPress={this.onResetPasscodePress}>
-              <Loc style={[styles.title]} text="page.mine.2fa.resetPasscode" />
+              <Loc style={[styles.title]} text={setPasscodeText} />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
             {useFingerSwitchRow}
@@ -101,16 +102,19 @@ TwoFactorAuth.propTypes = {
   setSingleSettings: PropTypes.func,
   showPasscode: PropTypes.func.isRequired,
   fingerprint: PropTypes.bool,
+  passcode: PropTypes.string,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
   fingerprint: undefined,
+  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
   fingerprint: state.App.get('fingerprint'),
+  passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

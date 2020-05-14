@@ -2,26 +2,26 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
-
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
 
-const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+const TABCOUNT = 3; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
 const windowWidth = Dimensions.get('window').width;
 const tabWidth = windowWidth / TABCOUNT;
 
 const SpotLight = posed.View({
-  route0: { x: tabWidth * 0.35 },
-  route1: { x: tabWidth * 1.35 },
-  route2: { x: tabWidth * 2.35 },
-  route3: { x: tabWidth * 3.35 },
+  route0: { x: tabWidth * 0.25 },
+  route1: { x: tabWidth * 1.25 },
+  route2: { x: tabWidth * 2.25 },
 });
 
 const Scaler = posed.View({
-  active: { scale: 1.25 },
-  inactive: { scale: 1 },
+  active: { scale: 1.2 },
+  inactive: { scale: 0.9 },
 });
 
 const styles = StyleSheet.create({
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   tabButton: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   spotLight: {
-    width: tabWidth * 0.3,
+    width: tabWidth * 0.5,
     height: 6,
     backgroundColor: 'green',
     borderRadius: 8,
@@ -85,7 +85,7 @@ const TabBar = (props) => {
               {renderIcon({ route, focused: isRouteActive, tintColor })}
             </Scaler>
 
-            <Text style={[styles.tabButtonText, { opacity }]}>{getLabelText({ route })}</Text>
+            <Text style={[styles.tabButtonText, { opacity }]}>{strings(getLabelText({ route }))}</Text>
           </TouchableOpacity>
         );
       })}
@@ -110,4 +110,8 @@ TabBar.propTypes = {
   }).isRequired,
 };
 
-export default TabBar;
+const mapStateToProps = (state) => ({
+  language: state.Wallet.get('language'),
+});
+
+export default connect(mapStateToProps)(TabBar);
