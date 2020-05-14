@@ -364,9 +364,9 @@
       "usePasscode": "Use passcode",
       "touchToVerify": "Touch to verify fingerprint",
       "nativeNote": "Scan your fingerprint on the device scanner to continue",
-      "failedAndTryPasscode": "A autenticação falhou. Tente usar a senha.",
-      "failedAndTryAgain.": "Authentication is failed. Try again.",
-      "fingerprintNotMatch": "Fingerprint is not matched. Try again."
+      "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
+      "failedAndTryAgain.": "Authentication failed. Please try again.",
+      "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
       "title": "Please set a password",

@@ -367,8 +367,8 @@
       "usePasscode": "Usar contraseña",
       "touchToVerify": "Toque para verificar la huella digital",
       "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
-      "failedAndTryPasscode": "La autenticación ha fallado. Intente usar el código de acceso en su lugar.",
-      "failedAndTryAgain.": "La autenticación ha fallado. Inténtalo de nuevo.",
+      "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
+      "failedAndTryAgain.": "Autenticación fallida. Inténtalo de nuevo.",
       "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
     },
     "createPasscode": {

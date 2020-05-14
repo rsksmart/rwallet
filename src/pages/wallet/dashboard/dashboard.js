@@ -65,7 +65,7 @@ class Dashboard extends Component {
       }
     }
 
-    doAuthVerify() {
+    doAuthVerify = () => {
       const {
         wallets, appLock, lockApp, fcmNavParams, callAuthVerify,
       } = this.props;
