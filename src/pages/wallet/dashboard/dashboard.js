@@ -30,7 +30,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
       const { navigation } = this.props;
-      this.willFocusSubscription = navigation.addListener('willFocus', this.callPasscodeInput);
+      this.willFocusSubscription = navigation.addListener('willFocus', this.doAuthVerify);
       this.didBlurSubscription = navigation.addListener(
         'didBlur',
         () => {
@@ -65,7 +65,7 @@ class Dashboard extends Component {
       }
     }
 
-    callPasscodeInput = () => {
+    doAuthVerify() {
       const {
         wallets, appLock, lockApp, fcmNavParams, callAuthVerify,
       } = this.props;
@@ -74,13 +74,6 @@ class Dashboard extends Component {
           lockApp(false);
           this.callFcmNavigate(fcmNavParams);
         }, () => null);
-      }
-    }
-
-    doAuthVerify() {
-      const { wallets, callAuthVerify } = this.props;
-      if (!isEmpty(wallets)) {
-        callAuthVerify();
       }
     }
 
