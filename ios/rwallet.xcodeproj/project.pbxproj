@@ -648,7 +648,6 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F3AA2513C79C4BF28F9CFA74 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		F8B97AB4238F9E8D000F3BFD /* RNCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
-		F8BDA992246CDD8400ADDBAC /* rwalletTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "rwalletTests copy-Info.plist"; path = "/Users/star/devlab/rwallet/ios/rwalletTests copy-Info.plist"; sourceTree = "<absolute>"; };
 		F8D5F410238B909C006CFB8D /* RNUUIDGenerator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNUUIDGenerator.xcodeproj; path = "../node_modules/react-native-uuid-generator/ios/RNUUIDGenerator.xcodeproj"; sourceTree = "<group>"; };
 		F8D5F44D238B92E2006CFB8D /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		F8D5F44E238B92E2006CFB8D /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -982,7 +981,6 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				99834D424A46469F93AB89B5 /* Resources */,
 				F861FEDD23791F5000A0C056 /* Recovered References */,
-				F8BDA992246CDD8400ADDBAC /* rwalletTests copy-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
