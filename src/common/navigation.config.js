@@ -14,7 +14,6 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase';
 import WalletList from '../pages/wallet/dashboard/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
-import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
@@ -163,14 +162,6 @@ const routeConfigMap = {
       path: 'WalletHistory',
       navigationOptions: () => ({
         headerTitle: 'WalletHistory',
-      }),
-    },
-
-    VerifyFingerprint: {
-      screen: VerifyFingerprint,
-      path: 'VerifyFingerprint',
-      navigationOptions: () => ({
-        headerTitle: 'VerifyFingerprint',
       }),
     },
     Scan: {

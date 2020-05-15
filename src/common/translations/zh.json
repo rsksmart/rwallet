@@ -365,7 +365,12 @@
     },
     "touchSensor": {
       "title": "指纹验证",
-      "usePasscode": "使用密码验证"
+      "usePasscode": "使用密码验证",
+      "touchToVerify": "点击进行指纹解锁",
+      "nativeNote": "通过Home键验证已有手机指纹",
+      "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
+      "failedAndTryAgain.": "验证失败，请重试。",
+      "fingerprintNotMatch": "指纹不匹配，请重试。"
     },
     "createPasscode": {
       "title": "请设置一个密码",

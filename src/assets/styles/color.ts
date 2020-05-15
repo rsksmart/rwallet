@@ -54,6 +54,10 @@ const color = {
         fontVIP : "#904829",
         inputBg : "#f2f2f2"
     },
+    text: {
+        link: '#DF5264',
+        warning: '#00B520',
+    },
     component: {
         input: {
             backgroundColor: '#F3F3F3',

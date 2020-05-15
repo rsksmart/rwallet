@@ -419,14 +419,8 @@ class Transfer extends Component {
       return;
     }
 
-    const { showPasscode, passcode } = this.props;
-    if (passcode) {
-      // showPasscode('verify', this.onConfirmSliderVerified, this.resetConfirm);
-      showPasscode('verify', () => this.confirm(toAddress), () => {});
-    } else {
-      // await this.onConfirmSliderVerified();
-      await this.confirm(toAddress);
-    }
+    const { callAuthVerify } = this.props;
+    callAuthVerify(this.confirm(toAddress), () => null);
   }
 
   onAmountInputBlur() {
@@ -1015,12 +1009,7 @@ Transfer.propTypes = {
   removeConfirmation: PropTypes.func.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
-  showPasscode: PropTypes.func.isRequired,
-  passcode: PropTypes.string,
-};
-
-Transfer.defaultProps = {
-  passcode: undefined,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -1028,12 +1017,16 @@ const mapStateToProps = (state) => ({
   currency: state.App.get('currency'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   language: state.App.get('language'),
+  isFingerprint: state.App.get('fingerprint'),
   passcode: state.App.get('passcode'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(
     appActions.addNotification(notification),
+  ),
+  callAuthVerify: (callback, fallback) => dispatch(
+    appActions.callAuthVerify(callback, fallback),
   ),
   addConfirmation: (confirmation) => dispatch(
     appActions.addConfirmation(confirmation),

@@ -364,7 +364,12 @@
     },
     "touchSensor": {
       "title": "Sensor tátil",
-      "usePasscode": "Usar contraseña"
+      "usePasscode": "Usar contraseña",
+      "touchToVerify": "Toque para verificar la huella digital",
+      "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+      "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
+      "failedAndTryAgain.": "Autenticación fallida. Inténtalo de nuevo.",
+      "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
     },
     "createPasscode": {
       "title": "Por favor establezca una contraseña",

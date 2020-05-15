@@ -181,12 +181,8 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { showPasscode, passcode } = this.props;
-      if (passcode) {
-        showPasscode('verify', this.backup, () => {});
-      } else {
-        this.backup();
-      }
+      const { callAuthVerify } = this.props;
+      callAuthVerify(this.backup, () => {});
     }
 
     onKeyNamePress() {
@@ -195,19 +191,8 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const {
-        passcode, showPasscode, resetSwapSource, resetSwapDest,
-      } = this.props;
-      if (passcode) {
-        showPasscode('verify', this.deleteKey, () => {
-          resetSwapSource();
-          resetSwapDest();
-        });
-      } else {
-        resetSwapSource();
-        resetSwapDest();
-        this.deleteKey();
-      }
+      const { callAuthVerify } = this.props;
+      callAuthVerify(this.deleteKey, () => {});
     }
 
     onDeletePress() {
@@ -283,16 +268,12 @@ KeySettings.propTypes = {
   confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  showPasscode: PropTypes.func.isRequired,
-  resetSwapSource: PropTypes.func.isRequired,
-  resetSwapDest: PropTypes.func.isRequired,
-  passcode: PropTypes.string,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
   confirmation: undefined,
-  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -307,11 +288,10 @@ const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
-  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
-  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

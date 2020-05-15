@@ -18,7 +18,6 @@ class Dashboard extends Component {
     constructor(props) {
       super(props);
       const { lockApp } = props;
-      this.callPasscodeInput = this.callPasscodeInput.bind(this);
       this.willFocusSubscription = null;
       this.lock = debounce(() => lockApp(true), config.appLock.timeout / 2);
     }
@@ -31,12 +30,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
       const { navigation } = this.props;
-      this.willFocusSubscription = navigation.addListener(
-        'willFocus',
-        () => {
-          this.callPasscodeInput();
-        },
-      );
+      this.willFocusSubscription = navigation.addListener('willFocus', this.doAuthVerify);
       this.didBlurSubscription = navigation.addListener(
         'didBlur',
         () => {
@@ -71,17 +65,18 @@ class Dashboard extends Component {
       }
     }
 
-    callPasscodeInput = () => {
+    doAuthVerify = () => {
       const {
-        wallets, showPasscode, appLock, lockApp, fcmNavParams,
+        wallets, appLock, lockApp, fcmNavParams, callAuthVerify,
       } = this.props;
       if (!isEmpty(wallets) && appLock) {
-        showPasscode('verify', () => {
+        callAuthVerify(() => {
           lockApp(false);
           this.callFcmNavigate(fcmNavParams);
-        });
+        }, () => null);
       }
     }
+
 
     render() {
       const { navigation, wallets } = this.props;
@@ -100,7 +95,6 @@ Dashboard.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  showPasscode: PropTypes.func.isRequired,
   appLock: PropTypes.bool.isRequired,
   lockApp: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
@@ -109,6 +103,7 @@ Dashboard.propTypes = {
     routeParams: PropTypes.object,
   }),
   resetFcmNavParams: PropTypes.func.isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
@@ -121,6 +116,7 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   appLock: state.App.get('appLock'),
   fcmNavParams: state.App.get('fcmNavParams'),
+  callAuthVerify: PropTypes.func.isRequired,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -132,6 +128,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
   resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

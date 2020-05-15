@@ -12,6 +12,7 @@ import PrimaryTabNavigatorComp from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
 import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
+import TouchSensorModal from '../components/common/modal/touchSensorModal';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import InAppNotification from '../components/common/inapp.notification/notification';
@@ -118,6 +119,7 @@ class RootComponent extends Component {
       showNotification, notification, removeNotification, notificationCloseCallback,
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
+      isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
       isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
     } = this.props;
 
@@ -129,6 +131,13 @@ class RootComponent extends Component {
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} notificationCloseCallback={notificationCloseCallback} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
           <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
+          <TouchSensorModal
+            isShowFingerprintModal={isShowFingerprintModal}
+            fingerprintCallback={fingerprintCallback}
+            fingerprintFallback={fingerprintFallback}
+            hideFingerprintModal={hideFingerprintModal}
+            fingerprintUsePasscode={fingerprintUsePasscode}
+          />
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
           <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} processNotification={processNotification} />
         </Root>
@@ -164,6 +173,11 @@ RootComponent.propTypes = {
   notificationCloseCallback: PropTypes.func,
   confirmationCallback: PropTypes.func,
   confirmationCancelCallback: PropTypes.func,
+  isShowFingerprintModal: PropTypes.bool.isRequired,
+  hideFingerprintModal: PropTypes.func.isRequired,
+  fingerprintCallback: PropTypes.func,
+  fingerprintFallback: PropTypes.func,
+  fingerprintUsePasscode: PropTypes.func,
   initLiveQueryPrice: PropTypes.func.isRequired,
   initLiveQueryBalances: PropTypes.func.isRequired,
   initLiveQueryTransactions: PropTypes.func.isRequired,
@@ -176,15 +190,18 @@ RootComponent.propTypes = {
 };
 
 RootComponent.defaultProps = {
-  notification: null,
   walletManager: undefined,
+  notification: null,
+  notificationCloseCallback: null,
   passcodeType: null,
   passcodeCallback: null,
   passcodeFallback: null,
   confirmation: null,
   confirmationCallback: null,
   confirmationCancelCallback: null,
-  notificationCloseCallback: null,
+  fingerprintCallback: null,
+  fingerprintFallback: null,
+  fingerprintUsePasscode: null,
   inAppNotification: undefined,
 };
 

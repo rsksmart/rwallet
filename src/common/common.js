@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
 import Rsk3 from '@rsksmart/rsk3';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
 import moment from 'moment';
 // import moment locales
@@ -289,6 +290,10 @@ const common = {
    */
   getSymbolName(symbol, type) {
     return `${type === 'Testnet' ? 't' : ''}${symbol}`;
+  },
+
+  isFingerprintAvailable() {
+    return FingerprintScanner.isSensorAvailable();
   },
 
   getRandom(count) {

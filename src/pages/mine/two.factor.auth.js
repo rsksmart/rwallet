@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity, Switch,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
@@ -58,8 +59,20 @@ class TwoFactorAuth extends Component {
     }
 
     render() {
-      const { navigation, passcode } = this.props;
+      const { navigation, passcode, fingerprint } = this.props;
       const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
+
+      let useFingerSwitchRow = null;
+      // Show use fingerprint switch row if fingerprint is available.
+      if (FingerprintScanner.isSensorAvailable()) {
+        useFingerSwitchRow = (
+          <View style={styles.row}>
+            <Loc style={[styles.title]} text="Use Fingerprint" />
+            <Switch value={fingerprint} onValueChange={this.setSingleSettings} />
+          </View>
+        );
+      }
+
       return (
         <BasePageGereral
           isSafeView={false}
@@ -72,6 +85,7 @@ class TwoFactorAuth extends Component {
               <Loc style={[styles.title]} text={setPasscodeText} />
               <Entypo name="chevron-small-right" size={35} style={styles.chevron} />
             </TouchableOpacity>
+            {useFingerSwitchRow}
           </View>
         </BasePageGereral>
       );
@@ -87,12 +101,14 @@ TwoFactorAuth.propTypes = {
   }).isRequired,
   setSingleSettings: PropTypes.func,
   showPasscode: PropTypes.func.isRequired,
+  fingerprint: PropTypes.bool,
   passcode: PropTypes.string,
 };
 
 
 TwoFactorAuth.defaultProps = {
   setSingleSettings: undefined,
+  fingerprint: undefined,
   passcode: undefined,
 };
 

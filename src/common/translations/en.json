@@ -102,10 +102,6 @@
         "body": "Your recovery phrase is verified",
         "note": "Be sure to store your recovery phrase in a safe and secure place"
       },
-      "verifyFingerprint": {
-        "title": "Verify Fingerprint",
-        "noMatch": "No match"
-      },
       "scan": {
         "title": "Scan",
         "cameraPermission": {
@@ -365,7 +361,12 @@
     },
     "touchSensor": {
       "title": "Touch Sensor",
-      "usePasscode": "Use passcode"
+      "usePasscode": "Use passcode",
+      "touchToVerify": "Touch to verify fingerprint",
+      "nativeNote": "Scan your fingerprint on the device scanner to continue",
+      "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
+      "failedAndTryAgain.": "Authentication failed. Please try again.",
+      "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
       "title": "Please set a password",

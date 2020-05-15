@@ -1,6 +1,6 @@
 /* eslint no-restricted-syntax:0 */
 import {
-  call, all, takeEvery, put, take,
+  call, all, takeEvery, put, select, take,
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
@@ -11,8 +11,8 @@ import walletActions from '../wallet/actions';
 
 import application from '../../common/application';
 import settings from '../../common/settings';
-import walletManager from '../../common/wallet/walletManager';
 import common from '../../common/common';
+import walletManager from '../../common/wallet/walletManager';
 import definitions from '../../common/definitions';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
@@ -215,6 +215,31 @@ function* renameRequest(action) {
   }
 }
 
+function* fingerprintUsePasscodeRequest(action) {
+  yield put(actions.hideFingerprintModal());
+  yield put(actions.showPasscode('verify', action.value.callback, action.value.fallback));
+}
+
+/**
+ * authVerifyRequest decide how to verify authorization
+ * If fingerprint in settings is enabled, and sensor is avaliable, use fingerprint
+ * If passcode is seted, use passcode
+ * If passcode is not seted, call callback function
+ */
+function* authVerifyRequest(action) {
+  const { callback, fallback } = action.value;
+  const state = yield select();
+  const isFingerprint = state.App.get('fingerprint');
+  const passcode = state.App.get('passcode');
+  if (isFingerprint && common.isFingerprintAvailable()) {
+    yield put(actions.showFingerprintModal(callback, fallback));
+  } else if (passcode) {
+    yield put(actions.showPasscode('verify', callback, fallback));
+  } else if (callback) {
+    yield call(callback);
+  }
+}
+
 function* setPasscodeRequest(action) {
   const { passcode } = action;
   try {
@@ -303,6 +328,9 @@ export default function* () {
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+
+    takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscodeRequest),
+    takeEvery(actions.AUTH_VERIFY, authVerifyRequest),
     takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
 
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
