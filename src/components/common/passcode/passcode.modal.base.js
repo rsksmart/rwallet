@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Modal, Image,
+  View, Text, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
@@ -14,17 +14,11 @@ const dotSize = 13;
 
 const styles = StyleSheet.create({
   background: {
-    backgroundColor: color.component.passcodeModal.backgroundColor,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,
     elevation: 999,
-    opacity: 0.9,
   },
   container: {
     flex: 1,
@@ -173,32 +167,30 @@ class PasscodeModalBase extends PureComponent {
     } = this.props;
 
     return (
-      <Modal animationType="fade" transparent>
-        <View style={[styles.background, styles.container]}>
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Loc style={[styles.title]} text={title} />
-            <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
-              {this.renderDots()}
-            </Animatable.View>
-            <View style={styles.buttonView}>
-              {isShowReset && (
-                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
-                  <Loc style={[styles.buttonText]} text="button.Reset" />
-                </TouchableOpacity>
-              )}
-              {showCancel && (
-                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                  <Image source={references.images.passcodeReset} />
-                </TouchableOpacity>
-              )}
-              {this.renderButtons()}
-              <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
-                <Image source={references.images.passcodeDelete} />
+      <View style={[styles.background, styles.container]}>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Loc style={[styles.title]} text={title} />
+          <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+            {this.renderDots()}
+          </Animatable.View>
+          <View style={styles.buttonView}>
+            {isShowReset && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
+                <Loc style={[styles.buttonText]} text="button.Reset" />
               </TouchableOpacity>
-            </View>
+            )}
+            {showCancel && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
+                <Image source={references.images.passcodeReset} />
+              </TouchableOpacity>
+            )}
+            {this.renderButtons()}
+            <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
+              <Image source={references.images.passcodeDelete} />
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </View>
     );
   }
 }

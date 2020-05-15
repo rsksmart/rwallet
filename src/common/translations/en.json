@@ -190,7 +190,8 @@
       "2fa": {
         "title": "Two-Factor Authentication",
         "setPasscode": "Set Passcode",
-        "resetPasscode": "Reset Passcode"
+        "resetPasscode": "Reset Passcode",
+        "useFingerprint": "Use Fingerprint"
       },
       "resetPasscodeSuccess" :{
         "title": {

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { View, Platform } from 'react-native';
+import {
+  View, Platform, Modal, StyleSheet,
+} from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { BlurView } from '@react-native-community/blur';
 
 import UpdateModal from '../components/update/update.modal';
 import Start from '../pages/start/start';
@@ -16,6 +19,12 @@ import TouchSensorModal from '../components/common/modal/touchSensorModal';
 import flex from '../assets/styles/layout.flex';
 import Toast from '../components/common/notification/toast';
 import InAppNotification from '../components/common/inapp.notification/notification';
+
+const styles = StyleSheet.create({
+  authVerifyView: {
+    flex: 1,
+  },
+});
 
 const SwitchNavi = createAppContainer(createSwitchNavigator(
   {
@@ -123,6 +132,8 @@ class RootComponent extends Component {
       isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
     } = this.props;
 
+    const isShowAuthVerifyModal = showPasscode || isShowFingerprintModal;
+
     return (
       <View style={[flex.flex1]}>
         <Root>
@@ -130,14 +141,28 @@ class RootComponent extends Component {
           {false && <UpdateModal showUpdate mandatory={false} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} notificationCloseCallback={notificationCloseCallback} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
-          <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />
-          <TouchSensorModal
-            isShowFingerprintModal={isShowFingerprintModal}
-            fingerprintCallback={fingerprintCallback}
-            fingerprintFallback={fingerprintFallback}
-            hideFingerprintModal={hideFingerprintModal}
-            fingerprintUsePasscode={fingerprintUsePasscode}
-          />
+
+          { isShowAuthVerifyModal && (
+            <Modal animationType="fade" transparent>
+              <BlurView
+                blurType="dark"
+                blurAmount={10}
+                style={styles.authVerifyView}
+              >
+                { showPasscode && <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />}
+                { isShowFingerprintModal && (
+                  <TouchSensorModal
+                    isShowFingerprintModal={isShowFingerprintModal}
+                    fingerprintCallback={fingerprintCallback}
+                    fingerprintFallback={fingerprintFallback}
+                    hideFingerprintModal={hideFingerprintModal}
+                    fingerprintUsePasscode={fingerprintUsePasscode}
+                  />
+                )}
+              </BlurView>
+            </Modal>
+          )}
+
           <Toast ref={(ref) => { this.toast = ref; }} backgroundColor="white" position="top" textColor="green" />
           <InAppNotification isVisiable={isShowInAppNotification} notification={inAppNotification} resetInAppNotification={resetInAppNotification} processNotification={processNotification} />
         </Root>

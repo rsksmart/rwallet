@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, StyleSheet, Image, TouchableOpacity, Platform,
+  View, StyleSheet, Image, TouchableOpacity, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: color.component.touchSensorModal.backgroundColor,
+    backgroundColor: 'rgba(0,0,0,0)',
   },
   panel: {
     marginHorizontal: 25,
@@ -75,32 +75,26 @@ export default class TouchSensorModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      animationType: 'fade',
-      transparent: true,
       errorMessage: null,
     };
     this.onCancelPress = this.onCancelPress.bind(this);
     this.onUsePasscodePress = this.onUsePasscodePress.bind(this);
     this.onIconPressed = this.onIconPressed.bind(this);
     this.requestScan = this.requestScan.bind(this);
+    this.state = { errorMessage: null };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { isShowFingerprintModal } = nextProps;
-    const { isShowFingerprintModal: isShowFingerprintModalLast } = this.props;
-    if (isShowFingerprintModal && !isShowFingerprintModalLast) {
-      this.onShowFingerprintModal(nextProps);
-    }
+  componentDidMount() {
+    this.requestScan();
+  }
+
+  componentWillUnmount = () => {
+    FingerprintScanner.release();
   }
 
   onIconPressed() {
     this.setState({ errorMessage: null });
-    this.requestScan(this.props);
-  }
-
-  onShowFingerprintModal(props) {
-    this.setState({ errorMessage: null });
-    this.requestScan(props);
+    this.requestScan();
   }
 
   onUsePasscodePress() {
@@ -123,8 +117,8 @@ export default class TouchSensorModal extends Component {
 
   startShow = () => {}
 
-  requestScan(props) {
-    const { hideFingerprintModal, fingerprintCallback } = props;
+  requestScan() {
+    const { hideFingerprintModal, fingerprintCallback } = this.props;
     const onAttempt = (error) => {
       console.log(`onAttempt: ${error}`);
       this.setState({ errorMessage: 'modal.touchSensor.fingerprintNotMatch' }, () => this.errView.shake(800));
@@ -163,47 +157,41 @@ export default class TouchSensorModal extends Component {
 
   renderModal() {
     const { fingerprintFallback } = this.props;
-    const { animationType, transparent, errorMessage } = this.state;
+    const { errorMessage } = this.state;
     return (
-      <Modal
-        animationType={animationType}
-        transparent={transparent}
-        onShow={this.startShow}
-      >
-        <View style={styles.container}>
-          <View style={styles.panel}>
-            <Loc style={[styles.title]} text="modal.touchSensor.title" />
-            <Animatable.View ref={(ref) => { this.errView = ref; }} useNativeDriver style={styles.errView}>
-              { errorMessage && (
-                <Loc style={[styles.errText]} text={errorMessage} />
-              )}
-            </Animatable.View>
-            <TouchableOpacity
-              style={styles.finger}
-              onPress={this.onIconPressed}
-              disabled={!(Platform.OS === 'ios')}
-            >
-              <Image source={finger} />
-            </TouchableOpacity>
-            { Platform.OS === 'ios' && (
-              <Loc style={[styles.touchToVerify]} text="modal.touchSensor.touchToVerify" />
+      <View style={styles.container}>
+        <View style={styles.panel}>
+          <Loc style={[styles.title]} text="modal.touchSensor.title" />
+          <Animatable.View ref={(ref) => { this.errView = ref; }} useNativeDriver style={styles.errView}>
+            { errorMessage && (
+              <Loc style={[styles.errText]} text={errorMessage} />
             )}
-            <TouchableOpacity
-              style={styles.passcode}
-              onPress={this.onUsePasscodePress}
-            >
-              <Loc style={[styles.passcodeText]} text="modal.touchSensor.usePasscode" />
-            </TouchableOpacity>
-            {
-              fingerprintFallback && (
-                <TouchableOpacity style={[styles.cancelView]} onPress={this.onCancelPress}>
-                  <Loc style={[styles.cancelText]} text="button.cancel" />
-                </TouchableOpacity>
-              )
-            }
-          </View>
+          </Animatable.View>
+          <TouchableOpacity
+            style={styles.finger}
+            onPress={this.onIconPressed}
+            disabled={!(Platform.OS === 'ios')}
+          >
+            <Image source={finger} />
+          </TouchableOpacity>
+          { Platform.OS === 'ios' && (
+            <Loc style={[styles.touchToVerify]} text="modal.touchSensor.touchToVerify" />
+          )}
+          <TouchableOpacity
+            style={styles.passcode}
+            onPress={this.onUsePasscodePress}
+          >
+            <Loc style={[styles.passcodeText]} text="modal.touchSensor.usePasscode" />
+          </TouchableOpacity>
+          {
+            fingerprintFallback && (
+              <TouchableOpacity style={[styles.cancelView]} onPress={this.onCancelPress}>
+                <Loc style={[styles.cancelText]} text="button.cancel" />
+              </TouchableOpacity>
+            )
+          }
         </View>
-      </Modal>
+      </View>
     );
   }
 

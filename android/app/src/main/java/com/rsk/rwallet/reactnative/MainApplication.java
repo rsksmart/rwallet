@@ -1,8 +1,12 @@
 package com.rsk.rwallet.reactnative;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
+import com.cmcewen.blurview.BlurViewPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -31,7 +35,7 @@ import com.reactnativecommunity.slider.ReactSliderPackage;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -43,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BlurViewPackage(),
             new RNFirebasePackage(),
             new RNVersionNumberPackage(),
             new LinearGradientPackage(),
@@ -80,5 +85,11 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+  }
+
+  @Override
+  protected void attachBaseContext(Context newBase) {
+      super.attachBaseContext(newBase);
+      MultiDex.install(this);
   }
 }
