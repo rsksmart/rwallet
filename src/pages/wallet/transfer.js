@@ -777,9 +777,11 @@ class Transfer extends Component {
   }
 
   inputAmount(text, callback) {
-    this.setState({ amount: text });
-    if (parseFloat(text) >= 0) {
-      this.setState({ amount: text }, () => {
+    // Replace comma as dot in argentinian amount input.
+    const newText = text.replace(',', '.');
+    this.setState({ amount: newText });
+    if (parseFloat(newText) >= 0) {
+      this.setState({ amount: newText }, () => {
         this.validateConfirmControl();
         if (callback) {
           callback();
