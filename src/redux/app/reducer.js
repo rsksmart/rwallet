@@ -39,6 +39,7 @@ const initState = new Map({
   isShowInAppNotification: false,
   inAppNotification: undefined,
   fcmNavParams: undefined,
+  fcmToken: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -139,6 +140,8 @@ export default function appReducer(state = initState, action) {
       return state.set('fcmNavParams', action.fcmNavParams);
     case actions.RESET_FCM_NAV_PARAMS:
       return state.set('fcmNavParams', null);
+    case actions.SET_FCM_TOKEN:
+      return state.set('fcmToken', action.fcmToken);
     default:
       return state;
   }

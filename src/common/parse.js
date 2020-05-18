@@ -69,7 +69,9 @@ class ParseHelper {
       parseUser.set('settings', settings);
     }
 
-    parseUser.set('fcmToken', fcmToken);
+    if (!_.isNil(fcmToken)) {
+      parseUser.set('fcmToken', fcmToken);
+    }
 
     // Only set wallets when it's defined.
     if (_.isArray(wallets)) {
@@ -187,7 +189,7 @@ class ParseHelper {
    * @returns {object}  error object defined by this app
    * @method handleError
    */
-  static async handleError({ err, appId }) {
+  static async handleError({ err }) {
     console.log('handleError', err);
 
     const message = err.message || 'error.parse.default';
@@ -196,11 +198,6 @@ class ParseHelper {
       case Parse.Error.INVALID_SESSION_TOKEN:
         console.log('INVALID_SESSION_TOKEN. Logging out');
         await Parse.User.logOut();
-        if (appId) {
-          console.log('Re-signing in. appId: ', appId);
-          await Parse.user.signIn(appId);
-        }
-        // Other Parse API errors that you want to explicitly handle
         break;
       default:
         break;
@@ -220,34 +217,6 @@ class ParseHelper {
     query.containedIn('address', addrArray);
     // 实际运行query
     return query.find();
-  }
-
-  /**
-   * Return an array of wallets with basic information such as wallet balance
-   * @returns {array} Array of wallet object; empty array if nothing found
-   */
-  static async getWallets() {
-    // Get current Parse.User
-    const parseUser = await Parse.User.currentAsync();
-
-    if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
-      return [];
-    }
-
-    const wallets = parseUser.get('wallets');
-
-    // since User's wallet field is linked value, we need to call fetch to retrieve full information of wallets
-    await wallets.fetch();
-
-    const result = _.map(wallets, (parseWallet) => ({
-      address: parseWallet.get('address'),
-      symbol: parseWallet.get('symbol'),
-      type: parseWallet.get('type'),
-      balance: parseWallet.get('balance'),
-      txCount: parseWallet.get('txCount'),
-    }));
-
-    return result;
   }
 
   /**

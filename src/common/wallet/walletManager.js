@@ -178,6 +178,11 @@ class WalletManager {
       }
     });
 
+    // serialize balance
+    if (isDirty) {
+      this.serialize();
+    }
+
     return isDirty;
   }
 

@@ -61,9 +61,10 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage } = this.props;
+    const { initializeFromStorage, initFcmChannel } = this.props;
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
+    initFcmChannel();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -71,7 +72,7 @@ class RootComponent extends Component {
       isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
       walletManager, currency, prices, isBalanceUpdated,
       initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
-      initFcmChannel,
+      getServerInfo, updateUser,
     } = nextProps;
 
     const {
@@ -110,12 +111,12 @@ class RootComponent extends Component {
 
         newState.isStorageRead = true;
       } else {
+        getServerInfo();
+        updateUser();
         initLiveQueryPrice();
         initLiveQueryBalances(tokens);
         initLiveQueryTransactions(tokens);
         initLiveQueryBlockHeights();
-        initFcmChannel();
-
         newState.isParseWritten = true;
       }
     }
@@ -212,6 +213,8 @@ RootComponent.propTypes = {
   initFcmChannel: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
+  getServerInfo: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

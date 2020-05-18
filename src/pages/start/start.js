@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   View, Image, StyleSheet, Text,
 } from 'react-native';
-import { isEmpty } from 'lodash';
+import _ from 'lodash';
 import VersionNumber from 'react-native-version-number';
 
 import { connect } from 'react-redux';
@@ -51,8 +51,8 @@ class StartPage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { isInitWithParseDone, wallets, navigation } = nextProps;
-    if (isInitWithParseDone && !isEmpty(wallets)) {
+    const { wallets, navigation } = nextProps;
+    if (!_.isEmpty(wallets)) {
       navigation.navigate('PrimaryTabNavigator');
     }
     return null;
@@ -64,14 +64,14 @@ class StartPage extends Component {
   }
 
   render() {
-    const { navigation, isInitWithParseDone, wallets } = this.props;
+    const { navigation, wallets } = this.props;
     const { version } = this.state;
     return (
       <SafeAreaView style={[styles.page]}>
         <View style={styles.logo}>
           <Image source={logo} />
         </View>
-        {(isInitWithParseDone && isEmpty(wallets)) && (
+        {!_.isNil(wallets) && _.isEmpty(wallets) && (
         <View style={styles.buttonView}>
           <Button text="page.start.start.button" onPress={() => navigation.navigate('TermsPage')} />
         </View>
@@ -90,7 +90,6 @@ StartPage.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  isInitWithParseDone: PropTypes.bool.isRequired,
 };
 
 StartPage.defaultProps = {
@@ -98,7 +97,6 @@ StartPage.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
 });
 

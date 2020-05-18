@@ -13,7 +13,6 @@ import ListPageHeader from '../../../components/headers/header.listpage';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
-import WalletPlaceholder from './wallet.carousel.page.wallet.placeholder';
 import config from '../../../../config';
 import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
@@ -72,17 +71,9 @@ class WalletList extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      currencySymbol: null,
-      listData: null,
-    };
-    this.onSwapPressed = this.onSwapPressed.bind(this);
-  }
-
-  componentDidMount() {
     const {
       currency, walletManager, navigation,
-    } = this.props;
+    } = props;
     const { wallets } = walletManager;
     const currencySymbol = getCurrencySymbol(currency);
     const listData = WalletList.createListData(wallets, currencySymbol, navigation);
@@ -111,7 +102,7 @@ class WalletList extends Component {
     this.setState(newState);
   }
 
-  onSwapPressed(wallet) {
+  onSwapPressed = (wallet) => {
     const { resetSwap, navigation } = this.props;
     resetSwap();
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true, wallet });
@@ -120,29 +111,25 @@ class WalletList extends Component {
   render() {
     const { navigation } = this.props;
     const { currencySymbol, listData } = this.state;
-    const isDataReady = currencySymbol && listData && listData.length;
-    let pageData = [];
-
-    if (isDataReady) {
-      pageData = _.map(listData, (walletData, index) => {
-        const hasSwappableCoin = walletData.wallet.coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
-        return {
-          index,
-          walletData,
-          onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
-          onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
-          onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
-            operation: 'scan',
-            wallet: walletData.wallet,
-            onDetectedAction: 'navigateToTransfer',
-          }),
-          onSwapPressed: () => this.onSwapPressed(walletData.wallet),
-          onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
-          currencySymbol,
-          hasSwappableCoin,
-        };
-      });
-    }
+    // const isDataReady = currencySymbol && listData && listData.length;
+    const pageData = _.map(listData, (walletData, index) => {
+      const hasSwappableCoin = walletData.wallet.coins.find((walletCoin) => config.coinswitch.initPairs[walletCoin.id]) != null;
+      return {
+        index,
+        walletData,
+        onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
+        onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
+        onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
+          operation: 'scan',
+          wallet: walletData.wallet,
+          onDetectedAction: 'navigateToTransfer',
+        }),
+        onSwapPressed: () => this.onSwapPressed(walletData.wallet),
+        onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
+        currencySymbol,
+        hasSwappableCoin,
+      };
+    });
 
     return (
       <BasePageSimple
@@ -154,11 +141,7 @@ class WalletList extends Component {
         headerComponent={<ListPageHeader title="page.wallet.list.title" />}
       >
         <View style={[styles.body]}>
-          {isDataReady ? <WalletCarousel data={pageData} navigation={navigation} pageWidth={WALLET_PAGE_WIDTH} /> : (
-            <View style={[{ width: WALLET_PAGE_WIDTH, height: 450 }]}>
-              <WalletPlaceholder />
-            </View>
-          )}
+          <WalletCarousel data={pageData} navigation={navigation} pageWidth={WALLET_PAGE_WIDTH} />
         </View>
       </BasePageSimple>
     );

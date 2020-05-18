@@ -49,6 +49,8 @@ const mapDispatchToProps = (dispatch) => ({
   initFcmChannel: () => dispatch(appActions.initFcmChannel()),
   resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
+  getServerInfo: () => dispatch(appActions.getServerInfo()),
+  updateUser: () => dispatch(appActions.getServerInfo()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
