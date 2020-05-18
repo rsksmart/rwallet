@@ -299,7 +299,7 @@ const common = {
         return true;
       }
     } catch (error) {
-      console.log('The device is not support fingerprint');
+      console.log('The device does not support fingerprint');
     }
     return false;
   },
