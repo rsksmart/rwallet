@@ -73,7 +73,7 @@ class Dashboard extends Component {
         callAuthVerify(() => {
           lockApp(false);
           this.callFcmNavigate(fcmNavParams);
-        }, () => null);
+        });
       }
     }
 

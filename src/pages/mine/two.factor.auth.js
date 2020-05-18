@@ -5,11 +5,11 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   body: {
@@ -42,6 +42,16 @@ class TwoFactorAuth extends Component {
 
       this.onResetPasscodePress = this.onResetPasscodePress.bind(this);
       this.setSingleSettings = this.setSingleSettings.bind(this);
+      this.isFingerprintAvailable = false;
+
+      this.state = {
+        isFingerprintAvailable: false,
+      };
+    }
+
+    async componentDidMount() {
+      const isFingerprintAvailable = await common.isFingerprintAvailable();
+      this.setState({ isFingerprintAvailable });
     }
 
     onResetPasscodePress() {
@@ -60,14 +70,16 @@ class TwoFactorAuth extends Component {
 
     render() {
       const { navigation, passcode, fingerprint } = this.props;
+      const { isFingerprintAvailable } = this.state;
       const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
 
       let useFingerSwitchRow = null;
       // Show use fingerprint switch row if fingerprint is available.
-      if (FingerprintScanner.isSensorAvailable()) {
+
+      if (isFingerprintAvailable) {
         useFingerSwitchRow = (
           <View style={styles.row}>
-            <Loc style={[styles.title]} text="Use Fingerprint" />
+            <Loc style={[styles.title]} text="page.mine.2fa.useFingerprint" />
             <Switch value={fingerprint} onValueChange={this.setSingleSettings} />
           </View>
         );

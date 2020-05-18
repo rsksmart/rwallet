@@ -193,7 +193,8 @@
       "2fa": {
         "title": "Autenticación de dos factores",
         "setPasscode": "Código de acceso establecido",
-        "resetPasscode": "Restablecer contraseña"
+        "resetPasscode": "Restablecer contraseña",
+        "useFingerprint": "Usar huella digital"
       },
       "resetPasscodeSuccess" :{
         "title": {
