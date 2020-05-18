@@ -7,6 +7,7 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import * as Animatable from 'react-native-animatable';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
+import { strings } from '../../../common/i18n';
 
 const styles = StyleSheet.create({
   container: {
@@ -125,7 +126,7 @@ export default class TouchSensorModal extends Component {
     };
     const params = {
       onAttempt,
-      description: 'modal.touchSensor.nativeNote',
+      description: strings('modal.touchSensor.nativeNote'),
       fallbackEnabled: false,
     };
     FingerprintScanner.authenticate(params).then(() => {

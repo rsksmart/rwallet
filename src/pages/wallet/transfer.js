@@ -420,7 +420,7 @@ class Transfer extends Component {
     }
 
     const { callAuthVerify } = this.props;
-    callAuthVerify(this.confirm(toAddress), () => null);
+    callAuthVerify(() => { this.confirm(toAddress); }, () => null);
   }
 
   onAmountInputBlur() {
