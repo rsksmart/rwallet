@@ -191,7 +191,8 @@
         "title": "Two-Factor Authentication",
         "setPasscode": "Set Passcode",
         "resetPasscode": "Reset Passcode",
-        "useFingerprint": "Use Fingerprint"
+        "useFingerprint": "Use Fingerprint",
+        "useFaceID": "Use Face ID"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -361,13 +362,21 @@
       "incorrect": "Passcode is incorrect"
     },
     "touchSensor": {
-      "title": "Touch Sensor",
       "usePasscode": "Use passcode",
-      "touchToVerify": "Touch to verify fingerprint",
-      "nativeNote": "Scan your fingerprint on the device scanner to continue",
+      "fingerprint": {
+        "title": "Touch Sensor",
+        "touchToVerify": "Touch to verify fingerprint",
+        "nativeNote": "Scan your fingerprint on the device scanner to continue",
+        "notMatch": "Fingerprint does not match. Please try again."
+      },
+      "faceID": {
+        "title": "Touch Sensor",
+        "touchToVerify": "Touch to verify face ID",
+        "nativeNote": "Please aim at the camera for face recognition",
+        "notMatch": "FaceID does not march. Please try again."
+      },
       "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
-      "failedAndTryAgain.": "Authentication failed. Please try again.",
-      "fingerprintNotMatch": "Fingerprint does not match. Please try again."
+      "failedAndTryAgain.": "Authentication failed. Please try again."
     },
     "createPasscode": {
       "title": "Please set a password",

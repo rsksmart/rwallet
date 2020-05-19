@@ -8,6 +8,7 @@ import * as Animatable from 'react-native-animatable';
 import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
+import common from '../../../common/common';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,18 +76,21 @@ const finger = require('../../../assets/images/misc/finger.png');
 export default class TouchSensorModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      errorMessage: null,
-    };
     this.onCancelPress = this.onCancelPress.bind(this);
     this.onUsePasscodePress = this.onUsePasscodePress.bind(this);
     this.onIconPressed = this.onIconPressed.bind(this);
     this.requestScan = this.requestScan.bind(this);
-    this.state = { errorMessage: null };
+    this.state = { errorMessage: null, biometryType: '' };
   }
 
   componentDidMount() {
-    this.requestScan();
+    common.getFingerprintType()
+      .then((biometryType) => {
+        this.setState({ biometryType });
+      })
+      .then(() => {
+        this.requestScan();
+      });
   }
 
   componentWillUnmount = () => {
@@ -120,13 +124,15 @@ export default class TouchSensorModal extends Component {
 
   requestScan() {
     const { hideFingerprintModal, fingerprintCallback } = this.props;
+    const { biometryType } = this.state;
     const onAttempt = (error) => {
       console.log(`onAttempt: ${error}`);
-      this.setState({ errorMessage: 'modal.touchSensor.fingerprintNotMatch' }, () => this.errView.shake(800));
+      const errorMessage = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.notMatch' : 'modal.touchSensor.fingerprint.notMatch';
+      this.setState({ errorMessage }, () => this.errView.shake(800));
     };
     const params = {
       onAttempt,
-      description: strings('modal.touchSensor.nativeNote'),
+      description: biometryType === 'Face ID' ? strings('modal.touchSensor.faceID.nativeNote') : strings('modal.touchSensor.fingerprint.nativeNote'),
       fallbackEnabled: false,
     };
     FingerprintScanner.authenticate(params).then(() => {
@@ -158,11 +164,13 @@ export default class TouchSensorModal extends Component {
 
   renderModal() {
     const { fingerprintFallback } = this.props;
-    const { errorMessage } = this.state;
+    const { errorMessage, biometryType } = this.state;
+    const titleText = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.title' : 'modal.touchSensor.fingerprint.title';
+    const touchToVerifyText = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.touchToVerify' : 'modal.touchSensor.fingerprint.touchToVerify';
     return (
       <View style={styles.container}>
         <View style={styles.panel}>
-          <Loc style={[styles.title]} text="modal.touchSensor.title" />
+          <Loc style={[styles.title]} text={titleText} />
           <Animatable.View ref={(ref) => { this.errView = ref; }} useNativeDriver style={styles.errView}>
             { errorMessage && (
               <Loc style={[styles.errText]} text={errorMessage} />
@@ -176,7 +184,7 @@ export default class TouchSensorModal extends Component {
             <Image source={finger} />
           </TouchableOpacity>
           { Platform.OS === 'ios' && (
-            <Loc style={[styles.touchToVerify]} text="modal.touchSensor.touchToVerify" />
+            <Loc style={[styles.touchToVerify]} text={touchToVerifyText} />
           )}
           <TouchableOpacity
             style={styles.passcode}

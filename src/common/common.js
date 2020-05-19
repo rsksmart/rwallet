@@ -295,13 +295,24 @@ const common = {
   async isFingerprintAvailable() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Biometrics') {
+      if (biometryType === 'Touch ID' || biometryType === 'Biometrics' || biometryType === 'Face ID') {
         return true;
       }
     } catch (error) {
       console.log('The device does not support fingerprint');
     }
     return false;
+  },
+
+  getFingerprintType() {
+    return new Promise((resolve, reject) => {
+      FingerprintScanner.isSensorAvailable().then((biometryType) => {
+        resolve(biometryType);
+      }).catch((error) => {
+        console.log('Fingerprint error: ', error);
+        reject(error);
+      });
+    });
   },
 
   getRandom(count) {

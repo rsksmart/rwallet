@@ -42,16 +42,15 @@ class TwoFactorAuth extends Component {
 
       this.onResetPasscodePress = this.onResetPasscodePress.bind(this);
       this.setSingleSettings = this.setSingleSettings.bind(this);
-      this.isFingerprintAvailable = false;
 
       this.state = {
-        isFingerprintAvailable: false,
+        biometryType: '',
       };
     }
 
-    async componentDidMount() {
-      const isFingerprintAvailable = await common.isFingerprintAvailable();
-      this.setState({ isFingerprintAvailable });
+    componentDidMount() {
+      common.getFingerprintType()
+        .then((biometryType) => this.setState({ biometryType }));
     }
 
     onResetPasscodePress() {
@@ -70,16 +69,17 @@ class TwoFactorAuth extends Component {
 
     render() {
       const { navigation, passcode, fingerprint } = this.props;
-      const { isFingerprintAvailable } = this.state;
+      const { biometryType } = this.state;
       const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
 
       let useFingerSwitchRow = null;
       // Show use fingerprint switch row if fingerprint is available.
 
-      if (isFingerprintAvailable) {
+      if (biometryType) {
+        const text = biometryType === 'Face ID' ? 'page.mine.2fa.useFaceID' : 'page.mine.2fa.useFingerprint';
         useFingerSwitchRow = (
           <View style={styles.row}>
-            <Loc style={[styles.title]} text="page.mine.2fa.useFingerprint" />
+            <Loc style={[styles.title]} text={text} />
             <Switch value={fingerprint} onValueChange={this.setSingleSettings} />
           </View>
         );
