@@ -40,6 +40,7 @@ const initState = new Map({
   inAppNotification: undefined,
   fcmNavParams: undefined,
   fcmToken: undefined,
+  isLoginError: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -142,6 +143,10 @@ export default function appReducer(state = initState, action) {
       return state.set('fcmNavParams', null);
     case actions.SET_FCM_TOKEN:
       return state.set('fcmToken', action.fcmToken);
+    case actions.SET_LOGIN_ERROR:
+      return state.set('isLoginError', true);
+    case actions.RESET_LOGIN_ERROR:
+      return state.set('isLoginError', false);
     default:
       return state;
   }

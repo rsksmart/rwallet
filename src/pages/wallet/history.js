@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: 'red',
   },
   noTransNotice: {
     textAlign: 'center',

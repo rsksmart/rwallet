@@ -69,10 +69,7 @@ class RootComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
-      walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
-      getServerInfo, updateUser,
+      isInitFromStorageDone, isInitWithParseDone, currency, prices, isBalanceUpdated,
     } = nextProps;
 
     const {
@@ -80,8 +77,6 @@ class RootComponent extends Component {
     } = this.props;
 
     const { isStorageRead, isParseWritten } = this.state;
-
-    const tokens = walletManager.getTokens();
 
     const newState = this.state;
 
@@ -104,24 +99,35 @@ class RootComponent extends Component {
         updateWalletAssetValue(currency, prices);
       }
     } else if (isInitFromStorageDone) { // Initialization logic
-      if (!isInitWithParseDone) {
-        // Upload current wallet settings to Parse in order to get balances and transactions
-        initializeWithParse();
-        // As long as the app initialized from storage, we mark state.isStorageRead to true
-
+      if (!isInitWithParseDone && !newState.isStorageRead) {
         newState.isStorageRead = true;
-      } else {
-        getServerInfo();
-        updateUser();
-        initLiveQueryPrice();
-        initLiveQueryBalances(tokens);
-        initLiveQueryTransactions(tokens);
-        initLiveQueryBlockHeights();
+        this.onStorageRead(nextProps);
+      } else if (!newState.isParseWritten) {
         newState.isParseWritten = true;
+        this.onUserLogin(nextProps);
       }
     }
 
     this.setState(newState);
+  }
+
+
+  onStorageRead = (props) => {
+    const { initializeWithParse } = props;
+    initializeWithParse();
+  }
+
+  onUserLogin = (props) => {
+    const {
+      getServerInfo, updateUser, initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
+    } = props;
+    const tokens = walletManager.getTokens();
+    getServerInfo();
+    updateUser();
+    initLiveQueryPrice();
+    initLiveQueryBalances(tokens);
+    initLiveQueryTransactions(tokens);
+    initLiveQueryBlockHeights();
   }
 
   render() {
@@ -174,7 +180,6 @@ class RootComponent extends Component {
 
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
-  initializeWithParse: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({
@@ -204,17 +209,11 @@ RootComponent.propTypes = {
   fingerprintCallback: PropTypes.func,
   fingerprintFallback: PropTypes.func,
   fingerprintUsePasscode: PropTypes.func,
-  initLiveQueryPrice: PropTypes.func.isRequired,
-  initLiveQueryBalances: PropTypes.func.isRequired,
-  initLiveQueryTransactions: PropTypes.func.isRequired,
-  initLiveQueryBlockHeights: PropTypes.func.isRequired,
   isShowInAppNotification: PropTypes.bool.isRequired,
   inAppNotification: PropTypes.shape({}),
   initFcmChannel: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
-  getServerInfo: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
 };
 
 RootComponent.defaultProps = {

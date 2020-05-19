@@ -40,9 +40,16 @@ class Dashboard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      const { fcmNavParams, appLock } = nextProps;
+      const {
+        fcmNavParams, appLock, isLoginError, showInAppNotification, resetLoginError,
+      } = nextProps;
+      const { isLoginError: lastIsLoginError } = this.props;
       if (!appLock) {
         this.callFcmNavigate(fcmNavParams);
+      }
+      if (!lastIsLoginError && isLoginError) {
+        showInAppNotification({ title: 'Network Error', body: 'Your device can not connect to the server.' });
+        resetLoginError();
       }
     }
 
@@ -104,6 +111,9 @@ Dashboard.propTypes = {
   }),
   resetFcmNavParams: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  isLoginError: PropTypes.bool.isRequired,
+  showInAppNotification: PropTypes.func.isRequired,
+  resetLoginError: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {
@@ -116,7 +126,7 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   appLock: state.App.get('appLock'),
   fcmNavParams: state.App.get('fcmNavParams'),
-  callAuthVerify: PropTypes.func.isRequired,
+  isLoginError: state.App.get('isLoginError'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -129,6 +139,8 @@ const mapDispatchToProps = (dispatch) => ({
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
   resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
   callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
+  showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
+  resetLoginError: () => dispatch(appActions.resetLoginError()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

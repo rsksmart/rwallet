@@ -15,6 +15,7 @@ if (_.isUndefined(parseConfig)) {
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
 Parse.CoreManager.set('REQUEST_HEADERS', { 'Rwallet-API-Key': parseConfig.rwalletApiKey });
 Parse.serverURL = parseConfig.serverURL;
+Parse.User.enableUnsafeCurrentUser();
 Parse.setAsyncStorage(AsyncStorage);
 
 /** Parse Class definition */
@@ -26,6 +27,11 @@ const ParseTransaction = Parse.Object.extend('Transaction');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
+  static async getUser() {
+    const user = await Parse.User.currentAsync();
+    return user;
+  }
+
   static signInOrSignUp(appId) {
     // Set appId as username and password.
     // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
@@ -176,11 +182,6 @@ class ParseHelper {
 
   static getServerInfo() {
     return Parse.Cloud.run('getServerInfo');
-  }
-
-  static getPrice({ symbols, currencies }) {
-    console.log('getPrice, symbols: ', symbols);
-    return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
   }
 
   /**

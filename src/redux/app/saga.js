@@ -8,6 +8,7 @@ import _ from 'lodash';
 /* Actions */
 import actions from './actions';
 import walletActions from '../wallet/actions';
+import priceActions from '../price/actions';
 
 import application from '../../common/application';
 import settings from '../../common/settings';
@@ -72,6 +73,16 @@ function* initFromStorageRequest() {
     // 2. Deserialize Wallets from permenate storage
     yield call(walletManager.deserialize);
 
+    const prices = yield call(storage.getPrices);
+    console.log('storage.getPrices, prices: ', prices);
+    yield put({
+      type: priceActions.PRICE_OBJECT_UPDATED,
+      prices,
+    });
+    const currency = settings.get('currency');
+    walletManager.updateAssetValue(prices, currency);
+    console.log('walletManager: ', walletManager);
+
     // Sets state in reducer for success
     yield put({
       type: walletActions.SET_WALLET_MANAGER,
@@ -104,12 +115,17 @@ function* initWithParseRequest() {
   // 1. Sign in or sign up to get Parse.User object
   // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    yield call(ParseHelper.signInOrSignUp, appId);
+    const user = yield call(ParseHelper.getUser);
+    console.log('initWithParseRequest, user: ', user);
+    if (!user) {
+      yield call(ParseHelper.signInOrSignUp, appId);
+    }
     console.log(`User found with appId ${appId}. Sign in successful.`);
     // If we don't encounter error here, mark initialization finished
     yield put({ type: actions.INIT_WITH_PARSE_DONE });
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
+    yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
     yield put(actions.initializeWithParse());
   }

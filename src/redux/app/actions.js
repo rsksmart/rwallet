@@ -54,6 +54,9 @@ const actions = {
   SET_FCM_TOKEN: 'SET_FCM_TOKEN',
   INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
 
+  SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
+  RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -173,6 +176,12 @@ const actions = {
   }),
   initFcm: () => ({
     type: actions.INIT_FCM,
+  }),
+  setLoginError: () => ({
+    type: actions.SET_LOGIN_ERROR,
+  }),
+  resetLoginError: () => ({
+    type: actions.RESET_LOGIN_ERROR,
   }),
 };
 
