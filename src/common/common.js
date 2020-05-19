@@ -292,6 +292,12 @@ const common = {
     return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
+  /**
+   * Returns the biometry type.
+   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint")
+   * @returns {string} the device biometry type
+   * @returns {null} if this device has no available biometry types
+   */
   async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
