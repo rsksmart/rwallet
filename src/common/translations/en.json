@@ -370,7 +370,7 @@
         "notMatch": "Fingerprint does not match. Please try again."
       },
       "faceID": {
-        "title": "Touch Sensor",
+        "title": "Face ID",
         "touchToVerify": "Touch to verify face ID",
         "nativeNote": "Please aim at the camera for face recognition",
         "notMatch": "FaceID does not march. Please try again."

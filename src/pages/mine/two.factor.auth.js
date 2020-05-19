@@ -44,13 +44,13 @@ class TwoFactorAuth extends Component {
       this.setSingleSettings = this.setSingleSettings.bind(this);
 
       this.state = {
-        biometryType: '',
+        biometryType: null,
       };
     }
 
-    componentDidMount() {
-      common.getFingerprintType()
-        .then((biometryType) => this.setState({ biometryType }));
+    async componentDidMount() {
+      const biometryType = await common.getBiometryType();
+      this.setState({ biometryType });
     }
 
     onResetPasscodePress() {

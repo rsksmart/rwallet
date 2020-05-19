@@ -292,27 +292,16 @@ const common = {
     return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
-  async isFingerprintAvailable() {
+  async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Biometrics' || biometryType === 'Face ID') {
-        return true;
+      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint' || biometryType === 'Face ID') {
+        return biometryType;
       }
     } catch (error) {
       console.log('The device does not support fingerprint');
     }
-    return false;
-  },
-
-  getFingerprintType() {
-    return new Promise((resolve, reject) => {
-      FingerprintScanner.isSensorAvailable().then((biometryType) => {
-        resolve(biometryType);
-      }).catch((error) => {
-        console.log('Fingerprint error: ', error);
-        reject(error);
-      });
-    });
+    return null;
   },
 
   getRandom(count) {

@@ -80,17 +80,13 @@ export default class TouchSensorModal extends Component {
     this.onUsePasscodePress = this.onUsePasscodePress.bind(this);
     this.onIconPressed = this.onIconPressed.bind(this);
     this.requestScan = this.requestScan.bind(this);
-    this.state = { errorMessage: null, biometryType: '' };
+    this.state = { errorMessage: null, biometryType: null };
   }
 
-  componentDidMount() {
-    common.getFingerprintType()
-      .then((biometryType) => {
-        this.setState({ biometryType });
-      })
-      .then(() => {
-        this.requestScan();
-      });
+  async componentDidMount() {
+    const biometryType = await common.getBiometryType();
+    this.setState({ biometryType });
+    this.requestScan();
   }
 
   componentWillUnmount = () => {
