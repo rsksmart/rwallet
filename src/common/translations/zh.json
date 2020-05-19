@@ -191,7 +191,7 @@
         "title": "币种"
       },
       "2fa": {
-        "title": "双因素认证",
+        "title": "双重认证",
         "setPasscode": "设置密码",
         "resetPasscode": "重置密码",
         "useFingerprint": "使用指纹解锁",
