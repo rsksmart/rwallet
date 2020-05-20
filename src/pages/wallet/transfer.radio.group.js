@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   body: {
     flex: 1,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
   },
   customRow: {
     flexDirection: 'row',

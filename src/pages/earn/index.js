@@ -7,6 +7,7 @@ import EarnHeader from '../../components/headers/header.earn';
 import Loc from '../../components/common/misc/loc';
 import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color.ts';
 
 const headerImage = require('../../assets/images/misc/title.image.earn.png');
 
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: 35,
     height: 3,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
     borderRadius: 1.5,
   },
   listText: {

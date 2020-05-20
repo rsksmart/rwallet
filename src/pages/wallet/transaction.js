@@ -14,6 +14,7 @@ import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color.ts';
 
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 17,
     alignSelf: 'center',
   },

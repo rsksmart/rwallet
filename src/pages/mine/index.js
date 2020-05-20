@@ -19,6 +19,7 @@ import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
 import WebViewModal from '../../components/common/webview.modal';
 import config from '../../../config';
+import color from '../../assets/styles/color.ts';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   linkText: {
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 16,
   },
   lastBlockMarginBottom: {

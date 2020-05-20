@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   scanView: {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    color: '#00B520',
+    color: color.app.theme,
     textAlign: 'center',
     fontWeight: '900',
     fontSize: 16,

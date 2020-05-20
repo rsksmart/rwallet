@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   selectedColor: {
-    color: color.lightGreen,
+    color: color.lightBlue,
   },
   ButtonsView: {
     flexDirection: 'row',

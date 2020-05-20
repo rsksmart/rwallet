@@ -8,6 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import SwapHeader from '../../components/headers/header.swap';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color.ts';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
     fontFamily: 'Avenir-Book',
     fontSize: 15,
     marginTop: 15,

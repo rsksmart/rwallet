@@ -16,6 +16,7 @@ import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
 // import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   body: {
@@ -325,7 +326,7 @@ class SwapSelection extends Component {
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        bgColor="#00B520"
+        bgColor={color.app.theme}
         headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
       >
         <View style={[styles.body]}>

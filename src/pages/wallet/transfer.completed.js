@@ -8,6 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color.ts';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   body: {
     flex: 1,

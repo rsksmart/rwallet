@@ -12,6 +12,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
+import color from '../../assets/styles/color.ts';
 
 const bip39 = require('bip39');
 
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   },
   copy: {
     textAlign: 'center',
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 15,
   },
   tagsView: {

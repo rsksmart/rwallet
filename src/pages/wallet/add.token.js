@@ -250,7 +250,7 @@ class AddToken extends Component {
         isSafeView
         customBottomButton={customButton}
         hasLoader={false}
-        bgColor="#00B520"
+        bgColor={color.app.theme}
         headerComponent={header}
       >
         <View style={[styles.body, { flex: 1 }]}>

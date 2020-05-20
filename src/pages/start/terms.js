@@ -12,6 +12,7 @@ import screenHelper from '../../common/screenHelper';
 import WebViewModal from '../../components/common/webview.modal';
 import { strings } from '../../common/i18n';
 import config from '../../../config';
+import color from '../../assets/styles/color.ts';
 
 const logo = require('../../assets/images/icon/logo.png');
 
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   },
   completeTermsText: {
     marginBottom: 10,
-    color: '#00B520',
+    color: color.app.theme,
   },
   termsView: {
     position: 'absolute',
