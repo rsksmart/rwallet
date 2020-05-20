@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity, Switch, Platform,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
-import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   body: {
@@ -82,7 +82,6 @@ class TwoFactorAuth extends Component {
           <View style={styles.row}>
             <Loc style={[styles.title]} text="page.mine.2fa.useFingerprint" />
             <Switch
-              trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
               value={fingerprint}
               onValueChange={this.setSingleSettings}
             />

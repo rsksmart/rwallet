@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground, Platform,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
@@ -202,7 +203,6 @@ class AddToken extends Component {
             <Image style={styles.icon} source={item.icon} />
             <Text style={styles.rowTitle}>{item.name}</Text>
             <Switch
-              trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
               style={styles.switch}
               value={item.selected}
               onValueChange={(value) => this.onSwitchValueChanged(index, value)}

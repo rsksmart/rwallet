@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, ScrollView, Platform,
+  View, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Switch } from 'native-base';
 
+import Switch from '../../src/components/common/switch/switch';
 import flex from '../../../assets/styles/layout.flex';
 import MineSettingIndexHeader from './mine.setting.index.header';
 import MineSettingIndexItem from './mine.setting.index.item';
-import color from '../../src/assets/styles/color.ts';
 
 
 class Setting extends Component {
@@ -31,7 +30,6 @@ class Setting extends Component {
               left="Enable Notification"
               right={(
                 <Switch
-                  trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
                   value
                   onValueChange={this.handleChangeSwitch}
                 />

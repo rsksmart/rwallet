@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Switch, Text, Platform,
+  StyleSheet, View, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import Switch from '../switch/switch';
 
 const styles = StyleSheet.create({
   item: {
@@ -30,7 +30,6 @@ export default class SwitchListItem extends Component {
       <View style={styles.item}>
         <Text style={styles.title}>{title}</Text>
         <Switch
-          trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
           value={value}
           onValueChange={(v) => {
             this.setState({ value: v });

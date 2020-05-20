@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform, Image,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, Image,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
+import Switch from '../../components/common/switch/switch';
 import { createErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
@@ -948,7 +949,6 @@ class Transfer extends Component {
             <View style={[styles.customRow]}>
               <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
               <Switch
-                trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
                 disabled={!levelFees}
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}

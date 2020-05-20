@@ -29,14 +29,14 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "rwallet.app"
+               BuildableName = "RIF Wallet.app"
                BlueprintName = "rwallet"
                ReferencedContainer = "container:rwallet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
+            buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
             buildForAnalyzing = "YES">
@@ -59,7 +59,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rwallet.app"
+            BuildableName = "RIF Wallet.app"
             BlueprintName = "rwallet"
             ReferencedContainer = "container:rwallet.xcodeproj">
          </BuildableReference>
@@ -92,7 +92,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rwallet.app"
+            BuildableName = "RIF Wallet.app"
             BlueprintName = "rwallet"
             ReferencedContainer = "container:rwallet.xcodeproj">
          </BuildableReference>
@@ -109,7 +109,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rwallet.app"
+            BuildableName = "RIF Wallet.app"
             BlueprintName = "rwallet"
             ReferencedContainer = "container:rwallet.xcodeproj">
          </BuildableReference>
