@@ -80,7 +80,7 @@ class Settings {
     } else if (name.length > CONSTANTS.NAME_MAX_LENGTH) {
       throw new Error('err.nametoolong');
     }
-    const regex = /^[a-zA-Z0-9 ]+$/;
+    const regex = /^[a-zA-Z0-9 ]+$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('err.nameinvalid');
