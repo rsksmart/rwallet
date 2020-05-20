@@ -5,6 +5,9 @@ import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
 
+
+const ERROR_PARSE_DEFAULT = 'error.parse.default';
+
 const parseConfig = config && config.parse;
 
 // If we are unable to load config, it means the config file is moved. Throw error to indicate that.
@@ -192,8 +195,11 @@ class ParseHelper {
    */
   static async handleError({ err }) {
     console.log('handleError', err);
+    if (!err) {
+      return { message: ERROR_PARSE_DEFAULT };
+    }
 
-    const message = err.message || 'error.parse.default';
+    const message = err.message || ERROR_PARSE_DEFAULT;
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:

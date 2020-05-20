@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
     color: color.black,
     marginTop: 5,
   },
+  errorMessage: {
+    color: '#DF5264',
+  },
 });
 
 class NotificationBar extends React.Component {
@@ -54,7 +57,7 @@ class NotificationBar extends React.Component {
   }
 
   render() {
-    const { title, message } = this.props;
+    const { type, title, message } = this.props;
 
     return (
       <GestureRecognizer onSwipe={this.onSwipe} style={styles.container}>
@@ -65,7 +68,7 @@ class NotificationBar extends React.Component {
           onPress={this.onNotificationPress}
         >
           <View style={styles.textContainer}>
-            <Text numberOfLines={1} style={styles.title}>{title}</Text>
+            <Text numberOfLines={1} style={[styles.title, type === 'error' ? styles.errorMessage : null]}>{title}</Text>
             <Text numberOfLines={1} style={styles.message}>{message}</Text>
           </View>
         </TouchableOpacity>
@@ -77,6 +80,7 @@ class NotificationBar extends React.Component {
 NotificationBar.propTypes = {
   title: PropTypes.string,
   message: PropTypes.string,
+  type: PropTypes.string,
   vibrate: PropTypes.bool,
   isOpen: PropTypes.bool,
   onPress: PropTypes.func,
@@ -86,6 +90,7 @@ NotificationBar.propTypes = {
 NotificationBar.defaultProps = {
   title: 'Notification',
   message: 'This is a test notification',
+  type: undefined,
   vibrate: true,
   isOpen: false,
   onPress: () => null,

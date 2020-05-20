@@ -20,6 +20,7 @@ class Dashboard extends Component {
       const { lockApp } = props;
       this.willFocusSubscription = null;
       this.lock = debounce(() => lockApp(true), config.appLock.timeout / 2);
+      this.isShowLoginError = false;
     }
 
     async componentWillMount() {
@@ -37,26 +38,30 @@ class Dashboard extends Component {
           timer.setTimeout(this, 'lockApp', this.lock, config.appLock.timeout);
         },
       );
+      this.showLoginError(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
-      const {
-        fcmNavParams, appLock, isLoginError, showInAppNotification, resetLoginError,
-      } = nextProps;
-      const { isLoginError: lastIsLoginError } = this.props;
+      const { fcmNavParams, appLock } = nextProps;
       if (!appLock) {
         this.callFcmNavigate(fcmNavParams);
       }
-      if (!lastIsLoginError && isLoginError) {
-        showInAppNotification({ title: 'Network Error', body: 'Your device can not connect to the server.' });
-        resetLoginError();
-      }
+      this.showLoginError(nextProps);
     }
 
     componentWillUnmount() {
       this.willFocusSubscription.remove();
       this.didBlurSubscription.remove();
       timer.clearTimeout(this);
+    }
+
+    showLoginError = (props) => {
+      const { isLoginError, showInAppNotification } = props;
+      const { isShowLoginError } = this;
+      if (!isShowLoginError && isLoginError) {
+        showInAppNotification({ type: 'error', title: 'Network Error', body: 'Your device can not connect to the server.' });
+        this.isShowLoginError = true;
+      }
     }
 
     /**
@@ -111,9 +116,6 @@ Dashboard.propTypes = {
   }),
   resetFcmNavParams: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
-  isLoginError: PropTypes.bool.isRequired,
-  showInAppNotification: PropTypes.func.isRequired,
-  resetLoginError: PropTypes.func.isRequired,
 };
 
 Dashboard.defaultProps = {

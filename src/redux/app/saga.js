@@ -121,6 +121,7 @@ function* initWithParseRequest() {
       yield call(ParseHelper.signInOrSignUp, appId);
     }
     console.log(`User found with appId ${appId}. Sign in successful.`);
+    yield put(actions.resetLoginError());
     // If we don't encounter error here, mark initialization finished
     yield put({ type: actions.INIT_WITH_PARSE_DONE });
   } catch (err) {
