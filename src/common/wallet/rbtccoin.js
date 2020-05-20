@@ -156,7 +156,7 @@ export default class RBTCCoin {
       precision: this.precision,
       chain: this.chain,
       name: this.name,
-      balance: this.balance.toString(),
+      balance: this.balance ? this.balance.toString() : undefined,
     };
   }
 

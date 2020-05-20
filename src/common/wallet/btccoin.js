@@ -102,7 +102,7 @@ export default class Coin {
       derivationPath: this.derivationPath,
       address: this.address,
       objectId: this.objectId,
-      balance: this.balance.toString(),
+      balance: this.balance ? this.balance.toString() : undefined,
     };
   }
 
