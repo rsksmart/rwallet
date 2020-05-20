@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginLeft: 13,
   },
   cornerButtonPlus: {
-    color: '#00BA00',
+    color: color.app.theme,
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
   },
