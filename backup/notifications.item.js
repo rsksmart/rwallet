@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Text, StyleSheet, Switch,
+  View, Text, StyleSheet, Switch, Platform,
 } from 'react-native';
+import color from '../src/assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   buttonView: {
@@ -43,6 +44,7 @@ export default class Item extends Component {
       <View style={styles.item}>
         <Text style={[styles.title]}>{data.title}</Text>
         <Switch
+          trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
           value={value}
           onValueChange={(v) => {
             this.setState({ value: v });

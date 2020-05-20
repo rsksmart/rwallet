@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, Text, TouchableOpacity, Switch,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, Switch, Platform,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -361,6 +361,7 @@ class WalletRecovery extends Component {
               <View style={styles.row}>
                 <Loc style={[flex.flex1, styles.switchLabel]} text="page.wallet.recovery.specifyPath" />
                 <Switch
+                  trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
                   value={isDerivationPathEnabled}
                   onValueChange={(value) => { this.setState({ isDerivationPathEnabled: value }); }}
                 />

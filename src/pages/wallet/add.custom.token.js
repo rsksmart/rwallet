@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, Switch,
+  View, StyleSheet, TextInput, Switch, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -179,7 +179,11 @@ class AddCustomToken extends Component {
             </View>
             <View style={[styles.switchView]}>
               <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
-              <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
+              <Switch
+                trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
+                value={isMainnet}
+                onValueChange={this.onSwitchValueChanged}
+              />
             </View>
           </View>
         </BasePageGereral>

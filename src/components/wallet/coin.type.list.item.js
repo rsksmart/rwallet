@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Image, Text, Switch,
+  StyleSheet, View, Image, Text, Switch, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color.ts';
@@ -51,6 +51,7 @@ export default class Item extends Component {
         <View style={[styles.right]}>
           <Text style={[styles.title]}>{data.title}</Text>
           <Switch
+            trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
             value={value}
             onValueChange={this.onValueChange}
             disabled={isDisabled}

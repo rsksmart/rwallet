@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, ScrollView,
+  View, ScrollView, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Switch } from 'native-base';
@@ -8,6 +8,7 @@ import { Switch } from 'native-base';
 import flex from '../../../assets/styles/layout.flex';
 import MineSettingIndexHeader from './mine.setting.index.header';
 import MineSettingIndexItem from './mine.setting.index.item';
+import color from '../../src/assets/styles/color.ts';
 
 
 class Setting extends Component {
@@ -28,9 +29,13 @@ class Setting extends Component {
             <MineSettingIndexItem
               navigation={navigation}
               left="Enable Notification"
-              right={
-                <Switch value onValueChange={this.handleChangeSwitch} />
-                    }
+              right={(
+                <Switch
+                  trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
+                  value
+                  onValueChange={this.handleChangeSwitch}
+                />
+              )}
             />
             <MineSettingIndexHeader text="R Wallet" />
             <MineSettingIndexItem

@@ -948,6 +948,7 @@ class Transfer extends Component {
             <View style={[styles.customRow]}>
               <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
               <Switch
+                trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
                 disabled={!levelFees}
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}

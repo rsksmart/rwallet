@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -202,6 +202,7 @@ class AddToken extends Component {
             <Image style={styles.icon} source={item.icon} />
             <Text style={styles.rowTitle}>{item.name}</Text>
             <Switch
+              trackColor={Platform.OS === 'ios' ? { false: 'gray', true: color.app.theme } : {}}
               style={styles.switch}
               value={item.selected}
               onValueChange={(value) => this.onSwitchValueChanged(index, value)}
