@@ -121,7 +121,7 @@ function* loginRequest() {
     yield call(ParseHelper.handleError, { err });
     yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
-    yield put(actions.initializeWithParse());
+    yield put(actions.login());
   }
 }
 
@@ -255,6 +255,9 @@ function* processNotificationRequest(action) {
   }
   const { title, body, data } = notification;
   console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+  if (!data) {
+    return null;
+  }
   const { event, eventParams } = data;
   const params = JSON.parse(eventParams);
   switch (event) {
