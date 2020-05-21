@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   spotLight: {
     width: tabWidth * 0.5,
     height: 6,
-    backgroundColor: 'green',
+    backgroundColor: '#4169E1',
     borderRadius: 8,
   },
   tabButtonText: {

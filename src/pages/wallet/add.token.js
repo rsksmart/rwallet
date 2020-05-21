@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     marginLeft: 13,
   },
   cornerButtonPlus: {
-    color: '#00BA00',
+    color: color.app.theme,
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
   },
@@ -250,7 +251,7 @@ class AddToken extends Component {
         isSafeView
         customBottomButton={customButton}
         hasLoader={false}
-        bgColor="#00B520"
+        bgColor={color.app.theme}
         headerComponent={header}
       >
         <View style={[styles.body, { flex: 1 }]}>

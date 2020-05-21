@@ -9,7 +9,7 @@ import presetStyles from '../../assets/styles/style';
 import color from '../../assets/styles/color.ts';
 import screenHelper from '../../common/screenHelper';
 
-const rsk = require('../../assets/images/mine/rsk.png');
+const rsk = require('../../assets/images/mine/page.footing.logo.png');
 
 const styles = StyleSheet.create({
   logoView: {

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Text, StyleSheet, Switch,
+  View, Text, StyleSheet,
 } from 'react-native';
+import Switch from '../src/components/common/switch/switch';
 
 const styles = StyleSheet.create({
   buttonView: {

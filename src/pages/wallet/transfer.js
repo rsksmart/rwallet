@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Platform, Image,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, Image,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
+import Switch from '../../components/common/switch/switch';
 import { createErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   body: {
     flex: 1,
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
   },
   customRow: {
     flexDirection: 'row',
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
     bottom: 3,
   },
   sendAllText: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   lastBlockMarginBottom: {
     marginBottom: 15,
@@ -806,9 +807,9 @@ class Transfer extends Component {
               style={styles.customFeeSlider}
               minimumValue={0}
               maximumValue={1}
-              minimumTrackTintColor="#00B520"
+              minimumTrackTintColor={color.app.theme}
               maximumTrackTintColor="#D8D8D8"
-              thumbTintColor="#00B520"
+              thumbTintColor={color.app.theme}
               onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
             />

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, Switch,
+  View, StyleSheet, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Rsk3 from '@rsksmart/rsk3';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
@@ -179,7 +180,10 @@ class AddCustomToken extends Component {
             </View>
             <View style={[styles.switchView]}>
               <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
-              <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
+              <Switch
+                value={isMainnet}
+                onValueChange={this.onSwitchValueChanged}
+              />
             </View>
           </View>
         </BasePageGereral>

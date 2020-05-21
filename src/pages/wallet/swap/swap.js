@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: 35,
     height: 3,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
     borderRadius: 1.5,
   },
   listText: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 
   },
   receivingAmount: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   buttonView: {
     flexDirection: 'row',
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     width: '33.3%',
     height: '100%',
     borderRadius: 25,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
     justifyContent: 'center',
     alignItems: 'center',
   },

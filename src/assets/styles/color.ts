@@ -42,6 +42,7 @@ const color = {
     border : {"bg": {} ,"primary":{} ,"aqua":{}, "black":{}, "blue":{}, "fuchsia":{}, "gray":{}, "green":{}, "lime":{}, "maroon":{}, "navy":{}, "olive":{}, "orange":{}, "purple":{}, "red":{}, "silver":{}, "teal":{}, "white":{}, "yellow":{}},
     //end
     app : {
+        theme: '#008CFF',
         standard : "#df394d",
         fontImp : "#333333",
         fontNormal : "#666666",
@@ -56,7 +57,7 @@ const color = {
     },
     text: {
         link: '#DF5264',
-        warning: '#00B520',
+        warning: '#008CFF',
     },
     component: {
         input: {
@@ -64,7 +65,7 @@ const color = {
             borderColor: 'rgba(144,144,144,0.2)',
         },
         button: {
-            backgroundColor: '#00b520',
+            backgroundColor: '#008CFF',
             color: '#FFF',
         },
         passcodeModal: {
@@ -74,10 +75,10 @@ const color = {
                 alert: '#FC4349',
             },
             dot: {
-                borderColor: '#00B520'
+                borderColor: '#008CFF'
             },
             dot2 : {
-                backgroundColor: '#00B520',
+                backgroundColor: '#008CFF',
             },
             button: {
                 borderColor: '#9F9F9F',
@@ -171,7 +172,7 @@ const color = {
     midGrey: '#727372',
     seporatorLineGrey: '#D8D8D8',
     seporatorLineLightGrey: '#DCDCDC',
-    lightGreen: '#00B520',
+    lightBlue: '#008CFF',
     word: '#4A4A4A',
     ...styleScript(),
 };

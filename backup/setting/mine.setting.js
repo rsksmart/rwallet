@@ -3,8 +3,8 @@ import {
   View, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Switch } from 'native-base';
 
+import Switch from '../../src/components/common/switch/switch';
 import flex from '../../../assets/styles/layout.flex';
 import MineSettingIndexHeader from './mine.setting.index.header';
 import MineSettingIndexItem from './mine.setting.index.item';
@@ -28,9 +28,12 @@ class Setting extends Component {
             <MineSettingIndexItem
               navigation={navigation}
               left="Enable Notification"
-              right={
-                <Switch value onValueChange={this.handleChangeSwitch} />
-                    }
+              right={(
+                <Switch
+                  value
+                  onValueChange={this.handleChangeSwitch}
+                />
+              )}
             />
             <MineSettingIndexHeader text="R Wallet" />
             <MineSettingIndexItem

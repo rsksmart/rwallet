@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   confirmationClearButtonText: {
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 16,
     fontWeight: '500',
   },

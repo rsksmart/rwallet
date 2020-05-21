@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Switch, Text,
+  StyleSheet, View, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import Switch from '../switch/switch';
 
 const styles = StyleSheet.create({
   item: {
     padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'red',
   },
   title: {
     flex: 1,

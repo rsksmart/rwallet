@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   check: {
     marginRight: 10,
-    color: '#00B520',
+    color: color.app.theme,
   },
 });
 

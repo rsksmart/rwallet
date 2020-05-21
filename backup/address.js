@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import flex from '../../assets/styles/layout.flex';
+import color from '../src/assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   send: {
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 16,
     marginTop: 30,
   },

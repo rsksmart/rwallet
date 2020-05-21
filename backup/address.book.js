@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   add: {
-    color: '#00B520',
+    color: color.app.theme,
     marginLeft: 15,
   },
   searchIcon: {

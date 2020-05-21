@@ -10,7 +10,7 @@ export const wordFieldWidth = 163;
 
 const styles = StyleSheet.create({
   frame: {
-    borderColor: '#00B520',
+    borderColor: color.app.theme,
     backgroundColor: color.component.input.backgroundColor,
     borderRadius: 4,
     borderWidth: 1,

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, TouchableOpacity, Switch,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
@@ -80,7 +81,10 @@ class TwoFactorAuth extends Component {
         useFingerSwitchRow = (
           <View style={styles.row}>
             <Loc style={[styles.title]} text="page.mine.2fa.useFingerprint" />
-            <Switch value={fingerprint} onValueChange={this.setSingleSettings} />
+            <Switch
+              value={fingerprint}
+              onValueChange={this.setSingleSettings}
+            />
           </View>
         );
       }
