@@ -173,6 +173,7 @@ const color = {
     seporatorLineLightGrey: '#DCDCDC',
     lightGreen: '#00B520',
     word: '#4A4A4A',
+    warningText: '#DF5264',
     ...styleScript(),
 };
 

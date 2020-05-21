@@ -82,5 +82,4 @@ const config = {
   termsUrl: 'https://www.rsk.co/terms-conditions',
 };
 
-
 export default config;

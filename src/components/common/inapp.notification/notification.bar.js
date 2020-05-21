@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   errorMessage: {
-    color: '#DF5264',
+    color: color.warningText,
   },
 });
 

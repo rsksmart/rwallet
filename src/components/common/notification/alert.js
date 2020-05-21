@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
+import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   scanView: {
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   errorButtonText: {
-    color: '#DF5264',
+    color: color.warningText,
   },
 });
 

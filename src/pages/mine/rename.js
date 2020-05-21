@@ -10,6 +10,7 @@ import presetStyle from '../../assets/styles/style';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
+import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   notice: {
     marginTop: 5,
     fontSize: 12,
-    color: '#DF5264',
+    color: color.warningText,
     marginHorizontal: 5,
   },
   body: {
