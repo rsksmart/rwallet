@@ -68,7 +68,7 @@
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
-        "importWalletNote": "Recupere sua carteira usando sua senha"
+        "importWalletNote": "Recupere sua carteira usando a frase de recuperação"
       },
       "selectCurrency": {
         "title": "Selecionar moeda da carteira",
