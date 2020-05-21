@@ -294,14 +294,14 @@ const common = {
 
   /**
    * Returns the biometry type.
-   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint")
+   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint" or "Biometrics")
    * @returns {string} the device biometry type
    * @returns {null} if this device has no available biometry types
    */
   async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint' || biometryType === 'Face ID') {
+      if (biometryType === 'Touch ID' || biometryType === 'Biometrics' || biometryType === 'Fingerprint' || biometryType === 'Face ID') {
         return biometryType;
       }
     } catch (error) {
