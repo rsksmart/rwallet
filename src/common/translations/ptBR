@@ -114,13 +114,13 @@
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
-        "title": "Mandar",
+        "title": "Enviar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
       },
       "swap": {
-        "title": "Troca",
+        "title": "Trocar",
         "wallet": "carteira",
         "want": "Quero %{symbol} no %{wallet}",
         "errorAmountInRange": {
@@ -135,7 +135,7 @@
         "title": "Escolha a moeda",
         "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
         "please": "por favor",
-        "create": "crio",
+        "create": "criar",
         "or": "ou",
         "import": "Introduzir",
         "aWallet": "uma carteira",
@@ -144,7 +144,7 @@
       "swapCompleted": {
         "title": "Troca",
         "body": "Troca concluída!",
-        "note": "Seu Exchange está a caminho.",
+        "note": "Sua troca está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
@@ -185,7 +185,7 @@
         "developerPortal": "Portal do desenvolvedor"
       },
       "language": {
-        "title": "Língua"
+        "title": "Idioma"
       },
       "currency": {
         "title": "Moeda"
@@ -273,9 +273,9 @@
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
-    "Send": "Mandar",
+    "Send": "Enviar",
     "Receive": "Receber",
-    "Swap": "Troca",
+    "Swap": "Trocar",
     "Delete": "Excluir",
     "Reset": "Redefinir",
     "Finish": "Terminar",
