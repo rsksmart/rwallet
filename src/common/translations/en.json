@@ -397,5 +397,11 @@
     "KRW": "South Korea Won",
     "CNY": "Chinese Yuan",
     "GBP": "Pound Sterling"
+  },
+  "notification": {
+    "networkError": {
+      "title": "Network Error",
+      "body": "Your device can not connect to the server."
+    }
   }
 }

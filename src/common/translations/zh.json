@@ -401,5 +401,11 @@
     "KRW": "韩元",
     "CNY": "人民币",
     "GBP": "英镑"
+  },
+  "notification": {
+    "networkError": {
+      "title": "网络错误",
+      "body": "您的设备无法连接到服务器。"
+    }
   }
 }

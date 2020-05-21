@@ -400,5 +400,11 @@
     "KRW": "Won coreano",
     "CNY": "Yuan chino",
     "GBP": "Libra esterlina"
+  },
+  "notification": {
+    "networkError": {
+      "title": "Error de red",
+      "body": "Su dispositivo no puede conectarse al servidor."
+    }
   }
 }

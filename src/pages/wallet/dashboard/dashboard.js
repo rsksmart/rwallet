@@ -10,6 +10,7 @@ import timer from '../../../common/timer';
 import config from '../../../../config';
 import fcmHelper from '../../../common/fcmHelper';
 import { createErrorInAppNotification } from '../../../components/common/inapp.notification/notification';
+import { strings } from '../../../common/i18n';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -60,7 +61,12 @@ class Dashboard extends Component {
       const { isLoginError, showInAppNotification } = props;
       const { isShowLoginError } = this;
       if (!isShowLoginError && isLoginError) {
-        showInAppNotification(createErrorInAppNotification('Network Error', 'Your device can not connect to the server.'));
+        showInAppNotification(
+          createErrorInAppNotification(
+            strings('notification.networkError.title'),
+            strings('notification.networkError.body'),
+          ),
+        );
         this.isShowLoginError = true;
       }
     }
@@ -130,6 +136,7 @@ const mapStateToProps = (state) => ({
   appLock: state.App.get('appLock'),
   fcmNavParams: state.App.get('fcmNavParams'),
   isLoginError: state.App.get('isLoginError'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
