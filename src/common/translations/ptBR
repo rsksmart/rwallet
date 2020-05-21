@@ -296,7 +296,7 @@
       "body": "Entre em contato com o suporte ao cliente."
     },
     "unableRecover": {
-      "title": "Não foi possível recuperar",
+      "title": "Não foi possível restaurar",
       "body": "Não podemos importar uma carteira com sua frase de recuperação. Verifique se a frase está correta."
     },
     "duplicatePhrase": {
