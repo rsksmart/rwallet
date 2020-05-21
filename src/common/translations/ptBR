@@ -28,7 +28,7 @@
         "addAsset": "Adicionar ativo"
       },
       "history": {
-        "noTransNote": "Não há transações encontradas nesta carteira.",
+        "noTransNote": "Você ainda não realizou transações com este ativo.",
         "recent": "Recente",
         "loading": "Carregando..."
       },
