@@ -163,7 +163,7 @@
       "addToken": {
         "title": "Adicionar tokens",
         "enabledAssets": "Ativados",
-        "note": "Desative ativos para ocultá-los do seu portfólio.",
+        "note": "Desative para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar outros tokens",
         "custom": "Adicionar"
       }
