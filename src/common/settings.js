@@ -3,7 +3,7 @@ import _ from 'lodash';
 import storage from './storage';
 import config from '../../config';
 import { getCurrentLanguage } from './i18n';
-import CONSTANTS from './constants';
+import CONSTANTS from './constants.json';
 
 /**
 * defaultSettings
@@ -80,7 +80,7 @@ class Settings {
     } else if (name.length > CONSTANTS.NAME_MAX_LENGTH) {
       throw new Error('err.nametoolong');
     }
-    const regex = /^[a-zA-Z0-9 ]$/g;
+    const regex = /^[a-zA-Z0-9 ]+$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('err.nameinvalid');
