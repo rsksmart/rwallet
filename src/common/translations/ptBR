@@ -262,7 +262,7 @@
     "gotIt": "ENTENDI",
     "create": "CRIAR",
     "CONFIRM": "CONFIRME",
-    "retry": "Tentar Novamente",
+    "retry": "Tentar novamente",
     "IMPORT": "IMPORTAR",
     "Clear": "Claro",
     "startOver": "RECOMEÇAR",
@@ -280,7 +280,7 @@
     "Reset": "Redefinir",
     "Finish": "Terminar",
     "Exchange": "Troca",
-    "addAsset": "Adicionar Ativo",
+    "addAsset": "Adicionar ativo",
     "ok": "Está bem"
   },
   "txState": {
