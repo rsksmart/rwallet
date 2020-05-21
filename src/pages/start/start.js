@@ -51,8 +51,8 @@ class StartPage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { wallets, navigation } = nextProps;
-    if (!_.isEmpty(wallets)) {
+    const { wallets, navigation, isInitFromStorageDone } = nextProps;
+    if (isInitFromStorageDone && !_.isEmpty(wallets)) {
       navigation.navigate('PrimaryTabNavigator');
     }
     return null;
@@ -64,14 +64,14 @@ class StartPage extends Component {
   }
 
   render() {
-    const { navigation, wallets } = this.props;
+    const { navigation, wallets, isInitFromStorageDone } = this.props;
     const { version } = this.state;
     return (
       <SafeAreaView style={[styles.page]}>
         <View style={styles.logo}>
           <Image source={logo} />
         </View>
-        {!_.isNil(wallets) && _.isEmpty(wallets) && (
+        {isInitFromStorageDone && _.isEmpty(wallets) && (
         <View style={styles.buttonView}>
           <Button text="page.start.start.button" onPress={() => navigation.navigate('TermsPage')} />
         </View>
@@ -90,6 +90,7 @@ StartPage.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
+  isInitFromStorageDone: PropTypes.bool.isRequired,
 };
 
 StartPage.defaultProps = {
@@ -98,6 +99,7 @@ StartPage.defaultProps = {
 
 const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
 });
 
 export default connect(mapStateToProps, null)(StartPage);

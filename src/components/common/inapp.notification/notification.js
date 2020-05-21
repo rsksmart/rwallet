@@ -15,6 +15,8 @@ const styles = StyleSheet.create({
   },
 });
 
+export const createErrorInAppNotification = (title, body) => ({ type: 'error', title, body });
+
 class Notification extends Component {
   constructor() {
     super();

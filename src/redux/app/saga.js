@@ -63,25 +63,21 @@ function* initFromStorageRequest() {
       value: settings,
     });
 
-    // Set passcode in reducer
+    // 2. Set passcode in reducer
     const passcode = yield call(storage.getPasscode);
     yield put({
       type: actions.UPDATE_PASSCODE,
       passcode,
     });
 
-    // 2. Deserialize Wallets from permenate storage
+    // 3. Deserialize Wallets from permenate storage
     yield call(walletManager.deserialize);
 
+    // 4. Deserialize prices
     const prices = yield call(storage.getPrices);
-    console.log('storage.getPrices, prices: ', prices);
-    yield put({
-      type: priceActions.PRICE_OBJECT_UPDATED,
-      prices,
-    });
+    yield put({ type: priceActions.PRICE_OBJECT_UPDATED, data: prices });
     const currency = settings.get('currency');
     walletManager.updateAssetValue(prices, currency);
-    console.log('walletManager: ', walletManager);
 
     // Sets state in reducer for success
     yield put({
@@ -109,21 +105,18 @@ function* initFromStorageRequest() {
   }
 }
 
-function* initWithParseRequest() {
+function* loginRequest() {
   const appId = application.get('id');
-
-  // 1. Sign in or sign up to get Parse.User object
-  // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
+    // Read Parse.User from storage, if not, sign in or sign up
     const user = yield call(ParseHelper.getUser);
-    console.log('initWithParseRequest, user: ', user);
+    console.log('initWithParseRequest, read from storage, user: ', user);
     if (!user) {
       yield call(ParseHelper.signInOrSignUp, appId);
     }
     console.log(`User found with appId ${appId}. Sign in successful.`);
     yield put(actions.resetLoginError());
-    // If we don't encounter error here, mark initialization finished
-    yield put({ type: actions.INIT_WITH_PARSE_DONE });
+    yield put(actions.loginDone());
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
     yield put(actions.setLoginError());
@@ -340,7 +333,7 @@ export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
-    takeEvery(actions.INIT_WITH_PARSE, initWithParseRequest),
+    takeEvery(actions.LOGIN, loginRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),

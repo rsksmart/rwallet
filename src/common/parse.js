@@ -30,6 +30,7 @@ const ParseTransaction = Parse.Object.extend('Transaction');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
+  // Get user from storage
   static async getUser() {
     const user = await Parse.User.currentAsync();
     return user;
@@ -70,7 +71,7 @@ class ParseHelper {
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings, fcmToken }) {
-    const parseUser = await Parse.User.currentAsync();
+    const parseUser = await ParseHelper.getUser();
     await parseUser.fetch();
 
     // Only set settings when it's defined.

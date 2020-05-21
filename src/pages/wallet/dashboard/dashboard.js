@@ -9,6 +9,7 @@ import appActions from '../../../redux/app/actions';
 import timer from '../../../common/timer';
 import config from '../../../../config';
 import fcmHelper from '../../../common/fcmHelper';
+import { createErrorInAppNotification } from '../../../components/common/inapp.notification/notification';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -59,7 +60,7 @@ class Dashboard extends Component {
       const { isLoginError, showInAppNotification } = props;
       const { isShowLoginError } = this;
       if (!isShowLoginError && isLoginError) {
-        showInAppNotification({ type: 'error', title: 'Network Error', body: 'Your device can not connect to the server.' });
+        showInAppNotification(createErrorInAppNotification('Network Error', 'Your device can not connect to the server.'));
         this.isShowLoginError = true;
       }
     }

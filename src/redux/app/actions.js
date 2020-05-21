@@ -2,8 +2,6 @@
 
 const actions = {
   // Constants definition
-  IS_PAGE_LOADING: 'IS_PAGE_LOADING',
-
   INIT_FROM_STORAGE: 'INIT_FROM_STORAGE',
   INIT_FROM_STORAGE_DONE: 'INIT_FROM_STORAGE_DONE',
 
@@ -54,6 +52,8 @@ const actions = {
   SET_FCM_TOKEN: 'SET_FCM_TOKEN',
   INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
 
+  LOGIN: 'LOGIN',
+  LOGIN_DONE: 'LOGIN_DONE',
   SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
   RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
 
@@ -77,10 +77,6 @@ const actions = {
   }),
   hidePasscode: () => ({
     type: actions.HIDE_PASSCODE,
-  }),
-  setPageLoading: (isLoading) => ({
-    type: actions.IS_PAGE_LOADING,
-    value: isLoading,
   }),
   getTransactions: (symbol, type, address, page) => ({
     type: actions.GET_TRANSACTIONS,
@@ -182,6 +178,12 @@ const actions = {
   }),
   resetLoginError: () => ({
     type: actions.RESET_LOGIN_ERROR,
+  }),
+  login: () => ({
+    type: actions.LOGIN,
+  }),
+  loginDone: () => ({
+    type: actions.LOGIN_DONE,
   }),
 };
 

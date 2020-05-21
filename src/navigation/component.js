@@ -48,14 +48,6 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
 class RootComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isStorageRead: false,
-      isParseWritten: false,
-    };
-  }
-
   /**
    * RootComponent is the main entrace of the App
    * Initialization jobs need to start here
@@ -69,52 +61,46 @@ class RootComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, currency, prices, isBalanceUpdated,
+      isInitFromStorageDone, isLogin, currency, prices, isBalanceUpdated,
     } = nextProps;
 
     const {
-      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated,
+      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated, isLogin: lastIsLogin, isInitFromStorageDone: lastIsInitFromStorageDone,
     } = this.props;
 
-    const { isStorageRead, isParseWritten } = this.state;
-
-    const newState = this.state;
-
-    if (isStorageRead && isParseWritten) { // Post-Initialization logic
-      const isCurrencyChanged = (currency !== originalCurrency);
-      const isPricesChanged = (!_.isEqual(prices, originalPrices));
-      let needUpdate = false;
-
-      console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
-      // Update total asset value and list data if there's currency or price change
-      // Balance, name, creation/deletion are handled in reducer directly
-      if (isBalanceUpdated) {
-        needUpdate = true;
-        resetBalanceUpdated();
-      } else if (isCurrencyChanged || isPricesChanged) {
-        needUpdate = true;
-      }
-
-      if (needUpdate) {
-        updateWalletAssetValue(currency, prices);
-      }
-    } else if (isInitFromStorageDone) { // Initialization logic
-      if (!isInitWithParseDone && !newState.isStorageRead) {
-        newState.isStorageRead = true;
-        this.onStorageRead(nextProps);
-      } else if (!newState.isParseWritten) {
-        newState.isParseWritten = true;
-        this.onUserLogin(nextProps);
-      }
+    // trigger onStorageRead if storage logic is done
+    if (!lastIsInitFromStorageDone && isInitFromStorageDone) {
+      this.onStorageRead(nextProps);
     }
 
-    this.setState(newState);
+    // trigger onUserLogin if user logged in
+    if (!lastIsLogin && isLogin) {
+      this.onUserLogin(nextProps);
+    }
+
+    // Update assets value
+    const isCurrencyChanged = (currency !== originalCurrency);
+    const isPricesChanged = (!_.isEqual(prices, originalPrices));
+    let needUpdate = false;
+
+    console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
+    // Update total asset value and list data if there's currency or price change
+    // Balance, name, creation/deletion are handled in reducer directly
+    if (isBalanceUpdated) {
+      needUpdate = true;
+      resetBalanceUpdated();
+    } else if (isCurrencyChanged || isPricesChanged) {
+      needUpdate = true;
+    }
+
+    if (needUpdate) {
+      updateWalletAssetValue(currency, prices);
+    }
   }
 
-
   onStorageRead = (props) => {
-    const { initializeWithParse } = props;
-    initializeWithParse();
+    const { login } = props;
+    login();
   }
 
   onUserLogin = (props) => {
@@ -188,7 +174,7 @@ RootComponent.propTypes = {
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
-  isInitWithParseDone: PropTypes.bool.isRequired,
+  isLogin: PropTypes.bool.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
