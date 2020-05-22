@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   addAsset: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
   },
   addAssetView: {
     marginTop: 15,
