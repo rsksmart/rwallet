@@ -361,7 +361,7 @@
     },
     "verifyPasscode": {
       "type": "Digite seu PIN",
-      "incorrect": "A senha está incorreta"
+      "incorrect": "O PIN está incorreto"
     },
     "touchSensor": {
       "title": "Usar senha",
