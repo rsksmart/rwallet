@@ -204,7 +204,7 @@
       },
       "keySettings": {
         "title": "Configurações principais",
-        "wallets": "carteiras",
+        "wallets": "ativos",
         "keyContains": "Esta chave contém",
         "security": "Segurança",
         "advanced": "Avançado",
