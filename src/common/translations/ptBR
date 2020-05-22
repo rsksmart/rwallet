@@ -176,7 +176,7 @@
         "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
         "wallets": {
-          "zero": "0 carteira",
+          "zero": "0 ativo",
           "one": "1 ativo",
           "other": "{{count}} ativos"
         },
