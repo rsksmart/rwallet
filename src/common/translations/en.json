@@ -28,7 +28,7 @@
         "addAsset": "Add Asset"
       },
       "history": {
-        "noTransNote": "You have not yet transacted with this asset",
+        "noTransNote": "There is no transaction found for this asset",
         "recent": "Recent",
         "loading": "Loading..."
       },
