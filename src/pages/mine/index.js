@@ -95,6 +95,9 @@ const styles = StyleSheet.create({
   lastBlockMarginBottom: {
     marginBottom: 135,
   },
+  grayIcon: {
+    color: color.word,
+  },
 });
 
 function Item({ data, title, isHasBottomBorder }) {
@@ -170,7 +173,7 @@ class MineIndex extends Component {
   settings = [
     {
       title: 'page.mine.language.title',
-      icon: <MaterialIcons name="language" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />,
+      icon: <MaterialIcons name="language" size={ICON_SIZE} style={styles.grayIcon} />,
       onPress: () => {
         const { navigation } = this.props;
         navigation.navigate('Language');
@@ -179,7 +182,7 @@ class MineIndex extends Component {
     {
       title: 'page.mine.currency.title',
       icon: (
-        <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />
+        <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={styles.grayIcon} />
       ),
       onPress: () => {
         const { navigation } = this.props;
@@ -189,11 +192,7 @@ class MineIndex extends Component {
     {
       title: 'page.mine.2fa.title',
       icon: (
-        <MaterialCommunityIcons
-          name="two-factor-authentication"
-          size={ICON_SIZE}
-          style={{ color: '#4A4A4A' }}
-        />
+        <MaterialCommunityIcons name="two-factor-authentication" size={ICON_SIZE} style={styles.grayIcon} />
       ),
       onPress: () => {
         const { navigation } = this.props;
@@ -250,21 +249,21 @@ class MineIndex extends Component {
   supports = [
     {
       title: 'page.mine.index.contactUs',
-      icon: <MaterialCommunityIcons name="email-outline" size={30} style={[styles.communityIcon]} />,
+      icon: <MaterialCommunityIcons name="email-outline" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
       onPress: () => {
         Linking.openURL('mailto:app@iovlabs.org');
       },
     },
     {
       title: 'page.mine.index.developerPortal',
-      icon: <AntDesign name="home" size={28} style={[styles.communityIcon]} />,
+      icon: <AntDesign name="home" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
       onPress: () => {
         Linking.openURL('https://developers.rsk.co');
       },
     },
     {
       title: 'page.start.terms.termsOfUse',
-      icon: <AntDesign name="filetext1" size={25} style={[styles.communityIcon]} />,
+      icon: <AntDesign name="filetext1" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
       onPress: () => {
         this.setState({ isTermsWebViewVisible: true });
       },
