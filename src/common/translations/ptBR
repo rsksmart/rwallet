@@ -149,7 +149,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar tokens personalizados",
-        "address": "Endereço do Contrato do Token",
+        "address": "Endereço do contrato do token",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
