@@ -195,11 +195,14 @@ class SwapSelection extends Component {
             <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
               <Loc text="page.wallet.swapSelection.create" style={[styles.noCoinInfoText, styles.underlineText]} />
             </TouchableOpacity>
-            <Loc text="page.wallet.swapSelection.or" style={[styles.noCoinInfoText]} suffix="&space&" prefix="&space&" />
+            <Text style={[styles.noCoinInfoText]}> </Text>
+            <Loc text="page.wallet.swapSelection.or" style={[styles.noCoinInfoText]} />
+            <Text style={[styles.noCoinInfoText]}> </Text>
             <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
               <Loc text="page.wallet.swapSelection.import" style={[styles.noCoinInfoText, styles.underlineText]} />
             </TouchableOpacity>
-            <Loc text="page.wallet.swapSelection.aWallet" style={[styles.noCoinInfoText]} prefix="&space&" />
+            <Text style={[styles.noCoinInfoText]}> </Text>
+            <Loc text="page.wallet.swapSelection.aWallet" style={[styles.noCoinInfoText]} />
           </View>
           <Loc text="page.wallet.swapSelection.startSwap" style={[styles.noCoinInfoText]} />
         </View>
