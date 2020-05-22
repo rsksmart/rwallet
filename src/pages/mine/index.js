@@ -265,7 +265,7 @@ class MineIndex extends Component {
       title: 'page.start.terms.termsOfUse',
       icon: <AntDesign name="filetext1" size={25} style={[styles.communityIcon]} />,
       onPress: () => {
-        Linking.openURL(config.termsUrl).catch((err) => console.error('cannot open terms web', err));
+        Linking.openURL(config.termsUrl).catch((err) => console.error('Cannot open Terms of Use: ', err));
       },
     },
   ];

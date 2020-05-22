@@ -57,7 +57,7 @@ class TermsPage extends Component {
   }
 
   onViewTermsPressed = () => {
-    Linking.openURL(config.termsUrl).catch((err) => console.error('cannot open terms web', err));
+    Linking.openURL(config.termsUrl).catch((err) => console.error('Cannot open Terms of Use: ', err));
   }
 
   render() {
