@@ -178,7 +178,7 @@
         "wallets": {
           "zero": "0 carteira",
           "one": "1 carteira",
-          "other": "{{count}} carteiras"
+          "other": "{{count}} ativos"
         },
         "support": "Apoio, suporte",
         "contactUs": "Contate-Nos",
