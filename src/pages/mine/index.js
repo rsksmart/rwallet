@@ -17,7 +17,6 @@ import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
-import WebViewModal from '../../components/common/webview.modal';
 import config from '../../../config';
 import color from '../../assets/styles/color.ts';
 
@@ -265,7 +264,7 @@ class MineIndex extends Component {
       title: 'page.start.terms.termsOfUse',
       icon: <AntDesign name="filetext1" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
       onPress: () => {
-        this.setState({ isTermsWebViewVisible: true });
+        Linking.openURL(config.termsUrl).catch((err) => console.error('Cannot open Terms of Use: ', err));
       },
     },
   ];
@@ -276,7 +275,6 @@ class MineIndex extends Component {
       keyListData: [],
       settings: [],
       joins: [],
-      isTermsWebViewVisible: false,
     };
     this.onEditNamePress = this.onEditNamePress.bind(this);
   }
@@ -304,14 +302,10 @@ class MineIndex extends Component {
     navigation.navigate('Rename');
   }
 
-  onViewTermsPressed = () => {
-    this.setState({ isTermsWebViewVisible: true });
-  }
-
   render() {
     const { language, navigation, username } = this.props;
     const {
-      keyListData, settings, joins, isTermsWebViewVisible,
+      keyListData, settings, joins,
     } = this.state;
     // Translate If username is default user name
     const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
@@ -361,12 +355,6 @@ class MineIndex extends Component {
             />
           </View>
         </View>
-        <WebViewModal
-          title={strings('page.start.terms.termsOfUse')}
-          url={config.termsUrl}
-          visible={isTermsWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
-        />
       </BasePageGereral>
     );
   }
