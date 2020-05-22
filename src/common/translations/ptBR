@@ -374,7 +374,7 @@
     },
     "createPasscode": {
       "title": "Crie um PIN",
-      "body": "A senha pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
+      "body": "O PIN pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
     },
     "deleteKey": {
       "title": "Atenção!",
