@@ -215,7 +215,7 @@
       },
       "keyName": {
         "title": "Nome da carteira",
-        "question": "Como você chama essa chave?",
+        "question": "Como você chama essa carteira?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
         "comment": "* O nome da chave pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
