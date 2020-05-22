@@ -198,7 +198,7 @@
       },
       "resetPasscodeSuccess" :{
         "title": {
-          "create": "Definir código de acesso",
+          "create": "PIN alterado com sucesso",
           "reset": "Redefinir sucesso da senha"
         }
       },
