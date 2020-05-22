@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Image, StyleSheet, TouchableOpacity,
+  View, Image, StyleSheet, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -9,8 +9,6 @@ import Loc from '../../components/common/misc/loc';
 import TermRow from './term.row';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
 import screenHelper from '../../common/screenHelper';
-import WebViewModal from '../../components/common/webview.modal';
-import { strings } from '../../common/i18n';
 import config from '../../../config';
 import color from '../../assets/styles/color.ts';
 
@@ -53,24 +51,16 @@ class TermsPage extends Component {
     header: null,
   });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isTermsWebViewVisible: false,
-    };
-  }
-
   onButtonPressed = () => {
     const { navigation } = this.props;
     navigation.navigate('PrimaryTabNavigator');
   }
 
   onViewTermsPressed = () => {
-    this.setState({ isTermsWebViewVisible: true });
+    Linking.openURL(config.termsUrl).catch((err) => console.error('cannot open terms web', err));
   }
 
   render() {
-    const { isTermsWebViewVisible } = this.state;
     return (
       <SafeAreaView>
         <View style={styles.page}>
@@ -93,12 +83,6 @@ class TermsPage extends Component {
             />
           </View>
         </View>
-        <WebViewModal
-          title={strings('page.start.terms.termsOfUse')}
-          url={config.termsUrl}
-          visible={isTermsWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
-        />
       </SafeAreaView>
     );
   }
