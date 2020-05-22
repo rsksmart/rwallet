@@ -199,7 +199,7 @@
       "resetPasscodeSuccess" :{
         "title": {
           "create": "PIN alterado com sucesso",
-          "reset": "Redefinir sucesso da senha"
+          "reset": "Alterar PIN"
         }
       },
       "keySettings": {
