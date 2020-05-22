@@ -205,7 +205,7 @@
       "keySettings": {
         "title": "Configurações principais",
         "wallets": "ativos",
-        "keyContains": "Esta chave contém",
+        "keyContains": "Esta carteira contém",
         "security": "Segurança",
         "advanced": "Avançado",
         "Wallets": "Ativos",
