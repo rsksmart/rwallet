@@ -214,7 +214,7 @@
         "backup": "Backup"
       },
       "keyName": {
-        "title": "Nome da chave",
+        "title": "Nome da carteira",
         "question": "Como você chama essa chave?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
