@@ -84,6 +84,7 @@
         "advancedOptions": "Opciones avanzadas",
         "specifyPath": "Especificar ruta de derivación",
         "coin": "Coin",
+        "selectCoin": "Selecciona una Coin",
         "derivationPath": "Ruta de derivación"
       },
       "recoveryPhrase": {
