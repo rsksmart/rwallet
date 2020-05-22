@@ -177,7 +177,7 @@
         "anonymousUser": "Usuário anônimo",
         "wallets": {
           "zero": "0 carteira",
-          "one": "1 carteira",
+          "one": "1 ativo",
           "other": "{{count}} ativos"
         },
         "support": "Apoio, suporte",
