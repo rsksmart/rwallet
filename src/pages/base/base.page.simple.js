@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import flex from '../../assets/styles/layout.flex';
 import screenHelper from '../../common/screenHelper';
+import Loader from '../../components/common/misc/loader';
 
 const styles = StyleSheet.create({
   safeView: {
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
 
 const BasePageSimple = (props) => {
   const {
-    children, isSafeView, renderAccessory, headerComponent, bgColor,
+    children, isSafeView, renderAccessory, headerComponent, bgColor, hasLoader, isLoading,
   } = props;
   const content = (
     <View style={flex.flex1}>
@@ -34,6 +35,7 @@ const BasePageSimple = (props) => {
         {content}
       </View>
       {renderAccessory && renderAccessory()}
+      {hasLoader && <Loader loading={isLoading} />}
     </View>
   );
 };
@@ -44,12 +46,16 @@ BasePageSimple.propTypes = {
   renderAccessory: PropTypes.func,
   headerComponent: PropTypes.element.isRequired,
   bgColor: PropTypes.string,
+  hasLoader: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
 BasePageSimple.defaultProps = {
   isSafeView: false,
   renderAccessory: null,
   bgColor: null,
+  hasLoader: false,
+  isLoading: false,
 };
 
 
