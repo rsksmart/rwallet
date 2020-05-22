@@ -142,7 +142,7 @@
         "startSwap": "para começar a usar Swap"
       },
       "swapCompleted": {
-        "title": "Troca",
+        "title": "Trocar",
         "body": "Troca concluída!",
         "note": "Sua troca está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
