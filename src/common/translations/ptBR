@@ -226,7 +226,7 @@
         "comment": "* O nome pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "resetcompleted": {
-        "title": "Redefinição concluída!"
+        "title": "Alteração concluída com sucesso!"
       }
     },
     "earn": {
