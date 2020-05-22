@@ -83,7 +83,8 @@
         "note": "Type the recovery phrase (usually 12 words)",
         "advancedOptions": "Advanced Options",
         "specifyPath": "Specify derivation path",
-        "coin": "Select a Coin",
+        "coin": "Coin",
+        "selectCoin": "Select a Coin",
         "derivationPath": "Derivation Path"
       },
       "recoveryPhrase": {

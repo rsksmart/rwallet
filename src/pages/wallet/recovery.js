@@ -403,7 +403,7 @@ class WalletRecovery extends Component {
             items={coins}
             selectIndex={selectedTokenIndex}
             onSelected={this.onSelectedTokenIndexSelected}
-            title={strings('page.wallet.recovery.coin')}
+            title={strings('page.wallet.recovery.selectCoin')}
           />
         </BasePageGereral>
       );

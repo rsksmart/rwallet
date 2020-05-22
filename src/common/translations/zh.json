@@ -84,6 +84,7 @@
         "advancedOptions": "高级选项",
         "specifyPath": "指定派生路径",
         "coin": "选择代币",
+        "selectCoin": "代币",
         "derivationPath": "派生路径"
       },
       "recoveryPhrase": {
