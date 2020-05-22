@@ -83,7 +83,7 @@
         "note": "Digite a frase de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
         "specifyPath": "Especificar caminho de derivação",
-        "coin": "Coin",
+        "coin": "Moeda",
         "derivationPath": "Caminho de derivação"
       },
       "recoveryPhrase": {
