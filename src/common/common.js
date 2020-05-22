@@ -295,7 +295,7 @@ const common = {
   async isFingerprintAvailable() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Biometrics') {
+      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint') {
         return true;
       }
     } catch (error) {
