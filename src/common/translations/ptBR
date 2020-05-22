@@ -360,7 +360,7 @@
       "notMatched": "O PIN não corresponde. Por favor, tente novamente."
     },
     "verifyPasscode": {
-      "type": "Digite sua senha",
+      "type": "Digite seu PIN",
       "incorrect": "A senha está incorreta"
     },
     "touchSensor": {
