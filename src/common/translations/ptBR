@@ -355,7 +355,7 @@
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",
       "typeNewPasscode": "Digite sua nova senha",
-      "confirmNewPasscode": "Confirme sua nova senha",
+      "confirmNewPasscode": "Confirme seu novo PIN",
       "oldIncorrect": "O PIN antigo está incorreto. Tente novamente",
       "notMatched": "O PIN não corresponde. Por favor, tente novamente."
     },
