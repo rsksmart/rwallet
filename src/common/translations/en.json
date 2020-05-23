@@ -23,7 +23,7 @@
     "wallet": {
       "list": {
         "title": "Your Wallet",
-        "myAssets": "My Assets",
+        "myAssets": "Portfolio",
         "allAssets": "All Assets",
         "addAsset": "Add Asset"
       },
