@@ -133,7 +133,7 @@
       },
       "swapSelection": {
         "title": "Escolha o ativo",
-        "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
+        "noSwappableCoin": "Desculpe, você não tem nenhum ativo trocável",
         "please": "por favor",
         "create": "criar",
         "or": "ou",
