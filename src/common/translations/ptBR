@@ -76,7 +76,7 @@
         "testnet": "Testnet"
       },
       "selectWallet": {
-        "title": "Selecione o Ativo"
+        "title": "Selecione um Ativo"
       },
       "recovery": {
         "title": "Importar carteira",
