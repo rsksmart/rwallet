@@ -219,7 +219,7 @@ function addTokenTransactions(token, transactions) {
       newToken.transactions[txIndex] = transaction;
     }
   });
-  newToken.transactions = newToken.transactions.sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
+  newToken.transactions = newToken.transactions.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 function* updateTransactionRequest(action) {
