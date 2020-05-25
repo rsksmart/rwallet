@@ -6,8 +6,8 @@
   Copyright © 2020 Facebook. All rights reserved.
 */
 {
-  "NSCameraUsageDescription" = "RIF Wallet需要访问您的相机才能扫描收件人的QR码。";
-  "NSFaceIDUsageDescription" = "RIF Wallet需要FaceID访问权限才能允许您快速安全地访问。";
+  "NSCameraUsageDescription" = "RIF Wallet需要访问您的相机用于扫描收件人的二维码。";
+  "NSFaceIDUsageDescription" = "RIF Wallet需要FaceID访问权限以便允许您快速安全地访问。";
   "NSPhotoLibraryUsageDescription" = "RIF Wallet需要访问照片库。";
 }
 
