@@ -28,7 +28,7 @@
         "addAsset": "Add Asset"
       },
       "history": {
-        "noTransNote": "There is no transaction found in this wallet",
+        "noTransNote": "There is no transaction found for this asset",
         "recent": "Recent",
         "loading": "Loading..."
       },
