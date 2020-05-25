@@ -8,6 +8,7 @@ import _ from 'lodash';
 /* Actions */
 import actions from './actions';
 import walletActions from '../wallet/actions';
+import priceActions from '../price/actions';
 
 import application from '../../common/application';
 import settings from '../../common/settings';
@@ -22,10 +23,12 @@ import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
-function* updateUserRequest(action) {
+function* updateUserRequest() {
   // Upload wallets or settings to server
   try {
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken: action.fcmToken });
+    const state = yield select();
+    const fcmToken = state.App.get('fcmToken');
+    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -60,15 +63,21 @@ function* initFromStorageRequest() {
       value: settings,
     });
 
-    // Set passcode in reducer
+    // 2. Set passcode in reducer
     const passcode = yield call(storage.getPasscode);
     yield put({
       type: actions.UPDATE_PASSCODE,
       passcode,
     });
 
-    // 2. Deserialize Wallets from permenate storage
+    // 3. Deserialize Wallets from permenate storage
     yield call(walletManager.deserialize);
+
+    // 4. Deserialize prices
+    const prices = yield call(storage.getPrices);
+    yield put({ type: priceActions.PRICE_OBJECT_UPDATED, data: prices });
+    const currency = settings.get('currency');
+    walletManager.updateAssetValue(prices, currency);
 
     // Sets state in reducer for success
     yield put({
@@ -96,43 +105,24 @@ function* initFromStorageRequest() {
   }
 }
 
-function* initWithParseRequest() {
+function* loginRequest() {
   const appId = application.get('id');
-
-  // 1. Sign in or sign up to get Parse.User object
-  // ParseHelper will have direct access to the User object so we don't need to pass it to state here
   try {
-    yield call(ParseHelper.signInOrSignUp, appId);
+    // Read Parse.User from storage, if not, sign in or sign up
+    const user = yield call(ParseHelper.getUser);
+    console.log('initWithParseRequest, read from storage, user: ', user);
+    if (!user) {
+      yield call(ParseHelper.signInOrSignUp, appId);
+    }
     console.log(`User found with appId ${appId}. Sign in successful.`);
+    yield put(actions.resetLoginError());
+    yield put(actions.loginDone());
   } catch (err) {
-    yield call(ParseHelper.handleError, { err, appId });
+    yield call(ParseHelper.handleError, { err });
+    yield put(actions.setLoginError());
+    // If it's error in signIn, do it again.
+    yield put(actions.login());
   }
-
-  // 2. Test server connection and get Server info
-  try {
-    const response = yield call(ParseHelper.getServerInfo);
-
-    // Sets state in reducer for success
-    yield put({
-      type: actions.GET_SERVER_INFO_RESULT,
-      value: response,
-    });
-  } catch (err) {
-    yield call(ParseHelper.handleError, { err, appId });
-  }
-
-  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
-
-  // 3. Upload wallets and settings to server
-  yield put({
-    type: actions.UPDATE_USER,
-    fcmToken,
-  });
-
-  // If we don't encounter error here, mark initialization finished
-  yield put({
-    type: actions.INIT_WITH_PARSE_DONE,
-  });
 }
 
 function* createRawTransaction(action) {
@@ -265,6 +255,9 @@ function* processNotificationRequest(action) {
   }
   const { title, body, data } = notification;
   console.log(`FirebaseMessaging, onFireMessagingNotification, title: ${title}, body: ${body} `);
+  if (!data) {
+    return null;
+  }
   const { event, eventParams } = data;
   const params = JSON.parse(eventParams);
   switch (event) {
@@ -318,21 +311,44 @@ function* initFcmChannelRequest() {
   }
 }
 
+function* initFcmRequest() {
+  const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
+  yield put({ type: actions.SET_FCM_TOKEN, fcmToken });
+  yield put({ type: actions.UPDATE_USER });
+}
+
+function* getServerInfoRequest() {
+  // 2. Test server connection and get Server info
+  try {
+    const response = yield call(ParseHelper.getServerInfo);
+
+    // Sets state in reducer for success
+    yield put({
+      type: actions.GET_SERVER_INFO_RESULT,
+      value: response,
+    });
+  } catch (err) {
+    yield call(ParseHelper.handleError, { err });
+  }
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
-    takeEvery(actions.INIT_WITH_PARSE, initWithParseRequest),
+    takeEvery(actions.LOGIN, loginRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),
     takeEvery(actions.RENAME, renameRequest),
+    takeEvery(actions.GET_SERVER_INFO, getServerInfoRequest),
 
     takeEvery(actions.FINGERPRINT_USE_PASSCODE, fingerprintUsePasscodeRequest),
     takeEvery(actions.AUTH_VERIFY, authVerifyRequest),
     takeEvery(actions.SET_PASSCODE, setPasscodeRequest),
 
+    takeEvery(actions.INIT_FCM, initFcmRequest),
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
     takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
   ]);

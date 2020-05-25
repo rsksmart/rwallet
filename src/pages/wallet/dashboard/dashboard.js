@@ -9,6 +9,8 @@ import appActions from '../../../redux/app/actions';
 import timer from '../../../common/timer';
 import config from '../../../../config';
 import fcmHelper from '../../../common/fcmHelper';
+import { createErrorInAppNotification } from '../../../components/common/inapp.notification/notification';
+import { strings } from '../../../common/i18n';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -20,6 +22,7 @@ class Dashboard extends Component {
       const { lockApp } = props;
       this.willFocusSubscription = null;
       this.lock = debounce(() => lockApp(true), config.appLock.timeout / 2);
+      this.isShowLoginError = false;
     }
 
     async componentWillMount() {
@@ -37,6 +40,7 @@ class Dashboard extends Component {
           timer.setTimeout(this, 'lockApp', this.lock, config.appLock.timeout);
         },
       );
+      this.showLoginError(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -44,12 +48,27 @@ class Dashboard extends Component {
       if (!appLock) {
         this.callFcmNavigate(fcmNavParams);
       }
+      this.showLoginError(nextProps);
     }
 
     componentWillUnmount() {
       this.willFocusSubscription.remove();
       this.didBlurSubscription.remove();
       timer.clearTimeout(this);
+    }
+
+    showLoginError = (props) => {
+      const { isLoginError, showInAppNotification } = props;
+      const { isShowLoginError } = this;
+      if (!isShowLoginError && isLoginError) {
+        showInAppNotification(
+          createErrorInAppNotification(
+            strings('notification.networkError.title'),
+            strings('notification.networkError.body'),
+          ),
+        );
+        this.isShowLoginError = true;
+      }
     }
 
     /**
@@ -116,7 +135,8 @@ const mapStateToProps = (state) => ({
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
   appLock: state.App.get('appLock'),
   fcmNavParams: state.App.get('fcmNavParams'),
-  callAuthVerify: PropTypes.func.isRequired,
+  isLoginError: state.App.get('isLoginError'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -129,6 +149,8 @@ const mapDispatchToProps = (dispatch) => ({
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
   resetFcmNavParams: () => dispatch(appActions.resetFcmNavParams()),
   callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
+  showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
+  resetLoginError: () => dispatch(appActions.resetLoginError()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

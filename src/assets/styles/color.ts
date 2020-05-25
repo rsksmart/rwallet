@@ -174,6 +174,7 @@ const color = {
     seporatorLineLightGrey: '#DCDCDC',
     lightBlue: '#008CFF',
     word: '#4A4A4A',
+    warningText: '#DF5264',
     ...styleScript(),
 };
 

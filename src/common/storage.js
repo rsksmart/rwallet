@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNSecureStorage from 'rn-secure-storage';
 
 const KEY_WALLETS = 'WALLETS';
+const KEY_PRICES = 'PRICE';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
@@ -188,6 +189,19 @@ class RNStorage {
   getWallets() {
     return this.load({ key: KEY_WALLETS });
   }
+
+  /**
+   * Set price using normal storage
+   * @param {string} id Key local Id
+   * @param {string} phrase String of price json
+   */
+  setPrices = (json) => this.save(KEY_PRICES, json)
+
+  /**
+   * Return price json data from normal storage; null if not found or failed
+   * @param {string} id Key local Id
+   */
+  getPrices = () => this.load({ key: KEY_PRICES })
 
   /**
    * Set Passcode using secure storage

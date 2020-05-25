@@ -12,6 +12,7 @@ import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
 import screenHelper from '../../common/screenHelper';
+import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   warningText: {
-    color: '#DF5264',
+    color: color.warningText,
     fontWeight: '500',
   },
   advancedBlock: {

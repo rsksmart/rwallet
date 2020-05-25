@@ -2,8 +2,6 @@
 
 const actions = {
   // Constants definition
-  IS_PAGE_LOADING: 'IS_PAGE_LOADING',
-
   INIT_FROM_STORAGE: 'INIT_FROM_STORAGE',
   INIT_FROM_STORAGE_DONE: 'INIT_FROM_STORAGE_DONE',
 
@@ -12,6 +10,7 @@ const actions = {
 
   UPDATE_USER: 'UPDATE_USER',
 
+  GET_SERVER_INFO: 'GET_SERVER_INFO',
   GET_SERVER_INFO_RESULT: 'GET_SERVER_INFO_RESULT',
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   GET_TRANSACTIONS_RESULT: 'GET_TRANSACTIONS_RESULT',
@@ -42,13 +41,21 @@ const actions = {
   SET_PASSCODE: 'SET_PASSWORD',
   UPDATE_PASSCODE: 'UPDATE_PASSCODE',
 
-  INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
   SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
   RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
   SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
   PROCESS_NOTIFICATON: 'PROCESS_NOTIFICATON',
   SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
   RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
+
+  INIT_FCM: 'INIT_FCM',
+  SET_FCM_TOKEN: 'SET_FCM_TOKEN',
+  INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
+
+  LOGIN: 'LOGIN',
+  LOGIN_DONE: 'LOGIN_DONE',
+  SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
+  RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
 
   // Functions definition
   initializeFromStorage: () => ({
@@ -70,10 +77,6 @@ const actions = {
   }),
   hidePasscode: () => ({
     type: actions.HIDE_PASSCODE,
-  }),
-  setPageLoading: (isLoading) => ({
-    type: actions.IS_PAGE_LOADING,
-    value: isLoading,
   }),
   getTransactions: (symbol, type, address, page) => ({
     type: actions.GET_TRANSACTIONS,
@@ -163,6 +166,24 @@ const actions = {
   }),
   resetFcmNavParams: () => ({
     type: actions.RESET_FCM_NAV_PARAMS,
+  }),
+  getServerInfo: () => ({
+    type: actions.GET_SERVER_INFO,
+  }),
+  initFcm: () => ({
+    type: actions.INIT_FCM,
+  }),
+  setLoginError: () => ({
+    type: actions.SET_LOGIN_ERROR,
+  }),
+  resetLoginError: () => ({
+    type: actions.RESET_LOGIN_ERROR,
+  }),
+  login: () => ({
+    type: actions.LOGIN,
+  }),
+  loginDone: () => ({
+    type: actions.LOGIN_DONE,
   }),
 };
 

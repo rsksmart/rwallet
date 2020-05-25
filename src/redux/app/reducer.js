@@ -6,7 +6,8 @@ const { defaultSettings } = config;
 
 const initState = new Map({
   isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
-  isInitWithParseDone: false, // Mark whether the second step, initalization with Parse done
+  isLogin: false, // Mark whether user logged in
+  isLoginError: false,
 
   application: undefined,
   settings: undefined, // Settings instance
@@ -39,21 +40,14 @@ const initState = new Map({
   isShowInAppNotification: false,
   inAppNotification: undefined,
   fcmNavParams: undefined,
+  fcmToken: undefined,
 });
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    case actions.IS_PAGE_LOADING:
-    {
-      return state.set('isPageLoading', action.value);
-    }
     case actions.INIT_FROM_STORAGE_DONE:
     {
       return state.set('isInitFromStorageDone', true);
-    }
-    case actions.INIT_WITH_PARSE_DONE:
-    {
-      return state.set('isInitWithParseDone', true);
     }
     case actions.GET_SERVER_INFO_RESULT:
     {
@@ -139,6 +133,14 @@ export default function appReducer(state = initState, action) {
       return state.set('fcmNavParams', action.fcmNavParams);
     case actions.RESET_FCM_NAV_PARAMS:
       return state.set('fcmNavParams', null);
+    case actions.SET_FCM_TOKEN:
+      return state.set('fcmToken', action.fcmToken);
+    case actions.LOGIN_DONE:
+      return state.set('isLogin', true);
+    case actions.SET_LOGIN_ERROR:
+      return state.set('isLoginError', true);
+    case actions.RESET_LOGIN_ERROR:
+      return state.set('isLoginError', false);
     default:
       return state;
   }

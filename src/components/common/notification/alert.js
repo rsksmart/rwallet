@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   errorButtonText: {
-    color: '#DF5264',
+    color: color.warningText,
   },
 });
 

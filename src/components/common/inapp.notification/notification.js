@@ -15,6 +15,8 @@ const styles = StyleSheet.create({
   },
 });
 
+export const createErrorInAppNotification = (title, body) => ({ type: 'error', title, body });
+
 class Notification extends Component {
   constructor() {
     super();
@@ -34,18 +36,19 @@ class Notification extends Component {
     if (isVisiable !== lastIsVisiable && isVisiable) {
       // Received a new notification
       this.notification = notification;
-      const { title, body: message } = notification;
-      this.show({ title, message });
+      const { title, body: message, type } = notification;
+      this.show({ title, message, type });
       resetInAppNotification();
     }
   }
 
   show = (
     {
-      title, message, icon, vibrate, additionalProps,
+      title, message, type, icon, vibrate, additionalProps,
     } = {
       title: '',
       message: '',
+      type: undefined,
       icon: null,
       vibrate: true,
       additionalProps: {},
@@ -66,6 +69,7 @@ class Notification extends Component {
         isOpen: true,
         title,
         message,
+        type,
         icon,
         vibrate,
         additionalProps,
@@ -76,6 +80,7 @@ class Notification extends Component {
             isOpen: false,
             title: '',
             message: '',
+            type: undefined,
             icon: null,
             vibrate: true,
             additionalProps,
@@ -125,7 +130,7 @@ class Notification extends Component {
     } = this.props;
 
     const {
-      animatedValue, title, message, isOpen, icon, vibrate, additionalProps,
+      animatedValue, title, message, type, isOpen, icon, vibrate, additionalProps,
     } = this.state;
 
     const height = baseHeight + this.heightOffset;
@@ -150,6 +155,7 @@ class Notification extends Component {
         <NotificationBody
           title={title}
           message={message}
+          type={type}
           onPress={this.onPressed}
           isOpen={isOpen}
           iconApp={iconApp}
@@ -175,6 +181,7 @@ Notification.propTypes = {
   notification: PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.string,
+    type: PropTypes.string,
   }),
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,

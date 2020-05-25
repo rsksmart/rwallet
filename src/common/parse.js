@@ -5,6 +5,9 @@ import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
 
+
+const ERROR_PARSE_DEFAULT = 'error.parse.default';
+
 const parseConfig = config && config.parse;
 
 // If we are unable to load config, it means the config file is moved. Throw error to indicate that.
@@ -15,6 +18,9 @@ if (_.isUndefined(parseConfig)) {
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
 Parse.CoreManager.set('REQUEST_HEADERS', { 'Rwallet-API-Key': parseConfig.rwalletApiKey });
 Parse.serverURL = parseConfig.serverURL;
+// enable cached-user functions
+// https://docs.parseplatform.org/js/guide/#current-user
+Parse.User.enableUnsafeCurrentUser();
 Parse.setAsyncStorage(AsyncStorage);
 
 /** Parse Class definition */
@@ -26,6 +32,12 @@ const ParseTransaction = Parse.Object.extend('Transaction');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
+  // Get user from storage
+  static async getUser() {
+    const user = await Parse.User.currentAsync();
+    return user;
+  }
+
   static signInOrSignUp(appId) {
     // Set appId as username and password.
     // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
@@ -61,7 +73,7 @@ class ParseHelper {
    * @returns {parseUser} saved User
    */
   static async updateUser({ wallets, settings, fcmToken }) {
-    const parseUser = await Parse.User.currentAsync();
+    const parseUser = await ParseHelper.getUser();
     await parseUser.fetch();
 
     // Only set settings when it's defined.
@@ -69,7 +81,9 @@ class ParseHelper {
       parseUser.set('settings', settings);
     }
 
-    parseUser.set('fcmToken', fcmToken);
+    if (!_.isNil(fcmToken)) {
+      parseUser.set('fcmToken', fcmToken);
+    }
 
     // Only set wallets when it's defined.
     if (_.isArray(wallets)) {
@@ -176,31 +190,24 @@ class ParseHelper {
     return Parse.Cloud.run('getServerInfo');
   }
 
-  static getPrice({ symbols, currencies }) {
-    console.log('getPrice, symbols: ', symbols);
-    return Parse.Cloud.run('getPrice', { symbols, currency: currencies });
-  }
-
   /**
    * Transform Parse errors to errors defined by this app
    * @param {object}     err        Parse error from response
    * @returns {object}  error object defined by this app
    * @method handleError
    */
-  static async handleError({ err, appId }) {
+  static async handleError({ err }) {
     console.log('handleError', err);
+    if (!err) {
+      return { message: ERROR_PARSE_DEFAULT };
+    }
 
-    const message = err.message || 'error.parse.default';
+    const message = err.message || ERROR_PARSE_DEFAULT;
 
     switch (err.code) {
       case Parse.Error.INVALID_SESSION_TOKEN:
         console.log('INVALID_SESSION_TOKEN. Logging out');
         await Parse.User.logOut();
-        if (appId) {
-          console.log('Re-signing in. appId: ', appId);
-          await Parse.user.signIn(appId);
-        }
-        // Other Parse API errors that you want to explicitly handle
         break;
       default:
         break;
@@ -220,34 +227,6 @@ class ParseHelper {
     query.containedIn('address', addrArray);
     // 实际运行query
     return query.find();
-  }
-
-  /**
-   * Return an array of wallets with basic information such as wallet balance
-   * @returns {array} Array of wallet object; empty array if nothing found
-   */
-  static async getWallets() {
-    // Get current Parse.User
-    const parseUser = await Parse.User.currentAsync();
-
-    if (_.isUndefined(parseUser) || _.isUndefined(parseUser.get('wallets'))) {
-      return [];
-    }
-
-    const wallets = parseUser.get('wallets');
-
-    // since User's wallet field is linked value, we need to call fetch to retrieve full information of wallets
-    await wallets.fetch();
-
-    const result = _.map(wallets, (parseWallet) => ({
-      address: parseWallet.get('address'),
-      symbol: parseWallet.get('symbol'),
-      type: parseWallet.get('type'),
-      balance: parseWallet.get('balance'),
-      txCount: parseWallet.get('txCount'),
-    }));
-
-    return result;
   }
 
   /**

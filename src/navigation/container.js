@@ -5,48 +5,59 @@ import walletActions from '../redux/wallet/actions';
 import priceActions from '../redux/price/actions';
 
 const mapStateToProps = (state) => ({
+  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
+  isLogin: state.App.get('isLogin'),
+  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
+  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
+
+  walletManager: state.Wallet.get('walletManager'),
+  currency: state.App.get('currency'),
+  prices: state.Price.get('prices'),
+
   showNotification: state.App.get('showNotification'),
   notification: state.App.get('notification'),
   notificationCloseCallback: state.App.get('notificationCloseCallback'),
+
   showPasscode: state.App.get('showPasscode'),
   passcodeType: state.App.get('passcodeType'),
   passcodeCallback: state.App.get('passcodeCallback'),
   passcodeFallback: state.App.get('passcodeFallback'),
-  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
-  isInitAppDone: state.App.get('isInitAppDone'),
-  walletManager: state.Wallet.get('walletManager'),
-  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  currency: state.App.get('currency'),
-  prices: state.Price.get('prices'),
-  isShowInAppNotification: state.App.get('isShowInAppNotification'),
+
+  isShowConfirmation: state.App.get('isShowConfirmation'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
   confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
+
   isShowFingerprintModal: state.App.get('isShowFingerprintModal'),
   fingerprintCallback: state.App.get('fingerprintCallback'),
   fingerprintFallback: state.App.get('fingerprintFallback'),
-  isShowConfirmation: state.App.get('isShowConfirmation'),
-  isInAppNotification: state.App.get('isInAppNotification'),
+
   inAppNotification: state.App.get('inAppNotification'),
+  isShowInAppNotification: state.App.get('isShowInAppNotification'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  closePasscodeModal: () => dispatch(appActions.hidePasscode()),
+  initFcmChannel: () => dispatch(appActions.initFcmChannel()),
+  login: () => dispatch(appActions.login()),
+
+  getServerInfo: () => dispatch(appActions.getServerInfo()),
+  updateUser: () => dispatch(appActions.getServerInfo()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
-  initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
-  updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),
-  removeNotification: () => dispatch(appActions.removeNotification()),
-  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
-  fingerprintUsePasscode: (callback, fallback) => dispatch(appActions.fingerprintUsePasscode(callback, fallback)),
-  hideFingerprintModal: () => dispatch(appActions.hideFingerprintModal()),
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
   initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
-  initFcmChannel: () => dispatch(appActions.initFcmChannel()),
+
+  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
+  updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),
+
+  removeNotification: () => dispatch(appActions.removeNotification()),
+  removeConfirmation: () => dispatch(appActions.removeConfirmation()),
+
+  fingerprintUsePasscode: (callback, fallback) => dispatch(appActions.fingerprintUsePasscode(callback, fallback)),
+  hideFingerprintModal: () => dispatch(appActions.hideFingerprintModal()),
+  closePasscodeModal: () => dispatch(appActions.hidePasscode()),
+
   resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
 });

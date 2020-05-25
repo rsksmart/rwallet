@@ -280,7 +280,7 @@ export default class Wallet {
    */
   addToken = (token) => {
     const {
-      symbol, type, contractAddress, objectId, name, precision,
+      symbol, type, contractAddress, objectId, name, precision, balance,
     } = token;
 
     let coin = null;
@@ -300,6 +300,9 @@ export default class Wallet {
     coin.address = derivation.address;
     if (objectId) {
       coin.objectId = objectId;
+    }
+    if (balance) {
+      coin.balance = new BigNumber(balance);
     }
     this.coins.push(coin);
     this.coins = common.sortTokens(this.coins);

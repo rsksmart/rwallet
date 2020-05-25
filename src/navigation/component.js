@@ -48,79 +48,72 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
 
 const uriPrefix = Platform.OS === 'android' ? 'rwallet://rwallet/' : 'rwallet://rwallet/';
 class RootComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isStorageRead: false,
-      isParseWritten: false,
-    };
-  }
-
   /**
    * RootComponent is the main entrace of the App
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage } = this.props;
+    const { initializeFromStorage, initFcmChannel } = this.props;
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
+    initFcmChannel();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isInitWithParseDone, initializeWithParse,
-      walletManager, currency, prices, isBalanceUpdated,
-      initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights,
-      initFcmChannel,
+      isInitFromStorageDone, isLogin, currency, prices, isBalanceUpdated,
     } = nextProps;
 
     const {
-      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated,
+      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated, isLogin: lastIsLogin, isInitFromStorageDone: lastIsInitFromStorageDone,
     } = this.props;
 
-    const { isStorageRead, isParseWritten } = this.state;
-
-    const tokens = walletManager.getTokens();
-
-    const newState = this.state;
-
-    if (isStorageRead && isParseWritten) { // Post-Initialization logic
-      const isCurrencyChanged = (currency !== originalCurrency);
-      const isPricesChanged = (!_.isEqual(prices, originalPrices));
-      let needUpdate = false;
-
-      console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
-      // Update total asset value and list data if there's currency or price change
-      // Balance, name, creation/deletion are handled in reducer directly
-      if (isBalanceUpdated) {
-        needUpdate = true;
-        resetBalanceUpdated();
-      } else if (isCurrencyChanged || isPricesChanged) {
-        needUpdate = true;
-      }
-
-      if (needUpdate) {
-        updateWalletAssetValue(currency, prices);
-      }
-    } else if (isInitFromStorageDone) { // Initialization logic
-      if (!isInitWithParseDone) {
-        // Upload current wallet settings to Parse in order to get balances and transactions
-        initializeWithParse();
-        // As long as the app initialized from storage, we mark state.isStorageRead to true
-
-        newState.isStorageRead = true;
-      } else {
-        initLiveQueryPrice();
-        initLiveQueryBalances(tokens);
-        initLiveQueryTransactions(tokens);
-        initLiveQueryBlockHeights();
-        initFcmChannel();
-
-        newState.isParseWritten = true;
-      }
+    // trigger onStorageRead if storage logic is done
+    if (!lastIsInitFromStorageDone && isInitFromStorageDone) {
+      this.onStorageRead(nextProps);
     }
 
-    this.setState(newState);
+    // trigger onUserLogin if user logged in
+    if (!lastIsLogin && isLogin) {
+      this.onUserLogin(nextProps);
+    }
+
+    // Update assets value
+    const isCurrencyChanged = (currency !== originalCurrency);
+    const isPricesChanged = (!_.isEqual(prices, originalPrices));
+    let needUpdate = false;
+
+    console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
+    // Update total asset value and list data if there's currency or price change
+    // Balance, name, creation/deletion are handled in reducer directly
+    if (isBalanceUpdated) {
+      needUpdate = true;
+      resetBalanceUpdated();
+    } else if (isCurrencyChanged || isPricesChanged) {
+      needUpdate = true;
+    }
+
+    if (needUpdate) {
+      updateWalletAssetValue(currency, prices);
+    }
+  }
+
+  onStorageRead = (props) => {
+    const { login } = props;
+    login();
+  }
+
+  onUserLogin = (props) => {
+    const {
+      getServerInfo, updateUser, initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
+    } = props;
+    const tokens = walletManager.getTokens();
+    getServerInfo();
+    updateUser();
+    initLiveQueryPrice();
+    initLiveQueryBalances(tokens);
+    initLiveQueryTransactions(tokens);
+    initLiveQueryBlockHeights();
   }
 
   render() {
@@ -173,7 +166,6 @@ class RootComponent extends Component {
 
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
-  initializeWithParse: PropTypes.func.isRequired,
   resetBalanceUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({
@@ -182,7 +174,7 @@ RootComponent.propTypes = {
   showNotification: PropTypes.bool.isRequired,
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
-  isInitWithParseDone: PropTypes.bool.isRequired,
+  isLogin: PropTypes.bool.isRequired,
   isBalanceUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -203,10 +195,6 @@ RootComponent.propTypes = {
   fingerprintCallback: PropTypes.func,
   fingerprintFallback: PropTypes.func,
   fingerprintUsePasscode: PropTypes.func,
-  initLiveQueryPrice: PropTypes.func.isRequired,
-  initLiveQueryBalances: PropTypes.func.isRequired,
-  initLiveQueryTransactions: PropTypes.func.isRequired,
-  initLiveQueryBlockHeights: PropTypes.func.isRequired,
   isShowInAppNotification: PropTypes.bool.isRequired,
   inAppNotification: PropTypes.shape({}),
   initFcmChannel: PropTypes.func.isRequired,
