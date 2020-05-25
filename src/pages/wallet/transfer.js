@@ -682,7 +682,7 @@ class Transfer extends Component {
   showInvalidAmountNotification() {
     const { addNotification } = this.props;
     const notification = createErrorNotification(
-      'modal.invalidAmount.amountExceedsTitle',
+      'modal.invalidAmount.title',
       'modal.invalidAmount.body',
     );
     addNotification(notification);
