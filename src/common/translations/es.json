@@ -28,7 +28,7 @@
         "addAsset": "Agregar activo"
       },
       "history": {
-        "noTransNote": "No se encontró ninguna transacción en esta wallet.",
+        "noTransNote": "No se encontró ninguna transacción de esta activo",
         "recent": "Reciente",
         "loading": "cargando..."
       },
@@ -133,8 +133,8 @@
         "have": "Tengo %{balance} en %{wallet}"
       },
       "swapSelection": {
-        "title": "Seleccione el tipo de moneda",
-        "noSwappableCoin": "Lo sentimos, no tienes ninguna moneda intercambiable",
+        "title": "Seleccione activo",
+        "noSwappableCoin": "Lo sentimos, no tienes ningún activo intercambiable",
         "please": "Por favor",
         "create": "crear",
         "or": "o",

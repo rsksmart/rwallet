@@ -28,7 +28,7 @@
         "addAsset": "Adicionar ativo"
       },
       "history": {
-        "noTransNote": "Não há transações encontradas nesta carteira.",
+        "noTransNote": "Não existe transação encontrada para este ativo",
         "recent": "Recente",
         "loading": "Carregando..."
       },
@@ -133,8 +133,8 @@
         "have": "Eu tenho %{balance} no %{wallet}"
       },
       "swapSelection": {
-        "title": "Escolha a moeda",
-        "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
+        "title": "Selecionar ativo",
+        "noSwappableCoin": "Desculpe, você não tem nenhum ativo permutável",
         "please": "por favor",
         "create": "crio",
         "or": "ou",

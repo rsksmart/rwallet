@@ -28,7 +28,7 @@
         "addAsset": "新增"
       },
       "history": {
-        "noTransNote": "此钱包还没有任何交易。",
+        "noTransNote": "找不到此资产的交易记录",
         "recent": "最近的",
         "loading": "加载中..."
       },
@@ -133,8 +133,8 @@
         "have": "我有%{balance}在%{wallet}"
       },
       "swapSelection": {
-        "title": "选择货币",
-        "noSwappableCoin": "抱歉，您没有任何可交换币",
+        "title": "选择资产",
+        "noSwappableCoin": "抱歉，您没有任何可交换资产",
         "please": "请",
         "create": "创建",
         "or": "或者",
