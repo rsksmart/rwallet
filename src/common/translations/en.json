@@ -130,8 +130,8 @@
         "have": "I have %{balance} in %{wallet}"
       },
       "swapSelection": {
-        "title": "Select Currency",
-        "noSwappableCoin": "Sorry, you don't have any Swappable Coin",
+        "title": "Select Asset",
+        "noSwappableCoin": "Sorry, you don't have any Swappable Asset",
         "please": "Please",
         "create": "Create",
         "or": "or",

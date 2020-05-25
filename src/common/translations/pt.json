@@ -133,8 +133,8 @@
         "have": "Eu tenho %{balance} no %{wallet}"
       },
       "swapSelection": {
-        "title": "Escolha a moeda",
-        "noSwappableCoin": "Desculpe, você não tem nenhuma moeda trocável",
+        "title": "Selecionar ativos",
+        "noSwappableCoin": "Desculpe, você não tem nenhum ativo trocável",
         "please": "por favor",
         "create": "crio",
         "or": "ou",
