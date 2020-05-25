@@ -3,7 +3,6 @@
   rwallet
 
   Created by star on 2020/5/25.
-  Copyright © 2020 Facebook. All rights reserved.
 */
 {
   "NSCameraUsageDescription" = "RIF Wallet necesita acceso a su cámara para escanear el código QR del destinatario.";
