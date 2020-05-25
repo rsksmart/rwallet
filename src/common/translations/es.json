@@ -28,7 +28,7 @@
         "addAsset": "Agregar activo"
       },
       "history": {
-        "noTransNote": "No se encontró ninguna transacción en esta wallet.",
+        "noTransNote": "No se encontró ninguna transacción de esta activo",
         "recent": "Reciente",
         "loading": "cargando..."
       },

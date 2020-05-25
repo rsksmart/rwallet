@@ -28,7 +28,7 @@
         "addAsset": "新增"
       },
       "history": {
-        "noTransNote": "此钱包还没有任何交易。",
+        "noTransNote": "找不到此资产的交易记录",
         "recent": "最近的",
         "loading": "加载中..."
       },
