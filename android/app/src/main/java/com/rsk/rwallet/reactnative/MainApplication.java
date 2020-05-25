@@ -31,6 +31,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.reactnativecommunity.slider.ReactSliderPackage;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
             new RNScreensPackage(),
             new ReactSliderPackage(),
             new RNFirebaseMessagingPackage(),
-            new RNFirebaseNotificationsPackage()
+            new RNFirebaseNotificationsPackage(),
+            new RNCWebViewPackage()
       );
     }
 
