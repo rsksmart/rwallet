@@ -28,7 +28,7 @@
         "addAsset": "Agregar activo"
       },
       "history": {
-        "noTransNote": "No se encontró ninguna transacción de esta activo",
+        "noTransNote": "No se ha encontrado ninguna transacción para este activo",
         "recent": "Reciente",
         "loading": "cargando..."
       },
