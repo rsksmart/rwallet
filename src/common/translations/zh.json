@@ -309,6 +309,10 @@
       "title": "单词太多",
       "body": "已经超过了12个单词了。"
     },
+    "amountExceeds": {
+      "title": "金额过大",
+      "body": "输入的金额超过了您的余额"
+    },
     "txFailed": {
       "title": "转账失败",
       "moreBTC": "您需要更多BTC余额才能完成转帐",

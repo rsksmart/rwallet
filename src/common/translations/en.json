@@ -305,6 +305,10 @@
       "title": "Too Many Words",
       "body": "The recovery phrase has to be 12 words."
     },
+    "amountExceeds": {
+      "title": "Amount Exceeds",
+      "body": "The amount entered exceeds your balance"
+    },
     "txFailed": {
       "title": "Transfer is failed",
       "moreBTC": "You need more BTC balance to complete the transfer",
