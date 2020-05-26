@@ -23,7 +23,7 @@
     "wallet": {
       "list": {
         "title": "Sua carteira",
-        "myAssets": "Portfólio",
+        "myAssets": "Meus ativos",
         "allAssets": "Todos os ativos",
         "addAsset": "Adicionar ativo"
       },
