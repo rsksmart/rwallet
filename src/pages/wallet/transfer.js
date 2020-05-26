@@ -428,7 +428,7 @@ class Transfer extends Component {
     const { amount } = this.state;
     const { coin } = this;
     if (_.isEmpty(amount)) return;
-    if (coin.balance.isLessThan(amount)) {
+    if (coin.balance && coin.balance.isLessThan(amount)) {
       this.showAmountExceedsNotification();
       return;
     }
