@@ -306,8 +306,8 @@
       "body": "The recovery phrase has to be 12 words."
     },
     "amountExceeds": {
-      "title": "Amount Exceeds",
-      "body": "The amount entered exceeds your balance"
+      "title": "Not enough balance",
+      "body": "The amount entered exceeds the wallet's balance"
     },
     "txFailed": {
       "title": "Transfer is failed",

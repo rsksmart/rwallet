@@ -309,8 +309,8 @@
       "body": "A frase de recuperação deve conter 12 palavras."
     },
     "amountExceeds": {
-      "title": "Quantidade excede",
-      "body": "O valor inserido excede seu saldo"
+      "title": "Equilíbrio insuficiente",
+      "body": "O valor inserido excede o saldo da carteira"
     },
     "txFailed": {
       "title": "A transferência falhou",

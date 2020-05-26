@@ -309,8 +309,8 @@
       "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
     },
     "amountExceeds": {
-      "title": "La cantidad excede",
-      "body": "La cantidad ingresada excede su saldo"
+      "title": "No hay suficiente equilibrio",
+      "body": "La cantidad ingresada excede el saldo de la billetera"
     },
     "txFailed": {
       "title": "La transferencia ha fallado",
