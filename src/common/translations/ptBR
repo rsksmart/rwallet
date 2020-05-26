@@ -35,7 +35,7 @@
       "transaction": {
         "Sent Funds": "Fundos enviados",
         "Received Funds": "Fundos recebidos",
-        "Sending Funds": "Envio de fundos",
+        "Sending Funds": "Enviando fundos",
         "Receiving Funds": "Recebendo fundos",
         "Failed Funds": "Fundos falidos",
         "date": "Data",
