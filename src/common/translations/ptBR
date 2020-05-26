@@ -144,7 +144,7 @@
       "swapCompleted": {
         "title": "Trocar",
         "body": "Troca concluída!",
-        "note": "Sua troca está a caminho.",
+        "note": "A troca está sendo realizada.",
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
