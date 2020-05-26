@@ -165,7 +165,7 @@
         "enabledAssets": "Ativados",
         "note": "Desative para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar tokens personalizados",
-        "custom": "Adicionar"
+        "custom": "Personalizados"
       }
     },
     "mine": {
