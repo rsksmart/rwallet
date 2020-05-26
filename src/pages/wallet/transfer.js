@@ -428,15 +428,22 @@ class Transfer extends Component {
     const { amount } = this.state;
     const { coin } = this;
     if (_.isEmpty(amount)) return;
-    if (!coin.balance || coin.balance.isLessThan(amount)) {
-      this.showAmountExceedsNotification();
-      return;
-    }
-    this.isAmountValid = common.isAmount(amount);
-    if (!this.isAmountValid) {
+
+    this.isAmountValid = true;
+
+    const isAmountValid = common.isAmount(amount);
+    if (!isAmountValid) {
+      this.isAmountValid = false;
       this.showInvalidAmountNotification();
       return;
     }
+
+    if (!coin.balance || coin.balance.isLessThan(amount)) {
+      this.isAmountValid = false;
+      this.showAmountExceedsNotification();
+      return;
+    }
+
     this.requestFees(false);
   }
 
