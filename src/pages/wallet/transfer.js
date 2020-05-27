@@ -426,12 +426,24 @@ class Transfer extends Component {
 
   onAmountInputBlur() {
     const { amount } = this.state;
+    const { coin } = this;
     if (_.isEmpty(amount)) return;
-    this.isAmountValid = common.isAmount(amount);
-    if (!this.isAmountValid) {
+
+    this.isAmountValid = true;
+
+    const isAmountValid = common.isAmount(amount);
+    if (!isAmountValid) {
+      this.isAmountValid = false;
       this.showInvalidAmountNotification();
       return;
     }
+
+    if (!coin.balance || coin.balance.isLessThan(amount)) {
+      this.isAmountValid = false;
+      this.showAmountExceedsNotification();
+      return;
+    }
+
     this.requestFees(false);
   }
 
@@ -683,6 +695,15 @@ class Transfer extends Component {
     addNotification(notification);
   }
 
+  showAmountExceedsNotification() {
+    const { addNotification } = this.props;
+    const notification = createErrorNotification(
+      'modal.amountExceeds.title',
+      'modal.amountExceeds.body',
+    );
+    addNotification(notification);
+  }
+
   async confirm(toAddress) {
     const { navigation, addNotification } = this.props;
     const { coin } = this;
@@ -774,7 +795,8 @@ class Transfer extends Component {
 
   validateConfirmControl() {
     const { to, amount } = this.state;
-    this.setState({ enableConfirm: to && amount });
+    const { isAmountValid, isAddressValid } = this;
+    this.setState({ enableConfirm: isAmountValid && isAddressValid && to && amount });
   }
 
   inputAmount(text, callback) {
