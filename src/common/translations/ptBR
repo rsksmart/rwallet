@@ -331,7 +331,7 @@
       "invalid": "O nome contém caracteres inválidos."
     },
     "incorrectKeyName": {
-      "title": "Nome de chave incorreto",
+      "title": "Nome de carteira incorreto",
       "tooShort": "O nome da chave é muito curto.",
       "tooLong": "O nome da chave é muito longo.",
       "invalid": "O nome da chave contém caracteres inválidos."
