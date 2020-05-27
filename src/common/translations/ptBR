@@ -89,7 +89,7 @@
       "recoveryPhrase": {
         "title": "Frase de recuperação",
         "note1": "Anote ou copie estas palavras",
-        "note2": "na ordem certa e salve-os",
+        "note2": "nesta ordem e salve-as",
         "note3": "em algum lugar seguro"
       },
       "verifyPhrase": {
