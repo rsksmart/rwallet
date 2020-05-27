@@ -332,7 +332,7 @@
     },
     "incorrectKeyName": {
       "title": "Nome de carteira incorreto",
-      "tooShort": "O nome da chave é muito curto.",
+      "tooShort": "O nome da carteira é muito curto.",
       "tooLong": "O nome da chave é muito longo.",
       "invalid": "O nome da chave contém caracteres inválidos."
     },
