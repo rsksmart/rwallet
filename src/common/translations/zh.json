@@ -68,7 +68,7 @@
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
-        "importWalletNote": "使用助记词导入"
+        "importWalletNote": "使用恢复短语还原您的钱包"
       },
       "selectCurrency": {
         "title": "选择钱包类型",
@@ -173,8 +173,8 @@
       "index": {
         "joinRSKCommunity": "加入RSK社群",
         "settings": "设置",
-        "createKey": "创建或导入一个密钥",
-        "keys": "密钥",
+        "createKey": "创建或导入一个钱包",
+        "keys": "钱包",
         "anonymousUser": "匿名用户",
         "wallets": {
           "zero": "0 钱包",
@@ -204,22 +204,22 @@
         }
       },
       "keySettings": {
-        "title": "密钥设置",
-        "keyContains": "这个密钥包含",
+        "title": "钱包设置",
+        "keyContains": "这个钱包包含",
         "wallets": "钱包",
         "security": "安全",
         "advanced": "高级",
         "Wallets": "钱包",
-        "keyName": "密钥名字",
+        "keyName": "钱包名字",
         "delete": "删除",
         "backup": "备份"
       },
       "keyName": {
-        "title": "密钥名字",
-        "question": "你如何称呼这个密钥呢？",
+        "title": "钱包名字",
+        "question": "你如何称呼这个钱包呢？",
         "notice": "在下面你可以改变显示的名字。",
         "name": "名字",
-        "comment": "* 密钥名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
+        "comment": "* 钱包名字可以包含1-%{maxLength}个字符（a-z），数字（0-9）和空格"
       },
       "rename": {
         "title": "名字",
@@ -337,10 +337,10 @@
       "invalid": "名字含有不合法字符。"
     },
     "incorrectKeyName": {
-      "title": "不正确的密钥名字",
-      "tooShort": "密钥名字太短。",
-      "tooLong": "密钥名字太长。",
-      "invalid": "密钥名字含有不合法字符。"
+      "title": "不正确的钱包名字",
+      "tooShort": "钱包名字太短。",
+      "tooLong": "钱包名字太长。",
+      "invalid": "钱包名字含有不合法字符。"
     },
     "guardPhrase": {
       "title": "保管好你的助记词",
@@ -384,7 +384,7 @@
     },
     "deleteKey": {
       "title": "警告!",
-      "body": "您确定要删除使用此密钥的所有钱包吗？"
+      "body": "您确定要删除此钱包中的所有资产吗？"
     },
     "swap": {
       "title": "没有可交换币",

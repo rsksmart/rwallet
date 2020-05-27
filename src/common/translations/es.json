@@ -68,7 +68,7 @@
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
         "importWallet": "Importar billetera existente",
-        "importWalletNote": "Recupere su billetera usando su frase de contraseña"
+        "importWalletNote": "Restaura tu billetera usando la frase de recuperación"
       },
       "selectCurrency": {
         "title": "Seleccionar moneda de Wallet",
@@ -173,8 +173,8 @@
       "index": {
         "joinRSKCommunity": "Únete a la comunidad de RSK",
         "settings": "Configuraciones",
-        "createKey": "Crear o importar una clave",
-        "keys": "Llaves",
+        "createKey": "Crear o importar una billetera",
+        "keys": "Billeteras",
         "anonymousUser": "Usuario anónimo",
         "wallets": {
           "zero": "0 billetera",
@@ -204,22 +204,22 @@
         }
       },
       "keySettings": {
-        "title": "Configuraciones clave",
-        "keyContains": "Esta clave contiene",
+        "title": "Configuraciones de billetera",
+        "keyContains": "Esta billetera contiene",
         "wallets": "billeteras",
         "security": "Seguridad",
         "advanced": "Avanzado",
         "Wallets": "Carteras",
-        "keyName": "Nombre clave",
+        "keyName": "Nombre de billetera",
         "delete": "Eliminar",
         "backup": "Respaldo"
       },
       "keyName": {
-        "title": "Nombre clave",
-        "question": "¿Cómo llamas a esta llave?",
+        "title": "Nombre de billetera",
+        "question": "¿Cómo se llama esta billetera?",
         "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
         "name": "Nombre",
-        "comment": "* El nombre de la clave puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre de la billetera puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "rename": {
         "title": "Tu nombre",
@@ -336,10 +336,10 @@
       "invalid": "Nombre contiene caracteres inválidos."
     },
     "incorrectKeyName": {
-      "title": "Nombre de clave incorrecto",
-      "tooShort": "El nombre de la clave es demasiado corto.",
-      "tooLong": "El nombre de la clave es demasiado largo.",
-      "invalid": "El nombre de la clave contiene caracteres no válidos."
+      "title": "Nombre de billetera incorrecto",
+      "tooShort": "El nombre de la billetera es demasiado corto.",
+      "tooLong": "El nombre de la billetera es demasiado largo.",
+      "invalid": "El nombre de la billetera contiene caracteres inválidos."
     },
     "guardPhrase": {
       "title": "Resguarde su frase de recuperación",
@@ -383,7 +383,7 @@
     },
     "deleteKey": {
       "title": "¡Advertencia!",
-      "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
+      "body": "¿Estás seguro de que deseas eliminar todos los activos con esta billetera?"
     },
     "swap": {
       "title": "No hay monedas intercambiables",
