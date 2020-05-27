@@ -203,7 +203,7 @@
         }
       },
       "keySettings": {
-        "title": "Configurações principais",
+        "title": "Configurações de carteira",
         "wallets": "ativos",
         "keyContains": "Esta carteira contém",
         "security": "Segurança",
