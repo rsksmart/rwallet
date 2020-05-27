@@ -190,14 +190,14 @@
       },
       "2fa": {
         "title": "Two-Factor Authentication",
-        "setPasscode": "Set Passcode",
-        "resetPasscode": "Reset Passcode",
+        "setPasscode": "Set PIN",
+        "resetPasscode": "Reset PIN",
         "useFingerprint": "Use Fingerprint"
       },
       "resetPasscodeSuccess" :{
         "title": {
-          "create": "Set Passcode Success",
-          "reset": "Reset Passcode Success"
+          "create": "Set PIN Success",
+          "reset": "Reset PIN Success"
         }
       },
       "keySettings": {
@@ -355,28 +355,28 @@
       "body": "The address has been copied to the clipboard."
     },
     "passcode": {
-      "typeOldPasscode": "Type your old passcode",
-      "typeNewPasscode": "Type your new passcode",
-      "confirmNewPasscode": "Confirm your new passcode",
-      "oldIncorrect": "Old Passcode is incorrect, try again",
-      "notMatched": "Passcode does not match. Please try again."
+      "typeOldPasscode": "Type your old PIN",
+      "typeNewPasscode": "Type your new PIN",
+      "confirmNewPasscode": "Confirm your new PIN",
+      "oldIncorrect": "Old PIN is incorrect, try again",
+      "notMatched": "PIN does not match. Please try again."
     },
     "verifyPasscode": {
-      "type": "Type your passcode",
-      "incorrect": "Passcode is incorrect"
+      "type": "Type your PIN",
+      "incorrect": "PIN is incorrect"
     },
     "touchSensor": {
       "title": "Touch Sensor",
-      "usePasscode": "Use passcode",
+      "usePasscode": "Use PIN",
       "touchToVerify": "Touch to verify fingerprint",
       "nativeNote": "Scan your fingerprint on the device scanner to continue",
-      "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
+      "failedAndTryPasscode": "Authentication failed. Please try PIN.",
       "failedAndTryAgain.": "Authentication failed. Please try again.",
       "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
-      "title": "Please set a password",
-      "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+      "title": "Please set a PIN",
+      "body": "PIN can protect your funds if this device is stolen or compromised by malicious software."
     },
     "deleteKey": {
       "title": "Warning!",
