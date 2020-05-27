@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  FlatList, RefreshControl, ActivityIndicator,
-  Image,
+  ActivityIndicator, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { LargeList } from 'react-native-largelist-v3';
+import { ChineseWithLastDateFooter, WithLastDateFooter } from 'react-native-spring-scrollview/Customize';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
@@ -16,11 +17,11 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageSimple from '../base/base.page.simple';
-import { strings } from '../../common/i18n';
 import definitions from '../../common/definitions';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
+import RefreshHeader from '../../components/headers/header.history.refresh';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 70,
   },
   rowRight: {
     flexDirection: 'row',
@@ -189,16 +191,6 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
   },
-  refreshControl: {
-    zIndex: 10000,
-  },
-  footer: {
-    paddingTop: 10,
-    paddingBottom: 10 + screenHelper.topHeight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
   noTransNotice: {
     textAlign: 'center',
   },
@@ -221,6 +213,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
   },
+  largelistView: {
+    flex: 1,
+    paddingBottom: 10 + screenHelper.topHeight,
+  },
 });
 
 const stateIcons = {
@@ -232,11 +228,11 @@ const stateIcons = {
 };
 
 function Item({
-  title, amount, datetime, onPress,
+  title, amount, datetime, onPress, itemKey,
 }) {
   const icon = stateIcons[title];
   return (
-    <TouchableOpacity style={[styles.row]} onPress={onPress}>
+    <TouchableOpacity style={[styles.row]} onPress={onPress} key={itemKey}>
       <View style={styles.iconView}>{icon}</View>
       <View style={[styles.rowRight]}>
         <View style={[styles.rowRightR1]}>
@@ -256,6 +252,11 @@ Item.propTypes = {
   amount: PropTypes.string.isRequired,
   datetime: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  itemKey: PropTypes.string,
+};
+
+Item.defaultProps = {
+  itemKey: null,
 };
 
 class History extends Component {
@@ -341,7 +342,6 @@ class History extends Component {
       fetchTxTimestamp: undefined, // Record the timestamp of the request
     };
 
-    this.refreshControl = this.refreshControl.bind(this);
     this.onSendButtonClick = this.onSendButtonClick.bind(this);
     this.onReceiveButtonClick = this.onReceiveButtonClick.bind(this);
     this.onbackClick = this.onbackClick.bind(this);
@@ -410,9 +410,15 @@ class History extends Component {
 
       // When txTimestamp === fetchTxTimestamp, the new data is retrieved,
       // Set isLoadMore and isRefreshing to false.
+      // Stop LargeList refreshing and loading
       if (txTimestamp === fetchTxTimestamp) {
         this.setState({ isLoadMore: false });
         this.setState({ isRefreshing: false });
+
+        if (this.largelist) {
+          this.largelist.endRefresh();
+          this.largelist.endLoading();
+        }
       }
 
       this.setState({
@@ -429,21 +435,6 @@ class History extends Component {
     }
     this.setState({ isRefreshing: true });
     this.fetchTokenTransactions(0);
-  }
-
-  onEndReached = () => {
-    const { isLoadMore, isRefreshing, listData } = this.state;
-    // In these cases, the operation of loading more should not be executed.
-    // 1. the list data is empty
-    // 2. It's loading more
-    // 3. When FlatList momentum scroll, the onEndReached function is called before.
-    if (_.isEmpty(listData) || isRefreshing || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
-      return;
-    }
-    this.isOnEndReachedCalledDuringMomentum = true;
-    // Record the request time so that you can check whether it is the latest request during the callback
-    this.setState({ isLoadMore: true });
-    this.fetchTokenTransactions(this.coin.transactions.length);
   }
 
   onSendButtonClick() {
@@ -475,6 +466,21 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  loadMoreData = () => {
+    const { isLoadMore, isRefreshing, listData } = this.state;
+    // In these cases, the operation of loading more should not be executed.
+    // 1. the list data is empty
+    // 2. It's loading more
+    // 3. When FlatList momentum scroll, the onEndReached function is called before.
+    if (_.isEmpty(listData) || isRefreshing || isLoadMore || this.isOnEndReachedCalledDuringMomentum) {
+      return;
+    }
+    this.isOnEndReachedCalledDuringMomentum = true;
+    // Record the request time so that you can check whether it is the latest request during the callback
+    this.setState({ isLoadMore: true });
+    this.fetchTokenTransactions(this.coin.transactions.length);
+  }
+
   fetchTokenTransactions = (skipCount) => {
     const { fetchTransactions } = this.props;
     const timestamp = (new Date()).getTime();
@@ -489,59 +495,52 @@ class History extends Component {
     });
   }
 
+  renderHistory = (listData, isRefreshing) => {
+    // Show loading animation when entering the page for the first time
+    if (!listData && isRefreshing) {
+      return <ActivityIndicator />;
+    }
+
+    return this.listView(listData, isRefreshing);
+  }
+
   renderHeader = (listData, isRefreshing) => {
     if (listData && listData.length === 0 && !isRefreshing) {
-      return <Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" />;
+      return <View><Loc style={[styles.noTransNotice]} text="page.wallet.history.noTransNote" /></View>;
     }
     return null;
   }
 
-  listView = (listData, onPress, isRefreshing) => (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      data={listData}
-      renderItem={({ item, index }) => (
-        <Item
-          title={item.state}
-          amount={item.amountText}
-          datetime={item.datetimeText}
-          onPress={() => { onPress(index); }}
-        />
-      )}
-      keyExtractor={(item, index) => index.toString()}
-      refreshControl={(
-        <RefreshControl
-          refreshing={isRefreshing}
+  listView = (listData, isRefreshing) => {
+    const { language } = this.props;
+    const Footer = language === 'zh' ? ChineseWithLastDateFooter : WithLastDateFooter;
+    const { onListItemPress: onPress } = this;
+    return (
+      <View style={styles.largelistView}>
+        <LargeList
+          showsVerticalScrollIndicator={false}
+          onMomentumScrollBegin={this.onMomentumScrollBegin}
+          data={[{ items: listData || [] }]}
+          ref={(largelist) => { this.largelist = largelist; }}
+          renderHeader={() => this.renderHeader(listData, isRefreshing)}
+          refreshHeader={RefreshHeader}
+          loadingFooter={Footer}
           onRefresh={this.onRefresh}
+          onLoading={this.loadMoreData}
+          heightForIndexPath={() => 70}
+          renderIndexPath={({ row }) => {
+            const item = (listData && listData[row]) || {};
+            return (
+              <Item
+                title={item.state}
+                amount={item.amountText}
+                datetime={item.datetimeText}
+                onPress={() => onPress(row)}
+                itemKey={row.toString()}
+              />
+            );
+          }}
         />
-        )}
-      ListHeaderComponent={this.renderHeader(listData, isRefreshing)}
-      ListFooterComponent={this.renderFooter}
-      onEndReached={this.onEndReached}
-      onEndReachedThreshold={0.5}
-      onMomentumScrollBegin={this.onMomentumScrollBegin}
-    />
-  );
-
-  refreshControl() {
-    const { isRefreshing } = this.state;
-    return (
-      <RefreshControl
-        style={styles.refreshControl}
-        refreshing={isRefreshing}
-        onRefresh={this.onRefresh}
-        title={strings('page.wallet.history.loading')}
-      />
-    );
-  }
-
-  renderFooter = () => {
-    const { isLoadMore } = this.state;
-    return (
-      <View style={styles.footer}>
-        {isLoadMore && (
-          <ActivityIndicator size="small" />
-        )}
       </View>
     );
   }
@@ -596,7 +595,7 @@ class History extends Component {
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
         <View style={[styles.sectionContainer, flex.flex1]}>
-          {this.listView(listData, this.onListItemPress, isRefreshing)}
+          {this.renderHistory(listData, isRefreshing)}
         </View>
       </BasePageSimple>
     );
@@ -611,6 +610,7 @@ History.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   currency: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
   walletManager: PropTypes.shape({}),
   updateTimestamp: PropTypes.number.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
