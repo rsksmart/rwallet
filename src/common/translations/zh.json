@@ -68,7 +68,7 @@
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
-        "importWalletNote": "使用恢复短语还原您的钱包"
+        "importWalletNote": "使用助记词还原您的钱包"
       },
       "selectCurrency": {
         "title": "选择钱包类型",
