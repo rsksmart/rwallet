@@ -170,8 +170,8 @@
       "index": {
         "joinRSKCommunity": "Join RSK's Community",
         "settings": "Settings",
-        "createKey": "Create or Import a Key",
-        "keys": "Keys",
+        "createKey": "Create or Import a Wallet",
+        "keys": "Wallets",
         "anonymousUser": "Anonymous User",
         "wallets": {
           "zero": "0 Wallet",
@@ -201,22 +201,22 @@
         }
       },
       "keySettings": {
-        "title": "Key Settings",
-        "keyContains": "This key contains",
+        "title": "Wallet Settings",
+        "keyContains": "This wallet contains",
         "wallets": "wallets",
         "security": "Security",
         "advanced": "Advanced",
         "Wallets": "Wallets",
-        "keyName": "Key Name",
+        "keyName": "Wallet Name",
         "delete": "Delete",
         "backup": "Backup"
       },
       "keyName": {
-        "title": "Key Name",
-        "question": "What do you call this key?",
+        "title": "Wallet Name",
+        "question": "What do you call this wallet?",
         "notice": "You can change the name displayed on the device below.",
         "name": "Name",
-        "comment": "* Key name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
+        "comment": "* Wallet name can contain 1-%{maxLength} letters (a-z), numbers (0-9), and space"
       },
       "rename": {
         "title": "Your Name",
@@ -333,10 +333,10 @@
       "invalid": "Name contains invalid characters."
     },
     "incorrectKeyName": {
-      "title": "Incorrect key name",
-      "tooShort": "Key name is too short.",
-      "tooLong": "Key name is too long.",
-      "invalid": "Key name contains invalid characters."
+      "title": "Incorrect wallet name",
+      "tooShort": "Wallet name is too short.",
+      "tooLong": "Wallet name is too long.",
+      "invalid": "Wallet name contains invalid characters."
     },
     "guardPhrase": {
       "title": "Safeguard your recovery phrase",
