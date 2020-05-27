@@ -334,7 +334,7 @@
       "title": "Nome de carteira incorreto",
       "tooShort": "O nome da carteira é muito curto.",
       "tooLong": "O nome da carteira é muito longo.",
-      "invalid": "O nome da chave contém caracteres inválidos."
+      "invalid": "O nome da carteira contém caracteres inválidos."
     },
     "guardPhrase": {
       "title": "Proteja sua frase de recuperação",
