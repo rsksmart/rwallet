@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
@@ -9,7 +8,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LargeList } from 'react-native-largelist-v3';
 import { ChineseWithLastDateFooter, WithLastDateFooter } from 'react-native-spring-scrollview/Customize';
-import { RefreshHeader } from 'react-native-spring-scrollview';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
@@ -23,6 +21,7 @@ import definitions from '../../common/definitions';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
+import RefreshHeader from '../../components/headers/header.refresh';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -227,14 +226,6 @@ const stateIcons = {
   Receiving: <Image source={sending} />,
   Failed: <MaterialIcons name="error-outline" size={36} style={[{ color: '#E73934' }]} />,
 };
-
-class MyRefreshHeader extends RefreshHeader {
-  static height = 50;
-
-  render() {
-    return <ActivityIndicator style={{ alignSelf: 'center' }} />;
-  }
-}
 
 function Item({
   title, amount, datetime, onPress, itemKey,
@@ -532,7 +523,7 @@ class History extends Component {
           data={[{ items: listData || [] }]}
           ref={(largelist) => { this.largelist = largelist; }}
           renderHeader={() => this.renderHeader(listData, isRefreshing)}
-          refreshHeader={MyRefreshHeader}
+          refreshHeader={RefreshHeader}
           loadingFooter={Footer}
           onRefresh={this.onRefresh}
           onLoading={this.loadMoreData}
