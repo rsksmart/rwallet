@@ -68,7 +68,7 @@
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
-        "importWalletNote": "Recupere sua carteira usando sua senha"
+        "importWalletNote": "Restaurar sua carteira usando a frase de recuperação"
       },
       "selectCurrency": {
         "title": "Selecionar moeda da carteira",
@@ -173,8 +173,8 @@
       "index": {
         "joinRSKCommunity": "Junte-se à comunidade de RSK",
         "settings": "Configurações",
-        "createKey": "Criar ou importar uma chave",
-        "keys": "Chaves",
+        "createKey": "Criar ou importar uma carteira",
+        "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
         "wallets": {
           "zero": "0 carteira",
@@ -204,22 +204,22 @@
         }
       },
       "keySettings": {
-        "title": "Configurações principais",
+        "title": "Configurações da carteira",
         "wallets": "carteiras",
-        "keyContains": "Esta chave contém",
+        "keyContains": "Esta carteira contém",
         "security": "Segurança",
         "advanced": "Avançado",
         "Wallets": "Carteiras",
-        "keyName": "Nome da chave",
+        "keyName": "Nome da carteira",
         "delete": "Excluir",
         "backup": "Backup"
       },
       "keyName": {
-        "title": "Nome da chave",
-        "question": "Como você chama essa chave?",
+        "title": "Nome da carteira",
+        "question": "Como você chama essa carteira?",
         "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
         "name": "Nome",
-        "comment": "* O nome da chave pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
+        "comment": "* O nome da carteira pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
       "rename": {
         "title": "Seu nome",
@@ -336,10 +336,10 @@
       "invalid": "O nome contém caracteres inválidos."
     },
     "incorrectKeyName": {
-      "title": "Nome de chave incorreto",
-      "tooShort": "O nome da chave é muito curto.",
-      "tooLong": "O nome da chave é muito longo.",
-      "invalid": "O nome da chave contém caracteres inválidos."
+      "title": "Nome incorreto da carteira",
+      "tooShort": "O nome da carteira é muito curto.",
+      "tooLong": "O nome da carteira é muito longo.",
+      "invalid": "O nome da carteira contém caracteres inválidos."
     },
     "guardPhrase": {
       "title": "Proteja sua frase de recuperação",
@@ -383,7 +383,7 @@
     },
     "deleteKey": {
       "title": "Atenção!",
-      "body": "Tem certeza de que deseja excluir todas as carteiras usando essa chave?"
+      "body": "Tem certeza de que deseja excluir todos os ativos usando esta carteira?"
     },
     "swap": {
       "title": "Nenhuma moeda trocável",
