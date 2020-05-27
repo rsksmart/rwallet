@@ -21,7 +21,7 @@ import definitions from '../../common/definitions';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
-import RefreshHeader from '../../components/headers/header.refresh';
+import RefreshHeader from '../../components/headers/header.history.refresh';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
