@@ -174,9 +174,9 @@
         "keys": "Keys",
         "anonymousUser": "Anonymous User",
         "wallets": {
-          "zero": "0 Wallet",
-          "one": "1 Wallet",
-          "other": "{{count}} Wallets"
+          "zero": "0 Asset",
+          "one": "1 Asset",
+          "other": "{{count}} Assets"
         },
         "support": "Support",
         "contactUs": "Contact Us",
@@ -203,10 +203,10 @@
       "keySettings": {
         "title": "Key Settings",
         "keyContains": "This key contains",
-        "wallets": "wallets",
+        "wallets": "assets",
         "security": "Security",
         "advanced": "Advanced",
-        "Wallets": "Wallets",
+        "Wallets": "Assets",
         "keyName": "Key Name",
         "delete": "Delete",
         "backup": "Backup"
