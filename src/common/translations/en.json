@@ -375,8 +375,8 @@
       "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
-      "title": "Please set a password",
-      "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+      "title": "Please set a passcode",
+      "body": "Passcode can protect your funds if this device is stolen or compromised by malicious software."
     },
     "deleteKey": {
       "title": "Warning!",
