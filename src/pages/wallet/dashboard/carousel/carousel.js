@@ -44,6 +44,7 @@ class Carousel extends Component {
 
   getItemLayout = (data, index) => {
     const { itemWidth, separatorWidth } = this.props;
+    console.log('itemWidth: ', itemWidth);
     let offset;
     if (index === 0) {
       offset = 0;
@@ -147,6 +148,8 @@ class Carousel extends Component {
       }
     }
 
+    console.log('startPoint, midPoint, endPoint: ', startPoint, midPoint, endPoint);
+
     return {
       startPoint, midPoint, endPoint,
     };
@@ -206,6 +209,7 @@ class Carousel extends Component {
         ],
       };
     }
+    console.log('animatedScale: ', animatedScale);
     return {
       ...animatedScale,
     };

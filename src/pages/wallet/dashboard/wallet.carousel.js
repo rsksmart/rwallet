@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
   Image,
-  StyleSheet, Text, TouchableOpacity, View,
+  StyleSheet, Text, TouchableOpacity, View, Dimensions,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
-import Carousel from './carousel';
+import Carousel from 'react-native-snap-carousel';
+// import Carousel from './carousel';
 import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
@@ -73,7 +74,11 @@ const styles = StyleSheet.create({
 class WalletCarousel extends Component {
   onAddWalletPressed = () => {
     const { navigation } = this.props;
-    this.carousel.scrollToIndex(1);
+    try {
+      this.carousel.scrollToIndex(1);
+    } catch (error) {
+      this.carousel.snapToItem(1);
+    }
     navigation.navigate('WalletAddIndex');
   }
 
@@ -118,10 +123,13 @@ class WalletCarousel extends Component {
         style={styles.carousel}
         data={data}
         renderItem={renderItem}
+        sliderWidth={Dimensions.get('window').width}
         itemWidth={pageWidth}
         inActiveOpacity={0.5}
         containerWidth={screen.width}
         initialIndex={1}
+        firstItem={1}
+        bounces={false}
       />
     );
   }

@@ -54,6 +54,7 @@
     "react-native-randombytes": "^3.5.3",
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-shapes": "^0.1.0",
+    "react-native-snap-carousel": "file:./src/third/react-native-snap-carousel",
     "react-native-spring-scrollview": "^2.0.23",
     "react-native-storage": "^1.0.1",
     "react-native-svg": "^9.13.3",
