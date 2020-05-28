@@ -338,7 +338,7 @@
     },
     "guardPhrase": {
       "title": "Proteja sua frase de recuperação",
-      "body": "Sua frase de recuperação é composta por 12 palavras selecionadas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
+      "body": "Sua frase de recuperação é composta por 12 palavras geradas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
     },
     "incorrectBackupPhrase": {
       "title": "Frase de backup incorreta",
