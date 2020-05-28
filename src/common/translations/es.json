@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Billetera",
-    "Spend": "Gastar",
-    "Earn": "Ganar",
     "Me": "Yo",
-    "Exchange": "Intercambiar"
+    "Exchange": "Intercambiar",
+    "App": "App"
   },
   "page": {
     "start": {
@@ -230,23 +229,9 @@
         "title": "¡Reinicio completado!"
       }
     },
-    "earn": {
+    "app": {
       "index": {
-        "title": "Gana criptomonedas con facilidad",
-        "comingSoon": "Próximamente...",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para ganar ...",
-        "feature1": "- Gana criptomonedas completando tareas",
-        "feature2": "- Obtenga intereses de una variedad de productos Defi",
-        "feature3": "- \"Devolución de efectivo\" en compras con criptomoneda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "estión de activos a su alcance",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para gastar ...",
-        "feature1": "- Compre más de 100 tarjetas de regalo con criptomoneda",
-        "feature2": "- Cambia entre cualquier ficha en tu billetera",
-        "feature3": "- Aprobación de transacciones con múltiples signos"
+        "title": "APP",
       }
     }
   },

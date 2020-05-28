@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "钱包",
-    "Spend": "消费",
-    "Earn": "收入",
     "Me": "我的",
-    "Exchange": "交换"
+    "Exchange": "交换",
+    "App": "应用"
   },
   "page": {
     "start": {
@@ -230,23 +229,9 @@
         "title": "重置成功！"
       }
     },
-    "earn": {
+    "app": {
       "index": {
-        "title": "轻松赚取加密货币",
-        "comingSoon": "即将推出...",
-        "featuresTitle": "以下赚钱功能即将推出...",
-        "feature1": "- 通过完成任务来赚取加密货币",
-        "feature2": "- 从各种Defi产品中获得收益",
-        "feature3": "- 使用加密货币购买, “现金返还”"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "触手可及的资产管理",
-        "featuresTitle": "以下消费功能即将推出...",
-        "feature1": "- 用加密货币购买100多张礼品卡",
-        "feature2": "- 在钱包中的所有币种之间交换",
-        "feature3": "- 交易的多签名批准"
+        "title": "APP",
       }
     }
   },

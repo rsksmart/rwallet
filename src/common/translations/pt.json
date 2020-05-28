@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Carteira",
-    "Spend": "Gastar",
-    "Earn": "Ganhar",
     "Me": "Eu",
-    "Exchange": "Troca"
+    "Exchange": "Troca",
+    "App": "Aplicativo"
   },
   "page": {
     "start": {
@@ -230,23 +229,9 @@
         "title": "Redefinição concluída!"
       }
     },
-    "earn": {
+    "app": {
       "index": {
-        "title": "Ganhe criptomoeda com facilidade",
-        "comingSoon": "Em breve...",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve.",
-        "feature1": "- Ganhe criptomoeda concluindo tarefas",
-        "feature2": "- Obter interesses de uma variedade de produtos Defi",
-        "feature3": "- \"Cash Back\" em compras com criptomoeda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Gerenciamento de ativos ao seu alcance",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
-        "feature1": "- Compre mais de 100 cartões-presente com criptomoeda",
-        "feature2": "- Troque entre qualquer token na sua carteira",
-        "feature3": "- Aprovação de transações com vários sinais"
+        "title": "APP",
       }
     }
   },

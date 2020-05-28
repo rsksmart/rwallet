@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Wallet",
-    "Spend": "Spend",
-    "Earn": "Earn",
     "Me": "Me",
-    "Exchange": "Swap"
+    "Exchange": "Swap",
+    "App": "App"
   },
   "page": {
     "start": {
@@ -227,23 +226,9 @@
         "title": "Reset completed!"
       }
     },
-    "earn": {
+    "app": {
       "index": {
-        "title": "Earn cryptocurrency with ease",
-        "comingSoon": "Coming soon...",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Earn cryptocurrency by completing tasks",
-        "feature2": "- Swap between any token in your wallet",
-        "feature3": "- \"Cash Back\" on purchases with cryptocurrency"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Asset Management at Your Fingertips",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Buy 100+ Gift Cards with cryptocurrency",
-        "feature2": "- Gain interests from a variety of Defi products",
-        "feature3": "- Multi-sign approval of transactions"
+        "title": "APP",
       }
     }
   },
