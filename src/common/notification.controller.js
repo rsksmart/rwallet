@@ -92,3 +92,10 @@ export const getDefaultErrorNotification = (buttonText, notificationCloseCallbac
   buttonText,
   notificationCloseCallback,
 );
+
+export const getDefaultTxFailedErrorNotification = (buttonText, notificationCloseCallback) => createErrorNotification(
+  'modal.txFailed.title',
+  'modal.txFailed.contactService',
+  buttonText,
+  notificationCloseCallback,
+);

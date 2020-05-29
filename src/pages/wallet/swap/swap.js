@@ -17,7 +17,9 @@ import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
 import Transaction from '../../../common/transaction';
 import appActions from '../../../redux/app/actions';
-import { createErrorNotification, createInfoNotification, getErrorNotification } from '../../../common/notification.controller';
+import {
+  createErrorNotification, createInfoNotification, getErrorNotification, getDefaultTxFailedErrorNotification,
+} from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
 import definitions from '../../../common/definitions';
@@ -460,11 +462,7 @@ class Swap extends Component {
       this.setState({ isLoading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      const notification = getErrorNotification(error.code, buttonText) || createErrorNotification(
-        'modal.txFailed.title',
-        'modal.txFailed.contactService',
-        buttonText,
-      );
+      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
     }
   }

@@ -12,7 +12,7 @@ import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
 import Switch from '../../components/common/switch/switch';
-import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultTxFailedErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
@@ -729,11 +729,7 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      const notification = getErrorNotification(error.code, buttonText) || createErrorNotification(
-        'modal.txFailed.title',
-        'modal.txFailed.contactService',
-        buttonText,
-      );
+      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
       // this.resetConfirm();
     }
