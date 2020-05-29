@@ -69,6 +69,13 @@ export const createErrorNotification = (title, message, buttonText, notification
   notificationCloseCallback,
 });
 
+/**
+ * get error notification by error code
+ * @param {number} errorCode
+ * @param {string} buttonText
+ * @param {function} notificationCloseCallback
+ * @returns {object} notification object
+ */
 export const getErrorNotification = (errorCode, buttonText, notificationCloseCallback) => {
   const errNotification = errorNotifications[errorCode];
   if (!errNotification) {
