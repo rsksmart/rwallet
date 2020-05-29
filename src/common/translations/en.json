@@ -396,7 +396,7 @@
     },
     "requestTimeout": {
       "title": "Request timeout",
-      "body": "The server could not complete the request within the specified time"
+      "body": "The server could not complete the request within the specified time."
     }
   },
   "currency": {

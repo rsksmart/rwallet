@@ -396,6 +396,10 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
+    },
+    "requestTimeout": {
+      "title": "Tempo limite da solicitação",
+      "body": "O servidor não pôde concluir a solicitação dentro do tempo especificado."
     }
   },
   "currency": {
