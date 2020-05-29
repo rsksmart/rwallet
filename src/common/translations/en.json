@@ -54,7 +54,7 @@
         "memo": "Memo (optional)",
         "fee": "Transaction fee",
         "custom": "Custom",
-        "feeQuestion": "How fast you want this done?",
+        "feeQuestion": "How fast do you want this done?",
         "Slow": "Slow",
         "Average": "Average",
         "Fast": "Fast",
