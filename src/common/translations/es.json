@@ -54,7 +54,7 @@
         "memo": "Memo (opcional)",
         "fee": "Tarifa de transacción",
         "custom": "Personalizado",
-        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "feeQuestion": "¿Qué tan rápido quieres que se haga esto?",
         "slow": "Lento",
         "Average": "Promedio",
         "Fast": "Rápido",
