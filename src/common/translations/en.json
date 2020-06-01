@@ -393,6 +393,10 @@
     "duplicateToken": {
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
+    },
+    "requestTimeout": {
+      "title": "Request timeout",
+      "body": "The server could not complete the request within the specified time."
     }
   },
   "currency": {

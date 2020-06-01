@@ -12,7 +12,7 @@ import color from '../../assets/styles/color.ts';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
 import Switch from '../../components/common/switch/switch';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultTxFailedErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
@@ -729,65 +729,7 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      let notification = null;
-      if (error.code === 141) {
-        const message = error.message.split('|');
-        switch (message[0]) {
-          case 'err.notenoughbalance.btc':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreBTC',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance.rbtc':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreRBTC',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance.rif':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreRIF',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreBalance',
-              buttonText,
-            );
-            break;
-          case 'err.timeout':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.serverTimeout',
-              buttonText,
-            );
-            addNotification(notification);
-            break;
-          case 'err.customized':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              message[1],
-              buttonText,
-            );
-            break;
-          default:
-            break;
-        }
-      }
-      // Default error notification
-      if (!notification) {
-        notification = createErrorNotification(
-          'modal.txFailed.title',
-          'modal.txFailed.contactService',
-          buttonText,
-        );
-      }
+      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
       // this.resetConfirm();
     }
