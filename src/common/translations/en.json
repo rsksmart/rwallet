@@ -165,6 +165,14 @@
         "custom": "Custom"
       }
     },
+    "dapp": {
+      "title": "DAPP",
+      "search": "Search or enter website url",
+      "recent": "Recent",
+      "recommended": "Recommended",
+      "all": "All",
+      "seeAll": "See All"
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Join RSK's Community",
