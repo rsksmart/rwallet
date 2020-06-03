@@ -37,56 +37,63 @@ const styles = StyleSheet.create({
 });
 
 export default function DappCard({
-  title, data, type, getItem,
+  navigation, title, data, type, getItem, style,
 }) {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       <View style={styles.cardTitle}>
         <Loc style={styles.cardTitleText} text={title} />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AppList', { title })}>
           <Loc style={styles.cardButtonText} text="page.dapp.seeAll" />
         </TouchableOpacity>
       </View>
 
-      {
-        type === 'row' && (
-          <View style={styles.row}>
-            {data.map((item) => getItem(item))}
-          </View>
-        )
-      }
+      { type === 'row' && (
+        <View style={styles.row}>
+          {data.map((item, index) => getItem(item, index))}
+        </View>
+      )}
 
-      {
-        type === 'nest' && (
-          <FlatList
-            data={data}
-            renderItem={getItem}
-            horizontal
-          />
-        )
-      }
+      {type === 'nest' && (
+        <FlatList
+          data={data}
+          renderItem={({ item, index }) => getItem(item, index)}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, index) => `nest-${index}`}
+        />
+      )}
 
-      {
-        type === 'list' && (
-          <FlatList
-            data={data}
-            renderItem={getItem}
-          />
-        )
-      }
+      {type === 'list' && (
+        <FlatList
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          renderItem={({ item, index }) => getItem(item, index)}
+          keyExtractor={(_, index) => `list-${index}`}
+        />
+      )}
     </View>
   );
 }
 
 DappCard.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+  }).isRequired,
   title: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(PropTypes.any),
   type: PropTypes.string,
   getItem: PropTypes.func,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 DappCard.defaultProps = {
   data: [],
   type: 'row',
   getItem: () => null,
+  style: null,
 };

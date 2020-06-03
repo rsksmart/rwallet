@@ -40,6 +40,7 @@ import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
 import AppIndex from '../pages/app/index';
+import AppList from '../pages/app/list';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -295,6 +296,13 @@ const routeConfigMap = {
       path: 'AppIndex',
       navigationOptions: () => ({
         headerTitle: 'AppIndex',
+      }),
+    },
+    AppList: {
+      screen: AppList,
+      path: 'AppList',
+      navigationOptions: () => ({
+        headerTitle: 'AppList',
       }),
     },
   },

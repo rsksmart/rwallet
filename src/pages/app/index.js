@@ -10,6 +10,7 @@ import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
+import WebViewModal from '../../components/common/webview.modal';
 
 const styles = StyleSheet.create({
   header: {
@@ -65,7 +66,38 @@ class AppIndex extends Component {
     header: null,
   });
 
+  constructor(props) {
+    super(props);
+
+    const dapp = {
+      name: 'Bitcoin',
+      url: 'https://testnet.manager.rns.rifos.org/',
+      desc: 'Bitcoin is an innovative payment network and a new kind of money.',
+    };
+
+    this.state = {
+      recentList: [dapp, dapp],
+      recommendedList: [
+        [dapp, dapp, dapp],
+        [dapp, dapp, dapp],
+        [dapp, dapp, dapp],
+        [dapp],
+      ],
+      allList: [dapp, dapp, dapp, dapp, dapp, dapp],
+      isDappWebViewVisible: false,
+      dapp: {},
+    };
+  }
+
+  onItemPress = (dapp) => {
+    this.setState({ dapp, isDappWebViewVisible: true });
+  }
+
   render() {
+    const { navigation } = this.props;
+    const {
+      recentList, recommendedList, allList, isDappWebViewVisible, dapp,
+    } = this.state;
     return (
       <BasePageGereral
         isSafeView={false}
@@ -80,50 +112,81 @@ class AppIndex extends Component {
         <SearchInput placeholder={strings('page.dapp.search')} />
 
         <DappCard
+          navigation={navigation}
           title="page.dapp.recent"
-          data={[1, 2]}
+          data={recentList}
           type="row"
-          getItem={() => (
-            <TouchableOpacity style={[styles.item, { justifyContent: 'flex-start' }]}>
-              <Image style={styles.dappIcon} source={icon} />
+          getItem={(item, index) => (
+            <TouchableOpacity
+              key={`row-${index}`}
+              style={[styles.item, { justifyContent: 'flex-start' }]}
+              onPress={() => this.onItemPress(item)}
+            >
+              <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={icon} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>Bitcoin</Text>
-                <Text style={styles.dappUrl}>bitcoin.org</Text>
+                <Text style={styles.dappName}>{item.name}</Text>
+                <Text style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
           )}
         />
 
         <DappCard
+          navigation={navigation}
           title="page.dapp.recommended"
-          data={[1, 2, 3, 4, 5, 6]}
+          data={recommendedList}
           type="nest"
-          getItem={() => (
-            <TouchableOpacity style={[styles.item, { marginRight: 15 }]}>
+          getItem={(items, index) => {
+            const view = items.map((item) => (
+              <TouchableOpacity
+                key={`nest-${index}`}
+                style={[styles.item, { marginRight: 15 }]}
+                onPress={() => this.onItemPress(item)}
+              >
+                <Image style={styles.dappIcon} source={icon} />
+                <View style={styles.dappInfo}>
+                  <Text style={styles.dappName}>{item.name}</Text>
+                  <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.desc}</Text>
+                  <Text style={styles.dappUrl}>{item.url}</Text>
+                </View>
+              </TouchableOpacity>
+            ));
+            return view;
+          }}
+        />
+
+        <DappCard
+          style={{ marginBottom: 135 }}
+          navigation={navigation}
+          title="page.dapp.all"
+          data={allList}
+          type="list"
+          getItem={(item, index) => (
+            <TouchableOpacity
+              key={`list-${index}`}
+              style={[styles.item, { justifyContent: 'flex-start', marginTop: 15 }]}
+              onPress={() => this.onItemPress(item)}
+            >
               <Image style={styles.dappIcon} source={icon} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>Bitcoin</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>Bitcoin is an innovative payment network and a new kind of money.123123123123123123 </Text>
-                <Text style={styles.dappUrl}>bitcoin.org</Text>
+                <View style={{
+                  justifyContent: 'space-between', flex: 1, flexDirection: 'row', alignItems: 'center',
+                }}
+                >
+                  <Text style={styles.dappName}>{item.name}</Text>
+                  <Text style={styles.dappUrl}>{item.url}</Text>
+                </View>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.desc}</Text>
               </View>
             </TouchableOpacity>
           )}
         />
 
-        <DappCard
-          title="page.dapp.all"
-          data={[1, 2, 3, 4, 5, 6]}
-          type="list"
-          getItem={() => (
-            <TouchableOpacity style={[styles.item, { justifyContent: 'flex-start', marginTop: 15 }]}>
-              <Image style={styles.dappIcon} source={icon} />
-              <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>Bitcoin</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>Bitcoin is an innovative payment network and a new kind of money. </Text>
-                <Text style={styles.dappUrl}>bitcoin.org</Text>
-              </View>
-            </TouchableOpacity>
-          )}
+        <WebViewModal
+          title={dapp && dapp.name}
+          url={dapp && dapp.url}
+          visible={isDappWebViewVisible}
+          onBackButtonPress={() => { this.setState({ isDappWebViewVisible: false }); }}
         />
       </BasePageGereral>
     );
