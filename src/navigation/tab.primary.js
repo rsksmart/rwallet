@@ -13,6 +13,7 @@ import TabBar from './components/bottom.tab';
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
+import appLight from '../assets/images/root/tab/app.l.png';
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -77,7 +78,7 @@ const PrimaryTabNavigator = createBottomTabNavigator(
             img = spendLight;
             break;
           case 'App':
-            img = homeLight;
+            img = appLight;
             break;
           default:
             console.error(`unexpected tab：${navigation.state.routeName}`);
@@ -109,9 +110,6 @@ const PrimaryTabNavigator = createBottomTabNavigator(
 const PrimaryTabNavigatorContainer = createAppContainer(PrimaryTabNavigator);
 
 export default class PrimaryTabNavigatorComp extends Component {
-  componentDidMount() {
-  }
-
   static router = null;
 
   render() {
