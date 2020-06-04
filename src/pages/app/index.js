@@ -95,7 +95,6 @@ class AppIndex extends Component {
       // one column has 3 dapps
       if (!((index + 1) % 3)) {
         recommendedSourceData.push(column);
-        console.log('recommendedSourceData: ', recommendedSourceData);
         column = [];
       }
     });
