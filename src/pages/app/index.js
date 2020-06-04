@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -86,6 +85,26 @@ class AppIndex extends Component {
     this.setState({ dapp, isDappWebViewVisible: true });
   }
 
+  // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], [dapp]]
+  formatRecommendedSourceData = (recommendedList) => {
+    const recommendedSourceData = [];
+    let column = [];
+    _.forEach(recommendedList, (dapp, index) => {
+      column.push(dapp);
+
+      // one column has 3 dapps
+      if (!((index + 1) % 3)) {
+        recommendedSourceData.push(column);
+        console.log('recommendedSourceData: ', recommendedSourceData);
+        column = [];
+      }
+    });
+    if (column && column.length) {
+      recommendedSourceData.push(column);
+    }
+    return recommendedSourceData;
+  }
+
   render() {
     const {
       navigation, language, recentDapps, dapps,
@@ -93,7 +112,11 @@ class AppIndex extends Component {
     const {
       isDappWebViewVisible, dapp, searchUrl,
     } = this.state;
+
+    // show 2 recent dapps
+    const recentSourceData = (recentDapps && recentDapps.length > 2) ? recentDapps.slice(0, 2) : recentDapps;
     const recommendedList = _.filter(dapps, { isRecommended: true });
+    const recommendedSourceData = this.formatRecommendedSourceData(recommendedList);
     return (
       <BasePageGereral
         isSafeView={false}
@@ -119,18 +142,18 @@ class AppIndex extends Component {
         <DappCard
           navigation={navigation}
           title="page.dapp.recent"
-          data={recentDapps}
+          data={recentSourceData}
           type="recent"
           getItem={(item, index) => (
             <TouchableOpacity
               key={`recent-${index}`}
-              style={[styles.item, { justifyContent: 'flex-start' }]}
+              style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
               <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
                 <Text style={styles.dappName}>{item.name[language]}</Text>
-                <Text style={styles.dappUrl}>{item.url}</Text>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -139,22 +162,28 @@ class AppIndex extends Component {
         <DappCard
           navigation={navigation}
           title="page.dapp.recommended"
-          data={recommendedList}
+          data={recommendedSourceData}
           type="recommended"
-          getItem={(item, index) => (
-            <TouchableOpacity
-              key={`recommended-${index}`}
-              style={[styles.item, { marginRight: 15 }]}
-              onPress={() => this.onDappPress(item)}
-            >
-              <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
-              <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>{item.name[language]}</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description[language]}</Text>
-                <Text style={styles.dappUrl}>{item.url}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
+          getItem={(items, col) => {
+            const column = [];
+            _.forEach(items, (item, row) => {
+              column.push(
+                <TouchableOpacity
+                  key={`recommended-${col}-${row}`}
+                  style={[styles.item, { marginRight: 15, marginTop: row ? 15 : 0 }]}
+                  onPress={() => this.onDappPress(item)}
+                >
+                  <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
+                  <View style={styles.dappInfo}>
+                    <Text style={styles.dappName}>{item.name[language]}</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description[language]}</Text>
+                    <Text style={styles.dappUrl}>{item.url}</Text>
+                  </View>
+                </TouchableOpacity>,
+              );
+            });
+            return <View>{column}</View>;
+          }}
         />
 
         <DappCard
