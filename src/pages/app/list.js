@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import BasePageGereral from '../base/base.page.general';
-import RSKad from '../../components/common/rsk.ad';
+import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
 import WebViewModal from '../../components/common/webview.modal';
@@ -89,11 +88,8 @@ class AppList extends Component {
       dappList = dapps;
     }
     return (
-      <BasePageGereral
-        isSafeView={false}
-        hasBottomBtn={false}
-        hasLoader={false}
-        renderAccessory={() => <RSKad />}
+      <BasePageSimple
+        isSafeView
         headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title={title} />}
       >
         <FlatList
@@ -121,7 +117,7 @@ class AppList extends Component {
           visible={isDappWebViewVisible}
           onBackButtonPress={() => { this.setState({ isDappWebViewVisible: false }); }}
         />
-      </BasePageGereral>
+      </BasePageSimple>
     );
   }
 }

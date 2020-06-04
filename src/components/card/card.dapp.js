@@ -86,7 +86,7 @@ DappCard.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   title: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object),
+  data: PropTypes.arrayOf(PropTypes.any),
   type: PropTypes.string,
   getItem: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
