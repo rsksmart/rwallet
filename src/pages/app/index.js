@@ -110,7 +110,9 @@ class AppIndex extends Component {
           placeholder={strings('page.dapp.search')}
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
-            this.setState({ isDappWebViewVisible: true, dapp: { url: searchUrl, title: searchUrl } });
+            if (searchUrl) {
+              this.setState({ isDappWebViewVisible: true, dapp: { url: searchUrl, title: searchUrl } });
+            }
           }}
         />
 
