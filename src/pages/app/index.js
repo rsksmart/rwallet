@@ -94,7 +94,6 @@ class AppIndex extends Component {
       isDappWebViewVisible, dapp, searchUrl,
     } = this.state;
     const recommendedList = _.filter(dapps, { isRecommended: true });
-    console.log('recentDapps: ', recentDapps);
     return (
       <BasePageGereral
         isSafeView={false}

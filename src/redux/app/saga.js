@@ -337,14 +337,13 @@ function* fetchDapps() {
   yield put({ type: actions.FETCH_DAPPS_RESULT, dapps });
 }
 
+// Add recently opened app to recentDapps
 function* addRecentDapp(action) {
   const { dapp } = action;
   const state = yield select();
   const recentDapps = state.App.get('recentDapps');
   const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
-  console.log('filterRecentDapps: ', filterRecentDapps);
   const newRecentDapps = [dapp, ...filterRecentDapps];
-  console.log('newRecentDapps: ', newRecentDapps);
   yield put({ type: actions.ADD_RECENT_DAPP_RESULT, recentDapps: newRecentDapps });
 }
 
