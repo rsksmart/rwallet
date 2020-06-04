@@ -27,6 +27,7 @@ Parse.setAsyncStorage(AsyncStorage);
 // const ParseUser = Parse.User;
 const ParseAddress = Parse.Object.extend('Address');
 const ParseTransaction = Parse.Object.extend('Transaction');
+const ParseDapp = Parse.Object.extend('Dapp');
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
  * so that we don't need to reference ParseUser, ParseGlobal in other files
@@ -397,6 +398,31 @@ class ParseHelper {
   static unsubscribe(subscription) {
     if (subscription) {
       subscription.unsubscribe();
+    }
+  }
+
+  static async fetchDapps() {
+    try {
+      const query = new Parse.Query(ParseDapp);
+      query.equalTo('isActive', true);
+      const result = await query.find();
+      const rows = _.map(result, (item) => {
+        const row = {};
+        row.id = item.id;
+        row.name = item.get('name');
+        row.title = item.get('title');
+        row.description = item.get('description');
+        row.url = item.get('url');
+        row.iconUrl = item.get('iconUrl');
+        row.isActive = item.get('isActive');
+        row.isRecommended = item.get('isRecommended');
+        return row;
+      });
+      console.log('rows: ', rows);
+      return rows;
+    } catch (error) {
+      console.log('fetch dapps error: ', error);
+      return null;
     }
   }
 }

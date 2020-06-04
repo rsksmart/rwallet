@@ -21,12 +21,13 @@ const WebViewModal = ({
 
 WebViewModal.propTypes = {
   title: PropTypes.string,
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
   visible: PropTypes.bool,
   onBackButtonPress: PropTypes.func,
 };
 
 WebViewModal.defaultProps = {
+  url: null,
   title: 'Back',
   visible: false,
   onBackButtonPress: () => null,

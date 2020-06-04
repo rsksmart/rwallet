@@ -7,6 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import Loc from '../common/misc/loc';
 
@@ -43,34 +44,34 @@ export default function DappCard({
     <View style={[styles.card, style]}>
       <View style={styles.cardTitle}>
         <Loc style={styles.cardTitleText} text={title} />
-        <TouchableOpacity onPress={() => navigation.navigate('AppList', { title })}>
+        <TouchableOpacity onPress={() => navigation.navigate('AppList', { title, type })}>
           <Loc style={styles.cardButtonText} text="page.dapp.seeAll" />
         </TouchableOpacity>
       </View>
 
-      { type === 'row' && (
+      {type === 'recent' && (
         <View style={styles.row}>
-          {data.map((item, index) => getItem(item, index))}
+          {_.map(data, (item, index) => getItem(item, index))}
         </View>
       )}
 
-      {type === 'nest' && (
+      {type === 'recommended' && (
         <FlatList
           data={data}
           renderItem={({ item, index }) => getItem(item, index)}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(_, index) => `nest-${index}`}
+          keyExtractor={(item, index) => `nest-${index}`}
         />
       )}
 
-      {type === 'list' && (
+      {type === 'all' && (
         <FlatList
           bounces={false}
           showsVerticalScrollIndicator={false}
           data={data}
           renderItem={({ item, index }) => getItem(item, index)}
-          keyExtractor={(_, index) => `list-${index}`}
+          keyExtractor={(item, index) => `list-${index}`}
         />
       )}
     </View>
@@ -85,7 +86,7 @@ DappCard.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   title: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(PropTypes.any),
+  data: PropTypes.arrayOf(PropTypes.object),
   type: PropTypes.string,
   getItem: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

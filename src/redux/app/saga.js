@@ -332,6 +332,22 @@ function* getServerInfoRequest() {
   }
 }
 
+function* fetchDapps() {
+  const dapps = yield call(ParseHelper.fetchDapps);
+  yield put({ type: actions.FETCH_DAPPS_RESULT, dapps });
+}
+
+function* addRecentDapp(action) {
+  const { dapp } = action;
+  const state = yield select();
+  const recentDapps = state.App.get('recentDapps');
+  const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
+  console.log('filterRecentDapps: ', filterRecentDapps);
+  const newRecentDapps = [dapp, ...filterRecentDapps];
+  console.log('newRecentDapps: ', newRecentDapps);
+  yield put({ type: actions.ADD_RECENT_DAPP_RESULT, recentDapps: newRecentDapps });
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -351,5 +367,8 @@ export default function* () {
     takeEvery(actions.INIT_FCM, initFcmRequest),
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
     takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
+
+    takeEvery(actions.FETCH_DAPPS, fetchDapps),
+    takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
   ]);
 }

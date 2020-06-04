@@ -41,6 +41,8 @@ const initState = new Map({
   inAppNotification: undefined,
   fcmNavParams: undefined,
   fcmToken: undefined,
+  dapps: undefined,
+  recentDapps: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -141,6 +143,10 @@ export default function appReducer(state = initState, action) {
       return state.set('isLoginError', true);
     case actions.RESET_LOGIN_ERROR:
       return state.set('isLoginError', false);
+    case actions.FETCH_DAPPS_RESULT:
+      return state.set('dapps', action.dapps);
+    case actions.ADD_RECENT_DAPP_RESULT:
+      return state.set('recentDapps', action.recentDapps);
     default:
       return state;
   }

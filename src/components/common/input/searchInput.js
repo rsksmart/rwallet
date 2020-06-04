@@ -42,11 +42,19 @@ const styles = StyleSheet.create({
 
 const search = require('../../../assets/images/icon/search.png');
 
-export default function SearchInput({ placeholder, placeholderTextColor }) {
+export default function SearchInput({
+  placeholder, placeholderTextColor, onChangeText, onSubmit,
+}) {
   return (
     <View style={styles.searchBar}>
       <Image style={styles.searchIcon} source={search} />
-      <TextInput style={styles.searchInputView} placeholder={placeholder} placeholderTextColor={placeholderTextColor} />
+      <TextInput
+        style={styles.searchInputView}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderTextColor}
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmit}
+      />
     </View>
   );
 }
@@ -54,8 +62,12 @@ SearchInput.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   placeholder: PropTypes.string.isRequired,
   placeholderTextColor: PropTypes.string,
+  onChangeText: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 SearchInput.defaultProps = {
   placeholderTextColor: null,
+  onChangeText: () => null,
+  onSubmit: () => null,
 };
