@@ -93,8 +93,8 @@ DappCard.propTypes = {
 };
 
 DappCard.defaultProps = {
-  data: [],
-  type: 'row',
+  data: null,
+  type: null,
   getItem: () => null,
   style: null,
 };
