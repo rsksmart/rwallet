@@ -337,12 +337,19 @@ function* fetchDapps() {
   yield put({ type: actions.FETCH_DAPPS_RESULT, dapps });
 }
 
-// Add recently opened app to recentDapps
+/**
+ * Add the recently opened dapp at the top of the recentDapps if dapp is not exist
+ * Move the recently opened dapp at the top of the recentDapps if dapp is exist
+ * @param {*} dapp
+ */
 function* addRecentDapp(action) {
   const { dapp } = action;
   const state = yield select();
   const recentDapps = state.App.get('recentDapps');
+
+  // delete the recently opened dapp from recentDapps if dapp is exist
   const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
+  // add the recently opened dapp at the top of the recentDapps
   const newRecentDapps = [dapp, ...filterRecentDapps];
   yield put({ type: actions.ADD_RECENT_DAPP_RESULT, recentDapps: newRecentDapps });
 }

@@ -51,6 +51,20 @@ const parseDataUtil = {
     const { blockHeightKeyInfos } = definitions;
     return { ...blockHeightKeyInfos[key], blockHeight: value };
   },
+
+  getDapp(dappObject) {
+    const dapp = {
+      id: dappObject.id,
+      name: dappObject.get('name'),
+      title: dappObject.get('title'),
+      description: dappObject.get('description'),
+      url: dappObject.get('url'),
+      iconUrl: dappObject.get('iconUrl'),
+      isActive: dappObject.get('isActive'),
+      isRecommended: dappObject.get('isRecommended'),
+    };
+    return dapp;
+  },
 };
 
 export default parseDataUtil;

@@ -404,20 +404,9 @@ class ParseHelper {
   static async fetchDapps() {
     const query = new Parse.Query(ParseDapp);
     query.equalTo('isActive', true);
-    const result = await query.find();
-    const rows = _.map(result, (item) => {
-      const row = {};
-      row.id = item.id;
-      row.name = item.get('name');
-      row.title = item.get('title');
-      row.description = item.get('description');
-      row.url = item.get('url');
-      row.iconUrl = item.get('iconUrl');
-      row.isActive = item.get('isActive');
-      row.isRecommended = item.get('isRecommended');
-      return row;
-    });
-    return rows;
+    const rows = await query.find();
+    const dapps = _.map(rows, (row) => parseDataUtil.getDapp(row));
+    return dapps;
   }
 }
 

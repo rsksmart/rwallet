@@ -15,6 +15,8 @@ import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
 import WebViewModal from '../../components/common/webview.modal';
 
+const dappPerColumn = 3; // One column has 3 dapps
+
 const styles = StyleSheet.create({
   header: {
     marginTop: NavHeader.HEIGHT,
@@ -85,15 +87,14 @@ class AppIndex extends Component {
     this.setState({ dapp, isDappWebViewVisible: true });
   }
 
-  // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], [dapp]]
+  // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
   formatRecommendedSourceData = (recommendedList) => {
     const recommendedSourceData = [];
     let column = [];
     _.forEach(recommendedList, (dapp, index) => {
       column.push(dapp);
 
-      // one column has 3 dapps
-      if (!((index + 1) % 3)) {
+      if (!((index + 1) % dappPerColumn)) {
         recommendedSourceData.push(column);
         column = [];
       }
@@ -104,18 +105,34 @@ class AppIndex extends Component {
     return recommendedSourceData;
   }
 
-  render() {
-    const {
-      navigation, language, recentDapps, dapps,
-    } = this.props;
-    const {
-      isDappWebViewVisible, dapp, searchUrl,
-    } = this.state;
+  getSourceData = () => {
+    const { recentDapps, dapps } = this.props;
 
     // show 2 recent dapps
     const recentSourceData = (recentDapps && recentDapps.length > 2) ? recentDapps.slice(0, 2) : recentDapps;
+
+    // filter out recommended dapps from all dapps
     const recommendedList = _.filter(dapps, { isRecommended: true });
+    // format recommended data to [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
     const recommendedSourceData = this.formatRecommendedSourceData(recommendedList);
+
+    // get all active dapps
+    const allSourceData = dapps;
+
+    return {
+      recent: recentSourceData,
+      recommended: recommendedSourceData,
+      all: allSourceData,
+    };
+  }
+
+  render() {
+    const { navigation, language } = this.props;
+    const { isDappWebViewVisible, dapp, searchUrl } = this.state;
+
+    const sourceData = this.getSourceData();
+    const { recent, recommended, all } = sourceData;
+
     return (
       <BasePageGereral
         isSafeView={false}
@@ -141,7 +158,7 @@ class AppIndex extends Component {
         <DappCard
           navigation={navigation}
           title="page.dapp.recent"
-          data={recentSourceData}
+          data={recent}
           type="recent"
           getItem={(item, index) => (
             <TouchableOpacity
@@ -161,7 +178,7 @@ class AppIndex extends Component {
         <DappCard
           navigation={navigation}
           title="page.dapp.recommended"
-          data={recommendedSourceData}
+          data={recommended}
           type="recommended"
           getItem={(items, col) => {
             const column = [];
@@ -189,7 +206,7 @@ class AppIndex extends Component {
           style={{ marginBottom: 135 }}
           navigation={navigation}
           title="page.dapp.all"
-          data={dapps}
+          data={all}
           type="all"
           getItem={(item, index) => (
             <TouchableOpacity
