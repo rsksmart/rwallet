@@ -9,7 +9,6 @@ import _ from 'lodash';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
-import WebViewModal from '../../components/common/webview.modal';
 
 const styles = StyleSheet.create({
   item: {
@@ -52,31 +51,26 @@ class AppList extends Component {
     header: null,
   });
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isDappWebViewVisible: false,
-      dapp: null,
-    };
-  }
-
   componentDidMount() {
     const { fetchDapps } = this.props;
     fetchDapps();
   }
 
   onDappPress = (dapp) => {
-    const { addRecentDapp } = this.props;
+    const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
-    this.setState({ dapp, isDappWebViewVisible: true });
+    this.openBrowser(dapp.title[language], dapp.url);
+  }
+
+  openBrowser = (title, url) => {
+    const { navigation } = this.props;
+    navigation.navigate('AppBrowser', { title, url });
   }
 
   render() {
     const {
       navigation, dapps, language, recentDapps,
     } = this.props;
-    const { dapp, isDappWebViewVisible } = this.state;
     const title = navigation.state.params.title || '';
     const type = navigation.state.params.type || '';
     let dappList = [];
@@ -109,13 +103,6 @@ class AppList extends Component {
           )}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => `list-${index}`}
-        />
-
-        <WebViewModal
-          title={dapp && dapp.title[language]}
-          url={dapp && dapp.url}
-          visible={isDappWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isDappWebViewVisible: false }); }}
         />
       </BasePageSimple>
     );

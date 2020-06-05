@@ -41,6 +41,7 @@ import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
 import AppIndex from '../pages/app/index';
 import AppList from '../pages/app/list';
+import AppBrowser from '../pages/app/browser';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -303,6 +304,13 @@ const routeConfigMap = {
       path: 'AppList',
       navigationOptions: () => ({
         headerTitle: 'AppList',
+      }),
+    },
+    AppBrowser: {
+      screen: AppBrowser,
+      path: 'AppBrowser',
+      navigationOptions: () => ({
+        headerTitle: 'AppBrowser',
       }),
     },
   },

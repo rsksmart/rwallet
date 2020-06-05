@@ -13,7 +13,6 @@ import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
-import WebViewModal from '../../components/common/webview.modal';
 
 const dappPerColumn = 3; // One column has 3 dapps
 
@@ -70,8 +69,6 @@ class AppIndex extends Component {
     super(props);
 
     this.state = {
-      isDappWebViewVisible: false,
-      dapp: null,
       searchUrl: null,
     };
   }
@@ -82,9 +79,14 @@ class AppIndex extends Component {
   }
 
   onDappPress = (dapp) => {
-    const { addRecentDapp } = this.props;
+    const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
-    this.setState({ dapp, isDappWebViewVisible: true });
+    this.openBrowser(dapp.title[language] || dapp.title, dapp.url);
+  }
+
+  openBrowser = (title, url) => {
+    const { navigation } = this.props;
+    navigation.navigate('AppBrowser', { title, url });
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -128,7 +130,7 @@ class AppIndex extends Component {
 
   render() {
     const { navigation, language } = this.props;
-    const { isDappWebViewVisible, dapp, searchUrl } = this.state;
+    const { searchUrl } = this.state;
 
     const sourceData = this.getSourceData();
     const { recent, recommended, all } = sourceData;
@@ -150,7 +152,9 @@ class AppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              this.setState({ isDappWebViewVisible: true, dapp: { url: searchUrl, title: searchUrl } });
+              const title = searchUrl;
+              const url = searchUrl;
+              this.openBrowser(title, url);
             }
           }}
         />
@@ -227,13 +231,6 @@ class AppIndex extends Component {
               </View>
             </TouchableOpacity>
           )}
-        />
-
-        <WebViewModal
-          title={dapp && (dapp.title[language] || dapp.title)}
-          url={dapp && dapp.url}
-          visible={isDappWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isDappWebViewVisible: false }); }}
         />
       </BasePageGereral>
     );
