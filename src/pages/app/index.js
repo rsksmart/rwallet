@@ -81,12 +81,12 @@ class AppIndex extends Component {
   onDappPress = (dapp) => {
     const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
-    this.openBrowser(dapp.title[language] || dapp.title, dapp.url);
+    this.openBrowser(dapp.url, dapp.title && dapp.title[language]);
   }
 
-  openBrowser = (title, url) => {
+  openBrowser = (url, title = '') => {
     const { navigation } = this.props;
-    navigation.navigate('AppBrowser', { title, url });
+    navigation.navigate('AppBrowser', { url, title });
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -152,9 +152,7 @@ class AppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              const title = searchUrl;
-              const url = searchUrl;
-              this.openBrowser(title, url);
+              this.openBrowser(searchUrl);
             }
           }}
         />
