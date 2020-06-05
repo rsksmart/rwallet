@@ -234,14 +234,14 @@ class RNStorage {
   getDapps = () => this.load({ key: KEY_DAPPS })
 
   /**
-   * Set dapps using normal storage
+   * Set recent dapps using normal storage
    * @param {string} id Key local id
    * @param {string} recentDapps recent dapps
    */
   setRecentDapps = (recentDapps) => this.save(KEY_RECENT_DAPPS, recentDapps)
 
   /**
-   * Return dapps from nomal storage; null if not found or failed
+   * Return recent dapps from nomal storage; null if not found or failed
    * @param {string} id Key local id
    */
   getRecentDapps = () => this.load({ key: KEY_RECENT_DAPPS })
