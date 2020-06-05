@@ -79,6 +79,14 @@ function* initFromStorageRequest() {
     const currency = settings.get('currency');
     walletManager.updateAssetValue(prices, currency);
 
+    // 5. Deserialize all active dapps
+    const dapps = yield call(storage.getDapps);
+    yield put({ type: actions.UPDATE_DAPPS, dapps });
+
+    // 6. Deserialize recent dapps
+    const recentDapps = yield call(storage.getRecentDapps);
+    yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps });
+
     // Sets state in reducer for success
     yield put({
       type: walletActions.SET_WALLET_MANAGER,
@@ -334,7 +342,7 @@ function* getServerInfoRequest() {
 
 function* fetchDapps() {
   const dapps = yield call(ParseHelper.fetchDapps);
-  yield put({ type: actions.FETCH_DAPPS_RESULT, dapps });
+  yield put({ type: actions.UPDATE_DAPPS, dapps });
 }
 
 /**
@@ -351,7 +359,7 @@ function* addRecentDapp(action) {
   const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
   // add the recently opened dapp at the top of the recentDapps
   const newRecentDapps = [dapp, ...filterRecentDapps];
-  yield put({ type: actions.ADD_RECENT_DAPP_RESULT, recentDapps: newRecentDapps });
+  yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps: newRecentDapps });
 }
 
 export default function* () {

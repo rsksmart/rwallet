@@ -170,7 +170,7 @@ class AppIndex extends Component {
             >
               <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>{item.name[language]}</Text>
+                <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
@@ -193,8 +193,8 @@ class AppIndex extends Component {
                 >
                   <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
                   <View style={styles.dappInfo}>
-                    <Text style={styles.dappName}>{item.name[language]}</Text>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description[language]}</Text>
+                    <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description && item.description[language]}</Text>
                     <Text style={styles.dappUrl}>{item.url}</Text>
                   </View>
                 </TouchableOpacity>,
@@ -222,10 +222,10 @@ class AppIndex extends Component {
                   justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center',
                 }}
                 >
-                  <Text style={styles.dappName}>{item.name[language]}</Text>
+                  <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
                   <Text style={styles.dappUrl}>{item.url}</Text>
                 </View>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language]}</Text>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description && item.description[language]}</Text>
               </View>
             </TouchableOpacity>
           )}

@@ -8,6 +8,8 @@ const KEY_PRICES = 'PRICE';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
+const KEY_DAPPS = 'DAPPS';
+const KEY_RECENT_DAPPS = 'RECENTDAPPS';
 
 class RNStorage {
   constructor() {
@@ -217,6 +219,32 @@ class RNStorage {
   getPasscode() {
     return RNStorage.secureGet(SECURE_KEY_PASSCODE);
   }
+
+  /**
+   * Set dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} dapps all active dapps
+   */
+  setDapps = (dapps) => this.save(KEY_DAPPS, dapps)
+
+  /**
+   * Return dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDapps = () => this.load({ key: KEY_DAPPS })
+
+  /**
+   * Set dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} recentDapps recent dapps
+   */
+  setRecentDapps = (recentDapps) => this.save(KEY_RECENT_DAPPS, recentDapps)
+
+  /**
+   * Return dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getRecentDapps = () => this.load({ key: KEY_RECENT_DAPPS })
 
   /**
    * Set Mnemonic Phrase using secure storage

@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import actions from './actions';
 import config from '../../../config';
+import storage from '../../common/storage';
 
 const { defaultSettings } = config;
 
@@ -143,10 +144,16 @@ export default function appReducer(state = initState, action) {
       return state.set('isLoginError', true);
     case actions.RESET_LOGIN_ERROR:
       return state.set('isLoginError', false);
-    case actions.FETCH_DAPPS_RESULT:
-      return state.set('dapps', action.dapps);
-    case actions.ADD_RECENT_DAPP_RESULT:
-      return state.set('recentDapps', action.recentDapps);
+    case actions.UPDATE_DAPPS: {
+      const { dapps } = action;
+      storage.setDapps(dapps);
+      return state.set('dapps', dapps);
+    }
+    case actions.UPDATE_RECENT_DAPPS: {
+      const { recentDapps } = action;
+      storage.setRecentDapps(recentDapps);
+      return state.set('recentDapps', recentDapps);
+    }
     default:
       return state;
   }
