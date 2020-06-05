@@ -53,10 +53,10 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage, initFcmChannel } = this.props;
+    const { initializeFromStorage, initFcm } = this.props;
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
-    initFcmChannel();
+    initFcm();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -197,7 +197,7 @@ RootComponent.propTypes = {
   fingerprintUsePasscode: PropTypes.func,
   isShowInAppNotification: PropTypes.bool.isRequired,
   inAppNotification: PropTypes.shape({}),
-  initFcmChannel: PropTypes.func.isRequired,
+  initFcm: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
 };

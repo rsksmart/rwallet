@@ -164,6 +164,11 @@
         "note": "Disable assets to hide them from your portfolio.",
         "addCustomToken": "Add Custom Token",
         "custom": "Custom"
+      },
+      "rns": {
+        "title": "Address",
+        "token": "Token",
+        "rnsName": "RNS Name"
       }
     },
     "mine": {
@@ -181,6 +186,11 @@
         "support": "Support",
         "contactUs": "Contact Us",
         "developerPortal": "Developer Portal"
+      },
+      "addressBook": {
+        "title": "Address Book",
+        "recent": "RECENT",
+        "all": "ALL"
       },
       "language": {
         "title": "Language"

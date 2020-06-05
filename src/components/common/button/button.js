@@ -40,7 +40,7 @@ export default function Button({
 
 Button.propTypes = {
   text: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
   disabled: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
@@ -48,4 +48,5 @@ Button.propTypes = {
 Button.defaultProps = {
   disabled: false,
   style: null,
+  onPress: () => null,
 };

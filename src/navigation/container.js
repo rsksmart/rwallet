@@ -37,6 +37,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  initFcm: () => dispatch(appActions.initFcm()),
   initFcmChannel: () => dispatch(appActions.initFcmChannel()),
   login: () => dispatch(appActions.login()),
 

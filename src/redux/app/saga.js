@@ -27,6 +27,10 @@ function* updateUserRequest() {
   // Upload wallets or settings to server
   try {
     const state = yield select();
+    const isLogin = state.App.get('isLogin');
+    if (!isLogin) {
+      return;
+    }
     const fcmToken = state.App.get('fcmToken');
     const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken });
 
@@ -315,6 +319,7 @@ function* initFcmRequest() {
   const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
   yield put({ type: actions.SET_FCM_TOKEN, fcmToken });
   yield put({ type: actions.UPDATE_USER });
+  yield call(initFcmChannelRequest);
 }
 
 function* getServerInfoRequest() {

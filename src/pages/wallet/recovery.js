@@ -164,6 +164,7 @@ class WalletRecovery extends Component {
         accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
+      this.coins = _.map(this.tokens, (token) => `${token.name} (${token.symbol})`);
     }
 
     onSubmitEditing() {
@@ -248,7 +249,7 @@ class WalletRecovery extends Component {
     }
 
     onTokenPressed = () => {
-      this.selectionModal.show();
+      this.selectionModal.show(this.coins);
     }
 
     onAccountIndexChanged = (value) => {
@@ -311,10 +312,9 @@ class WalletRecovery extends Component {
       const {
         phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
       } = this.state;
-      const { tokens } = this;
+      const { tokens, coins } = this;
 
       const { prefix } = tokens[selectedTokenIndex];
-      const coins = _.map(tokens, (token) => `${token.name} (${token.symbol})`);
       const selectedCoin = coins[selectedTokenIndex];
       const accountIndexText = !_.isNil(accounts[selectedTokenIndex]) ? accounts[selectedTokenIndex].toString() : '';
 

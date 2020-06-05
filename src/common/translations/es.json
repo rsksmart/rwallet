@@ -167,6 +167,11 @@
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
         "custom": "Personalizado"
+      },
+      "rns": {
+        "title": "Habla a",
+        "token": "Simbólico",
+        "rnsName": "Nombre RNS"
       }
     },
     "mine": {
@@ -184,6 +189,11 @@
         "support": "Apoyo",
         "contactUs": "Contacta con nosotros",
         "developerPortal": "Portal del desarrollador"
+      },
+      "addressBook": {
+        "title": "Directorio",
+        "recent": "RECIENTE",
+        "all": "TODAS"
       },
       "language": {
         "title": "Idioma"

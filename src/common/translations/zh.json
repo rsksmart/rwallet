@@ -167,9 +167,19 @@
         "note": "禁用资产以将其从投资组合中隐藏。",
         "addCustomToken": "添加自定义代币",
         "custom": "自定义"
+      },
+      "rns": {
+        "title": "地址",
+        "token": "代币",
+        "rnsName": "RNS名"
       }
     },
     "mine": {
+      "addressBook": {
+        "title": "地址簿",
+        "recent": "最近",
+        "all": "所有"
+      },
       "index": {
         "joinRSKCommunity": "加入RSK社群",
         "settings": "设置",

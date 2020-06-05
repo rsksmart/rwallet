@@ -67,7 +67,6 @@ class SelectionModal extends Component {
     super(props);
     this.state = {
       visible: false,
-      selectedIndex: 0,
       currentIndex: 0,
     };
   }
@@ -76,8 +75,7 @@ class SelectionModal extends Component {
     this.setState({ currentIndex: index });
   }
 
-  show = () => {
-    const { selectedIndex } = this.state;
+  show = (selectedIndex) => {
     this.setState({ visible: true, currentIndex: selectedIndex });
   }
 
@@ -87,14 +85,14 @@ class SelectionModal extends Component {
 
   onConfirmPressed = () => {
     const { currentIndex } = this.state;
-    const { onSelected } = this.props;
-    onSelected(currentIndex);
-    this.setState({ visible: false, selectedIndex: currentIndex });
+    const { onConfirm } = this.props;
+    onConfirm(currentIndex);
+    this.setState({ visible: false });
   }
 
   render() {
-    const { items, title } = this.props;
-    const { visible, currentIndex } = this.state;
+    const { title, items } = this.props;
+    const { currentIndex, visible } = this.state;
     return (
       <Modal visible={visible} transparent>
         <View style={styles.container}>
@@ -133,13 +131,9 @@ class SelectionModal extends Component {
 }
 
 SelectionModal.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.string),
-  onSelected: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-};
-
-SelectionModal.defaultProps = {
-  items: undefined,
+  items: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default SelectionModal;

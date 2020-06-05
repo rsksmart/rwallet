@@ -167,6 +167,11 @@
         "note": "Desative ativos para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar token personalizado",
         "custom": "Personalizados"
+      },
+      "rns": {
+        "title": "Endereço",
+        "token": "Símbolo",
+        "rnsName": "Nome do RNS"
       }
     },
     "mine": {
@@ -180,6 +185,11 @@
           "zero": "0 carteira",
           "one": "1 carteira",
           "other": "{{count}} carteiras"
+        },
+        "addressBook": {
+          "title": "Livro de endereços",
+          "recent": "RECENTE",
+          "all": "TODOS"
         },
         "support": "Apoio, suporte",
         "contactUs": "Contate-Nos",

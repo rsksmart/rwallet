@@ -394,6 +394,16 @@ class ParseHelper {
     return blockHeights;
   }
 
+  static createSubdomain(params) {
+    console.log('createSubdomain, params: ', params);
+    return Parse.Cloud.run('createSubdomain', params);
+  }
+
+  static isSubdomainAvailable(params) {
+    console.log('isSubdomainAvailable, params: ', params);
+    return Parse.Cloud.run('isSubdomainAvailable', params);
+  }
+
   static unsubscribe(subscription) {
     if (subscription) {
       subscription.unsubscribe();

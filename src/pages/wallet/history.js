@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
   myAssetsButtonsView: {
     width: '100%',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    left: 30,
     bottom: 17,
   },
   ButtonView: {
@@ -447,6 +447,11 @@ class History extends Component {
     navigation.navigate('WalletReceive', navigation.state.params);
   }
 
+  onRnsButtonClick = () => {
+    const { navigation } = this.props;
+    navigation.navigate('RnsAddress', navigation.state.params);
+  }
+
   onMomentumScrollBegin = () => {
     const { isLoadMore } = this.state;
     if (!isLoadMore) {
@@ -588,6 +593,18 @@ class History extends Component {
                 <Image source={receive} />
                 <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
+              { symbol !== 'BTC' && (
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={styles.spliteLine} />
+                  <TouchableOpacity
+                    style={[styles.ButtonView]}
+                    onPress={this.onRnsButtonClick}
+                  >
+                    <Image source={receive} />
+                    <Loc style={[styles.receiveText]} text="button.Receive" />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </View>
