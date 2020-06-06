@@ -378,7 +378,7 @@
     },
     "deleteKey": {
       "title": "Atenção!",
-      "body": "Tem certeza de que deseja excluir todos os ativos usando essa carteira?"
+      "body": "Tem certeza de que deseja excluir todos os ativos dessa carteira?"
     },
     "swap": {
       "title": "Nenhuma moeda trocável",
