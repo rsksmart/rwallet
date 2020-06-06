@@ -381,7 +381,7 @@
       "body": "Tem certeza de que deseja excluir todos os ativos dessa carteira?"
     },
     "swap": {
-      "title": "Nenhuma moeda trocável",
+      "title": "Nenhuma moeda para troca",
       "body": "O swap suporta BTC, RBTC e DOC. Adicione recurso."
     },
     "contractNotFound": {
