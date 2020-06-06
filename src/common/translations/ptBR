@@ -40,7 +40,7 @@
         "Failed Funds": "Fundos falidos",
         "date": "Data",
         "confirmations": "Confirmações",
-        "memo": "Memorando",
+        "memo": "Anotação",
         "noMemo": "Nenhuma nota",
         "transactionID": "ID da transação",
         "viewOnChain": "Ver na blockchain",
