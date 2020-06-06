@@ -98,7 +98,7 @@
         "isCorrect": "Isso está correto?"
       },
       "verifyPhraseSuccess": {
-        "title": "Verifique o sucesso da frase",
+        "title": "Sucesso na verificação da frase",
         "body": "Sua frase de recuperação foi verificada",
         "note": "Certifique-se de armazenar sua frase de recuperação em um local seguro"
       },
