@@ -109,7 +109,7 @@
         "title": "Ler código QR",
         "cameraPermission": {
           "title": "Permissão para usar a câmera",
-          "message": "Precisamos da sua permissão para usar sua câmera"
+          "message": "Precisamos de permissão para usar sua câmera"
         },
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
