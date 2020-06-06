@@ -327,7 +327,7 @@
     "incorrectName": {
       "title": "Nome incorreto",
       "tooShort": "Nome muito curto.",
-      "tooLong": "O nome é muito longo.",
+      "tooLong": "Nome muito longo.",
       "invalid": "O nome contém caracteres inválidos."
     },
     "incorrectKeyName": {
