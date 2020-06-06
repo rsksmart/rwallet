@@ -51,7 +51,7 @@
       },
       "transfer": {
         "to": "Para",
-        "memo": "Memorando (opcional)",
+        "memo": "Anotação (opcional)",
         "fee": "Taxa de transação",
         "custom": "Personalizar taxa",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
