@@ -198,8 +198,8 @@
       },
       "resetPasscodeSuccess" :{
         "title": {
-          "create": "PIN alterado com sucesso",
-          "reset": "Alterar PIN"
+          "create": "PIN definido com sucesso",
+          "reset": "PIN alterado com sucesso"
         }
       },
       "keySettings": {
