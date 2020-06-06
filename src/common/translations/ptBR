@@ -382,7 +382,7 @@
     },
     "swap": {
       "title": "Nenhuma moeda para troca",
-      "body": "O swap suporta BTC, RBTC e DOC. Adicione recurso."
+      "body": "A troca suporta BTC, RBTC e DOC. Adicione recurso."
     },
     "contractNotFound": {
       "title": "Contrato ERC20 não encontrado",
