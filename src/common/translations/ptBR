@@ -317,7 +317,7 @@
       "contactService": "Entre em contato com o atendimento ao cliente"
     },
     "invalidAmount": {
-      "title": "Montante inválido",
+      "title": "Quantidade inválida",
       "body": "Valor inválido"
     },
     "invalidAddress": {
