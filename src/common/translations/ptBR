@@ -364,7 +364,7 @@
       "incorrect": "O PIN está incorreto"
     },
     "touchSensor": {
-      "title": "Usar PIN",
+      "title": "Sensor biométrico",
       "usePasscode": "Sensor de toque",
       "touchToVerify": "Toque para verificar a impressão digital",
       "nativeNote": "Digitalize sua impressão digital no scanner do dispositivo para continuar",
