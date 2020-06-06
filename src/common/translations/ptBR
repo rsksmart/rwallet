@@ -390,7 +390,7 @@
     },
     "duplicateToken": {
       "title": "Token duplicado",
-      "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
+      "body": "Este token já foi adicionado à carteira. Por favor, tente um token diferente."
     }
   },
   "currency": {
