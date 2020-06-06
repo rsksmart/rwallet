@@ -284,7 +284,7 @@
     "ok": "Ok"
   },
   "txState": {
-    "Sent": "Enviei",
+    "Sent": "Enviado",
     "Sending": "Enviando",
     "Received": "Recebido",
     "Receiving": "Recebendo",
