@@ -313,7 +313,7 @@
       "moreRBTC": "Você precisa de mais saldo RBTC para concluir a transferência",
       "moreRIF": "Você precisa de mais saldo RIF para concluir a transferência",
       "moreBalance": "Você precisa de mais saldo para concluir a transferência",
-      "serverTimeout": "Desculpe, tempo limite do servidor",
+      "serverTimeout": "Desculpe, tempo limite do servidor excedido",
       "contactService": "Entre em contato com o atendimento ao cliente"
     },
     "invalidAmount": {
