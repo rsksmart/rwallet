@@ -292,7 +292,7 @@
   },
   "modal": {
     "defaultError": {
-      "title": "Erro do Servidor Interno",
+      "title": "Erro interno no servidor",
       "body": "Entre em contato com o suporte ao cliente."
     },
     "unableRecover": {
