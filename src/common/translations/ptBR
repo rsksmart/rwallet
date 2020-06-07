@@ -373,7 +373,7 @@
       "fingerprintNotMatch": "A impressão digital não corresponde. Por favor, tente novamente."
     },
     "createPasscode": {
-      "title": "Defina um PIN",
+      "title": "Configure um PIN",
       "body": "O PIN pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
     },
     "deleteKey": {
