@@ -192,7 +192,7 @@
       },
       "2fa": {
         "title": "Autenticação de dois fatores",
-        "setPasscode": "Definir PIN",
+        "setPasscode": "Configurar PIN",
         "resetPasscode": "Alterar PIN",
         "useFingerprint": "Usar impressão digital"
       },
