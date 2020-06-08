@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import OperationHeader from '../../components/headers/header.operation';
 import ProgressWebView from '../../components/common/progress.webview';
 
-class Browser extends Component {
+class DappBrowser extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -25,7 +25,7 @@ class Browser extends Component {
   }
 }
 
-Browser.propTypes = {
+DappBrowser.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -34,4 +34,4 @@ Browser.propTypes = {
   }).isRequired,
 };
 
-export default connect()(Browser);
+export default connect()(DappBrowser);

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import SelectionList from '../../components/common/list/selectionList';
-import actions from '../../redux/app/actions';
+import actions from '../../redux/dapp/actions';
 import Header from '../../components/headers/header';
 import { strings } from '../../common/i18n';
 import BasePageGereral from '../base/base.page.general';

@@ -35,7 +35,7 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: AppStackNavigator,
       path: 'app',
       navigationOptions: {
-        title: 'root.App',
+        title: 'root.DApp',
       },
     },
     Mine: {

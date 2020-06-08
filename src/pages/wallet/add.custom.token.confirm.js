@@ -16,7 +16,7 @@ import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
 import definitions from '../../common/definitions';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';

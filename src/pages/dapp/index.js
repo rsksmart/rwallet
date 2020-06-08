@@ -12,7 +12,7 @@ import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 
 const dappPerColumn = 3; // One column has 3 dapps
 
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class AppIndex extends Component {
+class DAppIndex extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -78,6 +78,15 @@ class AppIndex extends Component {
     fetchDapps();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { language, fetchDapps } = this.props;
+
+    // reload dapp page when language changed
+    if (language !== nextProps.language) {
+      fetchDapps();
+    }
+  }
+
   onDappPress = (dapp) => {
     const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
@@ -86,7 +95,7 @@ class AppIndex extends Component {
 
   openBrowser = (url, title = '') => {
     const { navigation } = this.props;
-    navigation.navigate('AppBrowser', { url, title });
+    navigation.navigate('DAppBrowser', { url, title });
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -235,7 +244,7 @@ class AppIndex extends Component {
   }
 }
 
-AppIndex.propTypes = {
+DAppIndex.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -249,7 +258,7 @@ AppIndex.propTypes = {
   language: PropTypes.string.isRequired,
 };
 
-AppIndex.defaultProps = {
+DAppIndex.defaultProps = {
   recentDapps: null,
   dapps: null,
 };
@@ -265,4 +274,4 @@ const mapDispatchToProps = (dispatch) => ({
   addRecentDapp: (dapp) => dispatch(appActions.addRecentDapp(dapp)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppIndex);
+export default connect(mapStateToProps, mapDispatchToProps)(DAppIndex);

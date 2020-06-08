@@ -13,7 +13,7 @@ import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';

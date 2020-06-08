@@ -21,7 +21,7 @@ import SwipableButtonList from '../../components/common/misc/swipableButtonList'
 import Picker from '../../components/common/input/picker';
 import wallet from '../../common/wallet/wallet';
 import storage from '../../common/storage';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 
 const styles = StyleSheet.create({
   button: {

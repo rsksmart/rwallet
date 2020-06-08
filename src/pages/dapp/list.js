@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 
 const styles = StyleSheet.create({
   item: {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class AppList extends Component {
+class DAppList extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -64,7 +64,7 @@ class AppList extends Component {
 
   openBrowser = (title, url) => {
     const { navigation } = this.props;
-    navigation.navigate('AppBrowser', { title, url });
+    navigation.navigate('DAppBrowser', { title, url });
   }
 
   render() {
@@ -109,7 +109,7 @@ class AppList extends Component {
   }
 }
 
-AppList.propTypes = {
+DAppList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -123,7 +123,7 @@ AppList.propTypes = {
   recentDapps: PropTypes.arrayOf(PropTypes.object),
 };
 
-AppList.defaultProps = {
+DAppList.defaultProps = {
   recentDapps: null,
   dapps: null,
 };
@@ -139,4 +139,4 @@ const mapDispatchToProps = (dispatch) => ({
   addRecentDapp: (dapp) => dispatch(appActions.addRecentDapp(dapp)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppList);
+export default connect(mapStateToProps, mapDispatchToProps)(DAppList);

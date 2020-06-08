@@ -3,7 +3,7 @@
     "Wallet": "Wallet",
     "Me": "Me",
     "Exchange": "Swap",
-    "App": "App"
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -166,7 +166,7 @@
       }
     },
     "dapp": {
-      "title": "DAPP",
+      "title": "DApp",
       "search": "Search or enter website url",
       "recent": "Recent",
       "recommended": "Recommended",
@@ -232,11 +232,6 @@
       },
       "resetcompleted": {
         "title": "Reset completed!"
-      }
-    },
-    "app": {
-      "index": {
-        "title": "APP",
       }
     }
   },

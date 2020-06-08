@@ -3,7 +3,7 @@
     "Wallet": "钱包",
     "Me": "我的",
     "Exchange": "交换",
-    "App": "应用"
+    "DApp": "应用"
   },
   "page": {
     "start": {
@@ -168,6 +168,14 @@
         "custom": "自定义"
       }
     },
+    "dapp": {
+      "title": "应用",
+      "search": "搜索或输入网站链接",
+      "recent": "最近",
+      "recommended": "推荐",
+      "all": "全部",
+      "seeAll": "全部"
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "加入RSK社群",
@@ -227,11 +235,6 @@
       },
       "resetcompleted": {
         "title": "重置成功！"
-      }
-    },
-    "app": {
-      "index": {
-        "title": "APP",
       }
     }
   },

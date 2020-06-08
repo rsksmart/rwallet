@@ -39,9 +39,9 @@ import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
-import AppIndex from '../pages/app/index';
-import AppList from '../pages/app/list';
-import AppBrowser from '../pages/app/browser';
+import DAppIndex from '../pages/dapp/index';
+import DAppList from '../pages/dapp/list';
+import DAppBrowser from '../pages/dapp/browser';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -292,25 +292,25 @@ const routeConfigMap = {
     },
   },
   app: {
-    AppIndex: {
-      screen: AppIndex,
-      path: 'AppIndex',
+    DAppIndex: {
+      screen: DAppIndex,
+      path: 'DAppIndex',
       navigationOptions: () => ({
-        headerTitle: 'AppIndex',
+        headerTitle: 'DAppIndex',
       }),
     },
-    AppList: {
-      screen: AppList,
-      path: 'AppList',
+    DAppList: {
+      screen: DAppList,
+      path: 'DAppList',
       navigationOptions: () => ({
-        headerTitle: 'AppList',
+        headerTitle: 'DAppList',
       }),
     },
-    AppBrowser: {
-      screen: AppBrowser,
-      path: 'AppBrowser',
+    DAppBrowser: {
+      screen: DAppBrowser,
+      path: 'DAppBrowser',
       navigationOptions: () => ({
-        headerTitle: 'AppBrowser',
+        headerTitle: 'DAppBrowser',
       }),
     },
   },

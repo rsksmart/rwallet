@@ -9,7 +9,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Tags from '../../components/common/misc/tags';
 import WordField, { wordFieldWidth } from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import walletActions from '../../redux/wallet/actions';
 import { createErrorNotification, createInfoNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';

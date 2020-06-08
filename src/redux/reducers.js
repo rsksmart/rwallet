@@ -1,4 +1,4 @@
-import App from './app/reducer';
+import App from './dapp/reducer';
 import Wallet from './wallet/reducer';
 import Price from './price/reducer';
 

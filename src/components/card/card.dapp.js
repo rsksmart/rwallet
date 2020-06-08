@@ -44,7 +44,7 @@ export default function DappCard({
     <View style={[styles.card, style]}>
       <View style={styles.cardTitle}>
         <Loc style={styles.cardTitleText} text={title} />
-        <TouchableOpacity onPress={() => navigation.navigate('AppList', { title, type })}>
+        <TouchableOpacity onPress={() => navigation.navigate('DAppList', { title, type })}>
           <Loc style={styles.cardButtonText} text="page.dapp.seeAll" />
         </TouchableOpacity>
       </View>

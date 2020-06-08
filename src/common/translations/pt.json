@@ -3,7 +3,7 @@
     "Wallet": "Carteira",
     "Me": "Eu",
     "Exchange": "Troca",
-    "App": "Aplicativo"
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -168,6 +168,14 @@
         "custom": "Personalizados"
       }
     },
+    "dapp": {
+      "title": "DApp",
+      "search": "Pesquise ou insira o URL do site",
+      "recent": "Recente",
+      "recommended": "Recomendar",
+      "all": "Todos",
+      "seeAll": "Ver Tudo"
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Junte-se à comunidade de RSK",
@@ -227,11 +235,6 @@
       },
       "resetcompleted": {
         "title": "Redefinição concluída!"
-      }
-    },
-    "app": {
-      "index": {
-        "title": "APP",
       }
     }
   },

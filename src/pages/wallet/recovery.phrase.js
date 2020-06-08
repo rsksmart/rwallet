@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
 import Loc from '../../components/common/misc/loc';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';

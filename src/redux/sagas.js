@@ -1,5 +1,5 @@
 import { all } from 'redux-saga/effects';
-import appSagas from './app/saga';
+import appSagas from './dapp/saga';
 import walletSagas from './wallet/saga';
 import priceSagas from './price/saga';
 

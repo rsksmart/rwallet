@@ -3,7 +3,7 @@
     "Wallet": "Billetera",
     "Me": "Yo",
     "Exchange": "Intercambiar",
-    "App": "App"
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -168,6 +168,14 @@
         "custom": "Personalizado"
       }
     },
+    "dapp": {
+      "title": "DApp",
+      "search": "Buscar o ingresar la URL del sitio web",
+      "recent": "Reciente",
+      "recommended": "Recomendar",
+      "all": "Todas",
+      "seeAll": "Ver Todo"
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Únete a la comunidad de RSK",
@@ -227,11 +235,6 @@
       },
       "resetcompleted": {
         "title": "¡Reinicio completado!"
-      }
-    },
-    "app": {
-      "index": {
-        "title": "APP",
       }
     }
   },

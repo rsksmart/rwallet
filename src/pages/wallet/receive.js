@@ -9,7 +9,7 @@ import QRCode from 'react-native-qrcode-svg';
 import color from '../../assets/styles/color.ts';
 // import Input from '../../components/common/input/input';
 import Loc from '../../components/common/misc/loc';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import OperationHeader from '../../components/headers/header.operation';

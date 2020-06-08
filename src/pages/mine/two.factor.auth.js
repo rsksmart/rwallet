@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
-import appActions from '../../redux/app/actions';
+import appActions from '../../redux/dapp/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
 
