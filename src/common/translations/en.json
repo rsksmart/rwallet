@@ -165,10 +165,10 @@
         "addCustomToken": "Add Custom Token",
         "custom": "Custom"
       },
-      "rns": {
-        "title": "Address",
-        "token": "Token",
-        "rnsName": "RNS Name"
+      "rnsCreateName": {
+        "title": "Create Nickname",
+        "address": "Address",
+        "rnsName": "RNS Nickname"
       }
     },
     "mine": {
@@ -289,7 +289,8 @@
     "Finish": "Finish",
     "Exchange": "Exchange",
     "addAsset": "Add Asset",
-    "ok": "Ok"
+    "ok": "Ok",
+    "name": "Name"
   },
   "txState": {
     "Sent": "Sent",
@@ -403,6 +404,20 @@
     "duplicateToken": {
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
+    },
+    "rnsNameCreateConfirm": {
+      "title": "",
+      "body": "RNS nicknames are all available. Do you want to create it now?"
+    },
+    "rnsNameUnavailable": {
+      "title": "RNS nickname unavailable",
+      "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
+    },
+    "rnsNewFeature": {
+      "title": "Send & Receive got easier",
+      "body": "We've launched support for RNS, or RIF Name Service which enables the identification of blockchain addresses by human-readable names.",
+      "confirmText": "Let’s try it",
+      "cancelText": "skip"
     }
   },
   "currency": {

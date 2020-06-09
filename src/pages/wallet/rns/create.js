@@ -20,9 +20,18 @@ import SelectionModal from '../../../components/common/modal/selection.modal';
 import { strings } from '../../../common/i18n';
 import parse from '../../../common/parse';
 import config from '../../../../config';
+import { createErrorNotification } from '../../../common/notification.controller';
+import appActions from '../../../redux/app/actions';
+import { createInfoConfirmation } from '../../../common/confirmation.controller';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
+
+const RnsNameState = {
+  UNCHECKED: 0,
+  AVAILABLE: 1,
+  UNAVAILABLE: 2,
+};
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -123,6 +132,10 @@ const styles = StyleSheet.create({
     color: color.warningText,
     marginTop: 10,
   },
+  successNotice: {
+    color: '#00B520',
+    marginTop: 10,
+  },
 });
 
 const shortAddress = (address) => {
@@ -177,7 +190,7 @@ class RnsAddress extends Component {
 
     this.state = {
       rnsRows: [{
-        address, symbol, balance, type,
+        address, symbol, balance, type, rnsNameState: RnsNameState.UNCHECKED,
       }],
       selectItems: [],
       isLoading: false,
@@ -192,10 +205,12 @@ class RnsAddress extends Component {
       return;
     }
     rnsRows[index].name = text;
+    delete rnsRows[index].isDomainValid;
     this.setState({ rnsRows: [...rnsRows] });
   }
 
   onCreatePressed = async () => {
+    const { addNotification, addConfirmation } = this.props;
     const { rnsRows } = this.state;
     // const user = await parse.getUser();
     // const fcmToken = user ? user.get('fcmToken') : null;
@@ -211,13 +226,27 @@ class RnsAddress extends Component {
     let isAllDomainValid = true;
     _.each(result, (item, index) => {
       if (!item) {
-        rnsRows[index].errorMessage = 'Sorry, The name entered is not available';
+        rnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
         isAllDomainValid = false;
+      } else {
+        rnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
       }
     });
     if (isAllDomainValid) {
-      await this.createSubdomain();
+      const confirmation = createInfoConfirmation(
+        'modal.rnsNameCreateConfirm.title',
+        'modal.rnsNameCreateConfirm.body',
+        this.createSubdomain,
+        () => null,
+      );
+      addConfirmation(confirmation);
     } else {
+      const notification = createErrorNotification(
+        'modal.rnsNameUnavailable.title',
+        'modal.rnsNameUnavailable.body',
+        'button.gotIt',
+      );
+      addNotification(notification);
       this.setState({ rnsRows: [...rnsRows] });
     }
   }
@@ -316,12 +345,20 @@ class RnsAddress extends Component {
     const { rnsRows } = this.state;
     const addressText = shortAddress(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
-    const { errorMessage } = rnsRows[index];
+    const { errorMessage, rnsNameState } = rnsRows[index];
+    let message = null;
+    if (rnsNameState !== RnsNameState.UNCHECKED) {
+      message = rnsNameState === RnsNameState.UNAVAILABLE
+        ? <Text style={styles.notice}>Sorry, The name entered is not available</Text>
+        : <Text style={styles.successNotice}>The name entered is available</Text>;
+    } else {
+      message = errorMessage ? <Text style={styles.notice}>{errorMessage}</Text> : null;
+    }
     return (
       <View style={styles.rnsRow}>
         <View style={styles.sectionContainer}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{strings('page.wallet.rns.token')}</Text>
+            <Text style={styles.title}>{strings('page.wallet.rnsCreateName.address')}</Text>
             <TouchableOpacity onPress={() => { this.onDeleteButtonPressed(index); }}>
               { index !== 0 && <FontAwesome style={styles.trash} name="trash-o" /> }
             </TouchableOpacity>
@@ -338,17 +375,18 @@ class RnsAddress extends Component {
           </View>
         </View>
         <View style={[styles.sectionContainer, space.marginBottom_15]}>
-          <Loc style={[styles.title, space.marginBottom_10]} text="page.wallet.rns.rnsName" />
+          <Loc style={[styles.title, space.marginBottom_10]} text="page.wallet.rnsCreateName.rnsName" />
           <View style={styles.row}>
             <TextInput
               style={[presetStyle.textInput, styles.textInput, { flex: 1, marginRight: 10 }]}
               value={name}
               onChangeText={(text) => { this.onRnsNameTextChange(text, index); }}
               onBlur={() => { this.onRnsNameBlur(index); }}
+              autoCapitalize="none"
             />
             <Text style={styles.domainText}>{`.${config.rnsDomain}`}</Text>
           </View>
-          <Text style={styles.notice}>{errorMessage}</Text>
+          {message}
         </View>
       </View>
     );
@@ -368,7 +406,7 @@ class RnsAddress extends Component {
         hasBottomBtn={false}
         hasLoader
         isLoading={isLoading}
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.rns.title" />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.rnsCreateName.title" />}
         customBottomButton={bottomButton}
       >
         <View style={styles.body}>
@@ -406,10 +444,17 @@ RnsAddress.propTypes = {
   walletManager: PropTypes.shape({
     wallets: PropTypes.array,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
 });
 
-export default connect(mapStateToProps)(RnsAddress);
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RnsAddress);

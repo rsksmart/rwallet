@@ -8,6 +8,7 @@ const KEY_PRICES = 'PRICE';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
+const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 
 class RNStorage {
   constructor() {
@@ -241,6 +242,18 @@ class RNStorage {
 
   getPrivateKey(id, symbol, type) {
     return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
+  }
+
+  async getIsShowRnsFeature() {
+    // return RNStorage.secureGet(IS_SHOW_RNS_FEATURE) || false;
+    // return RNStorage.secureGet(SECURE_KEY_PASSCODE);
+    const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
+    console.log('isShowRnsFeature: ', isShowRnsFeature);
+    return isShowRnsFeature || false;
+  }
+
+  setIsShowRnsFeature() {
+    return this.save(IS_SHOW_RNS_FEATURE, true);
   }
 }
 

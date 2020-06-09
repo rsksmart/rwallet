@@ -30,6 +30,7 @@ const { getCurrencySymbol } = common;
 const sending = require('../../assets/images/icon/sending.png');
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
+const rnsName = require('../../assets/images/icon/rnsName.png');
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -117,6 +118,13 @@ const styles = StyleSheet.create({
   },
   receiveText: {
     color: '#6FC062',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 13,
+    letterSpacing: 0.25,
+    marginLeft: 10,
+  },
+  NameText: {
+    color: '#656667',
     fontFamily: 'Avenir-Medium',
     fontSize: 13,
     letterSpacing: 0.25,
@@ -449,7 +457,7 @@ class History extends Component {
 
   onRnsButtonClick = () => {
     const { navigation } = this.props;
-    navigation.navigate('RnsAddress', navigation.state.params);
+    navigation.navigate('RnsCreateName', navigation.state.params);
   }
 
   onMomentumScrollBegin = () => {
@@ -600,8 +608,8 @@ class History extends Component {
                     style={[styles.ButtonView]}
                     onPress={this.onRnsButtonClick}
                   >
-                    <Image source={receive} />
-                    <Loc style={[styles.receiveText]} text="button.Receive" />
+                    <Image source={rnsName} />
+                    <Loc style={[styles.NameText]} text="button.name" />
                   </TouchableOpacity>
                 </View>
               )}
