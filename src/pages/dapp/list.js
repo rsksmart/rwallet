@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   item: {

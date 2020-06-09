@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants.json';
 import color from '../../assets/styles/color.ts';

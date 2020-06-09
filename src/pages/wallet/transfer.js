@@ -14,7 +14,7 @@ import Loc from '../../components/common/misc/loc';
 import Switch from '../../components/common/switch/switch';
 import { createErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';

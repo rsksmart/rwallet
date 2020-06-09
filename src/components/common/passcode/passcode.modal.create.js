@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
-import appActions from '../../../redux/dapp/actions';
+import appActions from '../../../redux/app/actions';
 
 const STATE_NEW_PASSCODE = 0;
 const STATE_CONFIRM_PASSCODE = 1;

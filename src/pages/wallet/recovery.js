@@ -11,7 +11,7 @@ import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
 import SelectionModal from '../../components/common/modal/selection.modal';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color.ts';
 import presetStyles from '../../assets/styles/style';

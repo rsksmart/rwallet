@@ -5,7 +5,7 @@ import {
 import { eventChannel /* END */ } from 'redux-saga';
 import _ from 'lodash';
 import actions from './actions';
-import appActions from '../dapp/actions';
+import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
 import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
