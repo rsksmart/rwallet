@@ -5,7 +5,9 @@ import {
 import PropTypes from 'prop-types';
 import { ethers } from 'ethers';
 import { WebView } from 'react-native-webview';
+import { connect } from 'react-redux';
 import OperationHeader from '../../components/headers/header.operation';
+import appActions from '../../redux/app/actions';
 
 const contractAddress = ethers.utils.getAddress(('0x248B320687eBf655f9eE7F62F0388c79fBB7b2F4').toLowerCase());
 const rskEndpoint = 'https://public-node.testnet.rsk.co';
@@ -137,12 +139,12 @@ class DAppBrowser extends Component {
     `
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, callAuthVerify } = this.props;
 
     const url = navigation.state.params.url || '';
     const title = navigation.state.params.title || url;
 
-    const mnemonic = '';
+    const mnemonic = 'eye divorce point script garage clutch cream useless pill cheese produce brush';
     const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
     const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
     const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
@@ -170,12 +172,15 @@ class DAppBrowser extends Component {
             const { method } = payload;
             if (method === 'eth_sendTransaction') {
               try {
-                contract.dispense(addr).then((tx) => {
-                  console.log('tx: ', tx);
-                  this.webview.postMessage(tx.hash);
-                }).catch((err) => {
-                  console.log('err: ', err);
-                });
+                callAuthVerify(() => {
+                  contract.dispense(addr).then((tx) => {
+                    console.log('tx: ', tx);
+                    this.webview.postMessage(tx.hash);
+                  }).catch((err) => {
+                    console.log('err: ', err);
+                    this.webview.postMessage('');
+                  });
+                }, () => null);
               } catch (error) {
                 console.log(error);
               }
@@ -194,6 +199,17 @@ DAppBrowser.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
-export default DAppBrowser;
+const mapStateToProps = (state) => ({
+  passcode: state.App.get('passcode'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  callAuthVerify: (callback, fallback) => dispatch(
+    appActions.callAuthVerify(callback, fallback),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DAppBrowser);
