@@ -62,6 +62,8 @@ class DAppBrowser extends Component {
           window.ethereum = web3;
           window.ethereum.selectedAddress = '${address}'
           window.ethereum.networkVersion = '31'
+          window.web3 = web3
+          window.web3.toDecimal = web3.utils.toDecimal
           const config = {
             isEnabled: true,
             isUnlocked: true,
@@ -90,6 +92,7 @@ class DAppBrowser extends Component {
 
           window.ethereum.sendAsync = async (payload, callback) => {
             const { method } = payload
+            alert(method)
             let err, res, result
             try {
               if (method === 'eth_getBlockByNumber') {
@@ -159,8 +162,8 @@ class DAppBrowser extends Component {
       <View style={{ flex: 1 }}>
         <OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />
         <WebView
-          source={{ uri: 'https://faucet.rifos.org/' }}
-          // source={{ uri: url }}
+          // source={{ uri: 'https://faucet.rifos.org/' }}
+          source={{ uri: url }}
           // source={{ uri: 'http://localhost:3000' }}
           ref={(webview) => { this.webview = webview; }}
           javaScriptEnabled
