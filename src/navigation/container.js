@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import RootComponent from './component';
-import appActions from '../redux/dapp/actions';
+import appActions from '../redux/app/actions';
 import walletActions from '../redux/wallet/actions';
 import priceActions from '../redux/price/actions';
 

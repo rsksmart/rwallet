@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Loc from '../../components/common/misc/loc';
 import walletActions from '../../redux/wallet/actions';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 import { createInfoConfirmation } from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';

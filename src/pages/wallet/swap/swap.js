@@ -16,7 +16,7 @@ import presetStyles from '../../../assets/styles/style';
 import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
 import Transaction from '../../../common/transaction';
-import appActions from '../../../redux/dapp/actions';
+import appActions from '../../../redux/app/actions';
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';

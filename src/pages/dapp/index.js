@@ -12,7 +12,7 @@ import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 
 const dappPerColumn = 3; // One column has 3 dapps
 

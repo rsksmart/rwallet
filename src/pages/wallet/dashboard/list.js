@@ -10,7 +10,7 @@ import RSKad from '../../../components/common/rsk.ad';
 import common from '../../../common/common';
 import BasePageSimple from '../../base/base.page.simple';
 import ListPageHeader from '../../../components/headers/header.listpage';
-import appActions from '../../../redux/dapp/actions';
+import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import WalletCarousel from './wallet.carousel';
 import config from '../../../../config';

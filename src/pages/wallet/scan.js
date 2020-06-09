@@ -13,7 +13,7 @@ import { strings } from '../../common/i18n';
 import BasePageSimple from '../base/base.page.simple';
 import common from '../../common/common';
 import { createErrorNotification } from '../../common/notification.controller';
-import appActions from '../../redux/dapp/actions';
+import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   preview: {
