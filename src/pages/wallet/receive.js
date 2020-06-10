@@ -128,6 +128,21 @@ class WalletReceive extends Component {
       addNotification(notification);
     }
 
+    onCopySubdomainPressed() {
+      const { navigation, addNotification } = this.props;
+      const { coin } = navigation.state.params;
+      const subdomain = coin && coin.subdomain;
+      if (_.isNil(subdomain)) {
+        return;
+      }
+      Clipboard.setString(subdomain);
+      const notification = createInfoNotification(
+        'modal.addressCopied.title',
+        'modal.addressCopied.body',
+      );
+      addNotification(notification);
+    }
+
     render() {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
@@ -137,6 +152,7 @@ class WalletReceive extends Component {
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
       const type = coin && coin.type;
+      const subdomain = coin && coin.subdomain;
       const symbolName = common.getSymbolName(symbol, type);
       const qrText = address;
       const title = `${strings('button.Receive')} ${symbolName}`;
@@ -156,6 +172,18 @@ class WalletReceive extends Component {
                   <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
                 <Text style={styles.addressText}>{address}</Text>
+                {/* TODO: we hide the refresh icon for now
+                Coin should have a isChangable member to decide whether it could generate more addresses
+                Only BTC is allowed to do that.
+                <TouchableOpacity>
+                  <Image style={styles.refreshIcon} source={refreshIcon} />
+                </TouchableOpacity> */}
+              </View>
+              <View style={styles.address}>
+                <TouchableOpacity style={styles.copyIconView} onPress={this.onCopySubdomainPressed}>
+                  <Image style={styles.copyIcon} source={copyIcon} />
+                </TouchableOpacity>
+                <Text style={styles.addressText}>{subdomain}</Text>
                 {/* TODO: we hide the refresh icon for now
                 Coin should have a isChangable member to decide whether it could generate more addresses
                 Only BTC is allowed to do that.

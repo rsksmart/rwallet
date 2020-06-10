@@ -172,6 +172,11 @@ class WalletManager {
             newToken.balance = newBalance;
             isDirty = true;
           }
+
+          if (match.subdomain && newToken.subdomain !== match.subdomain) {
+            newToken.subdomain = match.subdomain;
+            isDirty = true;
+          }
         } catch (err) {
           console.warn(`fetchBalance, unable to convert ${match.symbol} balance ${match.balance} to BigNumber`);
         }

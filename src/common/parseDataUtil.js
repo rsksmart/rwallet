@@ -37,7 +37,11 @@ const parseDataUtil = {
    */
   getBalance(balanceObj) {
     const balance = {
-      objectId: balanceObj.id, balance: balanceObj.get('balance'), address: balanceObj.get('address'), symbol: balanceObj.get('symbol'),
+      objectId: balanceObj.id,
+      balance: balanceObj.get('balance'),
+      address: balanceObj.get('address'),
+      symbol: balanceObj.get('symbol'),
+      subdomain: balanceObj.get('subdomain'),
     };
     return balance;
   },
