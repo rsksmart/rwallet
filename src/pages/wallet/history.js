@@ -22,6 +22,7 @@ import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
+import storage from '../../common/storage';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -455,9 +456,15 @@ class History extends Component {
     navigation.navigate('WalletReceive', navigation.state.params);
   }
 
-  onRnsButtonClick = () => {
+  onRnsButtonClick = async () => {
     const { navigation } = this.props;
-    navigation.navigate('RnsCreateName', navigation.state.params);
+    const subdomains = await storage.getRnsRegisteringSubdomains();
+    console.log('Registering subdomains: ', subdomains);
+    if (subdomains) {
+      navigation.navigate('RnsStatus', { subdomains });
+    } else {
+      navigation.navigate('RnsCreateName', { coin: this.coin });
+    }
   }
 
   onMomentumScrollBegin = () => {

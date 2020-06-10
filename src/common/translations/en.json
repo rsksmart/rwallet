@@ -290,7 +290,9 @@
     "Exchange": "Exchange",
     "addAsset": "Add Asset",
     "ok": "Ok",
-    "name": "Name"
+    "name": "Name",
+    "pending": "Pending",
+    "done": "Done"
   },
   "txState": {
     "Sent": "Sent",
@@ -406,12 +408,16 @@
       "body": "This token is already added in the wallet. Please try with a different token."
     },
     "rnsNameCreateConfirm": {
-      "title": "",
+      "title": "Create RNS subdomain",
       "body": "RNS nicknames are all available. Do you want to create it now?"
     },
     "rnsNameUnavailable": {
       "title": "RNS nickname unavailable",
       "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNS Subdomain Not Found",
+      "body": "RNS subdomain is not found in server."
     },
     "rnsNewFeature": {
       "title": "Send & Receive got easier",

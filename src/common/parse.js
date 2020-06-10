@@ -27,6 +27,8 @@ Parse.setAsyncStorage(AsyncStorage);
 // const ParseUser = Parse.User;
 const ParseAddress = Parse.Object.extend('Address');
 const ParseTransaction = Parse.Object.extend('Transaction');
+const ParseSubdomain = Parse.Object.extend('Subdomain');
+
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
  * so that we don't need to reference ParseUser, ParseGlobal in other files
@@ -399,9 +401,47 @@ class ParseHelper {
     return Parse.Cloud.run('createSubdomain', params);
   }
 
-  static isSubdomainAvailable(params) {
+  static async isSubdomainAvailable(params) {
     console.log('isSubdomainAvailable, params: ', params);
-    return Parse.Cloud.run('isSubdomainAvailable', params);
+    const result = await Parse.Cloud.run('isSubdomainAvailable', params);
+    console.log('isSubdomainAvailable, result: ', result);
+  }
+
+  static getRnsSubdomainsQuery(addresses) {
+    const uniqAddresses = _.uniq(addresses);
+    const queryAddress = new Parse.Query(ParseSubdomain);
+    queryAddress.containedIn('address', uniqAddresses);
+    const queryStatus = new Parse.Query(ParseSubdomain);
+    queryAddress.equalTo('status', 1);
+    const query = Parse.Query.and(queryAddress, queryStatus);
+    return query;
+  }
+
+  static async fetchRnsSubdomains(addresses) {
+    const query = ParseHelper.getRnsSubdomainsQuery(addresses);
+    const subdomains = await query.find();
+    return subdomains;
+  }
+
+  static async subscribeRnsSubdomains(addresses) {
+    const query = ParseHelper.getRnsSubdomainsQuery(addresses);
+    const subscription = await query.subscribe();
+    return subscription;
+  }
+
+  static async fetchRegisteringRnsSubdomains(records) {
+    const addresses = _.map(records, (record) => record.address.toLowerCase());
+    const subdomains = _.map(records, 'subdomain');
+    console.log('fetchRegisteringRnsSubdomains, records: ', records);
+    console.log('fetchRegisteringRnsSubdomains, addresses: ', addresses);
+    console.log('fetchRegisteringRnsSubdomains, subdomains: ', subdomains);
+    const queryAddress = new Parse.Query(ParseSubdomain);
+    queryAddress.containedIn('address', addresses);
+    const querySubdomains = new Parse.Query(ParseSubdomain);
+    querySubdomains.containedIn('subdomain', subdomains);
+    const result = await Parse.Query.and(queryAddress, querySubdomains).ascending('createdAt').find();
+    const status = parseDataUtil.getSubdomainStatus(result, records);
+    return status;
   }
 
   static unsubscribe(subscription) {

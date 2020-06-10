@@ -40,6 +40,7 @@ import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
 import RnsCreateName from '../pages/wallet/rns/create';
+import RnsStatus from '../pages/wallet/rns/status';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -293,6 +294,13 @@ const routeConfigMap = {
       path: 'RnsCreateName',
       navigationOptions: () => ({
         headerTitle: 'RnsCreateName',
+      }),
+    },
+    RnsStatus: {
+      screen: RnsStatus,
+      path: 'RnsStatus',
+      navigationOptions: () => ({
+        headerTitle: 'RnsStatus',
       }),
     },
   },

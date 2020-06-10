@@ -23,6 +23,7 @@ import config from '../../../../config';
 import { createErrorNotification } from '../../../common/notification.controller';
 import appActions from '../../../redux/app/actions';
 import { createInfoConfirmation } from '../../../common/confirmation.controller';
+import storage from '../../../common/storage';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -253,6 +254,15 @@ class RnsAddress extends Component {
 
   createSubdomain = async () => {
     const { rnsRows } = this.state;
+
+    // Save registering subdomains to native storage
+    const subdomains = _.map(rnsRows, (row) => {
+      const { name, address } = row;
+      return { subdomain: name, address };
+    });
+    storage.setRnsRegisteringSubdomains(subdomains);
+
+    // Send subdomains to server
     const user = await parse.getUser();
     const fcmToken = user ? user.get('fcmToken') : null;
     const params = { fcmToken };

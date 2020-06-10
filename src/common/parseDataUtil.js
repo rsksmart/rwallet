@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import moment from 'moment';
 import definitions from './definitions';
 
@@ -50,6 +51,20 @@ const parseDataUtil = {
     const { value } = row.get('valObj');
     const { blockHeightKeyInfos } = definitions;
     return { ...blockHeightKeyInfos[key], blockHeight: value };
+  },
+
+  getSubdomainStatus(subdomains, records) {
+    _.each(subdomains, (row) => {
+      const status = row.get('status');
+      const address = row.get('address');
+      const subdomain = row.get('subdomain');
+      const item = _.find(records, (record) => address === record.address.toLowerCase() && subdomain === record.subdomain);
+      if (!item) {
+        throw new Error('err.subdomainnotfound');
+      }
+      item.status = status;
+    });
+    return records;
   },
 };
 
