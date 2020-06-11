@@ -231,28 +231,32 @@ class ParseHelper {
     return query.find();
   }
 
-  /**
-   * Get balance of parseObject and update property of each addresss
-   * @param {array} tokens Array of Coin class instance
-   * @returns {array} e.g. [{objectId, balance(hex string)}]
-   */
-  static async fetchBalances(tokens) {
+  static getTokensQuery(tokens) {
     const addresses = _.uniq(_.map(tokens, 'address'));
     const query = new Parse.Query(ParseAddress);
     query.containedIn('address', addresses);
+    return query;
+  }
+
+  /**
+   * Get token of parseObject and update property of each addresss
+   * @param {array} tokens Array of Coin class instance
+   * @returns {array} e.g. [{objectId, balance(hex string)}]
+   */
+  static async fetchTokens(tokens) {
+    const query = ParseHelper.getTokensQuery(tokens);
     let results = await query.find();
-    results = _.map(results, (token) => parseDataUtil.getBalance(token));
-    console.log('fetchBalances, results: ', results);
+    results = _.map(results, (token) => parseDataUtil.getToken(token));
+    console.log('fetchTokens, results: ', results);
     return results;
   }
 
   /**
-   * Subscribe to balances Live Query channel
+   * Subscribe to tokens Live Query channel
    */
-  static async subscribeBalances(tokens) {
-    const addresses = _.uniq(_.map(tokens, 'address'));
-    const query = new Parse.Query(ParseAddress);
-    query.containedIn('address', addresses);
+  static async subscribeTokens(tokens) {
+    const query = ParseHelper.getTokensQuery(tokens);
+    console.log('query: ', query);
     const subscription = await query.subscribe();
     return subscription;
   }
@@ -415,18 +419,6 @@ class ParseHelper {
     queryAddress.equalTo('status', 1);
     const query = Parse.Query.and(queryAddress, queryStatus);
     return query;
-  }
-
-  static async fetchRnsSubdomains(addresses) {
-    const query = ParseHelper.getRnsSubdomainsQuery(addresses);
-    const subdomains = await query.find();
-    return subdomains;
-  }
-
-  static async subscribeRnsSubdomains(addresses) {
-    const query = ParseHelper.getRnsSubdomainsQuery(addresses);
-    const subscription = await query.subscribe();
-    return subscription;
   }
 
   static async fetchRegisteringRnsSubdomains(records) {

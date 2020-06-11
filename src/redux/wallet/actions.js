@@ -7,9 +7,9 @@ const actions = {
   GET_PRICE: 'GET_PRICE',
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
 
-  FETCH_BALANCES: 'FETCH_BALANCES',
-  FETCH_BALANCE_RESULT: 'FETCH_BALANCE_RESULT',
-  RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
+  FETCH_TOKENS: 'FETCH_TOKENS',
+  FETCH_TOKENS_RESULT: 'FETCH_TOKENS_RESULT',
+  RESET_TOKENS_UPDATED: 'RESET_TOKENS_UPDATED',
 
   FETCH_TRANSACTIONS: 'FETCH_TRANSACTIONS',
   FETCH_TRANSACTIONS_RESULT: 'FETCH_TRANSACTIONS_RESULT',
@@ -46,9 +46,8 @@ const actions = {
   SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
   RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
 
-  INIT_LIVE_QUERY_BALANCES: 'INIT_LIVE_QUERY_BALANCES',
-  SET_BALANCES_CHANNEL: 'SET_BALANCES_CHANNEL',
-  BALANCE_UPDATED: 'BALANCE_UPDATED',
+  INIT_LIVE_QUERY_TOKENS: 'INIT_LIVE_QUERY_TOKENS',
+  SET_TOKENS_CHANNEL: 'SET_TOKENS_CHANNEL',
 
   INIT_LIVE_QUERY_TRANSACTIONS: 'INIT_LIVE_QUERY_TRANSACTIONS',
   SET_TRANSACTIONS_CHANNEL: 'SET_TRANSACTIONS_CHANNEL',
@@ -67,8 +66,8 @@ const actions = {
     type: actions.FETCH_BALANCE,
     payload: walletManager,
   }),
-  resetBalanceUpdated: () => ({
-    type: actions.RESET_BALANCE_UPDATED,
+  resetTokensUpdated: () => ({
+    type: actions.RESET_TOKENS_UPDATED,
   }),
   fetchTransactions: (params) => ({
     type: actions.FETCH_TRANSACTIONS,
@@ -149,8 +148,8 @@ const actions = {
   resetSwapRateResultError: () => ({
     type: actions.RESET_SWAP_RATE_RESULT_ERROR,
   }),
-  initLiveQueryBalances: (tokens) => ({
-    type: actions.INIT_LIVE_QUERY_BALANCES,
+  initLiveQueryTokens: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_TOKENS,
     tokens,
   }),
   initLiveQueryTransactions: (tokens) => ({

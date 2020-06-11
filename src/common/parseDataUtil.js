@@ -35,13 +35,13 @@ const parseDataUtil = {
    * get balance from parse transaction object
    * @param {*} balanceObj, parse balance object
    */
-  getBalance(balanceObj) {
+  getToken(tokenObj) {
     const balance = {
-      objectId: balanceObj.id,
-      balance: balanceObj.get('balance'),
-      address: balanceObj.get('address'),
-      symbol: balanceObj.get('symbol'),
-      subdomain: balanceObj.get('subdomain'),
+      objectId: tokenObj.id,
+      balance: tokenObj.get('balance'),
+      address: tokenObj.get('address'),
+      symbol: tokenObj.get('symbol'),
+      subdomain: tokenObj.get('subdomain'),
     };
     return balance;
   },
