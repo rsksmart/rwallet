@@ -170,7 +170,7 @@ class DAppBrowser extends Component {
                   console.log('payload: ', payload);
                   const nonce = await provider.getTransactionCount(wallet.address);
                   const txData = {
-                    nonce: nonce + 1,
+                    nonce,
                     data: params[0].data,
                     gasLimit: params[0].gas || '0xb611',
                     gasPrice: params[0].gasPrice,
@@ -181,7 +181,7 @@ class DAppBrowser extends Component {
                   console.log('signedTransaction: ', signedTransaction);
                   const result = await provider.sendTransaction(signedTransaction);
                   console.log('result: ', result);
-                  this.webview.postMessage(result);
+                  this.webview.postMessage(result.hash);
                 }, () => null);
               } catch (error) {
                 console.log(error);
