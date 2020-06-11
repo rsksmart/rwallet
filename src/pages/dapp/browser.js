@@ -16,7 +16,7 @@ class DAppBrowser extends Component {
 
   getJsCode = (address) => `
       (function() {
-        let resolver, rejecter, hash, status = false
+        let resolver, rejecter, hash
         setTimeout(() => {
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
             const result = data.data
@@ -142,7 +142,7 @@ class DAppBrowser extends Component {
 
     const rskEndpoint = 'https://public-node.testnet.rsk.co';
     // input your own 12-words mnemonic
-    const mnemonic = '';
+    const mnemonic = 'eye divorce point script garage clutch cream useless pill cheese produce brush';
     const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
     const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
     const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
@@ -167,6 +167,7 @@ class DAppBrowser extends Component {
             if (method === 'eth_sendTransaction') {
               try {
                 callAuthVerify(async () => {
+                  console.log('payload: ', payload);
                   const nonce = await provider.getTransactionCount(wallet.address);
                   const txData = {
                     nonce: nonce + 1,
@@ -175,11 +176,12 @@ class DAppBrowser extends Component {
                     gasPrice: params[0].gasPrice,
                     to: params[0].to,
                   };
+                  console.log('txData: ', txData);
                   const signedTransaction = await wallet.sign(txData);
                   console.log('signedTransaction: ', signedTransaction);
                   const result = await provider.sendTransaction(signedTransaction);
                   console.log('result: ', result);
-                  this.webview.postMessage(result.hash);
+                  this.webview.postMessage(result);
                 }, () => null);
               } catch (error) {
                 console.log(error);
