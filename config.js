@@ -80,7 +80,7 @@ const config = {
     timeout: 300000,
   },
   termsUrl: 'https://www.rsk.co/terms-conditions',
-  rnsDomain: 'rwallet.rsk',
+  rnsDomain: 'wallet.rsk',
 };
 
 export default config;

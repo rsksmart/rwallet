@@ -22,8 +22,8 @@ import parse from '../../../common/parse';
 import config from '../../../../config';
 import { createErrorNotification } from '../../../common/notification.controller';
 import appActions from '../../../redux/app/actions';
-import { createInfoConfirmation } from '../../../common/confirmation.controller';
 import storage from '../../../common/storage';
+import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -211,7 +211,7 @@ class RnsAddress extends Component {
   }
 
   onCreatePressed = async () => {
-    const { addNotification, addConfirmation } = this.props;
+    const { addNotification } = this.props;
     const { rnsRows } = this.state;
     // const user = await parse.getUser();
     // const fcmToken = user ? user.get('fcmToken') : null;
@@ -234,13 +234,7 @@ class RnsAddress extends Component {
       }
     });
     if (isAllDomainValid) {
-      const confirmation = createInfoConfirmation(
-        'modal.rnsNameCreateConfirm.title',
-        'modal.rnsNameCreateConfirm.body',
-        this.createSubdomain,
-        () => null,
-      );
-      addConfirmation(confirmation);
+      this.rnsConfirmation.show();
     } else {
       const notification = createErrorNotification(
         'modal.rnsNameUnavailable.title',
@@ -254,6 +248,7 @@ class RnsAddress extends Component {
 
   createSubdomain = async () => {
     const { rnsRows } = this.state;
+    const { navigation } = this.props;
 
     // Save registering subdomains to native storage
     const subdomains = _.map(rnsRows, (row) => {
@@ -274,6 +269,7 @@ class RnsAddress extends Component {
     const result = await parse.createSubdomain(params);
     this.setState({ isLoading: false });
     console.log('parse.createSubdomain, result: ', result);
+    navigation.navigate('RnsStatus', { popScreen: 1 });
   }
 
   onAddButtonPressed = () => {
@@ -439,6 +435,11 @@ class RnsAddress extends Component {
           onConfirm={this.onSelectionModalConfirmed}
           title={strings('page.wallet.recovery.selectCoin')}
         />
+        <CreateRnsConfirmation
+          ref={(ref) => { this.rnsConfirmation = ref; }}
+          data={rnsRows}
+          onConfirm={this.createSubdomain}
+        />
       </BasePageGereral>
     );
   }
@@ -455,7 +456,6 @@ RnsAddress.propTypes = {
     wallets: PropTypes.array,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
-  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

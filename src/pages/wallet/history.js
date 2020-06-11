@@ -461,7 +461,7 @@ class History extends Component {
     const subdomains = await storage.getRnsRegisteringSubdomains();
     console.log('Registering subdomains: ', subdomains);
     if (subdomains) {
-      navigation.navigate('RnsStatus', { subdomains });
+      navigation.navigate('RnsStatus');
     } else {
       navigation.navigate('RnsCreateName', { coin: this.coin });
     }

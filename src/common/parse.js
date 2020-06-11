@@ -409,6 +409,7 @@ class ParseHelper {
     console.log('isSubdomainAvailable, params: ', params);
     const result = await Parse.Cloud.run('isSubdomainAvailable', params);
     console.log('isSubdomainAvailable, result: ', result);
+    return result;
   }
 
   static getRnsSubdomainsQuery(addresses) {

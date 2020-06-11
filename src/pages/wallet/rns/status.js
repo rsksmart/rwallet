@@ -170,8 +170,12 @@ class RnsStatus extends Component {
 
   constructor(props) {
     super(props);
-    const { navigation } = props;
-    const { subdomains } = navigation.state.params;
+    this.state = { rnsRows: [] };
+  }
+
+
+  async componentDidMount() {
+    const subdomains = await storage.getRnsRegisteringSubdomains();
 
     const rnsRows = _.map(subdomains, (subdomain) => ({
       subdomain: subdomain.subdomain,
@@ -179,11 +183,7 @@ class RnsStatus extends Component {
       status: definitions.SUBDOMAIN_STATUS.PENDING,
     }));
 
-    this.state = { rnsRows };
-  }
-
-  async componentDidMount() {
-    this.fetchRegisteringRnsSubdomains();
+    this.setState({ rnsRows }, this.fetchRegisteringRnsSubdomains);
   }
 
   fetchRegisteringRnsSubdomains = async () => {

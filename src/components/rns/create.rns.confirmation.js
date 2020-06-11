@@ -1,0 +1,152 @@
+import React, { Component } from 'react';
+import {
+  Modal, View, StyleSheet, Text, FlatList,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import color from '../../assets/styles/color.ts';
+import space from '../../assets/styles/space';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  panel: {
+    backgroundColor: color.white,
+    borderRadius: 5,
+    marginHorizontal: 25,
+    height: '82%',
+    alignItems: 'center',
+    paddingHorizontal: 25,
+  },
+  title: {
+    fontSize: 17,
+    color: color.black,
+    fontFamily: 'Avenir-Heavy',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  notice: {
+    fontSize: 16,
+    color: color.black,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  subdomain: {
+    fontSize: 16,
+    color: color.black,
+    fontFamily: 'Avenir-Black',
+  },
+  address: {
+    fontSize: 16,
+    color: color.black,
+    fontFamily: 'Avenir-Book',
+    marginTop: 10,
+  },
+  subdomainRow: {
+    alignItems: 'center',
+  },
+  confirmButton: {
+    justifyContent: 'center',
+    marginTop: 25,
+    height: 50,
+    backgroundColor: color.app.theme,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  confirmText: {
+    fontFamily: 'Avenir-Heavy',
+    color: '#F3F3F3',
+    fontSize: 16,
+  },
+  cancelButton: {
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  cancelText: {
+    color: '#B1B1B1',
+    fontFamily: 'Avenir-Roman',
+  },
+});
+
+class CreateRnsConfirmation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
+
+  show = () => {
+    this.setState({ visible: true });
+  }
+
+  onCancelPressed = () => {
+    this.setState({ visible: false });
+  }
+
+  onConfirmPressed = () => {
+    const { onConfirm } = this.props;
+    onConfirm();
+    this.setState({ visible: false });
+  }
+
+  renderSubdomainRow = ({ item }) => {
+    const subdomain = `${item.name}.wallet.rsk`;
+    return (
+      <View style={[styles.subdomainRow, space.marginBottom_15]}>
+        <Text style={[styles.subdomain]}>{subdomain}</Text>
+        <Text style={styles.address}>{item.address}</Text>
+      </View>
+    );
+  }
+
+  render() {
+    const { visible } = this.state;
+    const { data } = this.props;
+    return (
+      <Modal visible={visible} transparent>
+        <View style={styles.container}>
+          <View style={styles.panel}>
+            <Text style={[styles.title, space.marginTop_50]}>Confirm</Text>
+            <Text style={styles.notice}>
+              {`Please confirm that you would like to create nicknames for below ${data.length
+              } wallets.`}
+            </Text>
+            <FlatList
+              extraData={data}
+              data={data}
+              renderItem={this.renderSubdomainRow}
+              keyExtractor={(item, index) => index.toString()}
+            />
+            <View style={{ width: '80%' }}>
+              <TouchableOpacity style={styles.confirmButton} onPress={this.onConfirmPressed}>
+                <Text style={styles.confirmText}>Confirm</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={this.onCancelPressed}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+}
+
+CreateRnsConfirmation.propTypes = {
+  onConfirm: PropTypes.func,
+  data: PropTypes.arrayOf(PropTypes.shape({})),
+};
+
+CreateRnsConfirmation.defaultProps = {
+  onConfirm: () => null,
+  data: undefined,
+};
+
+export default CreateRnsConfirmation;
