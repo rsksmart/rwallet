@@ -1,107 +1,63 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Image, Clipboard,
+  View, Text, StyleSheet, Clipboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
-import color from '../../assets/styles/color.ts';
-// import Input from '../../components/common/input/input';
-import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
-import OperationHeader from '../../components/headers/header.operation';
+import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
+import color from '../../assets/styles/color.ts';
+import { DEVICE } from '../../common/info';
+
+// const copyIcon = require('../../assets/images/icon/copy.png');
+// const refreshIcon = require('../../assets/images/icon/refresh.png');
+const QRCODE_SIZE = DEVICE.screenHeight * 0.27;
 
 const styles = StyleSheet.create({
-  sectionTitle: {
-    fontSize: 20,
-    letterSpacing: 0.39,
-    fontWeight: '900',
-    color: '#000',
-    marginBottom: 10,
-  },
-  sectionContainer: {
-    marginTop: 10,
-    marginHorizontal: 20,
-    paddingBottom: 10,
-  },
-  input: {
-    height: 50,
-  },
-  headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Avenir-Medium',
-    fontSize: 20,
-    marginLeft: -2,
-    marginBottom: 2,
-  },
-  chevron: {
-    color: '#FFF',
-  },
-  headImage: {
-    position: 'absolute',
-  },
   body: {
     flex: 1,
     backgroundColor: 'white',
-    marginTop: 10,
+  },
+  addressContainer: {
+    marginTop: DEVICE.screenHeight * 0.03,
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   address: {
-    borderColor: color.component.input.borderColor,
-    backgroundColor: color.component.input.backgroundColor,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderStyle: 'solid',
     fontSize: 16,
-    paddingHorizontal: 5,
+    width: QRCODE_SIZE + 50,
     flexDirection: 'row',
-    alignItems: 'center',
-    height: 60,
+    justifyContent: 'center',
+  },
+  subdomainText: {
+    color: color.black,
+    fontFamily: 'Avenir-Black',
+    fontSize: 17,
+  },
+  addressView: {
+    marginTop: DEVICE.screenHeight * 0.01,
   },
   addressText: {
-    flex: 1,
-    marginLeft: 5,
-    marginRight: 10,
+    color: color.black,
+    fontFamily: 'Avenir-Book',
+    fontSize: 16,
+    textAlign: 'center',
   },
   copyIcon: {
     width: 20,
     height: 20,
   },
-  refreshIcon: {
-    width: 20,
-    height: 20,
-  },
   qrView: {
-    borderColor: color.component.input.borderColor,
-    backgroundColor: color.component.input.backgroundColor,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    height: 330,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  titleView: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 8,
-    left: 10,
-    alignItems: 'center',
-  },
-  copyIconView: {
-    width: 30,
-    height: 40,
-    justifyContent: 'center',
+    marginTop: DEVICE.screenHeight * 0.09,
     alignItems: 'center',
   },
 });
-
-const copyIcon = require('../../assets/images/icon/copy.png');
-// const refreshIcon = require('../../assets/images/icon/refresh.png');
 
 class WalletReceive extends Component {
     static navigationOptions = () => ({
@@ -128,6 +84,10 @@ class WalletReceive extends Component {
       addNotification(notification);
     }
 
+    onSharePressed = () => {
+      console.log('onSharePressed');
+    }
+
     onCopySubdomainPressed() {
       const { navigation, addNotification } = this.props;
       const { coin } = navigation.state.params;
@@ -146,60 +106,37 @@ class WalletReceive extends Component {
     render() {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
-      const qrSize = 270;
-      const qrLogoSize = qrSize * 0.2;
 
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
       const type = coin && coin.type;
-      const subdomain = coin && coin.subdomain;
+      let subdomain = coin && coin.subdomain;
       const symbolName = common.getSymbolName(symbol, type);
       const qrText = address;
       const title = `${strings('button.Receive')} ${symbolName}`;
 
+      subdomain = subdomain || 'chris.wallet.rsk';
+
       return (
         <BasePageGereral
           isSafeView={false}
-          hasBottomBtn={false}
+          hasBottomBtn
+          bottomBtnText="button.share"
+          bottomBtnOnPress={this.onSharePressed}
           hasLoader={false}
-          headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<Header onBackButtonPress={navigation.goBack} title={title} />}
         >
           <View style={styles.body}>
-            <View style={[styles.sectionContainer, { paddingBottom: 20 }]}>
-              <Loc style={[styles.sectionTitle]} text="page.wallet.receive.address" />
-              <View style={styles.address}>
-                <TouchableOpacity style={styles.copyIconView} onPress={this.onCopyPress}>
-                  <Image style={styles.copyIcon} source={copyIcon} />
-                </TouchableOpacity>
-                <Text style={styles.addressText}>{address}</Text>
-                {/* TODO: we hide the refresh icon for now
-                Coin should have a isChangable member to decide whether it could generate more addresses
-                Only BTC is allowed to do that.
-                <TouchableOpacity>
-                  <Image style={styles.refreshIcon} source={refreshIcon} />
-                </TouchableOpacity> */}
-              </View>
-              <View style={styles.address}>
-                <TouchableOpacity style={styles.copyIconView} onPress={this.onCopySubdomainPressed}>
-                  <Image style={styles.copyIcon} source={copyIcon} />
-                </TouchableOpacity>
-                <Text style={styles.addressText}>{subdomain}</Text>
-                {/* TODO: we hide the refresh icon for now
-                Coin should have a isChangable member to decide whether it could generate more addresses
-                Only BTC is allowed to do that.
-                <TouchableOpacity>
-                  <Image style={styles.refreshIcon} source={refreshIcon} />
-                </TouchableOpacity> */}
-              </View>
+            <View style={[styles.qrView]}>
+              <QRCode value={qrText} size={QRCODE_SIZE} />
             </View>
-            <View style={[styles.sectionContainer, styles.qrView]}>
-              <QRCode
-                value={qrText}
-                logo={coin.icon}
-                logoMargin={5}
-                size={qrSize}
-                logoSize={qrLogoSize}
-              />
+            <View style={[styles.addressContainer]}>
+              <View style={[styles.address]}>
+                <Text style={[styles.subdomainText]}>{subdomain}</Text>
+              </View>
+              <View style={[styles.address, styles.addressView]}>
+                <Text style={styles.addressText}>{address}</Text>
+              </View>
             </View>
           </View>
         </BasePageGereral>

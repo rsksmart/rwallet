@@ -292,7 +292,8 @@
     "ok": "Ok",
     "name": "Name",
     "pending": "Pending",
-    "done": "Done"
+    "done": "Done",
+    "share": "SHARE"
   },
   "txState": {
     "Sent": "Sent",
