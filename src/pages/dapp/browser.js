@@ -172,7 +172,7 @@ class DAppBrowser extends Component {
                   const txData = {
                     nonce: nonce + 1,
                     data: params[0].data,
-                    gasLimit: params[0].gas,
+                    gasLimit: params[0].gas || '0xb611',
                     gasPrice: params[0].gasPrice,
                     to: params[0].to,
                   };
