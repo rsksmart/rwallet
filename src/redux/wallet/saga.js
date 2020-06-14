@@ -21,7 +21,7 @@ function* createKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -40,7 +40,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -98,7 +98,7 @@ function* deleteTokenRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);

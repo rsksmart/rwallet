@@ -216,7 +216,7 @@ class RnsAddress extends Component {
     // const user = await parse.getUser();
     // const fcmToken = user ? user.get('fcmToken') : null;
     const queryParams = {};
-    queryParams.subdomainData = _.map(rnsRows, (row) => {
+    queryParams.subdomainList = _.map(rnsRows, (row) => {
       const { name, type } = row;
       return { subdomain: name, type };
     });
@@ -261,7 +261,7 @@ class RnsAddress extends Component {
     const user = await parse.getUser();
     const fcmToken = user ? user.get('fcmToken') : null;
     const params = { fcmToken };
-    params.subdomainData = _.map(rnsRows, (row) => {
+    params.subdomainList = _.map(rnsRows, (row) => {
       const { name, type, address } = row;
       return { subdomain: name, type, address };
     });

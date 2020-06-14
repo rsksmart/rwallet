@@ -447,6 +447,11 @@ const common = {
   getSymbolDecimalPlaces(symbol) {
     return config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
   },
+
+  isValidRnsSubdomain(text) {
+    const regex = /(([a-z0-9])+\.)+rsk$/g;
+    return regex.test(text);
+  },
 };
 
 export default common;

@@ -62,7 +62,7 @@ const parseDataUtil = {
       const status = row.get('status');
       const address = row.get('address');
       const subdomain = row.get('subdomain');
-      const item = _.find(records, (record) => address === record.address.toLowerCase() && subdomain === record.subdomain);
+      const item = _.find(records, (record) => address === record.address && subdomain === record.subdomain);
       if (!item) {
         throw new Error('err.subdomainnotfound');
       }

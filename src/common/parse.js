@@ -360,10 +360,10 @@ class ParseHelper {
     });
   }
 
-  static getUserTokenBalance(type, chain, constractAddress, address) {
-    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, constractAddress: ${constractAddress}, address: ${address}`);
+  static getUserTokenBalance(type, chain, contractAddress, address) {
+    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, contractAddress: ${contractAddress}, address: ${address}`);
     return Parse.Cloud.run('getUserTokenBalance', {
-      type, chain, tokenAddress: constractAddress, userAddress: address,
+      type, chain, tokenAddress: contractAddress, userAddress: address,
     });
   }
 
@@ -407,6 +407,7 @@ class ParseHelper {
 
   static async isSubdomainAvailable(params) {
     console.log('isSubdomainAvailable, params: ', params);
+    console.log(`isSubdomainAvailable, params: ${JSON.stringify(params)}`);
     const result = await Parse.Cloud.run('isSubdomainAvailable', params);
     console.log('isSubdomainAvailable, result: ', result);
     return result;
@@ -423,7 +424,7 @@ class ParseHelper {
   }
 
   static async fetchRegisteringRnsSubdomains(records) {
-    const addresses = _.map(records, (record) => record.address.toLowerCase());
+    const addresses = _.map(records, (record) => record.address);
     const subdomains = _.map(records, 'subdomain');
     console.log('fetchRegisteringRnsSubdomains, records: ', records);
     console.log('fetchRegisteringRnsSubdomains, addresses: ', addresses);
@@ -434,7 +435,15 @@ class ParseHelper {
     querySubdomains.containedIn('subdomain', subdomains);
     const result = await Parse.Query.and(queryAddress, querySubdomains).ascending('createdAt').find();
     const status = parseDataUtil.getSubdomainStatus(result, records);
+    console.log('status: ', status);
     return status;
+  }
+
+  static async querySubdomain(subdomain, type) {
+    console.log(`querySubdomain, subdomain: ${subdomain}, type: ${type}`);
+    const result = await Parse.Cloud.run('querySubdomain', { subdomain, type });
+    console.log('querySubdomain, result: ', result);
+    return result;
   }
 
   static unsubscribe(subscription) {

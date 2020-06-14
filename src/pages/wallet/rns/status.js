@@ -17,9 +17,11 @@ import config from '../../../../config';
 import appActions from '../../../redux/app/actions';
 import storage, { RNS_REGISTERING_SUBDOMAINS } from '../../../common/storage';
 import definitions from '../../../common/definitions';
-import parse from '../../../common/parse';
+import parseHelper from '../../../common/parse';
 import { createErrorNotification } from '../../../common/notification.controller';
-import { createErrorConfirmation } from '../../../common/confirmation.controller';
+import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
+
+const REFRESH_STATUS_DELAY_TIME = 8000;
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -183,33 +185,46 @@ class RnsStatus extends Component {
       status: definitions.SUBDOMAIN_STATUS.PENDING,
     }));
 
-    this.setState({ rnsRows }, this.fetchRegisteringRnsSubdomains);
+    this.setState({ rnsRows }, this.refreshStatus);
+  }
+
+  componentWillUnmount() {
+    this.clearTimer();
+    CancelablePromiseUtil.cancel(this);
+  }
+
+  refreshStatus = () => {
+    this.timer = setInterval(this.fetchRegisteringRnsSubdomains, REFRESH_STATUS_DELAY_TIME);
+  }
+
+  clearTimer = () => {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
   }
 
   fetchRegisteringRnsSubdomains = async () => {
-    const { addConfirmation, addNotification, navigation } = this.props;
+    console.log('fetchRegisteringRnsSubdomains');
+    const { addNotification, navigation } = this.props;
     const { rnsRows } = this.state;
     try {
-      const subdomains = await parse.fetchRegisteringRnsSubdomains(rnsRows);
+      const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchRegisteringRnsSubdomains(rnsRows), this);
       console.log('fetchRegisteringRnsSubdomains: ', subdomains);
       this.setState({ rnsRows: [...subdomains] });
+      const pendingSubdomain = _.find(subdomains, { status: definitions.SUBDOMAIN_STATUS.PENDING });
+      if (!pendingSubdomain) {
+        this.clearTimer();
+      }
     } catch (error) {
       if (error.message === 'err.subdomainnotfound') {
+        this.clearTimer();
         const notification = createErrorNotification(
           'modal.rnsSubdomainNotFound.title',
           'modal.rnsSubdomainNotFound.body',
           navigation.goBack,
         );
         addNotification(notification);
-      } else {
-        const confirmation = createErrorConfirmation(
-          definitions.defaultErrorNotification.title,
-          definitions.defaultErrorNotification.message,
-          'button.retry',
-          this.fetchRegisteringRnsSubdomains,
-          navigation.goBack,
-        );
-        addConfirmation(confirmation);
       }
     }
   }
@@ -309,7 +324,6 @@ RnsStatus.propTypes = {
   walletManager: PropTypes.shape({
     wallets: PropTypes.array,
   }).isRequired,
-  addConfirmation: PropTypes.func.isRequired,
   addNotification: PropTypes.func.isRequired,
 };
 
