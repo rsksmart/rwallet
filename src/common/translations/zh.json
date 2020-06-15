@@ -173,6 +173,11 @@
         "address": "地址",
         "rnsName": "RNS昵称",
         "anotherAddress": "另一个地址"
+      },
+      "rnsStatus": {
+        "pending": "注册等待被确认",
+        "success": "成功! 您的昵称已被创建.",
+        "failed": "失败！您的昵称注册失败."
       }
     },
     "mine": {

@@ -170,6 +170,11 @@
         "address": "Address",
         "rnsName": "RNS Nickname",
         "anotherAddress": "Another address"
+      },
+      "rnsStatus": {
+        "pending": "Registration waiting to be confirmed.",
+        "success": "Success! Your nickname is created.",
+        "failed": "Failed! Your nickname is failed to register."
       }
     },
     "mine": {

@@ -185,7 +185,6 @@ class RnsStatus extends Component {
   }
 
   renderRnsRow = (item, index) => {
-    console.log('renderRnsRow');
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
     const addressText = common.shortAddress(address);
@@ -193,19 +192,19 @@ class RnsStatus extends Component {
     let statusView = (
       <View style={styles.noticeView}>
         <ActivityIndicator style={styles.activityIndicator} size="small" animating />
-        <Text style={styles.pendingNotice}>Registration waiting to be confirmed.</Text>
+        <Text style={styles.pendingNotice}>{strings('page.wallet.rnsStatus.pending')}</Text>
       </View>
     );
     if (status === definitions.SUBDOMAIN_STATUS.SUCCESS) {
       statusView = (
         <View style={styles.noticeView}>
-          <Text style={styles.successNotice}>Success! Your nickname is created.</Text>
+          <Text style={styles.successNotice}>{strings('page.wallet.rnsStatus.success')}</Text>
         </View>
       );
     } else if (status === definitions.SUBDOMAIN_STATUS.FAILED) {
       statusView = (
         <View style={styles.noticeView}>
-          <Text style={styles.failedNotice}>Failed! Your nickname is failed to register.</Text>
+          <Text style={styles.failedNotice}>{strings('page.wallet.rnsStatus.failed')}</Text>
         </View>
       );
     }
@@ -282,7 +281,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
-  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RnsStatus);

@@ -173,6 +173,11 @@
         "address": "Endereço",
         "rnsName": "Apelido RNS",
         "anotherAddress": "Outro endereço"
+      },
+      "rnsStatus": {
+        "pending": "Registro aguardando confirmação.",
+        "success": "Sucesso! Seu apelido é criado.",
+        "failed": "Falhou! Seu apelido não foi registrado."
       }
     },
     "mine": {

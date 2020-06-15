@@ -173,6 +173,11 @@
         "address": "Habla a",
         "rnsName": "Apodo RNS",
         "anotherAddress": "Otra dirección"
+      },
+      "rnsStatus": {
+        "pending": "Registro a la espera de ser confirmado.",
+        "success": "¡Éxito! Tu apodo es creado.",
+        "failed": "¡Ha fallado! No se pudo registrar su apodo."
       }
     },
     "mine": {
