@@ -90,12 +90,12 @@ class DAppIndex extends Component {
   onDappPress = (dapp) => {
     const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
-    this.openBrowser(dapp.url, dapp.title && dapp.title[language]);
+    this.openBrowser(dapp.url, dapp.name && dapp.name[language]);
   }
 
-  openBrowser = (url, title = '') => {
+  openBrowser = (url, name = '') => {
     const { navigation } = this.props;
-    navigation.navigate('DAppBrowser', { url, title });
+    navigation.navigate('DAppBrowser', { url, name });
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -138,11 +138,13 @@ class DAppIndex extends Component {
   }
 
   render() {
-    const { navigation, language } = this.props;
+    const { navigation, language, walletManager } = this.props;
     const { searchUrl } = this.state;
 
     const sourceData = this.getSourceData();
     const { recent, recommended, all } = sourceData;
+
+    console.log('walletManager: ', walletManager);
 
     return (
       <BasePageGereral
@@ -256,17 +258,22 @@ DAppIndex.propTypes = {
   recentDapps: PropTypes.arrayOf(PropTypes.object),
   dapps: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array.isRequired,
+  }),
 };
 
 DAppIndex.defaultProps = {
   recentDapps: null,
   dapps: null,
+  walletManager: null,
 };
 
 const mapStateToProps = (state) => ({
   dapps: state.App.get('dapps'),
   recentDapps: state.App.get('recentDapps'),
   language: state.App.get('language'),
+  walletManager: state.Wallet.get('walletManager'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

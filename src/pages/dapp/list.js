@@ -59,19 +59,19 @@ class DAppList extends Component {
   onDappPress = (dapp) => {
     const { addRecentDapp, language } = this.props;
     addRecentDapp(dapp);
-    this.openBrowser(dapp.title[language], dapp.url);
+    this.openBrowser(dapp.name[language], dapp.url);
   }
 
-  openBrowser = (title, url) => {
+  openBrowser = (name, url) => {
     const { navigation } = this.props;
-    navigation.navigate('DAppBrowser', { title, url });
+    navigation.navigate('DAppBrowser', { name, url });
   }
 
   render() {
     const {
       navigation, dapps, language, recentDapps,
     } = this.props;
-    const title = navigation.state.params.title || '';
+    const name = navigation.state.params.name || '';
     const type = navigation.state.params.type || '';
     let dappList = [];
     if (type === 'recent') {
@@ -84,7 +84,7 @@ class DAppList extends Component {
     return (
       <BasePageSimple
         isSafeView
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title={title} />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title={name} />}
       >
         <FlatList
           data={dappList}

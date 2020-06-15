@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { ethers } from 'ethers';
+import Rsk3 from '@rsksmart/rsk3';
 import { WebView } from 'react-native-webview';
 import { connect } from 'react-redux';
 import OperationHeader from '../../components/headers/header.operation';
@@ -20,15 +21,23 @@ class DAppBrowser extends Component {
         setTimeout(() => {
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
             const result = data.data
-            if (result) {
+            if (result && resolver) {
               resolver(result)
-            } else {
+            } else if (rejecter) {
               rejecter(1)
             }
           })
         }, 0)
 
         getHash = (payload) => {
+          return new Promise((resolve, reject) => {
+            window.ReactNativeWebView.postMessage(JSON.stringify(payload))
+            resolver = resolve
+            rejecter = reject
+          })
+        }
+
+        getTransactionReceipt = (payload) => {
           return new Promise((resolve, reject) => {
             window.ReactNativeWebView.postMessage(JSON.stringify(payload))
             resolver = resolve
@@ -43,7 +52,6 @@ class DAppBrowser extends Component {
           window.ethereum.selectedAddress = '${address}'
           window.ethereum.networkVersion = '31'
           window.web3 = web3
-          window.web3.toDecimal = web3.utils.toDecimal
           const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
           const config = {
             isEnabled: true,
@@ -71,12 +79,19 @@ class DAppBrowser extends Component {
 
           window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
 
-          window.ethereum.sendAsync = async (payload, callback) => {
-            let err, res
+          const sendAsync = async (payload, callback) => {
+            window.ethereum.sendAsync = window.ethereum.send
+            let err, res, result = ''
+            const {method, params, jsonrpc, id} = payload
             try {
-              const {method, params, jsonrpc, id} = payload
               console.log('payload: ', payload)
-              let result = ''
+              if (method === 'net_version') {
+                result = '31'
+              }
+              if (method === 'eth_getBlockByNumber') {
+                const blockNumber = await provider.getBlockNumber()
+                result = await provider.getBlock(blockNumber)
+              }
               if (method === 'eth_call') {
                 result = await provider.call(params[0], params[1])
               }
@@ -92,19 +107,28 @@ class DAppBrowser extends Component {
                 hash = result
               }
               if (method === 'eth_getTransactionReceipt') {
-                result = await provider.getTransactionReceipt(hash)
+                result = await getTransactionReceipt(payload)
+                result = JSON.parse(result)
+              }
+              if (method === 'eth_getTransactionByHash') {
+                result = await provider.getTransaction(params[0])
+              }
+              if (method === 'eth_gasPrice') {
+                result = await provider.getGasPrice()
               }
 
-              console.log('result: ', {id, jsonrpc, result})
               res = {id, jsonrpc, result}
+              console.log('sendAsync res: ', res)
             } catch(err) {
               err = err
+              console.log('err: ', err)
             }
             callback(err, res)
           }
 
-          window.ethereum.send = window.ethereum.sendAsync
           window.web3.setProvider(window.ethereum)
+          window.ethereum.send = sendAsync
+          window.ethereum.sendAsync = sendAsync
         }
 
         let scriptCount = 0
@@ -121,7 +145,7 @@ class DAppBrowser extends Component {
           container.insertBefore(script, container.children[0])
         }
 
-        loadJsFile('https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js')
+        loadJsFile('https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.min.js')
         loadJsFile('https://storage.googleapis.com/storage-rwallet/ethers.min.js')
 
         let timer = setInterval(() => {
@@ -142,20 +166,22 @@ class DAppBrowser extends Component {
 
     const rskEndpoint = 'https://public-node.testnet.rsk.co';
     // input your own 12-words mnemonic
-    const mnemonic = 'eye divorce point script garage clutch cream useless pill cheese produce brush';
+    const mnemonic = 'fabric arrest space cost embark tell pear balance title girl photo valley';
     const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
     const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
     const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
     const addr = ethers.utils.getAddress(wallet.address.toLowerCase());
     const jsCode = this.getJsCode(addr);
+    const rsk3 = new Rsk3(rskEndpoint);
 
     return (
       <View style={{ flex: 1 }}>
         <OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />
         <WebView
           // source={{ uri: 'https://faucet.rifos.org/' }}
-          source={{ uri: 'https://testnet.manager.rns.rifos.org/' }}
+          // source={{ uri: 'https://testnet.manager.rns.rifos.org/' }}
           // source={{ uri: 'http://localhost:3000' }}
+          source={{ uri: url }}
           ref={(webview) => { this.webview = webview; }}
           javaScriptEnabled
           domStorageEnabled
@@ -172,8 +198,8 @@ class DAppBrowser extends Component {
                   const txData = {
                     nonce,
                     data: params[0].data,
-                    gasLimit: params[0].gas || '0xb611',
-                    gasPrice: params[0].gasPrice,
+                    gasLimit: params[0].gas || 600000,
+                    gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
                     to: params[0].to,
                   };
                   console.log('txData: ', txData);
@@ -186,6 +212,15 @@ class DAppBrowser extends Component {
               } catch (error) {
                 console.log(error);
               }
+            } else if (method === 'eth_getTransactionReceipt') {
+              rsk3.getTransactionReceipt(params[0]).then((res) => {
+                console.log('res: ', res);
+                res.status = res.status ? 1 : 0;
+                this.webview.postMessage(JSON.stringify(res));
+              }).catch((err) => {
+                console.log('err: ', err);
+                this.webview.postMessage('');
+              });
             }
           }}
         />
