@@ -413,6 +413,10 @@
     "duplicateToken": {
       "title": "重复的代币",
       "body": "这个代币已经被加入钱包。请尝试不同的代币。"
+    },
+    "requestTimeout": {
+      "title": "请求超时",
+      "body": "服务器在指定时间内不能完成请求。"
     }
   },
   "currency": {

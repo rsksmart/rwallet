@@ -87,28 +87,31 @@ class Transaction extends Component {
 
   static processViewData(transation, latestBlockHeights) {
     const { rawTransaction } = transation;
+    const {
+      chain, symbol, type, value, blockHeight, hash, memo,
+    } = rawTransaction;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
-      const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = `${common.getBalanceString(amount, transation.symbol)} ${common.getSymbolName(rawTransaction.symbol, rawTransaction.type)}`;
+      const amount = common.convertUnitToCoinAmount(symbol, value);
+      amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
     }
     const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
     if (transation.state === 'Sent' || transation.state === 'Received') {
-      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
+      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, chain, type);
       latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
-      confirmations = latestBlockHeight - rawTransaction.blockHeight;
+      confirmations = latestBlockHeight - blockHeight;
       confirmations = confirmations < 0 ? 0 : confirmations;
       confirmations = confirmations >= 6 ? '6+' : confirmations;
     }
     return {
       transactionState: transation.state,
-      transactionId: rawTransaction.hash,
+      transactionId: hash,
       amount: amountText,
       stateIcon: stateIcons[transation.state],
       datetime: datetimeText,
       confirmations,
-      memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
+      memo: memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
       isRefreshing: false,
     };
