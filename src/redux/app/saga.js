@@ -263,7 +263,7 @@ function* processNotificationRequest(action) {
     return null;
   }
   const { event, eventParams } = data;
-  const params = JSON.parse(eventParams);
+  const params = eventParams ? JSON.parse(eventParams) : null;
   switch (event) {
     case 'sentTransaction':
     case 'receivingTransaction':
@@ -277,6 +277,15 @@ function* processNotificationRequest(action) {
       const newAction = actions.setFcmNavParams({
         routeName: 'WalletHistory',
         routeParams: { coin },
+      });
+      yield put(newAction);
+      break;
+    }
+    case 'createRnsSuccess':
+    case 'createRnsFail': {
+      common.currentNavigation.navigate('Home');
+      const newAction = actions.setFcmNavParams({
+        routeName: 'RnsStatus',
       });
       yield put(newAction);
       break;
