@@ -168,7 +168,8 @@
       "rnsCreateName": {
         "title": "Create Nickname",
         "address": "Address",
-        "rnsName": "RNS Nickname"
+        "rnsName": "RNS Nickname",
+        "anotherAddress": "Another address"
       }
     },
     "mine": {

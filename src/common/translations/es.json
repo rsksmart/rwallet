@@ -168,10 +168,11 @@
         "addCustomToken": "Agregar token personalizado",
         "custom": "Personalizado"
       },
-      "rns": {
-        "title": "Habla a",
-        "token": "Simbólico",
-        "rnsName": "Nombre RNS"
+      "rnsCreateName": {
+        "title": "Crear apodo",
+        "address": "Habla a",
+        "rnsName": "Apodo RNS",
+        "anotherAddress": "Otra dirección"
       }
     },
     "mine": {

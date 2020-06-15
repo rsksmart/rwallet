@@ -168,10 +168,11 @@
         "addCustomToken": "Adicionar token personalizado",
         "custom": "Personalizados"
       },
-      "rns": {
-        "title": "Endereço",
-        "token": "Símbolo",
-        "rnsName": "Nome do RNS"
+      "rnsCreateName": {
+        "title": "Criar apelido",
+        "address": "Endereço",
+        "rnsName": "Apelido RNS",
+        "anotherAddress": "Outro endereço"
       }
     },
     "mine": {

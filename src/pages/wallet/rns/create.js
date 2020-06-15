@@ -24,6 +24,7 @@ import { createErrorNotification } from '../../../common/notification.controller
 import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
 import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
+import common from '../../../common/common';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -138,13 +139,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-const shortAddress = (address) => {
-  const prefix = address.substr(0, 6);
-  const suffix = address.substr(address.length - 4, address.length - 1);
-  const result = `${prefix}...${suffix}`;
-  return result;
-};
 
 const getTokens = (wallets) => {
   const tokens = [];
@@ -349,7 +343,7 @@ class RnsAddress extends Component {
     console.log('renderRnsRow');
     const { address, name } = item;
     const { rnsRows } = this.state;
-    const addressText = shortAddress(address);
+    const addressText = common.shortAddress(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
     const { errorMessage, rnsNameState } = rnsRows[index];
     let message = null;
@@ -404,7 +398,7 @@ class RnsAddress extends Component {
 
     const rnsRow = _.find(rnsRows, (row) => !row.name && row.errorMessage);
     const bottomButton = (<Button text="button.create" onPress={this.onCreatePressed} disabled={!!rnsRow} />);
-    const selectItemTexts = _.map(selectItems, (item) => shortAddress(item.address));
+    const selectItemTexts = _.map(selectItems, (item) => common.shortAddress(item.address));
 
     return (
       <BasePageGereral
@@ -425,7 +419,7 @@ class RnsAddress extends Component {
           { rnsRows.length < this.tokens.length && (
           <TouchableOpacity style={styles.addButton} onPress={this.onAddButtonPressed}>
             <Feather style={styles.addButtonPlus} name="plus" />
-            <Text style={styles.addButtonText}>Add</Text>
+            <Text style={styles.addButtonText}>{strings('page.wallet.rnsCreateName.anotherAddress')}</Text>
           </TouchableOpacity>
           )}
         </View>

@@ -20,18 +20,12 @@ import definitions from '../../../common/definitions';
 import parseHelper from '../../../common/parse';
 import { createErrorNotification } from '../../../common/notification.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
+import common from '../../../common/common';
 
 const REFRESH_STATUS_DELAY_TIME = 8000;
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: '600',
-    color: color.black,
     marginBottom: 20,
   },
   body: {
@@ -50,23 +44,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: color.black,
     marginLeft: 10,
-  },
-  addButton: {
-    borderWidth: 1,
-    borderColor: '#F2F2F2',
-    height: 38,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 14,
-    color: '#919191',
-  },
-  addButtonPlus: {
-    fontSize: 17,
-    color: color.app.theme,
-    marginRight: 4,
   },
   textInput: {
     fontSize: 16,
@@ -118,27 +95,6 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: 10,
   },
-  rnsRowBalance: {
-    fontSize: 16,
-    fontFamily: 'Avenir-Book',
-    marginRight: 7,
-  },
-  rnsRowAddress: {
-    fontSize: 16,
-    fontFamily: 'Avenir-Book',
-    marginRight: 7,
-    color: '#979797',
-  },
-  rnsRowChevron: {
-    fontSize: 30,
-    color: '#CBC6C6',
-    position: 'absolute',
-    right: 5,
-  },
-  notice: {
-    color: color.warningText,
-    marginTop: 10,
-  },
   successNotice: {
     color: '#00B520',
   },
@@ -157,13 +113,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
-
-const shortAddress = (address) => {
-  const prefix = address.substr(0, 6);
-  const suffix = address.substr(address.length - 4, address.length - 1);
-  const result = `${prefix}...${suffix}`;
-  return result;
-};
 
 class RnsStatus extends Component {
   static navigationOptions = () => ({
@@ -239,7 +188,7 @@ class RnsStatus extends Component {
     console.log('renderRnsRow');
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
-    const addressText = shortAddress(address);
+    const addressText = common.shortAddress(address);
     const { status } = rnsRows[index];
     let statusView = (
       <View style={styles.noticeView}>

@@ -168,10 +168,11 @@
         "addCustomToken": "添加自定义代币",
         "custom": "自定义"
       },
-      "rns": {
-        "title": "地址",
-        "token": "代币",
-        "rnsName": "RNS名"
+      "rnsCreateName": {
+        "title": "创建昵称",
+        "address": "地址",
+        "rnsName": "RNS昵称",
+        "anotherAddress": "另一个地址"
       }
     },
     "mine": {

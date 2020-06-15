@@ -452,6 +452,13 @@ const common = {
     const regex = /(([a-z0-9])+\.)+rsk$/g;
     return regex.test(text);
   },
+
+  shortAddress(address) {
+    const prefix = address.substr(0, 6);
+    const suffix = address.substr(address.length - 4, address.length - 1);
+    const result = `${prefix}...${suffix}`;
+    return result;
+  },
 };
 
 export default common;
