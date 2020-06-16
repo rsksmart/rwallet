@@ -90,8 +90,8 @@ function* initFromStorageRequest() {
     yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps });
 
     // 7. Deserialize dapp advertisements
-    const ads = yield call(storage.getAdvertisements);
-    yield put({ type: actions.UPDATE_ADVERTISEMENT, ads });
+    const advertisements = yield call(storage.getAdvertisements);
+    yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
 
     // Sets state in reducer for success
     yield put({
