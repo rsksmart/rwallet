@@ -79,13 +79,19 @@ function* initFromStorageRequest() {
     const currency = settings.get('currency');
     walletManager.updateAssetValue(prices, currency);
 
-    // 5. Deserialize all active dapps
+    // 5. Deserialize all active dapps and types
     const dapps = yield call(storage.getDapps);
     yield put({ type: actions.UPDATE_DAPPS, dapps });
+    const dappTypes = yield call(storage.getDappTypes);
+    yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
 
     // 6. Deserialize recent dapps
     const recentDapps = yield call(storage.getRecentDapps);
     yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps });
+
+    // 7. Deserialize dapp advertisements
+    const ads = yield call(storage.getAdvertisements);
+    yield put({ type: actions.UPDATE_ADVERTISEMENT, ads });
 
     // Sets state in reducer for success
     yield put({
@@ -345,6 +351,16 @@ function* fetchDapps() {
   yield put({ type: actions.UPDATE_DAPPS, dapps });
 }
 
+function* fetchDappTypes() {
+  const dappTypes = yield call(ParseHelper.fetchDappTypes);
+  yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
+}
+
+function* fetchAdvertisements() {
+  const advertisements = yield call(ParseHelper.fetchAdvertisements);
+  yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
+}
+
 /**
  * Add the recently opened dapp at the top of the recentDapps if dapp is not exist
  * Move the recently opened dapp at the top of the recentDapps if dapp is exist
@@ -383,6 +399,8 @@ export default function* () {
     takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
 
     takeEvery(actions.FETCH_DAPPS, fetchDapps),
+    takeEvery(actions.FETCH_DAPP_TYPES, fetchDappTypes),
+    takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
   ]);
 }

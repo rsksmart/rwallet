@@ -43,6 +43,8 @@ const initState = new Map({
   fcmNavParams: undefined,
   fcmToken: undefined,
   dapps: undefined,
+  dappTypes: undefined,
+  advertisements: undefined,
   recentDapps: undefined,
 });
 
@@ -148,6 +150,16 @@ export default function appReducer(state = initState, action) {
       const { dapps } = action;
       storage.setDapps(dapps);
       return state.set('dapps', dapps);
+    }
+    case actions.UPDATE_DAPP_TYPES: {
+      const { dappTypes } = action;
+      storage.setDappTypes(dappTypes);
+      return state.set('dappTypes', dappTypes);
+    }
+    case actions.UPDATE_ADVERTISEMENT: {
+      const { advertisements } = action;
+      storage.setAdvertisements(advertisements);
+      return state.set('advertisements', advertisements);
     }
     case actions.UPDATE_RECENT_DAPPS: {
       const { recentDapps } = action;

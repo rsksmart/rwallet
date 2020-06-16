@@ -71,7 +71,7 @@ class DAppList extends Component {
     const {
       navigation, dapps, language, recentDapps,
     } = this.props;
-    const name = navigation.state.params.name || '';
+    const title = navigation.state.params.title || '';
     const type = navigation.state.params.type || '';
     let dappList = [];
     if (type === 'recent') {
@@ -79,12 +79,12 @@ class DAppList extends Component {
     } else if (type === 'recommended') {
       dappList = _.filter(dapps, (item) => item.isRecommended);
     } else {
-      dappList = dapps;
+      dappList = _.filter(dapps, (item) => item.type === type);
     }
     return (
       <BasePageSimple
         isSafeView
-        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title={name} />}
+        headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title={title} />}
       >
         <FlatList
           data={dappList}

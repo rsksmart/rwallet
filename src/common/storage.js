@@ -9,6 +9,8 @@ const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
 const KEY_DAPPS = 'DAPPS';
+const KEY_DAPP_TYPES = 'DAPPTYPES';
+const ADVERTISEMENTS = 'ADVERTISEMENTS';
 const KEY_RECENT_DAPPS = 'RECENTDAPPS';
 
 class RNStorage {
@@ -232,6 +234,32 @@ class RNStorage {
    * @param {string} id Key local id
    */
   getDapps = () => this.load({ key: KEY_DAPPS })
+
+  /**
+   * Set dapp types using normal storage
+   * @param {string} id Key local id
+   * @param {string} dappTypes all active dapp types
+   */
+  setDappTypes = (dappTypes) => this.save(KEY_DAPP_TYPES, dappTypes)
+
+  /**
+   * Return dapp types from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDappTypes = () => this.load({ key: KEY_DAPP_TYPES })
+
+  /**
+   * Set advertisements using normal storage
+   * @param {string} id Key local id
+   * @param {string} ads all active advertisements
+   */
+  setAdvertisements = (ads) => this.save(ADVERTISEMENTS, ads)
+
+  /**
+   * Return advertisements from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getAdvertisements = () => this.load({ key: ADVERTISEMENTS })
 
   /**
    * Set recent dapps using normal storage

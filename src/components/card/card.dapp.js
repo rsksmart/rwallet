@@ -49,31 +49,21 @@ export default function DappCard({
         </TouchableOpacity>
       </View>
 
-      {type === 'recent' && (
-        <View style={styles.row}>
-          {_.map(data, (item, index) => getItem(item, index))}
-        </View>
-      )}
-
-      {type === 'recommended' && (
-        <FlatList
-          data={data}
-          renderItem={({ item, index }) => getItem(item, index)}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => `nest-${index}`}
-        />
-      )}
-
-      {type === 'all' && (
-        <FlatList
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          data={data}
-          renderItem={({ item, index }) => getItem(item, index)}
-          keyExtractor={(item, index) => `list-${index}`}
-        />
-      )}
+      {
+        type === 'recent' ? (
+          <View style={styles.row}>
+            {_.map(data, (item, index) => getItem(item, index))}
+          </View>
+        ) : (
+          <FlatList
+            data={data}
+            renderItem={({ item, index }) => getItem(item, index)}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => `nest-${index}`}
+          />
+        )
+      }
     </View>
   );
 }

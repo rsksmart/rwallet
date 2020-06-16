@@ -62,8 +62,31 @@ const parseDataUtil = {
       iconUrl: dappObject.get('iconUrl'),
       isActive: dappObject.get('isActive'),
       isRecommended: dappObject.get('isRecommended'),
+      type: dappObject.get('type'),
+      contractAddresses: dappObject.get('contractAddresses'),
+      tokens: dappObject.get('tokens'),
     };
     return dapp;
+  },
+
+  getDappType(dappTypeObject) {
+    const dappType = {
+      id: dappTypeObject.id,
+      name: dappTypeObject.get('name'),
+      translation: dappTypeObject.get('translation'),
+      isActive: dappTypeObject.get('isActive'),
+    };
+    return dappType;
+  },
+
+  getAdvertisement(advertisementObject) {
+    const advertisement = {
+      id: advertisementObject.id,
+      imgUrl: advertisementObject.get('imgUrl'),
+      url: advertisementObject.get('url'),
+      isActive: advertisementObject.get('isActive'),
+    };
+    return advertisement;
   },
 };
 

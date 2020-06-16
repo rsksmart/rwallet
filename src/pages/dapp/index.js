@@ -6,6 +6,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Header as NavHeader } from 'react-navigation';
+import Carousel from 'react-native-snap-carousel';
 import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
 import Loc from '../../components/common/misc/loc';
@@ -15,6 +16,8 @@ import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
 
 const dappPerColumn = 3; // One column has 3 dapps
+const { width } = Dimensions.get('window');
+const viewWidth = width - 30;
 
 const styles = StyleSheet.create({
   header: {
@@ -58,6 +61,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Avenir-Book',
   },
+  ads: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  adItem: {
+    borderRadius: 10,
+  },
+  adItemImage: {
+    width: '100%',
+    height: 60,
+    resizeMode: 'stretch',
+    borderRadius: 10,
+  },
 });
 
 class DAppIndex extends Component {
@@ -74,16 +90,19 @@ class DAppIndex extends Component {
   }
 
   componentDidMount() {
-    const { fetchDapps } = this.props;
+    const { fetchDapps, fetchDappTypes, fetchAdvertisements } = this.props;
     fetchDapps();
+    fetchDappTypes();
+    fetchAdvertisements();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { language, fetchDapps } = this.props;
+    const { language, fetchDapps, fetchDappTypes } = this.props;
 
     // reload dapp page when language changed
     if (language !== nextProps.language) {
       fetchDapps();
+      fetchDappTypes();
     }
   }
 
@@ -120,29 +139,38 @@ class DAppIndex extends Component {
     const { recentDapps, dapps } = this.props;
 
     // show 2 recent dapps
-    const recentSourceData = (recentDapps && recentDapps.length > 2) ? recentDapps.slice(0, 2) : recentDapps;
+    const recentSourceData = (recentDapps && recentDapps.length > 3) ? recentDapps.slice(0, 3) : recentDapps;
 
     // filter out recommended dapps from all dapps
     const recommendedList = _.filter(dapps, { isRecommended: true });
     // format recommended data to [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
     const recommendedSourceData = this.formatRecommendedSourceData(recommendedList);
 
-    // get all active dapps
-    const allSourceData = dapps;
-
     return {
       recent: recentSourceData,
       recommended: recommendedSourceData,
-      all: allSourceData,
     };
   }
 
+  getAdItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.adItem}
+      activeOpacity={1}
+      onPress={() => {
+      }}
+    >
+      <Image style={styles.adItemImage} source={{ uri: item.imgUrl }} />
+    </TouchableOpacity>
+  )
+
   render() {
-    const { navigation, language, walletManager } = this.props;
+    const {
+      navigation, language, walletManager, dappTypes, dapps, advertisements,
+    } = this.props;
     const { searchUrl } = this.state;
 
     const sourceData = this.getSourceData();
-    const { recent, recommended, all } = sourceData;
+    const { recent, recommended } = sourceData;
 
     console.log('walletManager: ', walletManager);
 
@@ -168,18 +196,30 @@ class DAppIndex extends Component {
           }}
         />
 
+        <View style={styles.ads}>
+          <Carousel
+            loop
+            layout="default"
+            data={advertisements}
+            renderItem={this.getAdItem}
+            sliderWidth={viewWidth}
+            itemWidth={viewWidth}
+          />
+        </View>
+
         <DappCard
           navigation={navigation}
           title="page.dapp.recent"
           data={recent}
           type="recent"
+          scrollEnabled={false}
           getItem={(item, index) => (
             <TouchableOpacity
               key={`recent-${index}`}
               style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
+              <Image style={[styles.dappIcon, { width: 40, height: 40 }]} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
                 <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
@@ -215,32 +255,38 @@ class DAppIndex extends Component {
           }}
         />
 
-        <DappCard
-          style={{ marginBottom: 135 }}
-          navigation={navigation}
-          title="page.dapp.all"
-          data={all}
-          type="all"
-          getItem={(item, index) => (
-            <TouchableOpacity
-              key={`all-${index}`}
-              style={[styles.item, { justifyContent: 'flex-start', marginTop: 15 }]}
-              onPress={() => this.onDappPress(item)}
-            >
-              <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
-              <View style={styles.dappInfo}>
-                <View style={{
-                  justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center',
-                }}
-                >
-                  <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
-                  <Text style={styles.dappUrl}>{item.url}</Text>
-                </View>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description && item.description[language]}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+        {
+          _.map(dappTypes, (dappType) => {
+            const dappList = _.filter(dapps, (dapp) => dapp.type === dappType.name);
+            if (dappList.length) {
+              return (
+                <DappCard
+                  type={dappType.name}
+                  navigation={navigation}
+                  title={dappType.translation && dappType.translation[language]}
+                  data={dappList}
+                  getItem={(item, index) => (
+                    <TouchableOpacity
+                      key={`${dappType.name}-${index}`}
+                      style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
+                      onPress={() => this.onDappPress(item)}
+                    >
+                      <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
+                      <View style={styles.dappInfo}>
+                        <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
+                        <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description && item.description[language]}</Text>
+                        <Text style={styles.dappUrl}>{item.url}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              );
+            }
+            return null;
+          })
+        }
+
+        <View style={{ marginBottom: 135 }} />
       </BasePageGereral>
     );
   }
@@ -254,9 +300,13 @@ DAppIndex.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   fetchDapps: PropTypes.func.isRequired,
+  fetchDappTypes: PropTypes.func.isRequired,
+  fetchAdvertisements: PropTypes.func.isRequired,
   addRecentDapp: PropTypes.func.isRequired,
   recentDapps: PropTypes.arrayOf(PropTypes.object),
   dapps: PropTypes.arrayOf(PropTypes.object),
+  dappTypes: PropTypes.arrayOf(PropTypes.object),
+  advertisements: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
@@ -266,11 +316,15 @@ DAppIndex.propTypes = {
 DAppIndex.defaultProps = {
   recentDapps: null,
   dapps: null,
+  dappTypes: null,
+  advertisements: null,
   walletManager: null,
 };
 
 const mapStateToProps = (state) => ({
   dapps: state.App.get('dapps'),
+  dappTypes: state.App.get('dappTypes'),
+  advertisements: state.App.get('advertisements'),
   recentDapps: state.App.get('recentDapps'),
   language: state.App.get('language'),
   walletManager: state.Wallet.get('walletManager'),
@@ -278,6 +332,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
+  fetchDappTypes: () => dispatch(appActions.fetchDappTypes()),
+  fetchAdvertisements: () => dispatch(appActions.fetchAdvertisements()),
   addRecentDapp: (dapp) => dispatch(appActions.addRecentDapp(dapp)),
 });
 
