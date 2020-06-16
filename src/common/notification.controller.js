@@ -84,7 +84,7 @@ export const getErrorNotification = (errorCode, buttonText, notificationCloseCal
 
 export const getDefaultErrorNotification = (buttonText, notificationCloseCallback) => createErrorNotification(
   definitions.defaultErrorNotification.title,
-  definitions.defaultErrorNotification.body,
+  definitions.defaultErrorNotification.message,
   buttonText,
   notificationCloseCallback,
 );

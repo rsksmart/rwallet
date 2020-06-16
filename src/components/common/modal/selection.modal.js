@@ -8,6 +8,7 @@ import color from '../../../assets/styles/color.ts';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import Loc from '../misc/loc';
+import { DEVICE } from '../../../common/info';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     borderRadius: 5,
     marginHorizontal: 45,
+    maxHeight: DEVICE.screenHeight * 0.6,
   },
   row: {
     flexDirection: 'row',

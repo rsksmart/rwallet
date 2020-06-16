@@ -249,7 +249,8 @@ class WalletRecovery extends Component {
     }
 
     onTokenPressed = () => {
-      this.selectionModal.show(this.coins);
+      const { selectedTokenIndex } = this.state;
+      this.selectionModal.show(selectedTokenIndex);
     }
 
     onAccountIndexChanged = (value) => {
@@ -401,8 +402,7 @@ class WalletRecovery extends Component {
           <SelectionModal
             ref={(ref) => { this.selectionModal = ref; }}
             items={coins}
-            selectIndex={selectedTokenIndex}
-            onSelected={this.onSelectedTokenIndexSelected}
+            onConfirm={this.onSelectedTokenIndexSelected}
             title={strings('page.wallet.recovery.selectCoin')}
           />
         </BasePageGereral>

@@ -172,7 +172,16 @@
         "title": "创建昵称",
         "address": "地址",
         "rnsName": "RNS昵称",
-        "anotherAddress": "另一个地址"
+        "anotherAddress": "另一个地址",
+        "nameTooShort": "昵称太短",
+        "nameTooLong": "昵称太长",                                                   
+        "nameUnavailable": "抱歉，您输入的名字不可用",
+        "nameAvailable": "输入的名字可用",
+        "selectAddress": "选择一个地址",
+        "confirmNotice": {
+          "one": "请确认您要为以下的1个钱包创建昵称。",
+          "other": "请确认您要为以下的{{count}}个钱包创建昵称。"
+        }
       },
       "rnsStatus": {
         "pending": "注册等待被确认",
@@ -417,6 +426,20 @@
     "requestTimeout": {
       "title": "请求超时",
       "body": "服务器在指定时间内不能完成请求。"
+    },
+    "rnsNameUnavailable": {
+      "title": "RNS昵称无效",
+      "body": "一些昵称无效。请检查列表，并尝试别的昵称。"
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNS域名未找到",
+      "body": "RNS域名注册信息在服务器上未找到."
+    },
+    "rnsNewFeature": {
+      "title": "发送接收变得更容易",
+      "body": "我们已经支持RNS域名服务，它使得区块链地址有易读的名字。",
+      "confirmText": "让我试试看",
+      "cancelText": "跳过"
     }
   },
   "currency": {

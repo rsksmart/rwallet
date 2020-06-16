@@ -154,12 +154,10 @@ class RnsStatus extends Component {
   }
 
   fetchRegisteringRnsSubdomains = async () => {
-    console.log('fetchRegisteringRnsSubdomains');
     const { addNotification, navigation } = this.props;
     const { rnsRows } = this.state;
     try {
       const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchRegisteringRnsSubdomains(rnsRows), this);
-      console.log('fetchRegisteringRnsSubdomains: ', subdomains);
       this.setState({ rnsRows: [...subdomains] });
       const pendingSubdomain = _.find(subdomains, { status: definitions.SUBDOMAIN_STATUS.PENDING });
       if (!pendingSubdomain) {
@@ -180,8 +178,14 @@ class RnsStatus extends Component {
 
   onDonePressed = async () => {
     const { navigation } = this.props;
-    storage.remove(RNS_REGISTERING_SUBDOMAINS);
-    navigation.goBack();
+    const { params } = navigation.state;
+    const { rnsRows } = this.state;
+    // If all subdomains are finished, remove registering domains from storage.
+    const rnsRow = _.find(rnsRows, { status: definitions.SUBDOMAIN_STATUS.PENDING });
+    if (!rnsRow) {
+      storage.remove(RNS_REGISTERING_SUBDOMAINS);
+    }
+    navigation.pop(params && params.isSkipCreatePage ? 2 : 1);
   }
 
   renderRnsRow = (item, index) => {
@@ -267,6 +271,7 @@ RnsStatus.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({

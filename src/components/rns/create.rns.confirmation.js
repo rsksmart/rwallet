@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
+import Loc from '../common/misc/loc';
 
 const styles = StyleSheet.create({
   container: {
@@ -113,11 +114,8 @@ class CreateRnsConfirmation extends Component {
       <Modal visible={visible} transparent>
         <View style={styles.container}>
           <View style={styles.panel}>
-            <Text style={[styles.title, space.marginTop_50]}>Confirm</Text>
-            <Text style={styles.notice}>
-              {`Please confirm that you would like to create nicknames for below ${data.length
-              } wallets.`}
-            </Text>
+            <Loc style={[styles.title, space.marginTop_50]} text="button.confirm" />
+            <Loc style={styles.notice} text="page.wallet.rnsCreateName.confirmNotice" interpolates={{ count: data.length }} />
             <FlatList
               extraData={data}
               data={data}
@@ -126,10 +124,10 @@ class CreateRnsConfirmation extends Component {
             />
             <View style={{ width: '80%' }}>
               <TouchableOpacity style={styles.confirmButton} onPress={this.onConfirmPressed}>
-                <Text style={styles.confirmText}>Confirm</Text>
+                <Loc style={styles.confirmText} text="button.confirm" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.cancelButton} onPress={this.onCancelPressed}>
-                <Text style={styles.cancelText}>Cancel</Text>
+                <Loc style={styles.cancelText} text="button.cancel" />
               </TouchableOpacity>
             </View>
           </View>

@@ -20,7 +20,7 @@ import SelectionModal from '../../../components/common/modal/selection.modal';
 import { strings } from '../../../common/i18n';
 import parse from '../../../common/parse';
 import config from '../../../../config';
-import { createErrorNotification } from '../../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
 import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
 import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
@@ -36,19 +36,12 @@ const RnsNameState = {
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: '600',
-    color: color.black,
-    marginBottom: 20,
-  },
   body: {
     marginHorizontal: 20,
     marginTop: 20,
+  },
+  sectionContainer: {
+    marginBottom: 20,
   },
   title: {
     flex: 1,
@@ -207,24 +200,38 @@ class RnsAddress extends Component {
   onCreatePressed = async () => {
     const { addNotification } = this.props;
     const { rnsRows } = this.state;
-    // const user = await parse.getUser();
-    // const fcmToken = user ? user.get('fcmToken') : null;
+
+    // Check with the server if the domain names are available
+    // Show loading UI during the progress
+    // If it's error during the progress, show error notification.
+    this.setState({ isLoading: true });
     const queryParams = {};
     queryParams.subdomainList = _.map(rnsRows, (row) => {
       const { name, type } = row;
       return { subdomain: name, type };
     });
-    this.setState({ isLoading: true });
-    const result = await parse.isSubdomainAvailable(queryParams);
-    this.setState({ isLoading: false });
+    let result = null;
+    try {
+      result = await parse.isSubdomainAvailable(queryParams);
+    } catch (error) {
+      const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+      addNotification(notification);
+      console.log(error);
+      return;
+    } finally {
+      this.setState({ isLoading: false });
+    }
+
+    // If all the domain names are available, ask user to create domains.
+    // Else, notify user to check names.
     console.log('parse.isSubdomainAvailable, result: ', result);
     let isAllDomainValid = true;
     _.each(result, (item, index) => {
       if (!item) {
-        rnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
+        rnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
         isAllDomainValid = false;
       } else {
-        rnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
+        rnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
       }
     });
     if (isAllDomainValid) {
@@ -263,7 +270,7 @@ class RnsAddress extends Component {
     const result = await parse.createSubdomain(params);
     this.setState({ isLoading: false });
     console.log('parse.createSubdomain, result: ', result);
-    navigation.navigate('RnsStatus', { popScreen: 1 });
+    navigation.navigate('RnsStatus', { isSkipCreatePage: true });
   }
 
   onAddButtonPressed = () => {
@@ -282,7 +289,7 @@ class RnsAddress extends Component {
       address, balance, symbol, type,
     } = foundToken;
     const newRnsRows = [...rnsRows, {
-      address, balance, symbol, type,
+      address, balance, symbol, type, rnsNameState: RnsNameState.UNCHECKED,
     }];
     this.setState({ rnsRows: newRnsRows });
   }
@@ -321,7 +328,6 @@ class RnsAddress extends Component {
   }
 
   onDeleteButtonPressed = (index) => {
-    console.log('onDeleteButtonPressed');
     const { rnsRows } = this.state;
     rnsRows.splice(index, 1);
     this.setState({ rnsRows });
@@ -331,10 +337,10 @@ class RnsAddress extends Component {
     const { rnsRows } = this.state;
     rnsRows[index].errorMessage = null;
     if (rnsRows[index].name > 1 && rnsRows[index].name.length < SUBDOMAIN_LENGTH_MIN) {
-      rnsRows[index].errorMessage = 'Name is too short';
+      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort');
     }
     if (rnsRows[index].name > 1 && rnsRows[index].name.length > SUBDOMAIN_LENGTH_MAX) {
-      rnsRows[index].errorMessage = 'Name is too long';
+      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooLong');
     }
     this.setState({ rnsRows: [...rnsRows] });
   }
@@ -349,8 +355,8 @@ class RnsAddress extends Component {
     let message = null;
     if (rnsNameState !== RnsNameState.UNCHECKED) {
       message = rnsNameState === RnsNameState.UNAVAILABLE
-        ? <Text style={styles.notice}>Sorry, The name entered is not available</Text>
-        : <Text style={styles.successNotice}>The name entered is available</Text>;
+        ? <Text style={styles.notice}>{strings('page.wallet.rnsCreateName.nameUnavailable')}</Text>
+        : <Text style={styles.successNotice}>{strings('page.wallet.rnsCreateName.nameAvailable')}</Text>;
     } else {
       message = errorMessage ? <Text style={styles.notice}>{errorMessage}</Text> : null;
     }
@@ -427,7 +433,7 @@ class RnsAddress extends Component {
           items={selectItemTexts}
           ref={(ref) => { this.selectionModal = ref; }}
           onConfirm={this.onSelectionModalConfirmed}
-          title={strings('page.wallet.recovery.selectCoin')}
+          title={strings('page.wallet.rnsCreateName.selectAddress')}
         />
         <CreateRnsConfirmation
           ref={(ref) => { this.rnsConfirmation = ref; }}
@@ -458,7 +464,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
-  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RnsAddress);
