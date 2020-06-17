@@ -98,10 +98,14 @@ const styles = StyleSheet.create({
   myAssetsButtonsView: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
     bottom: 17,
+    left: 25,
+  },
+  centerAssetsButtonsView: {
+    justifyContent: 'center',
+    left: 0,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -573,6 +577,7 @@ class History extends Component {
 
     const symbol = this.coin && this.coin.symbol;
     const type = this.coin && this.coin.type;
+    const chain = this.coin && this.coin.chain;
     const symbolName = common.getSymbolName(symbol, type);
 
     return (
@@ -592,7 +597,7 @@ class History extends Component {
                 </View>
               )
             }
-            <View style={styles.myAssetsButtonsView}>
+            <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
                 style={styles.ButtonView}
                 onPress={this.onSendButtonClick}

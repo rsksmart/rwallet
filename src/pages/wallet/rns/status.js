@@ -15,12 +15,13 @@ import Button from '../../../components/common/button/button';
 import { strings } from '../../../common/i18n';
 import config from '../../../../config';
 import appActions from '../../../redux/app/actions';
-import storage, { RNS_REGISTERING_SUBDOMAINS } from '../../../common/storage';
+import storage from '../../../common/storage';
 import definitions from '../../../common/definitions';
 import parseHelper from '../../../common/parse';
 import { createErrorNotification } from '../../../common/notification.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import common from '../../../common/common';
+import TypeTag from '../../../components/common/misc/type.tag';
 
 const REFRESH_STATUS_DELAY_TIME = 8000;
 
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Book',
     color: color.black,
     fontSize: 16,
+    flex: 1,
   },
   subdomainView: {
     flex: 1,
@@ -131,6 +133,7 @@ class RnsStatus extends Component {
     const rnsRows = _.map(subdomains, (subdomain) => ({
       subdomain: subdomain.subdomain,
       address: subdomain.address,
+      type: subdomain.type,
       status: definitions.SUBDOMAIN_STATUS.PENDING,
     }));
 
@@ -183,8 +186,10 @@ class RnsStatus extends Component {
     // If all subdomains are finished, remove registering domains from storage.
     const rnsRow = _.find(rnsRows, { status: definitions.SUBDOMAIN_STATUS.PENDING });
     if (!rnsRow) {
-      storage.remove(RNS_REGISTERING_SUBDOMAINS);
+      storage.clearRnsRegisteringSubdomains();
     }
+    // If this page is navigated from create page.
+    // when go back, it need to skip it.
     navigation.pop(params && params.isSkipCreatePage ? 2 : 1);
   }
 
@@ -192,7 +197,8 @@ class RnsStatus extends Component {
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
     const addressText = common.shortAddress(address);
-    const { status } = rnsRows[index];
+    const { status, type } = rnsRows[index];
+
     let statusView = (
       <View style={styles.noticeView}>
         <ActivityIndicator style={styles.activityIndicator} size="small" animating />
@@ -220,7 +226,8 @@ class RnsStatus extends Component {
             <Text style={styles.title}>{strings('page.wallet.rnsCreateName.address')}</Text>
           </View>
           <View style={styles.addressView}>
-            <Text style={styles.address}>{addressText}</Text>
+            <TypeTag type={type} />
+            <Text style={[styles.address, space.marginLeft_8]}>{addressText}</Text>
           </View>
         </View>
         <View style={[styles.sectionContainer, space.marginBottom_15]}>

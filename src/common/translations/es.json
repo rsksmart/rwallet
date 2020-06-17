@@ -61,7 +61,8 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
         "slideConfirm": "Deslice para confirmar",
-        "balance": "Equilibrar"
+        "balance": "Equilibrar",
+        "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
       },
       "add": {
         "title": "Agregar Wallet",

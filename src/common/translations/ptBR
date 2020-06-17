@@ -61,7 +61,8 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Inserir uma nota de transação",
         "slideConfirm": "Deslize para confirmar",
-        "balance": "Saldo"
+        "balance": "Saldo",
+        "unavailableAddress": "O endereço da carteira digitado não é válido"
       },
       "add": {
         "title": "Adicionar carteira",

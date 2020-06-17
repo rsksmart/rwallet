@@ -61,7 +61,8 @@
         "CONFIRMED": "CONFIRMED",
         "enterMemo": "Enter a transaction memo",
         "slideConfirm": "Slide to Confirm",
-        "balance": "Balance"
+        "balance": "Balance",
+        "unavailableAddress": "The wallet address you’ve entered is not valid"
       },
       "add": {
         "title": "Add Wallet",

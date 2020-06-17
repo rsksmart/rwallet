@@ -16,7 +16,7 @@ import presetStyle from '../../../assets/styles/style';
 import color from '../../../assets/styles/color.ts';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
-import SelectionModal from '../../../components/common/modal/selection.modal';
+import AddressSelectionModal from '../../../components/common/modal/address.selection.modal';
 import { strings } from '../../../common/i18n';
 import parse from '../../../common/parse';
 import config from '../../../../config';
@@ -25,6 +25,7 @@ import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
 import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
 import common from '../../../common/common';
+import TypeTag from '../../../components/common/misc/type.tag';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -116,11 +117,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Book',
     marginRight: 7,
     color: '#979797',
+    flex: 1,
   },
   rnsRowChevron: {
     fontSize: 30,
     color: '#CBC6C6',
-    position: 'absolute',
     right: 5,
   },
   notice: {
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
 });
 
 const getTokens = (wallets) => {
-  const tokens = [];
+  let tokens = [];
   _.each(wallets, (wallet) => {
     let isTestnetFound = false;
     let isMainnetFound = false;
@@ -155,6 +156,12 @@ const getTokens = (wallets) => {
       }
     }
   });
+  tokens = tokens.sort((a, b) => {
+    if (a.type === 'Mainnet') {
+      return -1;
+    }
+    return b.type === 'Mainnet' ? 1 : -1;
+  });
   return tokens;
 };
 
@@ -170,7 +177,7 @@ class RnsAddress extends Component {
     const { wallets } = walletManager;
 
     this.tokens = getTokens(wallets);
-    console.log('this.tokens: ', this.tokens);
+
     this.coin = coin;
     const {
       address, symbol, balance, type,
@@ -192,7 +199,7 @@ class RnsAddress extends Component {
     if (!match) {
       return;
     }
-    rnsRows[index].name = text;
+    rnsRows[index].subdomain = text;
     delete rnsRows[index].isDomainValid;
     this.setState({ rnsRows: [...rnsRows] });
   }
@@ -207,16 +214,16 @@ class RnsAddress extends Component {
     this.setState({ isLoading: true });
     const queryParams = {};
     queryParams.subdomainList = _.map(rnsRows, (row) => {
-      const { name, type } = row;
-      return { subdomain: name, type };
+      const { subdomain, type } = row;
+      return { subdomain, type };
     });
     let result = null;
     try {
       result = await parse.isSubdomainAvailable(queryParams);
     } catch (error) {
+      console.log(error);
       const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
       addNotification(notification);
-      console.log(error);
       return;
     } finally {
       this.setState({ isLoading: false });
@@ -249,12 +256,12 @@ class RnsAddress extends Component {
 
   createSubdomain = async () => {
     const { rnsRows } = this.state;
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
 
     // Save registering subdomains to native storage
     const subdomains = _.map(rnsRows, (row) => {
-      const { name, address } = row;
-      return { subdomain: name, address };
+      const { subdomain, address, type } = row;
+      return { subdomain, address, type };
     });
     storage.setRnsRegisteringSubdomains(subdomains);
 
@@ -263,12 +270,22 @@ class RnsAddress extends Component {
     const fcmToken = user ? user.get('fcmToken') : null;
     const params = { fcmToken };
     params.subdomainList = _.map(rnsRows, (row) => {
-      const { name, type, address } = row;
-      return { subdomain: name, type, address };
+      const { subdomain, type, address } = row;
+      return { subdomain, type, address };
     });
     this.setState({ isLoading: true });
-    const result = await parse.createSubdomain(params);
-    this.setState({ isLoading: false });
+    let result = null;
+    try {
+      result = await parse.createSubdomain(params);
+    } catch (error) {
+      console.log(error);
+      const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+      addNotification(notification);
+      storage.clearRnsRegisteringSubdomains();
+      return;
+    } finally {
+      this.setState({ isLoading: false });
+    }
     console.log('parse.createSubdomain, result: ', result);
     navigation.navigate('RnsStatus', { isSkipCreatePage: true });
   }
@@ -319,7 +336,6 @@ class RnsAddress extends Component {
   }
 
   onSelectionModalConfirmed = (selectedIndex) => {
-    console.log('onSelectionModalConfirmed, selectedIndex: ', selectedIndex);
     const { rnsRows } = this.state;
     const { selectItems } = this.state;
     const { address } = selectItems[selectedIndex];
@@ -336,10 +352,10 @@ class RnsAddress extends Component {
   onRnsNameBlur = (index) => {
     const { rnsRows } = this.state;
     rnsRows[index].errorMessage = null;
-    if (rnsRows[index].name > 1 && rnsRows[index].name.length < SUBDOMAIN_LENGTH_MIN) {
+    if (rnsRows[index].subdomain > 1 && rnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
       rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort');
     }
-    if (rnsRows[index].name > 1 && rnsRows[index].name.length > SUBDOMAIN_LENGTH_MAX) {
+    if (rnsRows[index].subdomain > 1 && rnsRows[index].subdomain.length > SUBDOMAIN_LENGTH_MAX) {
       rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooLong');
     }
     this.setState({ rnsRows: [...rnsRows] });
@@ -347,11 +363,11 @@ class RnsAddress extends Component {
 
   renderRnsRow = (item, index) => {
     console.log('renderRnsRow');
-    const { address, name } = item;
+    const { address, subdomain } = item;
     const { rnsRows } = this.state;
     const addressText = common.shortAddress(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
-    const { errorMessage, rnsNameState } = rnsRows[index];
+    const { errorMessage, rnsNameState, type } = rnsRows[index];
     let message = null;
     if (rnsNameState !== RnsNameState.UNCHECKED) {
       message = rnsNameState === RnsNameState.UNAVAILABLE
@@ -375,7 +391,8 @@ class RnsAddress extends Component {
               onPress={() => { this.onTokenButtonPressed(index, address); }}
               disabled={!isTouchDisabled}
             >
-              <Text style={styles.rnsRowAddress}>{addressText}</Text>
+              <TypeTag type={type} />
+              <Text style={[styles.rnsRowAddress, space.marginLeft_8]}>{addressText}</Text>
               { isTouchDisabled && <EvilIcons style={styles.rnsRowChevron} name="chevron-down" /> }
             </TouchableOpacity>
           </View>
@@ -385,7 +402,7 @@ class RnsAddress extends Component {
           <View style={styles.row}>
             <TextInput
               style={[presetStyle.textInput, styles.textInput, { flex: 1, marginRight: 10 }]}
-              value={name}
+              value={subdomain}
               onChangeText={(text) => { this.onRnsNameTextChange(text, index); }}
               onBlur={() => { this.onRnsNameBlur(index); }}
               autoCapitalize="none"
@@ -402,9 +419,8 @@ class RnsAddress extends Component {
     const { navigation } = this.props;
     const { rnsRows, selectItems, isLoading } = this.state;
 
-    const rnsRow = _.find(rnsRows, (row) => !row.name && row.errorMessage);
+    const rnsRow = _.find(rnsRows, (row) => !row.subdomain && row.errorMessage);
     const bottomButton = (<Button text="button.create" onPress={this.onCreatePressed} disabled={!!rnsRow} />);
-    const selectItemTexts = _.map(selectItems, (item) => common.shortAddress(item.address));
 
     return (
       <BasePageGereral
@@ -429,8 +445,8 @@ class RnsAddress extends Component {
           </TouchableOpacity>
           )}
         </View>
-        <SelectionModal
-          items={selectItemTexts}
+        <AddressSelectionModal
+          items={selectItems}
           ref={(ref) => { this.selectionModal = ref; }}
           onConfirm={this.onSelectionModalConfirmed}
           title={strings('page.wallet.rnsCreateName.selectAddress')}

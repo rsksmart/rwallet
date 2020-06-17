@@ -16,7 +16,6 @@ import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color.ts';
 import { DEVICE } from '../../common/info';
-import config from '../../../config';
 import space from '../../assets/styles/space';
 
 const copyIcon = require('../../assets/images/icon/copy.png');
@@ -91,10 +90,10 @@ class WalletReceive extends Component {
       if (_.isNil(subdomain)) {
         return;
       }
-      Clipboard.setString(subdomain);
+      Clipboard.setString(common.getFullDomain(subdomain));
       const notification = createInfoNotification(
-        'modal.addressCopied.title',
-        'modal.addressCopied.body',
+        'modal.subdomainCopied.title',
+        'modal.subdomainCopied.body',
       );
       addNotification(notification);
     }
@@ -164,21 +163,6 @@ class WalletReceive extends Component {
       Share.open(options);
     }
 
-    onCopySubdomainPressed() {
-      const { navigation, addNotification } = this.props;
-      const { coin } = navigation.state.params;
-      const subdomain = coin && coin.subdomain;
-      if (_.isNil(subdomain)) {
-        return;
-      }
-      Clipboard.setString(subdomain);
-      const notification = createInfoNotification(
-        'modal.addressCopied.title',
-        'modal.addressCopied.body',
-      );
-      addNotification(notification);
-    }
-
     render() {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
@@ -186,7 +170,7 @@ class WalletReceive extends Component {
       const address = coin && coin.address;
       const symbol = coin && coin.symbol;
       const type = coin && coin.type;
-      const subdomain = coin && coin.subdomain ? `${coin.subdomain}.${config.rnsDomain}` : null;
+      const subdomain = coin && coin.subdomain ? common.getFullDomain(coin.subdomain) : null;
       const symbolName = common.getSymbolName(symbol, type);
       const qrText = address;
       const title = `${strings('button.Receive')} ${symbolName}`;

@@ -439,9 +439,9 @@ class ParseHelper {
     return status;
   }
 
-  static async querySubdomain(subdomain, type) {
-    console.log(`querySubdomain, subdomain: ${subdomain}, type: ${type}`);
-    const result = await Parse.Cloud.run('querySubdomain', { subdomain, type });
+  static async querySubdomain(domain, type) {
+    console.log(`querySubdomain, domain: ${domain}, type: ${type}`);
+    const result = await Parse.Cloud.run('querySubdomain', { domain, type });
     console.log('querySubdomain, result: ', result);
     return result;
   }

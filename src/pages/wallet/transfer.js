@@ -223,6 +223,15 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 5,
   },
+  addressError: {
+    color: color.warningText,
+    marginTop: 10,
+  },
+  addressText: {
+    color: color.black,
+    marginTop: 10,
+    fontSize: 12,
+  },
 });
 
 const {
@@ -300,6 +309,8 @@ class Transfer extends Component {
       feeSliderValue: 0,
       amountPlaceholderText: '',
       levelFees: null, // [ { fee, value }... ]
+      addressError: null,
+      addressText: '',
     };
   }
 
@@ -450,20 +461,43 @@ class Transfer extends Component {
   }
 
   onToInputBlur = async () => {
+    const { navigation, addConfirmation } = this.props;
     const { to } = this.state;
     const { symbol, type, networkId } = this.coin;
     this.setState({ enableConfirm: false });
     if (_.isEmpty(to)) return;
     let address = null;
+    this.setState({ addressText: null, addressError: null });
     if (common.isValidRnsSubdomain(to)) {
       console.log(`toAddress[${to}] a rns subdomain.`);
-      const dotIndex = to.indexOf('.');
-      const subdomainName = to.substring(0, dotIndex);
-      address = await this.querySubdomainAddress(subdomainName, type);
+      this.setState({ loading: true });
+      try {
+        const subdomainAddress = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(to, type), this);
+        if (subdomainAddress) {
+          this.setState({ addressText: subdomainAddress });
+          address = subdomainAddress;
+        } else {
+          this.setState({ addressError: strings('page.wallet.transfer.unavailableAddress') });
+        }
+        if (!subdomainAddress) {
+          return;
+        }
+      } catch (error) {
+        const confirmation = createErrorConfirmation(
+          definitions.defaultErrorNotification.title,
+          definitions.defaultErrorNotification.message,
+          'button.retry',
+          () => this.onToInputBlur(),
+          () => navigation.goBack(),
+        );
+        addConfirmation(confirmation);
+      } finally {
+        this.setState({ loading: false });
+      }
     } else {
       address = to;
     }
-    this.isAddressValid = this.isWalletAddress(address, symbol, type, networkId);
+    this.isAddressValid = common.isWalletAddress(address, symbol, type, networkId);
     if (!this.isAddressValid) {
       this.showInvalidAddressNotification();
       return;
@@ -501,18 +535,6 @@ class Transfer extends Component {
       feeParams = { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
     }
     return feeParams;
-  }
-
-  isWalletAddress = (address, symbol, type, networkId) => {
-    if (symbol === 'BTC') {
-      return common.isBtcAddress(address, type);
-    }
-    try {
-      Rsk3.utils.toChecksumAddress(address, networkId);
-      return true;
-    } catch (error) {
-      return false;
-    }
   }
 
   querySubdomainAddress = async (subdomain, type) => {
@@ -864,6 +886,25 @@ class Transfer extends Component {
     );
   }
 
+  renderAddressText = () => {
+    const { addressError, addressText } = this.state;
+    if (addressError) {
+      return (
+        <Text style={styles.addressError}>
+          {addressError}
+        </Text>
+      );
+    }
+    if (addressText) {
+      return (
+        <Text style={styles.addressText}>
+          {addressText}
+        </Text>
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
       loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
@@ -917,11 +958,13 @@ class Transfer extends Component {
                 value={to}
                 onChangeText={(text) => { this.setState({ to: text.trim() }); }}
                 onBlur={this.onToInputBlur}
+                autoCapitalize="none"
               />
               <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
                 <Image source={references.images.scanAddress} />
               </TouchableOpacity>
             </View>
+            {this.renderAddressText()}
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.memo]} text="page.wallet.transfer.memo" />

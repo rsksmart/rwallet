@@ -239,19 +239,22 @@ const common = {
 
   /**
    * Validate wallet address
+   * As long as it can be converted into rsk checksum address, it is a valid rsk address.
    * @param {string} address
    * @param {string} symbol, BTC, RBTC, RIF
    * @param {string} type, MainTest or Testnet
    * @param {string} networkId
    */
   isWalletAddress(address, symbol, type, networkId) {
-    let isAdress = false;
     if (symbol === 'BTC') {
-      isAdress = this.isBtcAddress(address, type);
-    } else {
-      isAdress = Rsk3.utils.isAddress(address, networkId);
+      return common.isBtcAddress(address, type);
     }
-    return isAdress;
+    try {
+      Rsk3.utils.toChecksumAddress(address, networkId);
+      return true;
+    } catch (error) {
+      return false;
+    }
   },
 
   /**
@@ -453,11 +456,15 @@ const common = {
     return regex.test(text);
   },
 
-  shortAddress(address) {
-    const prefix = address.substr(0, 6);
-    const suffix = address.substr(address.length - 4, address.length - 1);
+  shortAddress(address, length = 8) {
+    const prefix = address.substr(0, length + 2);
+    const suffix = address.substr(address.length - length, address.length - 1);
     const result = `${prefix}...${suffix}`;
     return result;
+  },
+
+  getFullDomain(subdomain) {
+    return `${subdomain}.${config.rnsDomain}`;
   },
 };
 

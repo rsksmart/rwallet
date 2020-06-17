@@ -264,6 +264,10 @@ class RNStorage {
   setRnsRegisteringSubdomains(records) {
     return this.save(RNS_REGISTERING_SUBDOMAINS, records);
   }
+
+  clearRnsRegisteringSubdomains() {
+    this.remove(RNS_REGISTERING_SUBDOMAINS);
+  }
 }
 
 export default new RNStorage();
