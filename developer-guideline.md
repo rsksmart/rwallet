@@ -15,7 +15,7 @@ npm install web3 --save
 
 #### 2. Usage
 
-##### Check Metamask or other chrome ethereum plugin exist
+##### Check Metamask or other chrome ethereum plugins exist
 
 ```
 if (typeof window.ethereum === 'undefined') {
@@ -54,7 +54,7 @@ send = async () => {
       fromAddress = accounts[0]
       web3.eth.defaultAccount = fromAddress
     })
-    // Get minimumGasPrice from latest block
+    // Get gasPrice from block chain
     .then(() => web3.eth.getGasPrice())
     .then(async gasPrice => {
       // Get the fromAddress's transaction acount. Next transaction's nonce is equal to transactionCount + 1.
@@ -68,7 +68,7 @@ send = async () => {
         // Send 0.001 RBTC to toAddress
         value: web3.utils.toWei('0.001'),
 
-        // Get gasPrice from latest block, or a constant value. Default gasPrice is 1
+        // Get gasPrice from block chain, or a constant value. Default gasPrice is 1
         gasPrice: gasPrice || 1,
         nonce: transactionCount + 1,
       }
