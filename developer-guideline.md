@@ -93,4 +93,4 @@ send = async () => {
 
 [Metamask Doc](https://docs.metamask.io/guide/)
 
-[Web3 Doc](https://github.com/ethereum/web3.js/tree/v1.0.0-beta.55)
+[Web3 Doc](https://web3js.readthedocs.io/en/v1.2.6/getting-started.html)
