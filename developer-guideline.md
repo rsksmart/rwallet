@@ -45,7 +45,8 @@ getBalance = async () => {
 ```
 send = async () => {
   const toAddress = '0x243E0c3707a9E1e029b0f0E436eb4fa730b113E7'
-  const web3 = new Web3(window.ethereum)
+  const web3 = new Web3()
+  web3.setProvider(window.ethereum)
   let fromAddress
   window.ethereum.enable()
     // Get default account from chrome ethereum plugins
@@ -53,9 +54,8 @@ send = async () => {
       fromAddress = accounts[0]
       web3.eth.defaultAccount = fromAddress
     })
-    // Get latest block info, get minimumGasPrice from latest block
-    .then(() => web3.eth.getBlock('latest'))
-    .then(({ minimumGasPrice }) => minimumGasPrice < 1 ? 1 : Math.ceil(minimumGasPrice * 1.1))
+    // Get minimumGasPrice from latest block
+    .then(() => web3.eth.getGasPrice())
     .then(async gasPrice => {
       // Get the fromAddress's transaction acount. Next transaction's nonce is equal to transactionCount + 1.
       const transactionCount = await web3.eth.getTransactionCount(fromAddress)
@@ -68,8 +68,8 @@ send = async () => {
         // Send 0.001 RBTC to toAddress
         value: web3.utils.toWei('0.001'),
 
-        // Get gasPrice from latest block, or a constant value
-        gasPrice,
+        // Get gasPrice from latest block, or a constant value. Default gasPrice is 1
+        gasPrice: gasPrice || 1,
         nonce: transactionCount + 1,
       }
 
