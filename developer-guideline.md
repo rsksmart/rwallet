@@ -5,12 +5,12 @@
 using yarn: 
 
 ```
-yarn add web3@1.0.0-beta.55
+yarn add web3
 ```
 using npm:
 
 ```
-npm install web3@1.0.0-beta.55 --save
+npm install web3 --save
 ```
 
 #### 2. Usage
