@@ -246,10 +246,7 @@ class RNStorage {
   }
 
   async getIsShowRnsFeature() {
-    // return RNStorage.secureGet(IS_SHOW_RNS_FEATURE) || false;
-    // return RNStorage.secureGet(SECURE_KEY_PASSCODE);
     const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
-    console.log('isShowRnsFeature: ', isShowRnsFeature);
     return isShowRnsFeature || false;
   }
 
