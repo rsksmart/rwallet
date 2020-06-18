@@ -195,27 +195,27 @@ class RnsAddress extends Component {
   }
 
   onRnsNameTextChange = (text, index) => {
-    const { rnsRows } = this.state;
+    const { rnsRows: newRnsRows } = this.state;
     const regex = /^[a-z0-9]*$/g;
     const match = regex.exec(text);
     if (!match) {
       return;
     }
-    rnsRows[index].subdomain = text;
-    delete rnsRows[index].isDomainValid;
-    this.setState({ rnsRows: [...rnsRows] });
+    newRnsRows[index].subdomain = text;
+    delete newRnsRows[index].isDomainValid;
+    this.setState({ rnsRows: [...newRnsRows] });
   }
 
   onCreatePressed = async () => {
     const { addNotification } = this.props;
-    const { rnsRows } = this.state;
+    const { rnsRows: newRnsRows } = this.state;
 
     // Check with the server if the domain names are available
     // Show loading UI during the progress
     // If it's error during the progress, show error notification.
     this.setState({ isLoading: true });
     const queryParams = {};
-    queryParams.subdomainList = _.map(rnsRows, (row) => {
+    queryParams.subdomainList = _.map(newRnsRows, (row) => {
       const { subdomain, type } = row;
       return { subdomain, type };
     });
@@ -237,10 +237,10 @@ class RnsAddress extends Component {
     let isAllDomainValid = true;
     _.each(result, (item, index) => {
       if (!item) {
-        rnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
+        newRnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
         isAllDomainValid = false;
       } else {
-        rnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
+        newRnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
       }
     });
     if (isAllDomainValid) {
@@ -252,7 +252,7 @@ class RnsAddress extends Component {
         'button.gotIt',
       );
       addNotification(notification);
-      this.setState({ rnsRows: [...rnsRows] });
+      this.setState({ rnsRows: [...newRnsRows] });
     }
   }
 
@@ -338,11 +338,11 @@ class RnsAddress extends Component {
   }
 
   onSelectionModalConfirmed = (selectedIndex) => {
-    const { rnsRows } = this.state;
+    const { rnsRows: newRnsRows } = this.state;
     const { selectItems } = this.state;
     const { address } = selectItems[selectedIndex];
-    rnsRows[this.rnsRowIndex].address = address;
-    this.setState({ rnsRows: [...rnsRows] });
+    newRnsRows[this.rnsRowIndex].address = address;
+    this.setState({ rnsRows: [...newRnsRows] });
   }
 
   onDeleteButtonPressed = (index) => {
@@ -352,12 +352,12 @@ class RnsAddress extends Component {
   }
 
   onRnsNameBlur = (index) => {
-    const { rnsRows } = this.state;
-    rnsRows[index].errorMessage = null;
-    if (rnsRows[index].subdomain > 1 && rnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
-      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
+    const { rnsRows: newRnsRows } = this.state;
+    newRnsRows[index].errorMessage = null;
+    if (newRnsRows[index].subdomain > 1 && newRnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
+      newRnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
     }
-    this.setState({ rnsRows: [...rnsRows] });
+    this.setState({ rnsRows: [...newRnsRows] });
   }
 
   renderRnsRow = (item, index) => {
