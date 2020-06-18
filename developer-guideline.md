@@ -44,7 +44,9 @@ getBalance = async () => {
 
 ```
 send = async () => {
+  // Testnet api
   const api = 'http://130.211.12.3/parse/functions';
+  // Testnet rwallet api key
   const rwalletApiKey = 'Your-Own-Api-Key'
   const toAddress = '0x243E0c3707a9E1e029b0f0E436eb4fa730b113E7';
   const headers = {
@@ -82,6 +84,8 @@ send = async () => {
       return res.data.result
     })
     // gasFee format: { gas, gasPrice: { low, medium, high } }
+    // Total fee = gas * gasPrice. Total coast = total fee + transfer value
+    // If you want to transfer 1 RBTC to others and the total fee is 0.5 RBTC, you need to cost 1.5 RBTC. Then your friend will get 1 RBTC
     .then(async (gasFee) => {
       const res = await axios.post(
         `${api}/createRawTransaction`,
