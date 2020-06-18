@@ -73,9 +73,11 @@ const styles = StyleSheet.create({
     color: color.app.theme,
     marginRight: 4,
   },
-  textInput: {
+  subdomainInput: {
     fontSize: 16,
     fontFamily: 'Avenir-Book',
+    flex: 1,
+    marginRight: 10,
   },
   rnsRow: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -353,10 +355,7 @@ class RnsAddress extends Component {
     const { rnsRows } = this.state;
     rnsRows[index].errorMessage = null;
     if (rnsRows[index].subdomain > 1 && rnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
-      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort');
-    }
-    if (rnsRows[index].subdomain > 1 && rnsRows[index].subdomain.length > SUBDOMAIN_LENGTH_MAX) {
-      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooLong');
+      rnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
     }
     this.setState({ rnsRows: [...rnsRows] });
   }
@@ -365,7 +364,7 @@ class RnsAddress extends Component {
     console.log('renderRnsRow');
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
-    const addressText = common.shortAddress(address);
+    const addressText = common.getShortAddress(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
     const { errorMessage, rnsNameState, type } = rnsRows[index];
     let message = null;
@@ -401,11 +400,12 @@ class RnsAddress extends Component {
           <Loc style={[styles.title, space.marginBottom_10]} text="page.wallet.rnsCreateName.rnsName" />
           <View style={styles.row}>
             <TextInput
-              style={[presetStyle.textInput, styles.textInput, { flex: 1, marginRight: 10 }]}
+              style={[presetStyle.textInput, styles.subdomainInput]}
               value={subdomain}
               onChangeText={(text) => { this.onRnsNameTextChange(text, index); }}
               onBlur={() => { this.onRnsNameBlur(index); }}
               autoCapitalize="none"
+              maxLength={SUBDOMAIN_LENGTH_MAX}
             />
             <Text style={styles.domainText}>{`.${config.rnsDomain}`}</Text>
           </View>

@@ -9,7 +9,7 @@ const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
 const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
-export const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
+const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 
 class RNStorage {
   constructor() {

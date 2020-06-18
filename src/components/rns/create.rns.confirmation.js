@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
 import Loc from '../common/misc/loc';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   container: {
@@ -102,7 +103,7 @@ class CreateRnsConfirmation extends Component {
     return (
       <View style={[styles.subdomainRow, space.marginBottom_15]}>
         <Text style={[styles.subdomain]}>{subdomain}</Text>
-        <Text style={styles.address}>{item.address}</Text>
+        <Text style={styles.address}>{common.getShortAddress(item.address)}</Text>
       </View>
     );
   }

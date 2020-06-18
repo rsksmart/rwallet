@@ -173,10 +173,9 @@
         "address": "Endereço",
         "rnsName": "Apelido RNS",
         "anotherAddress": "Outro endereço",
-        "nameTooShort": "O apelido é muito curto",
-        "nameTooLong": "O apelido é muito longo",                                                   
+        "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
         "nameUnavailable": "Desculpe, o nome digitado não está disponível",
-        "nameAvailable": "O nome digitado está disponível"，
+        "nameAvailable": "O nome digitado está disponível",
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
           "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",

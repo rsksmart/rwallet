@@ -6,9 +6,9 @@ import color from '../../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   tag: {
+    width: 60,
     height: 23,
     borderRadius: 2,
-    paddingHorizontal: 7,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#028CFF',

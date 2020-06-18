@@ -102,7 +102,7 @@ class AddressSelectionModal extends Component {
         onPress={() => { this.onItemSelected(index); }}
       >
         <TypeTag type={type} />
-        <Text style={[flex.flex1, currentIndex === index ? styles.selectedColor : null, space.marginLeft_18]}>{common.shortAddress(address, 6)}</Text>
+        <Text style={[flex.flex1, currentIndex === index ? styles.selectedColor : null, space.marginLeft_18]}>{common.getShortAddress(address, 6)}</Text>
         { currentIndex === index && (
         <Ionicons style={styles.selectedColor} name="ios-checkmark" size={30} />
         )}

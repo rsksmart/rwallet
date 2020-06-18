@@ -456,7 +456,14 @@ const common = {
     return regex.test(text);
   },
 
-  shortAddress(address, length = 8) {
+  /**
+   * Get short address, omit middle part of rsk token address.
+   * For example, If address is 0xBB18Df33A915A2CFf0cAF0eDd59BD3e7606d0a83,
+   * returns 0xBB18Df33...606d0a83.
+   * @param {*} address, rsk token address
+   * @param {*} length, remains length of head and tail
+   */
+  getShortAddress(address, length = 8) {
     const prefix = address.substr(0, length + 2);
     const suffix = address.substr(address.length - length, address.length - 1);
     const result = `${prefix}...${suffix}`;
