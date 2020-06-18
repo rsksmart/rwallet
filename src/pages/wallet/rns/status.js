@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, ActivityIndicator,
+  View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -123,12 +123,15 @@ class RnsStatus extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { rnsRows: [] };
+    this.state = { rnsRows: [], isRefreshing: false };
   }
 
-
   async componentDidMount() {
+    const { setPage } = this.props;
     const subdomains = await storage.getRnsRegisteringSubdomains();
+
+    // Set current page to redux
+    setPage('RnsStatus');
 
     const rnsRows = _.map(subdomains, (subdomain) => ({
       subdomain: subdomain.subdomain,
@@ -141,6 +144,8 @@ class RnsStatus extends Component {
   }
 
   componentWillUnmount() {
+    const { resetPage } = this.props;
+    resetPage();
     this.clearTimer();
     CancelablePromiseUtil.cancel(this);
   }
@@ -161,7 +166,7 @@ class RnsStatus extends Component {
     const { rnsRows } = this.state;
     try {
       const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchRegisteringRnsSubdomains(rnsRows), this);
-      this.setState({ rnsRows: [...subdomains] });
+      this.setState({ rnsRows: subdomains });
       const pendingSubdomain = _.find(subdomains, { status: definitions.SUBDOMAIN_STATUS.PENDING });
       if (!pendingSubdomain) {
         this.clearTimer();
@@ -176,6 +181,8 @@ class RnsStatus extends Component {
         );
         addNotification(notification);
       }
+    } finally {
+      this.setState({ isRefreshing: false });
     }
   }
 
@@ -191,6 +198,11 @@ class RnsStatus extends Component {
     // If this page is navigated from create page.
     // when go back, it need to skip it.
     navigation.pop(params && params.isSkipCreatePage ? 2 : 1);
+  }
+
+  onRefresh = async () => {
+    this.setState({ isRefreshing: true });
+    this.fetchRegisteringRnsSubdomains();
   }
 
   renderRnsRow = (item, index) => {
@@ -245,12 +257,19 @@ class RnsStatus extends Component {
   }
 
   render() {
-    const { rnsRows } = this.state;
+    const { rnsRows, isRefreshing } = this.state;
 
     // If there are pending subdomains, bottom button is in pending status.
     const rnsRow = _.find(rnsRows, { status: definitions.SUBDOMAIN_STATUS.PENDING });
     const buttonText = rnsRow ? 'button.pending' : 'button.done';
     const bottomButton = (<Button text={buttonText} onPress={this.onDonePressed} disabled={!!rnsRow} />);
+
+    const refreshControl = (
+      <RefreshControl
+        refreshing={isRefreshing}
+        onRefresh={this.onRefresh}
+      />
+    );
 
     return (
       <BasePageGereral
@@ -262,6 +281,7 @@ class RnsStatus extends Component {
       >
         <View style={styles.body}>
           <FlatList
+            refreshControl={refreshControl}
             extraData={rnsRows}
             data={rnsRows}
             renderItem={({ item, index }) => (this.renderRnsRow(item, index))}
@@ -285,6 +305,8 @@ RnsStatus.propTypes = {
     wallets: PropTypes.array,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  setPage: PropTypes.func.isRequired,
+  resetPage: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -293,6 +315,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  setPage: (page) => dispatch(appActions.setPage(page)),
+  resetPage: () => dispatch(appActions.resetPage()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RnsStatus);
