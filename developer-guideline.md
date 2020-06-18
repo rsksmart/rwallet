@@ -44,47 +44,76 @@ getBalance = async () => {
 
 ```
 send = async () => {
-  const toAddress = '0x243E0c3707a9E1e029b0f0E436eb4fa730b113E7'
-  const web3 = new Web3()
-  web3.setProvider(window.ethereum)
-  let fromAddress
+  const api = 'http://130.211.12.3/parse/functions';
+  const rwalletApiKey = 'Your-Own-Api-Key'
+  const toAddress = '0x243E0c3707a9E1e029b0f0E436eb4fa730b113E7';
+  const headers = {
+    'X-Parse-Application-Id': 'rwallet',
+    'Content-Type': 'application/json',
+    'Rwallet-API-Key': rwalletApiKey,
+  };
+
+  const web3 = new Web3();
+  web3.setProvider(window.ethereum);
+  let fromAddress;
   window.ethereum.enable()
     // Get default account from chrome ethereum plugins
-    .then(accounts => {
-      fromAddress = accounts[0]
-      web3.eth.defaultAccount = fromAddress
+    .then((accounts) => {
+      fromAddress = accounts[0];
+      web3.eth.defaultAccount = fromAddress;
     })
-    // Get gasPrice from block chain
-    .then(() => web3.eth.getGasPrice())
-    .then(async gasPrice => {
-      // Get the fromAddress's transaction acount. Next transaction's nonce is equal to transactionCount + 1.
-      const transactionCount = await web3.eth.getTransactionCount(fromAddress)
-
-      // Generate transaction object
-      const transaction = {
-        from: fromAddress,
-        to: toAddress,
-        
-        // Send 0.001 RBTC to toAddress
-        value: web3.utils.toWei('0.001'),
-
-        // Get gasPrice from block chain, or a constant value. Default gasPrice is 1
-        gasPrice: gasPrice || 1,
-        nonce: transactionCount + 1,
-      }
-
-      // Send transaction to rps endpoint. (Chrome ethereum plugins can set the rpc endpoint.)
-      web3.eth.sendTransaction(transaction)
-      .on('transactionHash', function(hash){
-        console.log('transaction has been sent.')
+    .then(async () => {
+      // Get transaction fees from testnet chain
+      const res = await axios.post(
+        `${api}/getTransactionFees`,
+        {
+          // token symbol eg: RBTC, RIF
+          symbol: 'RBTC',
+          // chain type eg: Testnet, Mainnet
+          type: 'Testnet',
+          sender: fromAddress,
+          receiver: fromAddress,
+          // Transfer 0.0001 RBTC
+          value: web3.utils.toHex( web3.utils.toWei('0.0001') ),
+          memo: '',
+        },
+        { headers },
+      );
+      return res.data.result
+    })
+    // gasFee format: { gas, gasPrice: { low, medium, high } }
+    .then(async (gasFee) => {
+      const res = await axios.post(
+        `${api}/createRawTransaction`,
+        { 
+          symbol: 'RBTC',
+          type: 'Testnet',
+          sender: fromAddress,
+          receiver: toAddress,
+          value: web3.utils.toHex( web3.utils.toWei('0.0001') ),
+          gas: gasFee.gas,
+          gasPrice: gasFee.gasPrice.medium,
+        },
+        { headers },
+      );
+      return res.data.result
+    })
+    // Sign the rawTransaction with chrome ethereum plugins and then send it to the testnet chain
+    .then(async (rawTransaction) => {
+      web3.eth.sendTransaction(rawTransaction)
+      .on('transactionHash', (hash) => {
+        console.log('transaction has been sent: ', hash);
       })
-      .on('receipt', function(receipt){
-        console.log('transaction has been packaged.')
+      .on('receipt', (receipt) => {
+        console.log('transaction has been packaged: ', receipt);
       })
-      .on('confirmation', function(confirmationNumber, receipt){
-        console.log('transaction is confirmed.')
+      .on('confirmation', (confirmationNumber, receipt) => {
+        console.log('transaction is confirmed.');
       })
       .on('error', console.error);
+    })
+    .catch(err => {
+      console.log('err: ', err)
     })
 }
 ```
