@@ -195,7 +195,8 @@ class RnsAddress extends Component {
   }
 
   onRnsNameTextChange = (text, index) => {
-    const { rnsRows: newRnsRows } = this.state;
+    const { rnsRows } = this.state;
+    const newRnsRows = [...rnsRows];
     const regex = /^[a-z0-9]*$/g;
     const match = regex.exec(text);
     if (!match) {
@@ -203,12 +204,13 @@ class RnsAddress extends Component {
     }
     newRnsRows[index].subdomain = text;
     delete newRnsRows[index].isDomainValid;
-    this.setState({ rnsRows: [...newRnsRows] });
+    this.setState({ rnsRows: newRnsRows });
   }
 
   onCreatePressed = async () => {
     const { addNotification } = this.props;
-    const { rnsRows: newRnsRows } = this.state;
+    const { rnsRows } = this.state;
+    const newRnsRows = [...rnsRows];
 
     // Check with the server if the domain names are available
     // Show loading UI during the progress
@@ -252,7 +254,7 @@ class RnsAddress extends Component {
         'button.gotIt',
       );
       addNotification(notification);
-      this.setState({ rnsRows: [...newRnsRows] });
+      this.setState({ rnsRows: newRnsRows });
     }
   }
 
@@ -338,11 +340,12 @@ class RnsAddress extends Component {
   }
 
   onSelectionModalConfirmed = (selectedIndex) => {
-    const { rnsRows: newRnsRows } = this.state;
+    const { rnsRows } = this.state;
+    const newRnsRows = [...rnsRows];
     const { selectItems } = this.state;
     const { address } = selectItems[selectedIndex];
     newRnsRows[this.rnsRowIndex].address = address;
-    this.setState({ rnsRows: [...newRnsRows] });
+    this.setState({ rnsRows: newRnsRows });
   }
 
   onDeleteButtonPressed = (index) => {
@@ -352,12 +355,13 @@ class RnsAddress extends Component {
   }
 
   onRnsNameBlur = (index) => {
-    const { rnsRows: newRnsRows } = this.state;
+    const { rnsRows } = this.state;
+    const newRnsRows = [...rnsRows];
     newRnsRows[index].errorMessage = null;
     if (newRnsRows[index].subdomain > 1 && newRnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
       newRnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
     }
-    this.setState({ rnsRows: [...newRnsRows] });
+    this.setState({ rnsRows: newRnsRows });
   }
 
   renderRnsRow = (item, index) => {
