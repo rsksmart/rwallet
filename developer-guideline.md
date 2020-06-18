@@ -1,19 +1,51 @@
 ## Dapp Browser Developer Guideline
 
-#### 1. Install Web3
+#### This guideline is to help developers develop Dapps that can be used in rWallet's Dapp Browser.
+
+#### 1. Basic
+
+##### Unit
+
+"wei" are the smallest chain unit, and you should always make calculations in wei and convert only for display reasons.
+
+```
+web3.utils.toWei('1');
+> "1000000000000000000"
+```
+
+##### Transaction
+Every transaction requires a certain gas fee. The total gas fee = gas * gasPrice.
+
+If you want to transfer 1 RBTC to your friend, and the gas is 500000 wei, gasPrice is 20 gwei (1 gwei = 1000000000 wei), so the total gas fee is 1e16 wei (is equal to 0.01 RBTC) , you need to cost 1.01 RBTC, then your friend will get 1 RBTC.
+
+The send transaction steps:
+
+1. call getTransactionFees method to calculate the transaction fee
+2. generate transaction object: { symbol, type, sender, receiver, value, memo, gas, gasPrice }
+3. call createRawTransaction method to generate the raw transaction
+4. send the raw transaction to the chain and wait the miner package your transaction
+
+    
+#### 2. Install Web3, Axois to your WebApp
 
 using yarn: 
 
 ```
-yarn add web3
+yarn add web3 axios
 ```
 using npm:
 
 ```
-npm install web3 --save
+npm install web3 axios --save
 ```
 
-#### 2. Usage
+#### 3. Usage
+
+##### Import Web3, Axios
+```
+import Web3 from 'web3'
+import axios from 'axios'
+```
 
 ##### Check Metamask or other chrome ethereum plugins exist
 
@@ -83,9 +115,11 @@ send = async () => {
       );
       return res.data.result
     })
-    // gasFee format: { gas, gasPrice: { low, medium, high } }
-    // Total fee = gas * gasPrice. Total coast = total fee + transfer value
-    // If you want to transfer 1 RBTC to others and the total fee is 0.5 RBTC, you need to cost 1.5 RBTC. Then your friend will get 1 RBTC
+    /**
+     * gasFee format: { gas, gasPrice: { low, medium, high } }
+     * gasPrice determine the package speed.
+     * The bigger the gasPrice number, the faster the speed.
+     * /
     .then(async (gasFee) => {
       const res = await axios.post(
         `${api}/createRawTransaction`,
