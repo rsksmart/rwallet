@@ -145,7 +145,10 @@ class RnsStatus extends Component {
 
   componentWillUnmount() {
     const { resetPage } = this.props;
+
+    // set page variable in redux to null
     resetPage();
+
     this.clearTimer();
     CancelablePromiseUtil.cancel(this);
   }

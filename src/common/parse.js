@@ -401,49 +401,27 @@ class ParseHelper {
   }
 
   static createSubdomain(params) {
-    console.log('createSubdomain, params: ', params);
     return Parse.Cloud.run('createSubdomain', params);
   }
 
   static async isSubdomainAvailable(params) {
-    console.log('isSubdomainAvailable, params: ', params);
-    console.log(`isSubdomainAvailable, params: ${JSON.stringify(params)}`);
-    const result = await Parse.Cloud.run('isSubdomainAvailable', params);
-    console.log('isSubdomainAvailable, result: ', result);
-    return result;
+    return Parse.Cloud.run('isSubdomainAvailable', params);
   }
 
-  static getRnsSubdomainsQuery(addresses) {
-    const uniqAddresses = _.uniq(addresses);
-    const queryAddress = new Parse.Query(ParseSubdomain);
-    queryAddress.containedIn('address', uniqAddresses);
-    const queryStatus = new Parse.Query(ParseSubdomain);
-    queryAddress.equalTo('status', 1);
-    const query = Parse.Query.and(queryAddress, queryStatus);
-    return query;
+  static async querySubdomain(domain, type) {
+    return Parse.Cloud.run('querySubdomain', { domain, type });
   }
 
   static async fetchRegisteringRnsSubdomains(records) {
     const addresses = _.map(records, (record) => record.address);
     const subdomains = _.map(records, 'subdomain');
-    console.log('fetchRegisteringRnsSubdomains, records: ', records);
-    console.log('fetchRegisteringRnsSubdomains, addresses: ', addresses);
-    console.log('fetchRegisteringRnsSubdomains, subdomains: ', subdomains);
-    const queryAddress = new Parse.Query(ParseSubdomain);
-    queryAddress.containedIn('address', addresses);
-    const querySubdomains = new Parse.Query(ParseSubdomain);
-    querySubdomains.containedIn('subdomain', subdomains);
-    const result = await Parse.Query.and(queryAddress, querySubdomains).ascending('createdAt').find();
+    const query = new Parse.Query(ParseSubdomain);
+    const result = await query.containedIn('address', addresses)
+      .containedIn('subdomain', subdomains)
+      .ascending('createdAt')
+      .find();
     const status = parseDataUtil.getSubdomainStatus(result, records);
-    console.log('status: ', status);
     return status;
-  }
-
-  static async querySubdomain(domain, type) {
-    console.log(`querySubdomain, domain: ${domain}, type: ${type}`);
-    const result = await Parse.Cloud.run('querySubdomain', { domain, type });
-    console.log('querySubdomain, result: ', result);
-    return result;
   }
 
   static unsubscribe(subscription) {

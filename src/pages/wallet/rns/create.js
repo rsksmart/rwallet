@@ -203,7 +203,6 @@ class RnsAddress extends Component {
       return;
     }
     newRnsRows[index].subdomain = text;
-    delete newRnsRows[index].isDomainValid;
     this.setState({ rnsRows: newRnsRows });
   }
 
@@ -357,9 +356,11 @@ class RnsAddress extends Component {
   onRnsNameBlur = (index) => {
     const { rnsRows } = this.state;
     const newRnsRows = [...rnsRows];
-    newRnsRows[index].errorMessage = null;
-    if (newRnsRows[index].subdomain > 1 && newRnsRows[index].subdomain.length < SUBDOMAIN_LENGTH_MIN) {
-      newRnsRows[index].errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
+    const rnsRow = newRnsRows[index];
+    rnsRow.errorMessage = null;
+    // if subdomain entered is not empty, and its length less then SUBDOMAIN_LENGTH_MIN, show error message.
+    if (!_.isEmpty(rnsRow.subdomain) && rnsRow.subdomain.length < SUBDOMAIN_LENGTH_MIN) {
+      rnsRow.errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
     }
     this.setState({ rnsRows: newRnsRows });
   }

@@ -478,8 +478,6 @@ class Transfer extends Component {
           address = subdomainAddress;
         } else {
           this.setState({ addressError: strings('page.wallet.transfer.unavailableAddress') });
-        }
-        if (!subdomainAddress) {
           return;
         }
       } catch (error) {
@@ -542,12 +540,17 @@ class Transfer extends Component {
     return subdomains;
   }
 
+  /**
+   * requestFees
+   * This function checks user input and requests fees.
+   * If the user input is invalid, the request will not be initiated.
+   * Finally, the result of the request will be saved in the page state.
+   * @param {*} isAllBalance, Indicates whether the user needs to send the entire balance.
+   */
   requestFees = async (isAllBalance) => {
     const { amount, to } = this.state;
-    const { isAmountValid, isAddressValid, toAddress } = this;
+    const { isAmountValid, isAddressValid } = this;
     const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
-    console.log('requestFees, isValid: ', isValid);
-    console.log('requestFees, toAddress: ', toAddress);
     if (!isValid) {
       return;
     }
