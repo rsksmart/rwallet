@@ -53,7 +53,7 @@
         "memo": "Memo (optional)",
         "fee": "Transaction fee",
         "custom": "Custom",
-        "feeQuestion": "How fast you want this done?",
+        "feeQuestion": "How fast do you want this done?",
         "Slow": "Slow",
         "Average": "Average",
         "Fast": "Fast",
@@ -368,8 +368,8 @@
       "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
-      "title": "Please set a password",
-      "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+      "title": "Please set a passcode",
+      "body": "Passcode can protect your funds if this device is stolen or compromised by malicious software."
     },
     "deleteKey": {
       "title": "Warning!",
@@ -397,6 +397,10 @@
     "noWalletAvailable": {
       "title": "No Wallet Available",
       "body": "There is no wallet available for this Dapp yet. Please navigate to Wallet Creation page to either create or import a wallet first."
+    },
+    "requestTimeout": {
+      "title": "Request timeout",
+      "body": "The server could not complete the request within the specified time."
     }
   },
   "currency": {

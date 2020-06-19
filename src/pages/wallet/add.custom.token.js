@@ -14,10 +14,9 @@ import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color.ts';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
-import definitions from '../../common/definitions';
 import common from '../../common/common';
 import coinType from '../../common/wallet/cointype';
 
@@ -131,18 +130,8 @@ class AddCustomToken extends Component {
         console.log('tokenInfo: ', tokenInfo);
         return tokenInfo;
       } catch (error) {
-        console.log('getTokenBasicInfo, erorr: ', error);
-        let notification = null;
-        if (error.message === 'err.erc20contractnotfound') {
-          notification = createErrorNotification('modal.contractNotFound.title', 'modal.contractNotFound.body', 'button.retry');
-          addNotification(notification);
-        } else {
-          notification = createErrorNotification(
-            definitions.defaultErrorNotification.title,
-            definitions.defaultErrorNotification.message,
-            'button.retry',
-          );
-        }
+        console.log('getTokenBasicInfo, error: ', error);
+        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
         addNotification(notification);
         return null;
       } finally {

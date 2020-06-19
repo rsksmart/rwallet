@@ -401,6 +401,10 @@
     "noWalletAvailable": {
       "title": "没有可使用的钱包",
       "body": "这款Dapp没有对应可用的钱包，请先跳转至创建钱包页面，创建或者导入钱包。"
+    },
+    "requestTimeout": {
+      "title": "请求超时",
+      "body": "服务器在指定时间内不能完成请求。"
     }
   },
   "currency": {

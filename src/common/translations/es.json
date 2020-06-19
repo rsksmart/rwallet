@@ -53,7 +53,7 @@
         "memo": "Memo (opcional)",
         "fee": "Tarifa de transacción",
         "custom": "Personalizado",
-        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "feeQuestion": "¿Qué tan rápido quieres que se haga esto?",
         "slow": "Lento",
         "Average": "Promedio",
         "Fast": "Rápido",
@@ -371,7 +371,7 @@
       "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
     },
     "createPasscode": {
-      "title": "Por favor establezca una contraseña",
+      "title": "Por favor, establezca una contraseña",
       "body": "La contraseña puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
     },
     "deleteKey": {
@@ -400,6 +400,10 @@
     "noWalletAvailable": {
       "title": "No hay billetera disponible",
       "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero."
+    },
+    "requestTimeout": {
+      "title": "Pide tiempo fuera",
+      "body": "El servidor no pudo completar la solicitud dentro del tiempo especificado."
     }
   },
   "currency": {

@@ -17,7 +17,9 @@ import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
 import Transaction from '../../../common/transaction';
 import appActions from '../../../redux/app/actions';
-import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
+import {
+  createErrorNotification, createInfoNotification, getErrorNotification, getDefaultTxFailedErrorNotification,
+} from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
 import definitions from '../../../common/definitions';
@@ -460,66 +462,7 @@ class Swap extends Component {
       this.setState({ isLoading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      let notification = null;
-      if (error.code === 141) {
-        const message = error.message.split('|');
-        console.log(message[0]);
-        switch (message[0]) {
-          case 'err.notenoughbalance.btc':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreBTC',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance.rbtc':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreRBTC',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance.rif':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreRIF',
-              buttonText,
-            );
-            break;
-          case 'err.notenoughbalance':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.moreBalance',
-              buttonText,
-            );
-            break;
-          case 'err.timeout':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              'modal.txFailed.serverTimeout',
-              buttonText,
-            );
-            addNotification(notification);
-            break;
-          case 'err.customized':
-            notification = createErrorNotification(
-              'modal.txFailed.title',
-              message[1],
-              buttonText,
-            );
-            break;
-          default:
-            break;
-        }
-      }
-      // Default error notification
-      if (!notification) {
-        notification = createErrorNotification(
-          'modal.txFailed.title',
-          'modal.txFailed.contactService',
-          buttonText,
-        );
-      }
+      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
     }
   }
