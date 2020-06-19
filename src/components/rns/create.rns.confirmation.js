@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, StyleSheet, Text, FlatList,
+  Modal, View, StyleSheet, Text, FlatList, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
 import Loc from '../common/misc/loc';

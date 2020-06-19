@@ -342,8 +342,9 @@ class RnsAddress extends Component {
     const { rnsRows } = this.state;
     const newRnsRows = [...rnsRows];
     const { selectItems } = this.state;
-    const { address } = selectItems[selectedIndex];
+    const { address, type } = selectItems[selectedIndex];
     newRnsRows[this.rnsRowIndex].address = address;
+    newRnsRows[this.rnsRowIndex].type = type;
     this.setState({ rnsRows: newRnsRows });
   }
 
@@ -358,7 +359,7 @@ class RnsAddress extends Component {
     const newRnsRows = [...rnsRows];
     const rnsRow = newRnsRows[index];
     rnsRow.errorMessage = null;
-    // if subdomain entered is not empty, and its length less then SUBDOMAIN_LENGTH_MIN, show error message.
+    // If subdomain entered is not empty, and its length is less than SUBDOMAIN_LENGTH_MIN, show error message.
     if (!_.isEmpty(rnsRow.subdomain) && rnsRow.subdomain.length < SUBDOMAIN_LENGTH_MIN) {
       rnsRow.errorMessage = strings('page.wallet.rnsCreateName.nameTooShort', { count: SUBDOMAIN_LENGTH_MIN });
     }
@@ -366,7 +367,6 @@ class RnsAddress extends Component {
   }
 
   renderRnsRow = (item, index) => {
-    console.log('renderRnsRow');
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
     const addressText = common.getShortAddress(address);

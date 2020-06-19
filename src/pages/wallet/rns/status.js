@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl,
+  View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, BackHandler,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
 class RnsStatus extends Component {
   static navigationOptions = () => ({
     header: null,
+    gesturesEnabled: false,
   });
 
   constructor(props) {
@@ -141,6 +142,7 @@ class RnsStatus extends Component {
     }));
 
     this.setState({ rnsRows }, this.refreshStatus);
+    BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
   }
 
   componentWillUnmount() {
@@ -151,6 +153,7 @@ class RnsStatus extends Component {
 
     this.clearTimer();
     CancelablePromiseUtil.cancel(this);
+    BackHandler.removeEventListener('hardwareBackPress', this.onHardwareBackPress);
   }
 
   refreshStatus = () => {
@@ -187,6 +190,11 @@ class RnsStatus extends Component {
     } finally {
       this.setState({ isRefreshing: false });
     }
+  }
+
+  onHardwareBackPress = async () => {
+    this.onDonePressed();
+    return true;
   }
 
   onDonePressed = async () => {
