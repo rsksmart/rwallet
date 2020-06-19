@@ -157,6 +157,7 @@ class RnsStatus extends Component {
   }
 
   refreshStatus = () => {
+    this.fetchRegisteringRnsSubdomains();
     this.timer = setInterval(this.fetchRegisteringRnsSubdomains, REFRESH_STATUS_DELAY_TIME);
   }
 
