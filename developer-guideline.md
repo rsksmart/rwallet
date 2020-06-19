@@ -62,13 +62,26 @@ if (typeof window.ethereum === 'undefined') {
 ```
 getBalance = async () => {
   const address = '0x407d73d8a49eeb85d32cf465507dd71d507100c1'
+  // Testnet api
+  const api = 'http://130.211.12.3/parse/functions';
   
-  // Set rpc endpoint to web3
-  const rpcEndpoint = 'https://public-node.testnet.rsk.co'
-  const web3 = new Web3(rpcEndpoint)
-  
-  const balance = await web3.eth.getBalance(address)
-  return web3.utils.fromWei(balance)
+  const res = await axios.post(`${api}/getBalance`,
+    {
+      // token symbol eg: RBTC, RIF
+      symbol: 'RBTC',
+      // chain type eg: Testnet, Mainnet
+      type: 'Testnet',
+      address,
+    },
+    {
+      headers: {
+        'X-Parse-Application-Id': 'rwallet',
+        'Content-Type': 'application/json',
+        'Rwallet-API-Key': '3c5d8426-2903-4f37-b5c2-81110e653a86',
+      }
+    })
+  const balance = res.data.result
+  return balance
 }
 ```
 
