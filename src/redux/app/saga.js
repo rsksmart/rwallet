@@ -121,6 +121,7 @@ function* loginRequest() {
     console.log(`User found with appId ${appId}. Sign in successful.`);
     yield put(actions.resetLoginError());
     yield put(actions.loginDone());
+    yield put(actions.updateUser());
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
     yield put(actions.setLoginError());
