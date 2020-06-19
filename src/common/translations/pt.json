@@ -174,7 +174,12 @@
       "recent": "Recente",
       "recommended": "Recomendar",
       "all": "Todos",
-      "seeAll": "Ver Tudo"
+      "button": {
+        "seeAll": "Ver Tudo",
+        "confirm": "Confirme",
+        "createOrImport": "Criar ou Importar",
+        "cancel": "Cancelar"
+      }
     },
     "mine": {
       "index": {
@@ -384,6 +389,17 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
+    },
+    "dappWarning": {
+      "title": "Redirecionando para Dapp de terceiros “%{dappName}”",
+      "body": "%{description}\n Nota: você será redirecionado para um aplicativo de terceiros “%{dappName}”. Por favor, leia atentamente o Contrato do Usuário e a Política de Privacidade da Dapp de terceiros. “%{dappName}“ reservará total responsabilidade por todas as ações e uso no Dapp."
+    },
+    "walletSelection": {
+      "title": "Selecione Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "Nenhuma carteira disponível",
+      "body": "Ainda não há carteira disponível para este Dapp. Navegue até a página Criação de carteira, para criar ou importar uma carteira primeiro."
     }
   },
   "currency": {

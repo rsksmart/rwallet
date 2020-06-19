@@ -171,7 +171,12 @@
       "recent": "Recent",
       "recommended": "Recommended",
       "all": "All",
-      "seeAll": "See All"
+      "button": {
+        "seeAll": "See All",
+        "confirm": "Confirm",
+        "createOrImport": "Create or Import",
+        "cancel": "Cancel"
+      }
     },
     "mine": {
       "index": {
@@ -381,6 +386,17 @@
     "duplicateToken": {
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
+    },
+    "dappWarning": {
+      "title": "Redirecting to third-party Dapp “%{dappName}”",
+      "body": "%{description}\n Note: You will be redirected to a thrid-party Dapp “%{dappName}”. Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. “%{dappName}“ will reserve full responsibility for all actions and usage on the Dapp."
+    },
+    "walletSelection": {
+      "title": "Please select Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "No Wallet Available",
+      "body": "There is no wallet available for this Dapp yet. Please navigate to Wallet Creation page to either create or import a wallet first."
     }
   },
   "currency": {

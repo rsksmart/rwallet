@@ -28,7 +28,6 @@ Parse.setAsyncStorage(AsyncStorage);
 const ParseAddress = Parse.Object.extend('Address');
 const ParseTransaction = Parse.Object.extend('Transaction');
 const ParseDapp = Parse.Object.extend('Dapp');
-const ParseDappType = Parse.Object.extend('DappType');
 const ParseAd = Parse.Object.extend('Advertisement');
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
@@ -412,10 +411,9 @@ class ParseHelper {
   }
 
   static async fetchDappTypes() {
-    const query = new Parse.Query(ParseDappType);
-    query.equalTo('isActive', true);
-    const rows = await query.find();
-    const dappTypes = _.map(rows, (row) => parseDataUtil.getDappType(row));
+    const query = new Parse.Query('Global');
+    const dappTypesObj = await query.equalTo('key', 'dappTypes').first();
+    const dappTypes = parseDataUtil.getDappTypes(dappTypesObj);
     return dappTypes;
   }
 

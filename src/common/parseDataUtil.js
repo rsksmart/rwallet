@@ -69,14 +69,8 @@ const parseDataUtil = {
     return dapp;
   },
 
-  getDappType(dappTypeObject) {
-    const dappType = {
-      id: dappTypeObject.id,
-      name: dappTypeObject.get('name'),
-      translation: dappTypeObject.get('translation'),
-      isActive: dappTypeObject.get('isActive'),
-    };
-    return dappType;
+  getDappTypes(dappTypesObject) {
+    return dappTypesObject ? dappTypesObject.get('valObj') : [];
   },
 
   getAdvertisement(advertisementObject) {

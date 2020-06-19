@@ -1,19 +1,36 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import {
   Platform, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
-import { WebView } from 'react-native-webview';
 import { connect } from 'react-redux';
-import OperationHeader from '../../components/headers/header.operation';
 import appActions from '../../redux/app/actions';
+import BrowerHeader from '../../components/headers/header.browser';
+import ProgressWebView from '../../components/common/progress.webview';
+import WalletSelection from '../../components/common/modal/wallet.selection.modal';
+
+const rskEndpoint = 'https://public-node.testnet.rsk.co';
 
 class DAppBrowser extends Component {
   static navigationOptions = () => ({
     header: null,
   });
+
+  constructor(props) {
+    super(props);
+
+    const { navigation } = this.props;
+
+    this.state = {
+      canGoBack: false,
+      walletSelectionVisible: false,
+      currentWallet: navigation.state.params.wallet || null,
+    };
+
+    this.webview = createRef();
+  }
 
   getJsCode = (address) => `
       (function() {
@@ -84,7 +101,6 @@ class DAppBrowser extends Component {
             let err, res, result = ''
             const {method, params, jsonrpc, id} = payload
             try {
-              console.log('payload: ', payload)
               if (method === 'net_version') {
                 result = '31'
               }
@@ -118,7 +134,6 @@ class DAppBrowser extends Component {
               }
 
               res = {id, jsonrpc, result}
-              console.log('sendAsync res: ', res)
             } catch(err) {
               err = err
               console.log('err: ', err)
@@ -159,41 +174,52 @@ class DAppBrowser extends Component {
     `
 
   render() {
-    const { navigation, callAuthVerify } = this.props;
+    const { navigation, callAuthVerify, language } = this.props;
+    const { walletSelectionVisible, currentWallet } = this.state;
 
-    const url = navigation.state.params.url || '';
-    const title = navigation.state.params.title || url;
+    const dapp = navigation.state.params.dapp || { url: '', title: '' };
+    const { url, title } = dapp;
 
-    const rskEndpoint = 'https://public-node.testnet.rsk.co';
-    // input your own 12-words mnemonic
-    const mnemonic = 'fabric arrest space cost embark tell pear balance title girl photo valley';
+    const rsk3 = new Rsk3(rskEndpoint);
     const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
+    // input your own 12-words mnemonic
+    const { mnemonic } = currentWallet;
     const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
     const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
     const addr = ethers.utils.getAddress(wallet.address.toLowerCase());
     const jsCode = this.getJsCode(addr);
-    const rsk3 = new Rsk3(rskEndpoint);
 
     return (
       <View style={{ flex: 1 }}>
-        <OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />
-        <WebView
-          // source={{ uri: 'https://faucet.rifos.org/' }}
-          // source={{ uri: 'https://testnet.manager.rns.rifos.org/' }}
-          // source={{ uri: 'http://localhost:3000' }}
+        <BrowerHeader
+          title={(title && title[language]) || url}
+          onBackButtonPress={() => {
+            const { canGoBack } = this.state;
+            if (canGoBack) {
+              this.webview.current.goBack();
+            } else {
+              navigation.goBack();
+            }
+          }}
+          onCloseButtonPress={() => navigation.goBack()}
+          onSwitchButtonPress={() => this.setState({ walletSelectionVisible: true })}
+        />
+        <ProgressWebView
           source={{ uri: url }}
-          ref={(webview) => { this.webview = webview; }}
-          javaScriptEnabled
-          domStorageEnabled
+          ref={this.webview}
           injectedJavaScriptBeforeContentLoaded={jsCode}
+          onNavigationStateChange={(navState) => {
+            const { canGoBack } = navState;
+            this.setState({ canGoBack });
+          }}
           onMessage={(event) => {
             const { data } = event.nativeEvent;
             const payload = JSON.parse(data);
             const { method, params } = payload;
+            console.log('payload: ', payload);
             if (method === 'eth_sendTransaction') {
               try {
                 callAuthVerify(async () => {
-                  console.log('payload: ', payload);
                   const nonce = await provider.getTransactionCount(wallet.address);
                   const txData = {
                     nonce,
@@ -201,28 +227,36 @@ class DAppBrowser extends Component {
                     gasLimit: params[0].gas || 600000,
                     gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
                     to: params[0].to,
+                    value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0',
                   };
-                  console.log('txData: ', txData);
                   const signedTransaction = await wallet.sign(txData);
-                  console.log('signedTransaction: ', signedTransaction);
                   const result = await provider.sendTransaction(signedTransaction);
-                  console.log('result: ', result);
-                  this.webview.postMessage(result.hash);
+                  this.webview.current.postMessage(result.hash);
                 }, () => null);
               } catch (error) {
                 console.log(error);
               }
             } else if (method === 'eth_getTransactionReceipt') {
               rsk3.getTransactionReceipt(params[0]).then((res) => {
-                console.log('res: ', res);
                 res.status = res.status ? 1 : 0;
-                this.webview.postMessage(JSON.stringify(res));
+                this.webview.current.postMessage(JSON.stringify(res));
               }).catch((err) => {
                 console.log('err: ', err);
-                this.webview.postMessage('');
+                this.webview.current.postMessage('');
               });
             }
           }}
+        />
+        <WalletSelection
+          navigation={navigation}
+          visible={walletSelectionVisible}
+          closeFunction={() => this.setState({ walletSelectionVisible: false })}
+          confirmButtonPress={(switchWallet) => {
+            this.setState({ walletSelectionVisible: false, currentWallet: switchWallet }, () => {
+              this.webview.current.reload();
+            });
+          }}
+          dapp={dapp}
         />
       </View>
     );
@@ -237,10 +271,12 @@ DAppBrowser.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   passcode: state.App.get('passcode'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

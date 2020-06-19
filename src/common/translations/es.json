@@ -174,7 +174,12 @@
       "recent": "Reciente",
       "recommended": "Recomendar",
       "all": "Todas",
-      "seeAll": "Ver Todo"
+      "button": {
+        "seeAll": "Ver Todo",
+        "confirm": "Confirmar",
+        "createOrImport": "Crear o importar",
+        "cancel": "Cancelar"
+      }
     },
     "mine": {
       "index": {
@@ -384,6 +389,17 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
+    },
+    "dappWarning": {
+      "title": "Redireccionamiento a Dapp de terceros “%{dappName}”",
+      "body": "%{description}\n Nota: serás redirigido a una aplicación de terceros “%{dappName}”. Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. “%{dappName}“ se reservará la responsabilidad total de todas las acciones y el uso de Dapp."
+    },
+    "walletSelection": {
+      "title": "Por favor seleccione Monedero"
+    },
+    "noWalletAvailable": {
+      "title": "No hay billetera disponible",
+      "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero."
     }
   },
   "currency": {

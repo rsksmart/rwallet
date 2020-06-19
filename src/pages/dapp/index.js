@@ -14,6 +14,8 @@ import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
+import WalletSelection from '../../components/common/modal/wallet.selection.modal';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const dappPerColumn = 3; // One column has 3 dapps
 const { width } = Dimensions.get('window');
@@ -86,6 +88,8 @@ class DAppIndex extends Component {
 
     this.state = {
       searchUrl: null,
+      walletSelectionVisible: false,
+      clickedDapp: null,
     };
   }
 
@@ -107,14 +111,16 @@ class DAppIndex extends Component {
   }
 
   onDappPress = (dapp) => {
-    const { addRecentDapp, language } = this.props;
-    addRecentDapp(dapp);
-    this.openBrowser(dapp.url, dapp.name && dapp.name[language]);
-  }
-
-  openBrowser = (url, name = '') => {
-    const { navigation } = this.props;
-    navigation.navigate('DAppBrowser', { url, name });
+    const { addNotification, language } = this.props;
+    const dappName = dapp && dapp.name[language];
+    const description = dapp.description && dapp.description[language];
+    const notification = createInfoNotification(
+      strings('modal.dappWarning.title', { dappName }),
+      strings('modal.dappWarning.body', { description, dappName }),
+      null,
+      () => this.setState({ walletSelectionVisible: true, clickedDapp: dapp }),
+    );
+    addNotification(notification);
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -165,14 +171,12 @@ class DAppIndex extends Component {
 
   render() {
     const {
-      navigation, language, walletManager, dappTypes, dapps, advertisements,
+      navigation, language, dappTypes, dapps, advertisements,
     } = this.props;
-    const { searchUrl } = this.state;
+    const { searchUrl, walletSelectionVisible, clickedDapp } = this.state;
 
     const sourceData = this.getSourceData();
     const { recent, recommended } = sourceData;
-
-    console.log('walletManager: ', walletManager);
 
     return (
       <BasePageGereral
@@ -191,7 +195,7 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              this.openBrowser(searchUrl);
+              this.onDappPress({ url: searchUrl, name: searchUrl });
             }
           }}
         />
@@ -287,6 +291,13 @@ class DAppIndex extends Component {
         }
 
         <View style={{ marginBottom: 135 }} />
+
+        <WalletSelection
+          navigation={navigation}
+          visible={walletSelectionVisible}
+          closeFunction={() => this.setState({ walletSelectionVisible: false })}
+          dapp={clickedDapp}
+        />
       </BasePageGereral>
     );
   }
@@ -302,15 +313,12 @@ DAppIndex.propTypes = {
   fetchDapps: PropTypes.func.isRequired,
   fetchDappTypes: PropTypes.func.isRequired,
   fetchAdvertisements: PropTypes.func.isRequired,
-  addRecentDapp: PropTypes.func.isRequired,
   recentDapps: PropTypes.arrayOf(PropTypes.object),
   dapps: PropTypes.arrayOf(PropTypes.object),
   dappTypes: PropTypes.arrayOf(PropTypes.object),
   advertisements: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
-  walletManager: PropTypes.shape({
-    wallets: PropTypes.array.isRequired,
-  }),
+  addNotification: PropTypes.func.isRequired,
 };
 
 DAppIndex.defaultProps = {
@@ -318,7 +326,6 @@ DAppIndex.defaultProps = {
   dapps: null,
   dappTypes: null,
   advertisements: null,
-  walletManager: null,
 };
 
 const mapStateToProps = (state) => ({
@@ -327,14 +334,13 @@ const mapStateToProps = (state) => ({
   advertisements: state.App.get('advertisements'),
   recentDapps: state.App.get('recentDapps'),
   language: state.App.get('language'),
-  walletManager: state.Wallet.get('walletManager'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
   fetchDappTypes: () => dispatch(appActions.fetchDappTypes()),
   fetchAdvertisements: () => dispatch(appActions.fetchAdvertisements()),
-  addRecentDapp: (dapp) => dispatch(appActions.addRecentDapp(dapp)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppIndex);

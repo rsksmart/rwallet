@@ -9,6 +9,9 @@ import _ from 'lodash';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
+import WalletSelection from '../../components/common/modal/wallet.selection.modal';
+import { createInfoNotification } from '../../common/notification.controller';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   item: {
@@ -51,26 +54,38 @@ class DAppList extends Component {
     header: null,
   });
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      walletSelectionVisible: false,
+      clickedDapp: null,
+    };
+  }
+
   componentDidMount() {
     const { fetchDapps } = this.props;
     fetchDapps();
   }
 
   onDappPress = (dapp) => {
-    const { addRecentDapp, language } = this.props;
-    addRecentDapp(dapp);
-    this.openBrowser(dapp.name[language], dapp.url);
-  }
-
-  openBrowser = (name, url) => {
-    const { navigation } = this.props;
-    navigation.navigate('DAppBrowser', { name, url });
+    const { addNotification, language } = this.props;
+    const dappName = dapp && dapp.name[language];
+    const description = dapp.description && dapp.description[language];
+    const notification = createInfoNotification(
+      strings('modal.dappWarning.title', { dappName }),
+      strings('modal.dappWarning.body', { description, dappName }),
+      null,
+      () => this.setState({ walletSelectionVisible: true, clickedDapp: dapp }),
+    );
+    addNotification(notification);
   }
 
   render() {
     const {
       navigation, dapps, language, recentDapps,
     } = this.props;
+    const { walletSelectionVisible, clickedDapp } = this.state;
     const title = navigation.state.params.title || '';
     const type = navigation.state.params.type || '';
     let dappList = [];
@@ -95,14 +110,20 @@ class DAppList extends Component {
             >
               <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>{item.name[language]}</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language]}</Text>
+                { item.name && <Text style={styles.dappName}>{item.name[language]}</Text> }
+                { item.description && <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language]}</Text> }
                 <Text style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
           )}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => `list-${index}`}
+        />
+        <WalletSelection
+          navigation={navigation}
+          visible={walletSelectionVisible}
+          closeFunction={() => this.setState({ walletSelectionVisible: false })}
+          dapp={clickedDapp}
         />
       </BasePageSimple>
     );
@@ -119,8 +140,8 @@ DAppList.propTypes = {
   dapps: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
   fetchDapps: PropTypes.func.isRequired,
-  addRecentDapp: PropTypes.func.isRequired,
   recentDapps: PropTypes.arrayOf(PropTypes.object),
+  addNotification: PropTypes.func.isRequired,
 };
 
 DAppList.defaultProps = {
@@ -136,7 +157,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
-  addRecentDapp: (dapp) => dispatch(appActions.addRecentDapp(dapp)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppList);

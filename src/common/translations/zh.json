@@ -174,7 +174,12 @@
       "recent": "最近",
       "recommended": "推荐",
       "all": "全部",
-      "seeAll": "全部"
+      "button": {
+        "seeAll": "全部",
+        "confirm": "确定",
+        "createOrImport": "创建或者导入",
+        "cancel": "取消"
+      }
     },
     "mine": {
       "index": {
@@ -385,6 +390,17 @@
     "duplicateToken": {
       "title": "重复的代币",
       "body": "这个代币已经被加入钱包。请尝试不同的代币。"
+    },
+    "dappWarning": {
+      "title": "重定向到第三方Dapp “%{dappName}”",
+      "body": "%{description}\n 注意：您将被重定向到第三方 “%{dappName}”。 请仔细阅读第三方Dapp的用户协议和隐私政策。 “%{dappName}“ 将保留对Dapp上的所有操作和使用的全部责任。"
+    },
+    "walletSelection": {
+      "title": "请选择钱包"
+    },
+    "noWalletAvailable": {
+      "title": "没有可使用的钱包",
+      "body": "这款Dapp没有对应可用的钱包，请先跳转至创建钱包页面，创建或者导入钱包。"
     }
   },
   "currency": {
