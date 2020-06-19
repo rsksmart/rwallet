@@ -24,14 +24,25 @@ class DAppBrowser extends Component {
     super(props);
 
     const { navigation } = this.props;
+    const currentWallet = navigation.state.params.wallet || null;
 
     this.state = {
       canGoBack: false,
       walletSelectionVisible: false,
-      currentWallet: navigation.state.params.wallet || null,
+      wallet: this.generateWallet(currentWallet),
     };
 
     this.webview = createRef();
+  }
+
+  generateWallet = (currentWallet) => {
+    // // generate mainnet wallet
+    // return { ...currentWallet, address: currentWallet.coins[0].address };
+
+    // generate test wallet
+    const { mnemonic } = currentWallet;
+    const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
+    return mnemonicWallet;
   }
 
   getJsCode = (address) => `
@@ -177,12 +188,14 @@ class DAppBrowser extends Component {
 
   render() {
     const { navigation, callAuthVerify, language } = this.props;
-    const { walletSelectionVisible, currentWallet } = this.state;
+    const { walletSelectionVisible, wallet } = this.state;
 
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
+    const { address } = wallet;
+    console.log('address: ', address);
 
-    const jsCode = this.getJsCode(currentWallet.coins[0].address);
+    const jsCode = this.getJsCode(address);
 
     return (
       <View style={{ flex: 1 }}>
@@ -202,7 +215,8 @@ class DAppBrowser extends Component {
         <ProgressWebView
           source={{ uri: url }}
           ref={this.webview}
-          injectedJavaScriptBeforeContentLoaded={jsCode}
+          // injectedJavaScriptBeforeContentLoaded={jsCode}
+          injectedJavaScript={jsCode}
           onNavigationStateChange={(navState) => {
             const { canGoBack } = navState;
             this.setState({ canGoBack });
@@ -213,26 +227,24 @@ class DAppBrowser extends Component {
             const { method, params } = payload;
             console.log('payload: ', payload);
             if (method === 'eth_sendTransaction') {
+              console.log('address: ', address);
               try {
                 callAuthVerify(async () => {
-                  const { mnemonic } = currentWallet;
-                  const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
-                  this.wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
-                  const nonce = await provider.getTransactionCount(this.wallet.address);
+                  const nonce = await provider.getTransactionCount(address);
                   const txData = {
                     nonce,
                     data: params[0].data,
                     gasLimit: params[0].gas || 600000,
                     gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
                     to: params[0].to,
-                    value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0',
+                    value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
                   };
-                  const signedTransaction = await this.wallet.sign(txData);
+                  const signedTransaction = await wallet.sign(txData);
                   const result = await provider.sendTransaction(signedTransaction);
                   this.webview.current.postMessage(result.hash);
                 }, () => null);
               } catch (error) {
-                console.log(error);
+                console.log('error', error);
               }
             } else if (method === 'eth_getTransactionReceipt') {
               rsk3.getTransactionReceipt(params[0]).then((res) => {
@@ -250,7 +262,7 @@ class DAppBrowser extends Component {
           visible={walletSelectionVisible}
           closeFunction={() => this.setState({ walletSelectionVisible: false })}
           confirmButtonPress={(switchWallet) => {
-            this.setState({ walletSelectionVisible: false, currentWallet: switchWallet }, () => {
+            this.setState({ walletSelectionVisible: false, wallet: this.generateWallet(switchWallet) }, () => {
               this.webview.current.reload();
             });
           }}
