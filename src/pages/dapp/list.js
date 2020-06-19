@@ -70,8 +70,8 @@ class DAppList extends Component {
 
   onDappPress = (dapp) => {
     const { addNotification, language } = this.props;
-    const dappName = dapp && dapp.name[language];
-    const description = dapp.description && dapp.description[language];
+    const dappName = (dapp.name && dapp.name[language]) || dapp.name;
+    const description = (dapp.description && dapp.description[language]) || dapp.description;
     const notification = createInfoNotification(
       strings('modal.dappWarning.title', { dappName }),
       strings('modal.dappWarning.body', { description, dappName }),

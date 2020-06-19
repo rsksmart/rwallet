@@ -70,7 +70,7 @@ const parseDataUtil = {
   },
 
   getDappTypes(dappTypesObject) {
-    return dappTypesObject ? dappTypesObject.get('valObj') : [];
+    return dappTypesObject ? dappTypesObject.get('value') : [];
   },
 
   getAdvertisement(advertisementObject) {

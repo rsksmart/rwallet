@@ -112,8 +112,8 @@ class DAppIndex extends Component {
 
   onDappPress = (dapp) => {
     const { addNotification, language } = this.props;
-    const dappName = dapp && dapp.name[language];
-    const description = dapp.description && dapp.description[language];
+    const dappName = (dapp.name && dapp.name[language]) || dapp.name;
+    const description = (dapp.description && dapp.description[language]) || dapp.description;
     const notification = createInfoNotification(
       strings('modal.dappWarning.title', { dappName }),
       strings('modal.dappWarning.body', { description, dappName }),
@@ -163,6 +163,12 @@ class DAppIndex extends Component {
       style={styles.adItem}
       activeOpacity={1}
       onPress={() => {
+        const dapp = {
+          name: item.url,
+          url: item.url,
+          description: '',
+        };
+        this.onDappPress(dapp);
       }}
     >
       <Image style={styles.adItemImage} source={{ uri: item.imgUrl }} />
@@ -195,7 +201,7 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              this.onDappPress({ url: searchUrl, name: searchUrl });
+              this.onDappPress({ url: searchUrl, name: searchUrl, description: '' });
             }
           }}
         />
@@ -225,7 +231,7 @@ class DAppIndex extends Component {
             >
               <Image style={[styles.dappIcon, { width: 40, height: 40 }]} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
+                <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
@@ -248,8 +254,8 @@ class DAppIndex extends Component {
                 >
                   <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
                   <View style={styles.dappInfo}>
-                    <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description && item.description[language]}</Text>
+                    <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{(item.description && item.description[language]) || item.description}</Text>
                     <Text style={styles.dappUrl}>{item.url}</Text>
                   </View>
                 </TouchableOpacity>,
@@ -277,8 +283,8 @@ class DAppIndex extends Component {
                     >
                       <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
                       <View style={styles.dappInfo}>
-                        <Text style={styles.dappName}>{item.name && item.name[language]}</Text>
-                        <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{item.description && item.description[language]}</Text>
+                        <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+                        <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{(item.description && item.description[language]) || item.description}</Text>
                         <Text style={styles.dappUrl}>{item.url}</Text>
                       </View>
                     </TouchableOpacity>

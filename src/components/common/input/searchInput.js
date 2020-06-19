@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   searchInputView: {
     flex: 1,
     marginLeft: 10,
+    paddingVertical: 0,
   },
 });
 
