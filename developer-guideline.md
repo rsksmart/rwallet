@@ -77,7 +77,7 @@ getBalance = async () => {
       headers: {
         'X-Parse-Application-Id': 'rwallet',
         'Content-Type': 'application/json',
-        'Rwallet-API-Key': '3c5d8426-2903-4f37-b5c2-81110e653a86',
+        'Rwallet-API-Key': 'Your-Own-Api-Key',
       }
     })
   const balance = res.data.result
