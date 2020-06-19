@@ -127,22 +127,11 @@ class RnsStatus extends Component {
     this.state = { rnsRows: [], isRefreshing: false };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { setPage } = this.props;
-    const subdomains = await storage.getRnsRegisteringSubdomains();
-
-    // Set current page to redux
     setPage('RnsStatus');
-
-    const rnsRows = _.map(subdomains, (subdomain) => ({
-      subdomain: subdomain.subdomain,
-      address: subdomain.address,
-      type: subdomain.type,
-      status: definitions.SUBDOMAIN_STATUS.PENDING,
-    }));
-
-    this.setState({ rnsRows }, this.refreshStatus);
     BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
+    this.createListData();
   }
 
   componentWillUnmount() {
@@ -154,6 +143,29 @@ class RnsStatus extends Component {
     this.clearTimer();
     CancelablePromiseUtil.cancel(this);
     BackHandler.removeEventListener('hardwareBackPress', this.onHardwareBackPress);
+  }
+
+  createListData = async () => {
+    const { navigation } = this.props;
+    const { params } = navigation.state;
+    const navRnsRows = params && params.rnsRows ? params.rnsRows : [];
+
+    const subdomains = await storage.getRnsRegisteringSubdomains();
+
+    const rnsRows = [];
+    _.each(subdomains, (subdomain) => {
+      const rnsRow = {
+        subdomain: subdomain.subdomain,
+        address: subdomain.address,
+        type: subdomain.type,
+        status: definitions.SUBDOMAIN_STATUS.PENDING,
+      };
+      const foundSubdomain = _.find(navRnsRows, { subdomain: rnsRow.subdomain });
+      rnsRow.status = foundSubdomain ? foundSubdomain.status : rnsRow.status;
+      rnsRows.push(rnsRow);
+    });
+
+    this.setState({ rnsRows }, this.refreshStatus);
   }
 
   refreshStatus = () => {
