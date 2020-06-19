@@ -12,6 +12,8 @@ import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 
 const rskEndpoint = 'https://public-node.testnet.rsk.co';
+const rsk3 = new Rsk3(rskEndpoint);
+const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
 
 class DAppBrowser extends Component {
   static navigationOptions = () => ({
@@ -180,14 +182,7 @@ class DAppBrowser extends Component {
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
 
-    const rsk3 = new Rsk3(rskEndpoint);
-    const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
-    // input your own 12-words mnemonic
-    const { mnemonic } = currentWallet;
-    const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
-    const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
-    const addr = ethers.utils.getAddress(wallet.address.toLowerCase());
-    const jsCode = this.getJsCode(addr);
+    const jsCode = this.getJsCode(currentWallet.coins[0].address);
 
     return (
       <View style={{ flex: 1 }}>
@@ -220,7 +215,10 @@ class DAppBrowser extends Component {
             if (method === 'eth_sendTransaction') {
               try {
                 callAuthVerify(async () => {
-                  const nonce = await provider.getTransactionCount(wallet.address);
+                  const { mnemonic } = currentWallet;
+                  const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
+                  this.wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
+                  const nonce = await provider.getTransactionCount(this.wallet.address);
                   const txData = {
                     nonce,
                     data: params[0].data,
@@ -229,7 +227,7 @@ class DAppBrowser extends Component {
                     to: params[0].to,
                     value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0',
                   };
-                  const signedTransaction = await wallet.sign(txData);
+                  const signedTransaction = await this.wallet.sign(txData);
                   const result = await provider.sendTransaction(signedTransaction);
                   this.webview.current.postMessage(result.hash);
                 }, () => null);
