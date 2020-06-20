@@ -787,6 +787,7 @@ class Swap extends Component {
                   placeholder="0.00"
                   autoCapitalize="none"
                   autoCorrect={false}
+                  keyboardType="numeric"
                 />
               </View>
               <Text style={styles.boardValue}>{sourceValueText}</Text>
@@ -834,6 +835,7 @@ class Swap extends Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   editable={!!swapDest}
+                  keyboardType="numeric"
                 />
               </View>
               <Text style={styles.boardValue}>{destValueText}</Text>
