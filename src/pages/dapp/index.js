@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView,
+  View, Text, StyleSheet, Image, TouchableOpacity, Dimensions,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Header as NavHeader } from 'react-navigation';
 import Carousel from 'react-native-snap-carousel';
+import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
@@ -182,7 +183,11 @@ class DAppIndex extends Component {
     const { recent, recommended } = sourceData;
 
     return (
-      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+      <BasePageGereral
+        isSafeView={false}
+        hasBottomBtn={false}
+        hasLoader={false}
+      >
         <View style={styles.header} />
 
         <SearchInput
@@ -294,7 +299,7 @@ class DAppIndex extends Component {
           closeFunction={() => this.setState({ walletSelectionVisible: false })}
           dapp={clickedDapp}
         />
-      </ScrollView>
+      </BasePageGereral>
     );
   }
 }
