@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, Dimensions,
+  View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -173,6 +173,25 @@ class DAppIndex extends Component {
     </TouchableOpacity>
   )
 
+  getDappItem = (data, itemStyles = []) => {
+    const { language } = this.props;
+    const { item, index } = data;
+    return (
+      <TouchableOpacity
+        key={`${item.id}-${index}`}
+        style={[styles.item, ...itemStyles]}
+        onPress={() => this.onDappPress(item)}
+      >
+        <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
+        <View style={styles.dappInfo}>
+          <Text numberOfLines={2} style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && item.description[language]) || item.description}</Text>
+          <Text numberOfLines={2} style={styles.dappUrl}>{item.url}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const {
       navigation, language, dappTypes, dapps, advertisements,
@@ -226,7 +245,7 @@ class DAppIndex extends Component {
             >
               <Image style={[styles.dappIcon, { width: 40, height: 40 }]} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
-                <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+                <Text numberOfLines={2} style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
@@ -238,30 +257,20 @@ class DAppIndex extends Component {
           title="page.dapp.recommended"
           data={recommended}
           type="recommended"
-          getItem={(items, col) => {
+          getItem={(items) => {
             const column = [];
             _.forEach(items, (item, row) => {
-              column.push(
-                <TouchableOpacity
-                  key={`recommended-${col}-${row}`}
-                  style={[styles.item, { marginRight: 15, marginTop: row ? 15 : 0 }]}
-                  onPress={() => this.onDappPress(item)}
-                >
-                  <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
-                  <View style={styles.dappInfo}>
-                    <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{(item.description && item.description[language]) || item.description}</Text>
-                    <Text style={styles.dappUrl}>{item.url}</Text>
-                  </View>
-                </TouchableOpacity>,
-              );
+              column.push(this.getDappItem({ item, row }, [{ marginRight: 15, marginTop: row ? 15 : 0 }]));
             });
             return <View>{column}</View>;
           }}
         />
 
-        {
-          _.map(dappTypes, (dappType) => {
+        <FlatList
+          data={dappTypes || []}
+          extraData={dapps}
+          keyExtractor={(item, index) => `type-${index}`}
+          renderItem={({ item: dappType }) => {
             const dappList = _.filter(dapps, (dapp) => dapp.type === dappType.name);
             if (dappList.length) {
               return (
@@ -271,25 +280,14 @@ class DAppIndex extends Component {
                   title={dappType.translation && dappType.translation[language]}
                   data={dappList}
                   getItem={(item, index) => (
-                    <TouchableOpacity
-                      key={`${dappType.name}-${index}`}
-                      style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
-                      onPress={() => this.onDappPress(item)}
-                    >
-                      <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
-                      <View style={styles.dappInfo}>
-                        <Text style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
-                        <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: Dimensions.get('window').width / 2 }]}>{(item.description && item.description[language]) || item.description}</Text>
-                        <Text style={styles.dappUrl}>{item.url}</Text>
-                      </View>
-                    </TouchableOpacity>
+                    this.getDappItem({ item, index }, [{ flex: 1, justifyContent: 'flex-start', marginRight: 15 }])
                   )}
                 />
               );
             }
             return null;
-          })
-        }
+          }}
+        />
 
         <View style={{ marginBottom: 135 }} />
 
