@@ -388,8 +388,8 @@
       "body": "This token is already added in the wallet. Please try with a different token."
     },
     "dappWarning": {
-      "title": "Redirecting to third-party Dapp “%{dappName}”",
-      "body": "%{description}\n Note: You will be redirected to a thrid-party Dapp “%{dappName}”. Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. “%{dappName}“ will reserve full responsibility for all actions and usage on the Dapp."
+      "title": "Redirecting to third-party Dapp \"%{dappName}\"",
+      "body": "%{description}\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp."
     },
     "walletSelection": {
       "title": "Please select Wallet"

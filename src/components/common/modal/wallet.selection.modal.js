@@ -206,14 +206,14 @@ class WalletSelection extends PureComponent {
     _.forEach(tokens, (token, index) => {
       const canModTwo = !((index + 1) % 2);
       row.push(
-        <View style={styles.tokenItem}>
+        <View style={styles.tokenItem} key={`${token.address}-${token.symbol}`}>
           <Text style={styles.tokenText}>{token.symbol}</Text>
-          <Text style={styles.tokenText}>{(token.balance && token.balance.toString()) || 0}</Text>
+          <Text style={styles.tokenText}>{Number((token.balance && token.balance.toString())).toFixed(4) || 0}</Text>
         </View>,
       );
       if (canModTwo) {
         result.push(
-          <View style={styles.tokenRow}>
+          <View style={styles.tokenRow} key={`row-${index}`}>
             {row}
           </View>,
         );
@@ -222,7 +222,7 @@ class WalletSelection extends PureComponent {
     });
     if (row.length) {
       result.push(
-        <View style={styles.tokenRow}>
+        <View style={styles.tokenRow} key={`row-${row.length}`}>
           {row}
         </View>,
       );
@@ -232,9 +232,7 @@ class WalletSelection extends PureComponent {
   }
 
   getWalletItem = ({ item }) => {
-    const { dapp } = this.props;
     const { selectedWallet } = this.state;
-    const tokens = (dapp && dapp.tokens) || [];
     const { address: selectedAddress } = this.getWalletInfo(selectedWallet);
     const { address, network } = this.getWalletInfo(item);
     return (
@@ -250,7 +248,7 @@ class WalletSelection extends PureComponent {
         </View>
 
         <View style={{ alignSelf: 'center' }}>
-          {selectedAddress === address && this.getTokenView(selectedWallet.coins, tokens)}
+          {selectedAddress === address && this.getTokenView(selectedWallet.coins)}
         </View>
       </TouchableOpacity>
     );
