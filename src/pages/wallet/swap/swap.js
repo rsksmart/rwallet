@@ -361,6 +361,8 @@ class Swap extends Component {
   onChangeSourceAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
+
+    // There is no '.' but ',' in the spainish's numeric keyboard, so need to replace ',' to '.'
     const sourceText = text.replace(',', '.');
     const isAmount = common.isAmount(sourceText);
     let sourceAmount = null;
@@ -374,6 +376,8 @@ class Swap extends Component {
   onChangeDestAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
+
+    // There is no '.' but ',' in the spainish's numeric keyboard, so need to replace ',' to '.'
     const destText = text.replace(',', '.');
     const isAmount = common.isAmount(destText);
     let destAmount = null;
