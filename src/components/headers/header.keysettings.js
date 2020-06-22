@@ -44,14 +44,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function KeySettingsHeader({ title, walletCount, onBackButtonPress }) {
+export default function KeySettingsHeader({ title, assetsCount, onBackButtonPress }) {
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
       <Loc style={[styles.headerTitle]} text={title} />
       <Text style={[styles.headerText]}>
-        <Loc text="page.mine.keySettings.keyContains" />
-        {` ${walletCount} `}
-        <Loc text="page.mine.keySettings.wallets" />
+        <Loc text="page.mine.keySettings.walletContains" interpolates={{ count: assetsCount }} />
       </Text>
       <TouchableOpacity
         style={styles.backButton}
@@ -65,6 +63,6 @@ export default function KeySettingsHeader({ title, walletCount, onBackButtonPres
 
 KeySettingsHeader.propTypes = {
   onBackButtonPress: PropTypes.func.isRequired,
-  walletCount: PropTypes.number.isRequired,
+  assetsCount: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
 };

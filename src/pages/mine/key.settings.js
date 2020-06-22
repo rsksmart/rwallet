@@ -133,7 +133,7 @@ class KeySettings extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        walletCount: 0,
+        assetsCount: 0,
         name: '',
         isConfirmDeleteKey: false,
       };
@@ -152,7 +152,7 @@ class KeySettings extends Component {
       const walletListData = KeySettings.createWalletListData(coins);
       this.key = key;
       this.setState({
-        walletCount: coins.length,
+        assetsCount: coins.length,
         name,
         walletListData,
       });
@@ -221,14 +221,14 @@ class KeySettings extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        walletCount, name, walletListData,
+        assetsCount, name, walletListData,
       } = this.state;
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" assetsCount={assetsCount} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
@@ -237,7 +237,7 @@ class KeySettings extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Wallets" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Assets" />
             {KeySettings.renderWalletList(walletListData)}
           </View>
           <View style={styles.sectionContainer}>

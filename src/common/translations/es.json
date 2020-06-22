@@ -196,10 +196,9 @@
         "createKey": "Crear o importar una billetera",
         "keys": "Billeteras",
         "anonymousUser": "Usuario anónimo",
-        "wallets": {
-          "zero": "0 billetera",
-          "one": "1 billetera",
-          "other": "{{count}} carteras"
+        "assets": {
+          "one": "1 activo",
+          "other": "{{count}} activos"
         },
         "support": "Apoyo",
         "contactUs": "Contacta con nosotros",
@@ -230,11 +229,14 @@
       },
       "keySettings": {
         "title": "Configuraciones de billetera",
-        "keyContains": "Esta billetera contiene",
+        "walletContains": {
+          "one": "Esta billetera contiene 1 activos",
+          "other": "Esta billetera contiene {count} activos"
+        },
         "wallets": "billeteras",
         "security": "Seguridad",
         "advanced": "Avanzado",
-        "Wallets": "Carteras",
+        "Assets": "Bienes",
         "keyName": "Nombre de billetera",
         "delete": "Eliminar",
         "backup": "Respaldo"

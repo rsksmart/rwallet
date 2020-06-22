@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
-    marginTop: 0,
+    marginTop: 1,
     marginLeft: 1,
     flex: 1,
   },
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   titleView: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 20,
   },
 });
 
