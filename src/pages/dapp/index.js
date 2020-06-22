@@ -190,9 +190,9 @@ class DAppIndex extends Component {
       >
         <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
         <View style={styles.dappInfo}>
-          <Text numberOfLines={2} style={[styles.dappName, { fontSize: 18 }]}>{(item.name && item.name[language]) || item.name}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && item.name[language]) || item.name}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && item.description[language]) || item.description}</Text>
-          <Text numberOfLines={2} style={styles.dappUrl}>{item.url}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -253,7 +253,7 @@ class DAppIndex extends Component {
             >
               <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
               <View style={[styles.dappInfo, { marginLeft: 6 }]}>
-                <Text numberOfLines={2} style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
               </View>
             </TouchableOpacity>
           )}
