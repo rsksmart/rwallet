@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import {
   Platform, View,
 } from 'react-native';
+import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
@@ -30,9 +31,42 @@ class DAppBrowser extends Component {
       canGoBack: false,
       walletSelectionVisible: false,
       wallet: this.generateWallet(currentWallet),
+      web3JsContent: '',
+      ethersJsContent: '',
     };
 
     this.webview = createRef();
+  }
+
+  componentDidMount() {
+    const { web3JsContent, ethersJsContent } = this.state;
+    if (web3JsContent === '') {
+      if (Platform.OS === 'ios') {
+        RNFS.readFile(`${RNFS.MainBundlePath}/web3.js`, 'utf8')
+          .then((content) => {
+            this.setState({ web3JsContent: content });
+          });
+      } else {
+        RNFS.readFileAssets('web3.js', 'utf8')
+          .then((content) => {
+            this.setState({ web3JsContent: content });
+          });
+      }
+    }
+
+    if (ethersJsContent === '') {
+      if (Platform.OS === 'ios') {
+        RNFS.readFile(`${RNFS.MainBundlePath}/ethers.js`, 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
+          });
+      } else {
+        RNFS.readFileAssets('ethers.js', 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
+          });
+      }
+    }
   }
 
   generateWallet = (currentWallet) => {
@@ -45,7 +79,12 @@ class DAppBrowser extends Component {
     return mnemonicWallet;
   }
 
-  getJsCode = (address) => `
+  getJsCode = (address) => {
+    const { web3JsContent, ethersJsContent } = this.state;
+    return `
+      ${web3JsContent}
+      ${ethersJsContent}
+
       (function() {
         let resolver, rejecter, hash
         setTimeout(() => {
@@ -159,32 +198,13 @@ class DAppBrowser extends Component {
           window.ethereum.sendAsync = sendAsync
         }
 
-        let scriptCount = 0
-
-        function loadJsFile(content) {
-          const container = (document.head || document.documentElement)
-          const script = document.createElement('script')
-          script.setAttribute('type', 'text/javascript')
-          script.setAttribute('src', content)
-          script.onload = () => {
-            scriptCount += 1
-            script.remove()
-          }
-          container.insertBefore(script, container.children[0])
-        }
-
-        loadJsFile('https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.min.js')
-        loadJsFile('https://storage.googleapis.com/storage-rwallet/ethers.min.js')
-
-        let timer = setInterval(() => {
-          if (scriptCount === 2) {
-            initWeb3()
-            clearInterval(timer)
-          }
-        }, 100);
+        setTimeout(() => {
+          initWeb3()
+        }, 0)
       }) ();
       true
-    `
+    `;
+  }
 
   render() {
     const { navigation, callAuthVerify, language } = this.props;
@@ -215,8 +235,9 @@ class DAppBrowser extends Component {
         <ProgressWebView
           source={{ uri: url }}
           ref={this.webview}
-          // injectedJavaScriptBeforeContentLoaded={jsCode}
-          injectedJavaScript={jsCode}
+          onLoadStart={() => {
+            this.webview.current.injectJavaScript(jsCode);
+          }}
           onNavigationStateChange={(navState) => {
             const { canGoBack } = navState;
             this.setState({ canGoBack });
@@ -264,6 +285,9 @@ class DAppBrowser extends Component {
           confirmButtonPress={(switchWallet) => {
             this.setState({ walletSelectionVisible: false, wallet: this.generateWallet(switchWallet) }, () => {
               this.webview.current.reload();
+              setTimeout(() => {
+                this.webview.current.injectJavaScript(jsCode);
+              }, 500);
             });
           }}
           dapp={dapp}
