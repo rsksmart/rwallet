@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     borderRadius: 5,
     marginHorizontal: 25,
-    height: '82%',
+    maxHeight: '82%',
     alignItems: 'center',
     paddingHorizontal: 25,
   },
