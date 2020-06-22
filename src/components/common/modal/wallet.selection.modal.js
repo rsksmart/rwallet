@@ -213,7 +213,7 @@ class WalletSelection extends PureComponent {
       );
       if (canModTwo) {
         result.push(
-          <View style={styles.tokenRow} key={`row-${index}`}>
+          <View style={styles.tokenRow} key={`${token.address}-row-${index}`}>
             {row}
           </View>,
         );
@@ -222,7 +222,7 @@ class WalletSelection extends PureComponent {
     });
     if (row.length) {
       result.push(
-        <View style={styles.tokenRow} key={`row-${row.length}`}>
+        <View style={styles.tokenRow} key={`${tokens[row.length]}-row-${row.length}`}>
           {row}
         </View>,
       );

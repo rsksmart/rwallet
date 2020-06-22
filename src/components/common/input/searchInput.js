@@ -34,23 +34,18 @@ const styles = StyleSheet.create({
     height: 16,
     resizeMode: 'cover',
   },
-  searchInputView: {
-    flex: 1,
-    marginLeft: 10,
-    paddingVertical: 0,
-  },
 });
 
 const search = require('../../../assets/images/icon/search.png');
 
 export default function SearchInput({
-  placeholder, placeholderTextColor, onChangeText, onSubmit,
+  placeholder, placeholderTextColor, onChangeText, onSubmit, style,
 }) {
   return (
     <View style={styles.searchBar}>
       <Image style={styles.searchIcon} source={search} />
       <TextInput
-        style={styles.searchInputView}
+        style={style}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
         onChangeText={onChangeText}
@@ -65,10 +60,12 @@ SearchInput.propTypes = {
   placeholderTextColor: PropTypes.string,
   onChangeText: PropTypes.func,
   onSubmit: PropTypes.func,
+  style: PropTypes.oneOfType(PropTypes.arrayOf, PropTypes.object),
 };
 
 SearchInput.defaultProps = {
   placeholderTextColor: null,
   onChangeText: () => null,
   onSubmit: () => null,
+  style: null,
 };

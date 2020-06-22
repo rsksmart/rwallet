@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList,
+  View, Text, StyleSheet, Image, TouchableOpacity, FlatList, StatusBar,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Header as NavHeader } from 'react-navigation';
-import Carousel from 'react-native-snap-carousel';
+import { NavigationEvents, Header as NavHeader } from 'react-navigation';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
@@ -14,10 +13,10 @@ import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import { createInfoNotification } from '../../common/notification.controller';
+import AdsCarousel from '../../components/common/carousel/ads.carousel';
 
+const recentDappsNumber = 3; // show recent 3 dapps
 const dappPerColumn = 3; // One column has 3 dapps
-const { width } = Dimensions.get('window');
-const viewWidth = width - 30;
 
 const styles = StyleSheet.create({
   header: {
@@ -30,6 +29,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     fontFamily: 'Avenir-Heavy',
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    paddingVertical: 0,
+    fontSize: 12,
   },
   item: {
     flexDirection: 'row',
@@ -44,12 +49,12 @@ const styles = StyleSheet.create({
   },
   dappInfo: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 18,
   },
   dappName: {
     color: '#060606',
     fontFamily: 'Avenir-Book',
-    fontSize: 18,
+    fontSize: 12,
   },
   dappDesc: {
     color: '#535353',
@@ -58,7 +63,7 @@ const styles = StyleSheet.create({
   },
   dappUrl: {
     color: '#ABABAB',
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'Avenir-Book',
   },
   ads: {
@@ -67,11 +72,12 @@ const styles = StyleSheet.create({
   },
   adItem: {
     borderRadius: 10,
+    height: 112.5,
   },
   adItemImage: {
     width: '100%',
-    height: 60,
-    resizeMode: 'stretch',
+    height: '100%',
+    resizeMode: 'cover',
     borderRadius: 10,
   },
 });
@@ -142,8 +148,8 @@ class DAppIndex extends Component {
   getSourceData = () => {
     const { recentDapps, dapps } = this.props;
 
-    // show 2 recent dapps
-    const recentSourceData = (recentDapps && recentDapps.length > 3) ? recentDapps.slice(0, 3) : recentDapps;
+    // show recent dapps
+    const recentSourceData = (recentDapps && recentDapps.length > recentDappsNumber) ? recentDapps.slice(0, recentDappsNumber) : recentDapps;
 
     // filter out recommended dapps from all dapps
     const recommendedList = _.filter(dapps, { isRecommended: true });
@@ -184,7 +190,7 @@ class DAppIndex extends Component {
       >
         <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
         <View style={styles.dappInfo}>
-          <Text numberOfLines={2} style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+          <Text numberOfLines={2} style={[styles.dappName, { fontSize: 18 }]}>{(item.name && item.name[language]) || item.name}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && item.description[language]) || item.description}</Text>
           <Text numberOfLines={2} style={styles.dappUrl}>{item.url}</Text>
         </View>
@@ -207,11 +213,18 @@ class DAppIndex extends Component {
         hasBottomBtn={false}
         hasLoader={false}
       >
+        <NavigationEvents
+          onWillFocus={() => StatusBar.setBarStyle('dark-content')}
+          onWillBlur={() => StatusBar.setBarStyle('light-content')}
+        />
+
         <View style={styles.header} />
 
         <SearchInput
+          style={styles.searchInput}
           value={searchUrl}
           placeholder={strings('page.dapp.search')}
+          placeholderTextColor="#B5B5B5"
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
@@ -220,16 +233,11 @@ class DAppIndex extends Component {
           }}
         />
 
-        <View style={styles.ads}>
-          <Carousel
-            loop
-            layout="default"
-            data={advertisements}
-            renderItem={this.getAdItem}
-            sliderWidth={viewWidth}
-            itemWidth={viewWidth}
-          />
-        </View>
+        <AdsCarousel
+          style={styles.ads}
+          data={advertisements}
+          renderItem={this.getAdItem}
+        />
 
         <DappCard
           navigation={navigation}
@@ -243,10 +251,9 @@ class DAppIndex extends Component {
               style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={[styles.dappIcon, { width: 40, height: 40 }]} source={{ uri: item.iconUrl }} />
-              <View style={styles.dappInfo}>
+              <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
+              <View style={[styles.dappInfo, { marginLeft: 6 }]}>
                 <Text numberOfLines={2} style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
           )}

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   cardTitleText: {
     color: '#4A4A4A',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Avenir-Medium',
   },
   cardButtonText: {
