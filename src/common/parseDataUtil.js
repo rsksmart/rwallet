@@ -58,6 +58,7 @@ const parseDataUtil = {
   },
 
   getSubdomainStatus(subdomains, records) {
+    // The data queried from the database should correspond to the local records one by one
     if (subdomains.length < records.length) {
       throw new Error('err.subdomainnotfound');
     }
