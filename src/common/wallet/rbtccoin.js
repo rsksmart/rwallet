@@ -151,6 +151,7 @@ export default class RBTCCoin {
       metadata: this.metadata,
       derivationPath: this.derivationPath,
       address: this.address,
+      subdomain: this.subdomain,
       objectId: this.objectId,
       contractAddress: this.contractAddress,
       precision: this.precision,

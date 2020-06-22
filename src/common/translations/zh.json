@@ -60,7 +60,8 @@
         "CONFIRMED": "已确认",
         "enterMemo": "请输入转账备注",
         "slideConfirm": "滑动以确认",
-        "balance": "余额"
+        "balance": "余额",
+        "unavailableAddress": "您输入的钱包地址无效"
       },
       "add": {
         "title": "创建钱包",
@@ -166,6 +167,25 @@
         "note": "禁用资产以将其从投资组合中隐藏。",
         "addCustomToken": "添加自定义代币",
         "custom": "自定义"
+      },
+      "rnsCreateName": {
+        "title": "创建昵称",
+        "address": "地址",
+        "rnsName": "RNS昵称",
+        "anotherAddress": "另一个地址",
+        "nameTooShort": "昵称至少包含{{count}}个字符",
+        "nameUnavailable": "抱歉，您输入的名字不可用",
+        "nameAvailable": "输入的名字可用",
+        "selectAddress": "选择一个地址",
+        "confirmNotice": {
+          "one": "请确认您要为以下的1个钱包创建昵称。",
+          "other": "请确认您要为以下的{{count}}个钱包创建昵称。"
+        }
+      },
+      "rnsStatus": {
+        "pending": "注册等待被确认",
+        "success": "成功! 您的昵称已被创建.",
+        "failed": "失败！您的昵称注册失败."
       }
     },
     "dapp": {
@@ -182,6 +202,11 @@
       }
     },
     "mine": {
+      "addressBook": {
+        "title": "地址簿",
+        "recent": "最近",
+        "all": "所有"
+      },
       "index": {
         "joinRSKCommunity": "加入RSK社群",
         "settings": "设置",
@@ -405,6 +430,20 @@
     "requestTimeout": {
       "title": "请求超时",
       "body": "服务器在指定时间内不能完成请求。"
+    },
+    "rnsNameUnavailable": {
+      "title": "RNS昵称无效",
+      "body": "一些昵称无效。请检查列表，并尝试别的昵称。"
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNS域名未找到",
+      "body": "RNS域名注册信息在服务器上未找到."
+    },
+    "rnsNewFeature": {
+      "title": "发送接收变得更容易",
+      "body": "我们已经支持RNS域名服务，它使得区块链地址有易读的名字。",
+      "confirmText": "让我试试看",
+      "cancelText": "跳过"
     }
   },
   "currency": {

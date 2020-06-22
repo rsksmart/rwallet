@@ -27,6 +27,10 @@ function* updateUserRequest() {
   // Upload wallets or settings to server
   try {
     const state = yield select();
+    const isLogin = state.App.get('isLogin');
+    if (!isLogin) {
+      return;
+    }
     const fcmToken = state.App.get('fcmToken');
     const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken });
 
@@ -131,6 +135,7 @@ function* loginRequest() {
     console.log(`User found with appId ${appId}. Sign in successful.`);
     yield put(actions.resetLoginError());
     yield put(actions.loginDone());
+    yield put(actions.updateUser());
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
     yield put(actions.setLoginError());
@@ -273,7 +278,7 @@ function* processNotificationRequest(action) {
     return null;
   }
   const { event, eventParams } = data;
-  const params = JSON.parse(eventParams);
+  const params = eventParams ? JSON.parse(eventParams) : null;
   switch (event) {
     case 'sentTransaction':
     case 'receivingTransaction':
@@ -287,6 +292,16 @@ function* processNotificationRequest(action) {
       const newAction = actions.setFcmNavParams({
         routeName: 'WalletHistory',
         routeParams: { coin },
+      });
+      yield put(newAction);
+      break;
+    }
+    case 'createRnsSuccess':
+    case 'createRnsFail': {
+      common.currentNavigation.navigate('Home');
+      const newAction = actions.setFcmNavParams({
+        routeName: 'RnsStatus',
+        routeParams: { rnsRows: params },
       });
       yield put(newAction);
       break;
@@ -329,6 +344,7 @@ function* initFcmRequest() {
   const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
   yield put({ type: actions.SET_FCM_TOKEN, fcmToken });
   yield put({ type: actions.UPDATE_USER });
+  yield call(initFcmChannelRequest);
 }
 
 function* getServerInfoRequest() {

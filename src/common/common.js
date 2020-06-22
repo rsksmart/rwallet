@@ -239,19 +239,22 @@ const common = {
 
   /**
    * Validate wallet address
+   * As long as it can be converted into rsk checksum address, it is a valid rsk address.
    * @param {string} address
    * @param {string} symbol, BTC, RBTC, RIF
    * @param {string} type, MainTest or Testnet
    * @param {string} networkId
    */
   isWalletAddress(address, symbol, type, networkId) {
-    let isAdress = false;
     if (symbol === 'BTC') {
-      isAdress = this.isBtcAddress(address, type);
-    } else {
-      isAdress = Rsk3.utils.isAddress(address, networkId);
+      return common.isBtcAddress(address, type);
     }
-    return isAdress;
+    try {
+      Rsk3.utils.toChecksumAddress(address, networkId);
+      return true;
+    } catch (error) {
+      return false;
+    }
   },
 
   /**
@@ -446,6 +449,29 @@ const common = {
 
   getSymbolDecimalPlaces(symbol) {
     return config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
+  },
+
+  isValidRnsSubdomain(text) {
+    const regex = /(([a-z0-9])+\.)+rsk$/g;
+    return regex.test(text);
+  },
+
+  /**
+   * Get short address, omit middle part of rsk token address.
+   * For example, If address is 0xBB18Df33A915A2CFf0cAF0eDd59BD3e7606d0a83,
+   * returns 0xBB18Df33...606d0a83.
+   * @param {*} address, rsk token address
+   * @param {*} length, remains length of head and tail
+   */
+  getShortAddress(address, length = 8) {
+    const prefix = address.substr(0, length + 2);
+    const suffix = address.substr(address.length - length, address.length - 1);
+    const result = `${prefix}...${suffix}`;
+    return result;
+  },
+
+  getFullDomain(subdomain) {
+    return `${subdomain}.${config.rnsDomain}`;
   },
 };
 

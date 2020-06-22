@@ -217,7 +217,6 @@ Transaction.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
   latestBlockHeights: state.Wallet.get('latestBlockHeights'),
   currentLocale: state.App.get('language'),
 });

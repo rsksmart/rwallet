@@ -60,7 +60,8 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
         "slideConfirm": "Deslice para confirmar",
-        "balance": "Equilibrar"
+        "balance": "Equilibrar",
+        "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
       },
       "add": {
         "title": "Agregar Wallet",
@@ -166,6 +167,25 @@
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
         "custom": "Personalizado"
+      },
+      "rnsCreateName": {
+        "title": "Crear apodo",
+        "address": "Habla a",
+        "rnsName": "Apodo RNS",
+        "anotherAddress": "Otra dirección",
+        "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
+        "nameUnavailable": "Lo sentimos, el nombre ingresado no está disponible",
+        "nameAvailable": "El nombre ingresado está disponible",
+        "selectAddress": "Seleccione una direccion",
+        "confirmNotice": {
+          "one": "Confirme que desea crear apodos para menos de 1 billetera.",
+          "other": "Confirme que desea crear apodos para menos de {{count}} billeteras."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registro a la espera de ser confirmado.",
+        "success": "¡Éxito! Tu apodo es creado.",
+        "failed": "¡Ha fallado! No se pudo registrar su apodo."
       }
     },
     "dapp": {
@@ -196,6 +216,11 @@
         "support": "Apoyo",
         "contactUs": "Contacta con nosotros",
         "developerPortal": "Portal del desarrollador"
+      },
+      "addressBook": {
+        "title": "Directorio",
+        "recent": "RECIENTE",
+        "all": "TODAS"
       },
       "language": {
         "title": "Idioma"
@@ -404,6 +429,20 @@
     "requestTimeout": {
       "title": "Pide tiempo fuera",
       "body": "El servidor no pudo completar la solicitud dentro del tiempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apodo RNS no disponible",
+      "body": "Algunos apodos no están disponibles. Verifique la lista y vuelva a intentar el apodo anterior."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Subdominio RNS no encontrado",
+      "body": "El subdominio RNS no se encuentra en el servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar y recibir es más fácil",
+      "body": "Hemos lanzado soporte para RNS, o RIF Name Service que permite la identificación de direcciones blockchain por nombres legibles por humanos.",
+      "confirmText": "Vamos a intentarlo",
+      "cancelText": "omitir"
     }
   },
   "currency": {

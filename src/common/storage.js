@@ -12,6 +12,8 @@ const KEY_DAPPS = 'DAPPS';
 const KEY_DAPP_TYPES = 'DAPPTYPES';
 const ADVERTISEMENTS = 'ADVERTISEMENTS';
 const KEY_RECENT_DAPPS = 'RECENTDAPPS';
+const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
+const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 
 class RNStorage {
   constructor() {
@@ -297,6 +299,27 @@ class RNStorage {
 
   getPrivateKey(id, symbol, type) {
     return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
+  }
+
+  async getIsShowRnsFeature() {
+    const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
+    return isShowRnsFeature || false;
+  }
+
+  setIsShowRnsFeature() {
+    return this.save(IS_SHOW_RNS_FEATURE, true);
+  }
+
+  getRnsRegisteringSubdomains() {
+    return this.load({ key: RNS_REGISTERING_SUBDOMAINS });
+  }
+
+  setRnsRegisteringSubdomains(records) {
+    return this.save(RNS_REGISTERING_SUBDOMAINS, records);
+  }
+
+  clearRnsRegisteringSubdomains() {
+    this.remove(RNS_REGISTERING_SUBDOMAINS);
   }
 }
 

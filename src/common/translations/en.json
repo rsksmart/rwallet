@@ -60,7 +60,8 @@
         "CONFIRMED": "CONFIRMED",
         "enterMemo": "Enter a transaction memo",
         "slideConfirm": "Slide to Confirm",
-        "balance": "Balance"
+        "balance": "Balance",
+        "unavailableAddress": "The wallet address you’ve entered is not valid"
       },
       "add": {
         "title": "Add Wallet",
@@ -163,6 +164,25 @@
         "note": "Disable assets to hide them from your portfolio.",
         "addCustomToken": "Add Custom Token",
         "custom": "Custom"
+      },
+      "rnsCreateName": {
+        "title": "Create Nickname",
+        "address": "Address",
+        "rnsName": "RNS Nickname",
+        "anotherAddress": "Another address",
+        "nameTooShort": "Nickname contains at least {{count}} characters",                                               
+        "nameUnavailable": "Sorry, The name entered is not available",
+        "nameAvailable": "The name entered is available",
+        "selectAddress": "Select a Address",
+        "confirmNotice": {
+          "one": "Please confirm that you would like to create nicknames for below 1 wallet.",
+          "other": "Please confirm that you would like to create nicknames for below {{count}} wallets."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registration waiting to be confirmed.",
+        "success": "Success! Your nickname is created.",
+        "failed": "Failed! Your nickname is failed to register."
       }
     },
     "dapp": {
@@ -193,6 +213,11 @@
         "support": "Support",
         "contactUs": "Contact Us",
         "developerPortal": "Developer Portal"
+      },
+      "addressBook": {
+        "title": "Address Book",
+        "recent": "RECENT",
+        "all": "ALL"
       },
       "language": {
         "title": "Language"
@@ -272,7 +297,11 @@
     "Finish": "Finish",
     "Exchange": "Exchange",
     "addAsset": "Add Asset",
-    "ok": "Ok"
+    "ok": "Ok",
+    "name": "Name",
+    "pending": "Pending",
+    "done": "Done",
+    "share": "SHARE"
   },
   "txState": {
     "Sent": "Sent",
@@ -347,6 +376,10 @@
       "title": "Copied",
       "body": "The address has been copied to the clipboard."
     },
+    "subdomainCopied": {
+      "title": "Copied",
+      "body": "The subdomain has been copied to the clipboard."
+    },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
       "typeNewPasscode": "Type your new passcode",
@@ -401,6 +434,20 @@
     "requestTimeout": {
       "title": "Request timeout",
       "body": "The server could not complete the request within the specified time."
+    },
+    "rnsNameUnavailable": {
+      "title": "RNS nickname unavailable",
+      "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNS Subdomain Not Found",
+      "body": "RNS subdomain is not found in server."
+    },
+    "rnsNewFeature": {
+      "title": "Send & Receive got easier",
+      "body": "We've launched support for RNS, or RIF Name Service which enables the identification of blockchain addresses by human-readable names.",
+      "confirmText": "Let’s try it",
+      "cancelText": "skip"
     }
   },
   "currency": {

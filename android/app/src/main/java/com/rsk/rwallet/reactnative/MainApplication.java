@@ -6,6 +6,8 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
+import cl.json.RNSharePackage;
 import com.bolan9999.SpringScrollViewPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -49,6 +51,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNViewShotPackage(),
+            new RNSharePackage(),
             new SpringScrollViewPackage(),
             new BlurViewPackage(),
             new RNFirebasePackage(),

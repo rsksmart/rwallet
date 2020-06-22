@@ -53,19 +53,19 @@ class RootComponent extends Component {
    * Initialization jobs need to start here
    */
   async componentWillMount() {
-    const { initializeFromStorage, initFcmChannel } = this.props;
+    const { initializeFromStorage, initFcm } = this.props;
     // Load Settings and Wallets from permenate storage
     initializeFromStorage();
-    initFcmChannel();
+    initFcm();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      isInitFromStorageDone, isLogin, currency, prices, isBalanceUpdated,
+      isInitFromStorageDone, isLogin, currency, prices, isTokensUpdated,
     } = nextProps;
 
     const {
-      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetBalanceUpdated, isLogin: lastIsLogin, isInitFromStorageDone: lastIsInitFromStorageDone,
+      currency: originalCurrency, prices: originalPrices, updateWalletAssetValue, resetTokensUpdated, isLogin: lastIsLogin, isInitFromStorageDone: lastIsInitFromStorageDone,
     } = this.props;
 
     // trigger onStorageRead if storage logic is done
@@ -83,12 +83,12 @@ class RootComponent extends Component {
     const isPricesChanged = (!_.isEqual(prices, originalPrices));
     let needUpdate = false;
 
-    console.log('isBalanceUpdated', isBalanceUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
+    console.log('isTokensUpdated', isTokensUpdated, 'isCurrencyChanged', isCurrencyChanged, 'isPricesChanged', isPricesChanged);
     // Update total asset value and list data if there's currency or price change
     // Balance, name, creation/deletion are handled in reducer directly
-    if (isBalanceUpdated) {
+    if (isTokensUpdated) {
       needUpdate = true;
-      resetBalanceUpdated();
+      resetTokensUpdated();
     } else if (isCurrencyChanged || isPricesChanged) {
       needUpdate = true;
     }
@@ -105,13 +105,13 @@ class RootComponent extends Component {
 
   onUserLogin = (props) => {
     const {
-      getServerInfo, updateUser, initLiveQueryPrice, initLiveQueryBalances, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
+      getServerInfo, updateUser, initLiveQueryPrice, initLiveQueryTokens, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
     } = props;
     const tokens = walletManager.getTokens();
     getServerInfo();
     updateUser();
     initLiveQueryPrice();
-    initLiveQueryBalances(tokens);
+    initLiveQueryTokens(tokens);
     initLiveQueryTransactions(tokens);
     initLiveQueryBlockHeights();
   }
@@ -166,7 +166,7 @@ class RootComponent extends Component {
 
 RootComponent.propTypes = {
   initializeFromStorage: PropTypes.func.isRequired,
-  resetBalanceUpdated: PropTypes.func.isRequired,
+  resetTokensUpdated: PropTypes.func.isRequired,
   updateWalletAssetValue: PropTypes.func.isRequired,
   walletManager: PropTypes.shape({
     getTokens: PropTypes.func,
@@ -175,7 +175,7 @@ RootComponent.propTypes = {
   notification: PropTypes.shape({}), // TODO: what is this notification supposed to be?p
   isInitFromStorageDone: PropTypes.bool.isRequired,
   isLogin: PropTypes.bool.isRequired,
-  isBalanceUpdated: PropTypes.bool.isRequired,
+  isTokensUpdated: PropTypes.bool.isRequired,
   currency: PropTypes.string.isRequired,
   prices: PropTypes.arrayOf(PropTypes.object).isRequired,
   showPasscode: PropTypes.bool.isRequired,
@@ -197,7 +197,7 @@ RootComponent.propTypes = {
   fingerprintUsePasscode: PropTypes.func,
   isShowInAppNotification: PropTypes.bool.isRequired,
   inAppNotification: PropTypes.shape({}),
-  initFcmChannel: PropTypes.func.isRequired,
+  initFcm: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
 };

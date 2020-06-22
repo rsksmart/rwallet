@@ -46,6 +46,7 @@ const initState = new Map({
   dappTypes: undefined,
   advertisements: undefined,
   recentDapps: undefined,
+  page: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -166,6 +167,10 @@ export default function appReducer(state = initState, action) {
       storage.setRecentDapps(recentDapps);
       return state.set('recentDapps', recentDapps);
     }
+    case actions.SET_PAGE:
+      return state.set('page', action.page);
+    case actions.RESET_PAGE:
+      return state.set('page', null);
     default:
       return state;
   }

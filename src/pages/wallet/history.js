@@ -22,6 +22,7 @@ import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
+import storage from '../../common/storage';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -30,6 +31,7 @@ const { getCurrencySymbol } = common;
 const sending = require('../../assets/images/icon/sending.png');
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
+const rnsName = require('../../assets/images/icon/rnsName.png');
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -98,8 +100,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'absolute',
-    left: 30,
     bottom: 17,
+    left: 25,
+  },
+  centerAssetsButtonsView: {
+    justifyContent: 'center',
+    left: 0,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -117,6 +123,13 @@ const styles = StyleSheet.create({
   },
   receiveText: {
     color: '#6FC062',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 13,
+    letterSpacing: 0.25,
+    marginLeft: 10,
+  },
+  NameText: {
+    color: '#656667',
     fontFamily: 'Avenir-Medium',
     fontSize: 13,
     letterSpacing: 0.25,
@@ -447,6 +460,17 @@ class History extends Component {
     navigation.navigate('WalletReceive', navigation.state.params);
   }
 
+  onRnsButtonClick = async () => {
+    const { navigation } = this.props;
+    const subdomains = await storage.getRnsRegisteringSubdomains();
+    console.log('Registering subdomains: ', subdomains);
+    if (subdomains) {
+      navigation.navigate('RnsStatus');
+    } else {
+      navigation.navigate('RnsCreateName', { coin: this.coin });
+    }
+  }
+
   onMomentumScrollBegin = () => {
     const { isLoadMore } = this.state;
     if (!isLoadMore) {
@@ -553,6 +577,7 @@ class History extends Component {
 
     const symbol = this.coin && this.coin.symbol;
     const type = this.coin && this.coin.type;
+    const chain = this.coin && this.coin.chain;
     const symbolName = common.getSymbolName(symbol, type);
 
     return (
@@ -572,7 +597,7 @@ class History extends Component {
                 </View>
               )
             }
-            <View style={styles.myAssetsButtonsView}>
+            <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
                 style={styles.ButtonView}
                 onPress={this.onSendButtonClick}
@@ -588,6 +613,18 @@ class History extends Component {
                 <Image source={receive} />
                 <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
+              { symbol !== 'BTC' && (
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={styles.spliteLine} />
+                  <TouchableOpacity
+                    style={[styles.ButtonView]}
+                    onPress={this.onRnsButtonClick}
+                  >
+                    <Image source={rnsName} />
+                    <Loc style={[styles.NameText]} text="button.name" />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </View>

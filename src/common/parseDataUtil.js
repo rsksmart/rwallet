@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import moment from 'moment';
 import definitions from './definitions';
 
@@ -34,9 +35,13 @@ const parseDataUtil = {
    * get balance from parse transaction object
    * @param {*} balanceObj, parse balance object
    */
-  getBalance(balanceObj) {
+  getToken(tokenObj) {
     const balance = {
-      objectId: balanceObj.id, balance: balanceObj.get('balance'), address: balanceObj.get('address'), symbol: balanceObj.get('symbol'),
+      objectId: tokenObj.id,
+      balance: tokenObj.get('balance'),
+      address: tokenObj.get('address'),
+      symbol: tokenObj.get('symbol'),
+      subdomain: tokenObj.get('subdomain'),
     };
     return balance;
   },
@@ -81,6 +86,24 @@ const parseDataUtil = {
       isActive: advertisementObject.get('isActive'),
     };
     return advertisement;
+  },
+
+  getSubdomainStatus(subdomains, records) {
+    // The data queried from the database should correspond to the local records one by one
+    if (subdomains.length < records.length) {
+      throw new Error('err.subdomainnotfound');
+    }
+    _.each(subdomains, (row) => {
+      const status = row.get('status');
+      const address = row.get('address');
+      const subdomain = row.get('subdomain');
+      const item = _.find(records, (record) => address === record.address && subdomain === record.subdomain);
+      if (!item) {
+        throw new Error('err.subdomainnotfound');
+      }
+      item.status = status;
+    });
+    return records;
   },
 };
 

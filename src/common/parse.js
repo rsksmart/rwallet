@@ -29,6 +29,8 @@ const ParseAddress = Parse.Object.extend('Address');
 const ParseTransaction = Parse.Object.extend('Transaction');
 const ParseDapp = Parse.Object.extend('Dapp');
 const ParseAd = Parse.Object.extend('Advertisement');
+const ParseSubdomain = Parse.Object.extend('Subdomain');
+
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
  * so that we don't need to reference ParseUser, ParseGlobal in other files
@@ -231,28 +233,32 @@ class ParseHelper {
     return query.find();
   }
 
-  /**
-   * Get balance of parseObject and update property of each addresss
-   * @param {array} tokens Array of Coin class instance
-   * @returns {array} e.g. [{objectId, balance(hex string)}]
-   */
-  static async fetchBalances(tokens) {
+  static getTokensQuery(tokens) {
     const addresses = _.uniq(_.map(tokens, 'address'));
     const query = new Parse.Query(ParseAddress);
     query.containedIn('address', addresses);
+    return query;
+  }
+
+  /**
+   * Get token of parseObject and update property of each addresss
+   * @param {array} tokens Array of Coin class instance
+   * @returns {array} e.g. [{objectId, balance(hex string)}]
+   */
+  static async fetchTokens(tokens) {
+    const query = ParseHelper.getTokensQuery(tokens);
     let results = await query.find();
-    results = _.map(results, (token) => parseDataUtil.getBalance(token));
-    console.log('fetchBalances, results: ', results);
+    results = _.map(results, (token) => parseDataUtil.getToken(token));
+    console.log('fetchTokens, results: ', results);
     return results;
   }
 
   /**
-   * Subscribe to balances Live Query channel
+   * Subscribe to tokens Live Query channel
    */
-  static async subscribeBalances(tokens) {
-    const addresses = _.uniq(_.map(tokens, 'address'));
-    const query = new Parse.Query(ParseAddress);
-    query.containedIn('address', addresses);
+  static async subscribeTokens(tokens) {
+    const query = ParseHelper.getTokensQuery(tokens);
+    console.log('query: ', query);
     const subscription = await query.subscribe();
     return subscription;
   }
@@ -356,10 +362,10 @@ class ParseHelper {
     });
   }
 
-  static getUserTokenBalance(type, chain, constractAddress, address) {
-    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, constractAddress: ${constractAddress}, address: ${address}`);
+  static getUserTokenBalance(type, chain, contractAddress, address) {
+    console.log(`getUserTokenBalance, type:${type}, chain: ${chain}, contractAddress: ${contractAddress}, address: ${address}`);
     return Parse.Cloud.run('getUserTokenBalance', {
-      type, chain, tokenAddress: constractAddress, userAddress: address,
+      type, chain, tokenAddress: contractAddress, userAddress: address,
     });
   }
 
@@ -394,6 +400,30 @@ class ParseHelper {
     const rows = await query.find();
     const blockHeights = rows.map(parseDataUtil.getBlockHeight);
     return blockHeights;
+  }
+
+  static createSubdomain(params) {
+    return Parse.Cloud.run('createSubdomain', params);
+  }
+
+  static async isSubdomainAvailable(params) {
+    return Parse.Cloud.run('isSubdomainAvailable', params);
+  }
+
+  static async querySubdomain(domain, type) {
+    return Parse.Cloud.run('querySubdomain', { domain, type });
+  }
+
+  static async fetchRegisteringRnsSubdomains(records) {
+    const addresses = _.map(records, (record) => record.address);
+    const subdomains = _.map(records, 'subdomain');
+    const query = new Parse.Query(ParseSubdomain);
+    const result = await query.containedIn('address', addresses)
+      .containedIn('subdomain', subdomains)
+      .ascending('createdAt')
+      .find();
+    const status = parseDataUtil.getSubdomainStatus(result, records);
+    return status;
   }
 
   static unsubscribe(subscription) {

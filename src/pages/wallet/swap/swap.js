@@ -361,25 +361,31 @@ class Swap extends Component {
   onChangeSourceAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
+
+    // There is no '.' but ',' in the spainish's numeric keyboard, so need to replace ',' to '.'
+    const sourceText = text.replace(',', '.');
+    const isAmount = common.isAmount(sourceText);
     let sourceAmount = null;
     if (isAmount) {
-      sourceAmount = parseFloat(text);
+      sourceAmount = parseFloat(sourceText);
     }
     const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-    this.setState({ sourceText: text, switchIndex: -1, ...amountState });
+    this.setState({ sourceText, switchIndex: -1, ...amountState });
   }
 
   onChangeDestAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
+
+    // There is no '.' but ',' in the spainish's numeric keyboard, so need to replace ',' to '.'
+    const destText = text.replace(',', '.');
+    const isAmount = common.isAmount(destText);
     let destAmount = null;
     if (isAmount) {
-      destAmount = parseFloat(text);
+      destAmount = parseFloat(destText);
     }
     const amountState = this.getAmountState(destAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, 'dest');
-    this.setState({ destText: text, switchIndex: -1, ...amountState });
+    this.setState({ destText, switchIndex: -1, ...amountState });
   }
 
   getAmountState = (amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, type = 'source') => {
@@ -642,9 +648,11 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.symbol);
-      const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.symbol);
-      this.setState({ limitHalfDepositCoin, limitMaxDepositCoin });
+      if (currentSwapSource.coin.balance) {
+        const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.symbol);
+        const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.symbol);
+        this.setState({ limitHalfDepositCoin, limitMaxDepositCoin });
+      }
       this.updateRateInfoAndMaxDeposit();
     } else if (!swapSource || !swapDest) {
       this.resetAmountState();
@@ -787,6 +795,7 @@ class Swap extends Component {
                   placeholder="0.00"
                   autoCapitalize="none"
                   autoCorrect={false}
+                  keyboardType="numeric"
                 />
               </View>
               <Text style={styles.boardValue}>{sourceValueText}</Text>
@@ -834,6 +843,7 @@ class Swap extends Component {
                   autoCapitalize="none"
                   autoCorrect={false}
                   editable={!!swapDest}
+                  keyboardType="numeric"
                 />
               </View>
               <Text style={styles.boardValue}>{destValueText}</Text>

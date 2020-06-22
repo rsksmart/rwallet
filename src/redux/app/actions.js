@@ -66,6 +66,9 @@ const actions = {
   ADD_RECENT_DAPP: 'ADD_RECENT_DAPP',
   UPDATE_RECENT_DAPPS: 'UPDATE_RECENT_DAPPS',
 
+  SET_PAGE: 'SET_PAGE',
+  RESET_PAGE: 'RESET_PAGE',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -206,6 +209,13 @@ const actions = {
   addRecentDapp: (dapp) => ({
     type: actions.ADD_RECENT_DAPP,
     dapp,
+  }),
+  setPage: (page) => ({
+    type: actions.SET_PAGE,
+    page,
+  }),
+  resetPage: () => ({
+    type: actions.RESET_PAGE,
   }),
 };
 
