@@ -12,11 +12,12 @@ import SearchInput from '../../components/common/input/searchInput';
 import DappCard from '../../components/card/card.dapp';
 import appActions from '../../redux/app/actions';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { createInfoNotification } from '../../common/notification.controller';
 import AdsCarousel from '../../components/common/carousel/ads.carousel';
+import { createDappWarningConfirmation } from '../../common/confirmation.controller';
+import storage from '../../common/storage';
 
-const recentDappsNumber = 3; // show recent 3 dapps
-const dappPerColumn = 3; // One column has 3 dapps
+const RECENT_DAPPS_NUMBER = 3; // show recent 3 dapps
+const DAPP_PER_COLUMN = 3; // One column has 3 dapps
 
 const styles = StyleSheet.create({
   header: {
@@ -115,16 +116,21 @@ class DAppIndex extends Component {
   }
 
   onDappPress = (dapp) => {
-    const { addNotification, language } = this.props;
+    const { language, addConfirmation } = this.props;
     const dappName = (dapp.name && dapp.name[language]) || dapp.name;
     const description = (dapp.description && dapp.description[language]) || dapp.description;
-    const notification = createInfoNotification(
+    const dappWarningConfirmation = createDappWarningConfirmation(
       strings('modal.dappWarning.title', { dappName }),
       strings('modal.dappWarning.body', { description, dappName }),
-      null,
-      () => this.setState({ walletSelectionVisible: true, clickedDapp: dapp }),
+      () => {
+        this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
+        storage.setIsShowRnsFeature();
+      },
+      () => {
+        storage.setIsShowRnsFeature();
+      },
     );
-    addNotification(notification);
+    addConfirmation(dappWarningConfirmation);
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
@@ -134,7 +140,7 @@ class DAppIndex extends Component {
     _.forEach(recommendedList, (dapp, index) => {
       column.push(dapp);
 
-      if (!((index + 1) % dappPerColumn)) {
+      if (!((index + 1) % DAPP_PER_COLUMN)) {
         recommendedSourceData.push(column);
         column = [];
       }
@@ -149,7 +155,7 @@ class DAppIndex extends Component {
     const { recentDapps, dapps } = this.props;
 
     // show recent dapps
-    const recentSourceData = (recentDapps && recentDapps.length > recentDappsNumber) ? recentDapps.slice(0, recentDappsNumber) : recentDapps;
+    const recentSourceData = (recentDapps && recentDapps.length > RECENT_DAPPS_NUMBER) ? recentDapps.slice(0, RECENT_DAPPS_NUMBER) : recentDapps;
 
     // filter out recommended dapps from all dapps
     const recommendedList = _.filter(dapps, { isRecommended: true });
@@ -324,7 +330,7 @@ DAppIndex.propTypes = {
   dappTypes: PropTypes.arrayOf(PropTypes.object),
   advertisements: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
-  addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 DAppIndex.defaultProps = {
@@ -346,7 +352,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
   fetchDappTypes: () => dispatch(appActions.fetchDappTypes()),
   fetchAdvertisements: () => dispatch(appActions.fetchAdvertisements()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppIndex);

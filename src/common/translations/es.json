@@ -197,6 +197,7 @@
       "button": {
         "seeAll": "Ver Todo",
         "confirm": "Confirmar",
+        "understood": "Entendido",
         "createOrImport": "Crear o importar",
         "cancel": "Cancelar"
       }
@@ -417,7 +418,7 @@
     },
     "dappWarning": {
       "title": "Redireccionamiento a Dapp de terceros \"%{dappName}\"",
-      "body": "%{description}\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp."
+      "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp."
     },
     "walletSelection": {
       "title": "Por favor seleccione Monedero"

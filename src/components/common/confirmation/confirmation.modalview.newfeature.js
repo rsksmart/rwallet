@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet, TouchableOpacity, View, Image,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
 import color from '../../../assets/styles/color.ts';
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
   modalView: {
     marginHorizontal: 25,
     backgroundColor: color.white,
-    borderRadius: 5,
+    borderRadius: 12,
   },
   confirmButton: {
     width: '75%',
@@ -56,15 +58,37 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
+  closeBtn: {
+    marginTop: 34,
+    marginLeft: -3,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeImage: {
+    width: 12,
+    height: 12,
+    resizeMode: 'cover',
+  },
 });
 
+const closeImage = require('../../../assets/images/icon/close.png');
+
 const NewFeatureModalView = ({
-  title, message, onCancelPressed, onConfirmPressed, cancelText, confirmText,
+  title, message, onCancelPressed, onConfirmPressed, cancelText, confirmText, showCloseBtn, titleStyle, messageStyle,
 }) => (
   <View style={styles.modalView}>
     <View style={space.paddingHorizontal_25}>
-      <View style={styles.titleView}><Loc style={[styles.title]} text={title} /></View>
-      <Loc style={[styles.text]} text={message} />
+      {
+        showCloseBtn && (
+          <TouchableOpacity style={styles.closeBtn} onPress={onCancelPressed}>
+            <Image source={closeImage} style={styles.closeImage} />
+          </TouchableOpacity>
+        )
+      }
+      <View style={styles.titleView}><Loc style={titleStyle || styles.title} text={title} /></View>
+      <Loc style={messageStyle || styles.text} text={message} />
     </View>
     <View style={styles.buttonsView}>
       <TouchableOpacity style={[styles.confirmButton]} onPress={onConfirmPressed}>
@@ -82,13 +106,19 @@ NewFeatureModalView.propTypes = {
   message: PropTypes.string.isRequired,
   cancelText: PropTypes.string.isRequired,
   confirmText: PropTypes.string.isRequired,
+  titleStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
+  messageStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
   onCancelPressed: PropTypes.func,
   onConfirmPressed: PropTypes.func,
+  showCloseBtn: PropTypes.bool,
 };
 
 NewFeatureModalView.defaultProps = {
+  titleStyle: null,
+  messageStyle: null,
   onConfirmPressed: () => null,
   onCancelPressed: () => null,
+  showCloseBtn: false,
 };
 
 export default NewFeatureModalView;

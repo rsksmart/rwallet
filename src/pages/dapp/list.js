@@ -10,8 +10,9 @@ import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import appActions from '../../redux/app/actions';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { createInfoNotification } from '../../common/notification.controller';
 import { strings } from '../../common/i18n';
+import { createDappWarningConfirmation } from '../../common/confirmation.controller';
+import storage from '../../common/storage';
 
 const styles = StyleSheet.create({
   item: {
@@ -69,16 +70,22 @@ class DAppList extends Component {
   }
 
   onDappPress = (dapp) => {
-    const { addNotification, language } = this.props;
+    const { addConfirmation, language } = this.props;
     const dappName = (dapp.name && dapp.name[language]) || dapp.name;
     const description = (dapp.description && dapp.description[language]) || dapp.description;
-    const notification = createInfoNotification(
+
+    const dappWarningConfirmation = createDappWarningConfirmation(
       strings('modal.dappWarning.title', { dappName }),
       strings('modal.dappWarning.body', { description, dappName }),
-      null,
-      () => this.setState({ walletSelectionVisible: true, clickedDapp: dapp }),
+      () => {
+        this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
+        storage.setIsShowRnsFeature();
+      },
+      () => {
+        storage.setIsShowRnsFeature();
+      },
     );
-    addNotification(notification);
+    addConfirmation(dappWarningConfirmation);
   }
 
   render() {
@@ -141,7 +148,7 @@ DAppList.propTypes = {
   language: PropTypes.string.isRequired,
   fetchDapps: PropTypes.func.isRequired,
   recentDapps: PropTypes.arrayOf(PropTypes.object),
-  addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 DAppList.defaultProps = {
@@ -157,7 +164,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppList);
