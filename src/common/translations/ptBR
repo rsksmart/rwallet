@@ -61,7 +61,8 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Inserir uma nota de transação",
         "slideConfirm": "Deslize para confirmar",
-        "balance": "Saldo"
+        "balance": "Saldo",
+        "unavailableAddress": "O endereço da carteira digitado não é válido"
       },
       "add": {
         "title": "Adicionar carteira",
@@ -166,6 +167,25 @@
         "note": "Desative para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar tokens personalizados",
         "custom": "Personalizados"
+      },
+      "rnsCreateName": {
+        "title": "Criar apelido",
+        "address": "Endereço",
+        "rnsName": "Apelido RNS",
+        "anotherAddress": "Outro endereço",
+        "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
+        "nameUnavailable": "Desculpe, o nome digitado não está disponível",
+        "nameAvailable": "O nome digitado está disponível",
+        "selectAddress": "Selecione um endereço",
+        "confirmNotice": {
+          "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
+          "other": "Confirme que você deseja criar apelidos para abaixo de {{count}} carteiras."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registro aguardando confirmação.",
+        "success": "Sucesso! Seu apelido é criado.",
+        "failed": "Falhou! Seu apelido não foi registrado."
       }
     },
     "mine": {
@@ -391,6 +411,24 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente um token diferente."
+    },
+    "requestTimeout": {
+      "title": "Tempo limite da solicitação",
+      "body": "O servidor não pôde concluir a solicitação dentro do tempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apelido do RNS indisponível",
+      "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Subdomínio RNS não encontrado",
+      "body": "O subdomínio RNS não foi encontrado no servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar e receber ficou mais fácil",
+      "body": "Lançamos o suporte ao RNS, ou RIF Name Service, que permite a identificação de endereços de blockchain por nomes legíveis por humanos.",
+      "confirmText": "Vamos tentar",
+      "cancelText": "pular"
     }
   },
   "currency": {

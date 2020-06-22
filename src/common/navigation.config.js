@@ -39,6 +39,8 @@ import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
+import RnsCreateName from '../pages/wallet/rns/create';
+import RnsStatus from '../pages/wallet/rns/status';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -285,6 +287,20 @@ const routeConfigMap = {
       path: 'Rename',
       navigationOptions: () => ({
         headerTitle: 'Rename',
+      }),
+    },
+    RnsCreateName: {
+      screen: RnsCreateName,
+      path: 'RnsCreateName',
+      navigationOptions: () => ({
+        headerTitle: 'RnsCreateName',
+      }),
+    },
+    RnsStatus: {
+      screen: RnsStatus,
+      path: 'RnsStatus',
+      navigationOptions: () => ({
+        headerTitle: 'RnsStatus',
       }),
     },
   },

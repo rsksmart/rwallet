@@ -57,6 +57,9 @@ const actions = {
   SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
   RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
 
+  SET_PAGE: 'SET_PAGE',
+  RESET_PAGE: 'RESET_PAGE',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -184,6 +187,13 @@ const actions = {
   }),
   loginDone: () => ({
     type: actions.LOGIN_DONE,
+  }),
+  setPage: (page) => ({
+    type: actions.SET_PAGE,
+    page,
+  }),
+  resetPage: () => ({
+    type: actions.RESET_PAGE,
   }),
 };
 

@@ -150,30 +150,37 @@ class WalletManager {
 
 
   /**
-   * Update balances of Token based on input
-   * @param {array} balances Array of balance object in form of {objectId, balance(hex string)}
-   * @returns {boolean} True if any balance has changed
+   * Update tokens based on input
+   * @param {array} updatedItems Array of items in form of {objectId, balance(hex string), subdomain}, which are always fetched from server.
+   * @returns {boolean} True if any tokens has changed
    */
-  updateBalance(balances) {
-    console.log('updateBalance, balances: ', balances);
+  updateTokens(updatedItems) {
+    console.log('updateTokens, updatedItems: ', updatedItems);
     const tokenInstances = this.getTokens();
     let isDirty = false;
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const match = _.find(balances, (balanceObject) => balanceObject.address === token.address && balanceObject.symbol === token.symbol);
+      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol);
 
-      if (match) {
+      if (matchedToken) {
+        // update balance
         try {
           // Try to convert hex string to BigNumber
-          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
+          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, matchedToken.balance);
           // Update if it fetched new balance value
           if (newBalance && !newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;
             isDirty = true;
           }
         } catch (err) {
-          console.warn(`fetchBalance, unable to convert ${match.symbol} balance ${match.balance} to BigNumber`);
+          console.warn(`updateTokens, unable to convert ${matchedToken.symbol} balance ${matchedToken.balance} to BigNumber`);
+        }
+
+        // update subdomain
+        if (matchedToken.subdomain && newToken.subdomain !== matchedToken.subdomain) {
+          newToken.subdomain = matchedToken.subdomain;
+          isDirty = true;
         }
       }
     });

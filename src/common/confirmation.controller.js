@@ -8,14 +8,25 @@ const createInfoConfirmation = (title, message, confirmationCallback, confirmati
 });
 
 
-const createErrorConfirmation = (title, message, comfirmText, confirmationCallback, confirmationCancelCallback) => ({
+const createErrorConfirmation = (title, message, confirmText, confirmationCallback, confirmationCancelCallback) => ({
   id: Date.now(),
   type: 'error',
   title,
   message,
-  comfirmText,
+  confirmText,
   confirmationCallback,
   confirmationCancelCallback,
 });
 
-export { createInfoConfirmation, createErrorConfirmation };
+const createNewFeatureConfirmation = (title, message, confirmText, cancelText, confirmationCallback, confirmationCancelCallback) => ({
+  id: Date.now(),
+  type: 'newFeature',
+  title,
+  message,
+  confirmText,
+  cancelText,
+  confirmationCallback,
+  confirmationCancelCallback,
+});
+
+export { createInfoConfirmation, createErrorConfirmation, createNewFeatureConfirmation };

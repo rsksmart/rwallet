@@ -25,6 +25,7 @@ import CONSTANTS from '../../common/constants.json';
 import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import references from '../../assets/references';
+import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -222,6 +223,15 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 5,
   },
+  addressError: {
+    color: color.warningText,
+    marginTop: 10,
+  },
+  addressText: {
+    color: color.black,
+    marginTop: 10,
+    fontSize: 12,
+  },
 });
 
 const {
@@ -270,8 +280,9 @@ class Transfer extends Component {
     this.isAmountValid = false;
     this.isAddressValid = !!toAddress;
 
+    this.toAddress = null;
+
     this.confirm = this.confirm.bind(this);
-    this.validateConfirmControl = this.validateConfirmControl.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
     // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
@@ -280,10 +291,8 @@ class Transfer extends Component {
     this.onSendAllPress = this.onSendAllPress.bind(this);
     this.onConfirmPress = this.onConfirmPress.bind(this);
     this.onAmountInputBlur = this.onAmountInputBlur.bind(this);
-    this.onToInputBlur = this.onToInputBlur.bind(this);
     this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
     this.onAmountInputChangeText = this.onAmountInputChangeText.bind(this);
-    this.requestFees = this.requestFees.bind(this);
 
     this.state = {
       loading: false,
@@ -300,6 +309,8 @@ class Transfer extends Component {
       feeSliderValue: 0,
       amountPlaceholderText: '',
       levelFees: null, // [ { fee, value }... ]
+      addressError: null,
+      addressText: '',
     };
   }
 
@@ -323,6 +334,7 @@ class Transfer extends Component {
   componentWillUnmount() {
     const { removeConfirmation } = this.props;
     removeConfirmation();
+    CancelablePromiseUtil.cancel(this);
   }
 
   onGroupSelect(index) {
@@ -340,7 +352,6 @@ class Transfer extends Component {
         this.setState({ to: address }, () => {
           this.requestFees(false);
           this.isAddressValid = true;
-          this.validateConfirmControl();
         });
       },
     });
@@ -396,21 +407,22 @@ class Transfer extends Component {
 
   async onConfirmPress() {
     const { symbol, type, networkId } = this.coin;
-    const { amount, to } = this.state;
+    const { amount } = this.state;
+    const { toAddress } = this;
     // This app use checksum address with chainId, but some third-party app use web3 address,
     // so we need to convert input address to checksum address with chainId before validation and transfer
     // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
-    let toAddress = to;
+    let checksumAddress = toAddress;
     if (symbol !== 'BTC') {
       try {
-        toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
+        checksumAddress = Rsk3.utils.toChecksumAddress(toAddress, networkId);
       } catch (error) {
         this.showInvalidAddressNotification();
         return;
       }
     }
 
-    if (!common.isWalletAddress(toAddress, symbol, type, networkId)) {
+    if (!common.isWalletAddress(checksumAddress, symbol, type, networkId)) {
       this.showInvalidAddressNotification();
       return;
     }
@@ -421,12 +433,13 @@ class Transfer extends Component {
     }
 
     const { callAuthVerify } = this.props;
-    callAuthVerify(() => { this.confirm(toAddress); }, () => null);
+    callAuthVerify(() => { this.confirm(checksumAddress); }, () => null);
   }
 
   onAmountInputBlur() {
     const { amount } = this.state;
     const { coin } = this;
+    this.setState({ enableConfirm: false });
     if (_.isEmpty(amount)) return;
 
     this.isAmountValid = true;
@@ -447,15 +460,47 @@ class Transfer extends Component {
     this.requestFees(false);
   }
 
-  onToInputBlur() {
+  onToInputBlur = async () => {
+    const { navigation, addConfirmation } = this.props;
     const { to } = this.state;
     const { symbol, type, networkId } = this.coin;
+    this.setState({ enableConfirm: false });
     if (_.isEmpty(to)) return;
-    this.isAddressValid = common.isWalletAddress(to, symbol, type, networkId);
+    let address = null;
+    this.setState({ addressText: null, addressError: null });
+    if (common.isValidRnsSubdomain(to)) {
+      console.log(`toAddress[${to}] a rns subdomain.`);
+      this.setState({ loading: true });
+      try {
+        const subdomainAddress = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(to, type), this);
+        if (subdomainAddress) {
+          this.setState({ addressText: subdomainAddress });
+          address = subdomainAddress;
+        } else {
+          this.setState({ addressError: strings('page.wallet.transfer.unavailableAddress') });
+          return;
+        }
+      } catch (error) {
+        const confirmation = createErrorConfirmation(
+          definitions.defaultErrorNotification.title,
+          definitions.defaultErrorNotification.message,
+          'button.retry',
+          () => this.onToInputBlur(),
+          () => navigation.goBack(),
+        );
+        addConfirmation(confirmation);
+      } finally {
+        this.setState({ loading: false });
+      }
+    } else {
+      address = to;
+    }
+    this.isAddressValid = common.isWalletAddress(address, symbol, type, networkId);
     if (!this.isAddressValid) {
       this.showInvalidAddressNotification();
       return;
     }
+    this.toAddress = address;
     this.requestFees(false);
   }
 
@@ -464,6 +509,7 @@ class Transfer extends Component {
     // Because the fee of BTC transaction does not depend on memo,
     // changes to memo do not require recalculation of fee.
     if (symbol !== 'BTC') {
+      this.setState({ enableConfirm: false });
       this.requestFees(false);
     }
   }
@@ -489,39 +535,46 @@ class Transfer extends Component {
     return feeParams;
   }
 
-  calcCustomFee(value) {
-    const { currency, prices } = this.props;
-    const { feeSymbol } = this.state;
-    const { type } = this.coin;
-    let customFeeValue = null;
-    let customFee = null;
-    if (feeSymbol === 'BTC') {
-      const { minCustomFee, maxCustomFee } = this;
-      customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
-    } else {
-      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
-      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
-      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
+  querySubdomainAddress = async (subdomain, type) => {
+    const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(subdomain, type), this);
+    return subdomains;
+  }
+
+  /**
+   * requestFees
+   * This function checks user input and requests fees.
+   * If the user input is invalid, the request will not be initiated.
+   * Finally, the result of the request will be saved in the page state.
+   * @param {*} isAllBalance, Indicates whether the user needs to send the entire balance.
+   */
+  requestFees = async (isAllBalance) => {
+    const { amount, to } = this.state;
+    const { isAmountValid, isAddressValid } = this;
+    const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
+    if (!isValid) {
+      return;
     }
-    return { customFee, customFeeValue };
+    const transactionFees = await this.loadTransactionFees(isAllBalance);
+    if (!transactionFees) {
+      return;
+    }
+    this.processFees(transactionFees);
   }
 
   async loadTransactionFees(isAllBalance) {
     const { navigation, addConfirmation } = this.props;
-    const { amount, to, memo } = this.state;
-    const { coin, txFeesCache } = this;
+    const { amount, memo } = this.state;
+    const { coin, txFeesCache, toAddress } = this;
     const {
       symbol, type, transactions, privateKey, address,
     } = coin;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
-    console.log(`amount: ${amount}, to: ${to}, memo: ${memo}`);
+    console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 
     let isMatched = false;
-    if (amount === lastAmount && to === lastTo) {
+    if (amount === lastAmount && toAddress === lastTo) {
       if (symbol !== 'BTC') {
         isMatched = memo === lastMemo;
       } else {
@@ -529,6 +582,7 @@ class Transfer extends Component {
       }
     }
     if (isMatched) {
+      this.setState({ enableConfirm: true });
       return null;
     }
 
@@ -541,7 +595,7 @@ class Transfer extends Component {
           amount,
           transactions,
           fromAddress: address,
-          destAddress: to,
+          destAddress: toAddress,
           privateKey,
           isSendAllBalance: isAllBalance,
         };
@@ -549,13 +603,14 @@ class Transfer extends Component {
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       } else {
-        transactionFees = await parseHelper.getTransactionFees(symbol, type, address, to, fee, memo);
+        transactionFees = await parseHelper.getTransactionFees(symbol, type, address, toAddress, fee, memo);
       }
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
-        amount, to, memo, transactionFees,
+        amount, toAddress, memo, transactionFees,
       };
+      this.setState({ enableConfirm: true });
       return transactionFees;
     } catch (error) {
       // If error, let user try again or quit.
@@ -573,19 +628,23 @@ class Transfer extends Component {
     }
   }
 
-  async requestFees(isAllBalance) {
-    const { amount, to } = this.state;
-    const { isAmountValid, isAddressValid } = this;
-    const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
-    console.log('requestFees, isValid: ', isValid);
-    if (!isValid) {
-      return;
+  calcCustomFee(value) {
+    const { currency, prices } = this.props;
+    const { feeSymbol } = this.state;
+    const { type } = this.coin;
+    let customFeeValue = null;
+    let customFee = null;
+    if (feeSymbol === 'BTC') {
+      const { minCustomFee, maxCustomFee } = this;
+      customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
+    } else {
+      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
+      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
+      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
+      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
     }
-    const transactionFees = await this.loadTransactionFees(isAllBalance);
-    if (!transactionFees) {
-      return;
-    }
-    this.processFees(transactionFees);
+    return { customFee, customFeeValue };
   }
 
   processFees(transactionFees) {
@@ -735,19 +794,12 @@ class Transfer extends Component {
     }
   }
 
-  validateConfirmControl() {
-    const { to, amount } = this.state;
-    const { isAmountValid, isAddressValid } = this;
-    this.setState({ enableConfirm: isAmountValid && isAddressValid && to && amount });
-  }
-
   inputAmount(text, callback) {
     // Replace comma as dot in argentinian amount input.
     const newText = text.replace(',', '.');
     this.setState({ amount: newText });
     if (parseFloat(newText) >= 0) {
       this.setState({ amount: newText }, () => {
-        this.validateConfirmControl();
         if (callback) {
           callback();
         }
@@ -837,6 +889,25 @@ class Transfer extends Component {
     );
   }
 
+  renderAddressText = () => {
+    const { addressError, addressText } = this.state;
+    if (addressError) {
+      return (
+        <Text style={styles.addressError}>
+          {addressError}
+        </Text>
+      );
+    }
+    if (addressText) {
+      return (
+        <Text style={styles.addressText}>
+          {addressText}
+        </Text>
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
       loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
@@ -888,15 +959,15 @@ class Transfer extends Component {
               <TextInput
                 style={[styles.textInput]}
                 value={to}
-                onChangeText={(text) => {
-                  this.setState({ to: text.trim() }, this.validateConfirmControl);
-                }}
+                onChangeText={(text) => { this.setState({ to: text.trim() }); }}
                 onBlur={this.onToInputBlur}
+                autoCapitalize="none"
               />
               <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
                 <Image source={references.images.scanAddress} />
               </TouchableOpacity>
             </View>
+            {this.renderAddressText()}
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.memo]} text="page.wallet.transfer.memo" />

@@ -160,6 +160,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-view-shot')
+    implementation project(':react-native-share')
     implementation project(':react-native-spring-scrollview')
     implementation project(':@react-native-community_blur')
     implementation project(':react-native-firebase')

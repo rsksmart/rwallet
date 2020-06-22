@@ -9,6 +9,8 @@ import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import Loc from '../misc/loc';
 import { DEVICE } from '../../../common/info';
+import common from '../../../common/common';
+import TypeTag from '../misc/type.tag';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +21,7 @@ const styles = StyleSheet.create({
   panel: {
     backgroundColor: color.white,
     borderRadius: 5,
-    marginHorizontal: 45,
+    marginHorizontal: 35,
     maxHeight: DEVICE.screenHeight * 0.6,
   },
   row: {
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class SelectionModal extends Component {
+class AddressSelectionModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,6 +94,22 @@ class SelectionModal extends Component {
     this.setState({ visible: false });
   }
 
+  renderListItem = ({ item: { type, address }, index }) => {
+    const { currentIndex } = this.state;
+    return (
+      <TouchableOpacity
+        style={[styles.row, styles.listRow]}
+        onPress={() => { this.onItemSelected(index); }}
+      >
+        <TypeTag type={type} />
+        <Text style={[flex.flex1, currentIndex === index ? styles.selectedColor : null, space.marginLeft_18]}>{common.getShortAddress(address, 6)}</Text>
+        { currentIndex === index && (
+        <Ionicons style={styles.selectedColor} name="ios-checkmark" size={30} />
+        )}
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { title, items } = this.props;
     const { currentIndex, visible } = this.state;
@@ -104,17 +122,7 @@ class SelectionModal extends Component {
               showsVerticalScrollIndicator={false}
               data={items}
               extraData={currentIndex}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  style={[styles.row, styles.listRow]}
-                  onPress={() => { this.onItemSelected(index); }}
-                >
-                  <Text style={[flex.flex1, currentIndex === index ? styles.selectedColor : null]}>{item}</Text>
-                  { currentIndex === index && (
-                    <Ionicons style={styles.selectedColor} name="ios-checkmark" size={30} />
-                  )}
-                </TouchableOpacity>
-              )}
+              renderItem={this.renderListItem}
               keyExtractor={(item, index) => index.toString()}
             />
             <View style={styles.ButtonsView}>
@@ -132,10 +140,10 @@ class SelectionModal extends Component {
   }
 }
 
-SelectionModal.propTypes = {
+AddressSelectionModal.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.string).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
-export default SelectionModal;
+export default AddressSelectionModal;

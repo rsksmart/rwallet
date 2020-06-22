@@ -41,6 +41,7 @@ const initState = new Map({
   inAppNotification: undefined,
   fcmNavParams: undefined,
   fcmToken: undefined,
+  page: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -141,6 +142,10 @@ export default function appReducer(state = initState, action) {
       return state.set('isLoginError', true);
     case actions.RESET_LOGIN_ERROR:
       return state.set('isLoginError', false);
+    case actions.SET_PAGE:
+      return state.set('page', action.page);
+    case actions.RESET_PAGE:
+      return state.set('page', null);
     default:
       return state;
   }

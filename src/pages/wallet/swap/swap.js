@@ -642,9 +642,11 @@ class Swap extends Component {
       const duRate = currentSwapDest ? prices.find((price) => price.symbol === currentSwapDest.coin.symbol) : null;
       if (suRate) this.setState({ sourceUsdRate: parseFloat(suRate.price.USD) });
       if (duRate) this.setState({ destUsdRate: parseFloat(duRate.price.USD) });
-      const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.symbol);
-      const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.symbol);
-      this.setState({ limitHalfDepositCoin, limitMaxDepositCoin });
+      if (currentSwapSource.coin.balance) {
+        const limitHalfDepositCoin = common.formatAmount(currentSwapSource.coin.balance.div(2), currentSwapSource.coin.symbol);
+        const limitMaxDepositCoin = common.formatAmount(currentSwapSource.coin.balance, currentSwapSource.coin.symbol);
+        this.setState({ limitHalfDepositCoin, limitMaxDepositCoin });
+      }
       this.updateRateInfoAndMaxDeposit();
     } else if (!swapSource || !swapDest) {
       this.resetAmountState();
