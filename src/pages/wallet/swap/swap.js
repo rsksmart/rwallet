@@ -361,25 +361,27 @@ class Swap extends Component {
   onChangeSourceAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
+    const sourceText = text.replace(',', '.');
+    const isAmount = common.isAmount(sourceText);
     let sourceAmount = null;
     if (isAmount) {
-      sourceAmount = parseFloat(text);
+      sourceAmount = parseFloat(sourceText);
     }
     const amountState = this.getAmountState(sourceAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate);
-    this.setState({ sourceText: text, switchIndex: -1, ...amountState });
+    this.setState({ sourceText, switchIndex: -1, ...amountState });
   }
 
   onChangeDestAmount(text) {
     const { swapDest, swapSource } = this.props;
     const { limitMinDepositCoin, limitMaxDepositCoin, rate } = this.state;
-    const isAmount = common.isAmount(text);
+    const destText = text.replace(',', '.');
+    const isAmount = common.isAmount(destText);
     let destAmount = null;
     if (isAmount) {
-      destAmount = parseFloat(text);
+      destAmount = parseFloat(destText);
     }
     const amountState = this.getAmountState(destAmount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, 'dest');
-    this.setState({ destText: text, switchIndex: -1, ...amountState });
+    this.setState({ destText, switchIndex: -1, ...amountState });
   }
 
   getAmountState = (amount, swapDest, swapSource, limitMinDepositCoin, limitMaxDepositCoin, rate, type = 'source') => {
