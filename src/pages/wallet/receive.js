@@ -16,7 +16,6 @@ import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color.ts';
 import { DEVICE } from '../../common/info';
-import space from '../../assets/styles/space';
 import flex from '../../assets/styles/layout.flex';
 
 const copyIcon = require('../../assets/images/icon/copy.png');
@@ -38,6 +37,7 @@ const styles = StyleSheet.create({
     width: QRCODE_SIZE + 50,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 18,
   },
   subdomainText: {
@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   },
   addressView: {
     marginTop: DEVICE.screenHeight * 0.01,
-    alignItems: 'center',
   },
   addressText: {
     color: color.app.theme,
@@ -60,7 +59,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   copyIcon: {
-    marginLeft: 2,
+    marginLeft: 5,
+    marginBottom: 2,
   },
 });
 
@@ -195,12 +195,12 @@ class WalletReceive extends Component {
                 {subdomain && (
                   <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
                     <Text style={[styles.subdomainText]}>{subdomain}</Text>
-                    <Image style={space.marginLeft_3} source={copyIcon} />
+                    <Image style={styles.copyIcon} source={copyIcon} />
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
                   <Text style={styles.addressText}>{address}</Text>
-                  <Image style={space.marginLeft_3} source={copyIcon} />
+                  <Image style={styles.copyIcon} source={copyIcon} />
                 </TouchableOpacity>
               </View>
             </View>
