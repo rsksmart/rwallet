@@ -419,7 +419,7 @@
     },
     "dappWarning": {
       "title": "重定向到第三方Dapp “%{dappName}”",
-      "body": "%{description}\n\n注意：您将被重定向到第三方 “%{dappName}”。 请仔细阅读第三方Dapp的用户协议和隐私政策。 “%{dappName}” 将保留对Dapp上的所有操作和使用的全部责任。"
+      "body": "%{description}\n\n注意：您将被重定向到第三方 “%{dappName}”。 请仔细阅读第三方Dapp的用户协议和隐私政策。 “%{dappName}” 将保留对Dapp上的所有操作和使用的全部责任。\n\n"
     },
     "walletSelection": {
       "title": "请选择钱包"

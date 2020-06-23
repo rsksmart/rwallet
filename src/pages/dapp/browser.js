@@ -198,9 +198,7 @@ class DAppBrowser extends Component {
           window.ethereum.sendAsync = sendAsync
         }
 
-        setTimeout(() => {
-          initWeb3()
-        }, 0)
+        initWeb3()
       }) ();
       true
     `;
