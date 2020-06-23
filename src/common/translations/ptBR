@@ -178,7 +178,7 @@
         "nameAvailable": "O nome digitado está disponível",
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
-          "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
+          "one": "Confirme que você deseja criar apelidos para a carteira 1 abaixo.",
           "other": "Confirme que você deseja criar apelidos para as {{count}} carteiras abaixo."
         }
       },
