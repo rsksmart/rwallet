@@ -20,12 +20,13 @@ export default class AdsCarousel extends PureComponent {
       style, data, renderItem, sliderWidth, itemWidth,
     } = this.props;
     const { activeSlide } = this.state;
+    const sourceData = data || [];
     return (
       <View style={style}>
         <Carousel
           loop
           layout="default"
-          data={data || []}
+          data={sourceData}
           renderItem={renderItem}
           sliderWidth={sliderWidth || viewWidth}
           itemWidth={itemWidth || viewWidth}
@@ -33,7 +34,7 @@ export default class AdsCarousel extends PureComponent {
         />
 
         <Pagination
-          dotsLength={data.length}
+          dotsLength={sourceData.length}
           activeDotIndex={activeSlide}
           containerStyle={{ position: 'absolute', bottom: -21 }}
           dotStyle={{
