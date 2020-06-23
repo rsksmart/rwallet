@@ -212,14 +212,14 @@ class WalletSelection extends PureComponent {
     _.forEach(tokens, (token, index) => {
       const canModTwo = !((index + 1) % 2);
       row.push(
-        <View style={styles.tokenItem} key={`${token.address}-${token.symbol}`}>
+        <View style={styles.tokenItem} key={`${token.objectId}-${token.symbol}`}>
           <Text style={styles.tokenText}>{token.symbol}</Text>
           <Text style={styles.tokenText}>{Number((token.balance && token.balance.toString())).toFixed(4) || 0}</Text>
         </View>,
       );
       if (canModTwo) {
         result.push(
-          <View style={styles.tokenRow} key={`${token.address}-row-${index}`}>
+          <View style={styles.tokenRow} key={`${token.objectId}-row-${index}`}>
             {row}
           </View>,
         );
@@ -228,7 +228,7 @@ class WalletSelection extends PureComponent {
     });
     if (row.length) {
       result.push(
-        <View style={styles.tokenRow} key={`${tokens[row.length]}-row-${row.length}`}>
+        <View style={styles.tokenRow} key={`${tokens[result.length].objectId}-row-${row.length}`}>
           {row}
         </View>,
       );
