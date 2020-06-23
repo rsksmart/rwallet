@@ -179,12 +179,12 @@
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
           "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
-          "other": "Confirme que você deseja criar apelidos para abaixo de {{count}} carteiras."
+          "other": "Confirme que você deseja criar apelidos para as {{count}} carteiras abaixo."
         }
       },
       "rnsStatus": {
-        "pending": "Registro aguardando confirmação.",
-        "success": "Sucesso! Seu apelido é criado.",
+        "pending": "Aguardando confirmação do registro.",
+        "success": "Sucesso! Seu apelido foi criado.",
         "failed": "Falhou! Seu apelido não foi registrado."
       }
     },
