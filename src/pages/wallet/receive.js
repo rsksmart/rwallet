@@ -17,6 +17,7 @@ import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color.ts';
 import { DEVICE } from '../../common/info';
 import space from '../../assets/styles/space';
+import flex from '../../assets/styles/layout.flex';
 
 const copyIcon = require('../../assets/images/icon/copy.png');
 // const refreshIcon = require('../../assets/images/icon/refresh.png');
@@ -102,7 +103,7 @@ class WalletReceive extends Component {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
 
-      const uri = await captureRef(this, {
+      const uri = await captureRef(this.page, {
         format: 'jpg',
         quality: 0.8,
         result: 'tmpfile',
@@ -175,32 +176,36 @@ class WalletReceive extends Component {
       const qrText = address;
       const title = `${strings('button.Receive')} ${symbolName}`;
       return (
-        <BasePageGereral
-          isSafeView={false}
-          hasBottomBtn
-          bottomBtnText="button.share"
-          bottomBtnOnPress={this.onSharePressed}
-          hasLoader={false}
-          headerComponent={<Header onBackButtonPress={() => { navigation.goBack(); }} title={title} />}
-        >
-          <View style={styles.body}>
-            <View style={[styles.qrView]}>
-              <QRCode value={qrText} size={QRCODE_SIZE} />
-            </View>
-            <View style={[styles.addressContainer]}>
-              {subdomain && (
-                <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
-                  <Text style={[styles.subdomainText]}>{subdomain}</Text>
+        // react-native-view-shot a view ref with the property collapsable = false.
+        <View style={flex.flex1} collapsable={false} ref={(ref) => { this.page = ref; }}>
+          <BasePageGereral
+            collapsable={false}
+            isSafeView={false}
+            hasBottomBtn
+            bottomBtnText="button.share"
+            bottomBtnOnPress={this.onSharePressed}
+            hasLoader={false}
+            headerComponent={<Header onBackButtonPress={() => { navigation.goBack(); }} title={title} />}
+          >
+            <View style={styles.body}>
+              <View style={[styles.qrView]}>
+                <QRCode value={qrText} size={QRCODE_SIZE} />
+              </View>
+              <View style={[styles.addressContainer]}>
+                {subdomain && (
+                  <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
+                    <Text style={[styles.subdomainText]}>{subdomain}</Text>
+                    <Image style={space.marginLeft_3} source={copyIcon} />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
+                  <Text style={styles.addressText}>{address}</Text>
                   <Image style={space.marginLeft_3} source={copyIcon} />
                 </TouchableOpacity>
-              )}
-              <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
-                <Text style={styles.addressText}>{address}</Text>
-                <Image style={space.marginLeft_3} source={copyIcon} />
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </BasePageGereral>
+          </BasePageGereral>
+        </View>
       );
     }
 }
