@@ -440,6 +440,10 @@
       "body": "我们已经支持RNS域名服务，它使得区块链地址有易读的名字。",
       "confirmText": "让我试试看",
       "cancelText": "跳过"
+    },
+    "balanceInvalid": {
+      "title": "余额无效",
+      "body": "代币的余额无效，请重试!"
     }
   },
   "currency": {

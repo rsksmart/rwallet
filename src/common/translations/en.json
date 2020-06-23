@@ -444,6 +444,10 @@
       "body": "We've launched support for RNS, or RIF Name Service which enables the identification of blockchain addresses by human-readable names.",
       "confirmText": "Let’s try it",
       "cancelText": "skip"
+    },
+    "balanceInvalid": {
+      "title": "Balance Invalid",
+      "body": "Balance of this token is invalid. please try again later!"
     }
   },
   "currency": {
