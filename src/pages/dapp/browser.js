@@ -25,12 +25,11 @@ class DAppBrowser extends Component {
     super(props);
 
     const { navigation } = this.props;
-    const currentWallet = navigation.state.params.wallet || null;
 
     this.state = {
       canGoBack: false,
       walletSelectionVisible: false,
-      wallet: this.generateWallet(currentWallet),
+      wallet: navigation.state.params.wallet || null,
       web3JsContent: '',
       ethersJsContent: '',
     };
@@ -69,16 +68,6 @@ class DAppBrowser extends Component {
     }
   }
 
-  generateWallet = (currentWallet) => {
-    // // generate mainnet wallet
-    // return { ...currentWallet, address: currentWallet.coins[0].address };
-
-    // generate test wallet
-    const { mnemonic } = currentWallet;
-    const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/37310'/0'/0/0");
-    return mnemonicWallet;
-  }
-
   getJsCode = (address) => {
     const { web3JsContent, ethersJsContent } = this.state;
     return `
@@ -89,24 +78,17 @@ class DAppBrowser extends Component {
         let resolver, rejecter, hash
         setTimeout(() => {
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
-            const result = data.data
-            if (result && resolver) {
+            console.log('data: ', data.data)
+            const result = JSON.parse(data.data)
+            if (result && result.error && rejecter) {
+              rejecter(new Error(result.message))
+            } else if (resolver) {
               resolver(result)
-            } else if (rejecter) {
-              rejecter(1)
             }
           })
         }, 0)
 
-        getHash = (payload) => {
-          return new Promise((resolve, reject) => {
-            window.ReactNativeWebView.postMessage(JSON.stringify(payload))
-            resolver = resolve
-            rejecter = reject
-          })
-        }
-
-        getTransactionReceipt = (payload) => {
+        communicateWithRN = (payload) => {
           return new Promise((resolve, reject) => {
             window.ReactNativeWebView.postMessage(JSON.stringify(payload))
             resolver = resolve
@@ -150,15 +132,15 @@ class DAppBrowser extends Component {
 
           const sendAsync = async (payload, callback) => {
             window.ethereum.sendAsync = window.ethereum.send
-            let err, res, result = ''
+            let err, res = {}, result = ''
             const {method, params, jsonrpc, id} = payload
+            console.log('payload: ', payload)
             try {
               if (method === 'net_version') {
                 result = '31'
               }
               if (method === 'eth_getBlockByNumber') {
-                const blockNumber = await provider.getBlockNumber()
-                result = await provider.getBlock(blockNumber)
+                result = await communicateWithRN(payload)
               }
               if (method === 'eth_call') {
                 result = await provider.call(params[0], params[1])
@@ -171,12 +153,11 @@ class DAppBrowser extends Component {
                 result = result.toNumber()
               }
               if (method === 'eth_sendTransaction') {
-                result = await getHash(payload)
+                result = await communicateWithRN(payload)
                 hash = result
               }
               if (method === 'eth_getTransactionReceipt') {
-                result = await getTransactionReceipt(payload)
-                result = JSON.parse(result)
+                result = await communicateWithRN(payload)
               }
               if (method === 'eth_getTransactionByHash') {
                 result = await provider.getTransaction(params[0])
@@ -210,7 +191,8 @@ class DAppBrowser extends Component {
 
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
-    const { address } = wallet;
+    const { coins } = wallet;
+    const { address } = coins[0];
     console.log('address: ', address);
 
     const jsCode = this.getJsCode(address);
@@ -230,58 +212,78 @@ class DAppBrowser extends Component {
           onCloseButtonPress={() => navigation.goBack()}
           onSwitchButtonPress={() => this.setState({ walletSelectionVisible: true })}
         />
-        <ProgressWebView
-          source={{ uri: url }}
-          ref={this.webview}
-          onLoadStart={() => {
-            this.webview.current.injectJavaScript(jsCode);
-          }}
-          onNavigationStateChange={(navState) => {
-            const { canGoBack } = navState;
-            this.setState({ canGoBack });
-          }}
-          onMessage={(event) => {
-            const { data } = event.nativeEvent;
-            const payload = JSON.parse(data);
-            const { method, params } = payload;
-            console.log('payload: ', payload);
-            if (method === 'eth_sendTransaction') {
-              console.log('address: ', address);
-              try {
-                callAuthVerify(async () => {
-                  const nonce = await provider.getTransactionCount(address);
-                  const txData = {
-                    nonce,
-                    data: params[0].data,
-                    gasLimit: params[0].gas || 600000,
-                    gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-                    to: params[0].to,
-                    value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-                  };
-                  const signedTransaction = await wallet.sign(txData);
-                  const result = await provider.sendTransaction(signedTransaction);
-                  this.webview.current.postMessage(result.hash);
-                }, () => null);
-              } catch (error) {
-                console.log('error', error);
-              }
-            } else if (method === 'eth_getTransactionReceipt') {
-              rsk3.getTransactionReceipt(params[0]).then((res) => {
-                res.status = res.status ? 1 : 0;
-                this.webview.current.postMessage(JSON.stringify(res));
-              }).catch((err) => {
-                console.log('err: ', err);
-                this.webview.current.postMessage('');
-              });
-            }
-          }}
-        />
+        {
+          address && (
+            <ProgressWebView
+              source={{ uri: url }}
+              ref={this.webview}
+              onLoadStart={() => {
+                this.webview.current.injectJavaScript(jsCode);
+              }}
+              onNavigationStateChange={(navState) => {
+                const { canGoBack } = navState;
+                this.setState({ canGoBack });
+              }}
+              onMessage={(event) => {
+                const { data } = event.nativeEvent;
+                const payload = JSON.parse(data);
+                const { method, params } = payload;
+                console.log('payload: ', payload);
+                if (method === 'eth_getBlockByNumber') {
+                  rsk3.getBlock(params[0]).then((res) => {
+                    this.webview.current.postMessage(JSON.stringify(res));
+                  }).catch((err) => {
+                    const error = { error: 1, message: err.message };
+                    this.webview.current.postMessage(JSON.stringify(error));
+                  });
+                } else if (method === 'eth_sendTransaction') {
+                  callAuthVerify(async () => {
+                    try {
+                      const nonce = await provider.getTransactionCount(address);
+                      const txData = {
+                        nonce,
+                        data: params[0].data,
+                        gasLimit: params[0].gas || 600000,
+                        gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+                        to: params[0].to,
+                        value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+                      };
+                      const { privateKey } = coins[0];
+                      const signWallet = new ethers.Wallet(privateKey, provider);
+                      const signedTransaction = await signWallet.sign(txData);
+                      const result = await provider.sendTransaction(signedTransaction);
+                      this.webview.current.postMessage(JSON.stringify(result.hash));
+                    } catch (err) {
+                      console.log('err: ', err);
+                      const error = { error: 1, message: err.message };
+                      this.webview.current.postMessage(JSON.stringify(error));
+                    }
+                  }, () => null);
+                } else if (method === 'eth_getTransactionReceipt') {
+                  rsk3.getTransactionReceipt(params[0]).then((res) => {
+                    let result = res;
+                    if (res) {
+                      result.status = res.status ? 1 : 0;
+                    } else {
+                      result = '';
+                    }
+                    this.webview.current.postMessage(JSON.stringify(res));
+                  }).catch((err) => {
+                    console.log('err: ', err);
+                    const error = new Error({ error: 1, message: err.message });
+                    this.webview.current.postMessage(JSON.stringify(error));
+                  });
+                }
+              }}
+            />
+          )
+        }
         <WalletSelection
           navigation={navigation}
           visible={walletSelectionVisible}
           closeFunction={() => this.setState({ walletSelectionVisible: false })}
           confirmButtonPress={(switchWallet) => {
-            this.setState({ walletSelectionVisible: false, wallet: this.generateWallet(switchWallet) }, () => {
+            this.setState({ walletSelectionVisible: false, wallet: switchWallet }, () => {
               this.webview.current.reload();
               setTimeout(() => {
                 this.webview.current.injectJavaScript(jsCode);
