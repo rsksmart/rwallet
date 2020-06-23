@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     backgroundColor: 'white',
-    borderRadius: 6,
+    borderRadius: 12,
     width: '87%',
   },
   title: {
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     marginBottom: 36,
     alignSelf: 'center',
     fontSize: 17,
-    fontWeight: 'bold',
     fontFamily: 'Avenir-Heavy',
+    color: 'black',
   },
   line: {
     width: '100%',
@@ -47,20 +47,16 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     marginHorizontal: 15,
-    padding: 15,
-    paddingTop: 0,
-    height: 200,
+    padding: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noWalletText: {
     fontFamily: 'Avenir-Book',
     fontSize: 16,
+    color: 'black',
   },
-  wallets: {
-    height: 100,
-  },
-  btnView: {
+  confirmBtnView: {
     width: '80%',
     height: 44,
     alignSelf: 'center',
@@ -70,14 +66,24 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     marginTop: 10,
   },
-  btnFont: {
-    color: 'white',
+  confirmBtnFont: {
+    color: '#F3F3F3',
     fontFamily: 'Avenir-Heavy',
-    fontWeight: 'bold',
     fontSize: 16,
   },
-  walletItem: {
-    marginTop: 15,
+  cancelBtnView: {
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  cancelBtnFont: {
+    color: '#B1B1B1',
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+  },
+  separator: {
+    height: 15,
+    width: '100%',
   },
   selection: {
     flexDirection: 'row',
@@ -236,7 +242,7 @@ class WalletSelection extends PureComponent {
     const { address: selectedAddress } = this.getWalletInfo(selectedWallet);
     const { address, network } = this.getWalletInfo(item);
     return (
-      <TouchableOpacity activeOpacity={1} style={styles.walletItem} onPress={() => { this.setState({ selectedWallet: item }); }}>
+      <TouchableOpacity activeOpacity={1} onPress={() => { this.setState({ selectedWallet: item }); }}>
         <View style={styles.selection}>
           <View style={[{ padding: 5 }, network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
             <Text style={styles.network}>{network}</Text>
@@ -297,6 +303,7 @@ class WalletSelection extends PureComponent {
               {
                 supportWallets.length ? (
                   <FlatList
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
                     showsVerticalScrollIndicator={false}
                     bounces={false}
                     data={supportWallets}
@@ -310,7 +317,7 @@ class WalletSelection extends PureComponent {
             <View style={styles.line} />
 
             <TouchableOpacity
-              style={[styles.btnView, { backgroundColor: color.app.theme, marginTop: 30 }]}
+              style={[styles.confirmBtnView, { backgroundColor: color.app.theme, marginTop: 30 }]}
               onPress={() => {
                 if (propConfirmButtonPress) {
                   propConfirmButtonPress(selectedWallet);
@@ -319,11 +326,11 @@ class WalletSelection extends PureComponent {
                 }
               }}
             >
-              <Loc style={[styles.btnFont, { color: 'white' }]} text={confirmButtonText} />
+              <Loc style={[styles.confirmBtnFont]} text={confirmButtonText} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btnView, { backgroundColor: 'rgba(0, 0, 0, 0)' }]} onPress={closeFunction}>
-              <Loc style={[styles.btnFont, { color: '#B1B1B1' }]} text="page.dapp.button.cancel" />
+            <TouchableOpacity style={styles.cancelBtnView} onPress={closeFunction}>
+              <Loc style={[styles.cancelBtnFont]} text="page.dapp.button.cancel" />
             </TouchableOpacity>
           </View>
         </View>
