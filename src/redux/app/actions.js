@@ -44,6 +44,7 @@ const actions = {
   SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
   RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
   SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
+  RECEIVE_NOTIFICATION: 'RECEIVE_NOTIFICATION',
   PROCESS_NOTIFICATON: 'PROCESS_NOTIFICATON',
   SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
   RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
@@ -158,6 +159,11 @@ const actions = {
   }),
   initFcmChannel: () => ({
     type: actions.INIT_FCM_CHANNEL,
+  }),
+  receiveNotification: (notification, fcmType) => ({
+    type: actions.RECEIVE_NOTIFICATION,
+    notification,
+    fcmType,
   }),
   processNotification: (notification) => ({
     type: actions.PROCESS_NOTIFICATON,

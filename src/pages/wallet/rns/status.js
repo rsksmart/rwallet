@@ -134,6 +134,10 @@ class RnsStatus extends Component {
     this.createListData();
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.updateSubdomainsStatus(nextProps);
+  }
+
   componentWillUnmount() {
     const { resetPage } = this.props;
 
@@ -146,10 +150,6 @@ class RnsStatus extends Component {
   }
 
   createListData = async () => {
-    const { navigation } = this.props;
-    const { params } = navigation.state;
-    const navRnsRows = params && params.rnsRows ? params.rnsRows : [];
-
     const subdomains = await storage.getRnsRegisteringSubdomains();
 
     const rnsRows = [];
@@ -160,12 +160,26 @@ class RnsStatus extends Component {
         type: subdomain.type,
         status: definitions.SUBDOMAIN_STATUS.PENDING,
       };
-      const foundSubdomain = _.find(navRnsRows, { subdomain: rnsRow.subdomain });
-      rnsRow.status = foundSubdomain ? foundSubdomain.status : rnsRow.status;
       rnsRows.push(rnsRow);
     });
 
-    this.setState({ rnsRows }, this.refreshStatus);
+    this.setState({ rnsRows }, () => {
+      this.updateSubdomainsStatus(this.props);
+      this.refreshStatus();
+    });
+  }
+
+  // Update subdomains status, it will be updated by notification
+  updateSubdomainsStatus = (props) => {
+    const { subdomains } = props;
+    const { rnsRows } = this.state;
+    const newRnsRows = [...rnsRows];
+    _.each(newRnsRows, (rnsRow) => {
+      const newRnsRow = rnsRow;
+      const foundSubdomain = _.find(subdomains, { subdomain: rnsRow.subdomain });
+      newRnsRow.status = foundSubdomain ? foundSubdomain.status : rnsRow.status;
+    });
+    this.setState({ rnsRows: newRnsRows });
   }
 
   refreshStatus = () => {
@@ -335,6 +349,7 @@ RnsStatus.propTypes = {
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  subdomains: state.Wallet.get('subdomains'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
