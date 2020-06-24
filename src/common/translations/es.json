@@ -307,7 +307,11 @@
     "Finish": "Terminar",
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
-    "ok": "Okay"
+    "ok": "Okay",
+    "name": "Nombre",
+    "pending": "Pendiente",
+    "done": "Hecho",
+    "share": "COMPARTIR"
   },
   "txState": {
     "Sent": "Enviado",
