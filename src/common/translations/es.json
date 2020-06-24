@@ -442,7 +442,7 @@
     },
     "balanceInvalid": {
       "title": "Saldo inválido",
-      "body": "El saldo de este token no es válido. ¡Por favor, inténtelo de nuevo más tarde!"
+      "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
     }
   },
   "currency": {

@@ -441,8 +441,8 @@
       "cancelText": "pular"
     },
     "balanceInvalid": {
-      "title": "Saldo inválido",
-      "body": "O saldo desse token é inválido. por favor, tente novamente mais tarde!"
+      "title": "O saldo da carteira não está disponível",
+      "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
     }
   },
   "currency": {

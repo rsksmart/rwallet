@@ -446,8 +446,8 @@
       "cancelText": "skip"
     },
     "balanceInvalid": {
-      "title": "Balance Invalid",
-      "body": "Balance of this token is invalid. please try again later!"
+      "title": "Wallet balance is not available",
+      "body": "We are having problem retrieving your wallet balance. Please try again later."
     }
   },
   "currency": {
