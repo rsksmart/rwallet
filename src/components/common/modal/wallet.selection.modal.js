@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   testnet: {
-    backgroundColor: color.component.listItemIndicator,
+    backgroundColor: color.component.listItemIndicator.color,
     borderRadius: 4,
     padding: 5,
   },
@@ -299,7 +299,7 @@ class WalletSelection extends PureComponent {
     const confirmButtonText = supportWallets.length ? 'page.dapp.button.confirm' : 'page.dapp.button.createOrImport';
     return (
       <Modal
-        animationType="none"
+        animationType="fade"
         transparent
         visible={visible}
       >
