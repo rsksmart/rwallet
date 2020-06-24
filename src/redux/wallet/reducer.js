@@ -18,6 +18,8 @@ const initState = new Map({
   tokensChannel: undefined,
   transactionsChannel: undefined,
   txTimestamp: undefined,
+
+  subdomains: [],
 });
 
 /**
@@ -138,6 +140,9 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.SET_TRANSACTIONS_CHANNEL: {
       return state.set('transactionsChannel', action.value);
+    }
+    case actions.SET_SUBDOMAINS: {
+      return state.set('subdomains', action.subdomains);
     }
     default:
       return state;
