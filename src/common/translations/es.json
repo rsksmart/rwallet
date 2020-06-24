@@ -386,6 +386,10 @@
       "title": "Copiado",
       "body": "La dirección se ha copiado en el portapapeles."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "El subdominio se ha copiado al portapapeles."
+    },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
       "typeNewPasscode": "Escriba su nueva contraseña",

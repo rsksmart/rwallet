@@ -387,6 +387,10 @@
       "title": "已复制",
       "body": "地址已复制。"
     },
+    "subdomainCopied": {
+      "title": "已复制",
+      "body": "域名已复制。"
+    },
     "passcode": {
       "typeOldPasscode": "输入您的旧密码",
       "typeNewPasscode": "输入新密码",

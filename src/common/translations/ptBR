@@ -376,6 +376,10 @@
       "title": "Copiado",
       "body": "O endereço foi copiado para a área de transferência."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "O subdomínio foi copiado para a área de transferência."
+    },
     "passcode": {
       "typeOldPasscode": "Digite seu PIN antigo",
       "typeNewPasscode": "Digite seu novo PIN",
