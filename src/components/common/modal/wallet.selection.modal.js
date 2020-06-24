@@ -17,8 +17,8 @@ import color from '../../../assets/styles/color.ts';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 
-const tokenRowWidth = (Dimensions.get('window').width * 0.87 - 90);
-const tokenItemWidth = (tokenRowWidth - 30) / 2;
+const TOKEN_ROW_WIDTH = (Dimensions.get('window').width * 0.87 - 90);
+const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 30) / 2;
 
 const styles = StyleSheet.create({
   backgroundView: {
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
   flatlist: {
     marginHorizontal: 15,
     padding: 30,
-    alignItems: 'center',
     justifyContent: 'center',
   },
   noWalletText: {
@@ -107,13 +106,13 @@ const styles = StyleSheet.create({
   },
   tokenRow: {
     flexDirection: 'row',
-    width: tokenRowWidth,
+    width: TOKEN_ROW_WIDTH,
   },
   tokenItem: {
     flexDirection: 'row',
     marginTop: 10,
     marginLeft: 10,
-    width: tokenItemWidth,
+    width: TOKEN_ITEM_WIDTH,
     justifyContent: 'space-between',
   },
   mainnet: {
@@ -188,7 +187,7 @@ class WalletSelection extends PureComponent {
     closeFunction();
     setTimeout(() => {
       this.openBrowser(selectedWallet, dapp);
-    }, 500);
+    }, 300);
   }
 
   openBrowser = (selectedWallet, dapp) => {

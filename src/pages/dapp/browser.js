@@ -185,17 +185,81 @@ class DAppBrowser extends Component {
     `;
   }
 
-  render() {
-    const { navigation, callAuthVerify, language } = this.props;
-    const { walletSelectionVisible, wallet } = this.state;
+  injectJavaScript = () => {
+    const { wallet: { coins } } = this.state;
+    const { address } = coins[0];
+    const jsCode = this.getJsCode(address);
+    this.webview.current.injectJavaScript(jsCode);
+  }
 
+  onNavigationStateChange = (navState) => {
+    const { canGoBack } = navState;
+    this.setState({ canGoBack });
+  }
+
+  onMessage = async (event) => {
+    try {
+      const { data } = event.nativeEvent;
+      const { callAuthVerify } = this.props;
+      const { wallet: { coins } } = this.state;
+      const { address } = coins[0];
+      const payload = JSON.parse(data);
+      const { method, params } = payload;
+      if (method === 'eth_getBlockByNumber') {
+        const res = await rsk3.getBlock(params[0]);
+        this.webview.current.postMessage(JSON.stringify(res));
+      } else if (method === 'eth_sendTransaction') {
+        callAuthVerify(async () => {
+          try {
+            const nonce = await provider.getTransactionCount(address);
+            const txData = {
+              nonce,
+              data: params[0].data,
+              gasLimit: params[0].gas || 600000,
+              gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+              to: params[0].to,
+              value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+            };
+            const { privateKey } = coins[0];
+            const signWallet = new ethers.Wallet(privateKey, provider);
+            const signedTransaction = await signWallet.sign(txData);
+            const result = await provider.sendTransaction(signedTransaction);
+            this.webview.current.postMessage(JSON.stringify(result.hash));
+          } catch (err) {
+            console.log('err: ', err);
+            this.webview.current.postMessage(JSON.stringify({ error: 1, message: err.message }));
+          }
+        }, () => null);
+      } else if (method === 'eth_getTransactionReceipt') {
+        let res = await rsk3.getTransactionReceipt(params[0]);
+        if (res) {
+          res.status = res.status ? 1 : 0;
+        } else {
+          res = '';
+        }
+        this.webview.current.postMessage(JSON.stringify(res));
+      }
+    } catch (err) {
+      const error = { error: 1, message: err.message };
+      this.webview.current.postMessage(JSON.stringify(error));
+    }
+  }
+
+  switchWallet = (toWallet) => {
+    this.setState({ walletSelectionVisible: false, wallet: toWallet }, () => {
+      this.webview.current.reload();
+      setTimeout(() => {
+        this.injectJavaScript();
+      }, 500);
+    });
+  }
+
+  render() {
+    const { navigation, language } = this.props;
+    const { walletSelectionVisible, wallet: { coins } } = this.state;
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
-    const { coins } = wallet;
     const { address } = coins[0];
-    console.log('address: ', address);
-
-    const jsCode = this.getJsCode(address);
 
     return (
       <View style={{ flex: 1 }}>
@@ -217,64 +281,9 @@ class DAppBrowser extends Component {
             <ProgressWebView
               source={{ uri: url }}
               ref={this.webview}
-              onLoadStart={() => {
-                this.webview.current.injectJavaScript(jsCode);
-              }}
-              onNavigationStateChange={(navState) => {
-                const { canGoBack } = navState;
-                this.setState({ canGoBack });
-              }}
-              onMessage={(event) => {
-                const { data } = event.nativeEvent;
-                const payload = JSON.parse(data);
-                const { method, params } = payload;
-                console.log('payload: ', payload);
-                if (method === 'eth_getBlockByNumber') {
-                  rsk3.getBlock(params[0]).then((res) => {
-                    this.webview.current.postMessage(JSON.stringify(res));
-                  }).catch((err) => {
-                    const error = { error: 1, message: err.message };
-                    this.webview.current.postMessage(JSON.stringify(error));
-                  });
-                } else if (method === 'eth_sendTransaction') {
-                  callAuthVerify(async () => {
-                    try {
-                      const nonce = await provider.getTransactionCount(address);
-                      const txData = {
-                        nonce,
-                        data: params[0].data,
-                        gasLimit: params[0].gas || 600000,
-                        gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-                        to: params[0].to,
-                        value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-                      };
-                      const { privateKey } = coins[0];
-                      const signWallet = new ethers.Wallet(privateKey, provider);
-                      const signedTransaction = await signWallet.sign(txData);
-                      const result = await provider.sendTransaction(signedTransaction);
-                      this.webview.current.postMessage(JSON.stringify(result.hash));
-                    } catch (err) {
-                      console.log('err: ', err);
-                      const error = { error: 1, message: err.message };
-                      this.webview.current.postMessage(JSON.stringify(error));
-                    }
-                  }, () => null);
-                } else if (method === 'eth_getTransactionReceipt') {
-                  rsk3.getTransactionReceipt(params[0]).then((res) => {
-                    let result = res;
-                    if (res) {
-                      result.status = res.status ? 1 : 0;
-                    } else {
-                      result = '';
-                    }
-                    this.webview.current.postMessage(JSON.stringify(res));
-                  }).catch((err) => {
-                    console.log('err: ', err);
-                    const error = new Error({ error: 1, message: err.message });
-                    this.webview.current.postMessage(JSON.stringify(error));
-                  });
-                }
-              }}
+              onLoadStart={() => { this.injectJavaScript(); }}
+              onNavigationStateChange={this.onNavigationStateChange}
+              onMessage={this.onMessage}
             />
           )
         }
@@ -282,14 +291,7 @@ class DAppBrowser extends Component {
           navigation={navigation}
           visible={walletSelectionVisible}
           closeFunction={() => this.setState({ walletSelectionVisible: false })}
-          confirmButtonPress={(switchWallet) => {
-            this.setState({ walletSelectionVisible: false, wallet: switchWallet }, () => {
-              this.webview.current.reload();
-              setTimeout(() => {
-                this.webview.current.injectJavaScript(jsCode);
-              }, 500);
-            });
-          }}
+          confirmButtonPress={this.switchWallet}
           dapp={dapp}
         />
       </View>
