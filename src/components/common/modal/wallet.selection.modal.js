@@ -17,7 +17,11 @@ import color from '../../../assets/styles/color.ts';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 
-const TOKEN_ROW_WIDTH = (Dimensions.get('window').width * 0.87 - 90);
+// Get modal view width
+const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
+// Get row's width, 90 is FlatList's padding and margin size
+const TOKEN_ROW_WIDTH = (MODAL_WIDTH - 90);
+// One row has two tokens, 30 is token's separate size
 const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 30) / 2;
 
 const styles = StyleSheet.create({
@@ -30,7 +34,7 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 12,
-    width: '87%',
+    width: MODAL_WIDTH,
   },
   title: {
     marginTop: 36,
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: color.app.theme,
     borderRadius: 27,
-    marginTop: 10,
+    marginTop: 30,
   },
   confirmBtnFont: {
     color: '#F3F3F3',
@@ -118,10 +122,12 @@ const styles = StyleSheet.create({
   mainnet: {
     backgroundColor: '#028CFF',
     borderRadius: 4,
+    padding: 5,
   },
   testnet: {
-    backgroundColor: '#9B9B9B',
+    backgroundColor: color.component.listItemIndicator,
     borderRadius: 4,
+    padding: 5,
   },
   network: {
     fontFamily: 'Avenir-Book',
@@ -137,7 +143,7 @@ const styles = StyleSheet.create({
   },
   tokenText: {
     fontFamily: 'Avenir-Roman',
-    color: '#4A4A4A',
+    color: color.component.word,
     fontSize: 10,
   },
 });
@@ -243,7 +249,7 @@ class WalletSelection extends PureComponent {
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => { this.setState({ selectedWallet: item }); }}>
         <View style={styles.selection}>
-          <View style={[{ padding: 5 }, network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
+          <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
             <Text style={styles.network}>{network}</Text>
           </View>
           <Text style={styles.address}>{this.ellipsisAddress(address)}</Text>
@@ -259,6 +265,7 @@ class WalletSelection extends PureComponent {
     );
   }
 
+  // Get the wallet which wallet's coins in Dapp's support token list
   getSupportWallets = (dapp) => {
     const supportTokens = (dapp && dapp.tokens) || [];
     const { walletManager } = this.props;
@@ -266,7 +273,10 @@ class WalletSelection extends PureComponent {
     const supportWallets = [];
     _.forEach(wallets, (wallet) => {
       const { coins } = wallet;
+
+      // Get all rsk tokens
       const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC');
+      // If dapp support token list is empty, needs to show all rsk tokens
       const tokens = supportTokens.length ? _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol)) : rskTokens;
       if (tokens.length) {
         supportWallets.push({
@@ -316,7 +326,7 @@ class WalletSelection extends PureComponent {
             <View style={styles.line} />
 
             <TouchableOpacity
-              style={[styles.confirmBtnView, { backgroundColor: color.app.theme, marginTop: 30 }]}
+              style={styles.confirmBtnView}
               onPress={() => {
                 if (propConfirmButtonPress) {
                   propConfirmButtonPress(selectedWallet);

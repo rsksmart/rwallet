@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import Loc from '../common/misc/loc';
+import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   card: {
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   cardTitleText: {
-    color: '#4A4A4A',
+    color: color.component.word,
     fontSize: 18,
     fontFamily: 'Avenir-Medium',
   },

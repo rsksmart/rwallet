@@ -49,6 +49,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 12,
   },
+  recentDappSize: {
+    width: 50,
+    height: 50,
+  },
   dappInfo: {
     flex: 1,
     marginLeft: 18,
@@ -81,6 +85,9 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
+  },
+  bottomView: {
+    marginBottom: 135,
   },
 });
 
@@ -264,7 +271,7 @@ class DAppIndex extends Component {
               style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={[styles.dappIcon, { width: 50, height: 50 }]} source={{ uri: item.iconUrl }} />
+              <Image style={[styles.dappIcon, styles.recentDappSize]} source={{ uri: item.iconUrl }} />
               <View style={[styles.dappInfo, { marginLeft: 6 }]}>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
               </View>
@@ -309,7 +316,7 @@ class DAppIndex extends Component {
           }}
         />
 
-        <View style={{ marginBottom: 135 }} />
+        <View style={styles.bottomView} />
 
         <WalletSelection
           navigation={navigation}
