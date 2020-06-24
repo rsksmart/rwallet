@@ -231,7 +231,7 @@
         "title": "钱包设置",
         "walletContains": {
           "one": "这个钱包包含1个资产",
-          "other": "这个钱包包含{{}count}个资产"
+          "other": "这个钱包包含{{count}}个资产"
         },
         "security": "安全",
         "advanced": "高级",

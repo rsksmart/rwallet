@@ -7,6 +7,7 @@ import coinType from './cointype';
 import common from '../common';
 
 const bip39 = require('bip39');
+const ordinal = require('ordinal');
 
 const drivationTypes = [
   { symbol: 'BTC', type: 'Mainnet' },
@@ -18,29 +19,12 @@ const drivationTypes = [
 export default class Wallet {
   constructor({ id, name, mnemonic }) {
     this.id = id;
-    this.name = name || this.getWalletName(id);
+    this.name = name || `My ${ordinal(id + 1)} Wallet`;
     this.mnemonic = mnemonic;
     this.assetValue = new BigNumber(0);
     this.coins = [];
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
     this.derivations = undefined;
-  }
-
-  getWalletName = (id) => {
-    let number = `${id}th`;
-    switch (id) {
-      case 0:
-        number = 'First';
-        break;
-      case 1:
-        number = 'Second';
-        break;
-      case 2:
-        number = 'Third';
-        break;
-      default:
-    }
-    return `My ${number} Wallet`;
   }
 
   /**
