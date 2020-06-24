@@ -25,7 +25,8 @@
         "title": "Su Wallet",
         "myAssets": "Mis activos",
         "allAssets": "Todos los activos",
-        "addAsset": "Agregar activo"
+        "addAsset": "Agregar activo",
+        "addWallet": "Agregar billetera"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",

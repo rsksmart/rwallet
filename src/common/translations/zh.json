@@ -25,7 +25,8 @@
         "title": "钱包",
         "myAssets": "我的资产",
         "allAssets": "所有资产",
-        "addAsset": "新增"
+        "addAsset": "添加资产",
+        "addWallet": "添加钱包"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",

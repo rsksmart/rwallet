@@ -25,7 +25,8 @@
         "title": "Sua carteira",
         "myAssets": "Meus ativos",
         "allAssets": "Todos os ativos",
-        "addAsset": "Adicionar ativo"
+        "addAsset": "Adicionar ativo",
+        "addWallet": "Adicionar carteira"
       },
       "history": {
         "noTransNote": "Não existe transação encontrada para este ativo",
