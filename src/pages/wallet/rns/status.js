@@ -137,7 +137,7 @@ class RnsStatus extends Component {
   componentWillReceiveProps(nextProps) {
     const { subdomains } = nextProps;
     const { rnsRows } = this.state;
-    const newRnsRows = this.updateSubdomainsStatus(subdomains, rnsRows);
+    const newRnsRows = this.getUpdatedSubdomainsStatus(subdomains, rnsRows);
     this.setState({ rnsRows: newRnsRows });
   }
 
@@ -167,13 +167,13 @@ class RnsStatus extends Component {
       rnsRows.push(rnsRow);
     });
 
-    const newRnsRows = this.updateSubdomainsStatus(propSubdomains, rnsRows);
+    const newRnsRows = this.getUpdatedSubdomainsStatus(propSubdomains, rnsRows);
 
     this.setState({ rnsRows: newRnsRows }, this.refreshStatus);
   }
 
   // Update subdomains status, it will be updated by notification
-  updateSubdomainsStatus = (subdomains, rnsRows) => {
+  getUpdatedSubdomainsStatus = (subdomains, rnsRows) => {
     if (_.isEmpty(subdomains)) {
       return rnsRows;
     }
