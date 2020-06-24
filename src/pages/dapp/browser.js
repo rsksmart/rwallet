@@ -26,10 +26,12 @@ class DAppBrowser extends Component {
 
     const { navigation } = this.props;
 
+    const currentWallet = navigation.state.params.wallet || null;
+
     this.state = {
       canGoBack: false,
       walletSelectionVisible: false,
-      wallet: navigation.state.params.wallet || null,
+      wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
       ethersJsContent: '',
     };
@@ -67,6 +69,8 @@ class DAppBrowser extends Component {
       }
     }
   }
+
+  generateWallet = (wallet) => ({ ...wallet, address: ethers.utils.getAddress(wallet.coins[0].address.toLowerCase()) })
 
   getJsCode = (address) => {
     const { web3JsContent, ethersJsContent } = this.state;
@@ -186,8 +190,8 @@ class DAppBrowser extends Component {
   }
 
   injectJavaScript = () => {
-    const { wallet: { coins } } = this.state;
-    const { address } = coins[0];
+    const { wallet: { address } } = this.state;
+
     const jsCode = this.getJsCode(address);
     this.webview.current.injectJavaScript(jsCode);
   }
@@ -201,8 +205,7 @@ class DAppBrowser extends Component {
     try {
       const { data } = event.nativeEvent;
       const { callAuthVerify } = this.props;
-      const { wallet: { coins } } = this.state;
-      const { address } = coins[0];
+      const { wallet: { coins, address } } = this.state;
       const payload = JSON.parse(data);
       const { method, params } = payload;
       if (method === 'eth_getBlockByNumber') {
@@ -246,20 +249,17 @@ class DAppBrowser extends Component {
   }
 
   switchWallet = (toWallet) => {
-    this.setState({ walletSelectionVisible: false, wallet: toWallet }, () => {
+    if (this.webview.current) {
+      this.setState({ walletSelectionVisible: false, wallet: this.generateWallet(toWallet) });
       this.webview.current.reload();
-      setTimeout(() => {
-        this.injectJavaScript();
-      }, 500);
-    });
+    }
   }
 
   render() {
     const { navigation, language } = this.props;
-    const { walletSelectionVisible, wallet: { coins } } = this.state;
+    const { walletSelectionVisible, wallet: { address } } = this.state;
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
-    const { address } = coins[0];
 
     return (
       <View style={{ flex: 1 }}>
