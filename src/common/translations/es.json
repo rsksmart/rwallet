@@ -441,7 +441,7 @@
       "cancelText": "omitir"
     },
     "balanceInvalid": {
-      "title": "Saldo inválido",
+      "title": "El saldo de la billetera no está disponible",
       "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
     }
   },
