@@ -1,0 +1,442 @@
+{
+  "root": {
+    "Wallet": "Carteira",
+    "Spend": "Gastar",
+    "Earn": "Ganhar",
+    "Me": "Eu",
+    "Exchange": "Troca"
+  },
+  "page": {
+    "start": {
+      "start": {
+        "button": "Iniciar"
+      },
+      "terms": {
+        "term1": "Entendo que meus fundos estão mantidos com segurança neste dispositivo, não por uma empresa.",
+        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
+        "term3": "Eu li, compreendi e concordo com os Termos de Uso.",
+        "viewTerms": "Ver Termos de Uso",
+        "button": "Confirmar e Aceitar",
+        "termsOfUse": "Termos de Uso"
+      }
+    },
+    "wallet": {
+      "list": {
+        "title": "Sua carteira",
+        "myAssets": "Meus ativos",
+        "allAssets": "Todos os ativos",
+        "addAsset": "Adicionar ativo"
+      },
+      "history": {
+        "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
+        "recent": "Recente",
+        "loading": "Carregando..."
+      },
+      "transaction": {
+        "Sent Funds": "Fundos enviados",
+        "Received Funds": "Fundos recebidos",
+        "Sending Funds": "Enviando fundos",
+        "Receiving Funds": "Recebendo fundos",
+        "Failed Funds": "Fundos falidos",
+        "date": "Data",
+        "confirmations": "Confirmações",
+        "memo": "Anotação",
+        "noMemo": "Nenhuma nota",
+        "transactionID": "ID da transação",
+        "viewOnChain": "Ver na blockchain",
+        "Unconfirmed": "Não confirmado"
+      },
+      "receive": {
+        "address": "Endereço"
+      },
+      "transfer": {
+        "to": "Para",
+        "memo": "Anotação (opcional)",
+        "fee": "Taxa de transação",
+        "custom": "Personalizar taxa",
+        "feeQuestion": "Quão rápido você quer que isso seja feito?",
+        "Slow": "Lento",
+        "Average": "Médio",
+        "Fast": "Rápido",
+        "CONFIRMED": "CONFIRMADO",
+        "enterMemo": "Inserir uma nota de transação",
+        "slideConfirm": "Deslize para confirmar",
+        "balance": "Saldo",
+        "unavailableAddress": "O endereço da carteira digitado não é válido"
+      },
+      "add": {
+        "title": "Adicionar carteira",
+        "createWallet": "Criar carteira básica",
+        "createWalletNote": "Recomendado para usuários iniciantes",
+        "importWallet": "Importar carteira existente",
+        "importWalletNote": "Restaure sua carteira usando a frase de recuperação"
+      },
+      "selectCurrency": {
+        "title": "Selecionar moeda da carteira",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "Selecionar ativo"
+      },
+      "recovery": {
+        "title": "Importar carteira",
+        "note": "Digite a frase de recuperação (geralmente 12 palavras)",
+        "advancedOptions": "Opções avançadas",
+        "specifyPath": "Especificar caminho de derivação",
+        "coin": "Moeda",
+        "derivationPath": "Caminho de derivação"
+      },
+      "recoveryPhrase": {
+        "title": "Frase de recuperação",
+        "note1": "Anote ou copie estas palavras",
+        "note2": "nesta ordem e salve-as",
+        "note3": "em algum lugar seguro"
+      },
+      "verifyPhrase": {
+        "title": "Verifique sua frase",
+        "note": "Toque em cada palavra na ordem correta",
+        "isCorrect": "Isso está correto?"
+      },
+      "verifyPhraseSuccess": {
+        "title": "Sucesso na verificação da frase",
+        "body": "Sua frase de recuperação foi verificada",
+        "note": "Certifique-se de armazenar sua frase de recuperação em um local seguro"
+      },
+      "verifyFingerprint": {
+        "title": "Verificar impressão digital"
+      },
+      "scan": {
+        "title": "Ler código QR",
+        "cameraPermission": {
+          "title": "Permissão para usar a câmera",
+          "message": "Precisamos de permissão para usar sua câmera"
+        },
+        "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
+      },
+      "transferCompleted": {
+        "title": "Enviar",
+        "body": "Transferência concluída!",
+        "note": "Sua transação está a caminho.",
+        "viewExplorer": "Clique para ver no explorer"
+      },
+      "swap": {
+        "title": "Trocar",
+        "wallet": "carteira",
+        "want": "Quero %{symbol} na carteira %{wallet}",
+        "errorAmountInRange": {
+          "tooBig": "O valor é superior ao máximo de troca de %{max} %{symbol}",
+          "tooSmall": "O valor é menor que o mínimo de troca de %{min} %{symbol}"
+        },
+        "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
+        "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
+        "have": "Eu tenho %{balance} na carteira %{wallet}"
+      },
+      "swapSelection": {
+        "title": "Escolha o ativo",
+        "noSwappableCoin": "Desculpe, você não tem nenhum ativo para trocar",
+        "please": "por favor",
+        "create": "criar",
+        "or": "ou",
+        "import": "Importe",
+        "aWallet": "uma carteira",
+        "startSwap": "para começar a fazer trocas"
+      },
+      "swapCompleted": {
+        "title": "Trocar",
+        "body": "Troca concluída!",
+        "note": "A troca está sendo realizada.",
+        "viewExplorer": "Clique para ver no explorer"
+      },
+      "addCustomToken": {
+        "title": "Adicionar tokens personalizados",
+        "address": "Endereço do contrato do token",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "Adicionar tokens personalizados",
+        "question": "Deseja adicionar esses tokens?",
+        "token": "Símbolo",
+        "symbol": "Símbolo de Token",
+        "decimals": "Decimais de precisão",
+        "balance": "Saldo"
+      },
+      "addToken": {
+        "title": "Adicionar tokens",
+        "enabledAssets": "Ativos habilitados",
+        "note": "Desative para ocultá-los do seu portfólio.",
+        "addCustomToken": "Adicionar tokens personalizados",
+        "custom": "Personalizados"
+      },
+      "rnsCreateName": {
+        "title": "Criar apelido",
+        "address": "Endereço",
+        "rnsName": "Apelido RNS",
+        "anotherAddress": "Outro endereço",
+        "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
+        "nameUnavailable": "Desculpe, o nome digitado não está disponível",
+        "nameAvailable": "O nome digitado está disponível",
+        "selectAddress": "Selecione um endereço",
+        "confirmNotice": {
+          "one": "Confirme que você deseja criar apelidos para a carteira abaixo.",
+          "other": "Confirme que você deseja criar apelidos para as {{count}} carteiras abaixo."
+        }
+      },
+      "rnsStatus": {
+        "pending": "O registro está sendo confirmado.",
+        "success": "Sucesso! Seu apelido foi criado.",
+        "failed": "Falhou! Seu apelido não foi registrado."
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "Junte-se à comunidade RSK",
+        "settings": "Configurações",
+        "createKey": "Criar ou importar uma carteira",
+        "keys": "Carteiras",
+        "anonymousUser": "Usuário anônimo",
+        "wallets": {
+          "zero": "0 ativo",
+          "one": "1 ativo",
+          "other": "{{count}} ativos"
+        },
+        "support": "Suporte",
+        "contactUs": "Entre em contato",
+        "developerPortal": "Portal do desenvolvedor"
+      },
+      "language": {
+        "title": "Idioma"
+      },
+      "currency": {
+        "title": "Moeda"
+      },
+      "2fa": {
+        "title": "Autenticação de dois fatores",
+        "setPasscode": "Configurar PIN",
+        "resetPasscode": "Alterar PIN",
+        "useFingerprint": "Usar impressão digital"
+      },
+      "resetPasscodeSuccess" :{
+        "title": {
+          "create": "PIN configurado com sucesso",
+          "reset": "PIN alterado com sucesso"
+        }
+      },
+      "keySettings": {
+        "title": "Configurações de carteira",
+        "wallets": "ativos",
+        "keyContains": "Esta carteira contém",
+        "security": "Segurança",
+        "advanced": "Avançado",
+        "Wallets": "Ativos",
+        "keyName": "Nome da carteira",
+        "delete": "Excluir",
+        "backup": "Backup"
+      },
+      "keyName": {
+        "title": "Nome da carteira",
+        "question": "Qual nome você deseja para essa carteira?",
+        "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
+        "name": "Nome",
+        "comment": "* O nome da carteira pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
+      },
+      "rename": {
+        "title": "Seu nome",
+        "question": "Qual o seu nome?",
+        "comment": "* O nome pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
+      },
+      "resetcompleted": {
+        "title": "Alteração concluída com sucesso!"
+      }
+    },
+    "earn": {
+      "index": {
+        "title": "Ganhe criptomoedas com facilidade",
+        "comingSoon": "Em breve...",
+        "featuresTitle": "Os recursos abaixo estão chegando em breve.",
+        "feature1": "- Ganhe criptomoeda concluindo tarefas",
+        "feature2": "- Obter interesses de uma variedade de produtos Defi",
+        "feature3": "- \"Cash Back\" em compras com criptomoedas"
+      }
+    },
+    "spend": {
+      "index": {
+        "title": "Gerenciamento de ativos ao seu alcance",
+        "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
+        "feature1": "- Complete tarefas e ganhe criptomoedas",
+        "feature2": "- Faça trocas entre quaisquer tokens em sua carteira",
+        "feature3": "- \"Cash Back\" em compras com criptomoedas"
+      }
+    }
+  },
+  "language": {
+    "English": "Inglês",
+    "Spanish": "Espanhol",
+    "Portuguese": "Português",
+    "Chinese": "Chinês"
+  },
+  "button": {
+    "save": "SALVAR",
+    "NEXT": "PRÓXIMO",
+    "Next": "Próximo",
+    "gotIt": "ENTENDI",
+    "create": "CRIAR",
+    "CONFIRM": "CONFIRMAR",
+    "retry": "Tentar novamente",
+    "IMPORT": "IMPORTAR",
+    "Clear": "Limpar",
+    "startOver": "RECOMEÇAR",
+    "Copy": "Copiar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "Send All": "Enviar tudo",
+    "goToWallet": "IR PARA CARTEIRA",
+    "backToWallet": "VOLTAR PARA CARTEIRA",
+    "backToSetting": "VOLTAR PARA CONFIGURAÇÃO",
+    "Send": "Enviar",
+    "Receive": "Receber",
+    "Swap": "Trocar",
+    "Delete": "Excluir",
+    "Reset": "Alterar",
+    "Finish": "Concluir",
+    "Exchange": "Troca",
+    "addAsset": "Adicionar ativo",
+    "ok": "Ok"
+  },
+  "txState": {
+    "Sent": "Enviado",
+    "Sending": "Enviando",
+    "Received": "Recebido",
+    "Receiving": "Recebendo",
+    "Failed": "Falhou"
+  },
+  "modal": {
+    "defaultError": {
+      "title": "Erro interno no servidor",
+      "body": "Entre em contato com o suporte ao cliente."
+    },
+    "unableRecover": {
+      "title": "Não foi possível restaurar",
+      "body": "Não podemos importar uma carteira com sua frase de recuperação. Verifique se a frase está correta."
+    },
+    "duplicatePhrase": {
+      "title Phrase": "Frase duplicada",
+      "body": "Esta frase já foi importada no aplicativo. Por favor, tente com uma frase diferente."
+    },
+    "tooManyPhrase": {
+      "title": "Muitas palavras",
+      "body": "A frase de recuperação deve conter 12 palavras."
+    },
+    "txFailed": {
+      "title": "A transferência falhou",
+      "moreBTC": "Você precisa de mais saldo BTC para concluir a transferência",
+      "moreRBTC": "Você precisa de mais saldo RBTC para concluir a transferência",
+      "moreRIF": "Você precisa de mais saldo RIF para concluir a transferência",
+      "moreBalance": "Você precisa de mais saldo para concluir a transferência",
+      "serverTimeout": "Desculpe, tempo limite do servidor excedido",
+      "contactService": "Entre em contato com o atendimento ao cliente"
+    },
+    "invalidAmount": {
+      "title": "Quantidade inválida",
+      "body": "Valor inválido"
+    },
+    "invalidAddress": {
+      "title": "Endereço inválido",
+      "body": "Endereço inválido"
+    },
+    "incorrectName": {
+      "title": "Nome incorreto",
+      "tooShort": "Nome muito curto.",
+      "tooLong": "Nome muito longo.",
+      "invalid": "O nome contém caracteres inválidos."
+    },
+    "incorrectKeyName": {
+      "title": "Nome de carteira incorreto",
+      "tooShort": "O nome da carteira é muito curto.",
+      "tooLong": "O nome da carteira é muito longo.",
+      "invalid": "O nome da carteira contém caracteres inválidos."
+    },
+    "guardPhrase": {
+      "title": "Proteja sua frase de recuperação",
+      "body": "Sua frase de recuperação é composta por 12 palavras geradas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
+    },
+    "incorrectBackupPhrase": {
+      "title": "Frase de backup incorreta",
+      "body": "É importante que você anote sua frase de recuperação corretamente. Se algo acontecer com sua carteira, você precisará recuperar seu dinheiro. Por favor revise e tente novamente."
+    },
+    "phraseCopied": {
+      "title": "Copiado",
+      "body": "A frase de recuperação foi copiada para a área de transferência."
+    },
+    "addressCopied": {
+      "title": "Copiado",
+      "body": "O endereço foi copiado para a área de transferência."
+    },
+    "passcode": {
+      "typeOldPasscode": "Digite seu PIN antigo",
+      "typeNewPasscode": "Digite seu novo PIN",
+      "confirmNewPasscode": "Confirme seu novo PIN",
+      "oldIncorrect": "O PIN antigo está incorreto. Tente novamente",
+      "notMatched": "O PIN não corresponde. Por favor, tente novamente."
+    },
+    "verifyPasscode": {
+      "type": "Digite seu PIN",
+      "incorrect": "O PIN está incorreto"
+    },
+    "touchSensor": {
+      "title": "Sensor biométrico",
+      "usePasscode": "Usar PIN",
+      "touchToVerify": "Toque para verificar a impressão digital",
+      "nativeNote": "Digitalize sua impressão digital no scanner do dispositivo para continuar",
+      "failedAndTryPasscode": "A autenticação falhou. Por favor, tente o PIN.",
+      "failedAndTryAgain.": "A autenticação falhou. Por favor, tente novamente.",
+      "fingerprintNotMatch": "A impressão digital não corresponde. Por favor, tente novamente."
+    },
+    "createPasscode": {
+      "title": "Configure um PIN",
+      "body": "O PIN pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
+    },
+    "deleteKey": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir todos os ativos dessa carteira?"
+    },
+    "swap": {
+      "title": "Nenhuma moeda para troca",
+      "body": "A troca suporta BTC, RBTC e DOC. Adicione recurso."
+    },
+    "contractNotFound": {
+      "title": "Contrato ERC20 não encontrado",
+      "body": "Não conseguimos encontrar o contrato inteligente de token ERC20 de entrada. Por favor, verifique se está certo."
+    },
+    "duplicateToken": {
+      "title": "Token duplicado",
+      "body": "Este token já foi adicionado à carteira. Por favor, tente um token diferente."
+    },
+    "requestTimeout": {
+      "title": "Tempo limite da solicitação",
+      "body": "O servidor não pôde concluir a solicitação dentro do tempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apelido do RNS indisponível",
+      "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Subdomínio RNS não encontrado",
+      "body": "O subdomínio RNS não foi encontrado no servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar e receber ficou mais fácil",
+      "body": "Lançamos o suporte ao RNS, ou RIF Name Service, que permite a identificação de endereços de blockchain por nomes legíveis por humanos.",
+      "confirmText": "Vamos tentar",
+      "cancelText": "pular"
+    }
+  },
+  "currency": {
+    "USD": "Dólar americano",
+    "ARS": "Peso argentino",
+    "JPY": "Iene japonês",
+    "KRW": "Won Sul-Coreano",
+    "CNY": "Yuan chinês",
+    "GBP": "Libra esterlina"
+  }
+}
