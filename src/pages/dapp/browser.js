@@ -33,38 +33,23 @@ class DAppBrowser extends Component {
       walletSelectionVisible: false,
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
-      ethersJsContent: '',
     };
 
     this.webview = createRef();
   }
 
   componentDidMount() {
-    const { web3JsContent, ethersJsContent } = this.state;
+    const { web3JsContent } = this.state;
     if (web3JsContent === '') {
       if (Platform.OS === 'ios') {
-        RNFS.readFile(`${RNFS.MainBundlePath}/web3.js`, 'utf8')
+        RNFS.readFile(`${RNFS.MainBundlePath}/web3.1.2.7.js`, 'utf8')
           .then((content) => {
             this.setState({ web3JsContent: content });
           });
       } else {
-        RNFS.readFileAssets('web3.js', 'utf8')
+        RNFS.readFileAssets('web3.1.2.7.js', 'utf8')
           .then((content) => {
             this.setState({ web3JsContent: content });
-          });
-      }
-    }
-
-    if (ethersJsContent === '') {
-      if (Platform.OS === 'ios') {
-        RNFS.readFile(`${RNFS.MainBundlePath}/ethers.js`, 'utf8')
-          .then((content) => {
-            this.setState({ ethersJsContent: content });
-          });
-      } else {
-        RNFS.readFileAssets('ethers.js', 'utf8')
-          .then((content) => {
-            this.setState({ ethersJsContent: content });
           });
       }
     }
@@ -73,16 +58,14 @@ class DAppBrowser extends Component {
   generateWallet = (wallet) => ({ ...wallet, address: ethers.utils.getAddress(wallet.coins[0].address.toLowerCase()) })
 
   getJsCode = (address) => {
-    const { web3JsContent, ethersJsContent } = this.state;
+    const { web3JsContent } = this.state;
     return `
       ${web3JsContent}
-      ${ethersJsContent}
 
       (function() {
         let resolver, rejecter, hash
         setTimeout(() => {
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
-            console.log('data: ', data.data)
             const result = JSON.parse(data.data)
             if (result && result.error && rejecter) {
               rejecter(new Error(result.message))
@@ -107,7 +90,9 @@ class DAppBrowser extends Component {
           window.ethereum.selectedAddress = '${address}'
           window.ethereum.networkVersion = '31'
           window.web3 = web3
-          const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
+          window.web3.toDecimal = window.web3.utils.toDecimal
+          window.web3.toBigNumber = window.web3.utils.toBN
+          
           const config = {
             isEnabled: true,
             isUnlocked: true,
@@ -115,6 +100,7 @@ class DAppBrowser extends Component {
             onboardingcomplete: true,
             selectedAddress: '${address}',
           }
+
           window.ethereum.publicConfigStore = {
             _state: {
               ...config,
@@ -132,49 +118,60 @@ class DAppBrowser extends Component {
             })
           }
 
+          window.web3.version = {
+            api: '1.2.7',
+            getNetwork: () => {return 31},
+          }
+
           window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
 
+          window.web3.eth.contract = (abi) => {
+            const contract = new web3.eth.Contract(abi);
+            contract.at = (address) => {
+              contract.options.address = address
+              return contract
+            }
+
+            const { _jsonInterface } = contract;
+            _jsonInterface.forEach((item) => {
+              if (item.name && item.stateMutability) {
+                const method = item.name;
+                if (item.stateMutability === 'pure' || item.stateMutability === 'view') {
+                  contract[method] = (params, cb) => {
+                    console.log('contract method: ', method);
+                    contract.methods[method](params).call({ from: '${address}' }, cb);
+                  };
+                } else {
+                  contract[method] = (params, cb) => {
+                    console.log('contract method: ', method);
+                    contract.methods[method](params).send({ from: '${address}' }, cb);
+                  };
+                }
+              }
+            });
+
+            return contract
+          }
+
           const sendAsync = async (payload, callback) => {
-            window.ethereum.sendAsync = window.ethereum.send
             let err, res = {}, result = ''
             const {method, params, jsonrpc, id} = payload
             console.log('payload: ', payload)
             try {
               if (method === 'net_version') {
                 result = '31'
-              }
-              if (method === 'eth_getBlockByNumber') {
-                result = await communicateWithRN(payload)
-              }
-              if (method === 'eth_call') {
-                result = await provider.call(params[0], params[1])
-              }
-              if (method === 'eth_requestAccounts') {
+              } else if (method === 'eth_requestAccounts') {
                 result = ['${address}']
-              }
-              if (method === 'eth_estimateGas') {
-                result = await provider.estimateGas(params[0])
-                result = result.toNumber()
-              }
-              if (method === 'eth_sendTransaction') {
+              } else {
                 result = await communicateWithRN(payload)
-                hash = result
-              }
-              if (method === 'eth_getTransactionReceipt') {
-                result = await communicateWithRN(payload)
-              }
-              if (method === 'eth_getTransactionByHash') {
-                result = await provider.getTransaction(params[0])
-              }
-              if (method === 'eth_gasPrice') {
-                result = await provider.getGasPrice()
               }
 
-              res = {id, jsonrpc, result}
+              res = {id, jsonrpc, method, result}
             } catch(err) {
               err = err
               console.log('err: ', err)
             }
+            
             callback(err, res)
           }
 
@@ -189,9 +186,7 @@ class DAppBrowser extends Component {
     `;
   }
 
-  injectJavaScript = () => {
-    const { wallet: { address } } = this.state;
-
+  injectJavaScript = (address) => {
     const jsCode = this.getJsCode(address);
     this.webview.current.injectJavaScript(jsCode);
   }
@@ -208,38 +203,79 @@ class DAppBrowser extends Component {
       const { wallet: { coins, address } } = this.state;
       const payload = JSON.parse(data);
       const { method, params } = payload;
-      if (method === 'eth_getBlockByNumber') {
-        const res = await rsk3.getBlock(params[0]);
-        this.webview.current.postMessage(JSON.stringify(res));
-      } else if (method === 'eth_sendTransaction') {
-        callAuthVerify(async () => {
-          try {
-            const nonce = await provider.getTransactionCount(address);
-            const txData = {
-              nonce,
-              data: params[0].data,
-              gasLimit: params[0].gas || 600000,
-              gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-              to: params[0].to,
-              value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-            };
-            const { privateKey } = coins[0];
-            const signWallet = new ethers.Wallet(privateKey, provider);
-            const signedTransaction = await signWallet.sign(txData);
-            const result = await provider.sendTransaction(signedTransaction);
-            this.webview.current.postMessage(JSON.stringify(result.hash));
-          } catch (err) {
-            console.log('err: ', err);
-            this.webview.current.postMessage(JSON.stringify({ error: 1, message: err.message }));
-          }
-        }, () => null);
-      } else if (method === 'eth_getTransactionReceipt') {
-        let res = await rsk3.getTransactionReceipt(params[0]);
-        if (res) {
-          res.status = res.status ? 1 : 0;
-        } else {
-          res = '';
+
+      switch (method) {
+        case 'eth_estimateGas': {
+          const res = await provider.estimateGas(params[0]);
+          this.webview.current.postMessage(JSON.stringify(res.toNumber()));
+          break;
         }
+        case 'eth_gasPrice': {
+          const res = await provider.getGasPrice();
+          this.webview.current.postMessage(JSON.stringify(res));
+          break;
+        }
+        case 'eth_call': {
+          const res = await provider.call(params[0], params[1]);
+          this.webview.current.postMessage(JSON.stringify(res));
+          break;
+        }
+
+        case 'eth_getBlockByNumber': {
+          const res = await rsk3.getBlock(params[0]);
+          this.webview.current.postMessage(JSON.stringify(res));
+          break;
+        }
+
+        case 'eth_sendTransaction': {
+          callAuthVerify(async () => {
+            try {
+              const nonce = await provider.getTransactionCount(address);
+              const txData = {
+                nonce,
+                data: params[0].data,
+                gasLimit: params[0].gas || 600000,
+                gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+                to: params[0].to,
+                value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+              };
+              const { privateKey } = coins[0];
+              const signWallet = new ethers.Wallet(privateKey, provider);
+              const signedTransaction = await signWallet.sign(txData);
+              const result = await provider.sendTransaction(signedTransaction);
+              this.webview.current.postMessage(JSON.stringify(result.hash));
+            } catch (err) {
+              console.log('err: ', err);
+              this.webview.current.postMessage(JSON.stringify({ error: 1, message: err.message }));
+            }
+          }, () => null);
+          break;
+        }
+
+        case 'eth_getTransactionReceipt': {
+          let res = await rsk3.getTransactionReceipt(params[0]);
+          if (!res) {
+            res = '';
+          }
+          this.webview.current.postMessage(JSON.stringify(res));
+          break;
+        }
+
+        case 'eth_getTransactionByHash': {
+          const res = await provider.getTransaction(params[0]);
+          this.webview.current.postMessage(JSON.stringify(res));
+          break;
+        }
+
+        default:
+          break;
+      }
+
+      if (method === 'eth_call') {
+        const res = await provider.call(params[0], params[1]);
+        this.webview.current.postMessage(JSON.stringify(res));
+      } else if (method === 'eth_getBlockByNumber') {
+        const res = await rsk3.getBlock(params[0]);
         this.webview.current.postMessage(JSON.stringify(res));
       }
     } catch (err) {
@@ -250,14 +286,35 @@ class DAppBrowser extends Component {
 
   switchWallet = (toWallet) => {
     if (this.webview.current) {
-      this.setState({ walletSelectionVisible: false, wallet: this.generateWallet(toWallet) });
-      this.webview.current.reload();
+      const currentWallet = this.generateWallet(toWallet);
+      this.setState({ walletSelectionVisible: false, wallet: currentWallet }, () => {
+        this.webview.current.reload();
+      });
     }
+  }
+
+  getWebView = (address, url) => {
+    const { web3JsContent } = this.state;
+    if (address && web3JsContent) {
+      return (
+        <ProgressWebView
+          source={{ uri: url }}
+          ref={this.webview}
+          javaScriptEnabled
+          onLoadStart={() => { this.injectJavaScript(address); }}
+          onNavigationStateChange={this.onNavigationStateChange}
+          onMessage={this.onMessage}
+        />
+      );
+    }
+    return null;
   }
 
   render() {
     const { navigation, language } = this.props;
-    const { walletSelectionVisible, wallet: { address } } = this.state;
+    const {
+      walletSelectionVisible, wallet: { address },
+    } = this.state;
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
 
@@ -276,17 +333,7 @@ class DAppBrowser extends Component {
           onCloseButtonPress={() => navigation.goBack()}
           onSwitchButtonPress={() => this.setState({ walletSelectionVisible: true })}
         />
-        {
-          address && (
-            <ProgressWebView
-              source={{ uri: url }}
-              ref={this.webview}
-              onLoadStart={() => { this.injectJavaScript(); }}
-              onNavigationStateChange={this.onNavigationStateChange}
-              onMessage={this.onMessage}
-            />
-          )
-        }
+        {this.getWebView(address, url)}
         <WalletSelection
           navigation={navigation}
           visible={walletSelectionVisible}
