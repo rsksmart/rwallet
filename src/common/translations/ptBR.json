@@ -53,7 +53,7 @@
         "to": "Para",
         "memo": "Anotação (opcional)",
         "fee": "Taxa de transação",
-        "custom": "Personalizar taxa",
+        "custom": "Ajustar taxa",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
         "Slow": "Lento",
         "Average": "Médio",
