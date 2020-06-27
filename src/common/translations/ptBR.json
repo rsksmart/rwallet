@@ -183,7 +183,7 @@
         }
       },
       "rnsStatus": {
-        "pending": "Registro em processo de confirmação.",
+        "pending": "Registro aguardando confirmação.",
         "success": "Sucesso! Seu apelido foi criado.",
         "failed": "Falhou! Seu apelido não foi registrado."
       }
