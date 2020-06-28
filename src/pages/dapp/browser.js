@@ -151,6 +151,8 @@ class DAppBrowser extends Component {
               }
             }
 
+            window.web3.setProvider(window.ethereum)
+
             // Override enable function can return the current address to web site
             window.ethereum.enable = () => {
               return new Promise((resolve, reject) => {
@@ -221,9 +223,14 @@ class DAppBrowser extends Component {
               callback(err, res)
             }
 
-            window.web3.setProvider(window.ethereum)
             window.ethereum.send = sendAsync
             window.ethereum.sendAsync = sendAsync
+            const timer = setInterval(() => {
+              if (!window.ethereum.sendAsync) {
+                window.ethereum.sendAsync = window.ethereum.send
+                clearInterval(timer)
+              }
+            }, 2000)
           }
 
           initWeb3()
@@ -299,7 +306,7 @@ class DAppBrowser extends Component {
               console.log('err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
-          }, () => null);
+          }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
           break;
         }
 
@@ -307,6 +314,9 @@ class DAppBrowser extends Component {
           let res = await this.rsk3.getTransactionReceipt(params[0]);
           if (!res) {
             res = '';
+          } else {
+            // RNS and tRif faucet's transaction status judge condition: parseInt(status, 16) === 1, so need set true to 1 and false to 0
+            res.status = res.status ? 1 : 0;
           }
           const result = { id, result: res };
           this.webview.current.postMessage(JSON.stringify(result));
