@@ -25,7 +25,8 @@
         "title": "钱包",
         "myAssets": "我的资产",
         "allAssets": "所有资产",
-        "addAsset": "新增"
+        "addAsset": "添加资产",
+        "addWallet": "添加钱包"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",
@@ -308,7 +309,11 @@
     "Finish": "完成",
     "Exchange": "兑换",
     "addAsset": "添加资产",
-    "ok": "好的"
+    "ok": "好的",
+    "name": "名字",
+    "pending": "等待中",
+    "done": "已完成",
+    "share": "分享"
   },
   "txState": {
     "Sent": "已发送",
@@ -382,6 +387,10 @@
     "addressCopied": {
       "title": "已复制",
       "body": "地址已复制。"
+    },
+    "subdomainCopied": {
+      "title": "已复制",
+      "body": "域名已复制。"
     },
     "passcode": {
       "typeOldPasscode": "输入您的旧密码",

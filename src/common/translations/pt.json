@@ -25,7 +25,8 @@
         "title": "Sua carteira",
         "myAssets": "Meus ativos",
         "allAssets": "Todos os ativos",
-        "addAsset": "Adicionar ativo"
+        "addAsset": "Adicionar ativo",
+        "addWallet": "Adicionar carteira"
       },
       "history": {
         "noTransNote": "Não existe transação encontrada para este ativo",
@@ -307,7 +308,11 @@
     "Finish": "Terminar",
     "Exchange": "Troca",
     "addAsset": "Adicionar ativo",
-    "ok": "Está bem"
+    "ok": "Está bem",
+    "name": "Nome",
+    "pending": "Pendente",
+    "done": "Feito",
+    "share": "COMPARTILHAR"
   },
   "txState": {
     "Sent": "Enviei",
@@ -381,6 +386,10 @@
     "addressCopied": {
       "title": "Copiado",
       "body": "O endereço foi copiado para a área de transferência."
+    },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "O subdomínio foi copiado para a área de transferência."
     },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",

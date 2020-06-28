@@ -25,7 +25,8 @@
         "title": "Your Wallet",
         "myAssets": "My Assets",
         "allAssets": "All Assets",
-        "addAsset": "Add Asset"
+        "addAsset": "Add Asset",
+        "addWallet": "Add Wallet"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
