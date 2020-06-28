@@ -54,6 +54,8 @@ const actions = {
 
   INIT_LIVE_QUERY_BLOCK_HEIGHTS: 'INIT_LIVE_QUERY_BLOCK_HEIGHTS',
 
+  SET_SUBDOMAINS: 'SET_SUBDOMAINS',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -158,6 +160,10 @@ const actions = {
   }),
   initLiveQueryBlockHeights: () => ({
     type: actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS,
+  }),
+  setSubdomains: (subdomains) => ({
+    type: actions.SET_SUBDOMAINS,
+    subdomains,
   }),
 };
 

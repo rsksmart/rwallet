@@ -301,7 +301,6 @@ function* processNotificationRequest(action) {
       common.currentNavigation.navigate('Home');
       const newAction = actions.setFcmNavParams({
         routeName: 'RnsStatus',
-        routeParams: { rnsRows: params },
       });
       yield put(newAction);
       break;
@@ -318,13 +317,7 @@ function createFcmChannel() {
     const unsubscribeHandler = () => {};
 
     fcmHelper.startListen((notification, fcmType) => {
-      let action = null;
-      if (fcmType === FcmType.INAPP) {
-        action = actions.showInAppNotification(notification);
-      } else {
-        action = actions.processNotification(notification);
-      }
-      emitter(action);
+      emitter(actions.receiveNotification(notification, fcmType));
     });
 
     // unsubscribe function, this gets called when we close the channel
@@ -394,6 +387,36 @@ function* addRecentDapp(action) {
   yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps: newRecentDapps });
 }
 
+function* receiveNotificationRequest(action) {
+  const { notification, fcmType } = action;
+  if (!notification) {
+    return null;
+  }
+  const { title, body, data } = notification;
+  console.log(`receiveNotificationRequest, title: ${title}, body: ${body} `);
+  if (data) {
+    const { event, eventParams } = data;
+    const params = eventParams ? JSON.parse(eventParams) : null;
+    switch (event) {
+      case 'createRnsSuccess':
+      case 'createRnsFail': {
+        // Change subdomains status by notification params
+        yield put(walletActions.setSubdomains(params));
+        break;
+      }
+      default:
+    }
+  }
+
+  if (fcmType === FcmType.INAPP) {
+    yield put(actions.showInAppNotification(notification));
+  } else {
+    yield put(actions.processNotification(notification));
+  }
+
+  return null;
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -418,5 +441,6 @@ export default function* () {
     takeEvery(actions.FETCH_DAPP_TYPES, fetchDappTypes),
     takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
+    takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
   ]);
 }

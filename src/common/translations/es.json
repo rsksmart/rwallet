@@ -24,7 +24,8 @@
         "title": "Su Wallet",
         "myAssets": "Mis activos",
         "allAssets": "Todos los activos",
-        "addAsset": "Agregar activo"
+        "addAsset": "Agregar activo",
+        "addWallet": "Agregar billetera"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -301,7 +302,11 @@
     "Finish": "Terminar",
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
-    "ok": "Okay"
+    "ok": "Okay",
+    "name": "Nombre",
+    "pending": "Pendiente",
+    "done": "Hecho",
+    "share": "COMPARTIR"
   },
   "txState": {
     "Sent": "Enviado",
@@ -376,6 +381,10 @@
       "title": "Copiado",
       "body": "La dirección se ha copiado en el portapapeles."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "El subdominio se ha copiado al portapapeles."
+    },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
       "typeNewPasscode": "Escriba su nueva contraseña",
@@ -444,6 +453,10 @@
       "body": "Hemos lanzado soporte para RNS, o RIF Name Service que permite la identificación de direcciones blockchain por nombres legibles por humanos.",
       "confirmText": "Vamos a intentarlo",
       "cancelText": "omitir"
+    },
+    "balanceInvalid": {
+      "title": "El saldo de la billetera no está disponible",
+      "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
     }
   },
   "currency": {
