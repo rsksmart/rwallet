@@ -32,6 +32,7 @@ class DAppBrowser extends Component {
       walletSelectionVisible: false,
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
+      ethersJsContent: '',
     };
 
     this.webview = createRef();
@@ -39,7 +40,7 @@ class DAppBrowser extends Component {
   }
 
   componentDidMount() {
-    const { web3JsContent } = this.state;
+    const { web3JsContent, ethersJsContent } = this.state;
     if (web3JsContent === '') {
       if (Platform.OS === 'ios') {
         RNFS.readFile(`${RNFS.MainBundlePath}/web3.1.2.7.js`, 'utf8')
@@ -50,6 +51,19 @@ class DAppBrowser extends Component {
         RNFS.readFileAssets('web3.1.2.7.js', 'utf8')
           .then((content) => {
             this.setState({ web3JsContent: content });
+          });
+      }
+    }
+    if (ethersJsContent === '') {
+      if (Platform.OS === 'ios') {
+        RNFS.readFile(`${RNFS.MainBundlePath}/ethers.js`, 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
+          });
+      } else {
+        RNFS.readFileAssets('ethers.js', 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
           });
       }
     }
@@ -65,20 +79,23 @@ class DAppBrowser extends Component {
   }
 
   getJsCode = (address) => {
-    const { web3JsContent } = this.state;
+    const { web3JsContent, ethersJsContent } = this.state;
     return `
       ${web3JsContent}
-      setTimeout(() => {
+      ${ethersJsContent}
         (function() {
-          let resolver, rejecter, hash
+          let resolver = {}
+          let rejecter = {}
+          let hash
           setTimeout(() => {
             ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
-              console.log('data.data: ', data.data)
-              const result = data.data ? JSON.parse(data.data) : data.data
-              if (result && result.error && rejecter) {
-                rejecter(new Error(result.message))
-              } else if (resolver) {
-                resolver(result)
+              const passData = data.data ? JSON.parse(data.data) : data.data
+              console.log('passData: ', passData)
+              const { id, result } = passData
+              if (result && result.error && rejecter[id]) {
+                rejecter[id](new Error(result.message))
+              } else if (resolver[id]) {
+                resolver[id](result)
               }
             })
           }, 0)
@@ -86,14 +103,16 @@ class DAppBrowser extends Component {
           communicateWithRN = (payload) => {
             return new Promise((resolve, reject) => {
               window.ReactNativeWebView.postMessage(JSON.stringify(payload))
-              resolver = resolve
-              rejecter = reject
+              const { id } = payload
+              resolver[id] = resolve
+              rejecter[id] = reject
             })
           }
 
           function initWeb3() {
             const rskEndpoint = '${this.rskEndpoint}';
-            const web3 = new Web3(rskEndpoint);
+            const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
+            const web3 = new Web3(provider);
             window.ethereum = web3;
             window.ethereum.selectedAddress = '${address}'
             window.ethereum.networkVersion = '${this.networkVersion}'
@@ -181,8 +200,6 @@ class DAppBrowser extends Component {
               }
               
               console.log('res: ', res)
-              resolver = ''
-              rejecter = ''
               callback(err, res)
             }
 
@@ -193,7 +210,6 @@ class DAppBrowser extends Component {
 
           initWeb3()
         }) ();
-      }, 100)
       true
     `;
   }
@@ -209,33 +225,37 @@ class DAppBrowser extends Component {
   }
 
   onMessage = async (event) => {
+    const { data } = event.nativeEvent;
+    const payload = JSON.parse(data);
+    const { method, params, id } = payload;
     try {
-      const { data } = event.nativeEvent;
       const { callAuthVerify } = this.props;
       const { wallet: { coins, address } } = this.state;
-      const payload = JSON.parse(data);
-      const { method, params } = payload;
 
       switch (method) {
         case 'eth_estimateGas': {
           const res = await this.provider.estimateGas(params[0]);
-          this.webview.current.postMessage(JSON.stringify(res.toNumber()));
+          const result = { id, result: res.toNumber() };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
         case 'eth_gasPrice': {
           const res = await this.provider.getGasPrice();
-          this.webview.current.postMessage(JSON.stringify(res));
+          const result = { id, result: res };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
         case 'eth_call': {
           const res = await this.provider.call(params[0], params[1]);
-          this.webview.current.postMessage(JSON.stringify(res));
+          const result = { id, result: res };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
 
         case 'eth_getBlockByNumber': {
           const res = await this.rsk3.getBlock(params[0]);
-          this.webview.current.postMessage(JSON.stringify(res));
+          const result = { id, result: res };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
 
@@ -254,11 +274,12 @@ class DAppBrowser extends Component {
               const { privateKey } = coins[0];
               const signWallet = new ethers.Wallet(privateKey, this.provider);
               const signedTransaction = await signWallet.sign(txData);
-              const result = await this.provider.sendTransaction(signedTransaction);
-              this.webview.current.postMessage(JSON.stringify(result.hash));
+              const res = await this.provider.sendTransaction(signedTransaction);
+              const result = { id, result: res.hash };
+              this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
               console.log('err: ', err);
-              this.webview.current.postMessage(JSON.stringify({ error: 1, message: err.message }));
+              this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => null);
           break;
@@ -269,13 +290,15 @@ class DAppBrowser extends Component {
           if (!res) {
             res = '';
           }
-          this.webview.current.postMessage(JSON.stringify(res));
+          const result = { id, result: res };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
 
         case 'eth_getTransactionByHash': {
           const res = await this.provider.getTransaction(params[0]);
-          this.webview.current.postMessage(JSON.stringify(res));
+          const result = { id, result: res };
+          this.webview.current.postMessage(JSON.stringify(result));
           break;
         }
 
@@ -283,7 +306,7 @@ class DAppBrowser extends Component {
           break;
       }
     } catch (err) {
-      const error = { error: 1, message: err.message };
+      const error = { id, error: 1, message: err.message };
       this.webview.current.postMessage(JSON.stringify(error));
     }
   }
@@ -302,14 +325,14 @@ class DAppBrowser extends Component {
   }
 
   getWebView = (address, url) => {
-    const { web3JsContent } = this.state;
-    if (address && web3JsContent) {
+    const { web3JsContent, ethersJsContent } = this.state;
+    if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView
           source={{ uri: url }}
           ref={this.webview}
           javaScriptEnabled
-          onLoadStart={() => { this.injectJavaScript(address); }}
+          onLoadStart={() => { console.log('reload start'); this.injectJavaScript(address); }}
           onNavigationStateChange={this.onNavigationStateChange}
           onMessage={this.onMessage}
         />

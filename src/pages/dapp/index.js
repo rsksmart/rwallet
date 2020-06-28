@@ -185,6 +185,7 @@ class DAppIndex extends Component {
           name: item.url,
           url: item.url,
           description: '',
+          networks: ['Mainnet', 'Testnet'],
         };
         this.onDappPress(dapp);
       }}
@@ -248,7 +249,9 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              this.onDappPress({ url: searchUrl, name: searchUrl, description: '' });
+              this.onDappPress({
+                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'],
+              });
             }
           }}
         />

@@ -425,7 +425,7 @@
     },
     "noWalletAvailable": {
       "title": "No hay billetera disponible",
-      "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero."
+      "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero.\n\n"
     },
     "requestTimeout": {
       "title": "Pide tiempo fuera",

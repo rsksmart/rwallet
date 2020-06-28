@@ -425,7 +425,7 @@
     },
     "noWalletAvailable": {
       "title": "Nenhuma carteira disponível",
-      "body": "Ainda não há carteira disponível para este Dapp. Navegue até a página Criação de carteira, para criar ou importar uma carteira primeiro."
+      "body": "Ainda não há carteira disponível para este Dapp. Navegue até a página Criação de carteira, para criar ou importar uma carteira primeiro.\n\n"
     },
     "requestTimeout": {
       "title": "Tempo limite da solicitação",
