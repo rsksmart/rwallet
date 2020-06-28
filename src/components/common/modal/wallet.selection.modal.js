@@ -284,7 +284,10 @@ class WalletSelection extends PureComponent {
       const { walletManager } = this.props;
       const { wallets } = walletManager;
       const supportWallets = [];
-      const { networks } = dapp;
+      let { networks } = dapp;
+      if (!networks || !networks.length) {
+        networks = ['Mainnet', 'Testnet'];
+      }
       _.forEach(networks, (network) => {
         _.forEach(wallets, (wallet) => {
           const { coins } = wallet;
