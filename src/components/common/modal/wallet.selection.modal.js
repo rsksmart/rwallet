@@ -280,7 +280,7 @@ class WalletSelection extends PureComponent {
   // Get the wallet which wallet's coins in Dapp's support token list
   getSupportWallets = (dapp) => {
     if (dapp) {
-      const supportTokens = (dapp && dapp.tokens) || [];
+      const supportTokens = dapp.tokens || [];
       const { walletManager } = this.props;
       const { wallets } = walletManager;
       const supportWallets = [];
