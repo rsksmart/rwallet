@@ -439,6 +439,10 @@
       "body": "Lançamos o suporte ao RNS, ou RIF Name Service, que permite a identificação de endereços de blockchain por nomes legíveis por humanos.",
       "confirmText": "Vamos tentar",
       "cancelText": "pular"
+    },
+    "balanceInvalid": {
+      "title": "O saldo da carteira não está disponível",
+      "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
     }
   },
   "currency": {

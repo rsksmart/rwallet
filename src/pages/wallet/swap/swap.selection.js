@@ -17,6 +17,8 @@ import Loc from '../../../components/common/misc/loc';
 // import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
 import color from '../../../assets/styles/color.ts';
+import appActions from '../../../redux/app/actions';
+import { createErrorNotification } from '../../../common/notification.controller';
 
 const styles = StyleSheet.create({
   body: {
@@ -238,7 +240,7 @@ class SwapSelection extends Component {
 
   createListData = (wallets, navigation, selectionType, filters) => {
     const {
-      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, resetSwap,
+      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, resetSwap, addNotification,
     } = this.props;
 
     const { init } = navigation.state.params || { init: true };
@@ -272,6 +274,11 @@ class SwapSelection extends Component {
           amount: amountText,
           icon: coin.icon,
           onPress: () => {
+            if (_.isNil(coin.balance)) {
+              const notification = createErrorNotification('modal.balanceInvalid.title', 'modal.balanceInvalid.body');
+              addNotification(notification);
+              return;
+            }
             if (swapSource && swapDest
               && ((selectionType === 'source' && coin.id === swapSource.coin.id && wallet.name === swapSource.walletName)
                 || (selectionType === 'dest' && coin.id === swapDest.coin.id && wallet.name === swapDest.walletName))
@@ -368,7 +375,9 @@ SwapSelection.propTypes = {
   isShowBackButton: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
   bottomPaddingComponent: PropTypes.object,
+  addNotification: PropTypes.func.isRequired,
 };
+
 
 SwapSelection.defaultProps = {
   walletManager: undefined,
@@ -389,6 +398,7 @@ const mapDispatchToProps = (dispatch) => ({
   setSwapDest: (walletName, coin) => dispatch(walletActions.setSwapDest(walletName, coin)),
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
   switchSwap: () => dispatch(walletActions.switchSwap()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwapSelection);
