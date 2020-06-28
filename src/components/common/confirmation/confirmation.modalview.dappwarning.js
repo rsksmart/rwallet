@@ -13,16 +13,29 @@ import NewFeatureModalView from './confirmation.modalview.newfeature';
 const styles = StyleSheet.create({
   closeBtn: {
     marginTop: 34,
-    marginLeft: -3,
+    marginLeft: 53,
     width: 20,
     height: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute',
+    zIndex: 999,
   },
   closeImage: {
     width: 12,
     height: 12,
     resizeMode: 'cover',
+  },
+  titleStyle: {
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 17,
+    color: 'black',
+    marginTop: 34,
+  },
+  messageStyle: {
+    fontFamily: 'Avenir-Book',
+    fontSize: 16,
+    color: 'black',
   },
 });
 
@@ -42,6 +55,8 @@ const DappWarningConfirmation = ({
       cancelText="page.dapp.button.cancel"
       onCancelPressed={onCancelPressed}
       onConfirmPressed={onConfirmPressed}
+      titleStyle={styles.titleStyle}
+      messageStyle={styles.messageStyle}
     />
   </View>
 );
@@ -57,3 +72,5 @@ DappWarningConfirmation.defaultProps = {
   onConfirmPressed: () => null,
   onCancelPressed: () => null,
 };
+
+export default DappWarningConfirmation;

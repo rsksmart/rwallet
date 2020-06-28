@@ -31,7 +31,7 @@ const createNewFeatureConfirmation = (title, message, confirmText, cancelText, c
 
 const createDappWarningConfirmation = (title, message, confirmationCallback, confirmationCancelCallback) => ({
   id: Date.now(),
-  type: 'newFeature',
+  type: 'dappWarning',
   title,
   titleStyle: { fontFamily: 'Avenir-Heavy', fontSize: 17, color: 'black' },
   messageStyle: { fontFamily: 'Avenir-Book', fontSize: 16, color: 'black' },

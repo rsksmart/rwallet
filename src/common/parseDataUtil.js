@@ -70,6 +70,7 @@ const parseDataUtil = {
       type: dappObject.get('type'),
       contractAddresses: dappObject.get('contractAddresses'),
       tokens: dappObject.get('tokens'),
+      networks: dappObject.get('networks'),
     };
     return dapp;
   },

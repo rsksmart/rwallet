@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, TouchableOpacity, View, Image,
+  StyleSheet, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
@@ -73,20 +73,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const closeImage = require('../../../assets/images/icon/close.png');
-
 const NewFeatureModalView = ({
-  title, message, onCancelPressed, onConfirmPressed, cancelText, confirmText, showCloseBtn, titleStyle, messageStyle,
+  title, message, onCancelPressed, onConfirmPressed, cancelText, confirmText, titleStyle, messageStyle,
 }) => (
   <View style={styles.modalView}>
     <View style={space.paddingHorizontal_25}>
-      {
-        showCloseBtn && (
-          <TouchableOpacity style={styles.closeBtn} onPress={onCancelPressed}>
-            <Image source={closeImage} style={styles.closeImage} />
-          </TouchableOpacity>
-        )
-      }
       <View style={styles.titleView}><Loc style={titleStyle || styles.title} text={title} /></View>
       <Loc style={messageStyle || styles.text} text={message} />
     </View>
@@ -110,7 +101,6 @@ NewFeatureModalView.propTypes = {
   messageStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
   onCancelPressed: PropTypes.func,
   onConfirmPressed: PropTypes.func,
-  showCloseBtn: PropTypes.bool,
 };
 
 NewFeatureModalView.defaultProps = {
@@ -118,7 +108,6 @@ NewFeatureModalView.defaultProps = {
   messageStyle: null,
   onConfirmPressed: () => null,
   onCancelPressed: () => null,
-  showCloseBtn: false,
 };
 
 export default NewFeatureModalView;

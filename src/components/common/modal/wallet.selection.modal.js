@@ -90,8 +90,13 @@ const styles = StyleSheet.create({
   },
   selection: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
+    alignSelf: 'center',
+  },
+  row: {
+    flexDirection: 'row',
   },
   circle: {
     width: 13,
@@ -123,11 +128,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#028CFF',
     borderRadius: 4,
     padding: 5,
+    width: 49,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   testnet: {
     backgroundColor: color.component.listItemIndicator.color,
     borderRadius: 4,
     padding: 5,
+    width: 49,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   network: {
     fontFamily: 'Avenir-Book',
@@ -140,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Avenir-Book',
     fontWeight: 'bold',
+    marginLeft: 11,
   },
   tokenText: {
     fontFamily: 'Avenir-Roman',
@@ -209,8 +221,6 @@ class WalletSelection extends PureComponent {
     return address;
   }
 
-  getWalletInfo = (wallet) => ({ address: wallet.coins[0].address, network: wallet.coins[0].type })
-
   getTokenView = (tokens) => {
     const result = [];
     let row = [];
@@ -219,7 +229,7 @@ class WalletSelection extends PureComponent {
       row.push(
         <View style={styles.tokenItem} key={`${token.objectId}-${token.symbol}`}>
           <Text style={styles.tokenText}>{token.symbol}</Text>
-          <Text style={styles.tokenText}>{Number((token.balance && token.balance.toString())).toFixed(4) || 0}</Text>
+          <Text style={styles.tokenText}>{Number(((token.balance || 0) && token.balance.toString())).toFixed(4)}</Text>
         </View>,
       );
       if (canModTwo) {
@@ -244,15 +254,17 @@ class WalletSelection extends PureComponent {
 
   getWalletItem = ({ item }) => {
     const { selectedWallet } = this.state;
-    const { address: selectedAddress } = this.getWalletInfo(selectedWallet);
-    const { address, network } = this.getWalletInfo(item);
+    const { address: selectedAddress } = selectedWallet;
+    const { address, network } = item;
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => { this.setState({ selectedWallet: item }); }}>
         <View style={styles.selection}>
-          <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
-            <Text style={styles.network}>{network}</Text>
+          <View style={styles.row}>
+            <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
+              <Text style={styles.network}>{network}</Text>
+            </View>
+            <Text style={styles.address}>{this.ellipsisAddress(address)}</Text>
           </View>
-          <Text style={styles.address}>{this.ellipsisAddress(address)}</Text>
           <View style={styles.circle}>
             <View style={selectedAddress === address ? styles.isSelected : {}} />
           </View>
@@ -267,26 +279,34 @@ class WalletSelection extends PureComponent {
 
   // Get the wallet which wallet's coins in Dapp's support token list
   getSupportWallets = (dapp) => {
-    const supportTokens = (dapp && dapp.tokens) || [];
-    const { walletManager } = this.props;
-    const { wallets } = walletManager;
-    const supportWallets = [];
-    _.forEach(wallets, (wallet) => {
-      const { coins } = wallet;
+    if (dapp) {
+      const supportTokens = (dapp && dapp.tokens) || [];
+      const { walletManager } = this.props;
+      const { wallets } = walletManager;
+      const supportWallets = [];
+      const { networks } = dapp;
+      _.forEach(networks, (network) => {
+        _.forEach(wallets, (wallet) => {
+          const { coins } = wallet;
 
-      // Get all rsk tokens
-      const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC');
-      // If dapp support token list is empty, needs to show all rsk tokens
-      const tokens = supportTokens.length ? _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol)) : rskTokens;
-      if (tokens.length) {
-        supportWallets.push({
-          ...wallet,
-          coins: tokens,
+          // Get all rsk tokens
+          const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
+          // If dapp support token list is empty, needs to show all rsk tokens
+          const tokens = supportTokens.length ? _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol)) : rskTokens;
+          if (tokens.length) {
+            supportWallets.push({
+              ...wallet,
+              coins: tokens,
+              address: tokens[0].address,
+              network,
+            });
+          }
         });
-      }
-    });
+      });
 
-    return supportWallets;
+      return supportWallets;
+    }
+    return [];
   }
 
   render() {

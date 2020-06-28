@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import NewFeatureModalView from './confirmation.modalview.newfeature';
+import DappWarningModalView from './confirmation.modalview.dappwarning';
 import DefaultModalView from './confirmation.modalview.default';
 
 const styles = StyleSheet.create({
@@ -40,9 +41,14 @@ export default class ConfirmationPanel extends Component {
   render() {
     const { animationType, transparent } = this.state;
     const {
-      type, title, message, confirmText, cancelText, showCloseBtn, titleStyle, messageStyle,
+      type, title, message, confirmText, cancelText, showCloseBtn,
     } = this.props;
-    const ModalView = type === 'newFeature' ? NewFeatureModalView : DefaultModalView;
+    let ModalView = DefaultModalView;
+    if (type === 'newFeature') {
+      ModalView = NewFeatureModalView;
+    } else if (type === 'dappWarning') {
+      ModalView = DappWarningModalView;
+    }
 
     return (
       <Modal
@@ -53,9 +59,7 @@ export default class ConfirmationPanel extends Component {
         <View style={styles.modalViewWrapper}>
           <ModalView
             title={title}
-            titleStyle={titleStyle}
             message={message}
-            messageStyle={messageStyle}
             confirmText={confirmText || 'button.confirm'}
             cancelText={cancelText}
             onCancelPressed={this.onCancelPressed}
@@ -78,8 +82,6 @@ ConfirmationPanel.propTypes = {
   confirmationCallback: PropTypes.func,
   confirmationCancelCallback: PropTypes.func,
   showCloseBtn: PropTypes.bool,
-  titleStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
-  messageStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
 };
 
 ConfirmationPanel.defaultProps = {
@@ -89,6 +91,4 @@ ConfirmationPanel.defaultProps = {
   confirmText: 'button.confirm',
   cancelText: 'button.cancel',
   showCloseBtn: false,
-  titleStyle: null,
-  messageStyle: null,
 };
