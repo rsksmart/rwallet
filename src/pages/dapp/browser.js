@@ -1,6 +1,8 @@
 import React, { Component, createRef } from 'react';
 import {
   Platform, View,
+  ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
@@ -15,6 +17,13 @@ import CONSTANTS from '../../common/constants.json';
 
 const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
 
+const styles = StyleSheet.create({
+  loading: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+});
+
 class DAppBrowser extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -24,7 +33,6 @@ class DAppBrowser extends Component {
     super(props);
 
     const { navigation } = this.props;
-
     const currentWallet = navigation.state.params.wallet || null;
 
     this.state = {
@@ -110,6 +118,7 @@ class DAppBrowser extends Component {
           }
 
           function initWeb3() {
+            // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
             const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
             const web3 = new Web3(provider);
@@ -117,6 +126,8 @@ class DAppBrowser extends Component {
             window.ethereum.selectedAddress = '${address}'
             window.ethereum.networkVersion = '${this.networkVersion}'
             window.web3 = web3
+
+            // Adapt web3 old version (new web3 version move toDecimal and toBigNumber to utils class).
             window.web3.toDecimal = window.web3.utils.toDecimal
             window.web3.toBigNumber = window.web3.utils.toBN
             
@@ -128,6 +139,7 @@ class DAppBrowser extends Component {
               selectedAddress: '${address}',
             }
 
+            // Some web site using the config to check the window.ethereum is exist or not
             window.ethereum.publicConfigStore = {
               _state: {
                 ...config,
@@ -139,12 +151,14 @@ class DAppBrowser extends Component {
               }
             }
 
+            // Override enable function can return the current address to web site
             window.ethereum.enable = () => {
               return new Promise((resolve, reject) => {
                 resolve(['${address}'])
               })
             }
 
+            // Adapt web3 old version (new web3 version remove this function)
             window.web3.version = {
               api: '1.2.7',
               getNetwork: (cb) => { cb(null, '${this.networkVersion}') },
@@ -152,6 +166,9 @@ class DAppBrowser extends Component {
 
             window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
 
+            // Adapt web3 old version (need to override the abi's method).
+            // web3 < 1.0 using const contract = web3.eth.contract(abi).at(address)
+            // web3 >= 1.0 using const contract = new web3.eth.Contract()
             window.web3.eth.contract = (abi) => {
               const contract = new web3.eth.Contract(abi);
               contract.at = (address) => {
@@ -180,6 +197,7 @@ class DAppBrowser extends Component {
               return contract
             }
 
+            // Override the sendAsync function so we can listen the web site's call and do our things
             const sendAsync = async (payload, callback) => {
               let err, res = {}, result = ''
               const {method, params, jsonrpc, id} = payload
@@ -216,7 +234,7 @@ class DAppBrowser extends Component {
 
   injectJavaScript = (address) => {
     const jsCode = this.getJsCode(address);
-    this.webview.current.injectJavaScript(jsCode);
+    return jsCode;
   }
 
   onNavigationStateChange = (navState) => {
@@ -312,16 +330,8 @@ class DAppBrowser extends Component {
   }
 
   switchWallet = (toWallet) => {
-    if (this.webview.current) {
-      const currentWallet = this.generateWallet(toWallet);
-      this.setState({ walletSelectionVisible: false, wallet: currentWallet }, () => {
-        this.setNetwork(currentWallet.network);
-        this.webview.current.reload();
-        setTimeout(() => {
-          this.injectJavaScript(currentWallet.address);
-        }, 100);
-      });
-    }
+    const { navigation } = this.props;
+    navigation.replace('DAppBrowser', { wallet: toWallet, dapp: navigation.state.params.dapp });
   }
 
   getWebView = (address, url) => {
@@ -332,13 +342,13 @@ class DAppBrowser extends Component {
           source={{ uri: url }}
           ref={this.webview}
           javaScriptEnabled
-          onLoadStart={() => { console.log('reload start'); this.injectJavaScript(address); }}
+          injectedJavaScriptBeforeContentLoaded={this.injectJavaScript(address)}
           onNavigationStateChange={this.onNavigationStateChange}
           onMessage={this.onMessage}
         />
       );
     }
-    return null;
+    return <ActivityIndicator style={styles.loading} size="large" />;
   }
 
   render() {
@@ -381,6 +391,7 @@ DAppBrowser.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
