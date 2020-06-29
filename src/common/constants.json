@@ -15,5 +15,9 @@
       "RSK_END_POINT": "https://public-node.testnet.rsk.co",
       "NETWORK_VERSION": 31
     }
+  },
+
+  "EVENT": {
+    "TOKENS_UPDATE": "tokensUpdate"
   }
 }
