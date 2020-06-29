@@ -60,7 +60,7 @@ SearchInput.propTypes = {
   placeholderTextColor: PropTypes.string,
   onChangeText: PropTypes.func,
   onSubmit: PropTypes.func,
-  style: PropTypes.oneOfType(PropTypes.arrayOf, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 SearchInput.defaultProps = {

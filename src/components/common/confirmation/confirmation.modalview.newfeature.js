@@ -97,8 +97,8 @@ NewFeatureModalView.propTypes = {
   message: PropTypes.string.isRequired,
   cancelText: PropTypes.string.isRequired,
   confirmText: PropTypes.string.isRequired,
-  titleStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
-  messageStyle: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
+  titleStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  messageStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onCancelPressed: PropTypes.func,
   onConfirmPressed: PropTypes.func,
 };
