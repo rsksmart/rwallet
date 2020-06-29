@@ -10,6 +10,7 @@ const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
 const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
+const IS_USE_TRANSACTION_FALLBACK = 'isUseTransactionFallback';
 
 class RNStorage {
   constructor() {
@@ -264,6 +265,18 @@ class RNStorage {
 
   clearRnsRegisteringSubdomains() {
     this.remove(RNS_REGISTERING_SUBDOMAINS);
+  }
+
+  getUseTransactionFallback() {
+    return this.load({ key: IS_USE_TRANSACTION_FALLBACK });
+  }
+
+  setUseTransactionFallback() {
+    this.save(IS_USE_TRANSACTION_FALLBACK, true);
+  }
+
+  clearUseTransactionFallback() {
+    this.remove(IS_USE_TRANSACTION_FALLBACK);
   }
 }
 

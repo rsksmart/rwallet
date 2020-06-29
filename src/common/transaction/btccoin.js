@@ -41,11 +41,12 @@ export const signTransaction = async (transaction, privateKey) => {
   return rawTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
+export const getSignedTransactionParam = (signedTransaction, netType, memo, isUseTransactionFallback, coinSwitch) => {
   const param = {
     name: 'Bitcoin',
     hash: signedTransaction,
     type: netType,
+    isUseTransactionFallback,
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;

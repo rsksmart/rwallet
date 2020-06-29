@@ -1,5 +1,7 @@
 import Parse from 'parse/lib/react-native/Parse';
 import common from '../common';
+import ERROR_CODE from '../errors';
+import storage from '../storage';
 
 import * as btc from './btccoin';
 import * as rbtc from './rbtccoin';
@@ -14,9 +16,9 @@ const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.get
 
 const convertTransferValue = (symbol, value) => (symbol === 'BTC' ? common.btcToSatoshiHex(value) : common.rskCoinToWeiHex(value));
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
-  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
-  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
+const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, isUseTransactionFallback, coinswitch) => (symbol === 'BTC'
+  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, isUseTransactionFallback, coinswitch)
+  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, isUseTransactionFallback, coinswitch));
 
 const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
@@ -86,10 +88,15 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
+        const isUseTransactionFallback = await storage.getUseTransactionFallback();
+        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, isUseTransactionFallback, this.coinswitch);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
+        await storage.clearUseTransactionFallback();
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);
+        if (e.code === ERROR_CODE.ERR_REQUEST_TIMEOUT) {
+          await storage.setUseTransactionFallback();
+        }
         throw e;
       }
     } else {
