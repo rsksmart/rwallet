@@ -41,7 +41,7 @@ export default class ConfirmationPanel extends Component {
   render() {
     const { animationType, transparent } = this.state;
     const {
-      type, title, message, confirmText, cancelText, showCloseBtn,
+      type, title, message, confirmText, cancelText,
     } = this.props;
     let ModalView = DefaultModalView;
     if (type === 'newFeature') {
@@ -64,7 +64,6 @@ export default class ConfirmationPanel extends Component {
             cancelText={cancelText}
             onCancelPressed={this.onCancelPressed}
             onConfirmPressed={this.onConfirmPressed}
-            showCloseBtn={showCloseBtn}
           />
         </View>
       </Modal>
@@ -81,7 +80,6 @@ ConfirmationPanel.propTypes = {
   cancelText: PropTypes.string,
   confirmationCallback: PropTypes.func,
   confirmationCancelCallback: PropTypes.func,
-  showCloseBtn: PropTypes.bool,
 };
 
 ConfirmationPanel.defaultProps = {
@@ -90,5 +88,4 @@ ConfirmationPanel.defaultProps = {
   confirmationCancelCallback: null,
   confirmText: 'button.confirm',
   cancelText: 'button.cancel',
-  showCloseBtn: false,
 };
