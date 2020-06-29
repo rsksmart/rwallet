@@ -91,10 +91,20 @@ class DAppBrowser extends Component {
     return `
       ${web3JsContent}
       ${ethersJsContent}
+
+      // Disable the web site notification
+      class Notification {
+        constructor(title, options) {
+          this.title = title;
+          this.options = options;
+        }
+      }
+
         (function() {
           let resolver = {}
           let rejecter = {}
           let hash
+
           setTimeout(() => {
             ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
               const passData = data.data ? JSON.parse(data.data) : data.data
