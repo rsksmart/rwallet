@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import actions from './actions';
 import config from '../../../config';
+import storage from '../../common/storage';
 
 const { defaultSettings } = config;
 
@@ -41,6 +42,10 @@ const initState = new Map({
   inAppNotification: undefined,
   fcmNavParams: undefined,
   fcmToken: undefined,
+  dapps: undefined,
+  dappTypes: undefined,
+  advertisements: undefined,
+  recentDapps: undefined,
   page: undefined,
 });
 
@@ -142,6 +147,26 @@ export default function appReducer(state = initState, action) {
       return state.set('isLoginError', true);
     case actions.RESET_LOGIN_ERROR:
       return state.set('isLoginError', false);
+    case actions.UPDATE_DAPPS: {
+      const { dapps } = action;
+      storage.setDapps(dapps);
+      return state.set('dapps', dapps);
+    }
+    case actions.UPDATE_DAPP_TYPES: {
+      const { dappTypes } = action;
+      storage.setDappTypes(dappTypes);
+      return state.set('dappTypes', dappTypes);
+    }
+    case actions.UPDATE_ADVERTISEMENT: {
+      const { advertisements } = action;
+      storage.setAdvertisements(advertisements);
+      return state.set('advertisements', advertisements);
+    }
+    case actions.UPDATE_RECENT_DAPPS: {
+      const { recentDapps } = action;
+      storage.setRecentDapps(recentDapps);
+      return state.set('recentDapps', recentDapps);
+    }
     case actions.SET_PAGE:
       return state.set('page', action.page);
     case actions.RESET_PAGE:

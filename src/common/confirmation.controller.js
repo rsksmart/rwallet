@@ -29,4 +29,15 @@ const createNewFeatureConfirmation = (title, message, confirmText, cancelText, c
   confirmationCancelCallback,
 });
 
-export { createInfoConfirmation, createErrorConfirmation, createNewFeatureConfirmation };
+const createDappWarningConfirmation = (title, message, confirmationCallback, confirmationCancelCallback) => ({
+  id: Date.now(),
+  type: 'dappWarning',
+  title,
+  message,
+  confirmationCallback,
+  confirmationCancelCallback,
+});
+
+export {
+  createInfoConfirmation, createErrorConfirmation, createNewFeatureConfirmation, createDappWarningConfirmation,
+};

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import NewFeatureModalView from './confirmation.modalview.newfeature';
+import DappWarningModalView from './confirmation.modalview.dappwarning';
 import DefaultModalView from './confirmation.modalview.default';
 
 const styles = StyleSheet.create({
@@ -42,7 +43,12 @@ export default class ConfirmationPanel extends Component {
     const {
       type, title, message, confirmText, cancelText,
     } = this.props;
-    const ModalView = type === 'newFeature' ? NewFeatureModalView : DefaultModalView;
+    let ModalView = DefaultModalView;
+    if (type === 'newFeature') {
+      ModalView = NewFeatureModalView;
+    } else if (type === 'dappWarning') {
+      ModalView = DappWarningModalView;
+    }
 
     return (
       <Modal

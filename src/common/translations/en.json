@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Wallet",
-    "Spend": "Spend",
-    "Earn": "Earn",
     "Me": "Me",
-    "Exchange": "Swap"
+    "Exchange": "Swap",
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -187,6 +186,20 @@
         "failed": "Failed! Your nickname is failed to register."
       }
     },
+    "dapp": {
+      "title": "DApp",
+      "search": "Search or enter website url",
+      "recent": "Recent",
+      "recommended": "Recommended",
+      "all": "All",
+      "button": {
+        "seeAll": "See All",
+        "confirm": "Confirm",
+        "understood": "Understood",
+        "createOrImport": "Create or Import",
+        "cancel": "Cancel"
+      }
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Join RSK's Community",
@@ -251,25 +264,6 @@
       },
       "resetcompleted": {
         "title": "Reset completed!"
-      }
-    },
-    "earn": {
-      "index": {
-        "title": "Earn cryptocurrency with ease",
-        "comingSoon": "Coming soon...",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Earn cryptocurrency by completing tasks",
-        "feature2": "- Swap between any token in your wallet",
-        "feature3": "- \"Cash Back\" on purchases with cryptocurrency"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Asset Management at Your Fingertips",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Buy 100+ Gift Cards with cryptocurrency",
-        "feature2": "- Gain interests from a variety of Defi products",
-        "feature3": "- Multi-sign approval of transactions"
       }
     }
   },
@@ -427,6 +421,17 @@
     "duplicateToken": {
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
+    },
+    "dappWarning": {
+      "title": "Redirecting to third-party Dapp \"%{dappName}\"",
+      "body": "%{description}\n\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Please select Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "No Wallet Available",
+      "body": "There is no wallet available for this Dapp yet. Please navigate to Wallet Creation page to either create or import a wallet first.\n\n"
     },
     "requestTimeout": {
       "title": "Request timeout",

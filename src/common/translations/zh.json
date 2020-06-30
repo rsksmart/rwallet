@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "钱包",
-    "Spend": "消费",
-    "Earn": "收入",
     "Me": "我的",
-    "Exchange": "交换"
+    "Exchange": "交换",
+    "DApp": "应用"
   },
   "page": {
     "start": {
@@ -190,6 +189,20 @@
         "failed": "失败！您的昵称注册失败."
       }
     },
+    "dapp": {
+      "title": "应用",
+      "search": "搜索或输入网站链接",
+      "recent": "最近",
+      "recommended": "推荐",
+      "all": "全部",
+      "button": {
+        "seeAll": "全部",
+        "confirm": "确定",
+        "understood": "明白了",
+        "createOrImport": "创建或者导入",
+        "cancel": "取消"
+      }
+    },
     "mine": {
       "addressBook": {
         "title": "地址簿",
@@ -254,25 +267,6 @@
       },
       "resetcompleted": {
         "title": "重置成功！"
-      }
-    },
-    "earn": {
-      "index": {
-        "title": "轻松赚取加密货币",
-        "comingSoon": "即将推出...",
-        "featuresTitle": "以下赚钱功能即将推出...",
-        "feature1": "- 通过完成任务来赚取加密货币",
-        "feature2": "- 从各种Defi产品中获得收益",
-        "feature3": "- 使用加密货币购买, “现金返还”"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "触手可及的资产管理",
-        "featuresTitle": "以下消费功能即将推出...",
-        "feature1": "- 用加密货币购买100多张礼品卡",
-        "feature2": "- 在钱包中的所有币种之间交换",
-        "feature3": "- 交易的多签名批准"
       }
     }
   },
@@ -431,6 +425,17 @@
     "duplicateToken": {
       "title": "重复的代币",
       "body": "这个代币已经被加入钱包。请尝试不同的代币。"
+    },
+    "dappWarning": {
+      "title": "重定向到第三方Dapp “%{dappName}”",
+      "body": "%{description}\n\n注意：您将被重定向到第三方 “%{dappName}”。 请仔细阅读第三方Dapp的用户协议和隐私政策。 “%{dappName}” 将保留对Dapp上的所有操作和使用的全部责任。\n\n"
+    },
+    "walletSelection": {
+      "title": "请选择钱包"
+    },
+    "noWalletAvailable": {
+      "title": "没有可使用的钱包",
+      "body": "这款Dapp没有对应可用的钱包，请先跳转至创建钱包页面，创建或者导入钱包。\n\n"
     },
     "requestTimeout": {
       "title": "请求超时",

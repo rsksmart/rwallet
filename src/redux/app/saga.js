@@ -83,6 +83,20 @@ function* initFromStorageRequest() {
     const currency = settings.get('currency');
     walletManager.updateAssetValue(prices, currency);
 
+    // 5. Deserialize all active dapps and types
+    const dapps = yield call(storage.getDapps);
+    yield put({ type: actions.UPDATE_DAPPS, dapps });
+    const dappTypes = yield call(storage.getDappTypes);
+    yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
+
+    // 6. Deserialize recent dapps
+    const recentDapps = yield call(storage.getRecentDapps);
+    yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps });
+
+    // 7. Deserialize dapp advertisements
+    const advertisements = yield call(storage.getAdvertisements);
+    yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
+
     // Sets state in reducer for success
     yield put({
       type: walletActions.SET_WALLET_MANAGER,
@@ -341,6 +355,38 @@ function* getServerInfoRequest() {
   }
 }
 
+function* fetchDapps() {
+  const dapps = yield call(ParseHelper.fetchDapps);
+  yield put({ type: actions.UPDATE_DAPPS, dapps });
+}
+
+function* fetchDappTypes() {
+  const dappTypes = yield call(ParseHelper.fetchDappTypes);
+  yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
+}
+
+function* fetchAdvertisements() {
+  const advertisements = yield call(ParseHelper.fetchAdvertisements);
+  yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
+}
+
+/**
+ * Add the recently opened dapp at the top of the recentDapps if dapp is not exist
+ * Move the recently opened dapp at the top of the recentDapps if dapp is exist
+ * @param {*} dapp
+ */
+function* addRecentDapp(action) {
+  const { dapp } = action;
+  const state = yield select();
+  const recentDapps = state.App.get('recentDapps');
+
+  // delete the recently opened dapp from recentDapps if dapp is exist
+  const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
+  // add the recently opened dapp at the top of the recentDapps
+  const newRecentDapps = [dapp, ...filterRecentDapps];
+  yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps: newRecentDapps });
+}
+
 function* receiveNotificationRequest(action) {
   const { notification, fcmType } = action;
   if (!notification) {
@@ -390,6 +436,11 @@ export default function* () {
     takeEvery(actions.INIT_FCM, initFcmRequest),
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
     takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
+
+    takeEvery(actions.FETCH_DAPPS, fetchDapps),
+    takeEvery(actions.FETCH_DAPP_TYPES, fetchDappTypes),
+    takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
+    takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
   ]);
 }

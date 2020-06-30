@@ -5,6 +5,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
+import DAppStackNavigator from './stack.dapp';
 import topNavigator from './top.navigator';
 import flex from '../assets/styles/layout.flex';
 import TabBar from './components/bottom.tab';
@@ -12,6 +13,7 @@ import TabBar from './components/bottom.tab';
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
+import dappLight from '../assets/images/root/tab/dapp.l.png';
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -27,6 +29,13 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       path: 'exchange',
       navigationOptions: {
         title: 'root.Exchange',
+      },
+    },
+    DApp: {
+      screen: DAppStackNavigator,
+      path: 'dapp',
+      navigationOptions: {
+        title: 'root.DApp',
       },
     },
     Mine: {
@@ -68,6 +77,9 @@ const PrimaryTabNavigator = createBottomTabNavigator(
           case 'Exchange':
             img = spendLight;
             break;
+          case 'DApp':
+            img = dappLight;
+            break;
           default:
             console.error(`unexpected tab：${navigation.state.routeName}`);
         }
@@ -98,9 +110,6 @@ const PrimaryTabNavigator = createBottomTabNavigator(
 const PrimaryTabNavigatorContainer = createAppContainer(PrimaryTabNavigator);
 
 export default class PrimaryTabNavigatorComp extends Component {
-  componentDidMount() {
-  }
-
   static router = null;
 
   render() {
