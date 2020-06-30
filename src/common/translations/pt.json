@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Carteira",
-    "Spend": "Gastar",
-    "Earn": "Ganhar",
     "Me": "Eu",
-    "Exchange": "Troca"
+    "Exchange": "Troca",
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -25,7 +24,8 @@
         "title": "Sua carteira",
         "myAssets": "Meus ativos",
         "allAssets": "Todos os ativos",
-        "addAsset": "Adicionar ativo"
+        "addAsset": "Adicionar ativo",
+        "addWallet": "Adicionar carteira"
       },
       "history": {
         "noTransNote": "Não existe transação encontrada para este ativo",
@@ -61,7 +61,8 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Inserir uma nota de transação",
         "slideConfirm": "Deslize para confirmar",
-        "balance": "Saldo"
+        "balance": "Saldo",
+        "unavailableAddress": "O endereço da carteira digitado não é válido"
       },
       "add": {
         "title": "Adicionar carteira",
@@ -167,6 +168,39 @@
         "note": "Desative ativos para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar token personalizado",
         "custom": "Personalizados"
+      },
+      "rnsCreateName": {
+        "title": "Criar apelido",
+        "address": "Endereço",
+        "rnsName": "Apelido RNS",
+        "anotherAddress": "Outro endereço",
+        "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
+        "nameUnavailable": "Desculpe, o nome digitado não está disponível",
+        "nameAvailable": "O nome digitado está disponível",
+        "selectAddress": "Selecione um endereço",
+        "confirmNotice": {
+          "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
+          "other": "Confirme que você deseja criar apelidos para abaixo de {{count}} carteiras."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registro aguardando confirmação.",
+        "success": "Sucesso! Seu apelido é criado.",
+        "failed": "Falhou! Seu apelido não foi registrado."
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Pesquise ou insira o URL do site",
+      "recent": "Recente",
+      "recommended": "Recomendar",
+      "all": "Todos",
+      "button": {
+        "seeAll": "Ver Tudo",
+        "confirm": "Confirme",
+        "understood": "Entendido",
+        "createOrImport": "Criar ou Importar",
+        "cancel": "Cancelar"
       }
     },
     "mine": {
@@ -180,6 +214,11 @@
           "zero": "0 carteira",
           "one": "1 carteira",
           "other": "{{count}} carteiras"
+        },
+        "addressBook": {
+          "title": "Livro de endereços",
+          "recent": "RECENTE",
+          "all": "TODOS"
         },
         "support": "Apoio, suporte",
         "contactUs": "Contate-Nos",
@@ -229,25 +268,6 @@
       "resetcompleted": {
         "title": "Redefinição concluída!"
       }
-    },
-    "earn": {
-      "index": {
-        "title": "Ganhe criptomoeda com facilidade",
-        "comingSoon": "Em breve...",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve.",
-        "feature1": "- Ganhe criptomoeda concluindo tarefas",
-        "feature2": "- Obter interesses de uma variedade de produtos Defi",
-        "feature3": "- \"Cash Back\" em compras com criptomoeda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Gerenciamento de ativos ao seu alcance",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
-        "feature1": "- Compre mais de 100 cartões-presente com criptomoeda",
-        "feature2": "- Troque entre qualquer token na sua carteira",
-        "feature3": "- Aprovação de transações com vários sinais"
-      }
     }
   },
   "language": {
@@ -282,7 +302,11 @@
     "Finish": "Terminar",
     "Exchange": "Troca",
     "addAsset": "Adicionar ativo",
-    "ok": "Está bem"
+    "ok": "Está bem",
+    "name": "Nome",
+    "pending": "Pendente",
+    "done": "Feito",
+    "share": "COMPARTILHAR"
   },
   "txState": {
     "Sent": "Enviei",
@@ -357,6 +381,10 @@
       "title": "Copiado",
       "body": "O endereço foi copiado para a área de transferência."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "O subdomínio foi copiado para a área de transferência."
+    },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",
       "typeNewPasscode": "Digite sua nova senha",
@@ -396,6 +424,39 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
+    },
+    "dappWarning": {
+      "title": "Redirecionando para Dapp de terceiros \"%{dappName}\"",
+      "body": "%{description}\n\nNota: você será redirecionado para um aplicativo de terceiros \"%{dappName}\". Por favor, leia atentamente o Contrato do Usuário e a Política de Privacidade da Dapp de terceiros. \"%{dappName}\" reservará total responsabilidade por todas as ações e uso no Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Selecione Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "Nenhuma carteira disponível",
+      "body": "Ainda não há carteira disponível para este Dapp. Navegue até a página Criação de carteira, para criar ou importar uma carteira primeiro.\n\n"
+    },
+    "requestTimeout": {
+      "title": "Tempo limite da solicitação",
+      "body": "O servidor não pôde concluir a solicitação dentro do tempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apelido do RNS indisponível",
+      "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Subdomínio RNS não encontrado",
+      "body": "O subdomínio RNS não foi encontrado no servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar e receber ficou mais fácil",
+      "body": "Lançamos o suporte ao RNS, ou RIF Name Service, que permite a identificação de endereços de blockchain por nomes legíveis por humanos.",
+      "confirmText": "Vamos tentar",
+      "cancelText": "pular"
+    },
+    "balanceInvalid": {
+      "title": "O saldo da carteira não está disponível",
+      "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
     }
   },
   "currency": {

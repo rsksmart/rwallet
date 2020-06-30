@@ -21,7 +21,7 @@ function* createKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -40,7 +40,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, { err });
@@ -73,7 +73,7 @@ function* addTokenRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (error) {
     console.log(error);
@@ -98,7 +98,7 @@ function* deleteTokenRequest(action) {
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
-    yield put({ type: actions.INIT_LIVE_QUERY_BALANCES, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
     const message = yield call(ParseHelper.handleError, err);
@@ -126,17 +126,17 @@ function* getSwapRateRequest(action) {
  * create balances subscription channel
  * @param {object} subscription parse subscription
  */
-function createBalancesSubscriptionChannel(subscription) {
+function createTokensSubscriptionChannel(subscription) {
   return eventChannel((emitter) => {
-    const subscribeHandler = () => emitter({ type: actions.FETCH_BALANCES });
+    const subscribeHandler = () => emitter({ type: actions.FETCH_TOKENS });
     const unsubscribeHandler = () => {
       ParseHelper.unsubscribe(subscription);
       console.log('createBalancesSubscriptionChannel.unsubscribeHandler.');
     };
     const updateHandler = (object) => {
       console.log('createBalancesSubscriptionChannel.updateHandler, object: ', object);
-      const balance = parseDataUtil.getBalance(object);
-      return emitter({ type: actions.FETCH_BALANCE_RESULT, value: [balance] });
+      const balance = parseDataUtil.getToken(object);
+      return emitter({ type: actions.FETCH_TOKENS_RESULT, value: [balance] });
     };
 
     subscription.on('open', subscribeHandler);
@@ -151,18 +151,18 @@ function createBalancesSubscriptionChannel(subscription) {
  * Fetch balances of tokens and update property of each addresss
  * @param {object} subscription parse subscription
  */
-function* fetchBalancesRequest() {
+function* fetchTokensRequest() {
   try {
     const state = yield select();
     const walletManager = state.Wallet.get('walletManager');
     const tokens = walletManager.getTokens();
-    const response = yield call(ParseHelper.fetchBalances, tokens);
+    const response = yield call(ParseHelper.fetchTokens, tokens);
     yield put({
-      type: actions.FETCH_BALANCE_RESULT,
+      type: actions.FETCH_TOKENS_RESULT,
       value: response,
     });
   } catch (error) {
-    console.log('fetchBalances, error:', error);
+    console.log('fetchTokensRequest, error:', error);
   }
 }
 
@@ -170,19 +170,19 @@ function* fetchBalancesRequest() {
  * Subscribe balances of tokens
  * @param {object} subscription parse subscription
  */
-function* subscribeBalances(tokens) {
+function* subscribeTokens(tokens) {
   let subscription;
   let subscriptionChannel;
   try {
     const state = yield select();
-    subscription = yield call(ParseHelper.subscribeBalances, tokens);
-    subscriptionChannel = yield call(createBalancesSubscriptionChannel, subscription);
+    subscription = yield call(ParseHelper.subscribeTokens, tokens);
+    subscriptionChannel = yield call(createTokensSubscriptionChannel, subscription);
     // If there is already a channel here, cancel the previous channel and save the new channel.
-    const balancesChannel = state.Wallet.get('balancesChannel');
-    if (balancesChannel) {
-      balancesChannel.close();
+    const tokensChannel = state.Wallet.get('tokensChannel');
+    if (tokensChannel) {
+      tokensChannel.close();
     }
-    yield put({ type: actions.SET_BALANCES_CHANNEL, value: subscriptionChannel });
+    yield put({ type: actions.SET_TOKENS_CHANNEL, value: subscriptionChannel });
     while (true) {
       const payload = yield take(subscriptionChannel);
       yield put(payload);
@@ -194,7 +194,7 @@ function* subscribeBalances(tokens) {
       subscriptionChannel.close();
       subscription.close();
     } else {
-      console.log('Subscription disconnected: Balance');
+      console.log('Subscription disconnected: Tokens');
     }
   }
 }
@@ -203,9 +203,9 @@ function* subscribeBalances(tokens) {
  * initialize LiveQuery for balances
  * @param {array} tokens Array of Coin class instance
  */
-function* initLiveQueryBalancesRequest(action) {
+function* initLiveQueryTokensRequest(action) {
   const { tokens } = action;
-  yield call(subscribeBalances, tokens);
+  yield call(subscribeTokens, tokens);
 }
 
 function addTokenTransactions(token, transactions) {
@@ -405,7 +405,6 @@ function* initLiveQueryBlockHeightsRequest() {
   yield call(subscribeBlockHeights);
 }
 
-
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -416,14 +415,14 @@ export default function* () {
 
     takeEvery(actions.GET_SWAP_RATE, getSwapRateRequest),
 
-    takeEvery(actions.INIT_LIVE_QUERY_BALANCES, initLiveQueryBalancesRequest),
+    takeEvery(actions.INIT_LIVE_QUERY_TOKENS, initLiveQueryTokensRequest),
     takeEvery(actions.INIT_LIVE_QUERY_TRANSACTIONS, initLiveQueryTransactionsRequest),
     takeEvery(actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS, initLiveQueryBlockHeightsRequest),
 
     takeEvery(actions.FETCH_TRANSACTIONS, fetchTransactions),
     takeEvery(actions.UPDATE_TRANSACTION, updateTransactionRequest),
 
-    takeEvery(actions.FETCH_BALANCES, fetchBalancesRequest),
+    takeEvery(actions.FETCH_TOKENS, fetchTokensRequest),
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
   ]);
 }

@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
   isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
   isLogin: state.App.get('isLogin'),
   isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
+  isTokensUpdated: state.Wallet.get('isTokensUpdated'),
 
   walletManager: state.Wallet.get('walletManager'),
   currency: state.App.get('currency'),
@@ -37,6 +37,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  initFcm: () => dispatch(appActions.initFcm()),
   initFcmChannel: () => dispatch(appActions.initFcmChannel()),
   login: () => dispatch(appActions.login()),
 
@@ -44,11 +45,11 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: () => dispatch(appActions.getServerInfo()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
-  initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
+  initLiveQueryTokens: (tokens) => dispatch(walletActions.initLiveQueryTokens(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
   initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
 
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
+  resetTokensUpdated: () => dispatch(walletActions.resetTokensUpdated()),
   updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),
 
   removeNotification: () => dispatch(appActions.removeNotification()),

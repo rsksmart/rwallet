@@ -8,6 +8,12 @@ const KEY_PRICES = 'PRICE';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
+const KEY_DAPPS = 'DAPPS';
+const KEY_DAPP_TYPES = 'DAPPTYPES';
+const ADVERTISEMENTS = 'ADVERTISEMENTS';
+const KEY_RECENT_DAPPS = 'RECENTDAPPS';
+const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
+const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 
 class RNStorage {
   constructor() {
@@ -219,6 +225,58 @@ class RNStorage {
   }
 
   /**
+   * Set dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} dapps all active dapps
+   */
+  setDapps = (dapps) => this.save(KEY_DAPPS, dapps)
+
+  /**
+   * Return dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDapps = () => this.load({ key: KEY_DAPPS })
+
+  /**
+   * Set dapp types using normal storage
+   * @param {string} id Key local id
+   * @param {string} dappTypes all active dapp types
+   */
+  setDappTypes = (dappTypes) => this.save(KEY_DAPP_TYPES, dappTypes)
+
+  /**
+   * Return dapp types from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDappTypes = () => this.load({ key: KEY_DAPP_TYPES })
+
+  /**
+   * Set advertisements using normal storage
+   * @param {string} id Key local id
+   * @param {string} ads all active advertisements
+   */
+  setAdvertisements = (ads) => this.save(ADVERTISEMENTS, ads)
+
+  /**
+   * Return advertisements from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getAdvertisements = () => this.load({ key: ADVERTISEMENTS })
+
+  /**
+   * Set recent dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} recentDapps recent dapps
+   */
+  setRecentDapps = (recentDapps) => this.save(KEY_RECENT_DAPPS, recentDapps)
+
+  /**
+   * Return recent dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getRecentDapps = () => this.load({ key: KEY_RECENT_DAPPS })
+
+  /**
    * Set Mnemonic Phrase using secure storage
    * @param {string} id Key local Id
    * @param {string} phrase String of Mnemonic Phrase
@@ -241,6 +299,27 @@ class RNStorage {
 
   getPrivateKey(id, symbol, type) {
     return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
+  }
+
+  async getIsShowRnsFeature() {
+    const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
+    return isShowRnsFeature || false;
+  }
+
+  setIsShowRnsFeature() {
+    return this.save(IS_SHOW_RNS_FEATURE, true);
+  }
+
+  getRnsRegisteringSubdomains() {
+    return this.load({ key: RNS_REGISTERING_SUBDOMAINS });
+  }
+
+  setRnsRegisteringSubdomains(records) {
+    return this.save(RNS_REGISTERING_SUBDOMAINS, records);
+  }
+
+  clearRnsRegisteringSubdomains() {
+    this.remove(RNS_REGISTERING_SUBDOMAINS);
   }
 }
 

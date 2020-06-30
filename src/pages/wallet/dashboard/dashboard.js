@@ -76,12 +76,17 @@ class Dashboard extends Component {
      * If fcmNavParams is exsisted, navigate to the proper page.
      */
     callFcmNavigate = (fcmNavParams) => {
-      const { resetFcmNavParams, navigation } = this.props;
-      if (fcmNavParams) {
-        const { routeName, routeParams } = fcmNavParams;
-        navigation.push(routeName, routeParams);
-        resetFcmNavParams();
+      const { resetFcmNavParams, navigation, page } = this.props;
+      if (!fcmNavParams) {
+        return;
       }
+      const { routeName, routeParams } = fcmNavParams;
+      // When already on the RnsStatus page, there is no need to jump to this page again
+      if (page === routeName && routeName === 'RnsStatus') {
+        return;
+      }
+      navigation.push(routeName, routeParams);
+      resetFcmNavParams();
     }
 
     doAuthVerify = () => {
@@ -95,7 +100,6 @@ class Dashboard extends Component {
         });
       }
     }
-
 
     render() {
       const { navigation, wallets } = this.props;
@@ -123,11 +127,13 @@ Dashboard.propTypes = {
   }),
   resetFcmNavParams: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  page: PropTypes.string,
 };
 
 Dashboard.defaultProps = {
   wallets: undefined,
   fcmNavParams: undefined,
+  page: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -137,6 +143,7 @@ const mapStateToProps = (state) => ({
   fcmNavParams: state.App.get('fcmNavParams'),
   isLoginError: state.App.get('isLoginError'),
   language: state.App.get('language'),
+  page: state.App.get('page'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

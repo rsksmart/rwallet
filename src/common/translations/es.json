@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Billetera",
-    "Spend": "Gastar",
-    "Earn": "Ganar",
     "Me": "Yo",
-    "Exchange": "Intercambiar"
+    "Exchange": "Intercambiar",
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -25,7 +24,8 @@
         "title": "Su Wallet",
         "myAssets": "Mis activos",
         "allAssets": "Todos los activos",
-        "addAsset": "Agregar activo"
+        "addAsset": "Agregar activo",
+        "addWallet": "Agregar billetera"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -54,14 +54,15 @@
         "memo": "Memo (opcional)",
         "fee": "Tarifa de transacción",
         "custom": "Personalizado",
-        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "feeQuestion": "¿Qué tan rápido quieres que se haga esto?",
         "slow": "Lento",
         "Average": "Promedio",
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
         "slideConfirm": "Deslice para confirmar",
-        "balance": "Equilibrar"
+        "balance": "Equilibrar",
+        "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
       },
       "add": {
         "title": "Agregar Wallet",
@@ -167,6 +168,39 @@
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
         "custom": "Personalizado"
+      },
+      "rnsCreateName": {
+        "title": "Crear apodo",
+        "address": "Habla a",
+        "rnsName": "Apodo RNS",
+        "anotherAddress": "Otra dirección",
+        "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
+        "nameUnavailable": "Lo sentimos, el nombre ingresado no está disponible",
+        "nameAvailable": "El nombre ingresado está disponible",
+        "selectAddress": "Seleccione una direccion",
+        "confirmNotice": {
+          "one": "Confirme que desea crear apodos para menos de 1 billetera.",
+          "other": "Confirme que desea crear apodos para menos de {{count}} billeteras."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registro a la espera de ser confirmado.",
+        "success": "¡Éxito! Tu apodo es creado.",
+        "failed": "¡Ha fallado! No se pudo registrar su apodo."
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Buscar o ingresar la URL del sitio web",
+      "recent": "Reciente",
+      "recommended": "Recomendar",
+      "all": "Todas",
+      "button": {
+        "seeAll": "Ver Todo",
+        "confirm": "Confirmar",
+        "understood": "Entendido",
+        "createOrImport": "Crear o importar",
+        "cancel": "Cancelar"
       }
     },
     "mine": {
@@ -184,6 +218,11 @@
         "support": "Apoyo",
         "contactUs": "Contacta con nosotros",
         "developerPortal": "Portal del desarrollador"
+      },
+      "addressBook": {
+        "title": "Directorio",
+        "recent": "RECIENTE",
+        "all": "TODAS"
       },
       "language": {
         "title": "Idioma"
@@ -229,25 +268,6 @@
       "resetcompleted": {
         "title": "¡Reinicio completado!"
       }
-    },
-    "earn": {
-      "index": {
-        "title": "Gana criptomonedas con facilidad",
-        "comingSoon": "Próximamente...",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para ganar ...",
-        "feature1": "- Gana criptomonedas completando tareas",
-        "feature2": "- Obtenga intereses de una variedad de productos Defi",
-        "feature3": "- \"Devolución de efectivo\" en compras con criptomoneda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "estión de activos a su alcance",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para gastar ...",
-        "feature1": "- Compre más de 100 tarjetas de regalo con criptomoneda",
-        "feature2": "- Cambia entre cualquier ficha en tu billetera",
-        "feature3": "- Aprobación de transacciones con múltiples signos"
-      }
     }
   },
   "language": {
@@ -282,7 +302,11 @@
     "Finish": "Terminar",
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
-    "ok": "Okay"
+    "ok": "Okay",
+    "name": "Nombre",
+    "pending": "Pendiente",
+    "done": "Hecho",
+    "share": "COMPARTIR"
   },
   "txState": {
     "Sent": "Enviado",
@@ -357,6 +381,10 @@
       "title": "Copiado",
       "body": "La dirección se ha copiado en el portapapeles."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "El subdominio se ha copiado al portapapeles."
+    },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
       "typeNewPasscode": "Escriba su nueva contraseña",
@@ -378,7 +406,7 @@
       "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
     },
     "createPasscode": {
-      "title": "Por favor establezca una contraseña",
+      "title": "Por favor, establezca una contraseña",
       "body": "La contraseña puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
     },
     "deleteKey": {
@@ -396,6 +424,39 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
+    },
+    "dappWarning": {
+      "title": "Redireccionamiento a Dapp de terceros \"%{dappName}\"",
+      "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Por favor seleccione Monedero"
+    },
+    "noWalletAvailable": {
+      "title": "No hay billetera disponible",
+      "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero.\n\n"
+    },
+    "requestTimeout": {
+      "title": "Pide tiempo fuera",
+      "body": "El servidor no pudo completar la solicitud dentro del tiempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apodo RNS no disponible",
+      "body": "Algunos apodos no están disponibles. Verifique la lista y vuelva a intentar el apodo anterior."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Subdominio RNS no encontrado",
+      "body": "El subdominio RNS no se encuentra en el servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar y recibir es más fácil",
+      "body": "Hemos lanzado soporte para RNS, o RIF Name Service que permite la identificación de direcciones blockchain por nombres legibles por humanos.",
+      "confirmText": "Vamos a intentarlo",
+      "cancelText": "omitir"
+    },
+    "balanceInvalid": {
+      "title": "El saldo de la billetera no está disponible",
+      "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
     }
   },
   "currency": {

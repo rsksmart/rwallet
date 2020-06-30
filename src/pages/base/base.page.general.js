@@ -35,7 +35,7 @@ const BasePageGereral = (props) => {
   // const WrapperView = isViewWrapper ? View : ScrollView;
   return (
     <View style={[flex.flex1, isSafeView ? styles.safeView : {}, bgColor ? { backgroundColor: bgColor } : null]}>
-      <ScrollView refreshControl={refreshControl} alwaysBounceVertical={false} bounces={false}>
+      <ScrollView showsVerticalScrollIndicator={false} refreshControl={refreshControl} alwaysBounceVertical={false} bounces={false}>
         {content}
       </ScrollView>
       {!customBottomButton && hasBottomBtn && (
@@ -63,7 +63,7 @@ BasePageGereral.propTypes = {
   bottomBtnOnPress: PropTypes.func,
   bottomBtnText: PropTypes.string,
   isLoading: PropTypes.bool,
-  headerComponent: PropTypes.element.isRequired,
+  headerComponent: PropTypes.element,
   refreshControl: PropTypes.element,
   bgColor: PropTypes.string,
   customBottomButton: PropTypes.element,
@@ -76,6 +76,7 @@ BasePageGereral.defaultProps = {
   isLoading: false,
   renderAccessory: null,
   hasLoader: false,
+  headerComponent: null,
   refreshControl: null,
   bgColor: null,
   hasBottomBtn: false,

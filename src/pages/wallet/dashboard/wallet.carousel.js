@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Image,
-  StyleSheet, Text, TouchableOpacity, View, Dimensions,
+  StyleSheet, TouchableOpacity, View, Dimensions,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
@@ -10,6 +10,7 @@ import Carousel from 'react-native-snap-carousel';
 import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
+import Loc from '../../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   carousel: {
@@ -96,9 +97,7 @@ class WalletCarousel extends Component {
           <View style={[styles.addWalletButtonView]}>
             <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
               <Image source={references.images.addWallet} />
-              <Text style={[styles.addWalletText]}>
-                Add Wallet
-              </Text>
+              <Loc style={[styles.addWalletText]} text="page.wallet.list.addWallet" />
             </TouchableOpacity>
           </View>
         );

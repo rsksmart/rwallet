@@ -39,6 +39,12 @@ const blockHeightKeyInfos = {
 
 const blockHeightKeys = Object.keys(blockHeightKeyInfos);
 
+const SUBDOMAIN_STATUS = {
+  PENDING: 0,
+  SUCCESS: 1,
+  FAILED: 2,
+};
+
 export default {
-  txStatus, btcPreferenceFee, defaultErrorNotification, blockHeightKeyInfos, blockHeightKeys,
+  txStatus, btcPreferenceFee, defaultErrorNotification, blockHeightKeyInfos, blockHeightKeys, SUBDOMAIN_STATUS,
 };

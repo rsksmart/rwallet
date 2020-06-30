@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 export default function ListPageHeader() {
   return (
     <View style={styles.headerView}>
-      <Image source={references.images.listHeader} style={[styles.headerImage]} />
+      <Image source={references.images.header} style={[styles.headerImage]} />
     </View>
   );
 }

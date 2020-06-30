@@ -5,7 +5,7 @@ import { defaultNavigationOptions, routeConfigMaps } from '../common/navigation.
 const StackNavigator = createStackNavigator(
   { ...routeConfigMaps },
   {
-    initialRouteName: 'EarnIndex',
+    initialRouteName: 'DAppIndex',
     defaultNavigationOptions: defaultNavigationOptions(),
   },
 );

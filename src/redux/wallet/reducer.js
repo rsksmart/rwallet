@@ -1,13 +1,17 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+import { DeviceEventEmitter } from 'react-native';
 import actions from './actions';
+import CONSTANTS from '../../common/constants.json';
+
+const { EVENT: { TOKENS_UPDATE } } = CONSTANTS;
 
 const initState = new Map({
   wallets: [],
   latestBlockHeights: [],
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
-  isBalanceUpdated: false,
+  isTokensUpdated: false,
   isWalletsUpdated: false,
   isWalletNameUpdated: false,
   swapFromCoin: null,
@@ -15,9 +19,11 @@ const initState = new Map({
   addTokenResult: null,
   swapRates: {},
   swapRatesError: null,
-  balancesChannel: undefined,
+  tokensChannel: undefined,
   transactionsChannel: undefined,
   txTimestamp: undefined,
+
+  subdomains: [],
 });
 
 /**
@@ -33,24 +39,25 @@ export default function walletReducer(state = initState, action) {
     {
       return state.set('walletManager', action.value);
     }
-    case actions.FETCH_BALANCE_RESULT:
+    case actions.FETCH_TOKENS_RESULT:
     {
       const balances = action.value;
 
-      // Update balances in walletManager
+      // Update tokens data in walletManager
       const walletManager = state.get('walletManager');
       if (walletManager) {
-        const isDirty = walletManager.updateBalance(balances);
+        const isDirty = walletManager.updateTokens(balances);
+        DeviceEventEmitter.emit(TOKENS_UPDATE, true);
 
         if (isDirty) {
-          return state.set('isBalanceUpdated', true);
+          return state.set('isTokensUpdated', true);
         }
       }
 
       return state;
     }
-    case actions.RESET_BALANCE_UPDATED: {
-      return state.set('isBalanceUpdated', false);
+    case actions.RESET_TOKENS_UPDATED: {
+      return state.set('isTokensUpdated', false);
     }
     case actions.FETCH_TRANSACTIONS_RESULT: {
       return state.set('txTimestamp', action.timestamp);
@@ -133,11 +140,14 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_SWAP_RATE_RESULT_ERROR: {
       return state.set('swapRatesError', null);
     }
-    case actions.SET_BALANCES_CHANNEL: {
-      return state.set('balancesChannel', action.value);
+    case actions.SET_TOKENS_CHANNEL: {
+      return state.set('tokensChannel', action.value);
     }
     case actions.SET_TRANSACTIONS_CHANNEL: {
       return state.set('transactionsChannel', action.value);
+    }
+    case actions.SET_SUBDOMAINS: {
+      return state.set('subdomains', action.subdomains);
     }
     default:
       return state;

@@ -27,6 +27,10 @@ function* updateUserRequest() {
   // Upload wallets or settings to server
   try {
     const state = yield select();
+    const isLogin = state.App.get('isLogin');
+    if (!isLogin) {
+      return;
+    }
     const fcmToken = state.App.get('fcmToken');
     const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken });
 
@@ -79,6 +83,20 @@ function* initFromStorageRequest() {
     const currency = settings.get('currency');
     walletManager.updateAssetValue(prices, currency);
 
+    // 5. Deserialize all active dapps and types
+    const dapps = yield call(storage.getDapps);
+    yield put({ type: actions.UPDATE_DAPPS, dapps });
+    const dappTypes = yield call(storage.getDappTypes);
+    yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
+
+    // 6. Deserialize recent dapps
+    const recentDapps = yield call(storage.getRecentDapps);
+    yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps });
+
+    // 7. Deserialize dapp advertisements
+    const advertisements = yield call(storage.getAdvertisements);
+    yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
+
     // Sets state in reducer for success
     yield put({
       type: walletActions.SET_WALLET_MANAGER,
@@ -117,6 +135,7 @@ function* loginRequest() {
     console.log(`User found with appId ${appId}. Sign in successful.`);
     yield put(actions.resetLoginError());
     yield put(actions.loginDone());
+    yield put(actions.updateUser());
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
     yield put(actions.setLoginError());
@@ -259,7 +278,7 @@ function* processNotificationRequest(action) {
     return null;
   }
   const { event, eventParams } = data;
-  const params = JSON.parse(eventParams);
+  const params = eventParams ? JSON.parse(eventParams) : null;
   switch (event) {
     case 'sentTransaction':
     case 'receivingTransaction':
@@ -277,6 +296,15 @@ function* processNotificationRequest(action) {
       yield put(newAction);
       break;
     }
+    case 'createRnsSuccess':
+    case 'createRnsFail': {
+      common.currentNavigation.navigate('Home');
+      const newAction = actions.setFcmNavParams({
+        routeName: 'RnsStatus',
+      });
+      yield put(newAction);
+      break;
+    }
     default:
   }
   return null;
@@ -289,13 +317,7 @@ function createFcmChannel() {
     const unsubscribeHandler = () => {};
 
     fcmHelper.startListen((notification, fcmType) => {
-      let action = null;
-      if (fcmType === FcmType.INAPP) {
-        action = actions.showInAppNotification(notification);
-      } else {
-        action = actions.processNotification(notification);
-      }
-      emitter(action);
+      emitter(actions.receiveNotification(notification, fcmType));
     });
 
     // unsubscribe function, this gets called when we close the channel
@@ -315,6 +337,7 @@ function* initFcmRequest() {
   const fcmToken = yield call(fcmHelper.initFirebaseMessaging);
   yield put({ type: actions.SET_FCM_TOKEN, fcmToken });
   yield put({ type: actions.UPDATE_USER });
+  yield call(initFcmChannelRequest);
 }
 
 function* getServerInfoRequest() {
@@ -330,6 +353,68 @@ function* getServerInfoRequest() {
   } catch (err) {
     yield call(ParseHelper.handleError, { err });
   }
+}
+
+function* fetchDapps() {
+  const dapps = yield call(ParseHelper.fetchDapps);
+  yield put({ type: actions.UPDATE_DAPPS, dapps });
+}
+
+function* fetchDappTypes() {
+  const dappTypes = yield call(ParseHelper.fetchDappTypes);
+  yield put({ type: actions.UPDATE_DAPP_TYPES, dappTypes });
+}
+
+function* fetchAdvertisements() {
+  const advertisements = yield call(ParseHelper.fetchAdvertisements);
+  yield put({ type: actions.UPDATE_ADVERTISEMENT, advertisements });
+}
+
+/**
+ * Add the recently opened dapp at the top of the recentDapps if dapp is not exist
+ * Move the recently opened dapp at the top of the recentDapps if dapp is exist
+ * @param {*} dapp
+ */
+function* addRecentDapp(action) {
+  const { dapp } = action;
+  const state = yield select();
+  const recentDapps = state.App.get('recentDapps');
+
+  // delete the recently opened dapp from recentDapps if dapp is exist
+  const filterRecentDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id !== dapp.id);
+  // add the recently opened dapp at the top of the recentDapps
+  const newRecentDapps = [dapp, ...filterRecentDapps];
+  yield put({ type: actions.UPDATE_RECENT_DAPPS, recentDapps: newRecentDapps });
+}
+
+function* receiveNotificationRequest(action) {
+  const { notification, fcmType } = action;
+  if (!notification) {
+    return null;
+  }
+  const { title, body, data } = notification;
+  console.log(`receiveNotificationRequest, title: ${title}, body: ${body} `);
+  if (data) {
+    const { event, eventParams } = data;
+    const params = eventParams ? JSON.parse(eventParams) : null;
+    switch (event) {
+      case 'createRnsSuccess':
+      case 'createRnsFail': {
+        // Change subdomains status by notification params
+        yield put(walletActions.setSubdomains(params));
+        break;
+      }
+      default:
+    }
+  }
+
+  if (fcmType === FcmType.INAPP) {
+    yield put(actions.showInAppNotification(notification));
+  } else {
+    yield put(actions.processNotification(notification));
+  }
+
+  return null;
 }
 
 export default function* () {
@@ -351,5 +436,11 @@ export default function* () {
     takeEvery(actions.INIT_FCM, initFcmRequest),
     takeEvery(actions.INIT_FCM_CHANNEL, initFcmChannelRequest),
     takeEvery(actions.PROCESS_NOTIFICATON, processNotificationRequest),
+
+    takeEvery(actions.FETCH_DAPPS, fetchDapps),
+    takeEvery(actions.FETCH_DAPP_TYPES, fetchDappTypes),
+    takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
+    takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
+    takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
   ]);
 }

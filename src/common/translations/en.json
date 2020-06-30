@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Wallet",
-    "Spend": "Spend",
-    "Earn": "Earn",
     "Me": "Me",
-    "Exchange": "Swap"
+    "Exchange": "Swap",
+    "DApp": "DApp"
   },
   "page": {
     "start": {
@@ -25,7 +24,8 @@
         "title": "Your Wallet",
         "myAssets": "My Assets",
         "allAssets": "All Assets",
-        "addAsset": "Add Asset"
+        "addAsset": "Add Asset",
+        "addWallet": "Add Wallet"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -54,14 +54,15 @@
         "memo": "Memo (optional)",
         "fee": "Transaction fee",
         "custom": "Custom",
-        "feeQuestion": "How fast you want this done?",
+        "feeQuestion": "How fast do you want this done?",
         "Slow": "Slow",
         "Average": "Average",
         "Fast": "Fast",
         "CONFIRMED": "CONFIRMED",
         "enterMemo": "Enter a transaction memo",
         "slideConfirm": "Slide to Confirm",
-        "balance": "Balance"
+        "balance": "Balance",
+        "unavailableAddress": "The wallet address you’ve entered is not valid"
       },
       "add": {
         "title": "Add Wallet",
@@ -164,6 +165,39 @@
         "note": "Disable assets to hide them from your portfolio.",
         "addCustomToken": "Add Custom Token",
         "custom": "Custom"
+      },
+      "rnsCreateName": {
+        "title": "Create Nickname",
+        "address": "Address",
+        "rnsName": "RNS Nickname",
+        "anotherAddress": "Another address",
+        "nameTooShort": "Nickname contains at least {{count}} characters",                                               
+        "nameUnavailable": "Sorry, The name entered is not available",
+        "nameAvailable": "The name entered is available",
+        "selectAddress": "Select a Address",
+        "confirmNotice": {
+          "one": "Please confirm that you would like to create nicknames for below 1 wallet.",
+          "other": "Please confirm that you would like to create nicknames for below {{count}} wallets."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registration waiting to be confirmed.",
+        "success": "Success! Your nickname is created.",
+        "failed": "Failed! Your nickname is failed to register."
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Search or enter website url",
+      "recent": "Recent",
+      "recommended": "Recommended",
+      "all": "All",
+      "button": {
+        "seeAll": "See All",
+        "confirm": "Confirm",
+        "understood": "Understood",
+        "createOrImport": "Create or Import",
+        "cancel": "Cancel"
       }
     },
     "mine": {
@@ -181,6 +215,11 @@
         "support": "Support",
         "contactUs": "Contact Us",
         "developerPortal": "Developer Portal"
+      },
+      "addressBook": {
+        "title": "Address Book",
+        "recent": "RECENT",
+        "all": "ALL"
       },
       "language": {
         "title": "Language"
@@ -226,25 +265,6 @@
       "resetcompleted": {
         "title": "Reset completed!"
       }
-    },
-    "earn": {
-      "index": {
-        "title": "Earn cryptocurrency with ease",
-        "comingSoon": "Coming soon...",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Earn cryptocurrency by completing tasks",
-        "feature2": "- Swap between any token in your wallet",
-        "feature3": "- \"Cash Back\" on purchases with cryptocurrency"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Asset Management at Your Fingertips",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Buy 100+ Gift Cards with cryptocurrency",
-        "feature2": "- Gain interests from a variety of Defi products",
-        "feature3": "- Multi-sign approval of transactions"
-      }
     }
   },
   "language": {
@@ -279,7 +299,11 @@
     "Finish": "Finish",
     "Exchange": "Exchange",
     "addAsset": "Add Asset",
-    "ok": "Ok"
+    "ok": "Ok",
+    "name": "Name",
+    "pending": "Pending",
+    "done": "Done",
+    "share": "SHARE"
   },
   "txState": {
     "Sent": "Sent",
@@ -354,6 +378,10 @@
       "title": "Copied",
       "body": "The address has been copied to the clipboard."
     },
+    "subdomainCopied": {
+      "title": "Copied",
+      "body": "The subdomain has been copied to the clipboard."
+    },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
       "typeNewPasscode": "Type your new passcode",
@@ -375,8 +403,8 @@
       "fingerprintNotMatch": "Fingerprint does not match. Please try again."
     },
     "createPasscode": {
-      "title": "Please set a password",
-      "body": "Password can protect your funds if this device is stolen or compromised by malicious software."
+      "title": "Please set a passcode",
+      "body": "Passcode can protect your funds if this device is stolen or compromised by malicious software."
     },
     "deleteKey": {
       "title": "Warning!",
@@ -393,6 +421,39 @@
     "duplicateToken": {
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
+    },
+    "dappWarning": {
+      "title": "Redirecting to third-party Dapp \"%{dappName}\"",
+      "body": "%{description}\n\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Please select Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "No Wallet Available",
+      "body": "There is no wallet available for this Dapp yet. Please navigate to Wallet Creation page to either create or import a wallet first.\n\n"
+    },
+    "requestTimeout": {
+      "title": "Request timeout",
+      "body": "The server could not complete the request within the specified time."
+    },
+    "rnsNameUnavailable": {
+      "title": "RNS nickname unavailable",
+      "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNS Subdomain Not Found",
+      "body": "RNS subdomain is not found in server."
+    },
+    "rnsNewFeature": {
+      "title": "Send & Receive got easier",
+      "body": "We've launched support for RNS, or RIF Name Service which enables the identification of blockchain addresses by human-readable names.",
+      "confirmText": "Let’s try it",
+      "cancelText": "skip"
+    },
+    "balanceInvalid": {
+      "title": "Wallet balance is not available",
+      "body": "We are having problem retrieving your wallet balance. Please try again later."
     }
   },
   "currency": {
