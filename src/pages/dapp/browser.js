@@ -356,10 +356,11 @@ class DAppBrowser extends Component {
 
   getWebView = (address, url) => {
     const { web3JsContent, ethersJsContent } = this.state;
+    const dappUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `https://${url}`;
     if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView
-          source={{ uri: url }}
+          source={{ uri: dappUrl }}
           ref={this.webview}
           javaScriptEnabled
           injectedJavaScriptBeforeContentLoaded={this.injectJavaScript(address)}
@@ -413,7 +414,7 @@ DAppBrowser.propTypes = {
     dispatch: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,

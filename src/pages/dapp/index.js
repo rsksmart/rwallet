@@ -250,7 +250,7 @@ class DAppIndex extends Component {
           onSubmit={() => {
             if (searchUrl) {
               this.onDappPress({
-                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'],
+                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'], id: searchUrl,
               });
             }
           }}
@@ -337,7 +337,7 @@ DAppIndex.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
   }).isRequired,
   fetchDapps: PropTypes.func.isRequired,
   fetchDappTypes: PropTypes.func.isRequired,
