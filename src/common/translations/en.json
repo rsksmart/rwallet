@@ -128,7 +128,10 @@
         },
         "errorBalanceEnough": "Sorry, but you don't have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
-        "have": "I have %{balance} in %{wallet}"
+        "have": "I have %{balance} in %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "ALL"
       },
       "swapSelection": {
         "title": "Select Asset",

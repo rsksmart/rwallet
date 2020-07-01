@@ -130,7 +130,10 @@
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
-        "have": "Eu tenho %{balance} na carteira %{wallet}"
+        "have": "Eu tenho %{balance} na carteira %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "TUDO"
       },
       "swapSelection": {
         "title": "Escolha o ativo",

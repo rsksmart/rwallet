@@ -131,7 +131,10 @@
         },
         "errorBalanceEnough": "抱歉，您的余额不足",
         "errorAmountInvalid": "%{symbol}的余额无效。",
-        "have": "我有%{balance}在%{wallet}"
+        "have": "我有%{balance}在%{wallet}",
+        "min": "最小",
+        "half": "一般",
+        "all": "所有"
       },
       "swapSelection": {
         "title": "选择资产",

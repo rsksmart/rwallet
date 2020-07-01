@@ -78,9 +78,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     width: '100%',
+  },
+  myAssetsButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginHorizontal: 17,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -116,12 +119,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 20,
   },
-  spliteLine: {
+  splitLine: {
     borderRightWidth: 1,
     borderColor: '#D1D1D1',
     height: 15,
     marginBottom: 2,
-    marginHorizontal: 10,
   },
   addWalletButtonView: {
     flex: 1,
@@ -210,20 +212,22 @@ const WalletPage = (props) => {
           </Text>
           <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{assetValueText}</ResponsiveText>
           <View style={styles.myAssetsButtonsView}>
-            <TouchableOpacity style={styles.ButtonView} onPress={onSendPressed}>
-              <Image source={references.images.send} />
-              <Loc style={[styles.sendText]} text="button.Send" />
-            </TouchableOpacity>
-            <View style={styles.spliteLine} />
-            <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed}>
-              <Image source={references.images.receive} />
-              <Loc style={[styles.receiveText]} text="button.Receive" />
-            </TouchableOpacity>
-            <View style={styles.spliteLine} />
-            <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin ? 1 : 0.5 }]} onPress={onSwapPressed} disabled={!hasSwappableCoin}>
-              <Image source={references.images.swap} />
-              <Loc style={[styles.swapText]} text="button.Swap" />
-            </TouchableOpacity>
+            <View style={styles.myAssetsButtonsContainer}>
+              <TouchableOpacity style={styles.ButtonView} onPress={onSendPressed}>
+                <Image source={references.images.send} />
+                <Loc style={[styles.sendText]} text="button.Send" />
+              </TouchableOpacity>
+              <View style={styles.splitLine} />
+              <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed}>
+                <Image source={references.images.receive} />
+                <Loc style={[styles.receiveText]} text="button.Receive" />
+              </TouchableOpacity>
+              <View style={styles.splitLine} />
+              <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin ? 1 : 0.5 }]} onPress={onSwapPressed} disabled={!hasSwappableCoin}>
+                <Image source={references.images.swap} />
+                <Loc style={[styles.swapText]} text="button.Swap" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
