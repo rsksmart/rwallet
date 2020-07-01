@@ -135,7 +135,7 @@ class AddCustomToken extends Component {
           symbol, type, contractAddress: address, precision: decimals, chain, name,
         });
       } catch (error) {
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
         addNotification(notification);
       } finally {
         this.setState({ isLoading: false });

@@ -460,7 +460,7 @@
     },
     "incorrectTokenSymbol": {
       "title": "Símbolo de token incorrecto",
-      "body": "No es un símbolo de token correcto"
+      "body": "No es un símbolo de token correcto."
     }
   },
   "currency": {

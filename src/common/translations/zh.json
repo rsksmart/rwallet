@@ -461,7 +461,7 @@
     },
     "incorrectTokenSymbol": {
       "title": "不正确的代币符号",
-      "body": "这不是一个正确的代币符号"
+      "body": "这不是一个正确的代币符号。"
     }
   },
   "currency": {

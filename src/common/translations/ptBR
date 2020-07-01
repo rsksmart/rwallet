@@ -445,7 +445,7 @@
     },
     "incorrectTokenSymbol": {
       "title": "Símbolo de token incorreto",
-      "body": "Não é um símbolo de token correto"
+      "body": "Não é um símbolo de token correto."
     }
   },
   "currency": {
