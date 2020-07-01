@@ -15,9 +15,8 @@ import color from '../../assets/styles/color.ts';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
-import definitions from '../../common/definitions';
 import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 
@@ -136,7 +135,7 @@ class AddCustomToken extends Component {
           symbol, type, contractAddress: address, precision: decimals, chain, name,
         });
       } catch (error) {
-        const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
         addNotification(notification);
       } finally {
         this.setState({ isLoading: false });

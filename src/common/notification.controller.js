@@ -26,6 +26,14 @@ const errorNotifications = {
     title: 'modal.txFailed.title',
     body: 'modal.txFailed.serverTimeout',
   },
+  [ERROR_CODE.TIME_OUT]: {
+    title: 'modal.txFailed.title',
+    body: 'modal.txFailed.serverTimeout',
+  },
+  [ERROR_CODE.ERR_SYMBOL_TYPE_TOKEN]: {
+    title: 'modal.incorrectTokenSymbol.title',
+    body: 'modal.incorrectTokenSymbol.body',
+  },
 };
 
 

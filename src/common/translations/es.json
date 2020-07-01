@@ -457,6 +457,10 @@
     "balanceInvalid": {
       "title": "El saldo de la billetera no está disponible",
       "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
+    },
+    "incorrectTokenSymbol": {
+      "title": "Símbolo de token incorrecto",
+      "body": "No es un símbolo de token correcto"
     }
   },
   "currency": {
