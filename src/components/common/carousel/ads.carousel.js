@@ -24,11 +24,10 @@ export default class AdsCarousel extends PureComponent {
     return (
       <View style={style}>
         <Carousel
-          loop
           layout="default"
           data={sourceData}
           renderItem={renderItem}
-          sliderWidth={sliderWidth || viewWidth}
+          sliderWidth={sliderWidth || width}
           itemWidth={itemWidth || viewWidth}
           onSnapToItem={(index) => this.setState({ activeSlide: index })}
         />
