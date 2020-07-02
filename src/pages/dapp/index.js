@@ -184,6 +184,7 @@ class DAppIndex extends Component {
         const dapp = {
           name: item.url,
           url: item.url,
+          id: item.url,
           description: '',
           networks: ['Mainnet', 'Testnet'],
         };
