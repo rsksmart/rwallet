@@ -452,9 +452,14 @@ class ParseHelper {
     query.equalTo('isActive', true);
     const rows = await query.find();
     const ads = _.map(rows, (row) => parseDataUtil.getAdvertisement(row));
+
+    // using momentjs to filter advertisements because "OR" statement need to new extra Parse.Query object
     const currentTimestamp = moment().valueOf();
     const filterAds = _.filter(ads, (ad) => {
+      // If start time is not set, it means active immediately
       const startTimestamp = ad.start ? moment(ad.start).valueOf() : currentTimestamp;
+
+      // If end time is not set, it means awalys active
       const endTimestamp = ad.end ? moment(ad.end).valueOf() : currentTimestamp;
       return currentTimestamp >= startTimestamp && currentTimestamp <= endTimestamp;
     });
