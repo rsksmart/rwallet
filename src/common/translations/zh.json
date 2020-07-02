@@ -94,7 +94,7 @@
         "note2": "按顺序保存记录并保存它们",
         "note3": "到安全的地方"
       },
-      "backupPhrase": {
+      "verifyPhrase": {
         "title": "验证你的助记词",
         "note": "按顺序点击助记词标签",
         "isCorrect": "这是正确的助记词？"
@@ -131,7 +131,10 @@
         },
         "errorBalanceEnough": "抱歉，您的余额不足",
         "errorAmountInvalid": "%{symbol}的余额无效。",
-        "have": "我有%{balance}在%{wallet}"
+        "have": "我有%{balance}在%{wallet}",
+        "min": "最小",
+        "half": "一般",
+        "all": "所有"
       },
       "swapSelection": {
         "title": "选择资产",

@@ -131,7 +131,10 @@
         },
         "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
         "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
-        "have": "Tengo %{balance} en %{wallet}"
+        "have": "Tengo %{balance} en %{wallet}",
+        "min": "MIN",
+        "half": "MEDIO",
+        "all": "TODAS"
       },
       "swapSelection": {
         "title": "Seleccione activo",
@@ -167,7 +170,7 @@
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
-        "custom": "Personalizado"
+        "custom": "Customizar"
       },
       "rnsCreateName": {
         "title": "Crear apodo",
@@ -243,7 +246,7 @@
         }
       },
       "keySettings": {
-        "title": "Configuraciones de billetera",
+        "title": "Configurar billetera",
         "keyContains": "Esta billetera contiene",
         "wallets": "billeteras",
         "security": "Seguridad",
