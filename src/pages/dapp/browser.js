@@ -103,17 +103,19 @@ class DAppBrowser extends Component {
         (function() {
           let resolver = {}
           let rejecter = {}
-          let hash
 
           setTimeout(() => {
             ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
-              const passData = data.data ? JSON.parse(data.data) : data.data
-              console.log('passData: ', passData)
-              const { id, result } = passData
-              if (result && result.error && rejecter[id]) {
-                rejecter[id](new Error(result.message))
-              } else if (resolver[id]) {
-                resolver[id](result)
+              try {
+                const passData = data.data ? JSON.parse(data.data) : data.data
+                const { id, result } = passData
+                if (result && result.error && rejecter[id]) {
+                  rejecter[id](new Error(result.message))
+                } else if (resolver[id]) {
+                  resolver[id](result)
+                }
+              } catch(err) {
+                console.log('err: ', err)
               }
             })
           }, 0)
@@ -219,6 +221,8 @@ class DAppBrowser extends Component {
                   result = '${this.networkVersion}'
                 } else if (method === 'eth_requestAccounts') {
                   result = ['${address}']
+                } else if (method === 'eth_accounts') {
+                  result = ['${address}']
                 } else {
                   result = await communicateWithRN(payload)
                 }
@@ -291,6 +295,23 @@ class DAppBrowser extends Component {
           const res = await this.rsk3.getBlock(params[0]);
           const result = { id, result: res };
           this.webview.current.postMessage(JSON.stringify(result));
+          break;
+        }
+
+        case 'personal_sign': {
+          callAuthVerify(async () => {
+            try {
+              const { privateKey } = coins[0];
+              const signWallet = new ethers.Wallet(privateKey, this.provider);
+              const message = this.rsk3.utils.hexToAscii(params[0]);
+              const signature = await signWallet.signMessage(message);
+              const result = { id, result: signature };
+              this.webview.current.postMessage(JSON.stringify(result));
+            } catch (err) {
+              console.log('err: ', err);
+              this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+            }
+          }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
           break;
         }
 
