@@ -356,7 +356,7 @@ class DAppBrowser extends Component {
 
   getWebView = (address, url) => {
     const { web3JsContent, ethersJsContent } = this.state;
-    const dappUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `https://${url}`;
+    const dappUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `http://${url}`;
     if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView
