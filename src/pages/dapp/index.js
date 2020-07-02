@@ -43,6 +43,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  firstItem: {
+    marginLeft: 20,
+  },
   dappIcon: {
     width: 62,
     height: 62,
@@ -287,12 +290,12 @@ class DAppIndex extends Component {
           title="page.dapp.recommended"
           data={recommended}
           type="recommended"
-          getItem={(items) => {
+          getItem={(items, index) => {
             const column = [];
             _.forEach(items, (item, row) => {
-              column.push(this.getDappItem({ item, row }, [{ marginRight: 15, marginTop: row ? 15 : 0 }]));
+              column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: row ? 15 : 0 }]));
             });
-            return <View>{column}</View>;
+            return <View style={!index ? styles.firstItem : {}}>{column}</View>;
           }}
         />
 
@@ -310,7 +313,7 @@ class DAppIndex extends Component {
                   title={dappType.translation && dappType.translation[language]}
                   data={dappList}
                   getItem={(item, index) => (
-                    this.getDappItem({ item, index }, [{ flex: 1, justifyContent: 'flex-start', marginRight: 15 }])
+                    this.getDappItem({ item, index }, [!index ? styles.firstItem : {}, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }])
                   )}
                 />
               );

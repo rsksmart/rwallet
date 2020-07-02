@@ -43,6 +43,9 @@ const styles = StyleSheet.create({
     color: '#B6B6B6',
     marginBottom: 20,
     marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   confirmText: {
     color: color.white,

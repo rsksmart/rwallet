@@ -14,7 +14,6 @@ import color from '../../assets/styles/color.ts';
 
 const styles = StyleSheet.create({
   card: {
-    marginHorizontal: 20,
     marginTop: 25,
   },
   cardTitle: {
@@ -22,6 +21,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: 15,
+    marginHorizontal: 20,
   },
   cardTitleText: {
     color: color.component.word,
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    marginLeft: 20,
   },
 });
 
