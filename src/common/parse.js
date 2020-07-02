@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
+import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
-
 
 const ERROR_PARSE_DEFAULT = 'error.parse.default';
 
@@ -452,7 +452,13 @@ class ParseHelper {
     query.equalTo('isActive', true);
     const rows = await query.find();
     const ads = _.map(rows, (row) => parseDataUtil.getAdvertisement(row));
-    return ads;
+    const currentTimestamp = moment().valueOf();
+    const filterAds = _.filter(ads, (ad) => {
+      const startTimestamp = ad.start ? moment(ad.start).valueOf() : currentTimestamp;
+      const endTimestamp = ad.end ? moment(ad.end).valueOf() : currentTimestamp;
+      return currentTimestamp >= startTimestamp && currentTimestamp <= endTimestamp;
+    });
+    return filterAds;
   }
 }
 
