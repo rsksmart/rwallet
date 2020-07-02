@@ -455,9 +455,9 @@
       "title": "Wallet balance is not available",
       "body": "We are having problem retrieving your wallet balance. Please try again later."
     },
-    "incorrectTokenSymbol": {
-      "title": "Incorrect token symbol",
-      "body": "It's not a correct token symbol."
+    "InvalidTokenSymbol": {
+      "title": "Invalid token symbol",
+      "body": "A same token symbol already exists on this blockchain."
     }
   },
   "currency": {

@@ -458,9 +458,9 @@
       "title": "El saldo de la billetera no está disponible",
       "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
     },
-    "incorrectTokenSymbol": {
-      "title": "Símbolo de token incorrecto",
-      "body": "No es un símbolo de token correcto."
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token no válido",
+      "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
     }
   },
   "currency": {

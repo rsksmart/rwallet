@@ -459,9 +459,9 @@
       "title": "余额获取失败",
       "body": "我们在查询您的钱包余额时遇到问题，请稍后再试。"
     },
-    "incorrectTokenSymbol": {
-      "title": "不正确的代币符号",
-      "body": "这不是一个正确的代币符号。"
+    "InvalidTokenSymbol": {
+      "title": "无效的代币符号",
+      "body": "该区块链上已经存在相同的代币符号。"
     }
   },
   "currency": {

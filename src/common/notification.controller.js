@@ -27,8 +27,8 @@ const errorNotifications = {
     body: 'modal.txFailed.serverTimeout',
   },
   [ERROR_CODE.ERR_SYMBOL_TYPE_TOKEN]: {
-    title: 'modal.incorrectTokenSymbol.title',
-    body: 'modal.incorrectTokenSymbol.body',
+    title: 'modal.InvalidTokenSymbol.title',
+    body: 'modal.InvalidTokenSymbol.body',
   },
 };
 
