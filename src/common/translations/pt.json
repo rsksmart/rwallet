@@ -460,6 +460,10 @@
     "balanceInvalid": {
       "title": "O saldo da carteira não está disponível",
       "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token incorreto",
+      "body": "Um mesmo símbolo de token já existe nesta blockchain."
     }
   },
   "currency": {
