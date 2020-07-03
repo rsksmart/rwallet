@@ -1,4 +1,4 @@
-import firebase from 'react-native-firebase';
+import firebase from '@imstar15/react-native-firebase';
 
 export const FcmType = {
   LAUNCH: 'LAUNCH',
