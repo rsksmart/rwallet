@@ -414,7 +414,7 @@ DAppBrowser.propTypes = {
     dispatch: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
+    state: PropTypes.object.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,

@@ -142,7 +142,7 @@ DAppList.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
+    state: PropTypes.object.isRequired,
   }).isRequired,
   dapps: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,

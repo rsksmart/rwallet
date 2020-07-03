@@ -341,7 +341,7 @@ DAppIndex.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
+    state: PropTypes.object.isRequired,
   }).isRequired,
   fetchDapps: PropTypes.func.isRequired,
   fetchDappTypes: PropTypes.func.isRequired,
