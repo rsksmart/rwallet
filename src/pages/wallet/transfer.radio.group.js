@@ -137,12 +137,11 @@ const styles = StyleSheet.create({
   radioItemTitle: {
     color: '#000000',
     fontSize: 16,
-    letterSpacing: 0.31,
-    fontWeight: '500',
+    fontFamily: 'Avenir-Roman',
     marginBottom: 1,
   },
   radioItemTitleSelected: {
-    fontWeight: '700',
+    fontFamily: 'Avenir-Heavy',
   },
   radioItemText: {
     marginTop: 2,

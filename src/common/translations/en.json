@@ -3,7 +3,7 @@
     "Wallet": "Wallet",
     "Me": "Me",
     "Exchange": "Swap",
-    "DApp": "DApp"
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -128,7 +128,10 @@
         },
         "errorBalanceEnough": "Sorry, but you don't have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
-        "have": "I have %{balance} in %{wallet}"
+        "have": "I have %{balance} in %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "ALL"
       },
       "swapSelection": {
         "title": "Select Asset",
@@ -454,6 +457,10 @@
     "balanceInvalid": {
       "title": "Wallet balance is not available",
       "body": "We are having problem retrieving your wallet balance. Please try again later."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Invalid token symbol",
+      "body": "A same token symbol already exists on this blockchain."
     }
   },
   "currency": {

@@ -3,7 +3,7 @@
     "Wallet": "Billetera",
     "Me": "Yo",
     "Exchange": "Intercambiar",
-    "DApp": "DApp"
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -131,7 +131,10 @@
         },
         "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
         "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
-        "have": "Tengo %{balance} en %{wallet}"
+        "have": "Tengo %{balance} en %{wallet}",
+        "min": "MIN",
+        "half": "MEDIO",
+        "all": "TODAS"
       },
       "swapSelection": {
         "title": "Seleccione activo",
@@ -167,7 +170,7 @@
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
-        "custom": "Personalizado"
+        "custom": "Customizar"
       },
       "rnsCreateName": {
         "title": "Crear apodo",
@@ -243,7 +246,7 @@
         }
       },
       "keySettings": {
-        "title": "Configuraciones de billetera",
+        "title": "Configurar billetera",
         "keyContains": "Esta billetera contiene",
         "wallets": "billeteras",
         "security": "Seguridad",
@@ -457,6 +460,10 @@
     "balanceInvalid": {
       "title": "El saldo de la billetera no está disponible",
       "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token no válido",
+      "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
     }
   },
   "currency": {
