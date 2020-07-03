@@ -44,6 +44,7 @@ const actions = {
   SHOW_INAPP_NOTIFICATION: 'SHOW_INAPP_NOTIFICATION',
   RESET_INAPP_NOTIFICATION: 'RESET_INAPP_NOTIFICATION',
   SET_INIT_APP_DONE: 'SET_INIT_APP_DONE',
+  RECEIVE_NOTIFICATION: 'RECEIVE_NOTIFICATION',
   PROCESS_NOTIFICATON: 'PROCESS_NOTIFICATON',
   SET_FCM_NAV_PARAMS: 'SET_FCM_NAV_PARAMS',
   RESET_FCM_NAV_PARAMS: 'RESET_FCM_NAV_PARAMS',
@@ -56,6 +57,15 @@ const actions = {
   LOGIN_DONE: 'LOGIN_DONE',
   SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
   RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
+
+  FETCH_DAPPS: 'FETCH_DAPPS',
+  FETCH_DAPP_TYPES: 'FETCH_DAPP_TYPES',
+  FETCH_ADVERTISEMENT: 'FETCH_ADVERTISEMENT',
+  UPDATE_DAPPS: 'UPDATE_DAPPS',
+  UPDATE_DAPP_TYPES: 'UPDATE_DAPP_TYPES',
+  UPDATE_ADVERTISEMENT: 'UPDATE_ADVERTISEMENT',
+  ADD_RECENT_DAPP: 'ADD_RECENT_DAPP',
+  UPDATE_RECENT_DAPPS: 'UPDATE_RECENT_DAPPS',
 
   SET_PAGE: 'SET_PAGE',
   RESET_PAGE: 'RESET_PAGE',
@@ -159,6 +169,11 @@ const actions = {
   initFcmChannel: () => ({
     type: actions.INIT_FCM_CHANNEL,
   }),
+  receiveNotification: (notification, fcmType) => ({
+    type: actions.RECEIVE_NOTIFICATION,
+    notification,
+    fcmType,
+  }),
   processNotification: (notification) => ({
     type: actions.PROCESS_NOTIFICATON,
     notification,
@@ -187,6 +202,19 @@ const actions = {
   }),
   loginDone: () => ({
     type: actions.LOGIN_DONE,
+  }),
+  fetchDapps: () => ({
+    type: actions.FETCH_DAPPS,
+  }),
+  fetchDappTypes: () => ({
+    type: actions.FETCH_DAPP_TYPES,
+  }),
+  fetchAdvertisements: () => ({
+    type: actions.FETCH_ADVERTISEMENT,
+  }),
+  addRecentDapp: (dapp) => ({
+    type: actions.ADD_RECENT_DAPP,
+    dapp,
   }),
   setPage: (page) => ({
     type: actions.SET_PAGE,

@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Wallet",
-    "Spend": "Spend",
-    "Earn": "Earn",
     "Me": "Me",
-    "Exchange": "Swap"
+    "Exchange": "Swap",
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -25,7 +24,8 @@
         "title": "Your Wallet",
         "myAssets": "My Assets",
         "allAssets": "All Assets",
-        "addAsset": "Add Asset"
+        "addAsset": "Add Asset",
+        "addWallet": "Add Wallet"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -128,7 +128,10 @@
         },
         "errorBalanceEnough": "Sorry, but you don't have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
-        "have": "I have %{balance} in %{wallet}"
+        "have": "I have %{balance} in %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "ALL"
       },
       "swapSelection": {
         "title": "Select Asset",
@@ -184,6 +187,20 @@
         "pending": "Registration waiting to be confirmed.",
         "success": "Success! Your nickname is created.",
         "failed": "Failed! Your nickname is failed to register."
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Search or enter website url",
+      "recent": "Recent",
+      "recommended": "Recommended",
+      "all": "All",
+      "button": {
+        "seeAll": "See All",
+        "confirm": "Confirm",
+        "understood": "Understood",
+        "createOrImport": "Create or Import",
+        "cancel": "Cancel"
       }
     },
     "mine": {
@@ -252,25 +269,6 @@
       },
       "resetcompleted": {
         "title": "Reset completed!"
-      }
-    },
-    "earn": {
-      "index": {
-        "title": "Earn cryptocurrency with ease",
-        "comingSoon": "Coming soon...",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Earn cryptocurrency by completing tasks",
-        "feature2": "- Swap between any token in your wallet",
-        "feature3": "- \"Cash Back\" on purchases with cryptocurrency"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Asset Management at Your Fingertips",
-        "featuresTitle": "Below features are coming soon to Spend…",
-        "feature1": "- Buy 100+ Gift Cards with cryptocurrency",
-        "feature2": "- Gain interests from a variety of Defi products",
-        "feature3": "- Multi-sign approval of transactions"
       }
     }
   },
@@ -429,6 +427,17 @@
       "title": "Duplicate Token",
       "body": "This token is already added in the wallet. Please try with a different token."
     },
+    "dappWarning": {
+      "title": "Redirecting to third-party Dapp \"%{dappName}\"",
+      "body": "%{description}\n\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Please select Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "No Wallet Available",
+      "body": "There is no wallet available for this Dapp yet. Please navigate to Wallet Creation page to either create or import a wallet first.\n\n"
+    },
     "requestTimeout": {
       "title": "Request timeout",
       "body": "The server could not complete the request within the specified time."
@@ -446,6 +455,14 @@
       "body": "We've launched support for RNS, or RIF Name Service which enables the identification of blockchain addresses by human-readable names.",
       "confirmText": "Let’s try it",
       "cancelText": "skip"
+    },
+    "balanceInvalid": {
+      "title": "Wallet balance is not available",
+      "body": "We are having problem retrieving your wallet balance. Please try again later."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Invalid token symbol",
+      "body": "A same token symbol already exists on this blockchain."
     }
   },
   "currency": {

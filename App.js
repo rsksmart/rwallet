@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
+import 'ethers/dist/shims';
 import './shim'; // Provide global node types(global.Buffer, global.process) for node_modules packages(bitcoinjs-lib, bip32)
 import RootSwitchNavigator from './src/navigation/container';
 import store from './src/redux/store';

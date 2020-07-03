@@ -171,7 +171,7 @@ Manual Testing has to be done on a real iOS/android device. This is to make sure
 1. Import a wallet
     - Check Go Back Button
     - Enable all three testnet tokens
-1. Delete a walelt
+1. Delete a wallet
     - Goes to Me bottom tab and delete a Key
     - Go back to dashboard and make sure wallet is deleted
 1. Receive Test BTC

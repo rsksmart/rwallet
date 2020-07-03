@@ -134,6 +134,13 @@ class RnsStatus extends Component {
     this.createListData();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { subdomains } = nextProps;
+    const { rnsRows } = this.state;
+    const newRnsRows = this.getUpdatedSubdomainsStatus(subdomains, rnsRows);
+    this.setState({ rnsRows: newRnsRows });
+  }
+
   componentWillUnmount() {
     const { resetPage } = this.props;
 
@@ -146,10 +153,7 @@ class RnsStatus extends Component {
   }
 
   createListData = async () => {
-    const { navigation } = this.props;
-    const { params } = navigation.state;
-    const navRnsRows = params && params.rnsRows ? params.rnsRows : [];
-
+    const { subdomains: propSubdomains } = this.props;
     const subdomains = await storage.getRnsRegisteringSubdomains();
 
     const rnsRows = [];
@@ -160,12 +164,26 @@ class RnsStatus extends Component {
         type: subdomain.type,
         status: definitions.SUBDOMAIN_STATUS.PENDING,
       };
-      const foundSubdomain = _.find(navRnsRows, { subdomain: rnsRow.subdomain });
-      rnsRow.status = foundSubdomain ? foundSubdomain.status : rnsRow.status;
       rnsRows.push(rnsRow);
     });
 
-    this.setState({ rnsRows }, this.refreshStatus);
+    const newRnsRows = this.getUpdatedSubdomainsStatus(propSubdomains, rnsRows);
+
+    this.setState({ rnsRows: newRnsRows }, this.refreshStatus);
+  }
+
+  // Update subdomains status, it will be updated by notification
+  getUpdatedSubdomainsStatus = (subdomains, rnsRows) => {
+    if (_.isEmpty(subdomains)) {
+      return rnsRows;
+    }
+    const newRnsRows = [...rnsRows];
+    _.each(newRnsRows, (rnsRow) => {
+      const newRnsRow = rnsRow;
+      const foundSubdomain = _.find(subdomains, { subdomain: rnsRow.subdomain });
+      newRnsRow.status = foundSubdomain ? foundSubdomain.status : rnsRow.status;
+    });
+    return newRnsRows;
   }
 
   refreshStatus = () => {
@@ -331,10 +349,16 @@ RnsStatus.propTypes = {
   addNotification: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
   resetPage: PropTypes.func.isRequired,
+  subdomains: PropTypes.arrayOf(PropTypes.shape({})),
+};
+
+RnsStatus.defaultProps = {
+  subdomains: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  subdomains: state.Wallet.get('subdomains'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

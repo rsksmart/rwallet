@@ -26,6 +26,7 @@ import definitions from '../../../common/definitions';
 import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
+import { strings } from '../../../common/i18n';
 
 
 const styles = StyleSheet.create({
@@ -188,6 +189,7 @@ const styles = StyleSheet.create({
   },
   switchText: {
     fontFamily: 'Avenir-Heavy',
+    fontSize: 14,
   },
   switchTextActived: {
     color: '#FFF',
@@ -227,7 +229,7 @@ res.RBTC = require('../../../assets/images/icon/RBTC.png');
 res.RIF = require('../../../assets/images/icon/RIF.png');
 res.error = require('../../../assets/images/icon/error.png');
 
-const switchItems = ['MIN', 'HALF', 'ALL'];
+const switchItems = ['page.wallet.swap.min', 'page.wallet.swap.half', 'page.wallet.swap.all'];
 
 class Swap extends Component {
   static navigationOptions = () => ({
@@ -741,7 +743,7 @@ class Swap extends Component {
 
   render() {
     const {
-      navigation, swapSource, swapDest, currency,
+      navigation, swapSource, swapDest, currency, language,
     } = this.props;
     const {
       isBalanceEnough, isAmountInRange, sourceAmount, destAmount, sourceText, destText, sourceUsdRate, destUsdRate,
@@ -765,6 +767,9 @@ class Swap extends Component {
         />
       ) : null
     );
+
+    // Adjust text font for portuguese
+    const switchItemFontSize = language === 'es' ? { fontSize: 12 } : null;
 
     return (
       <BasePageGereral
@@ -862,13 +867,13 @@ class Swap extends Component {
             style={styles.switchView}
           >
             <TouchableOpacity style={[styles.switchItem, switchIndex === 0 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(0)}>
-              <Text style={[styles.switchText]}>{limitMinDepositCoin > 0 ? `${switchItems[0]}(${limitMinDepositCoin})` : switchItems[0]}</Text>
+              <Text style={[styles.switchText, switchItemFontSize]}>{limitMinDepositCoin > 0 ? `${strings(switchItems[0])}(${limitMinDepositCoin})` : strings(switchItems[0])}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.switchItem, switchIndex === 1 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(1)}>
-              <Text style={styles.switchText}>{switchItems[1]}</Text>
+              <Text style={[styles.switchText, switchItemFontSize]}>{strings(switchItems[1])}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.switchItem, switchIndex === 2 ? { backgroundColor: color.component.button.backgroundColor } : {}]} onPress={() => this.onSwitchPressed(2)}>
-              <Text style={styles.switchText}>{limitMaxDepositCoin >= 0 ? `${switchItems[2]}(${limitMaxDepositCoin})` : switchItems[2]}</Text>
+              <Text style={[styles.switchText, switchItemFontSize]}>{limitMaxDepositCoin >= 0 ? `${strings(switchItems[2])}(${limitMaxDepositCoin})` : strings(switchItems[2])}</Text>
             </TouchableOpacity>
           </View>
           { swapSource && this.renderExchangeStateBlock(sourceValueText, destValueText) }
@@ -912,6 +917,7 @@ Swap.propTypes = {
   swapRatesError: PropTypes.shape({}),
   resetSwapRateError: PropTypes.func.isRequired,
   passcode: PropTypes.string,
+  language: PropTypes.string.isRequired,
 };
 
 Swap.defaultProps = {
@@ -930,6 +936,7 @@ const mapStateToProps = (state) => ({
   swapRates: state.Wallet.get('swapRates'),
   swapRatesError: state.Wallet.get('swapRatesError'),
   passcode: state.App.get('passcode'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

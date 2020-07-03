@@ -57,6 +57,38 @@ const parseDataUtil = {
     return { ...blockHeightKeyInfos[key], blockHeight: value };
   },
 
+  getDapp(dappObject) {
+    const dapp = {
+      id: dappObject.id,
+      name: dappObject.get('name'),
+      title: dappObject.get('title'),
+      description: dappObject.get('description'),
+      url: dappObject.get('url'),
+      iconUrl: dappObject.get('iconUrl'),
+      isActive: dappObject.get('isActive'),
+      isRecommended: dappObject.get('isRecommended'),
+      type: dappObject.get('type'),
+      contractAddresses: dappObject.get('contractAddresses'),
+      tokens: dappObject.get('tokens'),
+      networks: dappObject.get('networks'),
+    };
+    return dapp;
+  },
+
+  getDappTypes(dappTypesObject) {
+    return dappTypesObject ? dappTypesObject.get('value') : [];
+  },
+
+  getAdvertisement(advertisementObject) {
+    const advertisement = {
+      id: advertisementObject.id,
+      imgUrl: advertisementObject.get('imgUrl'),
+      url: advertisementObject.get('url'),
+      isActive: advertisementObject.get('isActive'),
+    };
+    return advertisement;
+  },
+
   getSubdomainStatus(subdomains, records) {
     // The data queried from the database should correspond to the local records one by one
     if (subdomains.length < records.length) {

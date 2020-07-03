@@ -17,6 +17,7 @@ import config from '../../../config';
 import references from '../../assets/references';
 import walletActions from '../../redux/wallet/actions';
 import { strings } from '../../common/i18n';
+import ResponsiveText from '../../components/common/misc/responsive.text';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -82,10 +83,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
   },
-  cornerButtonText: {
-    fontFamily: 'Avenir-Medium',
-    fontSize: 16,
+  cornerButtonView: {
     marginLeft: 13,
+    flexDirection: 'row',
+  },
+  cornerButtonText: {
+    width: 75,
+  },
+  cornerButtonFont: {
+    fontFamily: 'Avenir-Medium',
   },
   cornerButtonPlus: {
     color: color.app.theme,
@@ -229,10 +235,10 @@ class AddToken extends Component {
     const rightButton = () => (
       <TouchableOpacity style={styles.rightButtonView} onPress={this.onAddCustomTokenPressed}>
         <ImageBackground source={references.images.cornerButton} style={styles.cornerButton}>
-          <Text style={styles.cornerButtonText}>
+          <View style={styles.cornerButtonView}>
             <Text style={styles.cornerButtonPlus}>+ </Text>
-            {strings('page.wallet.addToken.custom')}
-          </Text>
+            <ResponsiveText layoutStyle={styles.cornerButtonText} fontStyle={styles.cornerButtonFont} maxFontSize={16}>{strings('page.wallet.addToken.custom')}</ResponsiveText>
+          </View>
         </ImageBackground>
       </TouchableOpacity>
     );
