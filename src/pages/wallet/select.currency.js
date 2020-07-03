@@ -150,12 +150,12 @@ class WalletSelectCurrency extends Component {
     render() {
       const { isLoading, isDisabledSwitch } = this.state;
       const { navigation } = this.props;
-
+      const bottomBtnText = this.isImportWallet ? 'button.IMPORT' : 'button.create';
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn
-          bottomBtnText="button.create"
+          bottomBtnText={bottomBtnText}
           bottomBtnOnPress={this.onCreateButtonPress}
           hasLoader
           isLoading={isLoading}
