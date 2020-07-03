@@ -338,8 +338,12 @@ class RNStorage {
    */
   async addUseTransactionFallbackAddress(address) {
     let addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
-    if (!addresses) {
+    if (_.isNull(addresses)) {
       addresses = [];
+    }
+    const foundAddress = _.find(addresses, (item) => address === item);
+    if (foundAddress) {
+      return;
     }
     addresses.push(address);
     await this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
@@ -351,7 +355,7 @@ class RNStorage {
    */
   async removeUseTransactionFallbackAddress(address) {
     const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
-    if (!addresses) {
+    if (_.isEmpty(addresses)) {
       return;
     }
     _.remove(addresses, (item) => address === item);
@@ -364,7 +368,7 @@ class RNStorage {
    */
   async isUseTransactionFallbackAddress(address) {
     const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
-    if (!addresses) {
+    if (_.isEmpty(addresses)) {
       return false;
     }
     const foundAddress = _.find(addresses, (item) => address === item);

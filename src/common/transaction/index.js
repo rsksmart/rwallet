@@ -88,15 +88,18 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
+        // If the last transaction times out, this transaction should use the fallback parameter
         const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
         const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, isUseTransactionFallback, this.coinswitch);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
+        // If the transaction uses the fallback parameter and is sent successfully, you need to delete this address in the list
         if (isUseTransactionFallback) {
           await storage.removeUseTransactionFallbackAddress(this.sender);
         }
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);
         if (e.code === ERROR_CODE.ERR_REQUEST_TIMEOUT) {
+          // If it times out, record the address of the transaction so that the fallback parameter can be used in the next transaction
           await storage.addUseTransactionFallbackAddress(this.sender);
         }
         throw e;
