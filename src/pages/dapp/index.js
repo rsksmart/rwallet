@@ -187,6 +187,7 @@ class DAppIndex extends Component {
         const dapp = {
           name: item.url,
           url: item.url,
+          id: item.url,
           description: '',
           networks: ['Mainnet', 'Testnet'],
         };
@@ -253,7 +254,7 @@ class DAppIndex extends Component {
           onSubmit={() => {
             if (searchUrl) {
               this.onDappPress({
-                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'],
+                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'], id: searchUrl,
               });
             }
           }}
