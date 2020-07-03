@@ -44,7 +44,9 @@
         "noMemo": "无备注",
         "transactionID": "交易ID",
         "viewOnChain": "在区块链上查看",
-        "Unconfirmed": "未确认"
+        "Unconfirmed": "未确认",
+        "from": "发送地址",
+        "to": "接收地址"
       },
       "receive": {
         "address": "地址"
@@ -388,6 +390,10 @@
     "subdomainCopied": {
       "title": "已复制",
       "body": "域名已复制。"
+    },
+    "txIdCopied": {
+      "title": "已复制",
+      "body": "交易ID已复制。"
     },
     "passcode": {
       "typeOldPasscode": "输入您的旧密码",

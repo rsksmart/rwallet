@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, Linking, Image, ScrollView, RefreshControl,
+  View, StyleSheet, Text, Linking, Image, ScrollView, RefreshControl, Clipboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -15,6 +15,9 @@ import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color.ts';
+import references from '../../assets/references';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -70,6 +73,18 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
   },
+  copyView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  copyText: {
+    flex: 1,
+    color: color.app.theme,
+  },
+  copyIcon: {
+    marginLeft: 4,
+    marginBottom: 2,
+  },
 });
 
 const stateIcons = {
@@ -88,7 +103,7 @@ class Transaction extends Component {
   static processViewData(transation, latestBlockHeights) {
     const { rawTransaction } = transation;
     const {
-      chain, symbol, type, value, blockHeight, hash, memo,
+      chain, symbol, type, value, blockHeight, hash, memo, from, to,
     } = rawTransaction;
     let amountText = null;
     if (!_.isNil(rawTransaction.value)) {
@@ -114,6 +129,8 @@ class Transaction extends Component {
       memo: memo || strings('page.wallet.transaction.noMemo'),
       title: `${transation.state} Funds`,
       isRefreshing: false,
+      from,
+      to,
     };
   }
 
@@ -147,10 +164,43 @@ class Transaction extends Component {
     Linking.openURL(url);
   }
 
+  onFromPress = () => {
+    const { addNotification } = this.props;
+    const { from } = this.state;
+    Clipboard.setString(from);
+    const notification = createInfoNotification(
+      'modal.addressCopied.title',
+      'modal.addressCopied.body',
+    );
+    addNotification(notification);
+  }
+
+  onToPress = () => {
+    const { addNotification } = this.props;
+    const { to } = this.state;
+    Clipboard.setString(to);
+    const notification = createInfoNotification(
+      'modal.addressCopied.title',
+      'modal.addressCopied.body',
+    );
+    addNotification(notification);
+  }
+
+  onTransactionIdPress = () => {
+    const { addNotification } = this.props;
+    const { transactionId } = this.state;
+    Clipboard.setString(transactionId);
+    const notification = createInfoNotification(
+      'modal.txIdCopied.title',
+      'modal.txIdCopied.body',
+    );
+    addNotification(notification);
+  }
+
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing,
+      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
     } = this.state;
 
     const refreshControl = (
@@ -184,6 +234,20 @@ class Transaction extends Component {
             <Text>{datetime}</Text>
           </View>
           <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.from" />
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
+              <Text style={[styles.copyText]}>{from}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.to" />
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
+              <Text style={[styles.copyText]}>{to}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.confirmations" />
             <Text>{confirmations}</Text>
           </View>
@@ -193,7 +257,10 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
-            <Text selectable>{transactionId}</Text>
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onTransactionIdPress}>
+              <Text style={[styles.copyText]}>{transactionId}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
@@ -213,6 +280,7 @@ Transaction.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
   latestBlockHeights: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
@@ -221,7 +289,8 @@ const mapStateToProps = (state) => ({
   currentLocale: state.App.get('language'),
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transaction);

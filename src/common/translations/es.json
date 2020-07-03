@@ -44,7 +44,9 @@
         "noMemo": "Sin memo",
         "transactionID": "ID de transacción",
         "viewOnChain": "Ver en blockchain",
-        "Unconfirmed": "Inconfirmado"
+        "Unconfirmed": "Inconfirmado",
+        "from": "De",
+        "to": "A"
       },
       "receive": {
         "address": "Dirección"
@@ -387,6 +389,10 @@
     "subdomainCopied": {
       "title": "Copiado",
       "body": "El subdominio se ha copiado al portapapeles."
+    },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "La ID de transacción se ha copiado en el portapapeles."
     },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
