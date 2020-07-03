@@ -203,6 +203,8 @@ class Transaction extends Component {
       transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
     } = this.state;
 
+    const txStateText = strings(`txState.${transactionState}`);
+
     const refreshControl = (
       <RefreshControl
         refreshing={isRefreshing}
@@ -223,7 +225,7 @@ class Transaction extends Component {
           refreshControl={refreshControl}
         >
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
+            <Loc style={[styles.sectionTitle, styles.state]} text={txStateText} />
             <View style={styles.amountView}>
               <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amount}</ResponsiveText>
               <View style={styles.stateIcon}>{stateIcon}</View>
