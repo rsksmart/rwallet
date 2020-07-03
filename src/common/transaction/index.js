@@ -88,14 +88,16 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        const isUseTransactionFallback = await storage.getUseTransactionFallback();
+        const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
         const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, isUseTransactionFallback, this.coinswitch);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
-        await storage.clearUseTransactionFallback();
+        if (isUseTransactionFallback) {
+          await storage.removeUseTransactionFallbackAddress(this.sender);
+        }
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);
         if (e.code === ERROR_CODE.ERR_REQUEST_TIMEOUT) {
-          await storage.setUseTransactionFallback();
+          await storage.addUseTransactionFallbackAddress(this.sender);
         }
         throw e;
       }

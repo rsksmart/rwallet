@@ -2,6 +2,7 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSecureStorage from 'rn-secure-storage';
+import _ from 'lodash';
 
 const KEY_WALLETS = 'WALLETS';
 const KEY_PRICES = 'PRICE';
@@ -14,7 +15,7 @@ const ADVERTISEMENTS = 'ADVERTISEMENTS';
 const KEY_RECENT_DAPPS = 'RECENTDAPPS';
 const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
-const IS_USE_TRANSACTION_FALLBACK = 'isUseTransactionFallback';
+const USE_TRANSACTION_FALLBACK_ADDRESSES = 'useTransactionFallbackAddress';
 
 class RNStorage {
   constructor() {
@@ -323,16 +324,51 @@ class RNStorage {
     this.remove(RNS_REGISTERING_SUBDOMAINS);
   }
 
-  getUseTransactionFallback() {
-    return this.load({ key: IS_USE_TRANSACTION_FALLBACK });
+  getUseTransactionFallbackAddresses() {
+    return this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
   }
 
-  setUseTransactionFallback() {
-    this.save(IS_USE_TRANSACTION_FALLBACK, true);
+  setUseTransactionFallback(addresses) {
+    this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
   }
 
-  clearUseTransactionFallback() {
-    this.remove(IS_USE_TRANSACTION_FALLBACK);
+  /**
+   * add address to transaction fallback address list
+   * @param {*} address
+   */
+  async addUseTransactionFallbackAddress(address) {
+    let addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (!addresses) {
+      addresses = [];
+    }
+    addresses.push(address);
+    await this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
+  }
+
+  /**
+   * remove address from transaction fallback address list
+   * @param {*} address
+   */
+  async removeUseTransactionFallbackAddress(address) {
+    const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (!addresses) {
+      return;
+    }
+    _.remove(addresses, (item) => address === item);
+    await this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
+  }
+
+  /**
+   * check if the address is in the transaction fallback address list
+   * @param {*} address
+   */
+  async isUseTransactionFallbackAddress(address) {
+    const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (!addresses) {
+      return false;
+    }
+    const foundAddress = _.find(addresses, (item) => address === item);
+    return !!foundAddress;
   }
 }
 
