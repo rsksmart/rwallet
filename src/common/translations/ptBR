@@ -131,7 +131,10 @@
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
-        "have": "Eu tenho %{balance} na carteira %{wallet}"
+        "have": "Eu tenho %{balance} na carteira %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "TUDO"
       },
       "swapSelection": {
         "title": "Escolha o ativo",
@@ -442,6 +445,10 @@
     "balanceInvalid": {
       "title": "O saldo da carteira não está disponível",
       "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token incorreto",
+      "body": "Um mesmo símbolo de token já existe nesta blockchain."
     }
   },
   "currency": {

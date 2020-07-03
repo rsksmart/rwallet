@@ -58,6 +58,15 @@ const actions = {
   SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
   RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
 
+  FETCH_DAPPS: 'FETCH_DAPPS',
+  FETCH_DAPP_TYPES: 'FETCH_DAPP_TYPES',
+  FETCH_ADVERTISEMENT: 'FETCH_ADVERTISEMENT',
+  UPDATE_DAPPS: 'UPDATE_DAPPS',
+  UPDATE_DAPP_TYPES: 'UPDATE_DAPP_TYPES',
+  UPDATE_ADVERTISEMENT: 'UPDATE_ADVERTISEMENT',
+  ADD_RECENT_DAPP: 'ADD_RECENT_DAPP',
+  UPDATE_RECENT_DAPPS: 'UPDATE_RECENT_DAPPS',
+
   SET_PAGE: 'SET_PAGE',
   RESET_PAGE: 'RESET_PAGE',
 
@@ -193,6 +202,19 @@ const actions = {
   }),
   loginDone: () => ({
     type: actions.LOGIN_DONE,
+  }),
+  fetchDapps: () => ({
+    type: actions.FETCH_DAPPS,
+  }),
+  fetchDappTypes: () => ({
+    type: actions.FETCH_DAPP_TYPES,
+  }),
+  fetchAdvertisements: () => ({
+    type: actions.FETCH_ADVERTISEMENT,
+  }),
+  addRecentDapp: (dapp) => ({
+    type: actions.ADD_RECENT_DAPP,
+    dapp,
   }),
   setPage: (page) => ({
     type: actions.SET_PAGE,

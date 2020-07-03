@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
 
-const TABCOUNT = 3; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
 const windowWidth = Dimensions.get('window').width;
 const tabWidth = windowWidth / TABCOUNT;
@@ -17,6 +17,7 @@ const SpotLight = posed.View({
   route0: { x: tabWidth * 0.25 },
   route1: { x: tabWidth * 1.25 },
   route2: { x: tabWidth * 2.25 },
+  route3: { x: tabWidth * 3.25 },
 });
 
 const Scaler = posed.View({

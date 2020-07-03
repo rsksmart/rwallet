@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Carteira",
-    "Spend": "Gastar",
-    "Earn": "Ganhar",
     "Me": "Eu",
-    "Exchange": "Troca"
+    "Exchange": "Troca",
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -132,7 +131,10 @@
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
-        "have": "Eu tenho %{balance} no %{wallet}"
+        "have": "Eu tenho %{balance} no %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "TUDO"
       },
       "swapSelection": {
         "title": "Selecionar ativo",
@@ -168,7 +170,7 @@
         "enabledAssets": "Ativos ativados",
         "note": "Desative ativos para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar token personalizado",
-        "custom": "Personalizados"
+        "custom": "Customizar"
       },
       "rnsCreateName": {
         "title": "Criar apelido",
@@ -188,6 +190,20 @@
         "pending": "Registro aguardando confirmação.",
         "success": "Sucesso! Seu apelido é criado.",
         "failed": "Falhou! Seu apelido não foi registrado."
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Pesquise ou insira o URL do site",
+      "recent": "Recente",
+      "recommended": "Recomendar",
+      "all": "Todos",
+      "button": {
+        "seeAll": "Ver Tudo",
+        "confirm": "Confirme",
+        "understood": "Entendido",
+        "createOrImport": "Criar ou Importar",
+        "cancel": "Cancelar"
       }
     },
     "mine": {
@@ -254,25 +270,6 @@
       },
       "resetcompleted": {
         "title": "Redefinição concluída!"
-      }
-    },
-    "earn": {
-      "index": {
-        "title": "Ganhe criptomoeda com facilidade",
-        "comingSoon": "Em breve...",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve.",
-        "feature1": "- Ganhe criptomoeda concluindo tarefas",
-        "feature2": "- Obter interesses de uma variedade de produtos Defi",
-        "feature3": "- \"Cash Back\" em compras com criptomoeda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "Gerenciamento de ativos ao seu alcance",
-        "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
-        "feature1": "- Compre mais de 100 cartões-presente com criptomoeda",
-        "feature2": "- Troque entre qualquer token na sua carteira",
-        "feature3": "- Aprovação de transações com vários sinais"
       }
     }
   },
@@ -431,6 +428,17 @@
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente com um token diferente."
     },
+    "dappWarning": {
+      "title": "Redirecionando para Dapp de terceiros \"%{dappName}\"",
+      "body": "%{description}\n\nNota: você será redirecionado para um aplicativo de terceiros \"%{dappName}\". Por favor, leia atentamente o Contrato do Usuário e a Política de Privacidade da Dapp de terceiros. \"%{dappName}\" reservará total responsabilidade por todas as ações e uso no Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Selecione Wallet"
+    },
+    "noWalletAvailable": {
+      "title": "Nenhuma carteira disponível",
+      "body": "Ainda não há carteira disponível para este Dapp. Navegue até a página Criação de carteira, para criar ou importar uma carteira primeiro.\n\n"
+    },
     "requestTimeout": {
       "title": "Tempo limite da solicitação",
       "body": "O servidor não pôde concluir a solicitação dentro do tempo especificado."
@@ -452,6 +460,10 @@
     "balanceInvalid": {
       "title": "O saldo da carteira não está disponível",
       "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token incorreto",
+      "body": "Um mesmo símbolo de token já existe nesta blockchain."
     }
   },
   "currency": {
