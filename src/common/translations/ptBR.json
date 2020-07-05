@@ -54,7 +54,7 @@
         "to": "Para",
         "memo": "Anotação (opcional)",
         "fee": "Taxa de transação",
-        "custom": "Personalizar taxa",
+        "custom": "Ajustar taxa",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
         "Slow": "Lento",
         "Average": "Médio",
@@ -133,7 +133,7 @@
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
         "have": "Eu tenho %{balance} na carteira %{wallet}",
         "min": "MIN",
-        "half": "HALF",
+        "half": "METADE",
         "all": "TUDO"
       },
       "swapSelection": {
@@ -182,13 +182,13 @@
         "nameAvailable": "O nome digitado está disponível",
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
-          "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
-          "other": "Confirme que você deseja criar apelidos para abaixo de {{count}} carteiras."
+          "one": "Confirme que você deseja criar apelidos para a carteira abaixo.",
+          "other": "Confirme que você deseja criar apelidos para as {{count}} carteiras abaixo."
         }
       },
       "rnsStatus": {
         "pending": "Registro aguardando confirmação.",
-        "success": "Sucesso! Seu apelido é criado.",
+        "success": "Sucesso! Seu apelido foi criado.",
         "failed": "Falhou! Seu apelido não foi registrado."
       }
     },
@@ -308,7 +308,7 @@
     "ok": "Ok",
     "name": "Nome",
     "pending": "Pendente",
-    "done": "Feito",
+    "done": "Pronto",
     "share": "COMPARTILHAR"
   },
   "txState": {
