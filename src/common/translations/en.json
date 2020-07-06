@@ -469,6 +469,10 @@
     "InvalidTokenSymbol": {
       "title": "Invalid token symbol",
       "body": "A same token symbol already exists on this blockchain."
+    },
+    "rnsExceeded": {
+      "title": "Subdomains exceeded",
+      "body": "No more than 5 subdomains can be created per day."
     }
   },
   "currency": {

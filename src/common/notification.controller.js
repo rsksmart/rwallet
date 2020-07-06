@@ -30,6 +30,10 @@ const errorNotifications = {
     title: 'modal.InvalidTokenSymbol.title',
     body: 'modal.InvalidTokenSymbol.body',
   },
+  [ERROR_CODE.ERR_EXCEED_RNS_QUOTA]: {
+    title: 'modal.rnsExceeded.title',
+    body: 'modal.rnsExceeded.body',
+  },
 };
 
 

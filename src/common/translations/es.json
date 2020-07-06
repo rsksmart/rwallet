@@ -472,6 +472,10 @@
     "InvalidTokenSymbol": {
       "title": "Símbolo de token no válido",
       "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
+    },
+    "rnsExceeded": {
+      "title": "Subdomains exceeded",
+      "body": "No se pueden crear más de 5 subdominios por día."
     }
   },
   "currency": {
