@@ -44,7 +44,9 @@
         "noMemo": "Nenhuma nota",
         "transactionID": "ID da transação",
         "viewOnChain": "Ver na blockchain",
-        "Unconfirmed": "Não confirmado"
+        "Unconfirmed": "Não confirmado",
+        "from": "De",
+        "to": "Para"
       },
       "receive": {
         "address": "Endereço"
@@ -388,6 +390,10 @@
     "subdomainCopied": {
       "title": "Copiado",
       "body": "O subdomínio foi copiado para a área de transferência."
+    },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "O ID da transação foi copiado para a área de transferência."
     },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",

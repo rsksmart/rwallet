@@ -44,7 +44,9 @@
         "noMemo": "No memo",
         "transactionID": "Transaction ID",
         "viewOnChain": "View on blockchain",
-        "Unconfirmed": "Unconfirmed"
+        "Unconfirmed": "Unconfirmed",
+        "from": "From",
+        "to": "To"
       },
       "receive": {
         "address": "Address"
@@ -386,6 +388,10 @@
     "subdomainCopied": {
       "title": "Copied",
       "body": "The subdomain has been copied to the clipboard."
+    },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "The Transaction ID has been copied to the clipboard."
     },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
