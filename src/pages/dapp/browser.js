@@ -104,21 +104,19 @@ class DAppBrowser extends Component {
           let resolver = {}
           let rejecter = {}
 
-          setTimeout(() => {
-            ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
-              try {
-                const passData = data.data ? JSON.parse(data.data) : data.data
-                const { id, result } = passData
-                if (result && result.error && rejecter[id]) {
-                  rejecter[id](new Error(result.message))
-                } else if (resolver[id]) {
-                  resolver[id](result)
-                }
-              } catch(err) {
-                console.log('err: ', err)
+          ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
+            try {
+              const passData = data.data ? JSON.parse(data.data) : data.data
+              const { id, result } = passData
+              if (result && result.error && rejecter[id]) {
+                rejecter[id](new Error(result.message))
+              } else if (resolver[id]) {
+                resolver[id](result)
               }
-            })
-          }, 0)
+            } catch(err) {
+              console.log('err: ', err)
+            }
+          })
 
           communicateWithRN = (payload) => {
             return new Promise((resolve, reject) => {
