@@ -85,6 +85,8 @@ const parseDataUtil = {
       imgUrl: advertisementObject.get('imgUrl'),
       url: advertisementObject.get('url'),
       isActive: advertisementObject.get('isActive'),
+      start: advertisementObject.get('start'),
+      end: advertisementObject.get('end'),
     };
     return advertisement;
   },
