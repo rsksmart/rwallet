@@ -2,7 +2,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import _ from 'lodash';
 
 export const getRawTransactionParam = ({
-  symbol, netType, sender, receiver, value, data, memo, gasFee,
+  symbol, netType, sender, receiver, value, data, memo, gasFee, fallback,
 }) => {
   const { gasPrice, gas } = gasFee;
   const param = {
@@ -14,6 +14,7 @@ export const getRawTransactionParam = ({
     data,
     gasPrice,
     gas: Math.floor(gas), // gas must be integer
+    fallback,
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
