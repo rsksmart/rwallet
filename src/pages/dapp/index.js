@@ -264,13 +264,13 @@ class DAppIndex extends Component {
         />
 
         {
-          (advertisements && advertisements.length) ? (
+          _.isEmpty(advertisements) ? null : (
             <AdsCarousel
               style={styles.ads}
               data={advertisements}
               renderItem={this.getAdItem}
             />
-          ) : null
+          )
         }
 
         <DappCard
