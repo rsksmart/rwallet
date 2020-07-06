@@ -235,12 +235,6 @@ class DAppBrowser extends Component {
 
             window.ethereum.send = sendAsync
             window.ethereum.sendAsync = sendAsync
-            const timer = setInterval(() => {
-              if (!window.ethereum.sendAsync) {
-                window.ethereum.sendAsync = window.ethereum.send
-                clearInterval(timer)
-              }
-            }, 2000)
           }
 
           initWeb3()
