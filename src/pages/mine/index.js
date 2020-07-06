@@ -160,7 +160,7 @@ class MineIndex extends Component {
             <View style={styles.right}>
               <Text>{item.name}</Text>
               <Text style={styles.keyWallets}>
-                <Loc text="page.mine.index.wallets" interpolates={{ count: item.walletCount }} />
+                <Loc text="page.mine.index.assets" interpolates={{ count: item.walletCount }} />
               </Text>
             </View>
           </TouchableOpacity>

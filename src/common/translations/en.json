@@ -210,10 +210,9 @@
         "createKey": "Create or Import a Wallet",
         "keys": "Wallets",
         "anonymousUser": "Anonymous User",
-        "wallets": {
-          "zero": "0 Wallet",
-          "one": "1 Wallet",
-          "other": "{{count}} Wallets"
+        "assets": {
+          "one": "1 Asset",
+          "other": "{{count}} Assets"
         },
         "support": "Support",
         "contactUs": "Contact Us",
@@ -244,11 +243,14 @@
       },
       "keySettings": {
         "title": "Wallet Settings",
-        "keyContains": "This wallet contains",
+        "walletContains": {
+          "one": "This wallet contains 1 asset",
+          "other": "This wallet contains {{count}} assets"
+        },
         "wallets": "wallets",
         "security": "Security",
         "advanced": "Advanced",
-        "Wallets": "Wallets",
+        "Assets": "Assets",
         "keyName": "Wallet Name",
         "delete": "Delete",
         "backup": "Backup"

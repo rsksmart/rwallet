@@ -213,10 +213,9 @@
         "createKey": "Criar ou importar uma carteira",
         "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
-        "wallets": {
-          "zero": "0 carteira",
-          "one": "1 carteira",
-          "other": "{{count}} carteiras"
+        "assets": {
+          "one": "1 Ativo",
+          "other": "{{count}} Ativos"
         },
         "addressBook": {
           "title": "Livro de endereços",
@@ -247,11 +246,13 @@
       },
       "keySettings": {
         "title": "Configurações da carteira",
-        "wallets": "carteiras",
-        "keyContains": "Esta carteira contém",
+        "walletContains": {
+          "one": "Esta carteira contém 1 ativo",
+          "other": "Esta carteira contém {{count}} ativos"
+        },
         "security": "Segurança",
         "advanced": "Avançado",
-        "Wallets": "Carteiras",
+        "Assets": "Ativos",
         "keyName": "Nome da carteira",
         "delete": "Excluir",
         "backup": "Backup"

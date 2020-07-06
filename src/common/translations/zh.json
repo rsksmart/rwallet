@@ -218,10 +218,9 @@
         "createKey": "创建或导入一个钱包",
         "keys": "钱包",
         "anonymousUser": "匿名用户",
-        "wallets": {
-          "zero": "0 钱包",
-          "one": "1 钱包",
-          "other": "{{count}} 钱包"
+        "assets": {
+          "one": "1 资产",
+          "other": "{{count}} 资产"
         },
         "support": "支持",
         "contactUs": "联系我们",
@@ -247,11 +246,13 @@
       },
       "keySettings": {
         "title": "钱包设置",
-        "keyContains": "这个钱包包含",
-        "wallets": "钱包",
+        "walletContains": {
+          "one": "这个钱包包含1个资产",
+          "other": "这个钱包包含{{count}}个资产"
+        },
         "security": "安全",
         "advanced": "高级",
-        "Wallets": "钱包",
+        "Assets": "资产",
         "keyName": "钱包名字",
         "delete": "删除",
         "backup": "备份"

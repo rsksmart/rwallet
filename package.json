@@ -32,6 +32,7 @@
     "moment": "^2.24.0",
     "native-base": "^2.13.0",
     "node-libs-browser": "^2.2.1",
+    "ordinal": "^1.0.3",
     "parse": "^2.13.0",
     "prop-types": "^15.7.2",
     "react": "16.8.3",

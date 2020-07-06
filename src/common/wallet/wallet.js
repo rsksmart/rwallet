@@ -7,8 +7,7 @@ import coinType from './cointype';
 import common from '../common';
 
 const bip39 = require('bip39');
-
-const WALLET_NAME_PREFIX = 'Key ';
+const ordinal = require('ordinal');
 
 const drivationTypes = [
   { symbol: 'BTC', type: 'Mainnet' },
@@ -20,7 +19,7 @@ const drivationTypes = [
 export default class Wallet {
   constructor({ id, name, mnemonic }) {
     this.id = id;
-    this.name = name || WALLET_NAME_PREFIX + id;
+    this.name = name || `My ${ordinal(id + 1)} Wallet`;
     this.mnemonic = mnemonic;
     this.assetValue = new BigNumber(0);
     this.coins = [];
