@@ -271,7 +271,8 @@ class RnsAddress extends Component {
     // Send subdomains to server
     const user = await parse.getUser();
     const fcmToken = user ? user.get('fcmToken') : null;
-    const params = { fcmToken };
+    const userId = user ? user.get('username') : null;
+    const params = { userId, fcmToken };
     params.subdomainList = _.map(rnsRows, (row) => {
       const { subdomain, type, address } = row;
       return { subdomain, type, address };
