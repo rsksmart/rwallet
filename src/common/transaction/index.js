@@ -16,9 +16,9 @@ const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.get
 
 const convertTransferValue = (symbol, value) => (symbol === 'BTC' ? common.btcToSatoshiHex(value) : common.rskCoinToWeiHex(value));
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, isUseTransactionFallback, coinswitch) => (symbol === 'BTC'
-  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, isUseTransactionFallback, coinswitch)
-  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, isUseTransactionFallback, coinswitch));
+const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
+  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
+  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
 
 const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
@@ -52,8 +52,10 @@ class Transaction {
       symbol, netType, sender, receiver, value, data, memo, gasFee,
     } = this;
     try {
+      // If the last transaction is time out, createRawTransaction should use the fallback parameter
+      const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
       const param = createRawTransactionParam({
-        symbol, netType, sender, receiver, value, data, memo, gasFee,
+        symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
       });
       console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawTransaction', param);
@@ -88,14 +90,11 @@ class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        // If the last transaction times out, this transaction should use the fallback parameter
-        const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
-        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, isUseTransactionFallback, this.coinswitch);
+        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
+        console.log(`processSignedTransaction, param: ${JSON.stringify(param)}`);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
         // If the transaction uses the fallback parameter and is sent successfully, you need to delete this address in the list
-        if (isUseTransactionFallback) {
-          await storage.removeUseTransactionFallbackAddress(this.sender);
-        }
+        await storage.removeUseTransactionFallbackAddress(this.sender);
       } catch (e) {
         console.log('Transaction.processSignedTransaction err: ', e.message);
         if (e.code === ERROR_CODE.ERR_REQUEST_TIMEOUT) {
