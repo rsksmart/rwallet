@@ -4,14 +4,12 @@ import { WebView } from 'react-native-webview';
 import * as PropTypes from 'prop-types';
 import LoadingBar from './loading-bar';
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
   },
 });
-
 
 class ProgressBarWebView extends React.PureComponent {
   constructor(props) {
@@ -61,7 +59,6 @@ class ProgressBarWebView extends React.PureComponent {
     }
   };
 
-
   render() {
     const { height, forwardedRef } = this.props;
     const { percent, color, visible } = this.state;
@@ -91,7 +88,7 @@ ProgressBarWebView.propTypes = {
   onError: PropTypes.func,
   onLoadStart: PropTypes.func,
   onLoadEnd: PropTypes.func,
-  forwardedRef: PropTypes.element,
+  forwardedRef: PropTypes.object,
 };
 
 ProgressBarWebView.defaultProps = {

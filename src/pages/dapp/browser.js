@@ -219,7 +219,7 @@ class DAppBrowser extends Component {
               try {
                 if (method === 'net_version') {
                   result = '${this.networkVersion}'
-                } else if (method === 'eth_requestAccounts' || 'eth_accounts') {
+                } else if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
                   result = ['${address}']
                 } else {
                   result = await communicateWithRN(payload)
