@@ -42,7 +42,7 @@ export const signTransaction = async (transaction, privateKey) => {
   return rawTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo, isUseTransactionFallback, coinSwitch) => {
+export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
   const param = {
     name: 'Bitcoin',
     hash: signedTransaction,
