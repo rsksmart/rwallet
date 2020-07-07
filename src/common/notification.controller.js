@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import definitions from './definitions';
 import ERROR_CODE from './errors';
+import { strings } from './i18n';
 
-const errorNotifications = {
+export const errorNotifications = {
   [ERROR_CODE.ERC20_CONTRACT_NOT_FOUND]: {
     title: 'modal.contractNotFound.title',
     body: 'modal.contractNotFound.body',
@@ -50,7 +52,7 @@ export const createInfoNotification = (title, message, buttonText, notificationC
   id: Date.now(),
   type: 'info',
   title,
-  message,
+  message: strings(message),
   buttonText,
   notificationCloseCallback,
 });
@@ -59,7 +61,7 @@ export const createWarningNotification = (title, message, buttonText, notificati
   id: Date.now(),
   type: 'warning',
   title,
-  message,
+  message: strings(message),
   buttonText,
   notificationCloseCallback,
 });
@@ -68,25 +70,37 @@ export const createErrorNotification = (title, message, buttonText, notification
   id: Date.now(),
   type: 'error',
   title,
-  message,
+  message: strings(message),
   buttonText,
   notificationCloseCallback,
 });
+
+export const createErrorNotificationWithMessageParams = (title, message, messageParams, buttonText, notificationCloseCallback) => ({
+  id: Date.now(),
+  type: 'error',
+  title,
+  message: strings(message, messageParams),
+  buttonText,
+  notificationCloseCallback,
+});
+
 
 /**
  * get error notification by error code
  * @param {number} errorCode
  * @param {string} buttonText
+ * @param {object} messageParams, translation params for message
  * @param {function} notificationCloseCallback
  * @returns {object} notification object
  */
-export const getErrorNotification = (errorCode, buttonText, notificationCloseCallback) => {
+export const getErrorNotification = (errorCode, buttonText, messageParams, notificationCloseCallback) => {
   const errNotification = errorNotifications[errorCode];
   if (!errNotification) {
     return null;
   }
   const { title, body } = errNotification;
-  const notification = createErrorNotification(title, body, buttonText, notificationCloseCallback);
+  const notification = _.isEmpty(messageParams) ? createErrorNotification(title, body, buttonText, notificationCloseCallback)
+    : createErrorNotificationWithMessageParams(title, body, messageParams, buttonText, notificationCloseCallback);
   return notification;
 };
 

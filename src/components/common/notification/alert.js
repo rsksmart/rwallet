@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, StyleSheet, TouchableOpacity,
+  Modal, View, StyleSheet, TouchableOpacity, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Loc from '../misc/loc';
 import color from '../../../assets/styles/color.ts';
 
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Alert extends Component {
+class Alert extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -85,7 +86,7 @@ export default class Alert extends Component {
           <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
             <View style={{ paddingHorizontal: 20 }}>
               <Loc style={[styles.title]} text={title} />
-              <Loc style={[styles.text]} text={message} />
+              <Text style={[styles.text]}>{message}</Text>
             </View>
             <View style={styles.line} />
             <TouchableOpacity onPress={this.onCloseButtonPress}>
@@ -112,3 +113,9 @@ Alert.defaultProps = {
   buttonText: null,
   notificationCloseCallback: null,
 };
+
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
+
+export default connect(mapStateToProps)(Alert);

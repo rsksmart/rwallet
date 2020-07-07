@@ -474,7 +474,7 @@
     },
     "rnsExceeded": {
       "title": "Subdominios excedidos",
-      "body": "Não é possível criar mais de 5 subdomínios por dia."
+      "body": "Não é possível criar mais de {{count}} subdomínios por dia."
     }
   },
   "currency": {

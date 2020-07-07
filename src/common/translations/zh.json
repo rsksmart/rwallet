@@ -475,7 +475,7 @@
     },
     "rnsExceeded": {
       "title": "子域超额",
-      "body": "每天最多只能创建5个子域。"
+      "body": "每天最多只能创建{{count}}个子域。"
     }
   },
   "currency": {

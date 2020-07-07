@@ -472,7 +472,7 @@
     },
     "rnsExceeded": {
       "title": "Subdomains exceeded",
-      "body": "No more than 5 subdomains can be created per day."
+      "body": "No more than {{count}} subdomains can be created per day."
     }
   },
   "currency": {

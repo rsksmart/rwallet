@@ -20,7 +20,10 @@ import AddressSelectionModal from '../../../components/common/modal/address.sele
 import { strings } from '../../../common/i18n';
 import parse from '../../../common/parse';
 import config from '../../../../config';
-import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
+import ERROR_CODE from '../../../common/errors';
+import {
+  createErrorNotification, getErrorNotification, getDefaultErrorNotification,
+} from '../../../common/notification.controller';
 import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
 import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
@@ -282,8 +285,13 @@ class RnsAddress extends Component {
     try {
       result = await parse.createSubdomain(params);
     } catch (error) {
-      console.log(error);
-      const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+      let notification = null;
+      if (error.code === ERROR_CODE.ERR_EXCEED_RNS_QUOTA) {
+        const { quota } = error.message.data;
+        notification = getErrorNotification(error.code, 'button.retry', { count: quota });
+      } else {
+        notification = getErrorNotification(error.code, 'button.retry', error.message.data) || getDefaultErrorNotification('button.retry');
+      }
       addNotification(notification);
       storage.clearRnsRegisteringSubdomains();
       return;
