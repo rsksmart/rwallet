@@ -235,11 +235,15 @@ class DAppIndex extends Component {
         <NavigationEvents
           onWillFocus={() => {
             StatusBar.setBarStyle('dark-content');
-            StatusBar.setBackgroundColor('white');
+            if (Platform.OS === 'android') {
+              StatusBar.setBackgroundColor('white');
+            }
           }}
           onWillBlur={() => {
             StatusBar.setBarStyle('light-content');
-            StatusBar.setBackgroundColor(color.app.theme);
+            if (Platform.OS === 'android') {
+              StatusBar.setBackgroundColor(color.app.theme);
+            }
           }}
         />
 
@@ -260,11 +264,15 @@ class DAppIndex extends Component {
           }}
         />
 
-        <AdsCarousel
-          style={styles.ads}
-          data={advertisements}
-          renderItem={this.getAdItem}
-        />
+        {
+          _.isEmpty(advertisements) ? null : (
+            <AdsCarousel
+              style={styles.ads}
+              data={advertisements}
+              renderItem={this.getAdItem}
+            />
+          )
+        }
 
         <DappCard
           navigation={navigation}

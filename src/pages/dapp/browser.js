@@ -103,20 +103,20 @@ class DAppBrowser extends Component {
         (function() {
           let resolver = {}
           let rejecter = {}
-          let hash
 
-          setTimeout(() => {
-            ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
+          ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
+            try {
               const passData = data.data ? JSON.parse(data.data) : data.data
-              console.log('passData: ', passData)
               const { id, result } = passData
               if (result && result.error && rejecter[id]) {
                 rejecter[id](new Error(result.message))
               } else if (resolver[id]) {
                 resolver[id](result)
               }
-            })
-          }, 0)
+            } catch(err) {
+              console.log('err: ', err)
+            }
+          })
 
           communicateWithRN = (payload) => {
             return new Promise((resolve, reject) => {
@@ -217,7 +217,7 @@ class DAppBrowser extends Component {
               try {
                 if (method === 'net_version') {
                   result = '${this.networkVersion}'
-                } else if (method === 'eth_requestAccounts') {
+                } else if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
                   result = ['${address}']
                 } else {
                   result = await communicateWithRN(payload)
@@ -235,12 +235,6 @@ class DAppBrowser extends Component {
 
             window.ethereum.send = sendAsync
             window.ethereum.sendAsync = sendAsync
-            const timer = setInterval(() => {
-              if (!window.ethereum.sendAsync) {
-                window.ethereum.sendAsync = window.ethereum.send
-                clearInterval(timer)
-              }
-            }, 2000)
           }
 
           initWeb3()
@@ -291,6 +285,23 @@ class DAppBrowser extends Component {
           const res = await this.rsk3.getBlock(params[0]);
           const result = { id, result: res };
           this.webview.current.postMessage(JSON.stringify(result));
+          break;
+        }
+
+        case 'personal_sign': {
+          callAuthVerify(async () => {
+            try {
+              const { privateKey } = coins[0];
+              const signWallet = new ethers.Wallet(privateKey, this.provider);
+              const message = this.rsk3.utils.hexToAscii(params[0]);
+              const signature = await signWallet.signMessage(message);
+              const result = { id, result: signature };
+              this.webview.current.postMessage(JSON.stringify(result));
+            } catch (err) {
+              console.log('err: ', err);
+              this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+            }
+          }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
           break;
         }
 
