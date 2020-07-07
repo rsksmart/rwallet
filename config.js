@@ -83,6 +83,4 @@ const config = {
   rnsDomain: 'wallet.rsk',
 };
 
-
-
 export default config;
