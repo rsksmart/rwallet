@@ -288,7 +288,7 @@ class RnsAddress extends Component {
       let notification = null;
       if (error.code === ERROR_CODE.ERR_EXCEED_RNS_QUOTA) {
         const { quota } = error.message.data;
-        notification = getErrorNotification(error.code, 'button.retry', { count: quota });
+        notification = getErrorNotification(error.code, 'button.gotIt', { count: quota });
       } else {
         notification = getErrorNotification(error.code, 'button.retry', error.message.data) || getDefaultErrorNotification('button.retry');
       }
