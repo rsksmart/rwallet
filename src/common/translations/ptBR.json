@@ -458,8 +458,8 @@
       "body": "Um mesmo símbolo de token já existe nesta blockchain."
     },
     "rnsExceeded": {
-      "title": "Subdomínios excedidos",
-      "body": "Não é possível criar mais de {{count}} subdomínios por dia."
+      "title": "Número máximo alcançado",
+      "body": "Não podem ser criados mais de {{count}} apelidos por dia."
     }
   },
   "currency": {

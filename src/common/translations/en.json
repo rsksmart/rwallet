@@ -471,8 +471,8 @@
       "body": "A same token symbol already exists on this blockchain."
     },
     "rnsExceeded": {
-      "title": "Subdomains exceeded",
-      "body": "No more than {{count}} subdomains can be created per day."
+      "title": "Maximum number reached",
+      "body": "No more than {{count}} nicknames can be created per day."
     }
   },
   "currency": {

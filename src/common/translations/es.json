@@ -474,8 +474,8 @@
       "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
     },
     "rnsExceeded": {
-      "title": "Subdomains exceeded",
-      "body": "No se pueden crear más de {{count}} subdominios por día."
+      "title": "Número máximo alcanzado",
+      "body": "No se pueden crear más de {{count}} apodos por día."
     }
   },
   "currency": {
