@@ -128,6 +128,7 @@ class WalletCarousel extends Component {
         initialIndex={1}
         firstItem={1}
         bounces={false}
+        removeClippedSubviews={false}
       />
     );
   }
