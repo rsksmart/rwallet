@@ -14,6 +14,8 @@ const ERROR_CODE = {
   ERR_ROLE_NOT_SUPPORT_API: 713, // access role not exist
   ERR_API_EXCEED_THRESHOLD: 714, // access role not exist
   ERR_QUERY_ACCESS_DB: 715, // query access_x collection fail
+  ERR_SYMBOL_TYPE_TOKEN: 716, // already exist same symbol type token
+  ERR_EXCEED_RNS_QUOTA: 717, // exceed rns create subdomain daily quota
 
   NOT_ENOUGH_RBTC: 720,
   NOT_ENOUGH_BTC: 721,

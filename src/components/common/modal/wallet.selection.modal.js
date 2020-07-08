@@ -179,7 +179,8 @@ class WalletSelection extends PureComponent {
 
     this.listener = DeviceEventEmitter.addListener(TOKENS_UPDATE, (isTokensUpdated) => {
       if (isTokensUpdated) {
-        this.initWallets();
+        const { dapp } = this.props;
+        this.initWallets(dapp);
       }
     });
   }
@@ -197,9 +198,10 @@ class WalletSelection extends PureComponent {
 
   initWallets = (dapp = null) => {
     const supportWallets = this.getSupportWallets(dapp);
-    if (supportWallets.length) {
-      this.setState({ selectedWallet: supportWallets[0], supportWallets });
+    if (!_.isEmpty(supportWallets)) {
+      this.setState({ selectedWallet: supportWallets[0] });
     }
+    this.setState({ supportWallets });
   }
 
   createBtnPress = () => {
@@ -255,7 +257,7 @@ class WalletSelection extends PureComponent {
         row = [];
       }
     });
-    if (row.length) {
+    if (!_.isEmpty(row)) {
       result.push(
         <View style={styles.tokenRow} key={`${tokens[result.length].objectId}-row-${row.length}`}>
           {row}
@@ -299,7 +301,7 @@ class WalletSelection extends PureComponent {
       const { wallets } = walletManager;
       const supportWallets = [];
       let { networks } = dapp;
-      if (!networks || !networks.length) {
+      if (_.isEmpty(networks)) {
         networks = ['Mainnet', 'Testnet'];
       }
       _.forEach(networks, (network) => {
@@ -309,8 +311,8 @@ class WalletSelection extends PureComponent {
           // Get all rsk tokens
           const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
           // If dapp support token list is empty, needs to show all rsk tokens
-          const tokens = supportTokens.length ? _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol)) : rskTokens;
-          if (tokens.length) {
+          const tokens = _.isEmpty(supportTokens) ? rskTokens : _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol));
+          if (!_.isEmpty(tokens)) {
             supportWallets.push({
               ...wallet,
               coins: tokens,
@@ -331,9 +333,9 @@ class WalletSelection extends PureComponent {
       visible, closeFunction, confirmButtonPress: propConfirmButtonPress,
     } = this.props;
     const { selectedWallet, supportWallets } = this.state;
-    const title = supportWallets.length ? 'modal.walletSelection.title' : 'modal.noWalletAvailable.title';
-    const confirmButtonPress = supportWallets.length ? this.confirmBtnPress : this.createBtnPress;
-    const confirmButtonText = supportWallets.length ? 'page.dapp.button.confirm' : 'page.dapp.button.createOrImport';
+    const title = _.isEmpty(supportWallets) ? 'modal.noWalletAvailable.title' : 'modal.walletSelection.title';
+    const confirmButtonPress = _.isEmpty(supportWallets) ? this.createBtnPress : this.confirmBtnPress;
+    const confirmButtonText = _.isEmpty(supportWallets) ? 'page.dapp.button.createOrImport' : 'page.dapp.button.confirm';
     return (
       <Modal
         animationType="fade"
@@ -347,17 +349,19 @@ class WalletSelection extends PureComponent {
             <View style={styles.line} />
             <View style={styles.flatlist}>
               {
-                supportWallets.length ? (
-                  <FlatList
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    showsVerticalScrollIndicator={false}
-                    bounces={false}
-                    data={supportWallets}
-                    extraData={this.state}
-                    renderItem={this.getWalletItem}
-                    keyExtractor={(item, index) => `list-${index}`}
-                  />
-                ) : <Loc style={styles.noWalletText} text="modal.noWalletAvailable.body" />
+                _.isEmpty(supportWallets)
+                  ? <Loc style={styles.noWalletText} text="modal.noWalletAvailable.body" />
+                  : (
+                    <FlatList
+                      ItemSeparatorComponent={() => <View style={styles.separator} />}
+                      showsVerticalScrollIndicator={false}
+                      bounces={false}
+                      data={supportWallets}
+                      extraData={this.state}
+                      renderItem={this.getWalletItem}
+                      keyExtractor={(item, index) => `list-${index}`}
+                    />
+                  )
               }
             </View>
             <View style={styles.line} />

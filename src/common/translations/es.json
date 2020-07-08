@@ -3,7 +3,7 @@
     "Wallet": "Billetera",
     "Me": "Yo",
     "Exchange": "Intercambiar",
-    "DApp": "DApp"
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -44,7 +44,9 @@
         "noMemo": "Sin memo",
         "transactionID": "ID de transacción",
         "viewOnChain": "Ver en blockchain",
-        "Unconfirmed": "Inconfirmado"
+        "Unconfirmed": "Inconfirmado",
+        "from": "De",
+        "to": "A"
       },
       "receive": {
         "address": "Dirección"
@@ -131,7 +133,10 @@
         },
         "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
         "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
-        "have": "Tengo %{balance} en %{wallet}"
+        "have": "Tengo %{balance} en %{wallet}",
+        "min": "MIN",
+        "half": "MEDIO",
+        "all": "TODAS"
       },
       "swapSelection": {
         "title": "Seleccione activo",
@@ -167,7 +172,7 @@
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",
-        "custom": "Personalizado"
+        "custom": "Customizar"
       },
       "rnsCreateName": {
         "title": "Crear apodo",
@@ -210,10 +215,9 @@
         "createKey": "Crear o importar una billetera",
         "keys": "Billeteras",
         "anonymousUser": "Usuario anónimo",
-        "wallets": {
-          "zero": "0 billetera",
-          "one": "1 billetera",
-          "other": "{{count}} carteras"
+        "assets": {
+          "one": "1 activo",
+          "other": "{{count}} activos"
         },
         "support": "Apoyo",
         "contactUs": "Contacta con nosotros",
@@ -243,12 +247,15 @@
         }
       },
       "keySettings": {
-        "title": "Configuraciones de billetera",
-        "keyContains": "Esta billetera contiene",
+        "title": "Configurar billetera",
+        "walletContains": {
+          "one": "Esta billetera contiene 1 activos",
+          "other": "Esta billetera contiene {count} activos"
+        },
         "wallets": "billeteras",
         "security": "Seguridad",
         "advanced": "Avanzado",
-        "Wallets": "Carteras",
+        "Assets": "Bienes",
         "keyName": "Nombre de billetera",
         "delete": "Eliminar",
         "backup": "Respaldo"
@@ -385,6 +392,10 @@
       "title": "Copiado",
       "body": "El subdominio se ha copiado al portapapeles."
     },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "La ID de transacción se ha copiado en el portapapeles."
+    },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
       "typeNewPasscode": "Escriba su nueva contraseña",
@@ -457,6 +468,14 @@
     "balanceInvalid": {
       "title": "El saldo de la billetera no está disponible",
       "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token no válido",
+      "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
+    },
+    "rnsExceeded": {
+      "title": "Número máximo alcanzado",
+      "body": "No se pueden crear más de {{count}} apodos por día."
     }
   },
   "currency": {

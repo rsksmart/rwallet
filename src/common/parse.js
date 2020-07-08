@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import Parse from 'parse/react-native';
+import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
-
 
 const ERROR_PARSE_DEFAULT = 'error.parse.default';
 
@@ -452,7 +452,18 @@ class ParseHelper {
     query.equalTo('isActive', true);
     const rows = await query.find();
     const ads = _.map(rows, (row) => parseDataUtil.getAdvertisement(row));
-    return ads;
+
+    // using momentjs to filter advertisements because "OR" statement need to new extra Parse.Query object
+    const current = moment();
+    const filterAds = _.filter(ads, (ad) => {
+      // If start time is not set, it means active immediately
+      const start = ad.start ? moment(ad.start) : current;
+
+      // If end time is not set, it means awalys active
+      const end = ad.end ? moment(ad.end) : current;
+      return current.isSameOrAfter(start) && current.isSameOrBefore(end);
+    });
+    return filterAds;
   }
 }
 

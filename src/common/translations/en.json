@@ -3,7 +3,7 @@
     "Wallet": "Wallet",
     "Me": "Me",
     "Exchange": "Swap",
-    "DApp": "DApp"
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -44,7 +44,9 @@
         "noMemo": "No memo",
         "transactionID": "Transaction ID",
         "viewOnChain": "View on blockchain",
-        "Unconfirmed": "Unconfirmed"
+        "Unconfirmed": "Unconfirmed",
+        "from": "From",
+        "to": "To"
       },
       "receive": {
         "address": "Address"
@@ -128,7 +130,10 @@
         },
         "errorBalanceEnough": "Sorry, but you don't have enough balance",
         "errorAmountInvalid": "The amount of %{symbol} is invalid.",
-        "have": "I have %{balance} in %{wallet}"
+        "have": "I have %{balance} in %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "ALL"
       },
       "swapSelection": {
         "title": "Select Asset",
@@ -207,10 +212,9 @@
         "createKey": "Create or Import a Wallet",
         "keys": "Wallets",
         "anonymousUser": "Anonymous User",
-        "wallets": {
-          "zero": "0 Wallet",
-          "one": "1 Wallet",
-          "other": "{{count}} Wallets"
+        "assets": {
+          "one": "1 Asset",
+          "other": "{{count}} Assets"
         },
         "support": "Support",
         "contactUs": "Contact Us",
@@ -241,11 +245,14 @@
       },
       "keySettings": {
         "title": "Wallet Settings",
-        "keyContains": "This wallet contains",
+        "walletContains": {
+          "one": "This wallet contains 1 asset",
+          "other": "This wallet contains {{count}} assets"
+        },
         "wallets": "wallets",
         "security": "Security",
         "advanced": "Advanced",
-        "Wallets": "Wallets",
+        "Assets": "Assets",
         "keyName": "Wallet Name",
         "delete": "Delete",
         "backup": "Backup"
@@ -382,6 +389,10 @@
       "title": "Copied",
       "body": "The subdomain has been copied to the clipboard."
     },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "The Transaction ID has been copied to the clipboard."
+    },
     "passcode": {
       "typeOldPasscode": "Type your old passcode",
       "typeNewPasscode": "Type your new passcode",
@@ -454,6 +465,14 @@
     "balanceInvalid": {
       "title": "Wallet balance is not available",
       "body": "We are having problem retrieving your wallet balance. Please try again later."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Invalid token symbol",
+      "body": "A same token symbol already exists on this blockchain."
+    },
+    "rnsExceeded": {
+      "title": "Maximum number reached",
+      "body": "No more than {{count}} nicknames can be created per day."
     }
   },
   "currency": {

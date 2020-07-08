@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
 
 export const getRawTransactionParam = ({
-  netType, sender, receiver, value, data, memo, gasFee,
+  netType, sender, receiver, value, data, memo, gasFee, fallback,
 }) => {
   const param = {
     symbol: 'BTC',
@@ -12,6 +12,7 @@ export const getRawTransactionParam = ({
     receiver,
     value,
     data,
+    fallback,
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;

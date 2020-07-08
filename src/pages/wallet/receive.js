@@ -17,9 +17,8 @@ import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color.ts';
 import { DEVICE } from '../../common/info';
 import flex from '../../assets/styles/layout.flex';
+import references from '../../assets/references';
 
-const copyIcon = require('../../assets/images/icon/copy.png');
-// const refreshIcon = require('../../assets/images/icon/refresh.png');
 const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
 
 const styles = StyleSheet.create({
@@ -195,12 +194,12 @@ class WalletReceive extends Component {
                 {subdomain && (
                   <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
                     <Text style={[styles.subdomainText]}>{subdomain}</Text>
-                    <Image style={styles.copyIcon} source={copyIcon} />
+                    <Image style={styles.copyIcon} source={references.images.copyIcon} />
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
                   <Text style={styles.addressText}>{address}</Text>
-                  <Image style={styles.copyIcon} source={copyIcon} />
+                  <Image style={styles.copyIcon} source={references.images.copyIcon} />
                 </TouchableOpacity>
               </View>
             </View>

@@ -211,9 +211,11 @@ class RnsStatus extends Component {
     } catch (error) {
       if (error.message === 'err.subdomainnotfound') {
         this.clearTimer();
+        await storage.clearRnsRegisteringSubdomains();
         const notification = createErrorNotification(
           'modal.rnsSubdomainNotFound.title',
           'modal.rnsSubdomainNotFound.body',
+          'button.gotIt',
           navigation.goBack,
         );
         addNotification(notification);

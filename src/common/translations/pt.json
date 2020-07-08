@@ -3,7 +3,7 @@
     "Wallet": "Carteira",
     "Me": "Eu",
     "Exchange": "Troca",
-    "DApp": "DApp"
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -44,7 +44,9 @@
         "noMemo": "Nenhuma nota",
         "transactionID": "ID da transação",
         "viewOnChain": "Ver na blockchain",
-        "Unconfirmed": "Não confirmado"
+        "Unconfirmed": "Não confirmado",
+        "from": "De",
+        "to": "Para"
       },
       "receive": {
         "address": "Endereço"
@@ -131,7 +133,10 @@
         },
         "errorBalanceEnough": "Desculpe, mas você não tem saldo suficiente",
         "errorAmountInvalid": "A quantidade de ${symbol} é inválida.",
-        "have": "Eu tenho %{balance} no %{wallet}"
+        "have": "Eu tenho %{balance} no %{wallet}",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "TUDO"
       },
       "swapSelection": {
         "title": "Selecionar ativo",
@@ -167,7 +172,7 @@
         "enabledAssets": "Ativos ativados",
         "note": "Desative ativos para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar token personalizado",
-        "custom": "Personalizados"
+        "custom": "Customizar"
       },
       "rnsCreateName": {
         "title": "Criar apelido",
@@ -210,10 +215,9 @@
         "createKey": "Criar ou importar uma carteira",
         "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
-        "wallets": {
-          "zero": "0 carteira",
-          "one": "1 carteira",
-          "other": "{{count}} carteiras"
+        "assets": {
+          "one": "1 Ativo",
+          "other": "{{count}} Ativos"
         },
         "addressBook": {
           "title": "Livro de endereços",
@@ -244,11 +248,13 @@
       },
       "keySettings": {
         "title": "Configurações da carteira",
-        "wallets": "carteiras",
-        "keyContains": "Esta carteira contém",
+        "walletContains": {
+          "one": "Esta carteira contém 1 ativo",
+          "other": "Esta carteira contém {{count}} ativos"
+        },
         "security": "Segurança",
         "advanced": "Avançado",
-        "Wallets": "Carteiras",
+        "Assets": "Ativos",
         "keyName": "Nome da carteira",
         "delete": "Excluir",
         "backup": "Backup"
@@ -385,6 +391,10 @@
       "title": "Copiado",
       "body": "O subdomínio foi copiado para a área de transferência."
     },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "O ID da transação foi copiado para a área de transferência."
+    },
     "passcode": {
       "typeOldPasscode": "Digite sua senha antiga",
       "typeNewPasscode": "Digite sua nova senha",
@@ -457,6 +467,14 @@
     "balanceInvalid": {
       "title": "O saldo da carteira não está disponível",
       "body": "Estamos com problemas para recuperar o saldo da sua carteira. Por favor, tente novamente mais tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token incorreto",
+      "body": "Um mesmo símbolo de token já existe nesta blockchain."
+    },
+    "rnsExceeded": {
+      "title": "Número máximo alcançado",
+      "body": "Não podem ser criados mais de {{count}} apelidos por dia."
     }
   },
   "currency": {
