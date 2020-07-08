@@ -5,8 +5,7 @@ import {
 } from 'react-native';
 
 import PropTypes from 'prop-types';
-import Carousel from 'react-native-snap-carousel';
-// import Carousel from './carousel';
+import Carousel from '@amazingbeerbelly/react-native-snap-carousel';
 import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
@@ -95,7 +94,7 @@ class WalletCarousel extends Component {
       if (index < 0) {
         return (
           <View style={[styles.addWalletButtonView]}>
-            <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
+            <TouchableOpacity style={[styles.addWalletButton, { width: pageWidth / 2 + (Dimensions.get('window').width - pageWidth) / 3 }]} onPress={this.onAddWalletPressed}>
               <Image source={references.images.addWallet} />
               <Loc style={[styles.addWalletText]} text="page.wallet.list.addWallet" />
             </TouchableOpacity>
