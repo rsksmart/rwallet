@@ -84,6 +84,7 @@ class WalletCarousel extends Component {
 
   render() {
     const { data, pageWidth } = this.props;
+    const sliderWidth = Dimensions.get('window').width;
     data.unshift({ index: -1 });
 
     const renderItem = (itemData) => {
@@ -94,7 +95,7 @@ class WalletCarousel extends Component {
       if (index < 0) {
         return (
           <View style={[styles.addWalletButtonView]}>
-            <TouchableOpacity style={[styles.addWalletButton, { width: pageWidth / 2 + (Dimensions.get('window').width - pageWidth) / 3 }]} onPress={this.onAddWalletPressed}>
+            <TouchableOpacity style={[styles.addWalletButton, { width: pageWidth / 2 + (sliderWidth - pageWidth) / 3 }]} onPress={this.onAddWalletPressed}>
               <Image source={references.images.addWallet} />
               <Loc style={[styles.addWalletText]} text="page.wallet.list.addWallet" />
             </TouchableOpacity>
@@ -121,9 +122,8 @@ class WalletCarousel extends Component {
         style={styles.carousel}
         data={data}
         renderItem={renderItem}
-        sliderWidth={Dimensions.get('window').width}
+        sliderWidth={sliderWidth}
         itemWidth={pageWidth}
-        inActiveOpacity={0.5}
         containerWidth={screen.width}
         initialIndex={1}
         firstItem={1}
