@@ -1,12 +1,10 @@
-git_url "git@github.com:chrisli30/rwallet-ios-certs.git"
+git_url ENV['GIT_URL']
 
 type "development" # The default type, can be: appstore, adhoc, enterprise or development
 
-app_identifier "com.rsk.rwallet.reactnative"
+app_identifier ENV['APP_IDENTIFIER']
 
-username "kezjo30@gmail.com" # Username for Apple Developer account
-ENV["FASTLANE_PASSWORD"] = "!Lx2178667" # Password for Apple Developer account
-ENV["MATCH_PASSWORD"] = "password" #Password for the .p12 files saved in git repo.
+username ENV['USERNAME'] # Username for Apple Developer account
 
 # For all available options run `fastlane match --help`
 # Remove the # in the beginning of the line to enable the other options

@@ -1,11 +1,6 @@
 APP_ID="com.rsk.rwallet.reactnative"
 XCODEPROJ="./ios/rwallet.xcodeproj"
 GRADLE_FILE="android/app/build.gradle"
-SLACK_WEB_HOOK="https://hooks.slack.com/services/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"
-
-before_all do
-    ENV["SLACK_URL"] = SLACK_WEB_HOOK
-end
 
 platform :ios do
     lane :get_version do
@@ -88,7 +83,12 @@ platform :android do
     desc 'Build the Android application.'
     private_lane :build do
         gradle(task: 'clean', project_dir: 'android/')
-        gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/')
+        gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/', properties: {
+            "android.injected.signing.store.file" => Dir.pwd + "/../" + ENV['ANDROID_SIGN_FILE'],
+            "android.injected.signing.store.password" => ENV['ANDROID_SIGN_PASSWORD'],
+            "android.injected.signing.key.alias" => ENV['ANDROID_SIGN_KEY_ALIAS'],
+            "android.injected.signing.key.password" => ENV['ANDROID_SIGN_KEY_PASSWORD'],
+        })
     end
 
     desc 'Only build the APK.'
@@ -96,7 +96,9 @@ platform :android do
         set_version_name(version: options[:version])
         set_version_code(code: options[:code])
         build
-        slack(message: "App #{get_version_name}(#{get_version_code}) was built and successfully")
+        if (ENV['SLACK_URL']!= nil)
+            slack(message: "App #{get_version_name}(#{get_version_code}) was built and successfully")
+        end
     end
 
     desc 'Ship to Play Store Beta.'
