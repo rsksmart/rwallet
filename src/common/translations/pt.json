@@ -471,6 +471,10 @@
     "InvalidTokenSymbol": {
       "title": "Símbolo de token incorreto",
       "body": "Um mesmo símbolo de token já existe nesta blockchain."
+    },
+    "rnsExceeded": {
+      "title": "Número máximo alcançado",
+      "body": "Não podem ser criados mais de {{count}} apelidos por dia."
     }
   },
   "currency": {

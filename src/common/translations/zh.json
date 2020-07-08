@@ -472,6 +472,10 @@
     "InvalidTokenSymbol": {
       "title": "无效的代币符号",
       "body": "该区块链上已经存在相同的代币符号。"
+    },
+    "rnsExceeded": {
+      "title": "创建超额",
+      "body": "每天最多只能创建{{count}}个钱包昵称。"
     }
   },
   "currency": {
