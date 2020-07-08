@@ -1,9 +1,0 @@
-{
-    "eslint.nodePath": "/usr/local/bin/node",
-    "eslint.workingDirectories": [
-        "~/app/project/rwallet"
-    ],
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-    }
-}
