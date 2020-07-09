@@ -25,6 +25,7 @@ const config = {
       { name: 'Spanish', id: 'es' },
       { name: 'Portuguese', id: 'pt' },
       { name: 'Chinese', id: 'zh' },
+      { name: 'Brazilian Portuguese', id: 'ptBR' },
     ],
     currencies: [
       { name: 'USD', symbol: '$' },

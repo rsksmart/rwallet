@@ -281,7 +281,8 @@
     "English": "Inglés",
     "Spanish": "Español",
     "Portuguese": "Portugués",
-    "Chinese": "Chino"
+    "Chinese": "Chino",
+    "Brazilian Portuguese": "Portuguesa brasileña"
   },
   "button": {
     "save": "GUARDAR",
@@ -449,7 +450,7 @@
       "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
     },
     "walletSelection": {
-      "title": "Por favor seleccione Monedero"
+      "title": "Por favor seleccione una billetera"
     },
     "noWalletAvailable": {
       "title": "No hay billetera disponible",

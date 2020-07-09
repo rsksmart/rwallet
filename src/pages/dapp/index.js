@@ -128,8 +128,8 @@ class DAppIndex extends Component {
 
   onDappPress = (dapp) => {
     const { language, addConfirmation } = this.props;
-    const dappName = (dapp.name && dapp.name[language]) || dapp.name;
-    const description = (dapp.description && dapp.description[language]) || dapp.description;
+    const dappName = (dapp.name && (dapp.name[language] || dapp.name.en)) || dapp.name;
+    const description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
     const dappWarningConfirmation = createDappWarningConfirmation(
       strings('modal.dappWarning.title', { dappName }),
       strings('modal.dappWarning.body', { description, dappName }),
@@ -209,8 +209,8 @@ class DAppIndex extends Component {
       >
         <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
         <View style={styles.dappInfo}>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && item.name[language]) || item.name}</Text>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && item.description[language]) || item.description}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && (item.description[language] || item.description.en)) || item.description}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
         </View>
       </TouchableOpacity>
@@ -288,7 +288,7 @@ class DAppIndex extends Component {
             >
               <Image style={[styles.dappIcon, styles.recentDappSize]} source={{ uri: item.iconUrl }} />
               <View style={[styles.dappInfo, { marginLeft: 6 }]}>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{(item.name && item.name[language]) || item.name}</Text>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -319,7 +319,7 @@ class DAppIndex extends Component {
                 <DappCard
                   type={dappType.name}
                   navigation={navigation}
-                  title={dappType.translation && dappType.translation[language]}
+                  title={(dappType.translation && (dappType.translation[language] || dappType.translation.en))}
                   data={dappList}
                   getItem={(item, index) => (
                     this.getDappItem({ item, index }, [!index ? styles.firstItem : {}, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }])

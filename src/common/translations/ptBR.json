@@ -194,6 +194,20 @@
         "failed": "Falhou! Seu apelido não foi registrado."
       }
     },
+    "dapp": {
+      "title": "DApp",
+      "search": "Procurem ou introduzem o URL do site",
+      "recent": "Recente",
+      "recommended": "Recomendado",
+      "all": "Todos",
+      "button": {
+        "seeAll": "Veja tudo",
+        "confirm": "Confirmar",
+        "understood": "Entendido",
+        "createOrImport": "Criar ou Importar",
+        "cancel": "Cancelar"
+      }
+    },
     "mine": {
       "index": {
         "joinRSKCommunity": "Junte-se à comunidade RSK",
@@ -280,7 +294,8 @@
     "English": "Inglês",
     "Spanish": "Espanhol",
     "Portuguese": "Português",
-    "Chinese": "Chinês"
+    "Chinese": "Chinês",
+    "Brazilian Portuguese": "Português brasileiro"
   },
   "button": {
     "save": "SALVAR",
@@ -438,6 +453,17 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token já foi adicionado à carteira. Por favor, tente um token diferente."
+    },
+    "dappWarning": {
+      "title": "Redireccionar para o Dapp de terceiros \"%{dappName}\"",
+      "body": "%{description}\n\nNota: Você será redirecionado para um tripartite Dapp \"%{dappName}\". Por favor, analise cuidadosamente o Acordo de Utilizador e a Política de Privacidade do Dapp terceiro. \"%{dappName}\" reservará toda a responsabilidade por todas as ações e uso no Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Por favor escolha uma carteira"
+    },
+    "noWalletAvailable": {
+      "title": "Nenhuma carteira disponível",
+      "body": "Ainda não há carteira disponível para esse Dapp.Por favor, navegue para a página Creação de carteira para criar ou importar uma carteira primeiro.\n\n"
     },
     "requestTimeout": {
       "title": "Tempo limite da solicitação",

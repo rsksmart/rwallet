@@ -71,8 +71,8 @@ class DAppList extends Component {
 
   onDappPress = (dapp) => {
     const { addConfirmation, language } = this.props;
-    const dappName = (dapp.name && dapp.name[language]) || dapp.name;
-    const description = (dapp.description && dapp.description[language]) || dapp.description;
+    const dappName = (dapp.name && (dapp.name[language] || dapp.name.en)) || dapp.name;
+    const description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
 
     const dappWarningConfirmation = createDappWarningConfirmation(
       strings('modal.dappWarning.title', { dappName }),
@@ -117,8 +117,8 @@ class DAppList extends Component {
             >
               <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
               <View style={styles.dappInfo}>
-                { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language]}</Text> : null }
-                { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language]}</Text> : null }
+                { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en}</Text> : null }
+                { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language] || item.description.en}</Text> : null }
                 <Text style={styles.dappUrl}>{item.url}</Text>
               </View>
             </TouchableOpacity>
