@@ -233,7 +233,8 @@
         "title": "Autenticação de dois fatores",
         "setPasscode": "Configurar PIN",
         "resetPasscode": "Alterar PIN",
-        "useFingerprint": "Usar impressão digital"
+        "useFingerprint": "Usar impressão digital",
+        "useFaceID": "Usar ID da cara"
       },
       "resetPasscodeSuccess" :{
         "title": {
