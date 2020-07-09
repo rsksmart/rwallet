@@ -239,8 +239,9 @@ function* authVerifyRequest(action) {
   const { callback, fallback } = action.value;
   const state = yield select();
   const isFingerprint = state.App.get('fingerprint');
+  console.log('isFingerprint: ', isFingerprint);
   const passcode = state.App.get('passcode');
-  if (isFingerprint && common.isFingerprintAvailable()) {
+  if (isFingerprint && common.getBiometryType()) {
     yield put(actions.showFingerprintModal(callback, fallback));
   } else if (passcode) {
     yield put(actions.showPasscode('verify', callback, fallback));

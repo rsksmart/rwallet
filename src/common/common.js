@@ -295,16 +295,22 @@ const common = {
     return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
-  async isFingerprintAvailable() {
+  /**
+   * Returns the biometry type.
+   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint")
+   * @returns {string} the device biometry type
+   * @returns {null} if this device has no available biometry types
+   */
+  async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint') {
-        return true;
+      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint' || biometryType === 'Face ID') {
+        return biometryType;
       }
     } catch (error) {
       console.log('The device does not support fingerprint');
     }
-    return false;
+    return null;
   },
 
   getRandom(count) {
