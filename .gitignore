@@ -69,4 +69,4 @@ out.log
 .env 
 
 # Android signature file
-android/app/keystore/rwallet.tmp.jks
+android/app/keystores/*.jks
