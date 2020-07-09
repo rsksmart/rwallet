@@ -403,13 +403,21 @@
       "incorrect": "O PIN está incorreto"
     },
     "touchSensor": {
-      "title": "Sensor biométrico",
       "usePasscode": "Usar PIN",
-      "touchToVerify": "Toque para verificar a impressão digital",
-      "nativeNote": "Digitalize sua impressão digital no scanner do dispositivo para continuar",
+      "fingerprint": {
+        "title": "Sensor biométrico",
+        "touchToVerify": "Toque para verificar a impressão digital",
+        "nativeNote": "Digitalize sua impressão digital no scanner do dispositivo para continuar",
+        "notMatch": "A impressão digital não corresponde. Por favor, tente novamente."
+      },
+      "faceID": {
+        "title": "ID da cara",
+        "touchToVerify": "Toque para verificar o ID do rosto",
+        "nativeNote": "Por favor, apontem para a câmera para o reconhecimento do rosto",
+        "notMatch": "FaceID não marcha.Por favor, tente de novo."
+      },
       "failedAndTryPasscode": "A autenticação falhou. Por favor, tente o PIN.",
-      "failedAndTryAgain.": "A autenticação falhou. Por favor, tente novamente.",
-      "fingerprintNotMatch": "A impressão digital não corresponde. Por favor, tente novamente."
+      "failedAndTryAgain": "A autenticação falhou. Por favor, tente novamente."
     },
     "createPasscode": {
       "title": "Configure um PIN",

@@ -408,13 +408,21 @@
       "incorrect": "La contraseña es incorrecta"
     },
     "touchSensor": {
-      "title": "Sensor tátil",
       "usePasscode": "Usar contraseña",
-      "touchToVerify": "Toque para verificar la huella digital",
-      "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+      "fingerprint": {
+        "title": "Sensor tátil",
+        "touchToVerify": "Toque para verificar la huella digital",
+        "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+        "notMatch": "La huella digital no coincide. Inténtalo de nuevo."
+      },
+      "faceID": {
+        "title": "ID de cara",
+        "touchToVerify": "Toque para verificar la identificación de la cara",
+        "nativeNote": "Apunte a la cámara para el reconocimiento facial",
+        "notMatch": "FaceID no marcha. Inténtalo de nuevo."
+      },
       "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
-      "failedAndTryAgain.": "Autenticación fallida. Inténtalo de nuevo.",
-      "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
+      "failedAndTryAgain": "Autenticación fallida. Inténtalo de nuevo."
     },
     "createPasscode": {
       "title": "Por favor, establezca una contraseña",

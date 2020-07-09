@@ -420,7 +420,7 @@
         "notMatch": "FaceID does not march. Please try again."
       },
       "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
-      "failedAndTryAgain.": "Authentication failed. Please try again."
+      "failedAndTryAgain": "Authentication failed. Please try again."
     },
     "createPasscode": {
       "title": "Please set a passcode",

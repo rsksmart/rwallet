@@ -423,7 +423,7 @@
         "notMatch": "人脸识别不匹配，请重试。"
       },
       "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
-      "failedAndTryAgain.": "验证失败，请重试。"
+      "failedAndTryAgain": "验证失败，请重试。"
     },
     "createPasscode": {
       "title": "请设置一个密码",
