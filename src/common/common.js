@@ -357,7 +357,8 @@ const common = {
   },
 
   setMomentLocale(locale) {
-    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    let newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    newLocale = locale === 'ptBR' ? 'pt-br' : locale;
     moment.locale(newLocale);
   },
 
