@@ -438,7 +438,7 @@
       "body": "%{description}\n\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n"
     },
     "walletSelection": {
-      "title": "Please select Wallet"
+      "title": "Please Select a Wallet"
     },
     "noWalletAvailable": {
       "title": "No Wallet Available",

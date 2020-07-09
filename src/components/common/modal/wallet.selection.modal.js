@@ -18,13 +18,14 @@ import color from '../../../assets/styles/color.ts';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import CONSTANTS from '../../../common/constants.json';
+import common from '../../../common/common';
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
 // Get row's width, 90 is FlatList's padding and margin size
 const TOKEN_ROW_WIDTH = (MODAL_WIDTH - 90);
-// One row has two tokens, 30 is token's separate size
-const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 30) / 2;
+// One row has two tokens, 50 is token's separate size
+const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 50) / 2;
 
 const { EVENT: { TOKENS_UPDATE } } = CONSTANTS;
 
@@ -120,16 +121,16 @@ const styles = StyleSheet.create({
   tokenRow: {
     flexDirection: 'row',
     width: TOKEN_ROW_WIDTH,
+    justifyContent: 'space-between',
   },
   tokenItem: {
     flexDirection: 'row',
     marginTop: 10,
-    marginLeft: 10,
     width: TOKEN_ITEM_WIDTH,
     justifyContent: 'space-between',
   },
   mainnet: {
-    backgroundColor: '#028CFF',
+    backgroundColor: 'rgba(2, 140, 255, 0.65)',
     borderRadius: 4,
     padding: 5,
     width: 49,
@@ -147,14 +148,12 @@ const styles = StyleSheet.create({
   network: {
     fontFamily: 'Avenir-Book',
     fontSize: 10,
-    fontWeight: 'bold',
     color: 'white',
   },
   address: {
     color: 'rgba(0, 0, 0, 0.8)',
     fontSize: 16,
     fontFamily: 'Avenir-Book',
-    fontWeight: 'bold',
     marginLeft: 11,
   },
   tokenText: {
@@ -242,10 +241,11 @@ class WalletSelection extends PureComponent {
     let row = [];
     _.forEach(tokens, (token, index) => {
       const canModTwo = !((index + 1) % 2);
+      const tokenBalance = token.balance ? common.getBalanceString(token.balance, token.symbol) : '0';
       row.push(
         <View style={styles.tokenItem} key={`${token.objectId}-${token.symbol}`}>
           <Text style={styles.tokenText}>{token.symbol}</Text>
-          <Text style={styles.tokenText}>{Number(((token.balance || 0) && token.balance.toString())).toFixed(4)}</Text>
+          <Text style={styles.tokenText}>{tokenBalance}</Text>
         </View>,
       );
       if (canModTwo) {
@@ -286,7 +286,7 @@ class WalletSelection extends PureComponent {
           </View>
         </View>
 
-        <View style={{ alignSelf: 'center' }}>
+        <View style={{ width: '100%' }}>
           {selectedAddress === address && this.getTokenView(selectedWallet.coins)}
         </View>
       </TouchableOpacity>
