@@ -96,9 +96,9 @@ platform :android do
 
     desc 'Only build the APK.'
     lane :build_apk do |options|
-        # set_version_name(version: options[:version])
-        # set_version_code(code: options[:code])
-        # build
+        set_version_name(version: options[:version])
+        set_version_code(code: options[:code])
+        build
         if !ENV['SLACK_URL'].empty?
             slack(message: "App #{get_version_name}(#{get_version_code}) was built and successfully")
         end
