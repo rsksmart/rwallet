@@ -48,7 +48,7 @@ platform :ios do
         set_build(build: options[:build]),
         build
         pilot
-        if (ENV['SLACK_URL']!= nil)
+        if !ENV['SLACK_URL'].empty?
             slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
         end
     end
@@ -96,10 +96,10 @@ platform :android do
 
     desc 'Only build the APK.'
     lane :build_apk do |options|
-        set_version_name(version: options[:version])
-        set_version_code(code: options[:code])
-        build
-        if (ENV['SLACK_URL']!= nil)
+        # set_version_name(version: options[:version])
+        # set_version_code(code: options[:code])
+        # build
+        if !ENV['SLACK_URL'].empty?
             slack(message: "App #{get_version_name}(#{get_version_code}) was built and successfully")
         end
     end
