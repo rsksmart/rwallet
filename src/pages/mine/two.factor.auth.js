@@ -72,12 +72,15 @@ class TwoFactorAuth extends Component {
     setSingleSettings(value) {
       const { isOpen } = this.state;
       const { setSingleSettings, fingerprint, showFingerprintModal } = this.props;
+
+      // Open when user clicked. If user auth verify failed or cancel auth verify, will close the fingerprint switch
       this.setState({ isOpen: !isOpen });
       if (!fingerprint) {
         showFingerprintModal(() => {
           setSingleSettings('fingerprint', value);
         }, () => {
-          this.setState({ isOpen });
+          // Close the fingerprint switch when user verify failed or cancel
+          this.setState({ isOpen: false });
         }, true);
       } else {
         setSingleSettings('fingerprint', value);
