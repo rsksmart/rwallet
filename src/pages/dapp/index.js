@@ -127,21 +127,27 @@ class DAppIndex extends Component {
   }
 
   onDappPress = (dapp) => {
-    const { language, addConfirmation } = this.props;
-    const dappName = (dapp.name && (dapp.name[language] || dapp.name.en)) || dapp.name;
-    const description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
-    const dappWarningConfirmation = createDappWarningConfirmation(
-      strings('modal.dappWarning.title', { dappName }),
-      strings('modal.dappWarning.body', { description, dappName }),
-      () => {
-        this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
-        storage.setIsShowRnsFeature();
-      },
-      () => {
-        storage.setIsShowRnsFeature();
-      },
-    );
-    addConfirmation(dappWarningConfirmation);
+    const { language, addConfirmation, recentDapps } = this.props;
+    const exsitDapps = _.filter(recentDapps, (recentDapp) => recentDapp.id === dapp.id);
+
+    if (_.isEmpty(exsitDapps)) {
+      const dappName = (dapp.name && (dapp.name[language] || dapp.name.en)) || dapp.name;
+      const description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
+      const dappWarningConfirmation = createDappWarningConfirmation(
+        strings('modal.dappWarning.title', { dappName }),
+        strings('modal.dappWarning.body', { description, dappName }),
+        () => {
+          this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
+          storage.setIsShowRnsFeature();
+        },
+        () => {
+          storage.setIsShowRnsFeature();
+        },
+      );
+      addConfirmation(dappWarningConfirmation);
+    } else {
+      this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
+    }
   }
 
   // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
