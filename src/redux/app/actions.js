@@ -132,9 +132,9 @@ const actions = {
   resetUsernameUpdated: () => ({
     type: actions.RESET_USER_NAME_UPDATED,
   }),
-  showFingerprintModal: (callback, fallback) => ({
+  showFingerprintModal: (callback, fallback, fingerprintPasscodeDisabled = false) => ({
     type: actions.SHOW_FINGERPRINT_MODAL,
-    value: { callback, fallback },
+    value: { callback, fallback, fingerprintPasscodeDisabled },
   }),
   hideFingerprintModal: () => ({
     type: actions.HIDE_FINGERPRINT_MODAL,

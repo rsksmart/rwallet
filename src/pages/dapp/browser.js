@@ -394,7 +394,7 @@ class DAppBrowser extends Component {
     return (
       <View style={{ flex: 1 }}>
         <BrowerHeader
-          title={(title && title[language]) || url}
+          title={(title && (title[language] || title.en)) || url}
           onBackButtonPress={() => {
             const { canGoBack } = this.state;
             if (canGoBack) {

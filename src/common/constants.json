@@ -19,5 +19,11 @@
 
   "EVENT": {
     "TOKENS_UPDATE": "tokensUpdate"
+  },
+
+  "BIOMETRY_TYPES": {
+    "TOUCH_ID": "Touch ID",
+    "FINGERPRINT": "Fingerprint",
+    "FACE_ID": "Face ID"
   }
 }

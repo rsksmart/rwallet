@@ -281,7 +281,8 @@
     "English": "Inglés",
     "Spanish": "Español",
     "Portuguese": "Portugués",
-    "Chinese": "Chino"
+    "Chinese": "Chino",
+    "Brazilian Portuguese": "Portuguesa brasileña"
   },
   "button": {
     "save": "GUARDAR",
@@ -408,13 +409,21 @@
       "incorrect": "La contraseña es incorrecta"
     },
     "touchSensor": {
-      "title": "Sensor tátil",
       "usePasscode": "Usar contraseña",
-      "touchToVerify": "Toque para verificar la huella digital",
-      "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+      "fingerprint": {
+        "title": "Sensor tátil",
+        "touchToVerify": "Toque para verificar la huella digital",
+        "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+        "notMatch": "La huella digital no coincide. Inténtalo de nuevo."
+      },
+      "faceID": {
+        "title": "ID de cara",
+        "touchToVerify": "Toque para verificar la identificación de la cara",
+        "nativeNote": "Apunte a la cámara para el reconocimiento facial",
+        "notMatch": "FaceID no marcha. Inténtalo de nuevo."
+      },
       "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
-      "failedAndTryAgain.": "Autenticación fallida. Inténtalo de nuevo.",
-      "fingerprintNotMatch": "La huella digital no coincide. Inténtalo de nuevo."
+      "failedAndTryAgain": "Autenticación fallida. Inténtalo de nuevo."
     },
     "createPasscode": {
       "title": "Por favor, establezca una contraseña",
@@ -441,7 +450,7 @@
       "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
     },
     "walletSelection": {
-      "title": "Por favor seleccione Monedero"
+      "title": "Por favor seleccione una billetera"
     },
     "noWalletAvailable": {
       "title": "No hay billetera disponible",
