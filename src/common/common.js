@@ -15,6 +15,9 @@ import 'moment/locale/pt';
 import config from '../../config';
 import I18n from './i18n';
 import definitions from './definitions';
+import CONSTANTS from './constants.json';
+
+const { BIOMETRY_TYPES } = CONSTANTS;
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -304,7 +307,7 @@ const common = {
   async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint' || biometryType === 'Face ID') {
+      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FINGERPRINT || biometryType === BIOMETRY_TYPES.FACE_ID) {
         return biometryType;
       }
     } catch (error) {

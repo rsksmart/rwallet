@@ -11,6 +11,9 @@ import Switch from '../../components/common/switch/switch';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
+import CONSTANS from '../../common/constants.json';
+
+const { BIOMETRY_TYPES } = CONSTANS;
 
 const styles = StyleSheet.create({
   body: {
@@ -91,7 +94,7 @@ class TwoFactorAuth extends Component {
       // Show use fingerprint switch row if fingerprint is available.
 
       if (biometryType) {
-        const text = biometryType === 'Face ID' ? 'page.mine.2fa.useFaceID' : 'page.mine.2fa.useFingerprint';
+        const text = biometryType === BIOMETRY_TYPES.FACE_ID ? 'page.mine.2fa.useFaceID' : 'page.mine.2fa.useFingerprint';
         useFingerSwitchRow = (
           <View style={styles.row}>
             <Loc style={[styles.title]} text={text} />

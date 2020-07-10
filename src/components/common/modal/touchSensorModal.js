@@ -9,6 +9,9 @@ import color from '../../../assets/styles/color.ts';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
 import common from '../../../common/common';
+import CONSTANTS from '../../../common/constants.json';
+
+const { BIOMETRY_TYPES } = CONSTANTS;
 
 const styles = StyleSheet.create({
   container: {
@@ -123,12 +126,12 @@ export default class TouchSensorModal extends Component {
     const { hideFingerprintModal, fingerprintCallback } = this.props;
     const onAttempt = (error) => {
       console.log(`onAttempt: ${error}`);
-      const errorMessage = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.notMatch' : 'modal.touchSensor.fingerprint.notMatch';
+      const errorMessage = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.notMatch' : 'modal.touchSensor.fingerprint.notMatch';
       this.setState({ errorMessage }, () => this.errView.shake(800));
     };
     const params = {
       onAttempt,
-      description: biometryType === 'Face ID' ? strings('modal.touchSensor.faceID.nativeNote') : strings('modal.touchSensor.fingerprint.nativeNote'),
+      description: biometryType === BIOMETRY_TYPES.FACE_ID ? strings('modal.touchSensor.faceID.nativeNote') : strings('modal.touchSensor.fingerprint.nativeNote'),
       fallbackEnabled: false,
     };
     FingerprintScanner.authenticate(params).then(() => {
@@ -161,8 +164,8 @@ export default class TouchSensorModal extends Component {
   renderModal() {
     const { fingerprintPasscodeDisabled, fingerprintFallback } = this.props;
     const { errorMessage, biometryType } = this.state;
-    const titleText = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.title' : 'modal.touchSensor.fingerprint.title';
-    const touchToVerifyText = biometryType === 'Face ID' ? 'modal.touchSensor.faceID.touchToVerify' : 'modal.touchSensor.fingerprint.touchToVerify';
+    const titleText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.title' : 'modal.touchSensor.fingerprint.title';
+    const touchToVerifyText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.touchToVerify' : 'modal.touchSensor.fingerprint.touchToVerify';
     return (
       <View style={styles.container}>
         <View style={styles.panel}>
