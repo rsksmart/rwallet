@@ -29,6 +29,7 @@ const mapStateToProps = (state) => ({
   confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
 
   isShowFingerprintModal: state.App.get('isShowFingerprintModal'),
+  fingerprintPasscodeDisabled: state.App.get('fingerprintPasscodeDisabled'),
   fingerprintCallback: state.App.get('fingerprintCallback'),
   fingerprintFallback: state.App.get('fingerprintFallback'),
 

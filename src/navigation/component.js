@@ -122,7 +122,7 @@ class RootComponent extends Component {
       showPasscode, passcodeType, closePasscodeModal, passcodeCallback, passcodeFallback,
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
       isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
-      isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification,
+      isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification, fingerprintPasscodeDisabled,
     } = this.props;
 
     const isShowAuthVerifyModal = showPasscode || isShowFingerprintModal;
@@ -145,6 +145,7 @@ class RootComponent extends Component {
                 { showPasscode && <PasscodeModals showPasscode={showPasscode} passcodeType={passcodeType} closePasscodeModal={closePasscodeModal} passcodeCallback={passcodeCallback} passcodeFallback={passcodeFallback} />}
                 { isShowFingerprintModal && (
                   <TouchSensorModal
+                    fingerprintPasscodeDisabled={fingerprintPasscodeDisabled}
                     isShowFingerprintModal={isShowFingerprintModal}
                     fingerprintCallback={fingerprintCallback}
                     fingerprintFallback={fingerprintFallback}
@@ -200,6 +201,7 @@ RootComponent.propTypes = {
   initFcm: PropTypes.func.isRequired,
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
+  fingerprintPasscodeDisabled: PropTypes.bool,
 };
 
 RootComponent.defaultProps = {
@@ -216,6 +218,7 @@ RootComponent.defaultProps = {
   fingerprintFallback: null,
   fingerprintUsePasscode: null,
   inAppNotification: undefined,
+  fingerprintPasscodeDisabled: false,
 };
 
 export default RootComponent;

@@ -15,6 +15,9 @@ import 'moment/locale/pt';
 import config from '../../config';
 import I18n from './i18n';
 import definitions from './definitions';
+import CONSTANTS from './constants.json';
+
+const { BIOMETRY_TYPES } = CONSTANTS;
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -295,16 +298,22 @@ const common = {
     return `${type === 'Testnet' ? 't' : ''}${symbol}`;
   },
 
-  async isFingerprintAvailable() {
+  /**
+   * Returns the biometry type.
+   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint")
+   * @returns {string} the device biometry type
+   * @returns {null} if this device has no available biometry types
+   */
+  async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === 'Touch ID' || biometryType === 'Fingerprint') {
-        return true;
+      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FINGERPRINT || biometryType === BIOMETRY_TYPES.FACE_ID) {
+        return biometryType;
       }
     } catch (error) {
       console.log('The device does not support fingerprint');
     }
-    return false;
+    return null;
   },
 
   getRandom(count) {
@@ -351,7 +360,12 @@ const common = {
   },
 
   setMomentLocale(locale) {
-    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    let newLocale = locale;
+    if (locale === 'zh') {
+      newLocale = 'zh-cn';
+    } else if (locale === 'ptBR') {
+      newLocale = 'pt-br';
+    }
     moment.locale(newLocale);
   },
 

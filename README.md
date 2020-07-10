@@ -93,6 +93,41 @@ The first three steps are needed for both Android and iOS devices.
 </tr>
 </table>
 
+## Setup fastlane environment variable
+```
+APP_IDENTIFIER="com.rsk.rwallet.reactnative"
+
+
+# Apple id
+USERNAME=""
+
+# Apple password
+FASTLANE_PASSWORD=""
+
+# Apple specific password
+FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=""
+
+# Apple developer team id
+TEAM_ID=""
+
+# itunes connect team name
+FASTLANE_ITC_TEAM_NAME=""
+
+# Apple certs storage
+GIT_URL="git@xxx.com:xxxx/xxxxx.git"
+MATCH_PASSWORD=""
+
+
+# Android sign file
+ANDROID_SIGN_FILE="android/app/keystores/release.rwallet.jks"
+ANDROID_SIGN_PASSWORD=""
+ANDROID_SIGN_KEY_ALIAS="key0"
+ANDROID_SIGN_KEY_PASSWORD=""
+
+
+SLACK_URL=""
+```
+
 ### Build on iOS
 1. <a href="https://developer.apple.com/news/?id=12232019b">The App Store will no longer accept new apps using UIWebView as of April 2020 and app updates using UIWebView as of December 2020.</a> Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
 1. Make sure you have the latest version of the Xcode command line tools installed:

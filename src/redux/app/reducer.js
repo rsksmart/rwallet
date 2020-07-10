@@ -34,6 +34,7 @@ const initState = new Map({
   confirmation: null,
   confirmationCallback: null,
   isShowFingerprintModal: false,
+  fingerprintPasscodeDisabled: false,
   fingerprintCallback: null,
   fingerprintFallback: null,
   appLock: true,
@@ -119,10 +120,12 @@ export default function appReducer(state = initState, action) {
       return state.set('isUsernameUpdated', false);
     case actions.SHOW_FINGERPRINT_MODAL:
       return state.set('isShowFingerprintModal', true)
+        .set('fingerprintPasscodeDisabled', action.value.fingerprintPasscodeDisabled)
         .set('fingerprintCallback', action.value.callback)
         .set('fingerprintFallback', action.value.fallback);
     case actions.HIDE_FINGERPRINT_MODAL:
       return state.set('isShowFingerprintModal', false)
+        .set('fingerprintPasscodeDisabled', false)
         .set('fingerprintCallback', null)
         .set('fingerprintFallback', null);
     case actions.LOCK_APP:

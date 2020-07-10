@@ -11,6 +11,9 @@ import Switch from '../../components/common/switch/switch';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
+import CONSTANS from '../../common/constants.json';
+
+const { BIOMETRY_TYPES } = CONSTANS;
 
 const styles = StyleSheet.create({
   body: {
@@ -43,16 +46,18 @@ class TwoFactorAuth extends Component {
 
       this.onResetPasscodePress = this.onResetPasscodePress.bind(this);
       this.setSingleSettings = this.setSingleSettings.bind(this);
-      this.isFingerprintAvailable = false;
+
+      const { fingerprint } = this.props;
 
       this.state = {
-        isFingerprintAvailable: false,
+        biometryType: null,
+        isOpen: !!fingerprint,
       };
     }
 
     async componentDidMount() {
-      const isFingerprintAvailable = await common.isFingerprintAvailable();
-      this.setState({ isFingerprintAvailable });
+      const biometryType = await common.getBiometryType();
+      this.setState({ biometryType });
     }
 
     onResetPasscodePress() {
@@ -65,24 +70,39 @@ class TwoFactorAuth extends Component {
     }
 
     setSingleSettings(value) {
-      const { setSingleSettings } = this.props;
-      setSingleSettings('fingerprint', value);
+      const { isOpen } = this.state;
+      const { setSingleSettings, fingerprint, showFingerprintModal } = this.props;
+
+      // Open when user clicked. If user auth verify failed or cancel auth verify, will close the fingerprint switch
+      this.setState({ isOpen: !isOpen });
+      if (!fingerprint) {
+        showFingerprintModal(() => {
+          setSingleSettings('fingerprint', value);
+        }, () => {
+          // Close the fingerprint switch when user verify failed or cancel
+          this.setState({ isOpen: false });
+        }, true);
+      } else {
+        setSingleSettings('fingerprint', value);
+      }
     }
 
     render() {
-      const { navigation, passcode, fingerprint } = this.props;
-      const { isFingerprintAvailable } = this.state;
+      const { isOpen } = this.state;
+      const { navigation, passcode } = this.props;
+      const { biometryType } = this.state;
       const setPasscodeText = passcode ? 'page.mine.2fa.resetPasscode' : 'page.mine.2fa.setPasscode';
 
       let useFingerSwitchRow = null;
       // Show use fingerprint switch row if fingerprint is available.
 
-      if (isFingerprintAvailable) {
+      if (biometryType) {
+        const text = biometryType === BIOMETRY_TYPES.FACE_ID ? 'page.mine.2fa.useFaceID' : 'page.mine.2fa.useFingerprint';
         useFingerSwitchRow = (
           <View style={styles.row}>
-            <Loc style={[styles.title]} text="page.mine.2fa.useFingerprint" />
+            <Loc style={[styles.title]} text={text} />
             <Switch
-              value={fingerprint}
+              value={isOpen}
               onValueChange={this.setSingleSettings}
             />
           </View>
@@ -119,6 +139,7 @@ TwoFactorAuth.propTypes = {
   showPasscode: PropTypes.func.isRequired,
   fingerprint: PropTypes.bool,
   passcode: PropTypes.string,
+  showFingerprintModal: PropTypes.func.isRequired,
 };
 
 
@@ -137,6 +158,9 @@ const mapDispatchToProps = (dispatch) => ({
   setSingleSettings: (key, value) => dispatch(appActions.setSingleSettings(key, value)),
   showPasscode: (category, callback) => dispatch(
     appActions.showPasscode(category, callback),
+  ),
+  showFingerprintModal: (callback, fallback, fingerprintPasscodeDisabled) => dispatch(
+    appActions.showFingerprintModal(callback, fallback, fingerprintPasscodeDisabled),
   ),
 });
 

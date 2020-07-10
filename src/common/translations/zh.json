@@ -235,10 +235,11 @@
         "title": "币种"
       },
       "2fa": {
-        "title": "双因素认证",
+        "title": "双重认证",
         "setPasscode": "设置密码",
         "resetPasscode": "重置密码",
-        "useFingerprint": "使用指纹解锁"
+        "useFingerprint": "使用指纹解锁",
+        "useFaceID": "使用人脸识别"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -280,7 +281,8 @@
     "English": "英语",
     "Spanish": "西班牙语",
     "Portuguese": "葡萄牙语",
-    "Chinese": "中文"
+    "Chinese": "中文",
+    "Brazilian Portuguese": "巴西葡萄牙语"
   },
   "button": {
     "save": "保存",
@@ -408,13 +410,21 @@
       "incorrect": "密码不正确"
     },
     "touchSensor": {
-      "title": "指纹验证",
       "usePasscode": "使用密码验证",
-      "touchToVerify": "点击进行指纹解锁",
-      "nativeNote": "通过Home键验证已有手机指纹",
+      "fingerprint": {
+        "title": "指纹解锁",
+        "touchToVerify": "点击进行指纹解锁",
+        "nativeNote": "通过Home键验证已有手机指纹",
+        "notMatch": "指纹不匹配，请重试。"
+      },
+      "faceID": {
+        "title": "人脸识别",
+        "touchToVerify": "点击进行人脸识别",
+        "nativeNote": "请对准摄像头进行人脸识别",
+        "notMatch": "人脸识别不匹配，请重试。"
+      },
       "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
-      "failedAndTryAgain.": "验证失败，请重试。",
-      "fingerprintNotMatch": "指纹不匹配，请重试。"
+      "failedAndTryAgain": "验证失败，请重试。"
     },
     "createPasscode": {
       "title": "请设置一个密码",
