@@ -179,6 +179,7 @@ class SwapSelection extends Component {
     if (coinList.length) {
       contentComponent = (
         <FlatList
+          bounces={false}
           data={coinList}
           renderItem={({ item }) => (
             <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
@@ -215,6 +216,7 @@ class SwapSelection extends Component {
 
   renderWalletList = (listData) => (
     <FlatList
+      bounces={false}
       data={listData}
       extraData={listData}
       renderItem={({ item, index }) => {
