@@ -37,7 +37,8 @@ platform :ios do
 
     desc 'Build the iOS application.'
     private_lane :build do
-        certificates
+        update_project_team(path: XCODEPROJ)
+        sync_code_signing
         gym(scheme: 'rwallet', project: XCODEPROJ)
     end
 
@@ -47,7 +48,9 @@ platform :ios do
         set_build(build: options[:build]),
         build
         pilot
-        slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
+        if (ENV['SLACK_URL']!= nil)
+            slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
+        end
     end
 
 end
