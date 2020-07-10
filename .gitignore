@@ -67,3 +67,6 @@ out.log
 
 # Environment variable config for each developer
 .env 
+
+# Android signature file
+android/app/keystores/*.jks
