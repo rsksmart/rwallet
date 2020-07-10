@@ -1,14 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import {
-  Modal,
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-  DeviceEventEmitter,
+  Modal, Text, View, TouchableOpacity, StyleSheet, FlatList, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -17,7 +10,6 @@ import _ from 'lodash';
 import color from '../../../assets/styles/color.ts';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
-import CONSTANTS from '../../../common/constants.json';
 import common from '../../../common/common';
 
 // Get modal view width
@@ -26,8 +18,6 @@ const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
 const TOKEN_ROW_WIDTH = (MODAL_WIDTH - 90);
 // One row has two tokens, 50 is token's separate size
 const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 50) / 2;
-
-const { EVENT: { TOKENS_UPDATE } } = CONSTANTS;
 
 const styles = StyleSheet.create({
   backgroundView: {
@@ -175,24 +165,14 @@ class WalletSelection extends PureComponent {
 
   componentDidMount() {
     this.initWallets();
-
-    this.listener = DeviceEventEmitter.addListener(TOKENS_UPDATE, (isTokensUpdated) => {
-      if (isTokensUpdated) {
-        const { dapp } = this.props;
-        this.initWallets(dapp);
-      }
-    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { dapp } = nextProps;
-    if (dapp) {
+    const { isTokensUpdated: isLastTokensUpdated } = this.props;
+    const { dapp, isTokensUpdated } = nextProps;
+    if ((isTokensUpdated && !isLastTokensUpdated) || dapp) {
       this.initWallets(dapp);
     }
-  }
-
-  componentWillUnmount() {
-    this.listener.remove();
   }
 
   initWallets = (dapp = null) => {
@@ -413,6 +393,7 @@ WalletSelection.propTypes = {
   }),
   addRecentDapp: PropTypes.func,
   confirmButtonPress: PropTypes.func,
+  isTokensUpdated: PropTypes.bool.isRequired,
 };
 
 WalletSelection.defaultProps = {
@@ -429,6 +410,7 @@ WalletSelection.defaultProps = {
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
+  isTokensUpdated: state.Wallet.get('isTokensUpdated'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
