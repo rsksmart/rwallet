@@ -6,10 +6,11 @@ import PropTypes from 'prop-types';
 
 const { UIManager } = NativeModules;
 
-// eslint-disable-next-line no-unused-expressions
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+if (UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
-class ConfirmSlider extends Component { // eslint-disable-line no-unused-expressions
+class ConfirmSlider extends Component {
   constructor(props) {
     super(props);
     this.reset = this.reset.bind(this);
@@ -203,15 +204,12 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
 }
 
 ConfirmSlider.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   buttonColor: PropTypes.string.isRequired,
   buttonSize: PropTypes.number.isRequired,
   borderColor: PropTypes.string.isRequired,
   backgroundColor: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  icon: PropTypes.object.isRequired,
+  icon: PropTypes.shape({}).isRequired,
   borderRadius: PropTypes.number.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
   label: PropTypes.string.isRequired,
   onVerified: PropTypes.func.isRequired,
   okButton: PropTypes.shape({

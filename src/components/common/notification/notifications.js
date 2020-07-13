@@ -25,14 +25,17 @@ const Notifications = (props) => {
 
 Notifications.propTypes = {
   showNotification: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  notification: PropTypes.object,
+  notification: PropTypes.shape({
+    type: PropTypes.string,
+    title: PropTypes.string,
+    message: PropTypes.string,
+    buttonText: PropTypes.string,
+  }),
   removeNotification: PropTypes.func.isRequired,
   notificationCloseCallback: PropTypes.func,
 };
 
 Notifications.defaultProps = {
-  // eslint-disable-next-line react/forbid-prop-types
   notification: null,
   notificationCloseCallback: null,
 };

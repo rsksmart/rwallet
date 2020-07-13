@@ -73,8 +73,7 @@ class Settings {
    * validateName
    * @param {string} name, accept a-z, A-Z, 0-9 and space, max length is 32
    */
-  // eslint-disable-next-line class-methods-use-this
-  validateName(name) {
+  validateName = (name) => {
     if (name.length < 1) {
       throw new Error('err.nametooshort');
     } else if (name.length > CONSTANTS.NAME_MAX_LENGTH) {

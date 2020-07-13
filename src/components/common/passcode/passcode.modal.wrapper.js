@@ -1,6 +1,3 @@
-/* eslint "react/jsx-props-no-spreading": "off" */
-/* eslint "default-case": "off" */
-/* eslint "consistent-return": "off" */
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -12,11 +9,16 @@ const PasscodeModalWrapper = (props) => {
   const { type, passcode } = props;
   switch (type) {
     case 'create':
+      // eslint-disable-next-line react/jsx-props-no-spreading
       return <CreatePasscodeModal {...props} />;
     case 'reset':
+      // eslint-disable-next-line react/jsx-props-no-spreading
       return <ResetPasscodeModal {...props} />;
     case 'verify':
+      // eslint-disable-next-line react/jsx-props-no-spreading
       return passcode ? <VerifyPasscodeModal {...props} /> : null;
+    default:
+      return null;
   }
 };
 

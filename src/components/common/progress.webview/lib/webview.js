@@ -88,7 +88,7 @@ ProgressBarWebView.propTypes = {
   onError: PropTypes.func,
   onLoadStart: PropTypes.func,
   onLoadEnd: PropTypes.func,
-  forwardedRef: PropTypes.object,
+  forwardedRef: PropTypes.shape({}),
 };
 
 ProgressBarWebView.defaultProps = {

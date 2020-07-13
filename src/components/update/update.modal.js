@@ -171,7 +171,6 @@ class UpdateModal extends Component {
 export default UpdateModal;
 
 UpdateModal.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   showUpdate: PropTypes.bool.isRequired,
   mandatory: PropTypes.bool.isRequired,
 };

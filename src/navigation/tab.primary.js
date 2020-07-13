@@ -60,8 +60,8 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       </View>
     ),
     defaultNavigationOptions: ({ navigation }) => ({
-      // eslint-disable-next-line react/prop-types
-      tabBarIcon: ({ focused }) => {
+      tabBarIcon: (properties) => {
+        const { focused } = properties;
         let img = null;
         let width = 18;
         let height = 18;

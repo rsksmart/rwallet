@@ -40,7 +40,6 @@ Confirmation.propTypes = {
 };
 
 Confirmation.defaultProps = {
-  // eslint-disable-next-line react/forbid-prop-types
   confirmation: null,
   confirmationCallback: null,
   confirmationCancelCallback: null,

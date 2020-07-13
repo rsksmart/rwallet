@@ -1,14 +1,6 @@
 import {
   NavigationActions,
   StackActions,
-  // eslint-disable-next-line no-unused-vars
-  NavigationReplaceActionPayload,
-  // eslint-disable-next-line no-unused-vars
-  NavigationPopActionPayload,
-  // eslint-disable-next-line no-unused-vars
-  NavigationNavigateActionPayload,
-  // eslint-disable-next-line no-unused-vars
-  NavigationResetActionPayload,
 } from 'react-navigation';
 
 let navigator;
