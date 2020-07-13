@@ -168,7 +168,7 @@
         "balance": "Equilibrar"
       },
       "addToken": {
-        "title": "Agregar tokens",
+        "title": "Agregar Activo",
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
         "addCustomToken": "Agregar token personalizado",

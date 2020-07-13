@@ -168,7 +168,7 @@
         "balance": "余额"
       },
       "addToken": {
-        "title": "添加代币",
+        "title": "添加资产",
         "enabledAssets": "开启的资产",
         "note": "禁用资产以将其从投资组合中隐藏。",
         "addCustomToken": "添加自定义代币",

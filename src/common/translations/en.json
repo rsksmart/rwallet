@@ -165,7 +165,7 @@
         "balance": "Balance"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Add Asset",
         "enabledAssets": "Enabled Assets",
         "note": "Disable assets to hide them from your portfolio.",
         "addCustomToken": "Add Custom Token",
