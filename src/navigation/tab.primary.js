@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Image } from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation';
 
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
 import DAppStackNavigator from './stack.dapp';
-import topNavigator from './top.navigator';
-import flex from '../assets/styles/layout.flex';
 import TabBar from './components/bottom.tab';
 
 import homeLight from '../assets/images/root/tab/wallet.l.png';
@@ -107,22 +105,4 @@ const PrimaryTabNavigator = createBottomTabNavigator(
   },
 );
 
-const PrimaryTabNavigatorContainer = createAppContainer(PrimaryTabNavigator);
-
-export default class PrimaryTabNavigatorComp extends Component {
-  static router = null;
-
-  render() {
-    return (
-      <View style={[flex.flex1]}>
-        <PrimaryTabNavigatorContainer
-          ref={(navigatorRef) => {
-            topNavigator.setTopLevelNavigator(navigatorRef);
-          }}
-        />
-      </View>
-    );
-  }
-}
-
-PrimaryTabNavigatorComp.router = PrimaryTabNavigatorContainer.router;
+export default PrimaryTabNavigator;
