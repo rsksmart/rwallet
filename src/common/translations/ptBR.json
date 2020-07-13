@@ -155,23 +155,23 @@
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
-        "title": "Adicionar tokens personalizados",
-        "address": "Endereço do contrato do token",
+        "title": "Engadir ativos personalizados",
+        "address": "Endereço do Contrato de Activos",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
-        "title": "Adicionar tokens personalizados",
-        "question": "Deseja adicionar esses tokens?",
-        "token": "Símbolo",
-        "symbol": "Símbolo de Token",
+        "title": "Engadir ativos personalizados",
+        "question": "Você gostaria de adicionar esses ativos?",
+        "token": "Activo",
+        "symbol": "Símbolo de Activos",
         "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
       "addToken": {
-        "title": "Adicionar Ativo",
-        "enabledAssets": "Ativos habilitados",
+        "title": "Adicionar Activo",
+        "enabledAssets": "Enabled Assets",
         "note": "Desative para ocultá-los do seu portfólio.",
-        "addCustomToken": "Adicionar tokens personalizados",
+        "addCustomToken": "Engadir Activo Personalizado",
         "custom": "Personalizados"
       },
       "rnsCreateName": {

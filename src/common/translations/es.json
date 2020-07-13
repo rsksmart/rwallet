@@ -155,23 +155,23 @@
         "viewExplorer": "Haga clic para ver en el explorador"
       },
       "addCustomToken": {
-        "title": "Agregar tokens personalizados",
-        "address": "Dirección del contrato de token",
+        "title": "Agregar activos personalizados",
+        "address": "Dirección del contrato de activo",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
-        "title": "Agregar tokens personalizados",
-        "question": "¿Te gustaría agregar estos tokens?",
-        "token": "Simbólico",
-        "symbol": "Símbolo simbólico",
+        "title": "Agregar activos personalizados",
+        "question": "¿Desea agregar estos activos?",
+        "token": "Activo",
+        "symbol": "Símbolo de activo",
         "decimals": "Decimales de precisión",
         "balance": "Equilibrar"
       },
       "addToken": {
-        "title": "Agregar Activo",
+        "title": "Agregar activo",
         "enabledAssets": "Activos habilitados",
         "note": "Inhabilite los activos para ocultarlos de su cartera.",
-        "addCustomToken": "Agregar token personalizado",
+        "addCustomToken": "Agregar activo personalizado",
         "custom": "Customizar"
       },
       "rnsCreateName": {
