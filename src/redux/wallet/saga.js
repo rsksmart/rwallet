@@ -1,4 +1,3 @@
-/* eslint no-restricted-syntax:0 */
 import {
   take, call, all, takeEvery, put, select, cancelled,
 } from 'redux-saga/effects';

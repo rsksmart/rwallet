@@ -152,7 +152,6 @@ class SwapSelection extends Component {
     //   } catch {
     //     rawList = [];
     //   }
-    //   // eslint-disable-next-line no-plusplus
     //   for (let i = 0; i < rawList.length; i += 1) {
     //     const item = rawList[i];
     //     if (item.isActive) {
@@ -165,7 +164,6 @@ class SwapSelection extends Component {
     //   } catch {
     //     rawList = [];
     //   }
-    //   // eslint-disable-next-line no-plusplus
     //   for (let i = 0; i < rawList.length; i += 1) {
     //     const item = rawList[i];
     //     if (item.isActive) {
@@ -375,8 +373,7 @@ SwapSelection.propTypes = {
   resetSwap: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
   isShowBackButton: PropTypes.bool,
-  // eslint-disable-next-line react/forbid-prop-types
-  bottomPaddingComponent: PropTypes.object,
+  bottomPaddingComponent: PropTypes.shape({}),
   addNotification: PropTypes.func.isRequired,
 };
 

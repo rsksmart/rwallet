@@ -304,7 +304,6 @@ class ParseHelper {
   static requestCoinswitchAPI(type, coinswitchParams = {}) {
     const { deposit, destination } = coinswitchParams;
     let method; let path; let params;
-    // eslint-disable-next-line default-case
     switch (type) {
       case 'coins':
         method = 'get';
@@ -314,10 +313,12 @@ class ParseHelper {
         method = 'post';
         path = 'pairs';
         params = [];
-        // eslint-disable-next-line no-unused-expressions
-        deposit && params.push({ key: 'depositCoin', value: deposit });
-        // eslint-disable-next-line no-unused-expressions
-        destination && params.push({ key: 'destinationCoin', value: destination });
+        if (deposit) {
+          params.push({ key: 'depositCoin', value: deposit });
+        }
+        if (destination) {
+          params.push({ key: 'destinationCoin', value: destination });
+        }
         break;
       case 'rate':
         method = 'post';
@@ -334,10 +335,12 @@ class ParseHelper {
           { key: 'refundAddress', value: coinswitchParams.refundAddress },
         ];
         break;
+      default:
     }
     const options = { method, path };
-    // eslint-disable-next-line no-unused-expressions
-    params && (options.params = params);
+    if (params) {
+      options.params = params;
+    }
     return Parse.Cloud.run('coinswitch', options);
   }
 

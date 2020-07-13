@@ -32,7 +32,6 @@ PasscodeModals.propTypes = {
 };
 
 PasscodeModals.defaultProps = {
-  // eslint-disable-next-line react/forbid-prop-types
   passcodeType: null,
   passcodeCallback: null,
   passcodeFallback: null,
