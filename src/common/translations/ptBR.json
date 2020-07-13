@@ -155,15 +155,15 @@
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
-        "title": "Engadir ativos personalizados",
-        "address": "Endereço do Contrato de Activos",
+        "title": "Adicionar ativos personalizados",
+        "address": "Endereço do Contrato do Ativo",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
-        "title": "Engadir ativos personalizados",
+        "title": "Adicionar ativos personalizados",
         "question": "Você gostaria de adicionar esses ativos?",
-        "token": "Activo",
-        "symbol": "Símbolo de Activos",
+        "token": "Ativo",
+        "symbol": "Símbolo do Ativo",
         "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
