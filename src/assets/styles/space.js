@@ -1,13 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { screen } from '../../common/info';
-
-export function fWidthPer(iPerValue) {
-  return (screen.width * iPerValue) / 100;
-}
-
-export function fHeightPer(iPerValue) {
-  return (screen.height * iPerValue) / 100;
-}
 
 function styleScript() {
   const style = {};
