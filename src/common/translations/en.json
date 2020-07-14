@@ -152,23 +152,23 @@
         "viewExplorer": "Click to view in explorer"
       },
       "addCustomToken": {
-        "title": "Add Custom Tokens",
-        "address": "Token Contract Address",
+        "title": "Add Custom Assets",
+        "address": "Asset Contract Address",
         "mainnet": "Mainnet"
       },
       "addCustomTokenConfirm": {
-        "title": "Add Custom Tokens",
-        "question": "Would you like to add these tokens?",
-        "token": "Token",
-        "symbol": "Token Symbol",
+        "title": "Add Custom Assets",
+        "question": "Would you like to add these Assets?",
+        "token": "Asset",
+        "symbol": "Asset Symbol",
         "decimals": "Decimals of Precision",
         "balance": "Balance"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Add Asset",
         "enabledAssets": "Enabled Assets",
         "note": "Disable assets to hide them from your portfolio.",
-        "addCustomToken": "Add Custom Token",
+        "addCustomToken": "Add Custom Asset",
         "custom": "Custom"
       },
       "rnsCreateName": {
