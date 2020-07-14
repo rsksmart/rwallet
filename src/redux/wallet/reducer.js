@@ -1,10 +1,6 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
-import { DeviceEventEmitter } from 'react-native';
 import actions from './actions';
-import CONSTANTS from '../../common/constants.json';
-
-const { EVENT: { TOKENS_UPDATE } } = CONSTANTS;
 
 const initState = new Map({
   wallets: [],
@@ -47,7 +43,6 @@ export default function walletReducer(state = initState, action) {
       const walletManager = state.get('walletManager');
       if (walletManager) {
         const isDirty = walletManager.updateTokens(balances);
-        DeviceEventEmitter.emit(TOKENS_UPDATE, true);
 
         if (isDirty) {
           return state.set('isTokensUpdated', true);
