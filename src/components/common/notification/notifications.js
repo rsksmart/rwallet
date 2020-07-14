@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import Notification from './notification.wrapper';
+import Alert from './alert';
 
 const Notifications = (props) => {
   const {
@@ -10,7 +10,7 @@ const Notifications = (props) => {
   return (
     <View>
       {showNotification && notification && (
-      <Notification
+      <Alert
         type={notification.type}
         title={notification.title}
         message={notification.message}

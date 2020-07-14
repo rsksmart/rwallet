@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import HomeStackNavigator from './stack.home';
@@ -14,6 +14,16 @@ import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
 import dappLight from '../assets/images/root/tab/dapp.l.png';
+
+
+const styles = StyleSheet.create({
+  tabBarView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+});
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -47,18 +57,26 @@ const PrimaryTabNavigator = createBottomTabNavigator(
     },
   },
   {
-    tabBarComponent: (props) => (
-      <View style={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}
-      >
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <TabBar {...props} />
-      </View>
-    ),
+    tabBarComponent: (properties) => {
+      const {
+        renderIcon, getLabelText, activeTintColor, inactiveTintColor,
+        onTabPress, onTabLongPress, getAccessibilityLabel, navigation,
+      } = properties;
+      return (
+        <View style={styles.tabBarView}>
+          <TabBar
+            renderIcon={renderIcon}
+            getLabelText={getLabelText}
+            activeTintColor={activeTintColor}
+            inactiveTintColor={inactiveTintColor}
+            onTabPress={onTabPress}
+            onTabLongPress={onTabLongPress}
+            getAccessibilityLabel={getAccessibilityLabel}
+            navigation={navigation}
+          />
+        </View>
+      );
+    },
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: (properties) => {
         const { focused } = properties;

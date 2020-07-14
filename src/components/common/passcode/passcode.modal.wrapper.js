@@ -6,17 +6,36 @@ import ResetPasscodeModal from './passcode.modal.reset';
 import VerifyPasscodeModal from './passcode.modal.verify';
 
 const PasscodeModalWrapper = (props) => {
-  const { type, passcode } = props;
+  const {
+    type, passcode, closePasscodeModal, passcodeCallback, passcodeFallback, setPasscode,
+  } = props;
   switch (type) {
     case 'create':
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      return <CreatePasscodeModal {...props} />;
+      return (
+        <CreatePasscodeModal
+          closePasscodeModal={closePasscodeModal}
+          passcodeCallback={passcodeCallback}
+          setPasscode={setPasscode}
+        />
+      );
     case 'reset':
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      return <ResetPasscodeModal {...props} />;
+      return (
+        <ResetPasscodeModal
+          closePasscodeModal={closePasscodeModal}
+          passcodeCallback={passcodeCallback}
+          passcode={passcode}
+          setPasscode={setPasscode}
+        />
+      );
     case 'verify':
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      return passcode ? <VerifyPasscodeModal {...props} /> : null;
+      return passcode ? (
+        <VerifyPasscodeModal
+          closePasscodeModal={closePasscodeModal}
+          passcodeCallback={passcodeCallback}
+          passcodeFallback={passcodeFallback}
+          passcode={passcode}
+        />
+      ) : null;
     default:
       return null;
   }
@@ -25,11 +44,18 @@ const PasscodeModalWrapper = (props) => {
 PasscodeModalWrapper.propTypes = {
   type: PropTypes.oneOf(['create', 'reset', 'verify']).isRequired,
   passcode: PropTypes.string,
+  closePasscodeModal: PropTypes.func.isRequired,
+  passcodeCallback: PropTypes.func,
+  passcodeFallback: PropTypes.func,
+  setPasscode: PropTypes.func,
 };
 
 
 PasscodeModalWrapper.defaultProps = {
   passcode: undefined,
+  passcodeCallback: () => {},
+  passcodeFallback: undefined,
+  setPasscode: () => {},
 };
 
 const mapStateToProps = (state) => ({

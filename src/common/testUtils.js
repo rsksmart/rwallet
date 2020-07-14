@@ -10,7 +10,7 @@ export function mockComponent(componentName) {
 }
 
 mockComponent.protoTypes = {
-  children: PropTypes.shape(),
+  children: PropTypes.shape({}),
 };
 
 mockComponent.defaultProps = {
