@@ -137,7 +137,7 @@ function* loginRequest() {
     yield put(actions.loginDone());
     yield put(actions.updateUser());
   } catch (err) {
-    yield call(ParseHelper.handleError, { err });
+    console.log(err.message);
     yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
     yield put(actions.login());
@@ -352,7 +352,7 @@ function* getServerInfoRequest() {
       value: response,
     });
   } catch (err) {
-    yield call(ParseHelper.handleError, { err });
+    console.log(err.message);
   }
 }
 

@@ -24,8 +24,7 @@ function* createKeyRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.error(message);
+    console.warn(err.message);
   }
 }
 
@@ -43,8 +42,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.error(message);
+    console.warn(err.message);
   }
 }
 
@@ -55,10 +53,9 @@ function* renameKeyRequest(action) {
     yield put({ type: actions.WALLET_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    const notification = createErrorNotification('modal.incorrectKeyName.title', message.message);
+    console.warn(err.message);
+    const notification = createErrorNotification('modal.incorrectKeyName.title', err.message);
     yield put(appActions.addNotification(notification));
-    // console.error(message);
   }
 }
 
@@ -79,10 +76,7 @@ function* addTokenRequest(action) {
     console.log(error);
     if (error.message === 'err.exsistedtoken') {
       yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'error', error } });
-      return;
     }
-    const message = yield call(ParseHelper.handleError, error);
-    console.error(message);
   }
 }
 
@@ -101,8 +95,7 @@ function* deleteTokenRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
-    console.error(message);
+    console.error(err.message);
   }
 }
 

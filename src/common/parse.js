@@ -6,8 +6,6 @@ import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
 
-const ERROR_PARSE_DEFAULT = 'error.parse.default';
-
 const parseConfig = config && config.parse;
 
 // If we are unable to load config, it means the config file is moved. Throw error to indicate that.
@@ -192,32 +190,6 @@ class ParseHelper {
 
   static getServerInfo() {
     return Parse.Cloud.run('getServerInfo');
-  }
-
-  /**
-   * Transform Parse errors to errors defined by this app
-   * @param {object}     err        Parse error from response
-   * @returns {object}  error object defined by this app
-   * @method handleError
-   */
-  static async handleError({ err }) {
-    console.log('handleError', err);
-    if (!err) {
-      return { message: ERROR_PARSE_DEFAULT };
-    }
-
-    const message = err.message || ERROR_PARSE_DEFAULT;
-
-    switch (err.code) {
-      case Parse.Error.INVALID_SESSION_TOKEN:
-        console.log('INVALID_SESSION_TOKEN. Logging out');
-        await Parse.User.logOut();
-        break;
-      default:
-        break;
-    }
-
-    return { message };
   }
 
   /**
@@ -467,4 +439,29 @@ class ParseHelper {
   }
 }
 
-export default ParseHelper;
+// Create parse helper proxy to add global error handling
+const ParseHelperProxy = new Proxy(ParseHelper, {
+  get(target, propKey, receiver) {
+    const targetValue = Reflect.get(target, propKey, receiver);
+    if (typeof targetValue === 'function') {
+      const func = async (...args) => {
+        try {
+          const result = await targetValue.apply(this, args);
+          return result;
+        } catch (error) {
+          console.log('ParseHelperProxy, error', error.message);
+          // When the session expires, we need to log in again
+          if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+            console.log('INVALID_SESSION_TOKEN. Logging out');
+            Parse.User.logIn();
+          }
+          throw error;
+        }
+      };
+      return func;
+    }
+    return targetValue;
+  },
+});
+
+export default ParseHelperProxy;
