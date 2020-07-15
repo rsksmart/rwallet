@@ -154,7 +154,7 @@ android {
         }
         variant.outputs.all {
             def buildType = variant.buildType.name
-            outputFileName = "rWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
+            outputFileName = "RWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
         }
     }
 }

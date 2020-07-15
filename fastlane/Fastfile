@@ -32,13 +32,13 @@ platform :ios do
 
     desc 'Fetch certificates and provisioning profiles'
     lane :certificates do
-        match(app_identifier: APP_ID, type: 'development', readonly: true)
+        match(app_identifier: APP_ID, type: 'development', readonly: false)
     end
 
     desc 'Build the iOS application.'
     private_lane :build do
         update_project_team(path: XCODEPROJ)
-        sync_code_signing
+        match
         gym(scheme: 'rwallet', project: XCODEPROJ)
     end
 
