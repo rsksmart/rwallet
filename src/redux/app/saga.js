@@ -123,25 +123,39 @@ function* initFromStorageRequest() {
   }
 }
 
-function* loginRequest() {
+function* loginRequest(action) {
+  const { isRelogin } = action;
   const appId = application.get('id');
   try {
     // Read Parse.User from storage, if not, sign in or sign up
     const user = yield call(ParseHelper.getUser);
-    console.log('initWithParseRequest, read from storage, user: ', user);
-    if (!user) {
+    console.log('loginRequest, read from storage, user: ', user);
+    // If you need to log in again, or the user exists, call ParseHelper.signInOrSignUp
+    // Else use the user from storage
+    if (!user || isRelogin) {
       yield call(ParseHelper.signInOrSignUp, appId);
     }
     console.log(`User found with appId ${appId}. Sign in successful.`);
     yield put(actions.resetLoginError());
-    yield put(actions.loginDone());
+    yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
     console.log(err.message);
     yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
-    yield put(actions.login());
+    yield put(actions.login(isRelogin));
   }
+}
+
+function* reloginRequest() {
+  const state = yield select();
+  const isLogin = state.App.get('isLogin');
+  // Prevent repeated calls to the reloginRequest function
+  if (!isLogin) {
+    return;
+  }
+  yield put(actions.setLogin(false));
+  yield put(actions.login(true));
 }
 
 function* createRawTransaction(action) {
@@ -423,6 +437,7 @@ export default function* () {
     // When app loading action is fired, try to fetch server info
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
     takeEvery(actions.LOGIN, loginRequest),
+    takeEvery(actions.RELOGIN, reloginRequest),
     takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),

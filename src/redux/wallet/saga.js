@@ -372,9 +372,17 @@ function* subscribeBlockHeights() {
   let subscription;
   let subscriptionChannel;
   try {
+    const state = yield select();
     subscription = yield call(ParseHelper.subscribeBlockHeights);
     subscriptionChannel = yield call(createBlockHeightSubscriptionChannel, subscription);
-    yield put({ type: actions.SET_TRANSACTIONS_CHANNEL, value: subscriptionChannel });
+
+    // When resubscribing we need to close the last channel
+    const blockHeightsChannel = state.Wallet.get('blockHeightsChannel');
+    if (blockHeightsChannel) {
+      blockHeightsChannel.close();
+    }
+    yield put({ type: actions.SET_BLOCK_HEIGHTS_CHANNEL, value: subscriptionChannel });
+
     while (true) {
       const payload = yield take(subscriptionChannel);
       yield put(payload);
@@ -386,7 +394,7 @@ function* subscribeBlockHeights() {
       subscriptionChannel.close();
       subscription.close();
     } else {
-      console.log('Subscription disconnected: Transactions');
+      console.log('Subscription disconnected: subscribeBlockHeights');
     }
   }
 }

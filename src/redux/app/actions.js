@@ -54,7 +54,8 @@ const actions = {
   INIT_FCM_CHANNEL: 'INIT_FCM_CHANNEL',
 
   LOGIN: 'LOGIN',
-  LOGIN_DONE: 'LOGIN_DONE',
+  RELOGIN: 'RELOGIN',
+  SET_LOGIN: 'SET_LOGIN',
   SET_LOGIN_ERROR: 'SET_LOGIN_ERROR',
   RESET_LOGIN_ERROR: 'RESET_LOGIN_ERROR',
 
@@ -197,11 +198,16 @@ const actions = {
   resetLoginError: () => ({
     type: actions.RESET_LOGIN_ERROR,
   }),
-  login: () => ({
+  login: (isRelogin) => ({
     type: actions.LOGIN,
+    isRelogin,
   }),
-  loginDone: () => ({
-    type: actions.LOGIN_DONE,
+  relogin: () => ({
+    type: actions.RELOGIN,
+  }),
+  setLogin: (isLogin) => ({
+    type: actions.SET_LOGIN,
+    isLogin,
   }),
   fetchDapps: () => ({
     type: actions.FETCH_DAPPS,

@@ -5,6 +5,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
+import actions from '../redux/app/actions';
+import common from './common';
 
 const parseConfig = config && config.parse;
 
@@ -41,6 +43,7 @@ class ParseHelper {
   }
 
   static signInOrSignUp(appId) {
+    console.log('parse::signInOrSignUp, appId: ', appId);
     // Set appId as username and password.
     // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
     const username = appId;
@@ -48,6 +51,7 @@ class ParseHelper {
 
     return Parse.User.logIn(username, password)
       .catch((err) => {
+        console.log('signInOrSignUp, err: ', err, err.message);
         if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
           console.log(`User not found with appId ${username}. Signing up ...`);
           const user = new Parse.User();
@@ -443,6 +447,7 @@ class ParseHelper {
 const ParseHelperProxy = new Proxy(ParseHelper, {
   get(target, propKey, receiver) {
     const targetValue = Reflect.get(target, propKey, receiver);
+    console.log(`ParseHelperProxy, propKey: ${propKey}`);
     if (typeof targetValue === 'function') {
       const func = async (...args) => {
         try {
@@ -450,10 +455,10 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
           return result;
         } catch (error) {
           console.log('ParseHelperProxy, error', error.message);
-          // When the session expires, we need to log in again
+          // When the session expires, we need to relogin
           if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
-            console.log('INVALID_SESSION_TOKEN. Logging out');
-            Parse.User.logIn();
+            console.log('INVALID_SESSION_TOKEN');
+            common.getStore().dispatch(actions.relogin());
           }
           throw error;
         }

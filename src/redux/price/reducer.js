@@ -5,6 +5,7 @@ import storage from '../../common/storage';
 
 const initState = new Map({
   prices: [],
+  priceChannel: undefined,
 });
 
 export default function appReducer(state = initState, action) {
@@ -16,6 +17,9 @@ export default function appReducer(state = initState, action) {
       console.log('PRICE_OBJECT_UPDATED, prices: ', prices);
       storage.setPrices(prices);
       return state.set('prices', prices);
+    }
+    case actions.SET_PRICE_CHANNEL: {
+      return state.set('priceChannel', action.value);
     }
     default:
       return state;

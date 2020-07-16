@@ -39,6 +39,7 @@ const currencySymbols = _.reduce(currencies, (obj, row) => {
 
 const common = {
   currentNavigation: null,
+  store: undefined,
   isIphoneX() {
     // TODO
     // return DeviceInfo.getModel().toLowerCase().indexOf('iphone x') >= 0
@@ -486,6 +487,16 @@ const common = {
 
   getFullDomain(subdomain) {
     return `${subdomain}.${config.rnsDomain}`;
+  },
+
+  // set redux store
+  setStore(store) {
+    this.store = store;
+  },
+
+  // get redux store
+  getStore() {
+    return this.store;
   },
 };
 
