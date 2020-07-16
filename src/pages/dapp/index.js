@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, FlatList, StatusBar, Platform,
+  View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Platform,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -16,6 +16,7 @@ import AdsCarousel from '../../components/common/carousel/ads.carousel';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color.ts';
+import Image from '../../components/common/image/image';
 
 const RECENT_DAPPS_NUMBER = 3; // show recent 3 dapps
 const DAPP_PER_COLUMN = 3; // One column has 3 dapps
