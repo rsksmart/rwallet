@@ -28,9 +28,7 @@ export default class Image extends PureComponent {
         source={source}
         style={[style, isLoadedEnd ? {} : styles.placeholder]}
         onLoadEnd={() => {
-          setTimeout(() => {
-            this.setState({ isLoadedEnd: true });
-          }, 2000);
+          this.setState({ isLoadedEnd: true });
         }}
       />
     );
