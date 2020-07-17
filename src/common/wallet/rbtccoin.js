@@ -48,7 +48,7 @@ export default class RBTCCoin {
   constructor(symbol, type, derivationPath, contractAddress, name, precision) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
-    // metadata:{network, networkId, icon, queryKey, defaultName}
+    // metadata:{network, networkId, icon, defaultName}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.precision = precision;
@@ -210,10 +210,6 @@ export default class RBTCCoin {
 
   get icon() {
     return this.metadata.icon;
-  }
-
-  get queryKey() {
-    return this.metadata.queryKey;
   }
 
   get defaultName() {
