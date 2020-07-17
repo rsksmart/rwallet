@@ -5,8 +5,8 @@
   Created by star on 2020/5/25.
 */
 {
-  "NSCameraUsageDescription" = "RIF Wallet需要访问您的相机用于扫描收件人的二维码。";
-  "NSFaceIDUsageDescription" = "RIF Wallet需要FaceID访问权限以便允许您快速安全地访问。";
-  "NSPhotoLibraryUsageDescription" = "RIF Wallet需要访问照片库。";
+  "NSCameraUsageDescription" = "RWallet需要访问您的相机用于扫描收件人的二维码。";
+  "NSFaceIDUsageDescription" = "RWallet需要FaceID访问权限以便允许您快速安全地访问。";
+  "NSPhotoLibraryUsageDescription" = "RWallet需要访问照片库。";
 }
 
