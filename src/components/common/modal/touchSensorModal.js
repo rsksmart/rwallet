@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import * as Animatable from 'react-native-animatable';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
 import common from '../../../common/common';

@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Loc from '../misc/loc';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   scanView: {

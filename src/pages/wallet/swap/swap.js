@@ -11,7 +11,7 @@ import SwapHeader from '../../../components/headers/header.swap';
 import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
 import space from '../../../assets/styles/space';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import presetStyles from '../../../assets/styles/style';
 import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   rightButton: {
-    color: '#FFF',
+    color: color.white,
   },
   sepratorLine: {
-    backgroundColor: '#FFF',
+    backgroundColor: color.white,
     height: StyleSheet.hairlineWidth,
     flex: 1,
   },
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     color: '#9B9B9B',
   },
   boardWalletName: {
-    color: '#000',
+    color: color.black,
   },
   boardTokenView: {
     flexDirection: 'row',
@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
     paddingRight: 50,
   },
   textInput: {
-    color: '#000',
+    color: color.black,
     fontFamily: 'Avenir-Book',
     fontSize: 27,
   },
   boardAmount: {
-    color: '#000',
+    color: color.black,
     fontSize: 27,
     fontFamily: 'Avenir-Book',
     letterSpacing: 0.4,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   switchTextActived: {
-    color: '#FFF',
+    color: color.white,
   },
   error: {
     marginRight: 10,

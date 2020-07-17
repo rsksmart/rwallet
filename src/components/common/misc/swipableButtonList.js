@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import Loc from './loc';
 

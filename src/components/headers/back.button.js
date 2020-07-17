@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../common/misc/loc';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   headerTitle: {

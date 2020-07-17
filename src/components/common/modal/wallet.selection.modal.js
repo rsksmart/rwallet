@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import common from '../../../common/common';

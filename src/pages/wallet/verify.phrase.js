@@ -15,7 +15,7 @@ import { createErrorNotification, createInfoNotification } from '../../common/no
 import Button from '../../components/common/button/button';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 const WORD_FIELD_MARGIN = 37;

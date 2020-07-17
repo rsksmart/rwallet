@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import color from './color.ts';
+import color from './color';
 
 const style = StyleSheet.create({
   border: {

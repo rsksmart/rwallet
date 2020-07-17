@@ -12,7 +12,7 @@ import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
 import screenHelper from '../../common/screenHelper';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionContainer: {

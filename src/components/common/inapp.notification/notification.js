@@ -5,7 +5,7 @@ import { Animated, StyleSheet, Image } from 'react-native';
 // eslint-disable-next-line import/no-unresolved
 import NotificationBar from './notification.bar';
 import screenHelper from '../../../common/screenHelper';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import { DEVICE } from '../../../common/info';
 
 const styles = StyleSheet.create({

@@ -13,7 +13,7 @@ import Loc from '../../components/common/misc/loc';
 import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';

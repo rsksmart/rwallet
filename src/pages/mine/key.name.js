@@ -10,7 +10,7 @@ import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionContainer: {

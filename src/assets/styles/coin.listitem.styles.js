@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import color from './color.ts';
+import color from './color';
 
 const coinListItemStyles = StyleSheet.create({
   sectionTitle: {

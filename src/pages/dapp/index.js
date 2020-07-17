@@ -15,7 +15,7 @@ import WalletSelection from '../../components/common/modal/wallet.selection.moda
 import AdsCarousel from '../../components/common/carousel/ads.carousel';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const RECENT_DAPPS_NUMBER = 3; // show recent 3 dapps
 const DAPP_PER_COLUMN = 3; // One column has 3 dapps

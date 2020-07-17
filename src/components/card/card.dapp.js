@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import Loc from '../common/misc/loc';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   card: {

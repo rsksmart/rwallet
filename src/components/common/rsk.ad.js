@@ -6,7 +6,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import flex from '../../assets/styles/layout.flex';
 import presetStyles from '../../assets/styles/style';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import screenHelper from '../../common/screenHelper';
 
 const rsk = require('../../assets/images/mine/page.footing.logo.png');

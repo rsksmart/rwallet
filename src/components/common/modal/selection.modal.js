@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import Loc from '../misc/loc';

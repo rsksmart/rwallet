@@ -19,7 +19,7 @@ import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
 import WebViewModal from '../../components/common/webview.modal';
 import config from '../../../config';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 

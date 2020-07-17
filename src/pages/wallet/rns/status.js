@@ -9,7 +9,7 @@ import _ from 'lodash';
 import Header from '../../../components/headers/header';
 import BasePageGereral from '../../base/base.page.general';
 import Loc from '../../../components/common/misc/loc';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
 import { strings } from '../../../common/i18n';

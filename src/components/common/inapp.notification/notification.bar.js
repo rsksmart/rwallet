@@ -4,7 +4,7 @@ import {
   StyleSheet, TouchableOpacity, View, Text, Vibration,
 } from 'react-native';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   container: {

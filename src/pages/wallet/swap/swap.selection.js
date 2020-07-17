@@ -16,7 +16,7 @@ import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
 // import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 import { createErrorNotification } from '../../../common/notification.controller';
 
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   walletName: {
-    color: '#000',
+    color: color.black,
     fontSize: 14,
     fontFamily: 'Avenir-Heavy',
     letterSpacing: 0.27,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   coinName: {
-    color: '#000',
+    color: color.black,
     fontSize: 16,
     fontFamily: 'Avenir-Roman',
     letterSpacing: 0.4,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.39,
   },
   noCoinInfoText: {
-    color: '#FFF',
+    color: color.white,
     fontSize: 18,
     marginBottom: 10,
   },

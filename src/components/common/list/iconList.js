@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   item: {

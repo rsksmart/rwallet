@@ -12,7 +12,7 @@ import screenHelper from '../../common/screenHelper';
 import WebViewModal from '../../components/common/webview.modal';
 import { strings } from '../../common/i18n';
 import config from '../../../config';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const logo = require('../../assets/images/icon/logo.png');
 

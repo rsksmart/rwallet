@@ -10,7 +10,7 @@ import presetStyle from '../../assets/styles/style';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants.json';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionContainer: {

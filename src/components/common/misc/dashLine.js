@@ -1,6 +1,6 @@
 import React from 'react';
 import Dash from 'react-native-dash';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 export default function DashLine() {
   return (

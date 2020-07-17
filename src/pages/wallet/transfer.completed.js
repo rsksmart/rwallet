@@ -8,7 +8,7 @@ import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
 import BasePageGereral from '../base/base.page.general';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const completed = require('../../assets/images/icon/completed.png');
 

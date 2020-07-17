@@ -8,7 +8,7 @@ import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
 import coinType from '../../common/wallet/cointype';

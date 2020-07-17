@@ -13,7 +13,7 @@ import Header from '../../../components/headers/header';
 import BasePageGereral from '../../base/base.page.general';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
 import AddressSelectionModal from '../../../components/common/modal/address.selection.modal';

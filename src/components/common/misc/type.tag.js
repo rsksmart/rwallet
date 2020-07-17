@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   tag: {

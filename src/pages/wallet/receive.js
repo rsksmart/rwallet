@@ -14,7 +14,7 @@ import common from '../../common/common';
 import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import { DEVICE } from '../../common/info';
 import flex from '../../assets/styles/layout.flex';
 import references from '../../assets/references';

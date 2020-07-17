@@ -14,7 +14,7 @@ import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import references from '../../assets/references';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';

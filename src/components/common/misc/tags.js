@@ -3,7 +3,7 @@ import {
   StyleSheet, View, Text, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   tags: {

@@ -5,7 +5,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import Loc from '../misc/loc';
 import references from '../../../assets/references';
 

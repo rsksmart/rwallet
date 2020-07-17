@@ -11,7 +11,7 @@ import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';

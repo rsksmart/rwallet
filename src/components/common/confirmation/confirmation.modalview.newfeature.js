@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({

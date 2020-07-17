@@ -4,7 +4,7 @@ import {
   View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 

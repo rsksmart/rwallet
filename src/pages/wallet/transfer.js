@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
 import Rsk3 from '@rsksmart/rsk3';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
 import Switch from '../../components/common/switch/switch';

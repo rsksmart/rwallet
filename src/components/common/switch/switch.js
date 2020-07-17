@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Switch as RNSwitch, Platform,
 } from 'react-native';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 export default function Switch(props) {
   return (
