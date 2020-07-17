@@ -4,6 +4,12 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import {
+  Placeholder,
+  PlaceholderLine,
+  Fade,
+  PlaceholderMedia,
+} from 'rn-placeholder';
 import { connect } from 'react-redux';
 import { NavigationEvents, Header as NavHeader } from 'react-navigation';
 import BasePageGereral from '../base/base.page.general';
@@ -20,6 +26,14 @@ import Image from '../../components/common/image/image';
 
 const RECENT_DAPPS_NUMBER = 3; // show recent 3 dapps
 const DAPP_PER_COLUMN = 3; // One column has 3 dapps
+const PLACEHOLDER_TYPE = 'placeholder';
+const PLACEHOLDER_LIST = [
+  { type: PLACEHOLDER_TYPE, id: 1 },
+  { type: PLACEHOLDER_TYPE, id: 2 },
+  { type: PLACEHOLDER_TYPE, id: 3 },
+  { type: PLACEHOLDER_TYPE, id: 4 },
+  { type: PLACEHOLDER_TYPE, id: 5 },
+];
 
 const styles = StyleSheet.create({
   header: {
@@ -176,7 +190,7 @@ class DAppIndex extends Component {
     const recentSourceData = (recentDapps && recentDapps.length > RECENT_DAPPS_NUMBER) ? recentDapps.slice(0, RECENT_DAPPS_NUMBER) : recentDapps;
 
     // filter out recommended dapps from all dapps
-    const recommendedList = _.filter(dapps, { isRecommended: true });
+    const recommendedList = _.isEmpty(dapps) ? PLACEHOLDER_LIST : _.filter(dapps, { isRecommended: true });
     // format recommended data to [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
     const recommendedSourceData = this.formatRecommendedSourceData(recommendedList);
 
@@ -186,28 +200,50 @@ class DAppIndex extends Component {
     };
   }
 
-  getAdItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.adItem}
-      activeOpacity={1}
-      onPress={() => {
-        const dapp = {
-          name: item.url,
-          url: item.url,
-          id: item.url,
-          description: '',
-          networks: ['Mainnet', 'Testnet'],
-        };
-        this.onDappPress(dapp);
-      }}
-    >
-      <Image style={styles.adItemImage} source={{ uri: item.imgUrl }} />
-    </TouchableOpacity>
-  )
+  getAdItem = ({ item }) => {
+    const { type } = item;
+    return (
+      <TouchableOpacity
+        style={styles.adItem}
+        activeOpacity={1}
+        disabled={type === PLACEHOLDER_TYPE}
+        onPress={() => {
+          const dapp = {
+            name: item.url,
+            url: item.url,
+            id: item.url,
+            description: '',
+            networks: ['Mainnet', 'Testnet'],
+          };
+          this.onDappPress(dapp);
+        }}
+      >
+        <Image style={[styles.adItemImage, type === PLACEHOLDER_TYPE ? { backgroundColor: color.concrete } : {}]} source={{ uri: item.imgUrl }} />
+      </TouchableOpacity>
+    );
+  }
 
   getDappItem = (data, itemStyles = []) => {
     const { language } = this.props;
     const { item, index } = data;
+    const { type } = item;
+    if (type === PLACEHOLDER_TYPE) {
+      return (
+        <View
+          key={`${item.id}-${index}`}
+          style={[styles.item, ...itemStyles, { width: 200 }]}
+        >
+          <Placeholder
+            Animation={Fade}
+            Left={PlaceholderMedia}
+          >
+            <PlaceholderLine />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </Placeholder>
+        </View>
+      );
+    }
     return (
       <TouchableOpacity
         key={`${item.id}-${index}`}
@@ -271,15 +307,11 @@ class DAppIndex extends Component {
           }}
         />
 
-        {
-          _.isEmpty(advertisements) ? null : (
-            <AdsCarousel
-              style={styles.ads}
-              data={advertisements}
-              renderItem={this.getAdItem}
-            />
-          )
-        }
+        <AdsCarousel
+          style={styles.ads}
+          data={_.isEmpty(advertisements) ? PLACEHOLDER_LIST : advertisements}
+          renderItem={this.getAdItem}
+        />
 
         <DappCard
           navigation={navigation}
