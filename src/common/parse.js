@@ -447,7 +447,6 @@ class ParseHelper {
 const ParseHelperProxy = new Proxy(ParseHelper, {
   get(target, propKey, receiver) {
     const targetValue = Reflect.get(target, propKey, receiver);
-    console.log(`ParseHelperProxy, propKey: ${propKey}`);
     if (typeof targetValue === 'function') {
       const func = async (...args) => {
         try {
