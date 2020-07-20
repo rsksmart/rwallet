@@ -924,7 +924,7 @@ class Transfer extends Component {
     if (coin && coin.balance) {
       balanceText = common.getBalanceString(coin.balance, symbol);
       const balanceValue = common.getCoinValue(coin.balance, symbol, type, currency, prices);
-      balanceValueText = common.getAssetValueString(balanceValue);
+      balanceValueText = common.getAssetValueString(balanceValue) || '0';
     }
 
     return (
