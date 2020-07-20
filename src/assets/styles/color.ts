@@ -175,6 +175,7 @@ const color = {
     lightBlue: '#008CFF',
     word: '#4A4A4A',
     warningText: '#DF5264',
+    concrete: '#F2F2F2',
     ...styleScript(),
 };
 
