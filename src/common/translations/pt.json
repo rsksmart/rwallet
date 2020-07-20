@@ -118,7 +118,7 @@
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
-        "title": "Mandar",
+        "title": "Enviar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
@@ -301,7 +301,7 @@
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
-    "Send": "Mandar",
+    "Send": "Enviar",
     "Receive": "Receber",
     "Swap": "Troca",
     "Delete": "Excluir",
