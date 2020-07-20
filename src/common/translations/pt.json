@@ -110,7 +110,7 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Varredura",
+        "title": "Digitalizar",
         "cameraPermission": {
           "title": "Permissão para usar a câmera",
           "message": "Precisamos da sua permissão para usar sua câmera"
