@@ -15,23 +15,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#9B9B9B',
+    backgroundColor: color.dustyGray,
   },
   title: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#000',
+    color: color.black,
     marginTop: 22,
   },
   text: {
-    color: '#0B0B0B',
+    color: this.codGray,
     fontSize: 16,
     lineHeight: 22,
     marginTop: 15,
     marginBottom: 30,
   },
   line: {
-    borderBottomColor: '#DCDCDC',
+    borderBottomColor: color.gainsboro,
     width: '100%',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 15,
@@ -82,8 +82,8 @@ class Alert extends Component {
         visible
         onShow={this.startShow}
       >
-        <View style={{ justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
+        <View style={{ justifyContent: 'center', flex: 1, backgroundColor: color.blackA50 }}>
+          <View style={{ marginHorizontal: 25, backgroundColor: color.white, borderRadius: 5 }}>
             <View style={{ paddingHorizontal: 20 }}>
               <Loc style={[styles.title]} text={title} />
               <Text style={[styles.text]}>{message}</Text>

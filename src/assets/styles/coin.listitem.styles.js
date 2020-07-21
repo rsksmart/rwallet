@@ -6,7 +6,7 @@ const coinListItemStyles = StyleSheet.create({
     fontFamily: 'Avenir-Heavy',
     marginBottom: 10,
     fontSize: 14,
-    color: '#000',
+    color: color.black,
     paddingHorizontal: 10,
   },
   itemView: {

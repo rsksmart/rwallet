@@ -7,6 +7,7 @@ import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
 import DAppStackNavigator from './stack.dapp';
 import TabBar from './components/bottom.tab';
+import color from '../assets/styles/color';
 
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
@@ -99,8 +100,8 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#df394d', // 激活颜色
-      inactiveTintColor: 'gray', // 未激活颜色,
+      activeTintColor: color.ceriseRed, // 激活颜色
+      inactiveTintColor: color.gray, // 未激活颜色,
     },
   },
 );

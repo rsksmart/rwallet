@@ -13,6 +13,7 @@ import WalletSelection from '../../components/common/modal/wallet.selection.moda
 import { strings } from '../../common/i18n';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   item: {
@@ -34,17 +35,17 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   dappName: {
-    color: '#060606',
+    color: color.gray06,
     fontFamily: 'Avenir-Book',
     fontSize: 18,
   },
   dappDesc: {
-    color: '#535353',
+    color: color.gray53,
     fontSize: 11,
     fontFamily: 'Avenir-Book',
   },
   dappUrl: {
-    color: '#ABABAB',
+    color: color.grayAB,
     fontSize: 12,
     fontFamily: 'Avenir-Book',
   },

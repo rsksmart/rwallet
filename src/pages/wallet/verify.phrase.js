@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   tip: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     fontWeight: '500',
     letterSpacing: 0.29,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   confirmationView: {
     width: '100%',
     height: 200,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,

@@ -4,6 +4,8 @@ import { WebView } from 'react-native-webview';
 import * as PropTypes from 'prop-types';
 import LoadingBar from './loading-bar';
 
+import color from '../../../../assets/styles/color';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -61,10 +63,10 @@ class ProgressBarWebView extends React.PureComponent {
 
   render() {
     const { height, forwardedRef } = this.props;
-    const { percent, color, visible } = this.state;
+    const { percent, color: loadingBarColor, visible } = this.state;
     return (
       <View style={styles.container}>
-        {visible && <LoadingBar height={height} color={color} percent={percent} />}
+        {visible && <LoadingBar height={height} color={loadingBarColor} percent={percent} />}
         <WebView
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
@@ -88,13 +90,13 @@ ProgressBarWebView.propTypes = {
   onError: PropTypes.func,
   onLoadStart: PropTypes.func,
   onLoadEnd: PropTypes.func,
-  forwardedRef: PropTypes.object,
+  forwardedRef: PropTypes.shape({}),
 };
 
 ProgressBarWebView.defaultProps = {
   height: 3,
-  color: '#3B78E7',
-  errorColor: '#f30',
+  color: color.brightBlue,
+  errorColor: color.scarlet,
   disappearDuration: 300,
   onLoadProgress: undefined,
   onError: undefined,

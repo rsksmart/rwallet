@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
+import color from '../../../assets/styles/color';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -17,7 +18,7 @@ class WalletAddIndex extends Component {
         id: '1',
         title: 'page.wallet.add.createWallet',
         text: 'page.wallet.add.createWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: '#515151' }} />),
+        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
         onPress: () => {
           this.createWalletFlow('WalletSelectCurrency');
         },
@@ -26,7 +27,7 @@ class WalletAddIndex extends Component {
         id: '2',
         title: 'page.wallet.add.importWallet',
         text: 'page.wallet.add.importWalletNote',
-        icon: (<AntDesign name="download" size={25} style={{ color: '#515151' }} />),
+        icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
         onPress: () => {
           this.createWalletFlow('WalletRecovery');
         },

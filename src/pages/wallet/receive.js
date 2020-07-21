@@ -24,7 +24,7 @@ const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
   addressContainer: {
     marginTop: DEVICE.screenHeight * 0.03,

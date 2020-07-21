@@ -37,6 +37,88 @@ function styleScript() {
 
 
 const color = {
+  // transparent
+  transparent: 'transparent',
+
+  // gray
+  white: '#FFF',
+  black: '#000',
+  gray: 'gray',
+  grayD5: '#D5D5D5',
+  grayD1: '#D1D1D1',
+  grayD8: '#D8D8D8',
+  grayED: '#EDEDED',
+  gray06: '#060606',
+  gray97: '#979797',
+  grayAB: '#ABABAB',
+  gray53: '#535353',
+  grayF2: '#F2F2F2',
+  gray91: '#919191',
+  gray93: '#939393',
+  grayEB: '#EBEBEB',
+  grayB1: '#B1B1B1',
+  grayB5: '#B5B5B5',
+  codGray: '#0B0B0B',
+  doveGray: '#666666',
+  lightGray: '#CBC6C6',
+  dustyGray: '#9B9B9B',
+  gainsboro: '#DCDCDC',
+  tundora: '4A4A4A',
+  silver: '#BBB',
+  alto: '#DDD',
+  gallery: '#EEE',
+  nevada: '#656667',
+  emperor: '#515151',
+  silverChalice: '#ACACAC',
+  mineShaft: '#2D2D2D',
+  nobel: '#B6B6B6',
+  concrete: '#F3F3F3',
+  wildSand: '#F5F5F5',
+  snowDrift: '#F3F7F4',
+
+  // blue
+  lynch: '#77869E',
+  shipCove: '#6875B7',
+  azureRadiance: '#008CFF',
+  vividBlue: '#028CFF',
+  greenVogue: '#042C5C',
+  sanMarino: '#3F51B5',
+  curiousBlue: '#3B9DD8',
+  cerulean: '#039BE5',
+  royalBlue: '#4169E1',
+  godgerBlue: '#2979FF',
+  brightBlue: '#3B78E7',
+
+  // red
+  red: 'red',
+  cinnabar: '#E73934',
+  crimson: '#D2142B',
+  vermilion: '#FF4500',
+  ceriseRed: '#df394d',
+  scarlet: '#FF3300',
+
+  // green
+  mantis: '#6FC062',
+  malachite: '#00B520',
+  lightGrayishGreen: '#7BCC70',
+
+  // orange
+  buttercup: '#F5A623',
+
+  // yellow
+  selectiveYellow: '#FFBB00',
+
+  whiteA0: 'rgba(255, 255, 255, 0)',
+  whiteA50: 'rgba(255, 255, 255, 0.5)',
+  whiteA90: 'rgba(255, 255, 255, 0.9)',
+  whiteA92: 'rgba(255, 255, 255, 0.92)',
+  blackA30: 'rgba(0, 0, 0, 0.3)',
+  blackA50: 'rgba(0, 0, 0, 0.5)',
+  blackA64: 'rgba(0, 0, 0, 0.64)',
+  blackA80: 'rgba(0, 0, 0, 0.8)',
+  ebonyA60: 'rgba(8, 9, 18, 0.6)',
+  tunaA50: 'rgba(49, 49, 51,0.5)',
+  azureRadianceA65: 'rgba(2, 140, 255, 0.65)',
 
   // only used for IDE
   bg: {
@@ -50,10 +132,10 @@ const color = {
   },
   // end
   app: {
-    theme: '#008CFF',
-    standard: '#df394d',
+    theme: this.azureRadiance,
+    standard: this.ceriseRed,
     fontImp: '#333333',
-    fontNormal: '#666666',
+    fontNormal: this.doveGray,
     fontAssist: '#999999',
     naviLine: '#e5e5e5',
     inputLine: '#cccccc',
@@ -65,89 +147,89 @@ const color = {
   },
   text: {
     link: '#DF5264',
-    warning: '#008CFF',
+    warning: this.azureRadiance,
   },
   component: {
     input: {
-      backgroundColor: '#F3F3F3',
+      backgroundColor: this.concrete,
       borderColor: 'rgba(144,144,144,0.2)',
     },
     button: {
-      backgroundColor: '#008CFF',
-      color: '#FFF',
+      backgroundColor: this.azureRadiance,
+      color: this.white,
     },
     passcodeModal: {
       backgroundColor: '#080808',
       title: {
-        color: '#FFF',
+        color: this.white,
         alert: '#FC4349',
       },
       dot: {
-        borderColor: '#008CFF',
+        borderColor: this.azureRadiance,
       },
       dot2: {
-        backgroundColor: '#008CFF',
+        backgroundColor: this.azureRadiance,
       },
       button: {
         borderColor: '#9F9F9F',
       },
       cancel: {
-        color: '#FFF',
+        color: this.white,
       },
       char: {
-        color: '#F3F3F3',
+        color: this.concrete,
       },
       number: {
-        color: '#F3F3F3',
+        color: this.concrete,
       },
     },
     tags: {
       backgroundColor: '#0AB627',
-      color: '#FFF',
+      color: this.white,
     },
     iconList: {
-      borderBottomColor: '#D5D5D5',
+      borderBottomColor: this.grayD5,
       title: {
-        color: '#0B0B0B',
+        color: this.codGray,
       },
       chevron: {
-        color: '#D5D5D5',
+        color: this.grayD5,
       },
     },
     iconTwoTextList: {
-      borderBottomColor: '#bbb',
+      borderBottomColor: this.silver,
       title: {
-        color: '#0B0B0B',
+        color: this.codGray,
       },
       text: {
-        color: '#4A4A4A',
+        color: this.tundora,
       },
     },
     selectionList: {
-      color: '#2D2D2D',
+      color: this.mineShaft,
     },
     dashLine: {
-      backgroundColor: '#979797',
+      backgroundColor: this.gray97,
     },
     touchSensorModal: {
-      color: '#000',
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      color: this.black,
+      backgroundColor: this.whiteA50,
       panel: {
-        backgroundColor: '#FFF',
+        backgroundColor: this.white,
       },
     },
     listItemIndicator: {
-      color: '#9B9B9B',
+      color: this.dustyGray,
     },
     navBackIndicator: {
-      color: '#FFF',
+      color: this.white,
     },
     swipableButtonList: {
       backText: {
-        color: '#FFF',
+        color: this.white,
       },
       rowFront: {
-        backgroundColor: '#FFF',
+        backgroundColor: this.white,
       },
       backLeftBtnLeft: {
         backgroundColor: '#545455',
@@ -159,29 +241,26 @@ const color = {
         backgroundColor: '#60BA52',
       },
       right: {
-        borderBottomColor: '#EDEDED',
+        borderBottomColor: this.grayED,
       },
       title: {
-        color: '#042C5C',
+        color: this.greenVogue,
       },
       text: {
-        color: '#77869E',
+        color: this.lynch,
       },
       worth: {
-        color: '#000',
+        color: this.black,
       },
       amount: {
-        color: '#77869E',
+        color: this.lynch,
       },
     },
   },
-  black: '#000',
-  white: '#FFF',
   midGrey: '#727372',
-  seporatorLineGrey: '#D8D8D8',
-  seporatorLineLightGrey: '#DCDCDC',
-  lightBlue: '#008CFF',
-  word: '#4A4A4A',
+  seporatorLineGrey: this.grayD8,
+  seporatorLineLightGrey: this.grayD5,
+  word: this.tundora,
   warningText: '#DF5264',
   ...styleScript(),
 };

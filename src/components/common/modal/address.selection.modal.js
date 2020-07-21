@@ -14,7 +14,7 @@ import TypeTag from '../misc/type.tag';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: color.blackA50,
     justifyContent: 'center',
     flex: 1,
   },
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   selectedColor: {
-    color: color.lightBlue,
+    color: color.azureRadiance,
   },
   ButtonsView: {
     flexDirection: 'row',

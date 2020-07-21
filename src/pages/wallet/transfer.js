@@ -32,14 +32,14 @@ const MEMO_LINE_HEIGHT = 15;
 
 const styles = StyleSheet.create({
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: color.whiteA90,
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
     marginLeft: -2,
     marginBottom: 2,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   headImage: {
     position: 'absolute',
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     margin: 25,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 15,
     fontWeight: '300',
     width: '80%',
@@ -75,17 +75,17 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
   sending: {
-    color: '#000000',
+    color: color.black,
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.39,
     marginTop: 20,
   },
   sectionTitle: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     fontWeight: '900',
     letterSpacing: 0.31,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   memo: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     fontWeight: '900',
     letterSpacing: 0.23,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textInput: {
-    color: '#000000',
+    color: color.black,
     fontSize: 12,
     fontWeight: '500',
     paddingVertical: 0,
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
 
   },
   radioItemText1: {
-    color: '#000000',
+    color: color.black,
     fontSize: 16,
     letterSpacing: 0.31,
   },
   radioItemText2: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 12,
     fontWeight: '300',
     letterSpacing: 0.23,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ACACAC',
+    borderColor: color.silverChalice,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   customTitle: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     fontWeight: '500',
     letterSpacing: 0.31,
@@ -824,7 +824,7 @@ class Transfer extends Component {
               minimumValue={0}
               maximumValue={1}
               minimumTrackTintColor={color.app.theme}
-              maximumTrackTintColor="#D8D8D8"
+              maximumTrackTintColor={color.grayD8}
               thumbTintColor={color.app.theme}
               onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
               onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}

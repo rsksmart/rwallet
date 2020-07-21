@@ -11,14 +11,14 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#028CFF',
+    backgroundColor: color.vividBlue,
   },
   tagText: {
     color: color.white,
     fontSize: 12,
   },
   testnet: {
-    backgroundColor: '#9b9b9b',
+    backgroundColor: color.dustyGray,
   },
 });
 

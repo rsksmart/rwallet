@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listItemIndicator: {
-    color: '#D5D5D5',
+    color: color.grayD5,
     marginLeft: -3,
   },
   rowTitleView: {
@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
   balance: {
     fontFamily: 'Avenir-Roman',
     fontSize: 12,
-    color: '#77869E',
+    color: color.lynch,
     letterSpacing: 1,
   },
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: color.whiteA90,
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
     letterSpacing: 0.39,

@@ -27,7 +27,7 @@ export default function Picker() {
         ]}
         style={{
           inputAndroid: {
-            backgroundColor: 'transparent',
+            backgroundColor: color.transparent,
           },
           iconContainer: {
             top: 20,

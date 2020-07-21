@@ -9,6 +9,7 @@ import Carousel from '@amazingbeerbelly/react-native-snap-carousel';
 import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
+import color from '../../../assets/styles/color';
 import Loc from '../../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
@@ -16,28 +17,30 @@ const styles = StyleSheet.create({
   },
   item: {
     borderWidth: 2,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     flex: 1,
     borderRadius: 5,
-    borderColor: 'white',
+    borderColor: color.white,
     elevation: 3,
   },
   imageBackground: {
     flex: 2,
-    backgroundColor: '#EBEBEB',
+    backgroundColor: color.grayEB,
     borderWidth: 5,
-    borderColor: 'white',
+    borderColor: color.white,
   },
   rightTextContainer: {
     marginLeft: 'auto',
     marginRight: -2,
-    backgroundColor: 'rgba(49, 49, 51,0.5)',
+    backgroundColor: color.tunaA50,
     padding: 3,
     marginTop: 3,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
-  rightText: { color: 'white' },
+  rightText: {
+    color: color.white,
+  },
   lowerContainer: {
     flex: 1,
     margin: 10,
@@ -52,16 +55,16 @@ const styles = StyleSheet.create({
   },
   addWalletButtonView: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: color.transparent,
   },
   addWalletText: {
-    color: '#FFF',
+    color: color.white,
     fontFamily: 'Avenir-Medium',
     fontSize: 12,
     marginTop: 10,
   },
   addWalletButton: {
-    backgroundColor: 'rgba(255,255,255, 0.5)',
+    backgroundColor: color.whiteA50,
     borderTopRightRadius: 12,
     borderBottomRightRadius: 12,
     height: 166,

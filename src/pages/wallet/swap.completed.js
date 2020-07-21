@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 48,
     left: 55,
-    color: '#FFF',
+    color: color.white,
   },
   backButton: {
     position: 'absolute',
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     top: 37,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   headImage: {
     position: 'absolute',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
     marginLeft: 10,
   },
@@ -58,12 +58,12 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     marginTop: -330,
-    backgroundColor: '#fff',
+    backgroundColor: color.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -74,12 +74,12 @@ const styles = StyleSheet.create({
     marginBottom: 45,
   },
   title: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Heavy',
     fontSize: 17,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontFamily: 'Avenir-Book',
     fontSize: 15,
     marginTop: 15,
@@ -92,14 +92,14 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
   rightButton: {
-    color: '#FFF',
+    color: color.white,
   },
   bottomView: {
     height: 30,
-    backgroundColor: '#FFF',
+    backgroundColor: color.white,
     width: '100%',
     position: 'absolute',
     bottom: -10,

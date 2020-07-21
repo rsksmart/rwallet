@@ -16,12 +16,13 @@ import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import Item from '../../components/wallet/coin.type.list.item';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
     marginLeft: 10,
   },

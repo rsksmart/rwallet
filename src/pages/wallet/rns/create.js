@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     borderWidth: 1,
-    borderColor: '#F2F2F2',
+    borderColor: color.grayF2,
     height: 38,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     fontSize: 14,
-    color: '#919191',
+    color: color.gray91,
   },
   addButtonPlus: {
     fontSize: 17,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   rnsRow: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.grayD8,
     marginBottom: 20,
   },
   rnsTokenInput: {
@@ -121,12 +121,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Avenir-Book',
     marginRight: 7,
-    color: '#979797',
+    color: color.gray97,
     flex: 1,
   },
   rnsRowChevron: {
     fontSize: 30,
-    color: '#CBC6C6',
+    color: color.lightGray,
     right: 5,
   },
   notice: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   successNotice: {
-    color: '#00B520',
+    color: color.malachite,
     marginTop: 10,
   },
 });

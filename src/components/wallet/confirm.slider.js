@@ -3,6 +3,7 @@ import {
   View, PanResponder, Animated, NativeModules,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import color from '../../assets/styles/color';
 
 const { UIManager } = NativeModules;
 
@@ -158,7 +159,7 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
           }}
         >
           <Animated.View style={[{
-            position: 'absolute', height: dimensions.height, width: progressWidth, backgroundColor: '#7BCC70', borderRadius,
+            position: 'absolute', height: dimensions.height, width: progressWidth, backgroundColor: color.lightGrayishGreen, borderRadius,
           }]}
           />
 
@@ -170,7 +171,7 @@ class ConfirmSlider extends Component { // eslint-disable-line no-unused-express
               color: animatedTextValue.interpolate(
                 {
                   inputRange: [0, 100],
-                  outputRange: ['black', 'white'],
+                  outputRange: [color.black, color.white],
                 },
               ),
             }]}

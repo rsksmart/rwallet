@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   switch: {
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: color.black,
     paddingVertical: 10,
     width: Dimensions.get('window').width / 4,
   },

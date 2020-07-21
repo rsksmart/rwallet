@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import { screen } from '../../common/info';
 import flex from '../../assets/styles/layout.flex';
 import space from '../../assets/styles/space';
+import color from '../../assets/styles/color';
 
 import updateBanner from '../../assets/images/root/update/banner.update.png';
 
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: color.blackA30,
     height: screen.height,
     width: screen.width,
   },
@@ -66,7 +67,7 @@ class UpdateModal extends Component {
             <View
               style={[
                 {
-                  backgroundColor: '#fff',
+                  backgroundColor: color.white,
                   width: 0.8 * screen.width,
                   borderBottomLeftRadius: 5,
                   borderBottomRightRadius: 5,
@@ -76,7 +77,7 @@ class UpdateModal extends Component {
             >
               <Text
                 style={{
-                  color: '#2979FF',
+                  color: color.godgerBlue,
                   fontSize: 20,
                   fontWeight: 'bold',
                   justifyContent: 'center',
@@ -90,7 +91,7 @@ class UpdateModal extends Component {
                   borderBottomLeftRadius: 5,
                   borderBottomRightRadius: 5,
                   borderTopWidth: StyleSheet.hairlineWidth,
-                  borderTopColor: '#eee',
+                  borderTopColor: color.gallery,
                   height: 60,
                   width: 0.8 * screen.width,
                   position: 'absolute',
@@ -127,11 +128,11 @@ class UpdateModal extends Component {
                           alignItems: 'center',
                           borderRadius: 20,
                           justifyContent: 'center',
-                          backgroundColor: '#eee',
+                          backgroundColor: color.gallery,
                           flex: 1,
                         }}
                       >
-                        <Text style={{ color: '#666' }}>Update Later</Text>
+                        <Text style={{ color: color.doveGray }}>Update Later</Text>
                       </View>
                     </TouchableOpacity>
                   )}
@@ -151,11 +152,11 @@ class UpdateModal extends Component {
                         alignItems: 'center',
                         borderRadius: 20,
                         justifyContent: 'center',
-                        backgroundColor: '#2979FF',
+                        backgroundColor: color.godgerBlue,
                         flex: 1,
                       }}
                     >
-                      <Text style={{ color: '#fff' }}>Update Now</Text>
+                      <Text style={{ color: color.white }}>Update Now</Text>
                     </View>
                   </TouchableOpacity>
                 </View>

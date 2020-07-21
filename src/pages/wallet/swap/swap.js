@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   operationView: {
-    backgroundColor: '#F3F7F4',
+    backgroundColor: color.snowDrift,
     borderRadius: 3,
     flexDirection: 'row',
     alignItems: 'center',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   operationAmount: {
-    color: '#FFBB00',
+    color: color.selectiveYellow,
   },
   operationValue: {
     alignSelf: 'flex-end',
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   boardText: {
-    color: '#9B9B9B',
+    color: color.dustyGray,
   },
   boardWalletName: {
     color: color.black,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   switchView: {
     height: 40,
     marginTop: 33,
-    backgroundColor: '#F3F3F3',
+    backgroundColor: color.concrete,
     flexDirection: 'row',
     textAlign: 'center',
     justifyContent: 'center',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   errorView: {
-    backgroundColor: '#F3F7F4',
+    backgroundColor: color.snowDrift,
     borderRadius: 3,
     flexDirection: 'row',
     alignItems: 'center',
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     left: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     opacity: 0.75,
     borderWidth: 0,
   },
@@ -788,7 +788,7 @@ class Swap extends Component {
               <TouchableOpacity onPress={this.onSelectSourcePress} style={styles.boardTokenViewLeft}>
                 {swapSource && <Image style={styles.boardTokenIcon} source={swapSource.coin.icon} />}
                 {swapSource && <Text style={styles.boardTokenName}>{swapSource.coin.symbol}</Text>}
-                <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                <EvilIcons name="chevron-down" color={color.dustyGray} size={40} />
               </TouchableOpacity>
             </View>
             <View style={styles.boardAmountView}>
@@ -835,7 +835,7 @@ class Swap extends Component {
               <TouchableOpacity onPress={this.onSelectDestPress} style={styles.boardTokenViewLeft}>
                 {swapDest && (<Image style={styles.boardTokenIcon} source={swapDest.coin.icon} />)}
                 {swapDest && (<Text style={styles.boardTokenName}>{swapDest.coin.symbol}</Text>)}
-                <EvilIcons name="chevron-down" color="#9B9B9B" size={40} />
+                <EvilIcons name="chevron-down" color={color.dustyGray} size={40} />
               </TouchableOpacity>
             </View>
             <View style={styles.boardAmountView}>

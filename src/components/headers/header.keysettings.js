@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
 import Loc from '../common/misc/loc';
+import color from '../../assets/styles/color';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 65,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   headerText: {
     fontSize: 15,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 45,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   backButton: {
     position: 'absolute',
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     bottom: 97,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
 });
 

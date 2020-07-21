@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   rnsRow: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.grayD8,
     marginBottom: 20,
   },
   addressView: {
@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   successNotice: {
-    color: '#00B520',
+    color: color.malachite,
   },
   pendingNotice: {
-    color: '#F5A623',
+    color: color.buttercup,
   },
   failedNotice: {
     color: color.warningText,

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   addCustomTokenView: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: color.whiteA50,
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 20,

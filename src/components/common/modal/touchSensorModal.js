@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: color.transparent,
   },
   panel: {
     marginHorizontal: 25,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   touchToVerify: {
     fontFamily: 'Avenir-Heavy',
-    color: '#000000',
+    color: color.black,
     marginBottom: 17,
   },
   passcode: {},
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   errText: {
     marginTop: 10,
-    color: 'red',
+    color: color.red,
     textAlign: 'center',
     lineHeight: 20,
   },

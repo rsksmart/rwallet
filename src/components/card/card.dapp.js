@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
   },
   cardButtonText: {
-    color: '#028CFF',
+    color: color.vividBlue,
     fontFamily: 'Avenir-Roman',
     fontSize: 14,
   },

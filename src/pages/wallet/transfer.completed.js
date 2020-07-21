@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 48,
     left: 55,
-    color: '#FFF',
+    color: color.white,
   },
   backButton: {
     position: 'absolute',
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     top: 37,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   headImage: {
     position: 'absolute',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
     marginLeft: 10,
   },
@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#000000',
+    color: color.black,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 15,
     fontWeight: '300',
     width: '80%',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
 });
 

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '300',
     letterSpacing: 0.32,
-    color: '#000000',
+    color: color.black,
   },
 });
 

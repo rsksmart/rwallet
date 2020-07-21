@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   itemView: {
     marginLeft: 10,
     padding: 5,
-    backgroundColor: color.lightBlue,
+    backgroundColor: color.azureRadiance,
     borderRadius: 5,
     marginTop: 10,
     height: 30,

@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 20,
   },
   title: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     letterSpacing: 0.25,
     fontWeight: 'bold',

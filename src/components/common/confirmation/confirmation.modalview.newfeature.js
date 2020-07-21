@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    color: '#B6B6B6',
+    color: color.nobel,
     marginBottom: 20,
     marginTop: 10,
     width: '100%',
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontFamily: 'Avenir-Roman',
-    color: '#B6B6B6',
+    color: color.nobel,
     fontSize: 16,
   },
   buttonsView: {

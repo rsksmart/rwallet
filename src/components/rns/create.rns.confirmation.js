@@ -10,7 +10,7 @@ import common from '../../common/common';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: color.blackA50,
     justifyContent: 'center',
     flex: 1,
   },
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     fontFamily: 'Avenir-Heavy',
-    color: '#F3F3F3',
+    color: color.concrete,
     fontSize: 16,
   },
   cancelButton: {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   cancelText: {
-    color: '#B1B1B1',
+    color: color.grayB1,
     fontFamily: 'Avenir-Roman',
   },
 });
