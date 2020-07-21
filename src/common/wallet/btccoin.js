@@ -1,9 +1,8 @@
-import { fromSeed, fromBase58 } from 'bip32';
+import { fromSeed } from 'bip32';
 import _ from 'lodash';
 import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
-import PathKeyPair from './pathkeypair';
 import common from '../common';
 
 export default class Coin {
@@ -21,73 +20,34 @@ export default class Coin {
     this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
   }
 
+  deriveSegwitAddressAndPrivateKey = (root, network) => {
+    const path = `m/84'/${this.networkId}'/${this.account}'/0/0`;
+    const keyPair = root.derivePath(path);
+    const { address } = payments.p2wpkh({ pubkey: keyPair.publicKey, network });
+    this.segWitAddress = address;
+    this.segWitPrivateKey = keyPair.privateKey.toString('hex');
+  }
+
+  deriveLegacyAddressAndPrivateKey = (root, network) => {
+    const path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    const keyPair = root.derivePath(path);
+    const { address } = payments.p2pkh({ pubkey: keyPair.publicKey, network });
+    this.legacyAddress = address;
+    this.legacyPrivateKey = keyPair.privateKey.toString('hex');
+  }
+
   derive(seed) {
     const network = this.metadata && this.metadata.network;
-
     try {
-      const master = fromSeed(seed, network).toBase58();
-      const accountNode = Coin.generateAccountNode(master, network, this.networkId, this.account);
-      const changeNode = Coin.generateChangeNode(accountNode, network, 0);
-      const addressNode = Coin.generateAddressNode(changeNode, network, 0);
-      this.address = Coin.generateAddress(addressNode, network);
-      // this.addressPublicKey = addressNode.public_key;
-      // console.log('this.addressPublicKey = addressNode.public_key;');
-      const privateKeyBuffer = Coin.getPrivateKeyBuffer(master, addressNode, network);
-      // console.log(`[PK]this.addressPrivateKey: ${this.addressPrivateKey}`);
-      this.privateKey = privateKeyBuffer.toString('hex');
+      const root = fromSeed(seed, network);
+      this.deriveLegacyAddressAndPrivateKey(root, network);
+      this.deriveSegwitAddressAndPrivateKey(root, network);
+      this.address = this.segWitAddress;
+      this.privateKey = this.segWitPrivateKey;
+      console.log(`address: ${this.address}, privateKey: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
-
-    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
-  }
-
-  static getPrivateKeyBuffer(master, addressNode, network) {
-    let privateKey = Coin.derivePathFromNode(master, addressNode.path, network);
-    privateKey = fromBase58(privateKey, network).privateKey;
-    return privateKey;
-  }
-
-  static generateAccountNode(master, network, networkId, account) {
-    const path = `m/44'/${networkId}'/${account}'`;
-    const pk = fromBase58(master, network)
-      .derivePath(path)
-      .neutered()
-      .toBase58();
-    return new PathKeyPair(path, pk);
-  }
-
-  static generateChangeNode(accountNode, network, index) {
-    const path = `${accountNode.path}/${index}`;
-    const publickey = this.deriveChildFromNode(accountNode.public_key, network, index);
-    return new PathKeyPair(path, publickey);
-  }
-
-  static generateAddressNode(changeNode, network, index) {
-    const pk = changeNode;
-    const path = `${pk.path}/${index}`;
-    const result = this.deriveChildFromNode(pk.public_key, network, index);
-    return new PathKeyPair(path, result);
-  }
-
-  static generateAddress(addressNode, network) {
-    const options = {
-      pubkey: fromBase58(addressNode.public_key, network).publicKey,
-      network,
-    };
-
-    return payments.p2pkh(options).address;
-  }
-
-  static deriveChildFromNode(node, network, index) {
-    const t = fromBase58(node, network).derive(index);
-    return t.toBase58();
-  }
-
-  static derivePathFromNode(node, path, network) {
-    return fromBase58(node, network)
-      .derivePath(path)
-      .toBase58();
   }
 
   /**
