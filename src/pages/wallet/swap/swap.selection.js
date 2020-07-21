@@ -242,7 +242,7 @@ class SwapSelection extends Component {
 
   createListData = (wallets, navigation, selectionType, filters) => {
     const {
-      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, resetSwap, addNotification,
+      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, addNotification,
     } = this.props;
 
     const { init } = navigation.state.params || { init: true };
@@ -296,8 +296,8 @@ class SwapSelection extends Component {
                 if (swapDest && wallet.name === swapDest.walletName && coin.id === swapDest.coin.id) {
                   switchSwap();
                 } else if (swapDest && !config.coinswitch.initPairs[coin.id].includes(swapDest.coin.id)) {
+                  switchSwap();
                   setSwapSource(wallet.name, coin);
-                  resetSwap();
                 } else {
                   setSwapSource(wallet.name, coin);
                 }
