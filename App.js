@@ -6,7 +6,7 @@ import './shim'; // Provide global node types(global.Buffer, global.process) for
 import RootSwitchNavigator from './src/navigation/container';
 import store from './src/redux/store';
 import common from './src/common/common';
-import color from './src/assets/styles/color.ts';
+import color from './src/assets/styles/color';
 
 // Fix cut-off text on some android device
 common.setDefaultFontFamily();

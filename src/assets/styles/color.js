@@ -35,14 +35,13 @@ function styleScript() {
   return style;
 }
 
-
-const color = {
+const baseColor = {
   // transparent
   transparent: 'transparent',
 
   // gray
-  white: '#FFF',
-  black: '#000',
+  white: 'white',
+  black: 'black',
   gray: 'gray',
   grayD5: '#D5D5D5',
   grayD1: '#D1D1D1',
@@ -63,7 +62,7 @@ const color = {
   lightGray: '#CBC6C6',
   dustyGray: '#9B9B9B',
   gainsboro: '#DCDCDC',
-  tundora: '4A4A4A',
+  tundora: '#4A4A4A',
   silver: '#BBB',
   alto: '#DDD',
   gallery: '#EEE',
@@ -108,6 +107,7 @@ const color = {
   // yellow
   selectiveYellow: '#FFBB00',
 
+  // transparent colors
   whiteA0: 'rgba(255, 255, 255, 0)',
   whiteA50: 'rgba(255, 255, 255, 0.5)',
   whiteA90: 'rgba(255, 255, 255, 0.9)',
@@ -119,7 +119,9 @@ const color = {
   ebonyA60: 'rgba(8, 9, 18, 0.6)',
   tunaA50: 'rgba(49, 49, 51,0.5)',
   azureRadianceA65: 'rgba(2, 140, 255, 0.65)',
+};
 
+const color = {
   // only used for IDE
   bg: {
     bg: {}, primary: {}, aqua: {}, black: {}, blue: {}, fuchsia: {}, gray: {}, green: {}, lime: {}, maroon: {}, navy: {}, olive: {}, orange: {}, purple: {}, red: {}, silver: {}, teal: {}, white: {}, yellow: {},
@@ -132,10 +134,10 @@ const color = {
   },
   // end
   app: {
-    theme: this.azureRadiance,
-    standard: this.ceriseRed,
+    theme: baseColor.azureRadiance,
+    standard: baseColor.ceriseRed,
     fontImp: '#333333',
-    fontNormal: this.doveGray,
+    fontNormal: baseColor.doveGray,
     fontAssist: '#999999',
     naviLine: '#e5e5e5',
     inputLine: '#cccccc',
@@ -147,89 +149,89 @@ const color = {
   },
   text: {
     link: '#DF5264',
-    warning: this.azureRadiance,
+    warning: baseColor.azureRadiance,
   },
   component: {
     input: {
-      backgroundColor: this.concrete,
+      backgroundColor: baseColor.concrete,
       borderColor: 'rgba(144,144,144,0.2)',
     },
     button: {
-      backgroundColor: this.azureRadiance,
-      color: this.white,
+      backgroundColor: baseColor.azureRadiance,
+      color: baseColor.white,
     },
     passcodeModal: {
       backgroundColor: '#080808',
       title: {
-        color: this.white,
+        color: baseColor.white,
         alert: '#FC4349',
       },
       dot: {
-        borderColor: this.azureRadiance,
+        borderColor: baseColor.azureRadiance,
       },
       dot2: {
-        backgroundColor: this.azureRadiance,
+        backgroundColor: baseColor.azureRadiance,
       },
       button: {
         borderColor: '#9F9F9F',
       },
       cancel: {
-        color: this.white,
+        color: baseColor.white,
       },
       char: {
-        color: this.concrete,
+        color: baseColor.concrete,
       },
       number: {
-        color: this.concrete,
+        color: baseColor.concrete,
       },
     },
     tags: {
       backgroundColor: '#0AB627',
-      color: this.white,
+      color: baseColor.white,
     },
     iconList: {
-      borderBottomColor: this.grayD5,
+      borderBottomColor: baseColor.grayD5,
       title: {
-        color: this.codGray,
+        color: baseColor.codGray,
       },
       chevron: {
-        color: this.grayD5,
+        color: baseColor.grayD5,
       },
     },
     iconTwoTextList: {
-      borderBottomColor: this.silver,
+      borderBottomColor: baseColor.silver,
       title: {
-        color: this.codGray,
+        color: baseColor.codGray,
       },
       text: {
-        color: this.tundora,
+        color: baseColor.tundora,
       },
     },
     selectionList: {
-      color: this.mineShaft,
+      color: baseColor.mineShaft,
     },
     dashLine: {
-      backgroundColor: this.gray97,
+      backgroundColor: baseColor.gray97,
     },
     touchSensorModal: {
-      color: this.black,
-      backgroundColor: this.whiteA50,
+      color: baseColor.black,
+      backgroundColor: baseColor.whiteA50,
       panel: {
-        backgroundColor: this.white,
+        backgroundColor: baseColor.white,
       },
     },
     listItemIndicator: {
-      color: this.dustyGray,
+      color: baseColor.dustyGray,
     },
     navBackIndicator: {
-      color: this.white,
+      color: baseColor.white,
     },
     swipableButtonList: {
       backText: {
-        color: this.white,
+        color: baseColor.white,
       },
       rowFront: {
-        backgroundColor: this.white,
+        backgroundColor: baseColor.white,
       },
       backLeftBtnLeft: {
         backgroundColor: '#545455',
@@ -241,28 +243,29 @@ const color = {
         backgroundColor: '#60BA52',
       },
       right: {
-        borderBottomColor: this.grayED,
+        borderBottomColor: baseColor.grayED,
       },
       title: {
-        color: this.greenVogue,
+        color: baseColor.greenVogue,
       },
       text: {
-        color: this.lynch,
+        color: baseColor.lynch,
       },
       worth: {
-        color: this.black,
+        color: baseColor.black,
       },
       amount: {
-        color: this.lynch,
+        color: baseColor.lynch,
       },
     },
   },
   midGrey: '#727372',
-  seporatorLineGrey: this.grayD8,
-  seporatorLineLightGrey: this.grayD5,
-  word: this.tundora,
+  seporatorLineGrey: baseColor.grayD8,
+  seporatorLineLightGrey: baseColor.grayD5,
+  word: baseColor.tundora,
   warningText: '#DF5264',
   ...styleScript(),
+  ...baseColor,
 };
 
 
