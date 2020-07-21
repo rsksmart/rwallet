@@ -144,8 +144,8 @@ export default function appReducer(state = initState, action) {
       return state.set('fcmNavParams', null);
     case actions.SET_FCM_TOKEN:
       return state.set('fcmToken', action.fcmToken);
-    case actions.LOGIN_DONE:
-      return state.set('isLogin', true);
+    case actions.SET_LOGIN:
+      return state.set('isLogin', action.isLogin);
     case actions.SET_LOGIN_ERROR:
       return state.set('isLoginError', true);
     case actions.RESET_LOGIN_ERROR:

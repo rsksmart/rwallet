@@ -5,8 +5,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
-
-const ERROR_PARSE_DEFAULT = 'error.parse.default';
+import actions from '../redux/app/actions';
+import common from './common';
 
 const parseConfig = config && config.parse;
 
@@ -43,6 +43,7 @@ class ParseHelper {
   }
 
   static signInOrSignUp(appId) {
+    console.log('parse::signInOrSignUp, appId: ', appId);
     // Set appId as username and password.
     // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
     const username = appId;
@@ -50,6 +51,7 @@ class ParseHelper {
 
     return Parse.User.logIn(username, password)
       .catch((err) => {
+        console.log('signInOrSignUp, err: ', err, err.message);
         if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
           console.log(`User not found with appId ${username}. Signing up ...`);
           const user = new Parse.User();
@@ -192,32 +194,6 @@ class ParseHelper {
 
   static getServerInfo() {
     return Parse.Cloud.run('getServerInfo');
-  }
-
-  /**
-   * Transform Parse errors to errors defined by this app
-   * @param {object}     err        Parse error from response
-   * @returns {object}  error object defined by this app
-   * @method handleError
-   */
-  static async handleError({ err }) {
-    console.log('handleError', err);
-    if (!err) {
-      return { message: ERROR_PARSE_DEFAULT };
-    }
-
-    const message = err.message || ERROR_PARSE_DEFAULT;
-
-    switch (err.code) {
-      case Parse.Error.INVALID_SESSION_TOKEN:
-        console.log('INVALID_SESSION_TOKEN. Logging out');
-        await Parse.User.logOut();
-        break;
-      default:
-        break;
-    }
-
-    return { message };
   }
 
   /**
@@ -467,4 +443,29 @@ class ParseHelper {
   }
 }
 
-export default ParseHelper;
+// Create parse helper proxy to add global error handling
+const ParseHelperProxy = new Proxy(ParseHelper, {
+  get(target, propKey, receiver) {
+    const targetValue = Reflect.get(target, propKey, receiver);
+    if (typeof targetValue === 'function') {
+      const func = async (...args) => {
+        try {
+          const result = await targetValue.apply(this, args);
+          return result;
+        } catch (error) {
+          console.log('ParseHelperProxy, error', error.message);
+          // When the session expires, we need to relogin
+          if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+            console.log('INVALID_SESSION_TOKEN');
+            common.getStore().dispatch(actions.relogin());
+          }
+          throw error;
+        }
+      };
+      return func;
+    }
+    return targetValue;
+  },
+});
+
+export default ParseHelperProxy;

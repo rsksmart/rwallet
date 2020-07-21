@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 import {
-  all, take, takeEvery, put, call, cancelled,
+  all, take, takeEvery, put, call, cancelled, select,
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import actions from './actions';
@@ -66,8 +66,16 @@ function* subscribePrices() {
   let socket;
   let socketChannel;
   try {
+    const state = yield select();
     socket = yield call(ParseHelper.subscribePrice);
     socketChannel = yield call(createSocketChannel, socket);
+
+    // When resubscribing we need to close the last channel
+    const priceChannel = state.Price.get('priceChannel');
+    if (priceChannel) {
+      priceChannel.close();
+    }
+    yield put({ type: actions.SET_PRICE_CHANNEL, value: socketChannel });
 
     while (true) {
       const payload = yield take(socketChannel);

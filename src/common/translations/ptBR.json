@@ -56,7 +56,7 @@
         "to": "Para",
         "memo": "Anotação (opcional)",
         "fee": "Taxa de transação",
-        "custom": "Ajustar taxa",
+        "custom": "Ajustar taxa manualmente",
         "feeQuestion": "Quão rápido você quer que isso seja feito?",
         "Slow": "Lento",
         "Average": "Médio",
@@ -201,7 +201,7 @@
       "recommended": "Recomendado",
       "all": "Todos",
       "button": {
-        "seeAll": "Ver tudo",
+        "seeAll": "Ver todos",
         "confirm": "Confirmar",
         "understood": "Entendi",
         "createOrImport": "Criar ou Importar",
@@ -429,8 +429,8 @@
       "faceID": {
         "title": "Face ID",
         "touchToVerify": "Toque para verificar o Face ID",
-        "nativeNote": "Por favor, aponte para a câmera para o reconhecimento do rosto",
-        "notMatch": "Face ID não confere. Por favor, tente de novo."
+        "nativeNote": "Por favor, aponte seu rosto para a câmera para que seja feito o reconhecimento facial",
+        "notMatch": "Face ID não confere. Por favor, tente novamente."
       },
       "failedAndTryPasscode": "A autenticação falhou. Por favor, tente o PIN.",
       "failedAndTryAgain": "A autenticação falhou. Por favor, tente novamente."
@@ -464,7 +464,7 @@
     },
     "noWalletAvailable": {
       "title": "Nenhuma carteira disponível",
-      "body": "Ainda não existe carteira disponível para esse Dapp. Por favor, primeiro navegue para a página criação para gerar ou importar uma carteira.\n\n"
+      "body": "Ainda não existe carteira disponível para esse Dapp. Por favor, primeiro crie ou importe uma através da Página de Criação de Carteira.\n\n"
     },
     "requestTimeout": {
       "title": "Tempo limite da solicitação",
