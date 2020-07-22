@@ -80,7 +80,13 @@ const config = {
   appLock: {
     timeout: 300000,
   },
-  termsUrl: 'https://www.rsk.co/terms-conditions',
+  termsUrl: {
+    en: 'https://www.rsk.co/terms-conditions',
+    zh: 'https://www.rsk.co/zh-Hans/terms-conditions',
+    es: 'https://www.rsk.co/es/terms-conditions',
+    pt: 'https://www.rsk.co/pt-pt/terms-conditions',
+    ptBR: 'https://www.rsk.co/pt-pt/terms-conditions',
+  },
   rnsDomain: 'wallet.rsk',
 };
 
