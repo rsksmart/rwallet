@@ -86,6 +86,9 @@ const config = {
     es: 'https://www.rsk.co/es/terms-conditions',
     pt: 'https://www.rsk.co/pt-pt/terms-conditions',
     ptBR: 'https://www.rsk.co/pt-pt/terms-conditions',
+    ru: 'https://www.rsk.co/ru/terms-conditions',
+    ko: 'https://www.rsk.co/ko/terms-conditions',
+    ja: 'https://www.rsk.co/ja/terms-conditions',
   },
   rnsDomain: 'wallet.rsk',
 };
