@@ -232,4 +232,11 @@ export default class RBTCCoin {
     if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
     return serialized;
   }
+
+  setupWithDerivation = (derivation) => {
+    const { path, address, privateKey } = derivation;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+  }
 }

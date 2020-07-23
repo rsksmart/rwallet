@@ -20,31 +20,41 @@ export default class Coin {
     this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
   }
 
-  deriveSegwitAddressAndPrivateKey = (root, network) => {
+  deriveSegwit= (root, network) => {
     const path = `m/84'/${this.networkId}'/${this.account}'/0/0`;
     const keyPair = root.derivePath(path);
     const { address } = payments.p2wpkh({ pubkey: keyPair.publicKey, network });
-    this.segWitAddress = address;
-    this.segWitPrivateKey = keyPair.privateKey.toString('hex');
+    return {
+      path,
+      address,
+      privateKey: keyPair.privateKey.toString('hex'),
+    };
   }
 
-  deriveLegacyAddressAndPrivateKey = (root, network) => {
+  deriveLegacy = (root, network) => {
     const path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
     const keyPair = root.derivePath(path);
     const { address } = payments.p2pkh({ pubkey: keyPair.publicKey, network });
-    this.legacyAddress = address;
-    this.legacyPrivateKey = keyPair.privateKey.toString('hex');
+    return {
+      path,
+      address,
+      privateKey: keyPair.privateKey.toString('hex'),
+    };
   }
 
   derive(seed) {
     const network = this.metadata && this.metadata.network;
     try {
       const root = fromSeed(seed, network);
-      this.deriveLegacyAddressAndPrivateKey(root, network);
-      this.deriveSegwitAddressAndPrivateKey(root, network);
-      this.address = this.segWitAddress;
-      this.privateKey = this.segWitPrivateKey;
-      console.log(`address: ${this.address}, privateKey: ${this.privateKey}`);
+      this.addresses = {
+        legacy: this.deriveLegacy(root, network),
+        segwit: this.deriveSegwit(root, network),
+      };
+      const { path, address, privateKey } = this.addresses.legacy;
+      this.path = path;
+      this.address = address;
+      this.privateKey = privateKey;
+      console.log(`path: ${path}, address: ${this.address}, privateKey: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
@@ -63,15 +73,17 @@ export default class Coin {
       address: this.address,
       objectId: this.objectId,
       balance: this.balance ? this.balance.toString() : undefined,
+      addressType: this.addressType,
     };
   }
 
   static fromJSON(json) {
     const {
-      symbol, type, derivationPath, objectId,
+      symbol, type, derivationPath, objectId, addressType,
     } = json;
     const instance = new Coin(symbol, type, derivationPath);
     instance.objectId = objectId;
+    instance.addressType = addressType;
     return instance;
   }
 
@@ -122,5 +134,13 @@ export default class Coin {
 
   get defaultName() {
     return this.metadata.defaultName;
+  }
+
+  setupWithDerivation = (derivation, addressType = 'legacy') => {
+    const { address, privateKey, path } = derivation.addresses[addressType];
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+    this.addressType = addressType;
   }
 }

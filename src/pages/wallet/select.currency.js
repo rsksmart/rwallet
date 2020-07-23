@@ -12,6 +12,7 @@ import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import { createInfoNotification } from '../../common/notification.controller';
+import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
@@ -45,7 +46,7 @@ class WalletSelectCurrency extends Component {
       };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
-      this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
+      this.btcAddressType = 'legacy';
       this.mainnet = [];
       this.testnet = [];
       const { consts: { supportedTokens } } = config;
@@ -79,19 +80,44 @@ class WalletSelectCurrency extends Component {
       }
     }
 
-    async onCreateButtonPress() {
-      const { navigation } = this.props;
+    createCoins = (addressType) => {
       const coins = [];
       for (let i = 0; i < this.mainnet.length; i += 1) {
         if (this.mainnet[i].selected) {
-          coins.push({ symbol: this.mainnet[i].title, type: 'Mainnet' });
+          const item = { symbol: this.mainnet[i].title, type: 'Mainnet' };
+          if (item.symbol === 'BTC') {
+            item.addressType = addressType;
+          }
+          coins.push(item);
         }
       }
       for (let i = 0; i < this.testnet.length; i += 1) {
         if (this.testnet[i].selected) {
-          coins.push({ symbol: this.mainnet[i].title, type: 'Testnet' });
+          const item = { symbol: this.mainnet[i].title, type: 'Testnet' };
+          if (item.symbol === 'BTC') {
+            item.addressType = addressType;
+          }
+          coins.push(item);
         }
       }
+      return coins;
+    }
+
+     onCreateButtonPress = async () => {
+       const { addConfirmation } = this.props;
+       let coins = [];
+       const notification = createBTCAddressTypeConfirmation(() => {
+         coins = this.createCoins('legacy');
+         this.createWalletWithCoins(coins);
+       }, () => {
+         coins = this.createCoins('segwit');
+         this.createWalletWithCoins(coins);
+       });
+       addConfirmation(notification);
+     }
+
+    createWalletWithCoins = (coins) => {
+      const { navigation } = this.props;
       if (this.isImportWallet) {
         this.requestCreateWallet(this.phrase, coins);
       } else {
@@ -186,6 +212,7 @@ WalletSelectCurrency.propTypes = {
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
   showPasscode: PropTypes.func.isRequired,
   passcode: PropTypes.string,
 };
@@ -206,6 +233,7 @@ const mapDispatchToProps = (dispatch) => ({
   createKey: (name, phrases, coins, walletManager, derivationPaths) => dispatch(walletActions.createKey(name, phrases, coins, walletManager, derivationPaths)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 
