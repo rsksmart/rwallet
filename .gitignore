@@ -70,5 +70,3 @@ out.log
 
 # Android signature file
 android/app/keystores/*.jks
-
-yarn.lock
