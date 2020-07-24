@@ -4,7 +4,6 @@ import {
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
-import publicIP from 'react-native-public-ip';
 import { getUniqueId } from 'react-native-device-info';
 
 /* Actions */
@@ -34,10 +33,9 @@ function* updateUserRequest() {
       return;
     }
     const fcmToken = state.App.get('fcmToken');
-    const ipAddress = yield call(publicIP);
     const deviceId = yield call(getUniqueId);
     const updatedParseUser = yield call(ParseHelper.updateUser, {
-      wallets: walletManager.wallets, settings, fcmToken, ipAddress, deviceId,
+      wallets: walletManager.wallets, settings, fcmToken, deviceId,
     });
 
     // Update coin's objectId and return isDirty true if there's coin updated
