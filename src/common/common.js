@@ -361,7 +361,15 @@ const common = {
     }
     newPrice.push(rdocPrice);
 
-    const rifPrice = _.find(newPrice, { symbol: 'RIF' });
+    let rifPrice = _.find(newPrice, { symbol: 'RIF' });
+    if (_.isUndefined(rifPrice)) {
+      rifPrice = { symbol: 'RIF', price: {} };
+      _.each(btcPriceKeys, (key) => {
+        rifPrice.price[key] = '0';
+      });
+      newPrice.push(rifPrice);
+    }
+
     let rifproPrice = _.find(newPrice, { symbol: 'RIFPRO' });
     if (_.isUndefined(rifproPrice)) {
       rifproPrice = _.clone(rifPrice);
