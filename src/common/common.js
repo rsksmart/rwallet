@@ -378,6 +378,7 @@ const common = {
     let rifPrice = _.find(newPrice, { symbol: 'RIF' });
     if (_.isUndefined(rifPrice)) {
       rifPrice = this.initPriceObject('RIF', btcPriceKeys);
+      newPrice.push(rifPrice);
     }
 
     let rifproPrice = _.find(newPrice, { symbol: 'RIFPRO' });
