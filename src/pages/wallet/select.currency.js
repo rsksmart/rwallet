@@ -17,6 +17,7 @@ import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import Item from '../../components/wallet/coin.type.list.item';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -107,10 +108,10 @@ class WalletSelectCurrency extends Component {
        const { addConfirmation } = this.props;
        let coins = [];
        const notification = createBTCAddressTypeConfirmation(() => {
-         coins = this.createCoins('legacy');
+         coins = this.createCoins(definitions.BtcAddressType.legacy);
          this.createWalletWithCoins(coins);
        }, () => {
-         coins = this.createCoins('segwit');
+         coins = this.createCoins(definitions.BtcAddressType.segwit);
          this.createWalletWithCoins(coins);
        });
        addConfirmation(notification);

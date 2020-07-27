@@ -196,6 +196,7 @@ export default class Wallet {
         type: derivation.type,
         path: derivation.path,
         address: derivation.address,
+        addressType: derivation.addressType,
       };
       if (derivation.symbol === 'BTC') {
         item.addresses = {
@@ -333,7 +334,8 @@ export default class Wallet {
     const derivation = _.find(this.derivations, { symbol: derivationSymbol, type });
     if (symbol === 'BTC') {
       coin = new Coin(symbol, type, derivation.path);
-      coin.setupWithDerivation(derivation, addressType);
+      coin.setupWithDerivation(derivation, addressType || derivation.accessType);
+      derivation.accessType = addressType;
     } else {
       coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, name, precision);
       coin.setupWithDerivation(derivation);

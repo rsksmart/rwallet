@@ -45,6 +45,17 @@ const SUBDOMAIN_STATUS = {
   FAILED: 2,
 };
 
+const BtcAddressType = {
+  legacy: 'legacy',
+  segwit: 'segwit',
+};
+
 export default {
-  txStatus, btcPreferenceFee, defaultErrorNotification, blockHeightKeyInfos, blockHeightKeys, SUBDOMAIN_STATUS,
+  txStatus,
+  btcPreferenceFee,
+  defaultErrorNotification,
+  blockHeightKeyInfos,
+  blockHeightKeys,
+  SUBDOMAIN_STATUS,
+  BtcAddressType,
 };

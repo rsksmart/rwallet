@@ -20,6 +20,7 @@ import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
 import coinType from '../../common/wallet/cointype';
+import definitions from '../../common/definitions';
 
 const bip39 = require('bip39');
 
@@ -151,8 +152,24 @@ class WalletRecovery extends Component {
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
       this.tokens = [
-        { symbol: 'BTC', prefix: "m/44'/0'/", name: coinType.BTC.defaultName },
-        { symbol: 'RBTC', prefix: "m/44'/137'/", name: coinType.RBTC.defaultName },
+        {
+          symbol: 'BTC',
+          prefix: "m/44'/0'/",
+          addressType: definitions.BtcAddressType.legacy,
+          displayText: `${coinType.BTC.defaultName} (BTC)`,
+        },
+        {
+          symbol: 'BTC',
+          prefix: "m/84'/0'/",
+          addressType: definitions.BtcAddressType.segwit,
+          displayText: `${coinType.BTC.defaultName} (BTC-SegWit)`,
+        },
+        {
+          symbol: 'RBTC',
+          prefix: "m/44'/137'/",
+          name: coinType.RBTC.defaultName,
+          displayText: `${coinType.BTC.defaultName} (RBTC)`,
+        },
       ];
       this.state = {
         phrases: [],
@@ -164,7 +181,7 @@ class WalletRecovery extends Component {
         accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
-      this.coins = _.map(this.tokens, (token) => `${token.name} (${token.symbol})`);
+      this.coins = _.map(this.tokens, (token) => token.displayText);
     }
 
     onSubmitEditing() {
