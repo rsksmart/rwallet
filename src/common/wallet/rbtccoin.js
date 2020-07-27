@@ -4,6 +4,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import common from '../common';
+import storage from '../storage';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -161,13 +162,22 @@ export default class RBTCCoin {
     };
   }
 
+  toDerivationJson() {
+    const {
+      symbol, type, path, address,
+    } = this;
+    return {
+      symbol, type, path, address,
+    };
+  }
+
   static fromJSON(json) {
     const {
-      id, amount, address, objectId,
+      symbol, type, path, address, objectId,
     } = json;
-    const instance = new RBTCCoin(id, amount, address);
+    const instance = new RBTCCoin(symbol, type, path);
+    instance.address = address;
     instance.objectId = objectId;
-
     return instance;
   }
 
@@ -238,5 +248,24 @@ export default class RBTCCoin {
     this.path = path;
     this.address = address;
     this.privateKey = privateKey;
+  }
+
+  savePrivateKey = async (walletId) => {
+    const { symbol, type, privateKey } = this;
+    try {
+      await storage.setPrivateKey(walletId, symbol, type, privateKey);
+    } catch (ex) {
+      console.log('savePrivateKey, error', ex.message);
+    }
+  }
+
+  restorePrivateKey = async (walletId) => {
+    try {
+      const { symbol, type } = this;
+      const privateKey = await storage.getPrivateKey(walletId, symbol, type);
+      this.privateKey = privateKey;
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 }

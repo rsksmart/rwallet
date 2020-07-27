@@ -27,15 +27,19 @@ export const getRawTransactionParam = ({
 
 export const signTransaction = async (transaction, privateKey) => {
   const rawTransaction = _.cloneDeep(transaction);
+  const { tx: { addresses } } = rawTransaction;
+  const fromAddress = addresses[0];
+  const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
+  const hashType = isSegwitAddress ? bitcoin.Transaction.SIGHASH_ALL : bitcoin.Transaction.SIGHASH_NONE;
   const buf = Buffer.from(privateKey, 'hex');
   const keys = bitcoin.ECPair.fromPrivateKey(buf);
   rawTransaction.pubkeys = [];
   rawTransaction.signatures = rawTransaction.tosign.map((tosign) => {
     rawTransaction.pubkeys.push(keys.publicKey.toString('hex'));
     const signature = keys.sign(Buffer.from(tosign, 'hex'));
-    const encodedSignature = bitcoin.script.signature.encode(signature, bitcoin.Transaction.SIGHASH_NONE);
+    const encodedSignature = bitcoin.script.signature.encode(signature, hashType);
     let hexStr = encodedSignature.toString('hex');
-    hexStr = hexStr.substr(0, hexStr.length - 2);
+    hexStr = isSegwitAddress ? hexStr : hexStr.substr(0, hexStr.length - 2);
     return hexStr;
   });
   console.log(`signedTransaction: ${JSON.stringify(rawTransaction)}`);

@@ -4,9 +4,15 @@ import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
 import common from '../common';
+import storage from '../storage';
+
+const privateKeySuffix = {
+  legacy: '',
+  segwit: '/segwit',
+};
 
 export default class Coin {
-  constructor(symbol, type, derivationPath) {
+  constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, queryKey, defaultName}
     this.metadata = coinType[this.id];
@@ -15,9 +21,9 @@ export default class Coin {
     this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
-    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
   }
 
   deriveSegwit= (root, network) => {
@@ -69,7 +75,7 @@ export default class Coin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      derivationPath: this.derivationPath,
+      path: this.path,
       address: this.address,
       objectId: this.objectId,
       balance: this.balance ? this.balance.toString() : undefined,
@@ -77,13 +83,29 @@ export default class Coin {
     };
   }
 
+  toDerivationJson() {
+    const {
+      symbol, type, path, address, addressType,
+    } = this;
+    return {
+      symbol,
+      type,
+      path,
+      address,
+      addressType,
+      addresses: this.getAddressesWithoutPrivateKey(),
+    };
+  }
+
   static fromJSON(json) {
     const {
-      symbol, type, derivationPath, objectId, addressType,
+      symbol, type, path, addressType, address, addresses, objectId,
     } = json;
-    const instance = new Coin(symbol, type, derivationPath);
-    instance.objectId = objectId;
+    const instance = new Coin(symbol, type, path);
     instance.addressType = addressType;
+    instance.address = address;
+    instance.addresses = addresses;
+    instance.objectId = objectId;
     return instance;
   }
 
@@ -136,11 +158,49 @@ export default class Coin {
     return this.metadata.defaultName;
   }
 
-  setupWithDerivation = (derivation, addressType = 'legacy') => {
-    const { address, privateKey, path } = derivation.addresses[addressType];
+  setupWithDerivation = (derivation, addressType) => {
+    this.addressType = derivation.addressType || addressType || 'legacy';
+    const { address, privateKey, path } = derivation.addresses[this.addressType];
     this.path = path;
     this.address = address;
     this.privateKey = privateKey;
-    this.addressType = addressType;
   }
+
+  savePrivateKey = async (walletId) => {
+    const { symbol, type } = this;
+    try {
+      let newType = type + privateKeySuffix.legacy;
+      console.log(`savePrivateKey, id: ${walletId}, symbol: ${symbol}, type: ${newType}, privateKey: ${this.addresses.legacy.privateKey}`);
+      await storage.setPrivateKey(walletId, symbol, newType, this.addresses.legacy.privateKey);
+      newType = this.type + privateKeySuffix.segwit;
+      console.log(`savePrivateKey, id: ${walletId}, symbol: ${symbol}, type: ${newType}, privateKey: ${this.addresses.legacy.privateKey}`);
+      await storage.setPrivateKey(walletId, symbol, newType, this.addresses.segwit.privateKey);
+    } catch (ex) {
+      console.log('savePrivateKey, error', ex.message);
+    }
+  }
+
+  restorePrivateKey = async (walletId) => {
+    try {
+      const { symbol, type } = this;
+      let newType = type + privateKeySuffix.legacy;
+      const legacyPrivateKey = await storage.getPrivateKey(walletId, symbol, newType);
+      this.addresses.legacy.privateKey = legacyPrivateKey;
+      newType = type + privateKeySuffix.segwit;
+      const segwitPrivateKey = await storage.getPrivateKey(walletId, symbol, newType);
+      this.addresses.segwit.privateKey = segwitPrivateKey;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  getAddressesWithoutPrivateKey = () => {
+    const newAddresses = {};
+    const keys = Object.keys(this.addresses);
+    _.each(keys, (key) => {
+      const { path, address } = this.addresses[key];
+      newAddresses[key] = { path, address };
+    });
+    return newAddresses;
+  };
 }

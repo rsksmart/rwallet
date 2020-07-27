@@ -47,16 +47,15 @@ class WalletSelectCurrency extends Component {
       };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
-      this.btcAddressType = 'legacy';
       this.mainnet = [];
       this.testnet = [];
       const { consts: { supportedTokens } } = config;
       // Generate mainnet and testnet list data
       _.each(supportedTokens, (token) => {
-        const item = { title: token, icon: coinType[token].icon };
+        const item = { title: token, symbol: token, icon: coinType[token].icon };
         item.selected = true;
         this.mainnet.push(item);
-        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), icon: coinType[`${token}Testnet`].icon };
+        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), symbol: token, icon: coinType[`${token}Testnet`].icon };
         testnetItem.selected = false;
         this.testnet.push(testnetItem);
       });
@@ -101,21 +100,24 @@ class WalletSelectCurrency extends Component {
           coins.push(item);
         }
       }
-      return coins;
+      this.createWalletWithCoins(coins);
     }
 
-     onCreateButtonPress = async () => {
-       const { addConfirmation } = this.props;
-       let coins = [];
-       const notification = createBTCAddressTypeConfirmation(() => {
-         coins = this.createCoins(definitions.BtcAddressType.legacy);
-         this.createWalletWithCoins(coins);
-       }, () => {
-         coins = this.createCoins(definitions.BtcAddressType.segwit);
-         this.createWalletWithCoins(coins);
-       });
-       addConfirmation(notification);
-     }
+    onCreateButtonPress = async () => {
+      const { addConfirmation } = this.props;
+      const selectedMainnetBtc = _.find(this.mainnet, { symbol: 'BTC', selected: true });
+      const selectedTestnetBtc = _.find(this.testnet, { symbol: 'BTC', selected: true });
+      if (!selectedMainnetBtc && !selectedTestnetBtc) {
+        this.createCoins();
+        return;
+      }
+      const notification = createBTCAddressTypeConfirmation(() => {
+        this.createCoins(definitions.BtcAddressType.legacy);
+      }, () => {
+        this.createCoins(definitions.BtcAddressType.segwit);
+      });
+      addConfirmation(notification);
+    }
 
     createWalletWithCoins = (coins) => {
       const { navigation } = this.props;
