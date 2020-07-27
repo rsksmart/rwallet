@@ -325,6 +325,20 @@ const common = {
   },
 
   /**
+   * Init price object with { symbol, price: {} }
+   * Return new price object
+   * @param {symbol} the price symbol
+   * @param {priceKeys} the price keys
+   */
+  initPriceObject(symbol, priceKeys) {
+    const priceObject = { symbol, price: {} };
+    _.each(priceKeys, (key) => {
+      priceObject.price[key] = '0';
+    });
+    return priceObject;
+  },
+
+  /**
    * Add or update tokens' price
    * Returns new prices array
    * @param {*} prices
@@ -356,26 +370,22 @@ const common = {
 
     let rdocPrice = _.find(newPrice, { symbol: 'RDOC' });
     if (_.isUndefined(rdocPrice)) {
-      rdocPrice = _.clone(docPrice);
+      rdocPrice = _.cloneDeep(docPrice);
       rdocPrice.symbol = 'RDOC';
+      newPrice.push(rdocPrice);
     }
-    newPrice.push(rdocPrice);
 
     let rifPrice = _.find(newPrice, { symbol: 'RIF' });
     if (_.isUndefined(rifPrice)) {
-      rifPrice = { symbol: 'RIF', price: {} };
-      _.each(btcPriceKeys, (key) => {
-        rifPrice.price[key] = '0';
-      });
-      newPrice.push(rifPrice);
+      rifPrice = this.initPriceObject('RIF', btcPriceKeys);
     }
 
     let rifproPrice = _.find(newPrice, { symbol: 'RIFPRO' });
     if (_.isUndefined(rifproPrice)) {
-      rifproPrice = _.clone(rifPrice);
+      rifproPrice = _.cloneDeep(rifPrice);
       rifproPrice.symbol = 'RIFPRO';
+      newPrice.push(rifproPrice);
     }
-    newPrice.push(rifproPrice);
     return newPrice;
   },
 
