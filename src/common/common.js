@@ -353,6 +353,21 @@ const common = {
         docPrice.price[key] = (currency / usdPrice).toString();
       }
     });
+
+    let rdocPrice = _.find(newPrice, { symbol: 'RDOC' });
+    if (_.isUndefined(rdocPrice)) {
+      rdocPrice = _.clone(docPrice);
+      rdocPrice.symbol = 'RDOC';
+    }
+    newPrice.push(rdocPrice);
+
+    const rifPrice = _.find(newPrice, { symbol: 'RIF' });
+    let rifproPrice = _.find(newPrice, { symbol: 'RIFPRO' });
+    if (_.isUndefined(rifproPrice)) {
+      rifproPrice = _.clone(rifPrice);
+      rifproPrice.symbol = 'RIFPRO';
+    }
+    newPrice.push(rifproPrice);
     return newPrice;
   },
 
