@@ -197,6 +197,7 @@ export default class Wallet {
           isNeedSave = true;
           coin = new Coin(symbol, type, path);
           coin.derive(seed);
+          coin.addressType = definitions.BtcAddressType.legacy;
           await coin.savePrivateKey(id);
         } else {
           // restore derivation
@@ -272,11 +273,7 @@ export default class Wallet {
       // 1. If a already has a value, use it to create a token
       if (!derivation.addressType) {
         // 2. If user select addressType to create BTC for the first time, set addressType to derivation.
-        // 3. If the app is upgraded and BTC has been opened before,
-        // derivation.addressType and addressType will be null
-        // we use legacy address type
-        const newAddressType = addressType || definitions.BtcAddressType.legacy;
-        this.setBtcAddressType(newAddressType);
+        this.setBtcAddressType(addressType);
       }
       coin = new Coin(symbol, type, derivation.path);
     } else {
