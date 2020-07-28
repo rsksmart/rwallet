@@ -167,6 +167,10 @@ export default class Coin {
     this.privateKey = privateKey;
   }
 
+  /**
+   * Save private key, type for segwit private key is Mainnet/segwit or Testnet/segwit
+   * @param {*} walletId
+   */
   savePrivateKey = async (walletId) => {
     const { symbol, type } = this;
     try {
@@ -181,6 +185,10 @@ export default class Coin {
     }
   }
 
+  /**
+   * Restore private key, type for segwit private key is Mainnet/segwit or Testnet/segwit
+   * @param {*} walletId
+   */
   restorePrivateKey = async (walletId) => {
     try {
       const { symbol, type } = this;
