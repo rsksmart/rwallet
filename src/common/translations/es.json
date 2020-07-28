@@ -282,7 +282,10 @@
     "Spanish": "Español",
     "Portuguese": "Portugués",
     "Chinese": "Chino",
-    "Brazilian Portuguese": "Portuguesa brasileña"
+    "Brazilian Portuguese": "Portuguesa brasileña",
+    "Japanese": "Japonés",
+    "Russian": "Ruso",
+    "Korean": "Koreano"
   },
   "button": {
     "save": "GUARDAR",

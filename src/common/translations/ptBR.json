@@ -296,7 +296,10 @@
     "Spanish": "Espanhol",
     "Portuguese": "Português",
     "Chinese": "Chinês",
-    "Brazilian Portuguese": "Português brasileiro"
+    "Brazilian Portuguese": "Português brasileiro",
+    "Japanese": "Japonês",
+    "Russian": "Russo",
+    "Korean": "Coreano"
   },
   "button": {
     "save": "SALVAR",
