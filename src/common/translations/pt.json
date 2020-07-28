@@ -110,7 +110,7 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Varredura",
+        "title": "Digitalizar",
         "cameraPermission": {
           "title": "Permissão para usar a câmera",
           "message": "Precisamos da sua permissão para usar sua câmera"
@@ -118,7 +118,7 @@
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
-        "title": "Mandar",
+        "title": "Enviar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
@@ -292,16 +292,16 @@
     "CONFIRM": "CONFIRME",
     "retry": "Repetir",
     "IMPORT": "IMPORTAR",
-    "Clear": "Claro",
+    "Clear": "Limpar",
     "startOver": "RECOMEÇAR",
-    "Copy": "cópia de",
+    "Copy": "copiar",
     "confirm": "confirme",
     "cancel": "Cancelar",
     "Send All": "Envie todos",
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
-    "Send": "Mandar",
+    "Send": "Enviar",
     "Receive": "Receber",
     "Swap": "Troca",
     "Delete": "Excluir",

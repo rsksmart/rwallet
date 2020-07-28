@@ -44,6 +44,7 @@
     "react-native-camera": "2.11.2",
     "react-native-crypto": "^2.2.0",
     "react-native-dash": "0.0.11",
+    "react-native-device-info": "^5.6.3",
     "react-native-dotenv": "^0.2.0",
     "react-native-fingerprint-scanner": "^2.6.2",
     "react-native-fs": "^2.16.6",

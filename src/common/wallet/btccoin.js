@@ -14,7 +14,7 @@ const privateKeySuffix = {
 export default class Coin {
   constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
-    // metadata:{network, networkId, icon, queryKey, defaultName}
+    // metadata:{network, networkId, icon, defaultName}
     this.metadata = coinType[this.id];
     this.chain = this.metadata.chain;
     this.type = type;
@@ -148,10 +148,6 @@ export default class Coin {
 
   get icon() {
     return this.metadata.icon;
-  }
-
-  get queryKey() {
-    return this.metadata.queryKey;
   }
 
   get defaultName() {

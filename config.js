@@ -19,7 +19,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFPRO', 'RDOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
@@ -80,7 +80,16 @@ const config = {
   appLock: {
     timeout: 300000,
   },
-  termsUrl: 'https://www.rsk.co/terms-conditions',
+  termsUrl: {
+    en: 'https://www.rsk.co/terms-conditions',
+    zh: 'https://www.rsk.co/zh-Hans/terms-conditions',
+    es: 'https://www.rsk.co/es/terms-conditions',
+    pt: 'https://www.rsk.co/pt-pt/terms-conditions',
+    ptBR: 'https://www.rsk.co/pt-pt/terms-conditions',
+    ru: 'https://www.rsk.co/ru/terms-conditions',
+    ko: 'https://www.rsk.co/ko/terms-conditions',
+    ja: 'https://www.rsk.co/ja/terms-conditions',
+  },
   rnsDomain: 'wallet.rsk',
 };
 
