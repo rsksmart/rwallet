@@ -92,7 +92,7 @@ class WalletSelectCurrency extends Component {
             if (symbol === 'BTC') {
               coin.addressType = addressType;
             }
-            coins.push(item);
+            coins.push(coin);
           }
         });
       };

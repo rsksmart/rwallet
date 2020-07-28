@@ -8,7 +8,7 @@ import storage from '../storage';
 
 const privateKeySuffix = {
   legacy: '',
-  segwit: '/segwit',
+  segwit: '|segwit',
 };
 
 export default class Coin {
