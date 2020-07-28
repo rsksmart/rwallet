@@ -158,9 +158,10 @@ export default class Coin {
     return this.metadata.defaultName;
   }
 
-  setupWithDerivation = (derivation, addressType) => {
-    this.addressType = derivation.addressType || addressType || 'legacy';
-    const { address, privateKey, path } = derivation.addresses[this.addressType];
+  setupWithDerivation = (derivation) => {
+    const { addressType } = derivation;
+    const { address, privateKey, path } = derivation.addresses[addressType];
+    this.addressType = addressType;
     this.path = path;
     this.address = address;
     this.privateKey = privateKey;

@@ -151,6 +151,7 @@ class WalletRecovery extends Component {
       this.onChangeText = this.onChangeText.bind(this);
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
+      // Address path parameter list
       this.tokens = [
         {
           symbol: 'BTC',
@@ -181,6 +182,7 @@ class WalletRecovery extends Component {
         accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
+      // Address option list data
       this.coins = _.map(this.tokens, (token) => token.displayText);
     }
 

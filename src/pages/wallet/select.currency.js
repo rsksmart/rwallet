@@ -81,25 +81,24 @@ class WalletSelectCurrency extends Component {
     }
 
     createCoins = (addressType) => {
+      // List of tokens to be created, [{symbol, type, addressType}]
       const coins = [];
-      for (let i = 0; i < this.mainnet.length; i += 1) {
-        if (this.mainnet[i].selected) {
-          const item = { symbol: this.mainnet[i].title, type: 'Mainnet' };
-          if (item.symbol === 'BTC') {
-            item.addressType = addressType;
+      const addCoins = (items, type) => {
+        _.each(items, (item) => {
+          const { selected, title: symbol } = item;
+          if (selected) {
+            const coin = { symbol, type };
+            // BTC needs to set the address type
+            if (symbol === 'BTC') {
+              coin.addressType = addressType;
+            }
+            coins.push(item);
           }
-          coins.push(item);
-        }
-      }
-      for (let i = 0; i < this.testnet.length; i += 1) {
-        if (this.testnet[i].selected) {
-          const item = { symbol: this.mainnet[i].title, type: 'Testnet' };
-          if (item.symbol === 'BTC') {
-            item.addressType = addressType;
-          }
-          coins.push(item);
-        }
-      }
+        });
+      };
+      addCoins(this.mainnet, 'Mainnet');
+      addCoins(this.testnet, 'Testnet');
+      // Create these tokens
       this.createWalletWithCoins(coins);
     }
 
@@ -107,10 +106,12 @@ class WalletSelectCurrency extends Component {
       const { addConfirmation } = this.props;
       const selectedMainnetBtc = _.find(this.mainnet, { symbol: 'BTC', selected: true });
       const selectedTestnetBtc = _.find(this.testnet, { symbol: 'BTC', selected: true });
+      // If BTC is not selected, there is no need to ask the user for the address type of BTC.
       if (!selectedMainnetBtc && !selectedTestnetBtc) {
         this.createCoins();
         return;
       }
+      // Ask users for BTC address type
       const notification = createBTCAddressTypeConfirmation(() => {
         this.createCoins(definitions.BtcAddressType.legacy);
       }, () => {

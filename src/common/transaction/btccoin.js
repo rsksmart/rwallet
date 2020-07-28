@@ -29,6 +29,7 @@ export const signTransaction = async (transaction, privateKey) => {
   const rawTransaction = _.cloneDeep(transaction);
   const { tx: { addresses } } = rawTransaction;
   const fromAddress = addresses[0];
+  // The signatures of segwit and legacy addresses are somewhat different
   const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
   const hashType = isSegwitAddress ? bitcoin.Transaction.SIGHASH_ALL : bitcoin.Transaction.SIGHASH_NONE;
   const buf = Buffer.from(privateKey, 'hex');

@@ -134,21 +134,22 @@ class AddToken extends Component {
 
   onSwitchValueChanged = (index, value) => {
     const {
-      walletManager, deleteToken, resetWalletsUpdated, addConfirmation,
+      walletManager, addToken, deleteToken, resetWalletsUpdated, addConfirmation,
     } = this.props;
     const { listData } = this.state;
     const listItem = listData[index];
     listItem.selected = value;
 
-    if (listItem.selected && !this.wallet.getBtcAddressType()) {
-      const notification = createBTCAddressTypeConfirmation(() => {
-        this.addToken(listItem.token, definitions.BtcAddressType.legacy);
+    if (listItem.selected && listItem.token.symbol === 'BTC' && !this.wallet.getBtcAddressType()) {
+      // If the BTC address type has not been set before, when we choose BTC, we should ask the user for the BTC address type
+      const confirmation = createBTCAddressTypeConfirmation(() => {
+        this.addBTCToken(listItem.token, definitions.BtcAddressType.legacy);
       }, () => {
-        this.addToken(listItem.token, definitions.BtcAddressType.segwit);
+        this.addBTCToken(listItem.token, definitions.BtcAddressType.segwit);
       });
-      addConfirmation(notification);
+      addConfirmation(confirmation);
     } else if (listItem.selected) {
-      this.addToken(listItem.token);
+      addToken(walletManager, this.wallet, listItem.token);
     } else {
       deleteToken(walletManager, this.wallet, listItem.token);
     }
@@ -165,12 +166,10 @@ class AddToken extends Component {
     navigation.navigate('AddCustomToken', navigation.state.params);
   }
 
-  addToken = (token, btcAddressType) => {
+  addBTCToken = (token, btcAddressType) => {
     const { walletManager, addToken } = this.props;
     const newToken = token;
-    if (token.symbol === 'BTC') {
-      newToken.addressType = btcAddressType;
-    }
+    newToken.addressType = btcAddressType;
     addToken(walletManager, this.wallet, newToken);
   }
 

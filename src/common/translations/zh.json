@@ -486,6 +486,12 @@
     "rnsExceeded": {
       "title": "创建超额",
       "body": "每天最多只能创建{{count}}个钱包昵称。"
+    },
+    "chooseBTCAddressType": {
+      "title": "选择地址类型",
+      "body": "请选择比特币地址类型",
+      "legacy": "旧类型",
+      "segwit": "隔离见证"
     }
   },
   "currency": {
