@@ -171,10 +171,8 @@ export default class Coin {
     const { symbol, type } = this;
     try {
       let newType = type + privateKeySuffix.legacy;
-      console.log(`savePrivateKey, id: ${walletId}, symbol: ${symbol}, type: ${newType}, privateKey: ${this.addresses.legacy.privateKey}`);
       await storage.setPrivateKey(walletId, symbol, newType, this.addresses.legacy.privateKey);
       newType = this.type + privateKeySuffix.segwit;
-      console.log(`savePrivateKey, id: ${walletId}, symbol: ${symbol}, type: ${newType}, privateKey: ${this.addresses.legacy.privateKey}`);
       await storage.setPrivateKey(walletId, symbol, newType, this.addresses.segwit.privateKey);
     } catch (ex) {
       console.log('savePrivateKey, error', ex.message);

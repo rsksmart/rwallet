@@ -91,6 +91,7 @@ const config = {
     ja: 'https://www.rsk.co/ja/terms-conditions',
   },
   rnsDomain: 'wallet.rsk',
+  storageVersion: 3,
 };
 
 export default config;

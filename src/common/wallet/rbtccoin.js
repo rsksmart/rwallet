@@ -46,7 +46,7 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, derivationPath) {
+  constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, defaultName}
@@ -57,9 +57,9 @@ export default class RBTCCoin {
     this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
-    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
     this.name = this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
@@ -148,7 +148,7 @@ export default class RBTCCoin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      derivationPath: this.derivationPath,
+      path: this.path,
       address: this.address,
       subdomain: this.subdomain,
       objectId: this.objectId,
