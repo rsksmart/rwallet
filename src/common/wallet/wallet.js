@@ -197,7 +197,7 @@ export default class Wallet {
           isNeedSave = true;
           coin = new Coin(symbol, type, path);
           coin.derive(seed);
-          coin.addressType = definitions.BtcAddressType.legacy;
+          coin.setBtcAddressType(definitions.BtcAddressType.legacy);
           await coin.savePrivateKey(id);
         } else {
           // restore derivation
@@ -277,7 +277,8 @@ export default class Wallet {
       }
       coin = new Coin(symbol, type, derivation.path);
     } else {
-      coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, name, precision);
+      coin = new RBTCCoin(symbol, type, derivation.path);
+      coin.setCustomTokenData({ contractAddress, name, precision });
     }
 
     // reuse address, private key of derivation
@@ -317,7 +318,7 @@ export default class Wallet {
     _.each(this.derivations, (derivation) => {
       const newDerivation = derivation;
       if (newDerivation.symbol === 'BTC') {
-        newDerivation.addressType = addressType;
+        newDerivation.setAddressType(addressType);
       }
     });
   }

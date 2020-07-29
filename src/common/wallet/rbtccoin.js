@@ -46,14 +46,12 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, derivationPath, contractAddress, name, precision) {
+  constructor(symbol, type, derivationPath) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, defaultName}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
-    this.precision = precision;
-    this.contractAddress = contractAddress;
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
@@ -62,7 +60,7 @@ export default class RBTCCoin {
     this.account = common.parseAccountFromDerivationPath(derivationPath);
     this.networkId = this.metadata.networkId;
     this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
-    this.name = name || this.metadata.defaultName;
+    this.name = this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
 
@@ -263,5 +261,12 @@ export default class RBTCCoin {
     } catch (err) {
       console.log(err.message);
     }
+  }
+
+  setCustomTokenData = async (data) => {
+    const { contractAddress, name, precision } = data;
+    this.precision = precision;
+    this.contractAddress = contractAddress;
+    this.name = name || this.metadata.defaultName;
   }
 }

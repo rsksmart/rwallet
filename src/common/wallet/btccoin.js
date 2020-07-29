@@ -208,4 +208,16 @@ export default class Coin {
     });
     return newAddresses;
   };
+
+  setAddressType = (addressType) => {
+    if (this.addresses && this.addresses[addressType]) {
+      console.warn(`the address of ${addressType} is not exist!`);
+      return;
+    }
+    const { address, path, privateKey } = this.addresses[addressType];
+    this.addressType = addressType;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+  }
 }
