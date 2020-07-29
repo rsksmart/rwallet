@@ -197,7 +197,7 @@ export default class Wallet {
           isNeedSave = true;
           coin = new Coin(symbol, type, path);
           coin.derive(seed);
-          coin.setBtcAddressType(definitions.BtcAddressType.legacy);
+          coin.setAddressType(definitions.BtcAddressType.legacy);
           await coin.savePrivateKey(id);
         } else {
           // restore derivation

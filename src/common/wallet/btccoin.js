@@ -208,7 +208,7 @@ export default class Coin {
   };
 
   setAddressType = (addressType) => {
-    if (this.addresses && this.addresses[addressType]) {
+    if (!(this.addresses && this.addresses[addressType])) {
       console.warn(`the address of ${addressType} is not exist!`);
       return;
     }
