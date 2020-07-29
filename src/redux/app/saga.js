@@ -61,7 +61,7 @@ function* initFromStorageRequest() {
 
     // If the storage version is lower, upgrade
     const storageVersion = yield call(storage.getStorageVersion);
-    if (!storageVersion && config.storageVersion > storageVersion) {
+    if (!storageVersion || config.storageVersion > storageVersion) {
       // TODO: upgrade from old version
       // update current storage version
       yield call(storage.setStorageVersion, config.storageVersion);
