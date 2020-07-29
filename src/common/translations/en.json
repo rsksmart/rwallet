@@ -280,7 +280,10 @@
     "Spanish": "Spanish",
     "Portuguese": "Portuguese",
     "Chinese": "Chinese",
-    "Brazilian Portuguese": "Brazilian Portuguese"
+    "Brazilian Portuguese": "Brazilian Portuguese",
+    "Japanese": "Japanese",
+    "Russian": "Russian",
+    "Korean": "Korean"
   },
   "button": {
     "save": "SAVE",
