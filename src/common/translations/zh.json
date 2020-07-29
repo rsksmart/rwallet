@@ -282,7 +282,10 @@
     "Spanish": "西班牙语",
     "Portuguese": "葡萄牙语",
     "Chinese": "中文",
-    "Brazilian Portuguese": "巴西葡萄牙语"
+    "Brazilian Portuguese": "巴西葡萄牙语",
+    "Japanese": "日语",
+    "Russian": "俄语",
+    "Korean": "韩语"
   },
   "button": {
     "save": "保存",

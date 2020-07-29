@@ -1,0 +1,505 @@
+{
+  "root": {
+    "Wallet": "ウォレット",
+    "Me": "私",
+    "Exchange": "スワップ",
+    "DApp": "Dapps"
+  },
+  "page": {
+    "start": {
+      "start": {
+        "button": "始めましょう"
+      },
+      "terms": {
+        "term1": "私は、私の資金が御社ではなくこのデバイスに安全に保管されていることを理解しています。",
+        "term2": "私は、このアプリを別のデバイスに移動や削除した場合、資金を復元できるのは復元フレーズのみであることを理解しています。",
+        "term3": "私は、利用規約を読み、理解し、同意しました。",
+        "viewTerms": "完全な利用規約を表示",
+        "button": "確認＆同意",
+        "termsOfUse": "利用規約"
+      }
+    },
+    "wallet": {
+      "list": {
+        "title": "お客様のウォレット",
+        "myAssets": "私の資産",
+        "allAssets": "すべての資産",
+        "addAsset": "資産を追加",
+        "addWallet": "ウォレットを追加"
+      },
+      "history": {
+        "noTransNote": "この資産の取引が見つかりません",
+        "recent": "最近",
+        "loading": "読み込み中…"
+      },
+      "transaction": {
+        "Sent Funds": "送金済みの資金",
+        "Received Funds": "受領済みの資金",
+        "Sending Funds": "資金を送金",
+        "Receiving Funds": "資金を受領",
+        "Failed Funds": "送金／受領できなかった資金",
+        "date": "日付",
+        "confirmations": "確認",
+        "memo": "メモ",
+        "noMemo": "メモがありません",
+        "transactionID": "取引ID",
+        "viewOnChain": "ブロックチェーンで表示",
+        "Unconfirmed": "未確認",
+        "from": "送金元",
+        "to": "送金先"
+      },
+      "receive": {
+        "address": "アドレス"
+      },
+      "transfer": {
+        "to": "送金先",
+        "memo": "メモ（任意）",
+        "fee": "取引手数料",
+        "custom": "カスタム",
+        "feeQuestion": "処理の速さはどうしますか？",
+        "Slow": "遅い",
+        "Average": "普通",
+        "Fast": "速い",
+        "CONFIRMED": "確定しました",
+        "enterMemo": "取引メモを入力",
+        "slideConfirm": "スライドして確定",
+        "balance": "残高",
+        "unavailableAddress": "入力したウォレットアドレスが無効です"
+      },
+      "add": {
+        "title": "ウォレットを追加",
+        "createWallet": "基本的ウォレットを作成",
+        "createWalletNote": "初めてのユーザーにおすすめ",
+        "importWallet": "既存のウォレットをインポート",
+        "importWalletNote": "復元フレーズを使用してウォレットを復元"
+      },
+      "selectCurrency": {
+        "title": "ウォレット通貨を選択",
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
+      },
+      "selectWallet": {
+        "title": "資産を選択"
+      },
+      "recovery": {
+        "title": "ウォレットをインポート",
+        "note": "復元フレーズを入力してください（通常は12語）",
+        "advancedOptions": "詳細オプション",
+        "specifyPath": "導出経路を指定",
+        "coin": "コイン",
+        "selectCoin": "コインを選択",
+        "derivationPath": "導出経路"
+      },
+      "recoveryPhrase": {
+        "title": "復元フレーズ",
+        "note1": "これらの単語を正しい順序で書き留めるかコピーして、",
+        "note2": "安全な場所に",
+        "note3": "保存してください"
+      },
+      "verifyPhrase": {
+        "title": "フレーズを確認してください",
+        "note": "各単語を正しい順序でタップしてください",
+        "isCorrect": "正しい順序でタップしましたか？"
+      },
+      "verifyPhraseSuccess": {
+        "title": "フレーズを確認しました",
+        "body": "復元フレーズを確認しました",
+        "note": "復元フレーズは、安全な場所に保存するようにしてください"
+      },
+      "scan": {
+        "title": "スキャン",
+        "cameraPermission": {
+          "title": "カメラの使用許可",
+          "message": "カメラの使用許可をオンにしてください"
+        },
+        "unauthorization": "この機能を使用するには、カメラの使用許可をオンにしてください。"
+      },
+      "transferCompleted": {
+        "title": "送金",
+        "body": "送金が完了しました！",
+        "note": "現在、取引処理中です。",
+        "viewExplorer": "クリックしてエクスプローラで表示"
+      },
+      "swap": {
+        "title": "スワップ",
+        "wallet": "ウォレット",
+        "want": "%{wallet}に%{symbol}を希望",
+        "errorAmountInRange": {
+          "tooBig": "金額が最大換算額である%{max} %{symbol}を超えています",
+          "tooSmall": "金額が最小換算額である%{min} %{symbol}に足りません"
+        },
+        "errorBalanceEnough": "申し訳ありませんが、残高が不足しています",
+        "errorAmountInvalid": "%{symbol}の金額が無効です。",
+        "have": "%{wallet}に%{balance}を所持しています",
+        "min": "MIN",
+        "half": "HALF",
+        "all": "ALL"
+      },
+      "swapSelection": {
+        "title": "資産を選択",
+        "noSwappableCoin": "申し訳ありませんが、スワップ可能な資産をお持ちではありません",
+        "please": "スワップの使用を",
+        "create": "開始するには、",
+        "or": "ウォレットを作成",
+        "import": "または",
+        "aWallet": "インポート",
+        "startSwap": "してください"
+      },
+      "swapCompleted": {
+        "title": "スワップ",
+        "body": "換算が完了しました！",
+        "note": "現在、換算処理中です。",
+        "viewExplorer": "クリックしてエクスプローラで表示"
+      },
+      "addCustomToken": {
+        "title": "カスタム資産を追加",
+        "address": "資産契約アドレス",
+        "mainnet": "Mainnet"
+      },
+      "addCustomTokenConfirm": {
+        "title": "カスタム資産を追加",
+        "question": "これらの資産を追加しますか？",
+        "token": "資産",
+        "symbol": "資産記号",
+        "decimals": "小数点以下の桁数",
+        "balance": "残高"
+      },
+      "addToken": {
+        "title": "資産を追加",
+        "enabledAssets": "有効な資産",
+        "note": "資産を無効にしてポートフォリオから非表示にしてください。",
+        "addCustomToken": "カスタム資産を追加",
+        "custom": "カスタム"
+      },
+      "rnsCreateName": {
+        "title": "ニックネームを作成",
+        "address": "アドレス",
+        "rnsName": "RNSニックネーム",
+        "anotherAddress": "別のアドレス",
+        "nameTooShort": "ニックネームは、{{count}}文字以上で構成されています",                                               
+        "nameUnavailable": "申し訳ありませんが、入力したニックネームは使用できません",
+        "nameAvailable": "入力したニックネームは使用できます",
+        "selectAddress": "アドレスを選択",
+        "confirmNotice": {
+          "one": "以下に表示されている1個のウォレットのニックネームを作成することを確認してください。",
+          "other": "以下に表示されている{{count}}個のウォレットのニックネームを作成することを確認してください。"
+        }
+      },
+      "rnsStatus": {
+        "pending": "登録確認待ちです。",
+        "success": "登録が完了しました！ニックネームが作成されました。",
+        "failed": "登録できませんでした！ニックネームを登録できませんでした。"
+      }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "ウェブサイトのURLを検索または入力してください",
+      "recent": "最近",
+      "recommended": "お勧め",
+      "all": "すべて",
+      "button": {
+        "seeAll": "すべて表示",
+        "confirm": "確定",
+        "understood": "理解しました",
+        "createOrImport": "作成またはインポート",
+        "cancel": "取り消す"
+      }
+    },
+    "mine": {
+      "index": {
+        "joinRSKCommunity": "RSKコミュニティに参加",
+        "settings": "設定",
+        "createKey": "ウォレットを作成またはインポート",
+        "keys": "ウォレット",
+        "anonymousUser": "匿名ユーザー",
+        "assets": {
+          "one": "1資産",
+          "other": "{{count}}資産"
+        },
+        "support": "サポート",
+        "contactUs": "お問い合わせ",
+        "developerPortal": "開発者ポータル"
+      },
+      "addressBook": {
+        "title": "アドレスブック",
+        "recent": "最近",
+        "all": "ALL"
+      },
+      "language": {
+        "title": "言語"
+      },
+      "currency": {
+        "title": "通貨"
+      },
+      "2fa": {
+        "title": "2要素認証",
+        "setPasscode": "パスコードを設定",
+        "resetPasscode": "パスコードをリセット",
+        "useFingerprint": "指紋認証を使用",
+        "useFaceID": "フェイスIDを使用"
+      },
+      "resetPasscodeSuccess" :{
+        "title": {
+          "create": "パスコードを設定しました",
+          "reset": "パスコードをリセットしました"
+        }
+      },
+      "keySettings": {
+        "title": "ウォレット設定",
+        "walletContains": {
+          "one": "このウォレットには1資産が含まれています",
+          "other": "このウォレットには{{count}}資産が含まれています"
+        },
+        "wallets": "ウォレット",
+        "security": "セキュリティ",
+        "advanced": "詳細",
+        "Assets": "資産名",
+        "keyName": "ウォレット名",
+        "delete": "削除",
+        "backup": "バックアップ"
+      },
+      "keyName": {
+        "title": "ウォレット名",
+        "question": "このウォレットの名前は何にしますか？",
+        "notice": "以下のデバイスに表示される名前を変更できます。",
+        "name": "名前",
+        "comment": "*ウォレット名は、1〜%{maxLength}文字（半角小文字アルファベット）、数字（0〜9）、スペースで設定してください"
+      },
+      "rename": {
+        "title": "お客様の名前",
+        "question": "お客様の名前は？",
+        "comment": "*名前は、1〜%{maxLength}文字（半角小文字アルファベット）、数字（0〜9）、スペースで設定してください"
+      },
+      "resetcompleted": {
+        "title": "リセットが完了しました！"
+      }
+    }
+  },
+  "language": {
+    "English": "英語",
+    "Spanish": "スペイン語",
+    "Portuguese": "ポルトガル語",
+    "Chinese": "中国語",
+    "Brazilian Portuguese": "ブラジルポルトガル語",
+    "Japanese": "日本語",
+    "Russian": "ロシア語",
+    "Korean": "韓国語"
+  },
+  "button": {
+    "save": "保存",
+    "NEXT": "次",
+    "Next": "次",
+    "gotIt": "了解です",
+    "create": "作成",
+    "CONFIRM": "確定",
+    "retry": "再試行",
+    "IMPORT": "インポート",
+    "Clear": "クリア",
+    "startOver": "最初からやり直す",
+    "Copy": "コピー",
+    "confirm": "確定",
+    "cancel": "取り消す",
+    "Send All": "すべて送金",
+    "goToWallet": "ウォレットを表示",
+    "backToWallet": "ウォレットに戻る",
+    "backToSetting": "設定に戻る",
+    "Send": "送金",
+    "Receive": "受領",
+    "Swap": "スワップ",
+    "Delete": "削除",
+    "Reset": "リセット",
+    "Finish": "終了",
+    "Exchange": "換算",
+    "addAsset": "資産を追加",
+    "ok": "OK",
+    "name": "名前",
+    "pending": "保留中",
+    "done": "完了です",
+    "share": "シェア"
+  },
+  "txState": {
+    "Sent": "送金されました",
+    "Sending": "送金中",
+    "Received": "受領しました",
+    "Receiving": "受領中",
+    "Failed": "受領できませんでした"
+  },
+  "modal": {
+    "defaultError": {
+      "title": "内部サーバーエラーです",
+      "body": "カスタマーサポートにお問い合わせください"
+    },
+    "unableRecover": {
+      "title": "復元できません",
+      "body": "復元フレーズを含むウォレットをインポートできません。フレーズが正しいことを確認してください。"
+    },
+    "duplicatePhrase": {
+      "title": "フレーズを複製",
+      "body": "このフレーズはすでにアプリにインポートされています。別のフレーズでお試しください。"
+    },
+    "tooManyPhrase": {
+      "title": "語数が多すぎます",
+      "body": "復元フレーズは12語で入力してください。"
+    },
+    "amountExceeds": {
+      "title": "残高が不足しています",
+      "body": "入力した金額がウォレットの残高を超えています"
+    },
+    "txFailed": {
+      "title": "送金できませんでした",
+      "moreBTC": "BTC残高が不足しているため、送金を完了できません",
+      "moreRBTC": "RBTC残高が不足しているため、送金を完了できません",
+      "moreRIF": "RIF残高が不足しているため、送金を完了できません",
+      "moreBalance": "残高が不足しているため、送金を完了できません",
+      "serverTimeout": "申し訳ありませんが、サーバーがタイムアウトしました",
+      "contactService": "カスタマーサービスにお問い合わせください"
+    },
+    "invalidAmount": {
+      "title": "金額が無効です",
+      "body": "金額が無効です"
+    },
+    "invalidAddress": {
+      "title": "アドレスが無効です",
+      "body": "アドレスが無効です"
+    },
+    "incorrectName": {
+      "title": "名前が正しくありません",
+      "tooShort": "名前が短すぎます。",
+      "tooLong": "名前が長すぎます。",
+      "invalid": "名前に無効な文字が含まれています。"
+    },
+    "incorrectKeyName": {
+      "title": "ウォレット名が正しくありません",
+      "tooShort": "ウォレット名が短すぎます。",
+      "tooLong": "ウォレット名が長すぎます。",
+      "invalid": "ウォレット名に無効な文字が含まれています。"
+    },
+    "guardPhrase": {
+      "title": "復元フレーズを保護しましょう",
+      "body": "復元フレーズは、ランダムに選択された12の単語で構成されています。各単語は、表示されている順に間違えないように書き留めてください。"
+    },
+    "incorrectBackupPhrase": {
+      "title": "バックアップフレーズが正しくありません",
+      "body": "復元フレーズは、正確に書き留めておくようにしてください。ご使用のウォレットに問題が発生した場合、資金の復元には復元フレーズが必要となります。確認して、もう一度お試しください。"
+    },
+    "phraseCopied": {
+      "title": "コピーされました",
+      "body": "復元フレーズがクリップボードにコピーされました。"
+    },
+    "addressCopied": {
+      "title": "コピーされました",
+      "body": "アドレスがクリップボードにコピーされました。"
+    },
+    "subdomainCopied": {
+      "title": "コピーされました",
+      "body": "サブドメインがクリップボードにコピーされました。"
+    },
+    "txIdCopied": {
+      "title": "コピーされました",
+      "body": "取引IDがクリップボードにコピーされました。"
+    },
+    "passcode": {
+      "typeOldPasscode": "現在のパスコードを入力してください",
+      "typeNewPasscode": "新しいパスコードを入力してください",
+      "confirmNewPasscode": "新しいパスコードを確認してください",
+      "oldIncorrect": "現在のパスコードが正しくありません。もう一度入力してください",
+      "notMatched": "パスコードが一致しません。もう一度お試しください。"
+    },
+    "verifyPasscode": {
+      "type": "パスコードを入力してください",
+      "incorrect": "パスコードが正しくありません"
+    },
+    "touchSensor": {
+      "usePasscode": "パスコードを使用",
+      "fingerprint": {
+        "title": "タッチセンサー",
+        "touchToVerify": "タッチして指紋を認証",
+        "nativeNote": "続行するには、デバイススキャナーで指紋をスキャンしてください",
+        "notMatch": "指紋が一致しません。もう一度お試しください。"
+      },
+      "faceID": {
+        "title": "フェイスID",
+        "touchToVerify": "タッチしてフェイスIDを認証",
+        "nativeNote": "顔が認識できるようにカメラの方を向いてください",
+        "notMatch": "フェイスIDが一致しません。もう一度お試しください。"
+      },
+      "failedAndTryPasscode": "認証できませんでした。パスコードをお試しください。",
+      "failedAndTryAgain": "認証できませんでした。もう一度お試しください。"
+    },
+    "createPasscode": {
+      "title": "パスコードを設定してください",
+      "body": "デバイスが悪意のあるソフトウェアによって盗まれたり侵害された場合に、パスコードによって資金を保護することができます。"
+    },
+    "deleteKey": {
+      "title": "警告！",
+      "body": "このウォレットを使用しているすべての資産を削除してもよろしいですか？"
+    },
+    "swap": {
+      "title": "スワップ可能なコインはありません",
+      "body": "スワップは、BTC、RBTCおよびDOCに対応しています。資産を追加してください。"
+    },
+    "contractNotFound": {
+      "title": "ERC20契約が見つかりません",
+      "body": "入力ERC20トークンのスマートコントラクトが見つかりません。契約が正しいことを確認してください。"
+    },
+    "duplicateToken": {
+      "title": "トークンを複製",
+      "body": "このトークンはすでにウォレットに追加されています。別のトークンでお試しください。"
+    },
+    "dappWarning": {
+      "title": "サードパーティのDapp「%{dappName}」にリダイレクトしています",
+      "body": "%{description}\n\n注意：サードパーティのDapp「%{dappName}」にリダイレクトされます。当該サードパーティのDappユーザー契約およびプライバシーポリシーをよくお読みください。また、お客様がサードパーティのDappで行うすべての取引やサービスその他の使用については、「%{dappName}」に全責任が帰属します。\n\n"
+    },
+    "walletSelection": {
+      "title": "ウォレットを選択してください"
+    },
+    "noWalletAvailable": {
+      "title": "利用可能なウォレットがありません",
+      "body": "このDappで利用可能なウォレットはまだありません。ウォレットを作成またはインポートするには、ウォレット作成ページに移動してください。\n\n"
+    },
+    "requestTimeout": {
+      "title": "リクエストがタイムアウトしました",
+      "body": "サーバーは、指定された時間内にリクエストを完了できませんでした。"
+    },
+    "rnsNameUnavailable": {
+      "title": "RNSニックネームは使用できません",
+      "body": "一部のニックネームは使用できません。リストを確認して、別のニックネームで再度お試しください。"
+    },
+    "rnsSubdomainNotFound": {
+      "title": "RNSサブドメインが見つかりません",
+      "body": "RNSサブドメインがサーバーに見つかりません。"
+    },
+    "rnsNewFeature": {
+      "title": "送金＆受領がより簡単になりました",
+      "body": "当社は、人間が読み取ることのできる名前別にブロックチェーンのアドレスを識別できるRNSまたはRIF Name Serviceのサポートを開始しました。",
+      "confirmText": "試してみる",
+      "cancelText": "あとで"
+    },
+    "balanceInvalid": {
+      "title": "ウォレットの残高を利用できません",
+      "body": "お客様のウォレット残高を取得できません。しばらくしてからもう一度やり直してください。"
+    },
+    "InvalidTokenSymbol": {
+      "title": "トークン記号が無効です",
+      "body": "同じトークン記号が、このブロックチェーンにすでに存在しています。"
+    },
+    "rnsExceeded": {
+      "title": "最大数に達しました",
+      "body": "1日に作成できるニックネームは{{count}}個までです。"
+    }
+  },
+  "currency": {
+    "USD": "米ドル",
+    "ARS": "アルゼンチンペソ",
+    "JPY": "日本円",
+    "KRW": "韓国ウォン",
+    "CNY": "中国人民元",
+    "GBP": "英ポンド"
+  },
+  "notification": {
+    "networkError": {
+      "title": "ネットワークエラーです",
+      "body": "ご使用のデバイスはサーバーに接続できません。"
+    }
+  }
+}

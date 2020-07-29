@@ -9,6 +9,9 @@ import es from './translations/es.json';
 import pt from './translations/pt.json';
 import zh from './translations/zh.json';
 import ptBR from './translations/ptBR.json';
+import ja from './translations/ja.json';
+import ko from './translations/ko.json';
+import ru from './translations/ru.json';
 
 // Change the default separator
 // https://github.com/AlexanderZaytsev/react-native-i18n/issues/73
@@ -19,7 +22,7 @@ I18n.fallbacks = true;
 
 // Define the supported translations
 I18n.translations = {
-  en, es, pt, zh, ptBR,
+  en, es, pt, zh, ptBR, ja, ko, ru,
 };
 
 const currentLocale = I18n.currentLocale();
