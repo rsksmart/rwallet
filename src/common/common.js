@@ -308,11 +308,11 @@ const common = {
   async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FINGERPRINT || biometryType === BIOMETRY_TYPES.FACE_ID) {
+      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FACE_ID || biometryType === BIOMETRY_TYPES.Biometrics) {
         return biometryType;
       }
     } catch (error) {
-      console.log('The device does not support fingerprint');
+      console.log('The device does not support fingerprint, error: ', error);
     }
     return null;
   },

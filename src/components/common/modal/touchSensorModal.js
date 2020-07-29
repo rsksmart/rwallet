@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity, Platform,
+  View, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
@@ -133,6 +133,7 @@ export default class TouchSensorModal extends Component {
       onAttempt,
       description: biometryType === BIOMETRY_TYPES.FACE_ID ? strings('modal.touchSensor.faceID.nativeNote') : strings('modal.touchSensor.fingerprint.nativeNote'),
       fallbackEnabled: false,
+      cancelButton: strings('button.cancel'),
     };
     FingerprintScanner.authenticate(params).then(() => {
       this.setState({ errorMessage: null });
@@ -178,13 +179,10 @@ export default class TouchSensorModal extends Component {
           <TouchableOpacity
             style={styles.finger}
             onPress={this.onIconPressed}
-            disabled={!(Platform.OS === 'ios')}
           >
             <Image source={finger} />
           </TouchableOpacity>
-          { Platform.OS === 'ios' && (
-            <Loc style={[styles.touchToVerify]} text={touchToVerifyText} />
-          )}
+          <Loc style={[styles.touchToVerify]} text={touchToVerifyText} />
 
           {
             !fingerprintPasscodeDisabled && (
