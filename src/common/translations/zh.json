@@ -493,7 +493,7 @@
     "chooseBTCAddressType": {
       "title": "选择地址类型",
       "body": "请选择比特币地址类型",
-      "legacy": "旧类型",
+      "legacy": "普通",
       "segwit": "隔离见证"
     }
   },
