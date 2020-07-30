@@ -85,7 +85,7 @@ class WalletSelectCurrency extends Component {
       const coins = [];
       const addCoins = (items, type) => {
         _.each(items, (item) => {
-          const { selected, title: symbol } = item;
+          const { selected, symbol } = item;
           if (selected) {
             const coin = { symbol, type };
             // BTC needs to set the address type
