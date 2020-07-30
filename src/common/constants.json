@@ -19,7 +19,7 @@
 
   "BIOMETRY_TYPES": {
     "TOUCH_ID": "Touch ID",
-    "FINGERPRINT": "Fingerprint",
-    "FACE_ID": "Face ID"
+    "FACE_ID": "Face ID",
+    "Biometrics": "Biometrics"
   }
 }
