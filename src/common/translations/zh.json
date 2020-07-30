@@ -417,7 +417,7 @@
       "fingerprint": {
         "title": "指纹解锁",
         "touchToVerify": "点击进行指纹解锁",
-        "nativeNote": "通过Home键验证已有手机指纹",
+        "nativeNote": "请验证已有指纹",
         "notMatch": "指纹不匹配，请重试。"
       },
       "faceID": {
