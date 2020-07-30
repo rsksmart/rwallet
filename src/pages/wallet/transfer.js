@@ -15,6 +15,7 @@ import Switch from '../../components/common/switch/switch';
 import { createErrorNotification, getErrorNotification, getDefaultTxFailedErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
@@ -26,6 +27,7 @@ import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
+import ERROR_CODE from '../../common/errors';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -764,8 +766,9 @@ class Transfer extends Component {
   }
 
   async confirm(toAddress) {
-    const { navigation, addNotification } = this.props;
+    const { navigation, addNotification, getBalance } = this.props;
     const { coin } = this;
+    const { symbol, type, address } = coin;
     const { memo } = this.state;
     const { amount } = this.state;
     try {
@@ -790,6 +793,11 @@ class Transfer extends Component {
       const buttonText = 'button.retry';
       const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
+      if (error.code === ERROR_CODE.NOT_ENOUGH_BALANCE || ERROR_CODE.NOT_ENOUGH_BTC || ERROR_CODE.NOT_ENOUGH_RBTC) {
+        getBalance({
+          symbol, type, address, needFetch: true,
+        });
+      }
       // this.resetConfirm();
     }
   }
@@ -1048,6 +1056,7 @@ Transfer.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  getBalance: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -1057,6 +1066,7 @@ const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   isFingerprint: state.App.get('fingerprint'),
   passcode: state.App.get('passcode'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1073,6 +1083,7 @@ const mapDispatchToProps = (dispatch) => ({
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
+  getBalance: (params) => dispatch(walletActions.getBalance(params)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transfer);
