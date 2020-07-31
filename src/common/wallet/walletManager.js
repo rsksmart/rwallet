@@ -94,12 +94,16 @@ class WalletManager {
       if (_.isNumber(result.currentKeyId)) {
         this.currentKeyId = result.currentKeyId;
       }
-
       // Re-create Wallet objects based on result.wallets JSON
       const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
+      this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 
-      this.wallets = wallets;
+      // If the version is upgraded, the data needs to be saved again
+      const needSaveWallet = _.find(wallets, { isNeedSave: true });
+      if (needSaveWallet) {
+        await this.serialize();
+      }
     }
 
     console.log('Deserialized Wallets from Storage.', this.wallets);

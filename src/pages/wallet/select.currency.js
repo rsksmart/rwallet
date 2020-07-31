@@ -12,10 +12,12 @@ import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import { createInfoNotification } from '../../common/notification.controller';
+import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import config from '../../../config';
 import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import Item from '../../components/wallet/coin.type.list.item';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -45,16 +47,15 @@ class WalletSelectCurrency extends Component {
       };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
-      this.onCreateButtonPress = this.onCreateButtonPress.bind(this);
       this.mainnet = [];
       this.testnet = [];
       const { consts: { supportedTokens } } = config;
       // Generate mainnet and testnet list data
       _.each(supportedTokens, (token) => {
-        const item = { title: token, icon: coinType[token].icon };
+        const item = { title: token, symbol: token, icon: coinType[token].icon };
         item.selected = true;
         this.mainnet.push(item);
-        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), icon: coinType[`${token}Testnet`].icon };
+        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), symbol: token, icon: coinType[`${token}Testnet`].icon };
         testnetItem.selected = false;
         this.testnet.push(testnetItem);
       });
@@ -79,19 +80,48 @@ class WalletSelectCurrency extends Component {
       }
     }
 
-    async onCreateButtonPress() {
-      const { navigation } = this.props;
+    createCoins = (addressType) => {
+      // List of tokens to be created, [{symbol, type, addressType}]
       const coins = [];
-      for (let i = 0; i < this.mainnet.length; i += 1) {
-        if (this.mainnet[i].selected) {
-          coins.push({ symbol: this.mainnet[i].title, type: 'Mainnet' });
-        }
+      const addCoins = (items, type) => {
+        _.each(items, (item) => {
+          const { selected, symbol } = item;
+          if (selected) {
+            const coin = { symbol, type };
+            // BTC needs to set the address type
+            if (symbol === 'BTC') {
+              coin.addressType = addressType;
+            }
+            coins.push(coin);
+          }
+        });
+      };
+      addCoins(this.mainnet, 'Mainnet');
+      addCoins(this.testnet, 'Testnet');
+      // Create these tokens
+      this.createWalletWithCoins(coins);
+    }
+
+    onCreateButtonPress = async () => {
+      const { addConfirmation } = this.props;
+      const selectedMainnetBtc = _.find(this.mainnet, { symbol: 'BTC', selected: true });
+      const selectedTestnetBtc = _.find(this.testnet, { symbol: 'BTC', selected: true });
+      // If BTC is not selected, there is no need to ask the user for the address type of BTC.
+      if (!selectedMainnetBtc && !selectedTestnetBtc) {
+        this.createCoins();
+        return;
       }
-      for (let i = 0; i < this.testnet.length; i += 1) {
-        if (this.testnet[i].selected) {
-          coins.push({ symbol: this.mainnet[i].title, type: 'Testnet' });
-        }
-      }
+      // Ask users for BTC address type
+      const notification = createBTCAddressTypeConfirmation(() => {
+        this.createCoins(definitions.BtcAddressType.legacy);
+      }, () => {
+        this.createCoins(definitions.BtcAddressType.segwit);
+      });
+      addConfirmation(notification);
+    }
+
+    createWalletWithCoins = (coins) => {
+      const { navigation } = this.props;
       if (this.isImportWallet) {
         this.requestCreateWallet(this.phrase, coins);
       } else {
@@ -186,6 +216,7 @@ WalletSelectCurrency.propTypes = {
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
   showPasscode: PropTypes.func.isRequired,
   passcode: PropTypes.string,
 };
@@ -206,6 +237,7 @@ const mapDispatchToProps = (dispatch) => ({
   createKey: (name, phrases, coins, walletManager, derivationPaths) => dispatch(walletActions.createKey(name, phrases, coins, walletManager, derivationPaths)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
 });
 

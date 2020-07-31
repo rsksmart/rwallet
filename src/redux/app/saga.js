@@ -18,6 +18,7 @@ import walletManager from '../../common/wallet/walletManager';
 import definitions from '../../common/definitions';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
+import config from '../../../config';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -57,6 +58,14 @@ function* updateUserRequest() {
 function* initFromStorageRequest() {
   try {
     // yield call(storage.remove, 'wallets');
+
+    // If the storage version is lower, upgrade
+    const storageVersion = yield call(storage.getStorageVersion);
+    if (!storageVersion || config.storageVersion > storageVersion) {
+      // TODO: upgrade from old version
+      // update current storage version
+      yield call(storage.setStorageVersion, config.storageVersion);
+    }
 
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);

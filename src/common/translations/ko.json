@@ -183,6 +183,12 @@
         "confirmNotice": {
           "one": "아래 월렛 1개에 대한 별명 생성을 확인하십시오.",
           "other": "아래에  {{count}}개 대한 별명 생성을 확인하십시오."
+        },
+        "chooseBTCAddressType": {
+          "title": "주소 유형을 선택하십시오",
+          "body": "비트 코인 주소 유형을 선택하십시오",
+          "legacy": "유산",
+          "segwit": "세그 윗"
         }
       },
       "rnsStatus": {

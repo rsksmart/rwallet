@@ -488,6 +488,12 @@
     "rnsExceeded": {
       "title": "Número máximo alcanzado",
       "body": "No se pueden crear más de {{count}} apodos por día."
+    },
+    "chooseBTCAddressType": {
+      "title": "Elegir tipo de dirección",
+      "body": "Por favor seleccione el tipo de dirección de bitcoin",
+      "legacy": "legado",
+      "segwit": "segwit"
     }
   },
   "currency": {

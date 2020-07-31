@@ -486,6 +486,12 @@
     "rnsExceeded": {
       "title": "Maximum number reached",
       "body": "No more than {{count}} nicknames can be created per day."
+    },
+    "chooseBTCAddressType": {
+      "title": "Choose address type",
+      "body": "Please select bitcoin address type",
+      "legacy": "legacy",
+      "segwit": "segwit"
     }
   },
   "currency": {

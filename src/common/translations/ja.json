@@ -486,6 +486,12 @@
     "rnsExceeded": {
       "title": "最大数に達しました",
       "body": "1日に作成できるニックネームは{{count}}個までです。"
+    },
+    "chooseBTCAddressType": {
+      "title": "住所タイプを選択",
+      "body": "ビットコインアドレスタイプを選択してください",
+      "legacy": "遺産",
+      "segwit": "セグウィット"
     }
   },
   "currency": {

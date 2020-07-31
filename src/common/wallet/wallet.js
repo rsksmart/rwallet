@@ -5,11 +5,12 @@ import RBTCCoin from './rbtccoin';
 import storage from '../storage';
 import coinType from './cointype';
 import common from '../common';
+import definitions from '../definitions';
 
 const bip39 = require('bip39');
 const ordinal = require('ordinal');
 
-const drivationTypes = [
+const derivationTypes = [
   { symbol: 'BTC', type: 'Mainnet' },
   { symbol: 'BTC', type: 'Testnet' },
   { symbol: 'RBTC', type: 'Mainnet' },
@@ -35,24 +36,13 @@ export default class Wallet {
    */
   generateDerivations(derivationPaths) {
     this.derivations = [];
-    _.each(drivationTypes, (drivationType) => {
-      const { symbol, type } = drivationType;
+    _.each(derivationTypes, (derivationType) => {
+      const { symbol, type } = derivationType;
       const path = type === 'Mainnet' && derivationPaths && derivationPaths[symbol] ? derivationPaths[symbol] : null;
-      let coin = null;
-      if (symbol === 'BTC') {
-        coin = new Coin(symbol, type, path);
-      } else {
-        coin = new RBTCCoin(symbol, type, path);
-      }
+      const coin = symbol === 'BTC' ? new Coin(symbol, type, path) : new RBTCCoin(symbol, type, path);
       coin.derive(this.seed);
-      this.derivations.push({
-        symbol,
-        type,
-        path: coin.derivationPath,
-        address: coin.address,
-        privateKey: coin.privateKey,
-      });
-      Wallet.savePrivateKey(this.id, symbol, type, coin.privateKey);
+      coin.savePrivateKey(this.id);
+      this.derivations.push(coin);
     });
   }
 
@@ -156,42 +146,10 @@ export default class Wallet {
   }
 
   /**
-   * Save private key with walletId, symbol, type into secure storage if exits
-   */
-  static async savePrivateKey(id, symbol, type, privateKey) {
-    try {
-      console.log(`savePrivateKey, id: ${id}, symbol: ${symbol}, type: ${type}, privateKey: ${privateKey}`);
-      await storage.setPrivateKey(id, symbol, type, privateKey);
-    } catch (ex) {
-      console.log('savePrivateKey, error', ex.message);
-    }
-  }
-
-  /**
-   * Restore private key by walletId, symbol, type from secure storage; set to null if storage lookup fails
-   */
-  static async restorePrivateKey(id, symbol, type) {
-    try {
-      const privateKey = await storage.getPrivateKey(id, symbol, type);
-      return privateKey;
-    } catch (err) {
-      console.log(err.message);
-    }
-
-    return null;
-  }
-
-
-  /**
    * Returns a JSON to save required data to backend server; empty array if there's no coins
    */
   toJSON() {
-    const newDerivations = _.map(this.derivations, (derivation) => ({
-      symbol: derivation.symbol,
-      type: derivation.type,
-      path: derivation.path,
-      address: derivation.address,
-    }));
+    const newDerivations = _.map(this.derivations, (derivation) => derivation.toDerivationJson());
 
     const result = {
       id: this.id,
@@ -216,26 +174,41 @@ export default class Wallet {
 
     // use secure storage to restore phrase
     const phrase = await Wallet.restorePhrase(id);
+    const seed = bip39.mnemonicToSeedSync(phrase);
+    console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
 
-    // use secure storage to restore private key
-    if (derivations) {
-      const privateKeyPromises = [];
-      _.each(drivationTypes, async (drivationType) => {
-        const { symbol, type } = drivationType;
-        privateKeyPromises.push(Wallet.restorePrivateKey(id, symbol, type));
-      });
-      const privateKeys = await Promise.all(privateKeyPromises);
-      _.each(privateKeys, (privateKey, index) => {
-        derivations[index].privateKey = privateKey;
-      });
-    }
+    let isNeedSave = false;
 
     if (!_.isString(phrase)) { // We are be able to restore phrase; do not continue.
       console.log(`Wallet.fromJSON: phrase restored is not a string, Id=${id}; returning null.`);
       return null;
     }
 
-    console.log(`Wallet.fromJSON: restored phrase for Id=${id}; ${phrase}.`);
+    // restore derivations
+    // use secure storage to restore private key
+    if (derivations) {
+      const promises = _.map(derivations, async (derivation, index) => {
+        const { symbol, type, path } = derivation;
+        let coin = null;
+
+        //  If addresses is empty, it is an upgrade from the old version
+        // upgrade from old struct, recreate derivation
+        if (symbol === 'BTC' && _.isEmpty(derivation.addresses)) {
+          isNeedSave = true;
+          coin = new Coin(symbol, type, path);
+          coin.derive(seed);
+          coin.setAddressType(definitions.BtcAddressType.legacy);
+          await coin.savePrivateKey(id);
+        } else {
+          // restore derivation
+          coin = symbol === 'BTC' ? Coin.fromJSON(derivation) : RBTCCoin.fromJSON(derivation);
+          await coin.restorePrivateKey(id);
+        }
+        derivations[index] = coin;
+      });
+      await Promise.all(promises);
+    }
+
     console.log('Wallet.fromJSON: derivations: ', derivations);
 
     // Migrate from old coin structure
@@ -253,7 +226,7 @@ export default class Wallet {
       id, name, phrase, coins, derivations,
     });
 
-    return wallet;
+    return { isNeedSave, wallet };
   }
 
   /**
@@ -279,24 +252,39 @@ export default class Wallet {
    */
   addToken = (token) => {
     const {
-      symbol, type, contractAddress, objectId, name, precision, balance, subdomain,
+      symbol, type, contractAddress, objectId, name, precision, balance, subdomain, addressType,
     } = token;
 
     let coin = null;
+
+    // If the token already exists, an exception is thrown.
     const foundCoin = _.find(this.coins, { symbol, type });
     if (foundCoin) {
       throw new Error('err.exsistedtoken');
     }
-    // Create coin and reuse address and private key
+
+    // Find the corresponding derivation
     const derivationSymbol = symbol === 'BTC' ? symbol : 'RBTC';
     const derivation = _.find(this.derivations, { symbol: derivationSymbol, type });
+
+    // create token instance and restore addresses and private key with derivation.
+    // symbol, type must not be null
     if (symbol === 'BTC') {
+      // 1. If a already has a value, use it to create a token
+      if (!derivation.addressType) {
+        // 2. If user select addressType to create BTC for the first time, set addressType to derivation.
+        this.setBtcAddressType(addressType);
+      }
       coin = new Coin(symbol, type, derivation.path);
     } else {
-      coin = new RBTCCoin(symbol, type, derivation.path, contractAddress, name, precision);
+      coin = new RBTCCoin(symbol, type, derivation.path);
+      coin.setCustomTokenData({ contractAddress, name, precision });
     }
-    coin.privateKey = derivation.privateKey;
-    coin.address = derivation.address;
+
+    // reuse address, private key of derivation
+    coin.setupWithDerivation(derivation);
+
+    // restore other data
     if (objectId) {
       coin.objectId = objectId;
     }
@@ -306,6 +294,7 @@ export default class Wallet {
     if (subdomain) {
       coin.subdomain = subdomain;
     }
+
     this.coins.push(coin);
     this.coins = common.sortTokens(this.coins);
     return coin;
@@ -322,5 +311,21 @@ export default class Wallet {
       symbols.push(coin.symbol);
     });
     return _.uniq(symbols);
+  }
+
+  // Set BTC address type (Mainnet, Testnet)
+  setBtcAddressType(addressType) {
+    _.each(this.derivations, (derivation) => {
+      const newDerivation = derivation;
+      if (newDerivation.symbol === 'BTC') {
+        newDerivation.setAddressType(addressType);
+      }
+    });
+  }
+
+  // Get BTC address type
+  getBtcAddressType = () => {
+    const derivation = _.find(this.derivations, { symbol: 'BTC', type: 'Mainnet' });
+    return derivation.addressType;
   }
 }

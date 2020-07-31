@@ -16,6 +16,7 @@ const KEY_RECENT_DAPPS = 'RECENTDAPPS';
 const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 const USE_TRANSACTION_FALLBACK_ADDRESSES = 'useTransactionFallbackAddress';
+const STORAGE_VERSION = 'storageVersion';
 
 class RNStorage {
   constructor() {
@@ -374,6 +375,12 @@ class RNStorage {
     const foundAddress = _.find(addresses, (item) => address === item);
     return !!foundAddress;
   }
+
+  setStorageVersion = async (version) => {
+    await this.save(STORAGE_VERSION, version);
+  }
+
+  getStorageVersion = async () => this.load({ key: STORAGE_VERSION })
 }
 
 export default new RNStorage();

@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
   login: () => dispatch(appActions.login()),
 
   getServerInfo: () => dispatch(appActions.getServerInfo()),
-  updateUser: () => dispatch(appActions.getServerInfo()),
+  updateUser: () => dispatch(appActions.updateUser()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
   initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
   initLiveQueryTokens: (tokens) => dispatch(walletActions.initLiveQueryTokens(tokens)),
