@@ -56,6 +56,7 @@ const actions = {
   SET_BLOCK_HEIGHTS_CHANNEL: 'SET_BLOCK_HEIGHT_CHANNEL',
 
   SET_SUBDOMAINS: 'SET_SUBDOMAINS',
+  GET_BALANCE: 'GET_BALANCE',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -165,6 +166,14 @@ const actions = {
   setSubdomains: (subdomains) => ({
     type: actions.SET_SUBDOMAINS,
     subdomains,
+  }),
+  getBalance: ({
+    symbol, type, address, needFetch,
+  }) => ({
+    type: actions.GET_BALANCE,
+    payload: {
+      symbol, type, address, needFetch,
+    },
   }),
 };
 
