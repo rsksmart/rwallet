@@ -502,7 +502,7 @@
     "chooseBTCAddressType": {
       "title": "Escolha o tipo de endereço",
       "body": "Por favor, selecione o tipo de endereço bitcoin",
-      "legacy": "legado",
+      "legacy": "legacy",
       "segwit": "segwit"
     }
   },
