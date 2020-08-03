@@ -139,7 +139,7 @@
         "all": "TUDO"
       },
       "swapSelection": {
-        "title": "Escolha o ativo",
+        "title": "Selecionar ativo",
         "noSwappableCoin": "Desculpe, você não tem nenhum ativo para trocar",
         "please": "por favor",
         "create": "criar",
