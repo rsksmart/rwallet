@@ -143,6 +143,8 @@ export default class TouchSensorModal extends Component {
       hideFingerprintModal();
     }).catch((error) => {
       console.log(`FingerprintScanner, error, name: ${error.name}, message: ${error.message}, biometric: ${error.biometric}`);
+      // If it fails, you need to call FingerprintScanner.release. Otherwise, the callback will not be executed when FingerprintScanner.authenticate is called again on Android.
+      FingerprintScanner.release();
       // If error.name is UserCancel, errorMessage is null
       // If error.name is AuthenticationFailed or FingerprintScannerNotSupported,
       // user have tried five times, system have stoped fingerprint verification.
