@@ -357,6 +357,10 @@
       "title": "Muitas palavras",
       "body": "A frase de recuperação deve conter 12 palavras."
     },
+    "amountExceeds": {
+      "title": "Saldo insuficiente",
+      "body": "O valor inserido excede o saldo da carteira"
+    },
     "txFailed": {
       "title": "A transferência falhou",
       "moreBTC": "Você precisa de mais saldo BTC para concluir a transferência",
