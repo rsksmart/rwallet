@@ -41,17 +41,22 @@ export function strings(name, params = {}) {
 
 /**
  * get matched language from current locale
+ * If currentLocale is be found in I18n.translations, return it. Otherwise return upper locale.
  * for example
- * If currentLocale is en-us, en-nz or en-ca, return en
- * If currentLocale is zh-cn, zh-hk or zh-tw, return zh
+ * If currentLocale is pt-BR return pt-BR
+ * If currentLocale is en-US, en-NZ or en-CA, return en
+ * If currentLocale is zh-CN, zh-HK or zh-TW, return zh
  */
 export function getCurrentLanguage() {
   const keys = Object.keys(I18n.translations);
+  // Precise matching
   let foundLanguage = _.find(keys, (key) => key === currentLocale);
   if (foundLanguage) {
     return foundLanguage;
   }
+  // Preset default language
   let currentLanguage = config.defaultSettings.language;
+  // Find upper locale
   const regex = /^([a-z]+)[_-].*/g;
   const language = currentLocale.replace(regex, '$1');
   foundLanguage = _.find(keys, (key) => key === language);
