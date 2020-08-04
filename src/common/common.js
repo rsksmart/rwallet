@@ -399,12 +399,8 @@ const common = {
   },
 
   setMomentLocale(locale) {
-    let newLocale = locale;
-    if (locale === 'zh') {
-      newLocale = 'zh-cn';
-    } else if (locale === 'ptBR') {
-      newLocale = 'pt-br';
-    }
+    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    // pt-BR will be normalize to pt-br
     moment.locale(newLocale);
   },
 

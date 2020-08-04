@@ -8,7 +8,7 @@ import en from './translations/en.json';
 import es from './translations/es.json';
 import pt from './translations/pt.json';
 import zh from './translations/zh.json';
-import ptBR from './translations/ptBR.json';
+import ptBR from './translations/pt-BR.json';
 import ja from './translations/ja.json';
 import ko from './translations/ko.json';
 import ru from './translations/ru.json';
@@ -22,7 +22,7 @@ I18n.fallbacks = true;
 
 // Define the supported translations
 I18n.translations = {
-  en, es, pt, zh, ptBR, ja, ko, ru,
+  en, es, pt, zh, 'pt-BR': ptBR, ja, ko, ru,
 };
 
 const currentLocale = I18n.currentLocale();
@@ -46,12 +46,16 @@ export function strings(name, params = {}) {
  * If currentLocale is zh-cn, zh-hk or zh-tw, return zh
  */
 export function getCurrentLanguage() {
+  const keys = Object.keys(I18n.translations);
+  let foundLanguage = _.find(keys, (key) => key === currentLocale);
+  if (foundLanguage) {
+    return foundLanguage;
+  }
   let currentLanguage = config.defaultSettings.language;
   const regex = /^([a-z]+)[_-].*/g;
   const language = currentLocale.replace(regex, '$1');
-  const keys = Object.keys(I18n.translations);
-  const foundLanuage = _.find(keys, (key) => key === language);
-  currentLanguage = foundLanuage || currentLanguage;
+  foundLanguage = _.find(keys, (key) => key === language);
+  currentLanguage = foundLanguage || currentLanguage;
   return currentLanguage;
 }
 
