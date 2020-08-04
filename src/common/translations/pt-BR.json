@@ -139,7 +139,7 @@
         "all": "TUDO"
       },
       "swapSelection": {
-        "title": "Escolha o ativo",
+        "title": "Selecionar ativo",
         "noSwappableCoin": "Desculpe, você não tem nenhum ativo para trocar",
         "please": "por favor",
         "create": "criar",
@@ -315,7 +315,7 @@
     "Copy": "Copiar",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
-    "Send All": "Enviar tudo",
+    "sendAll": "Enviar tudo",
     "goToWallet": "IR PARA CARTEIRA",
     "backToWallet": "VOLTAR PARA CARTEIRA",
     "backToSetting": "VOLTAR PARA CONFIGURAÇÃO",
@@ -325,7 +325,7 @@
     "Delete": "Excluir",
     "Reset": "Alterar",
     "Finish": "Concluir",
-    "Exchange": "Troca",
+    "Exchange": "Realizar troca",
     "addAsset": "Adicionar ativo",
     "ok": "Ok",
     "name": "Nome",
@@ -356,6 +356,10 @@
     "tooManyPhrase": {
       "title": "Muitas palavras",
       "body": "A frase de recuperação deve conter 12 palavras."
+    },
+    "amountExceeds": {
+      "title": "Saldo insuficiente",
+      "body": "O valor inserido excede o saldo da carteira"
     },
     "txFailed": {
       "title": "A transferência falhou",
@@ -502,7 +506,7 @@
     "chooseBTCAddressType": {
       "title": "Escolha o tipo de endereço",
       "body": "Por favor, selecione o tipo de endereço bitcoin",
-      "legacy": "legado",
+      "legacy": "legacy",
       "segwit": "segwit"
     }
   },
