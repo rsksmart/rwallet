@@ -139,7 +139,7 @@
         "all": "TUDO"
       },
       "swapSelection": {
-        "title": "Escolha o ativo",
+        "title": "Selecionar ativo",
         "noSwappableCoin": "Desculpe, você não tem nenhum ativo para trocar",
         "please": "por favor",
         "create": "criar",
@@ -325,7 +325,7 @@
     "Delete": "Excluir",
     "Reset": "Alterar",
     "Finish": "Concluir",
-    "Exchange": "Troca",
+    "Exchange": "Realizar troca",
     "addAsset": "Adicionar ativo",
     "ok": "Ok",
     "name": "Nome",
@@ -506,7 +506,7 @@
     "chooseBTCAddressType": {
       "title": "Escolha o tipo de endereço",
       "body": "Por favor, selecione o tipo de endereço bitcoin",
-      "legacy": "legado",
+      "legacy": "legacy",
       "segwit": "segwit"
     }
   },
