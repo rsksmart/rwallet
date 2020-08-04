@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
     letterSpacing: 0.39,
-    marginLeft: 12,
+    marginLeft: 9,
     marginBottom: 2,
     flex: 1,
   },
@@ -33,21 +33,20 @@ const styles = StyleSheet.create({
   },
   chevron: {
     color: color.component.navBackIndicator.color,
-    marginTop: -1.5,
     marginLeft: -14,
     fontSize: 40,
   },
   cross: {
     color: color.component.navBackIndicator.color,
-    marginTop: -1.5,
-    marginLeft: -20,
-    fontSize: 40,
+    marginTop: 6,
+    marginLeft: -13,
+    fontSize: 28,
   },
   list: {
     color: color.component.navBackIndicator.color,
-    marginTop: -1.5,
-    marginLeft: -20,
-    fontSize: 40,
+    marginTop: 6,
+    marginLeft: -23,
+    fontSize: 27,
   },
 });
 
