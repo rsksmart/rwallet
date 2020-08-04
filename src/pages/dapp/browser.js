@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
 import appActions from '../../redux/app/actions';
-import BrowerHeader from '../../components/headers/header.browser';
+import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import CONSTANTS from '../../common/constants.json';
@@ -393,7 +393,7 @@ class DAppBrowser extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <BrowerHeader
+        <BrowserHeader
           title={(title && (title[language] || title.en)) || url}
           onBackButtonPress={() => {
             const { canGoBack } = this.state;
