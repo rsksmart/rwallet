@@ -258,7 +258,7 @@
       "keyName": {
         "title": "Nome da carteira",
         "question": "Qual nome você deseja para essa carteira?",
-        "notice": "Você pode alterar o nome exibido no dispositivo abaixo.",
+        "notice": "Você pode alterar o nome exibido para esta carteira neste dispositivo.",
         "name": "Nome",
         "comment": "* O nome da carteira pode conter de 1 a %{maxLength} letras (a-z), números (0-9) e espaço"
       },
