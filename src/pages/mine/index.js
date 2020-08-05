@@ -362,10 +362,9 @@ class MineIndex extends Component {
           </View>
         </View>
         <WebViewModal
-          title={strings('page.start.terms.termsOfUse')}
           url={config.termsUrl[language]}
           visible={isTermsWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
+          onCloseButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
         />
       </BasePageGereral>
     );
