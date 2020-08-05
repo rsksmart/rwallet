@@ -256,7 +256,7 @@ class DAppIndex extends Component {
         <View style={styles.dappInfo}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && (item.description[language] || item.description.en)) || item.description}</Text>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{common.getDomain(item.url)}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -302,9 +302,10 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              const domain = common.getDomain(searchUrl);
+              const url = searchUrl.toLowerCase();
+              const domain = common.getDomain(url);
               this.onDappPress({
-                url: domain, name: domain, description: '', networks: ['Mainnet', 'Testnet'], id: domain, iconUrl: config.defaultDappIcon,
+                url, name: domain, description: '', networks: ['Mainnet', 'Testnet'], id: url, iconUrl: config.defaultDappIcon,
               });
             }
           }}

@@ -546,6 +546,13 @@ const common = {
       if (domain.startsWith('www.')) {
         domain = domain.substring(4, domain.length);
       }
+
+      // delete sub route
+      [domain] = _.split(domain, '/');
+
+      // delete params
+      [domain] = _.split(domain, '?');
+
       return domain;
     } catch (error) {
       return url;
