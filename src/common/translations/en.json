@@ -158,7 +158,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Assets",
-        "question": "Would you like to add these Assets?",
+        "question": "Would you like to add this asset?",
         "token": "Asset",
         "symbol": "Asset Symbol",
         "decimals": "Decimals of Precision",

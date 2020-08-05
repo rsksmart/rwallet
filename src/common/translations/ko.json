@@ -158,7 +158,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",
-        "question": "해당 자산을 추가하시겠습니까?",
+        "question": "이 자산을 추가 하시겠습니까?",
         "token": "자산",
         "symbol": "자산 표시",
         "decimals": "십진법",
