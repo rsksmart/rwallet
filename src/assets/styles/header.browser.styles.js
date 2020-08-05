@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'Avenir-Medium',
-    fontSize: 20,
+    fontSize: 15,
     letterSpacing: 0.39,
     marginLeft: 9,
     marginBottom: 2,
