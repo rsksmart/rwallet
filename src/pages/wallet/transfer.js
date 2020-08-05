@@ -121,7 +121,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInputIcon: {
-    marginRight: 20,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    paddingRight: 15,
   },
   question: {
     fontSize: 16,
