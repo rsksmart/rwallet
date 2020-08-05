@@ -14,6 +14,7 @@ import { strings } from '../../common/i18n';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
 import config from '../../../config';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   item: {
@@ -126,7 +127,7 @@ class DAppList extends Component {
               <View style={styles.dappInfo}>
                 { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en}</Text> : null }
                 { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language] || item.description.en}</Text> : null }
-                <Text style={styles.dappUrl}>{item.url}</Text>
+                <Text style={styles.dappUrl}>{common.getDomain(item.url)}</Text>
               </View>
             </TouchableOpacity>
           )}

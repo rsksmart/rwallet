@@ -24,6 +24,7 @@ import storage from '../../common/storage';
 import color from '../../assets/styles/color.ts';
 import Image from '../../components/common/image/image';
 import config from '../../../config';
+import common from '../../common/common';
 
 const RECENT_DAPPS_NUMBER = 3; // show recent 3 dapps
 const DAPP_PER_COLUMN = 3; // One column has 3 dapps
@@ -255,7 +256,7 @@ class DAppIndex extends Component {
         <View style={styles.dappInfo}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && (item.description[language] || item.description.en)) || item.description}</Text>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{item.url}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappUrl}>{common.getDomain(item.url)}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -301,8 +302,9 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
+              const domain = common.getDomain(searchUrl);
               this.onDappPress({
-                url: searchUrl, name: searchUrl, description: '', networks: ['Mainnet', 'Testnet'], id: searchUrl, iconUrl: config.defaultDappIcon,
+                url: domain, name: domain, description: '', networks: ['Mainnet', 'Testnet'], id: domain, iconUrl: config.defaultDappIcon,
               });
             }
           }}
