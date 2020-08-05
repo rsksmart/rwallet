@@ -521,7 +521,7 @@ class History extends Component {
 
   renderHistory = (listData, isRefreshing) => {
     // Show loading animation when entering the page for the first time
-    if (!listData && isRefreshing) {
+    if (_.isEmpty(listData) && isRefreshing) {
       return <ActivityIndicator />;
     }
 
@@ -549,6 +549,7 @@ class History extends Component {
           renderHeader={() => this.renderHeader(listData, isRefreshing)}
           refreshHeader={RefreshHeader}
           loadingFooter={Footer}
+          allLoaded={_.isEmpty(listData)}
           onRefresh={this.onRefresh}
           onLoading={this.loadMoreData}
           heightForIndexPath={() => 70}
