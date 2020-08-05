@@ -41,6 +41,7 @@ class DAppBrowser extends Component {
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
       ethersJsContent: '',
+      localNonce: 0,
     };
 
     this.webview = createRef();
@@ -257,6 +258,7 @@ class DAppBrowser extends Component {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, params, id } = payload;
+    const { localNonce } = this.state;
     try {
       const { callAuthVerify } = this.props;
       const { wallet: { coins, address } } = this.state;
@@ -298,7 +300,7 @@ class DAppBrowser extends Component {
               const result = { id, result: signature };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('personal_sign err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
@@ -308,7 +310,11 @@ class DAppBrowser extends Component {
         case 'eth_sendTransaction': {
           callAuthVerify(async () => {
             try {
-              const nonce = await this.provider.getTransactionCount(address);
+              let nonce = await this.provider.getTransactionCount(address);
+              if (localNonce > nonce) {
+                nonce = localNonce;
+              }
+              this.setState({ localNonce: nonce + 1 });
               const txData = {
                 nonce,
                 data: params[0].data,
@@ -324,7 +330,7 @@ class DAppBrowser extends Component {
               const result = { id, result: res.hash };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('eth_sendTransaction err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
