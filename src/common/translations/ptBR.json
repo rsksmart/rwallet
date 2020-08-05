@@ -233,7 +233,7 @@
         "title": "Autenticação de dois fatores",
         "setPasscode": "Configurar PIN",
         "resetPasscode": "Alterar PIN",
-        "useFingerprint": "Usar impressão digital",
+        "useFingerprint": "Usar biometria",
         "useFaceID": "Usar Face ID"
       },
       "resetPasscodeSuccess" :{
@@ -243,7 +243,7 @@
         }
       },
       "keySettings": {
-        "title": "Configurações de carteira",
+        "title": "Configurações da carteira",
         "walletContains": {
           "one": "Esta carteira contém 1 ativo",
           "other": "Esta carteira contém {{count}} ativos"
