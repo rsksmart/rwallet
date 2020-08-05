@@ -540,10 +540,6 @@ const common = {
       if (domain.startsWith('http://')) {
         domain = domain.substring(7, domain.length);
       }
-      if (domain.startsWith('www.')) {
-        domain = domain.substring(4, domain.length);
-      }
-
       if (domain.startsWith('https://')) {
         domain = domain.substring(8, domain.length);
       }
