@@ -125,7 +125,7 @@ class DAppList extends Component {
             >
               <Image style={styles.dappIcon} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
               <View style={styles.dappInfo}>
-                { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en}</Text> : null }
+                { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en || item.name}</Text> : null }
                 { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language] || item.description.en}</Text> : null }
                 <Text style={styles.dappUrl}>{common.getDomain(item.url)}</Text>
               </View>
