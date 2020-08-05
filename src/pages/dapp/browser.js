@@ -311,6 +311,7 @@ class DAppBrowser extends Component {
           callAuthVerify(async () => {
             try {
               let nonce = await this.provider.getTransactionCount(address);
+              // Some transactions are not on the chain yet, so need save local nonce to ensure that the transaction nonce is unique
               if (localNonce > nonce) {
                 nonce = localNonce;
               }
