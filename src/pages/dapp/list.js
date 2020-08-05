@@ -13,6 +13,7 @@ import WalletSelection from '../../components/common/modal/wallet.selection.moda
 import { strings } from '../../common/i18n';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
+import config from '../../../config';
 
 const styles = StyleSheet.create({
   item: {
@@ -121,7 +122,7 @@ class DAppList extends Component {
               style={[styles.item, { marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={styles.dappIcon} source={{ uri: item.iconUrl }} />
+              <Image style={styles.dappIcon} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
               <View style={styles.dappInfo}>
                 { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en}</Text> : null }
                 { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language] || item.description.en}</Text> : null }
