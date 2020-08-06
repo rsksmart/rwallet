@@ -234,8 +234,14 @@ class DAppBrowser extends Component {
               callback(err, res)
             }
 
-            window.ethereum.send = sendAsync
-            window.ethereum.sendAsync = sendAsync
+            setTimeout(() => {
+              if (!window.ethereum.send) {
+                window.ethereum.send = sendAsync
+              }
+              if (!window.ethereum.sendAsync) {
+                window.ethereum.sendAsync = sendAsync
+              }
+            }, 1000)
           }
 
           initWeb3()
