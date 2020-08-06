@@ -41,7 +41,6 @@ class DAppBrowser extends Component {
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
       ethersJsContent: '',
-      localNonce: 0,
     };
 
     this.webview = createRef();
@@ -258,7 +257,6 @@ class DAppBrowser extends Component {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, params, id } = payload;
-    const { localNonce } = this.state;
     try {
       const { callAuthVerify } = this.props;
       const { wallet: { coins, address } } = this.state;
@@ -310,12 +308,7 @@ class DAppBrowser extends Component {
         case 'eth_sendTransaction': {
           callAuthVerify(async () => {
             try {
-              let nonce = await this.provider.getTransactionCount(address);
-              // Some transactions are not on the chain yet, so need save local nonce to ensure that the transaction nonce is unique
-              if (localNonce > nonce) {
-                nonce = localNonce;
-              }
-              this.setState({ localNonce: nonce + 1 });
+              const nonce = await this.provider.getTransactionCount(address, 'pending');
               const txData = {
                 nonce,
                 data: params[0].data,
