@@ -234,6 +234,7 @@ class DAppBrowser extends Component {
               callback(err, res)
             }
 
+            // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
             setTimeout(() => {
               if (!window.ethereum.send) {
                 window.ethereum.send = sendAsync
