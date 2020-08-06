@@ -158,7 +158,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",
-        "question": "これらの資産を追加しますか？",
+        "question": "このアセットを追加しますか？",
         "token": "資産",
         "symbol": "資産記号",
         "decimals": "小数点以下の桁数",

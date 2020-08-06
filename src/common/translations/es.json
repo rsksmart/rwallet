@@ -161,7 +161,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",
-        "question": "¿Desea agregar estos activos?",
+        "question": "¿Desea agregar este activo?",
         "token": "Activo",
         "symbol": "Símbolo de activo",
         "decimals": "Decimales de precisión",
