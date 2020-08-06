@@ -558,6 +558,17 @@ const common = {
       return url;
     }
   },
+
+  // completion dapp url with 'http'
+  completionUrl(url) {
+    try {
+      let newUrl = url.toLowerCase();
+      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `http://${newUrl}`;
+      return newUrl;
+    } catch (error) {
+      return url;
+    }
+  },
 };
 
 export default common;
