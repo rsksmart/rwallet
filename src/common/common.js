@@ -404,9 +404,8 @@ const common = {
 
   setMomentLocale(locale) {
     try {
-      let newLocale = locale === 'zh' ? 'zh-cn' : locale;
       // pt-BR will be normalize to pt-br
-      newLocale = this.normalizeLocale(newLocale);
+      const newLocale = locale === 'zh' ? 'zh-cn' : this.normalizeLocale(locale);
       moment.locale(newLocale);
     } catch (error) {
       console.warn('Failed to set moment locale, locale: ', locale);
