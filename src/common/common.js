@@ -400,8 +400,8 @@ const common = {
 
   setMomentLocale(locale) {
     const newLocale = locale === 'zh' ? 'zh-cn' : locale;
-    // pt-BR will be normalize to pt-br
-    moment.locale(newLocale);
+    // pt-BR will be normalize to pt-br. It must be an array, otherwise it will crash.
+    moment.locale([newLocale]);
   },
 
   estimateBtcSize({
