@@ -74,7 +74,7 @@
         "importWalletNote": "Restore your wallet using the recovery phrase"
       },
       "selectCurrency": {
-        "title": "Select Wallet Currency",
+        "title": "Select Wallet Assets",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },
