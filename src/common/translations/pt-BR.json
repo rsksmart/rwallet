@@ -157,7 +157,7 @@
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
         "address": "Endereço do Contrato do Ativo",
-        "mainnet": "Mainnet"
+        "mainnet": "Rede principal"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
