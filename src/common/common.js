@@ -403,10 +403,14 @@ const common = {
   },
 
   setMomentLocale(locale) {
-    let newLocale = locale === 'zh' ? 'zh-cn' : locale;
-    // pt-BR will be normalize to pt-br
-    newLocale = this.normalizeLocale(newLocale);
-    moment.locale(newLocale);
+    try {
+      let newLocale = locale === 'zh' ? 'zh-cn' : locale;
+      // pt-BR will be normalize to pt-br
+      newLocale = this.normalizeLocale(newLocale);
+      moment.locale(newLocale);
+    } catch (error) {
+      console.warn('Failed to set moment locale, locale: ', locale);
+    }
   },
 
   estimateBtcSize({
