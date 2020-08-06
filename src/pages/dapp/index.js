@@ -302,7 +302,8 @@ class DAppIndex extends Component {
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {
-              const url = searchUrl.toLowerCase();
+              let url = searchUrl.toLowerCase();
+              url = (url.startsWith('http://') || url.startsWith('https://')) ? url : `http://${url}`;
               const domain = common.getDomain(url);
               this.onDappPress({
                 url, name: domain, description: '', networks: ['Mainnet', 'Testnet'], id: url, iconUrl: config.defaultDappIcon,
