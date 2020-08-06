@@ -532,6 +532,43 @@ const common = {
   getStore() {
     return this.store;
   },
+
+  // get domain from url
+  getDomain(url) {
+    try {
+      let domain = url.toLowerCase();
+      if (domain.startsWith('http://')) {
+        domain = domain.substring(7, domain.length);
+      }
+      if (domain.startsWith('https://')) {
+        domain = domain.substring(8, domain.length);
+      }
+      if (domain.startsWith('www.')) {
+        domain = domain.substring(4, domain.length);
+      }
+
+      // delete sub route
+      [domain] = _.split(domain, '/');
+
+      // delete params
+      [domain] = _.split(domain, '?');
+
+      return domain;
+    } catch (error) {
+      return url;
+    }
+  },
+
+  // completion dapp url with 'http'
+  completionUrl(url) {
+    try {
+      let newUrl = url.toLowerCase();
+      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `http://${newUrl}`;
+      return newUrl;
+    } catch (error) {
+      return url;
+    }
+  },
 };
 
 export default common;

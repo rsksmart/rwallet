@@ -14,6 +14,7 @@ import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import CONSTANTS from '../../common/constants.json';
+import common from '../../common/common';
 
 const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
 
@@ -367,7 +368,7 @@ class DAppBrowser extends Component {
 
   getWebView = (address, url) => {
     const { web3JsContent, ethersJsContent } = this.state;
-    const dappUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `http://${url}`;
+    const dappUrl = common.completionUrl(url);
     if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView

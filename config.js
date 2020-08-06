@@ -95,6 +95,7 @@ const config = {
   },
   rnsDomain: 'wallet.rsk',
   storageVersion: 3,
+  defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
 
 export default config;
