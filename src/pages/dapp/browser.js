@@ -298,7 +298,7 @@ class DAppBrowser extends Component {
               const result = { id, result: signature };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('personal_sign err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
@@ -308,7 +308,7 @@ class DAppBrowser extends Component {
         case 'eth_sendTransaction': {
           callAuthVerify(async () => {
             try {
-              const nonce = await this.provider.getTransactionCount(address);
+              const nonce = await this.provider.getTransactionCount(address, 'pending');
               const txData = {
                 nonce,
                 data: params[0].data,
@@ -324,7 +324,7 @@ class DAppBrowser extends Component {
               const result = { id, result: res.hash };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('eth_sendTransaction err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
