@@ -398,10 +398,15 @@ const common = {
     I18n.locale = language;
   },
 
+  normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
+  },
+
   setMomentLocale(locale) {
-    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
-    // pt-BR will be normalize to pt-br. It must be an array, otherwise it will crash.
-    moment.locale([newLocale]);
+    let newLocale = locale === 'zh' ? 'zh-cn' : locale;
+    // pt-BR will be normalize to pt-br
+    newLocale = this.normalizeLocale(newLocale);
+    moment.locale(newLocale);
   },
 
   estimateBtcSize({
