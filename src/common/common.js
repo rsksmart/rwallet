@@ -385,11 +385,11 @@ const common = {
       newPrice.push(rifPrice);
     }
 
-    let rifproPrice = _.find(newPrice, { symbol: 'RIFPRO' });
-    if (_.isUndefined(rifproPrice)) {
-      rifproPrice = _.cloneDeep(rifPrice);
-      rifproPrice.symbol = 'RIFPRO';
-      newPrice.push(rifproPrice);
+    let rifpPrice = _.find(newPrice, { symbol: 'RIFP' });
+    if (_.isUndefined(rifpPrice)) {
+      rifpPrice = _.cloneDeep(rifPrice);
+      rifpPrice.symbol = 'RIFP';
+      newPrice.push(rifpPrice);
     }
     return newPrice;
   },

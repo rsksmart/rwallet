@@ -19,7 +19,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFPRO', 'RDOC'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
@@ -95,6 +95,7 @@ const config = {
   },
   rnsDomain: 'wallet.rsk',
   storageVersion: 3,
+  defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
 
 export default config;

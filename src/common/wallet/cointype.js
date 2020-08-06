@@ -36,13 +36,13 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'DOC',
   },
-  RIFPRO: {
+  RIFP: {
     networkId: 137,
-    icon: references.images.RIFPRO,
-    defaultName: 'RIF Pro',
+    icon: references.images.RIFP,
+    defaultName: 'RIFPro',
     chain: 'Rootstock',
     type: 'Mainnet',
-    symbol: 'RIFPRO',
+    symbol: 'RIFP',
   },
   RDOC: {
     networkId: 137,
@@ -85,13 +85,13 @@ const coinType = {
     type: 'Testnet',
     symbol: 'DOC',
   },
-  RIFPROTestnet: {
+  RIFPTestnet: {
     networkId: 137,
-    icon: references.images.RIFPRO_GREY,
-    defaultName: 'RIF Pro',
+    icon: references.images.RIFP_GREY,
+    defaultName: 'RIFPro',
     chain: 'Rootstock',
     type: 'Testnet',
-    symbol: 'RIFPRO',
+    symbol: 'RIFP',
   },
   RDOCTestnet: {
     networkId: 137,
