@@ -76,7 +76,7 @@
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
-        "mainnet": "Mainnet",
+        "mainnet": "Rede principal",
         "testnet": "Testnet"
       },
       "selectWallet": {
