@@ -209,7 +209,7 @@
       "index": {
         "joinRSKCommunity": "Join RSK's Community",
         "settings": "Settings",
-        "createKey": "Create or Import a Wallet",
+        "createKey": "Add a New Wallet",
         "keys": "Wallets",
         "anonymousUser": "Anonymous User",
         "assets": {
