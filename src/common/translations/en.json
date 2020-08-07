@@ -177,8 +177,8 @@
         "rnsName": "RNS Nickname",
         "anotherAddress": "Another address",
         "nameTooShort": "Nickname contains at least {{count}} characters",                                               
-        "nameUnavailable": "Sorry, The name entered is not available",
-        "nameAvailable": "The name entered is available",
+        "nameUnavailable": "Sorry, The nickname entered is not available",
+        "nameAvailable": "The nickname entered is available",
         "selectAddress": "Select a Address",
         "confirmNotice": {
           "one": "Please confirm that you would like to create nicknames for below 1 wallet.",
@@ -312,7 +312,7 @@
     "Exchange": "Exchange",
     "addAsset": "Add Asset",
     "ok": "Ok",
-    "name": "Name",
+    "nickname": "Nickname",
     "pending": "Pending",
     "done": "Done",
     "share": "SHARE"
@@ -392,7 +392,7 @@
     },
     "subdomainCopied": {
       "title": "Copied",
-      "body": "The subdomain has been copied to the clipboard."
+      "body": "The nickname has been copied to the clipboard."
     },
     "txIdCopied": {
       "title": "Copied",
@@ -466,8 +466,8 @@
       "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
     },
     "rnsSubdomainNotFound": {
-      "title": "RNS Subdomain Not Found",
-      "body": "RNS subdomain is not found in server."
+      "title": "RNS Nickname Not Found",
+      "body": "RNS nickname is not found in server."
     },
     "rnsNewFeature": {
       "title": "Send & Receive got easier",

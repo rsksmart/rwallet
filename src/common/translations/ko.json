@@ -177,8 +177,8 @@
         "rnsName": "RNS 별명",
         "anotherAddress": "다른 주소",
         "nameTooShort": "별명은 최소 {{count}}자여야 합니다",                                               
-        "nameUnavailable": "죄송합니다. 입력하신 이름을 사용할 수 없습니다",
-        "nameAvailable": "입력하신 이름을 사용할 수 있습니다",
+        "nameUnavailable": "입력하신 닉네임을 사용할 수 없습니다",
+        "nameAvailable": "입력 한 별명을 사용할 수 있습니다.",
         "selectAddress": "주소 선택",
         "confirmNotice": {
           "one": "아래 월렛 1개에 대한 별명 생성을 확인하십시오.",
@@ -318,7 +318,7 @@
     "Exchange": "교환/거래소",
     "addAsset": "자산 추가하기",
     "ok": "승인",
-    "name": "이름",
+    "nickname": "별명",
     "pending": "처리 중",
     "done": "완료",
     "share": "공유"
@@ -398,7 +398,7 @@
     },
     "subdomainCopied": {
       "title": "복사 완료",
-      "body": "서브도메인이 클립보드에 복사되었습니다."
+      "body": "닉네임이 클립 보드에 복사되었습니다."
     },
     "txIdCopied": {
       "title": "복사 완료",
@@ -472,8 +472,8 @@
       "body": "일부 별명을 사용할 수 없습니다. 목록을 확인하고 다른 별명으로 다시 시도하십시오."
     },
     "rnsSubdomainNotFound": {
-      "title": "RNS 서브도메인을 찾을 수 없습니다",
-      "body": "서버에서 RNS 서브도메인을 찾을 수 없습니다."
+      "title": "RNS 별명을 찾을 수 없음",
+      "body": "서버에 RNS 닉네임을 찾을 수 없습니다."
     },
     "rnsNewFeature": {
       "title": "더 쉬운 수신과 전송",

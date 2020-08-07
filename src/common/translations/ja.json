@@ -177,8 +177,8 @@
         "rnsName": "RNSニックネーム",
         "anotherAddress": "別のアドレス",
         "nameTooShort": "ニックネームは、{{count}}文字以上で構成されています",                                               
-        "nameUnavailable": "申し訳ありませんが、入力したニックネームは使用できません",
-        "nameAvailable": "入力したニックネームは使用できます",
+        "nameUnavailable": "入力したニックネームは使用できません",
+        "nameAvailable": "入力したニックネームは利用可能です",
         "selectAddress": "アドレスを選択",
         "confirmNotice": {
           "one": "以下に表示されている1個のウォレットのニックネームを作成することを確認してください。",
@@ -312,7 +312,7 @@
     "Exchange": "換算",
     "addAsset": "資産を追加",
     "ok": "OK",
-    "name": "名前",
+    "nickname": "ニックネーム",
     "pending": "保留中",
     "done": "完了です",
     "share": "シェア"
@@ -392,7 +392,7 @@
     },
     "subdomainCopied": {
       "title": "コピーされました",
-      "body": "サブドメインがクリップボードにコピーされました。"
+      "body": "ニックネームがクリップボードにコピーされました。"
     },
     "txIdCopied": {
       "title": "コピーされました",
@@ -466,8 +466,8 @@
       "body": "一部のニックネームは使用できません。リストを確認して、別のニックネームで再度お試しください。"
     },
     "rnsSubdomainNotFound": {
-      "title": "RNSサブドメインが見つかりません",
-      "body": "RNSサブドメインがサーバーに見つかりません。"
+      "title": "RNSニックネームが見つかりません",
+      "body": "RNSニックネームがサーバーに見つかりません。"
     },
     "rnsNewFeature": {
       "title": "送金＆受領がより簡単になりました",

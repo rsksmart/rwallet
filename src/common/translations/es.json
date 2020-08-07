@@ -180,8 +180,8 @@
         "rnsName": "Apodo RNS",
         "anotherAddress": "Otra dirección",
         "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
-        "nameUnavailable": "Lo sentimos, el nombre ingresado no está disponible",
-        "nameAvailable": "El nombre ingresado está disponible",
+        "nameUnavailable": "Lo sentimos, el sobrenombre ingresado no está disponible",
+        "nameAvailable": "El apodo ingresado está disponible",
         "selectAddress": "Seleccione una direccion",
         "confirmNotice": {
           "one": "Confirme que desea crear apodos para menos de 1 billetera.",
@@ -314,7 +314,7 @@
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
     "ok": "Okay",
-    "name": "Nombre",
+    "nickname": "Apodo",
     "pending": "Pendiente",
     "done": "Hecho",
     "share": "COMPARTIR"
@@ -394,7 +394,7 @@
     },
     "subdomainCopied": {
       "title": "Copiado",
-      "body": "El subdominio se ha copiado al portapapeles."
+      "body": "El apodo se ha copiado en el portapapeles."
     },
     "txIdCopied": {
       "title": "Copied",
@@ -468,8 +468,8 @@
       "body": "Algunos apodos no están disponibles. Verifique la lista y vuelva a intentar el apodo anterior."
     },
     "rnsSubdomainNotFound": {
-      "title": "Subdominio RNS no encontrado",
-      "body": "El subdominio RNS no se encuentra en el servidor."
+      "title": "Apodo RNS no encontrado",
+      "body": "El apodo de RNS no se encuentra en el servidor."
     },
     "rnsNewFeature": {
       "title": "Enviar y recibir es más fácil",
