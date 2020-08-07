@@ -483,7 +483,7 @@
     },
     "rnsSubdomainNotFound": {
       "title": "Apelido RNS não encontrado",
-      "body": "O apelido do RNS não foi encontrado no servidor."
+      "body": "O apelido RNS não foi encontrado no servidor."
     },
     "rnsNewFeature": {
       "title": "Enviar e receber ficou mais fácil",
