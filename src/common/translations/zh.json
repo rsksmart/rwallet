@@ -180,8 +180,8 @@
         "rnsName": "RNS昵称",
         "anotherAddress": "另一个地址",
         "nameTooShort": "昵称至少包含{{count}}个字符",
-        "nameUnavailable": "抱歉，您输入的名字不可用",
-        "nameAvailable": "输入的名字可用",
+        "nameUnavailable": "抱歉，您输入的昵称不可用",
+        "nameAvailable": "输入的昵称可用",
         "selectAddress": "选择一个地址",
         "confirmNotice": {
           "one": "请确认您要为以下的1个钱包创建昵称。",
@@ -315,7 +315,7 @@
     "Exchange": "兑换",
     "addAsset": "添加资产",
     "ok": "好的",
-    "name": "名字",
+    "nickname": "昵称",
     "pending": "等待中",
     "done": "已完成",
     "share": "分享"
@@ -395,7 +395,7 @@
     },
     "subdomainCopied": {
       "title": "已复制",
-      "body": "域名已复制。"
+      "body": "昵称已复制。"
     },
     "txIdCopied": {
       "title": "已复制",
@@ -469,8 +469,8 @@
       "body": "一些昵称无效。请检查列表，并尝试别的昵称。"
     },
     "rnsSubdomainNotFound": {
-      "title": "RNS域名未找到",
-      "body": "RNS域名注册信息在服务器上未找到."
+      "title": "RNS昵称未找到",
+      "body": "RNS昵称注册信息在服务器上未找到."
     },
     "rnsNewFeature": {
       "title": "发送接收变得更容易",

@@ -622,7 +622,7 @@ class History extends Component {
                     onPress={this.onRnsButtonClick}
                   >
                     <Image source={rnsName} />
-                    <Loc style={[styles.NameText]} text="button.name" />
+                    <Loc style={[styles.NameText]} text="button.nickname" />
                   </TouchableOpacity>
                 </View>
               )}

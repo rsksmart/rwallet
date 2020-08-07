@@ -180,8 +180,8 @@
         "rnsName": "Apelido RNS",
         "anotherAddress": "Outro endereço",
         "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
-        "nameUnavailable": "Desculpe, o nome digitado não está disponível",
-        "nameAvailable": "O nome digitado está disponível",
+        "nameUnavailable": "Desculpe, o apelido digitado não está disponível",
+        "nameAvailable": "O apelido digitado está disponível",
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
           "one": "Confirme que você deseja criar apelidos para a carteira abaixo.",
@@ -328,7 +328,7 @@
     "Exchange": "Realizar troca",
     "addAsset": "Adicionar ativo",
     "ok": "Ok",
-    "name": "Nome",
+    "nickname": "Apelido",
     "pending": "Pendente",
     "done": "Pronto",
     "share": "COMPARTILHAR"
@@ -408,7 +408,7 @@
     },
     "subdomainCopied": {
       "title": "Copiado",
-      "body": "O subdomínio foi copiado para a área de transferência."
+      "body": "O apelido foi copiado para a área de transferência."
     },
     "txIdCopied": {
       "title": "Copied",
@@ -482,8 +482,8 @@
       "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
     },
     "rnsSubdomainNotFound": {
-      "title": "Subdomínio RNS não encontrado",
-      "body": "O subdomínio RNS não foi encontrado no servidor."
+      "title": "Apelido RNS não encontrado",
+      "body": "O apelido RNS não foi encontrado no servidor."
     },
     "rnsNewFeature": {
       "title": "Enviar e receber ficou mais fácil",
