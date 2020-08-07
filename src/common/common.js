@@ -398,10 +398,18 @@ const common = {
     I18n.locale = language;
   },
 
+  normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
+  },
+
   setMomentLocale(locale) {
-    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
-    // pt-BR will be normalize to pt-br
-    moment.locale(newLocale);
+    try {
+      // pt-BR will be normalize to pt-br
+      const newLocale = locale === 'zh' ? 'zh-cn' : this.normalizeLocale(locale);
+      moment.locale(newLocale);
+    } catch (error) {
+      console.warn('Failed to set moment locale, locale: ', locale);
+    }
   },
 
   estimateBtcSize({
