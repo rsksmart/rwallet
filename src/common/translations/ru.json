@@ -133,7 +133,9 @@
         "have": "У меня есть %{balance} в %{wallet}",
         "min": "МИН",
         "half": "ПОЛОВИНА",
-        "all": "ВСЕ"
+        "all": "ВСЕ",
+        "exchanging": "Обменявшись",
+        "receiving": "получающий"
       },
       "swapSelection": {
         "title": "Выберите актив",

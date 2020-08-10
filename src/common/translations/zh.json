@@ -136,7 +136,9 @@
         "have": "我有%{balance}在%{wallet}",
         "min": "最小",
         "half": "一般",
-        "all": "所有"
+        "all": "所有",
+        "exchanging": "将兑换",
+        "receiving": "将收到"
       },
       "swapSelection": {
         "title": "选择资产",

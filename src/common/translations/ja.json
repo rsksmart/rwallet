@@ -133,7 +133,9 @@
         "have": "%{wallet}に%{balance}を所持しています",
         "min": "MIN",
         "half": "HALF",
-        "all": "ALL"
+        "all": "ALL",
+        "exchanging": "交換",
+        "receiving": "受け取る"
       },
       "swapSelection": {
         "title": "資産を選択",

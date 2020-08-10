@@ -133,7 +133,9 @@
         "have": "I have %{balance} in %{wallet}",
         "min": "MIN",
         "half": "HALF",
-        "all": "ALL"
+        "all": "ALL",
+        "exchanging": "Exchanging",
+        "receiving": "Receiving"
       },
       "swapSelection": {
         "title": "Select Asset",

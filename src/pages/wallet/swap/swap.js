@@ -727,7 +727,7 @@ class Swap extends Component {
       <View>
         <View style={[styles.operationView, space.marginTop_27]}>
           <View style={styles.operationLeft}>
-            <Text>Exchanging</Text>
+            <Text>{strings('page.wallet.swap.exchanging')}</Text>
           </View>
           <View style={styles.operationRight}>
             {sourceAmount && <Text style={styles.operationAmount}>{sourceAmount.toString()}</Text>}
@@ -736,7 +736,7 @@ class Swap extends Component {
         </View>
         <View style={[styles.operationView, space.marginTop_10]}>
           <View style={styles.operationLeft}>
-            <Text>Receiving</Text>
+            <Text>{strings('page.wallet.swap.receiving')}</Text>
           </View>
           <View style={styles.operationRight}>
             {destAmount && <Text style={[styles.operationAmount, styles.receivingAmount]}>{`+${destAmount}`}</Text>}
