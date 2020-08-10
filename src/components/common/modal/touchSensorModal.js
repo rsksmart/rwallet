@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
 });
 
 const finger = require('../../../assets/images/misc/finger.png');
+const face = require('../../../assets/images/misc/face.png');
 
 export default class TouchSensorModal extends Component {
   constructor(props) {
@@ -172,6 +173,7 @@ export default class TouchSensorModal extends Component {
     const { errorMessage, biometryType } = this.state;
     const titleText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.title' : 'modal.touchSensor.fingerprint.title';
     const touchToVerifyText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.touchToVerify' : 'modal.touchSensor.fingerprint.touchToVerify';
+    const icon = biometryType === BIOMETRY_TYPES.FACE_ID ? face : finger;
     return (
       <View style={styles.container}>
         <View style={styles.panel}>
@@ -185,7 +187,7 @@ export default class TouchSensorModal extends Component {
             style={styles.finger}
             onPress={this.onIconPressed}
           >
-            <Image source={finger} />
+            <Image source={icon} />
           </TouchableOpacity>
           <Loc style={[styles.touchToVerify]} text={touchToVerifyText} />
 

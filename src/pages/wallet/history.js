@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LargeList } from 'react-native-largelist-v3';
 import { ChineseWithLastDateFooter, WithLastDateFooter } from 'react-native-spring-scrollview/Customize';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -29,6 +28,7 @@ const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 const { getCurrencySymbol } = common;
 
 const sending = require('../../assets/images/icon/sending.png');
+const failed = require('../../assets/images/icon/failed.png');
 const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
 const rnsName = require('../../assets/images/icon/rnsName.png');
@@ -237,7 +237,7 @@ const stateIcons = {
   Sending: <Image source={sending} />,
   Received: <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />,
   Receiving: <Image source={sending} />,
-  Failed: <MaterialIcons name="error-outline" size={36} style={[{ color: '#E73934' }]} />,
+  Failed: <Image source={failed} />,
 };
 
 function Item({
