@@ -469,7 +469,7 @@
     },
     "rnsNameUnavailable": {
       "title": "RNS 별명 사용 불가",
-      "body": "일부 별명을 사용할 수 없습니다. 목록을 확인하고 다른 별명으로 다시 시도하십시오."
+      "body": "아래에 입력 한 닉네임은 사용할 수 없습니다. 다른 별명으로 다시 시도하십시오."
     },
     "rnsSubdomainNotFound": {
       "title": "RNS 별명을 찾을 수 없음",

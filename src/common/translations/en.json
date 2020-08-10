@@ -463,7 +463,7 @@
     },
     "rnsNameUnavailable": {
       "title": "RNS nickname unavailable",
-      "body": "Some nicknames is unavailable. Please check the list and retry anther nickname."
+      "body": "Below entered nicknames are unavailable. Please try again with different nicknames."
     },
     "rnsSubdomainNotFound": {
       "title": "RNS Nickname Not Found",

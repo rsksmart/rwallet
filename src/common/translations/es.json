@@ -465,7 +465,7 @@
     },
     "rnsNameUnavailable": {
       "title": "Apodo RNS no disponible",
-      "body": "Algunos apodos no están disponibles. Verifique la lista y vuelva a intentar el apodo anterior."
+      "body": "Los sobrenombres ingresados ​​a continuación no están disponibles. Vuelve a intentarlo con diferentes apodos."
     },
     "rnsSubdomainNotFound": {
       "title": "Apodo RNS no encontrado",
