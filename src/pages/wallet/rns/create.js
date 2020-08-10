@@ -137,6 +137,12 @@ const styles = StyleSheet.create({
     color: '#00B520',
     marginTop: 10,
   },
+  trashButton: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: 40,
+    height: 40,
+  },
 });
 
 const getTokens = (wallets) => {
@@ -394,9 +400,11 @@ class RnsAddress extends Component {
         <View style={styles.sectionContainer}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>{strings('page.wallet.rnsCreateName.address')}</Text>
-            <TouchableOpacity onPress={() => { this.onDeleteButtonPressed(index); }}>
-              { index !== 0 && <FontAwesome style={styles.trash} name="trash-o" /> }
+            { index !== 0 && (
+            <TouchableOpacity style={styles.trashButton} onPress={() => { this.onDeleteButtonPressed(index); }}>
+              <FontAwesome style={styles.trash} name="trash-o" />
             </TouchableOpacity>
+            )}
           </View>
           <View style={styles.rnsTokenInput}>
             <TouchableOpacity
