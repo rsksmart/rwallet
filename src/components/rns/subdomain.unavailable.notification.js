@@ -12,8 +12,6 @@ const styles = StyleSheet.create({
   subdomain: {
     fontSize: 16,
     color: color.black,
-    fontFamily: 'Avenir-Black',
-    textAlign: 'center',
   },
 });
 
