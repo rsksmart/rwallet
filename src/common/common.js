@@ -402,10 +402,19 @@ const common = {
     return key ? key.toLowerCase().replace('_', '-') : key;
   },
 
+  convertToMomentLocale(locale) {
+    let newLocale = this.normalizeLocale(locale);
+    // The locale code of Brazilian Portuguese is ptbr in Mi Note 9s and Mi Max.
+    // We need to convert it to 'pt-br'.
+    newLocale = newLocale === 'ptbr' ? 'pt-br' : newLocale;
+    newLocale = newLocale === 'zh' ? 'zh-cn' : newLocale;
+    return newLocale;
+  },
+
   setMomentLocale(locale) {
     try {
       // pt-BR will be normalize to pt-br
-      const newLocale = locale === 'zh' ? 'zh-cn' : this.normalizeLocale(locale);
+      const newLocale = this.convertToMomentLocale(locale);
       moment.locale(newLocale);
     } catch (error) {
       console.warn('Failed to set moment locale, locale: ', locale);
