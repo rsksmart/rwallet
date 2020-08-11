@@ -98,7 +98,7 @@ class CreateRnsConfirmation extends Component {
   }
 
   renderSubdomainRow = ({ item }) => {
-    const subdomain = `${item.subdomain}.wallet.rsk`;
+    const subdomain = common.getFullDomain(item.subdomain);
     return (
       <View style={[styles.subdomainRow, space.marginBottom_15]}>
         <Text style={[styles.subdomain]}>{subdomain}</Text>

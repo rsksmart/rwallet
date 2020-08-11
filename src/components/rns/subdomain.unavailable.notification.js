@@ -7,6 +7,7 @@ import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
 import notificationStyles from '../../assets/styles/notification.styles';
 import Loc from '../common/misc/loc';
+import common from '../../common/common';
 
 const styles = StyleSheet.create({
   subdomain: {
@@ -33,7 +34,7 @@ class SubdomainUnavailableNotification extends Component {
   }
 
   renderSubdomainRow = ({ item }) => {
-    const subdomain = `${item}.wallet.rsk`;
+    const subdomain = common.getFullDomain(item);
     return (
       <View style={space.marginBottom_15}>
         <Text style={[styles.subdomain]}>{subdomain}</Text>
