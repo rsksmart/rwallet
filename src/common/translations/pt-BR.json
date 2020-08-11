@@ -444,7 +444,7 @@
         "title": "Biometria",
         "touchToVerify": "Toque para verificar a biometria",
         "nativeNote": "Verifique sua biometria",
-        "notMatch": "A biometria não corresponde. Por favor, tente novamente."
+        "notMatch": "A biometria não confere. Por favor, tente novamente."
       },
       "failedAndTryPasscode": "A autenticação falhou. Por favor, tente o PIN.",
       "failedAndTryAgain": "A autenticação falhou. Por favor, tente novamente."
