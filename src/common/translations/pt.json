@@ -464,7 +464,7 @@
     },
     "rnsNameUnavailable": {
       "title": "Apelido do RNS indisponível",
-      "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
+      "body": "Os apelidos inseridos abaixo não estão disponíveis. Por favor, tente novamente com apelidos diferentes."
     },
     "rnsSubdomainNotFound": {
       "title": "Apelido RNS não encontrado",

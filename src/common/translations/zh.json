@@ -466,7 +466,7 @@
     },
     "rnsNameUnavailable": {
       "title": "RNS昵称无效",
-      "body": "一些昵称无效。请检查列表，并尝试别的昵称。"
+      "body": "在下面输入的昵称不可用，请使用其他昵称重试。"
     },
     "rnsSubdomainNotFound": {
       "title": "RNS昵称未找到",

@@ -22,11 +22,12 @@ import parse from '../../../common/parse';
 import config from '../../../../config';
 import ERROR_CODE from '../../../common/errors';
 import {
-  createErrorNotification, getErrorNotification, getDefaultErrorNotification,
+  getErrorNotification, getDefaultErrorNotification,
 } from '../../../common/notification.controller';
 import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
 import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmation';
+import SubdomainUnavailableNotification from '../../../components/rns/subdomain.unavailable.notification';
 import common from '../../../common/common';
 import TypeTag from '../../../components/common/misc/type.tag';
 
@@ -245,25 +246,23 @@ class RnsAddress extends Component {
     // Else, notify user to check names.
     console.log('parse.isSubdomainAvailable, result: ', result);
     let isAllDomainValid = true;
+    const unavailableSubdomains = [];
     _.each(result, (item, index) => {
       if (!item) {
         newRnsRows[index].rnsNameState = RnsNameState.UNAVAILABLE;
         isAllDomainValid = false;
+        unavailableSubdomains.push(newRnsRows[index].subdomain);
       } else {
         newRnsRows[index].rnsNameState = RnsNameState.AVAILABLE;
       }
     });
-    if (isAllDomainValid) {
-      this.rnsConfirmation.show();
-    } else {
-      const notification = createErrorNotification(
-        'modal.rnsNameUnavailable.title',
-        'modal.rnsNameUnavailable.body',
-        'button.gotIt',
-      );
-      addNotification(notification);
-      this.setState({ rnsRows: newRnsRows });
-    }
+    this.setState({ rnsRows: newRnsRows }, () => {
+      if (isAllDomainValid) {
+        this.rnsConfirmation.show();
+      } else {
+        this.subdomainUnavailableNotification.show();
+      }
+    });
   }
 
   createSubdomain = async () => {
@@ -444,6 +443,13 @@ class RnsAddress extends Component {
     const rnsRow = _.find(rnsRows, (row) => !row.subdomain && row.errorMessage);
     const bottomButton = (<Button text="button.create" onPress={this.onCreatePressed} disabled={!!rnsRow} />);
 
+    const unavailableSubdomains = [];
+    _.each(rnsRows, (item) => {
+      if (item.rnsNameState === RnsNameState.UNAVAILABLE) {
+        unavailableSubdomains.push(item.subdomain);
+      }
+    });
+
     return (
       <BasePageGereral
         isSafeView={false}
@@ -477,6 +483,10 @@ class RnsAddress extends Component {
           ref={(ref) => { this.rnsConfirmation = ref; }}
           data={rnsRows}
           onConfirm={this.createSubdomain}
+        />
+        <SubdomainUnavailableNotification
+          ref={(ref) => { this.subdomainUnavailableNotification = ref; }}
+          data={unavailableSubdomains}
         />
       </BasePageGereral>
     );

@@ -1,52 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Modal, View, StyleSheet, TouchableOpacity, Text,
+  Modal, View, TouchableOpacity, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Loc from '../misc/loc';
-import color from '../../../assets/styles/color.ts';
-
-const styles = StyleSheet.create({
-  scanView: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    backgroundColor: '#9B9B9B',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: '#000',
-    marginTop: 22,
-  },
-  text: {
-    color: '#0B0B0B',
-    fontSize: 16,
-    lineHeight: 22,
-    marginTop: 15,
-    marginBottom: 30,
-  },
-  line: {
-    borderBottomColor: '#DCDCDC',
-    width: '100%',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 15,
-  },
-  button: {
-    color: color.app.theme,
-    textAlign: 'center',
-    fontWeight: '900',
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  errorButtonText: {
-    color: color.warningText,
-  },
-});
+import space from '../../../assets/styles/space';
+import notificationStyles from '../../../assets/styles/notification.styles';
 
 class Alert extends Component {
   constructor(props) {
@@ -82,15 +42,15 @@ class Alert extends Component {
         visible
         onShow={this.startShow}
       >
-        <View style={{ justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
-            <View style={{ paddingHorizontal: 20 }}>
-              <Loc style={[styles.title]} text={title} />
-              <Text style={[styles.text]}>{message}</Text>
+        <View style={notificationStyles.backgroundBoard}>
+          <View style={notificationStyles.frontBoard}>
+            <View style={space.paddingHorizontal_20}>
+              <Loc style={[notificationStyles.title]} text={title} />
+              <Text style={[notificationStyles.text]}>{message}</Text>
             </View>
-            <View style={styles.line} />
+            <View style={notificationStyles.line} />
             <TouchableOpacity onPress={this.onCloseButtonPress}>
-              <Loc style={type === 'error' ? [styles.button, styles.errorButtonText] : [styles.button]} text={closeButtonText} caseType="upper" />
+              <Loc style={type === 'error' ? [notificationStyles.button, notificationStyles.errorButtonText] : [notificationStyles.button]} text={closeButtonText} caseType="upper" />
             </TouchableOpacity>
           </View>
         </View>
