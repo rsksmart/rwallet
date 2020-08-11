@@ -235,7 +235,7 @@
         "resetPasscode": "Alterar PIN",
         "useFingerprint": "Usar biometria",
         "useFaceID": "Usar Face ID",
-        "useBiometrics": "Use biometria"
+        "useBiometrics": "Usar biometria"
       },
       "resetPasscodeSuccess" :{
         "title": {
