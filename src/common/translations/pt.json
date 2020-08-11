@@ -136,7 +136,9 @@
         "have": "Eu tenho %{balance} no %{wallet}",
         "min": "MIN",
         "half": "HALF",
-        "all": "TUDO"
+        "all": "TUDO",
+        "exchanging": "Troca",
+        "receiving": "Recebendo"
       },
       "swapSelection": {
         "title": "Selecionar ativo",

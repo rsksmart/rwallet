@@ -133,7 +133,9 @@
         "have": "%{balance}/%{wallet}를 보유했습니다",
         "min": "최소",
         "half": "절반",
-        "all": "모두"
+        "all": "모두",
+        "exchanging": "교환",
+        "receiving": "전수"
       },
       "swapSelection": {
         "title": "자산 선택",
