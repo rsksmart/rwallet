@@ -234,7 +234,8 @@
         "setPasscode": "Configurar PIN",
         "resetPasscode": "Alterar PIN",
         "useFingerprint": "Usar biometria",
-        "useFaceID": "Usar Face ID"
+        "useFaceID": "Usar Face ID",
+        "useBiometrics": "Use biometria"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -438,6 +439,12 @@
         "touchToVerify": "Toque para verificar o Face ID",
         "nativeNote": "Por favor, aponte seu rosto para a câmera para que seja feito o reconhecimento facial",
         "notMatch": "Face ID não confere. Por favor, tente novamente."
+      },
+      "biometrics": {
+        "title": "Biometria",
+        "touchToVerify": "Toque para verificar a biometria",
+        "nativeNote": "Verifique sua biometria",
+        "notMatch": "A biometria não corresponde. Por favor, tente novamente."
       },
       "failedAndTryPasscode": "A autenticação falhou. Por favor, tente o PIN.",
       "failedAndTryAgain": "A autenticação falhou. Por favor, tente novamente."

@@ -242,7 +242,8 @@
         "setPasscode": "패스코드 설정",
         "resetPasscode": "패스코드 재설정",
         "useFingerprint": "지문 사용",
-        "useFaceID": "페이스 ID 사용"
+        "useFaceID": "페이스 ID 사용",
+        "useBiometrics": "생체 인식 사용"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -428,6 +429,12 @@
         "touchToVerify": "화면을 터치해 페이스 ID를 인증하십시오",
         "nativeNote": "얼굴 인식을 위해 카메라를 똑바로 쳐다보십시오.",
         "notMatch": "페이스 ID가 일치하지 않습니다. 다시 시도하십시오."
+      },
+      "biometrics": {
+        "title": "생체 인식",
+        "touchToVerify": "생체 인식을 확인하려면 터치하세요.",
+        "nativeNote": "생체 인식을 확인하십시오",
+        "notMatch": "생체 인식이 일치하지 않습니다. 다시 시도하십시오."
       },
       "failedAndTryPasscode": "인증 실패. 패스코드를 시도하십시오.",
       "failedAndTryAgain": "인증 실패. 다시 시도하십시오."

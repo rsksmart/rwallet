@@ -123,17 +123,28 @@ export default class TouchSensorModal extends Component {
 
   startShow = () => {}
 
+  getBiometryText = (biometryType, key) => {
+    const prefix = 'modal.touchSensor';
+    const type = {
+      [BIOMETRY_TYPES.FACE_ID]: 'faceID',
+      [BIOMETRY_TYPES.TOUCH_ID]: 'fingerprint',
+      [BIOMETRY_TYPES.Biometrics]: 'biometrics',
+    };
+    const biometricText = `${prefix}.${type[biometryType]}.${key}`;
+    return biometricText;
+  }
+
   requestScan() {
     const { biometryType } = this.state;
     const { hideFingerprintModal, fingerprintCallback } = this.props;
     const onAttempt = (error) => {
       console.log(`onAttempt: ${error}`);
-      const errorMessage = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.notMatch' : 'modal.touchSensor.fingerprint.notMatch';
+      const errorMessage = this.getBiometryText(biometryType, 'notMatch');
       this.setState({ errorMessage }, () => this.errView.shake(800));
     };
     const params = {
       onAttempt,
-      description: biometryType === BIOMETRY_TYPES.FACE_ID ? strings('modal.touchSensor.faceID.nativeNote') : strings('modal.touchSensor.fingerprint.nativeNote'),
+      description: strings(this.getBiometryText(biometryType, 'nativeNote')),
       fallbackEnabled: false,
       cancelButton: strings('button.cancel'),
     };
@@ -171,8 +182,8 @@ export default class TouchSensorModal extends Component {
   renderModal() {
     const { fingerprintPasscodeDisabled, fingerprintFallback } = this.props;
     const { errorMessage, biometryType } = this.state;
-    const titleText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.title' : 'modal.touchSensor.fingerprint.title';
-    const touchToVerifyText = biometryType === BIOMETRY_TYPES.FACE_ID ? 'modal.touchSensor.faceID.touchToVerify' : 'modal.touchSensor.fingerprint.touchToVerify';
+    const titleText = this.getBiometryText(biometryType, 'title');
+    const touchToVerifyText = this.getBiometryText(biometryType, 'touchToVerify');
     const icon = biometryType === BIOMETRY_TYPES.FACE_ID ? face : finger;
     return (
       <View style={styles.container}>

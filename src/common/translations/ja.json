@@ -236,7 +236,8 @@
         "setPasscode": "パスコードを設定",
         "resetPasscode": "パスコードをリセット",
         "useFingerprint": "指紋認証を使用",
-        "useFaceID": "フェイスIDを使用"
+        "useFaceID": "フェイスIDを使用",
+        "useBiometrics": "生体認証を使用する"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -422,6 +423,12 @@
         "touchToVerify": "タッチしてフェイスIDを認証",
         "nativeNote": "顔が認識できるようにカメラの方を向いてください",
         "notMatch": "フェイスIDが一致しません。もう一度お試しください。"
+      },
+      "biometrics": {
+        "title": "バイオメトリクス",
+        "touchToVerify": "タッチして生体認証を検証",
+        "nativeNote": "生体認証を確認してください",
+        "notMatch": "生体認証が一致しません。もう一度やり直してください。"
       },
       "failedAndTryPasscode": "認証できませんでした。パスコードをお試しください。",
       "failedAndTryAgain": "認証できませんでした。もう一度お試しください。"

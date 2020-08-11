@@ -236,7 +236,8 @@
         "setPasscode": "Set Passcode",
         "resetPasscode": "Reset Passcode",
         "useFingerprint": "Use Fingerprint",
-        "useFaceID": "Use Face ID"
+        "useFaceID": "Use Face ID",
+        "useBiometrics": "Use Biometrics"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -421,7 +422,13 @@
         "title": "Face ID",
         "touchToVerify": "Touch to verify face ID",
         "nativeNote": "Please aim at the camera for face recognition",
-        "notMatch": "FaceID does not march. Please try again."
+        "notMatch": "FaceID does not match. Please try again."
+      },
+      "biometrics": {
+        "title": "Biometrics",
+        "touchToVerify": "Touch to verify biometrics",
+        "nativeNote": "Please verify your biometrics",
+        "notMatch": "Biometrics does not match. Please try again."
       },
       "failedAndTryPasscode": "Authentication failed. Please try Passcode.",
       "failedAndTryAgain": "Authentication failed. Please try again."
