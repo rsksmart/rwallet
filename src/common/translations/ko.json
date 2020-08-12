@@ -74,7 +74,7 @@
         "importWalletNote": "복구 암호로 월렛 복구하기"
       },
       "selectCurrency": {
-        "title": "월렛 통화 선택",
+        "title": "지갑 자산 선택",
         "mainnet": "메인넷",
         "testnet": "테스트넷"
       },

@@ -75,7 +75,7 @@
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira",
+        "title": "Selecione Ativos da Carteira",
         "mainnet": "Rede principal",
         "testnet": "Rede teste"
       },

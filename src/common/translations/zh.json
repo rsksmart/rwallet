@@ -74,7 +74,7 @@
         "importWalletNote": "使用助记词还原您的钱包"
       },
       "selectCurrency": {
-        "title": "选择钱包类型",
+        "title": "选择钱包资产",
         "mainnet": "正式网络",
         "testnet": "测试网络"
       },

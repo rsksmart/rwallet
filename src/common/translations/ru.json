@@ -74,7 +74,7 @@
         "importWalletNote": "Восстановите свой кошелек, используя фразу для восстановления"
       },
       "selectCurrency": {
-        "title": "Выберите валюту кошелька",
+        "title": "Выберите активы кошелька",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },
