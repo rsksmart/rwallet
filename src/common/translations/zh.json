@@ -241,7 +241,8 @@
         "setPasscode": "设置密码",
         "resetPasscode": "重置密码",
         "useFingerprint": "使用指纹解锁",
-        "useFaceID": "使用人脸识别"
+        "useFaceID": "使用人脸识别",
+        "useBiometrics": "使用生物识别"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -427,6 +428,12 @@
         "touchToVerify": "点击进行人脸识别",
         "nativeNote": "请对准摄像头进行人脸识别",
         "notMatch": "人脸识别不匹配，请重试。"
+      },
+      "biometrics": {
+        "title": "生物识别",
+        "touchToVerify": "点击以验证生物特征",
+        "nativeNote": "请验证您的生物特征",
+        "notMatch": "生物特征不匹配，请重试。"
       },
       "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
       "failedAndTryAgain": "验证失败，请重试。"

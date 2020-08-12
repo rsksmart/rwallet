@@ -87,6 +87,16 @@ class TwoFactorAuth extends Component {
       }
     }
 
+    getBiometryText = (biometryType) => {
+      const prefix = 'page.mine.2fa';
+      const suffix = {
+        [BIOMETRY_TYPES.FACE_ID]: 'useFaceID',
+        [BIOMETRY_TYPES.TOUCH_ID]: 'useFingerprint',
+        [BIOMETRY_TYPES.Biometrics]: 'useBiometrics',
+      };
+      return `${prefix}.${suffix[biometryType]}`;
+    }
+
     render() {
       const { isOpen } = this.state;
       const { navigation, passcode } = this.props;
@@ -97,7 +107,7 @@ class TwoFactorAuth extends Component {
       // Show use fingerprint switch row if fingerprint is available.
 
       if (biometryType) {
-        const text = biometryType === BIOMETRY_TYPES.FACE_ID ? 'page.mine.2fa.useFaceID' : 'page.mine.2fa.useFingerprint';
+        const text = this.getBiometryText(biometryType);
         useFingerSwitchRow = (
           <View style={styles.row}>
             <Loc style={[styles.title]} text={text} />

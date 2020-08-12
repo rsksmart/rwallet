@@ -240,7 +240,9 @@
         "title": "Autenticación de dos factores",
         "setPasscode": "Código de acceso establecido",
         "resetPasscode": "Restablecer contraseña",
-        "useFingerprint": "Usar huella digital"
+        "useFingerprint": "Usar huella digital",
+        "useFaceID": "Usar Face ID",
+        "useBiometrics": "Usar biometría"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -426,6 +428,12 @@
         "touchToVerify": "Toque para verificar la identificación de la cara",
         "nativeNote": "Apunte a la cámara para el reconocimiento facial",
         "notMatch": "FaceID no marcha. Inténtalo de nuevo."
+      },
+      "biometrics": {
+        "title": "Biometría",
+        "touchToVerify": "Toque para verificar la biometría",
+        "nativeNote": "Verifique sus datos biométricos",
+        "notMatch": "La biometría no coincide. Inténtalo de nuevo."
       },
       "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
       "failedAndTryAgain": "Autenticación fallida. Inténtalo de nuevo."
