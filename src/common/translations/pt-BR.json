@@ -75,9 +75,9 @@
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação"
       },
       "selectCurrency": {
-        "title": "Selecionar moeda da carteira",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Selecionar ativos da carteira",
+        "mainnet": "Rede principal",
+        "testnet": "Rede teste"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
@@ -158,22 +158,22 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do Contrato do Ativo",
-        "mainnet": "Mainnet"
+        "address": "Endereço do contrato do ativo",
+        "mainnet": "Rede principal"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
         "question": "Você deseja adicionar este ativo?",
         "token": "Ativo",
-        "symbol": "Símbolo do Ativo",
+        "symbol": "Símbolo do ativo",
         "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
       "addToken": {
         "title": "Adicionar Ativo",
-        "enabledAssets": "Ativos Habilitados",
+        "enabledAssets": "Ativos habilitados",
         "note": "Desative para ocultá-los do seu portfólio.",
-        "addCustomToken": "Adicionar Ativo Personalizado",
+        "addCustomToken": "Adicionar ativo personalizado",
         "custom": "Personalizados"
       },
       "rnsCreateName": {
@@ -480,7 +480,7 @@
     },
     "noWalletAvailable": {
       "title": "Nenhuma carteira disponível",
-      "body": "Ainda não existe carteira disponível para esse Dapp. Por favor, primeiro crie ou importe uma através da Página de Criação de Carteira.\n\n"
+      "body": "Ainda não existe carteira disponível para esse Dapp. Por favor, primeiro crie ou importe uma na página adicionar carteira.\n\n"
     },
     "requestTimeout": {
       "title": "Tempo limite da solicitação",
