@@ -74,7 +74,7 @@
         "importWalletNote": "復元フレーズを使用してウォレットを復元"
       },
       "selectCurrency": {
-        "title": "ウォレット通貨を選択",
+        "title": "ウォレットアセットを選択",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },

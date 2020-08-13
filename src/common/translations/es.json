@@ -74,7 +74,7 @@
         "importWalletNote": "Restaura tu billetera usando la frase de recuperación"
       },
       "selectCurrency": {
-        "title": "Seleccionar moneda de Wallet",
+        "title": "Seleccionar activos de Wallet",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },
