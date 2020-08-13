@@ -285,6 +285,7 @@ function* setPasscodeRequest(action) {
       type: actions.UPDATE_PASSCODE,
       passcode,
     });
+    yield put(actions.lockApp(false));
   } catch (error) {
     console.log('setPasscodeRequest, error: ', error);
   }
