@@ -182,7 +182,7 @@ class WalletSelectCurrency extends Component {
       const { navigation } = this.props;
       const bottomBtnText = this.isImportWallet ? 'button.IMPORT' : 'button.create';
 
-      const bottomButton = (<Button text={bottomBtnText} onPress={this.onImportPress} disabled={!isCanSubmit} />);
+      const bottomButton = (<Button text={bottomBtnText} onPress={this.onCreateButtonPress} disabled={!isCanSubmit} />);
 
       return (
         <BasePageGereral
