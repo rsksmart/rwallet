@@ -353,9 +353,9 @@ class Transfer extends Component {
       onDetectedAction: 'backToTransfer',
       onQrcodeDetected: (address) => {
         console.log('onQrcodeDetected, address: ', address);
+        // Fill in the address and call onToInputBlur to check the content
         this.setState({ to: address }, () => {
-          this.requestFees(false);
-          this.isAddressValid = true;
+          this.onToInputBlur();
         });
       },
     });
