@@ -315,7 +315,7 @@ class History extends Component {
         if (daysElapsed < 1) {
           datetimeText = datetime.fromNow();
         } else {
-          datetimeText = datetime.format('MMM D. YYYY');
+          datetimeText = datetime.format('LL');
         }
       }
 
