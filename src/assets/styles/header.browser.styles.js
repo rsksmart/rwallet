@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import screenHelper from '../../common/screenHelper';
-import color from './color.ts';
+import color from './color';
 
 const headerHeight = 100 + screenHelper.topHeight;
 
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: color.whiteA90,
     fontFamily: 'Avenir-Medium',
     fontSize: 15,
     letterSpacing: 0.39,

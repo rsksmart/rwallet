@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import color from './color.ts';
+import color from './color';
 
 const styles = StyleSheet.create({
   tag: {
@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#028CFF',
+    backgroundColor: color.vividBlue,
     marginRight: 8,
   },
   tagText: {
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   testnet: {
-    backgroundColor: '#9b9b9b',
+    backgroundColor: color.dustyGray,
   },
 });
 

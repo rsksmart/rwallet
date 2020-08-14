@@ -9,9 +9,9 @@ import _ from 'lodash';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
-// import color from '../../assets/styles/color.ts';
+// import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
@@ -23,7 +23,7 @@ import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 const styles = StyleSheet.create({
   sectionContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.grayD8,
     paddingBottom: 20,
   },
   title: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: 26,
   },
   symbol: {
-    color: '#042C5C',
+    color: color.greenVogue,
     fontFamily: 'Avenir-Heavy',
     fontSize: 20,
     letterSpacing: 0.5,

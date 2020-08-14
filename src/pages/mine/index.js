@@ -19,7 +19,7 @@ import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
 import WebViewModal from '../../components/common/webview.modal';
 import config from '../../../config';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 20,
   },
   sectionContainer: {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   title: {
-    color: '#0B0B0B',
+    color: this.codGray,
     fontSize: 16,
   },
   right: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
+    borderBottomColor: color.grayED,
     paddingVertical: 20,
     flex: 1,
   },
@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   keyIcon: {
-    color: '#4A4A4A', transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
+    color: color.tundora, transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
   },
   keyWallets: {
-    backgroundColor: '#F3F3F3',
+    backgroundColor: color.concrete,
     borderRadius: 5,
     padding: 5,
-    color: '#000',
+    color: color.black,
     position: 'absolute',
     right: 0,
   },
@@ -204,21 +204,21 @@ class MineIndex extends Component {
   joins = [
     {
       title: 'Twitter',
-      icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: '#039BE5' }]} />,
+      icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: color.cerulean }]} />,
       onPress: () => {
         Linking.openURL('https://twitter.com/rsksmart');
       },
     },
     {
       title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#3B9DD8' }]} />,
+      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: color.curiousBlue }]} />,
       onPress: () => {
         Linking.openURL('https://t.me/rskofficialcommunity');
       },
     },
     {
       title: 'Facebook',
-      icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: '#3F51B5' }]} />,
+      icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: color.sanMarino }]} />,
       onPress: () => {
         Linking.openURL('https://www.facebook.com/RSKsmart/');
       },
@@ -232,14 +232,14 @@ class MineIndex extends Component {
     },
     {
       title: 'Reddit',
-      icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: '#FF4500' }]} />,
+      icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: color.vermilion }]} />,
       onPress: () => {
         Linking.openURL('https://www.reddit.com/r/rootstock/');
       },
     },
     {
       title: 'YouTube',
-      icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: '#D2142B' }]} />,
+      icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: color.crimson }]} />,
       onPress: () => {
         Linking.openURL('https://www.youtube.com/rsksmart');
       },

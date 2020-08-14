@@ -4,6 +4,8 @@ import { WebView } from 'react-native-webview';
 import * as PropTypes from 'prop-types';
 import LoadingBar from './loading-bar';
 
+import presetColor from '../../../../assets/styles/color';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -109,8 +111,8 @@ ProgressBarWebView.propTypes = {
 
 ProgressBarWebView.defaultProps = {
   height: 3,
-  color: '#3B78E7',
-  errorColor: '#f30',
+  color: presetColor.brightBlue,
+  errorColor: presetColor.scarlet,
   disappearDuration: 300,
   onLoadProgress: undefined,
   onError: undefined,

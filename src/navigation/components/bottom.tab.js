@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
+import color from '../../assets/styles/color';
 
 const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 70 + screenHelper.bottomHeight,
     elevation: 2,
-    backgroundColor: 'black',
+    backgroundColor: color.black,
     borderTopRightRadius: 26,
     borderTopLeftRadius: 26,
     paddingBottom: screenHelper.bottomHeight,
@@ -39,11 +40,11 @@ const styles = StyleSheet.create({
   spotLight: {
     width: tabWidth * 0.5,
     height: 6,
-    backgroundColor: '#4169E1',
+    backgroundColor: color.royalBlue,
     borderRadius: 8,
   },
   tabButtonText: {
-    color: 'white',
+    color: color.white,
   },
 });
 

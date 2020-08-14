@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import * as Animatable from 'react-native-animatable';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
 import common from '../../../common/common';
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: color.transparent,
   },
   panel: {
     marginHorizontal: 25,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   touchToVerify: {
     fontFamily: 'Avenir-Heavy',
-    color: '#000000',
+    color: color.black,
     marginBottom: 17,
   },
   passcode: {},
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   errText: {
     marginTop: 10,
-    color: 'red',
+    color: color.red,
     textAlign: 'center',
     lineHeight: 20,
   },

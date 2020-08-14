@@ -12,7 +12,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const bip39 = require('bip39');
 

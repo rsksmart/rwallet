@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-import color from './color.ts';
+import color from './color';
 
 const style = StyleSheet.create({
   border: {
     borderStyle: 'solid',
-    borderColor: '#000000',
+    borderColor: color.black,
     borderWidth: 1,
   },
   borderRadiusFull: {
@@ -41,10 +41,10 @@ const style = StyleSheet.create({
   },
   card: {
     borderStyle: 'solid',
-    borderColor: '#dddddd',
+    borderColor: color.alto,
     borderWidth: 1,
     borderRadius: 6,
-    backgroundColor: '#ffffff',
+    backgroundColor: color.white,
   },
   textInput: {
     borderColor: color.component.input.borderColor,
@@ -71,17 +71,17 @@ const style = StyleSheet.create({
   board: {
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: color.white,
   },
   noBottomBorder: {
-    borderBottomColor: 'rgba(0,0,0,0)',
+    borderBottomColor: color.transparent,
   },
 });
 

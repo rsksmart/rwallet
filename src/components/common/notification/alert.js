@@ -26,8 +26,7 @@ class Alert extends Component {
     }
   }
 
-  startShow = () => {
-  };
+  startShow = () => {};
 
   render() {
     const { animationType, transparent } = this.state;

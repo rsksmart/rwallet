@@ -9,7 +9,7 @@ import VersionNumber from 'react-native-version-number';
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');

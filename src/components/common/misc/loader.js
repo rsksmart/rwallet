@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -13,10 +14,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    backgroundColor: '#00000040',
+    backgroundColor: color.blackA64,
   },
   activityIndicatorWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
     height: 100,
     width: 100,
     borderRadius: 10,

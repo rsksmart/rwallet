@@ -3,7 +3,7 @@ import {
   StyleSheet, View, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import DashLine from './dashLine';
 
 export const wordFieldWidth = 163;

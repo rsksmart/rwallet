@@ -8,7 +8,7 @@ import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
 import coinType from '../../common/wallet/cointype';
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   addCustomTokenView: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: color.whiteA50,
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 20,

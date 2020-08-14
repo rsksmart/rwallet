@@ -3,7 +3,7 @@ import {
   StyleSheet, View, Image, FlatList, Text, TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   item: {

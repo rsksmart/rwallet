@@ -5,6 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import color from '../../../assets/styles/color';
 
 import NewFeatureModalView from './confirmation.modalview.newfeature';
 
@@ -12,13 +13,13 @@ const styles = StyleSheet.create({
   titleStyle: {
     fontFamily: 'Avenir-Heavy',
     fontSize: 17,
-    color: 'black',
+    color: color.black,
     marginTop: 6,
   },
   messageStyle: {
     fontFamily: 'Avenir-Book',
     fontSize: 16,
-    color: 'black',
+    color: color.black,
   },
 });
 

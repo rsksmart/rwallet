@@ -5,11 +5,11 @@ import {
 import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../common/misc/loc';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: color.whiteA90,
     fontFamily: 'Avenir-Medium',
     fontSize: 20,
     letterSpacing: 0.39,

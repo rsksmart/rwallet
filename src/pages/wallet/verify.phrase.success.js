@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
     marginLeft: 10,
   },
@@ -39,10 +40,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#000000',
+    color: color.black,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 15,
     fontWeight: '300',
     width: '80%',

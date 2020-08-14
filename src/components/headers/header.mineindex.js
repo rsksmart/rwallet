@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../common/misc/responsive.text';
+import color from '../../assets/styles/color';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -21,15 +22,15 @@ const styles = StyleSheet.create({
     left: 20,
     bottom: -40,
     position: 'absolute',
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
     borderRadius: AVATAR_SIZE / 2,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 4,
     elevation: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
   },
   nameView: {
     alignItems: 'center',
@@ -45,14 +46,14 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: color.white,
   },
   nameEditView: {
     marginLeft: 10,
     marginBottom: -5,
   },
   nameEdit: {
-    color: '#FFFFFF',
+    color: color.white,
   },
   headerView: {
     height: headerHeight,

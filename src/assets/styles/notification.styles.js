@@ -1,22 +1,22 @@
 import { StyleSheet } from 'react-native';
-import color from './color.ts';
+import color from './color';
 
 const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#000',
+    color: color.black,
     marginTop: 22,
   },
   text: {
-    color: '#0B0B0B',
+    color: color.codGray,
     fontSize: 16,
     lineHeight: 22,
     marginTop: 15,
     marginBottom: 30,
   },
   line: {
-    borderBottomColor: '#DCDCDC',
+    borderBottomColor: color.gainsboro,
     width: '100%',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 15,
@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
   backgroundBoard: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: color.blackA50,
   },
   frontBoard: {
     marginHorizontal: 25,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     borderRadius: 5,
   },
 });

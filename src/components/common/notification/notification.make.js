@@ -8,6 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import color from '../../../assets/styles/color';
 
 const ICON_SQUARE_SIZE = 100;
 const ANIMATION_DURATION_MS = 150;
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'hidden',
     borderRadius: 7,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: {
       width: 0,
       height: 5,

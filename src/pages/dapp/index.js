@@ -21,7 +21,7 @@ import WalletSelection from '../../components/common/modal/wallet.selection.moda
 import AdsCarousel from '../../components/common/carousel/ads.carousel';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import Image from '../../components/common/image/image';
 import config from '../../../config';
 import common from '../../common/common';
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    color: '#028CFF',
+    color: color.vividBlue,
     fontWeight: 'bold',
     fontSize: 20,
     fontFamily: 'Avenir-Heavy',
@@ -78,17 +78,17 @@ const styles = StyleSheet.create({
     marginLeft: 18,
   },
   dappName: {
-    color: '#060606',
+    color: color.gray06,
     fontFamily: 'Avenir-Book',
     fontSize: 12,
   },
   dappDesc: {
-    color: '#535353',
+    color: color.gray53,
     fontSize: 11,
     fontFamily: 'Avenir-Book',
   },
   dappUrl: {
-    color: '#ABABAB',
+    color: color.grayAB,
     fontSize: 11,
     fontFamily: 'Avenir-Book',
   },
@@ -220,7 +220,7 @@ class DAppIndex extends Component {
           this.onDappPress(dapp);
         }}
       >
-        <Image style={[styles.adItemImage, type === PLACEHOLDER_TYPE ? { backgroundColor: color.concrete } : {}]} source={{ uri: item.imgUrl }} />
+        <Image style={[styles.adItemImage, type === PLACEHOLDER_TYPE ? { backgroundColor: color.grayF2 } : {}]} source={{ uri: item.imgUrl }} />
       </TouchableOpacity>
     );
   }
@@ -281,7 +281,7 @@ class DAppIndex extends Component {
           onWillFocus={() => {
             StatusBar.setBarStyle('dark-content');
             if (Platform.OS === 'android') {
-              StatusBar.setBackgroundColor('white');
+              StatusBar.setBackgroundColor(color.white);
             }
           }}
           onWillBlur={() => {
@@ -298,7 +298,7 @@ class DAppIndex extends Component {
           style={styles.searchInput}
           value={searchUrl}
           placeholder={strings('page.dapp.search')}
-          placeholderTextColor="#B5B5B5"
+          placeholderTextColor={color.grayB5}
           onChangeText={(url) => { this.setState({ searchUrl: url }); }}
           onSubmit={() => {
             if (searchUrl) {

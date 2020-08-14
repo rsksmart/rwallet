@@ -8,6 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../common/misc/responsive.text';
 import { strings } from '../../common/i18n';
+import color from '../../assets/styles/color';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     right: 24,
   },
   headerTitleText: {
-    color: '#FFFFFF',
+    color: color.white,
     fontFamily: 'Avenir-Black',
   },
   backButton: {
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     bottom: 97,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   noGobackTitleStyle: {
     fontSize: 20,

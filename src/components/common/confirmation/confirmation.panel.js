@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import NewFeatureModalView from './confirmation.modalview.newfeature';
 import DappWarningModalView from './confirmation.modalview.dappwarning';
 import DefaultModalView from './confirmation.modalview.default';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   modalViewWrapper: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: color.blackA50,
   },
 });
 

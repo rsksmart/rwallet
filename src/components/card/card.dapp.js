@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import Loc from '../common/misc/loc';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   card: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
   },
   cardButtonText: {
-    color: '#028CFF',
+    color: color.vividBlue,
     fontFamily: 'Avenir-Roman',
     fontSize: 14,
   },

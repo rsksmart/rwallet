@@ -22,6 +22,7 @@ import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
 import storage from '../../common/storage';
+import color from '../../assets/styles/color';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -38,14 +39,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     paddingHorizontal: 10,
   },
   sectionContainer: {
     paddingHorizontal: 30,
   },
   addAsset: {
-    color: '#77869E',
+    color: color.lynch,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -59,14 +60,14 @@ const styles = StyleSheet.create({
     height: 166,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: color.white,
   },
   headerBoardView: {
     alignItems: 'center',
@@ -77,11 +78,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   myAssetsText: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Black',
   },
   assetsValue: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Roman',
     fontSize: 15,
     letterSpacing: 0.94,
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
   sending: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Roman',
     fontSize: 15,
     letterSpacing: 0.94,
@@ -112,31 +113,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   swapIcon: {
-    color: '#656667',
+    color: color.nevada,
   },
   sendText: {
-    color: '#6875B7',
+    color: color.shipCove,
     fontFamily: 'Avenir-Medium',
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   receiveText: {
-    color: '#6FC062',
+    color: color.mantis,
     fontFamily: 'Avenir-Medium',
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   NameText: {
-    color: '#656667',
+    color: color.nevada,
     fontFamily: 'Avenir-Medium',
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   swapText: {
-    color: '#656667',
+    color: color.nevada,
     marginLeft: 10,
     fontSize: 13,
     fontWeight: '500',
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D8D8D8',
+    borderBottomColor: color.grayD8,
     marginLeft: 20,
     paddingBottom: 9,
     paddingTop: 11,
@@ -167,20 +168,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   title: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Roman',
     fontSize: 16,
     letterSpacing: 0.33,
   },
   amount: {
-    color: '#000000',
+    color: color.black,
     fontFamily: 'Avenir-Heavy',
     fontSize: 16,
     letterSpacing: 1,
     alignSelf: 'flex-end',
   },
   datetime: {
-    color: '#939393',
+    color: color.gray93,
     fontFamily: 'Avenir-Roman',
     fontSize: 12,
     letterSpacing: 0,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   recent: {
-    color: '#000000',
+    color: color.black,
     fontSize: 13,
     letterSpacing: 0.25,
     fontWeight: 'bold',
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   },
   spliteLine: {
     borderRightWidth: 1,
-    borderColor: '#D1D1D1',
+    borderColor: color.grayD1,
     height: 15,
     marginBottom: 2,
     marginLeft: 20,
@@ -233,9 +234,9 @@ const styles = StyleSheet.create({
 });
 
 const stateIcons = {
-  Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: '#6875B7' }]} />,
+  Sent: <SimpleLineIcons name="arrow-up-circle" size={30} style={[{ color: color.shipCove }]} />,
   Sending: <Image source={sending} />,
-  Received: <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: '#6FC062' }]} />,
+  Received: <SimpleLineIcons name="arrow-down-circle" size={30} style={[{ color: color.mantis }]} />,
   Receiving: <Image source={sending} />,
   Failed: <Image source={failed} />,
 };

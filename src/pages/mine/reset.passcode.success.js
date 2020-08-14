@@ -7,7 +7,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
-
+import color from '../../assets/styles/color';
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: '300',
-    color: '#000000',
+    color: color.black,
   },
 });
 

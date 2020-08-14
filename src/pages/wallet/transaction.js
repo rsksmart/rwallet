@@ -14,7 +14,7 @@ import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import references from '../../assets/references';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
   },
   state: {
@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
 });
 
 const stateIcons = {
-  Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: '#6875B7' }]} />,
+  Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: color.shipCove }]} />,
   Sending: <Image source={sending} style={{ width: 37, height: 37 }} />,
-  Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
+  Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: color.mantis }]} />,
   Receiving: <Image source={sending} style={{ width: 37, height: 37 }} />,
-  Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: '#E73934' }]} />,
+  Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: color.cinnabar }]} />,
 };
 
 class Transaction extends Component {

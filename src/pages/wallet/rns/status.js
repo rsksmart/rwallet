@@ -9,7 +9,7 @@ import _ from 'lodash';
 import Header from '../../../components/headers/header';
 import BasePageGereral from '../../base/base.page.general';
 import Loc from '../../../components/common/misc/loc';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
 import { strings } from '../../../common/i18n';
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   rnsRow: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.grayD8,
     marginBottom: 20,
   },
   addressView: {
@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   successNotice: {
-    color: '#00B520',
+    color: color.malachite,
   },
   pendingNotice: {
-    color: '#F5A623',
+    color: color.buttercup,
   },
   failedNotice: {
     color: color.warningText,

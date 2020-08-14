@@ -6,7 +6,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
 import Rsk3 from '@rsksmart/rsk3';
 import { StackActions, NavigationActions } from 'react-navigation';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import OperationHeader from '../../components/headers/header.operation';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
   authorizationContainer: {
     backgroundColor: color.white,

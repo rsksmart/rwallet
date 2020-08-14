@@ -15,7 +15,7 @@ import { createErrorNotification, createInfoNotification } from '../../common/no
 import Button from '../../components/common/button/button';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 const WORD_FIELD_MARGIN = 37;
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   tip: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     fontWeight: '500',
     letterSpacing: 0.29,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   confirmationView: {
     width: '100%',
     height: 200,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,

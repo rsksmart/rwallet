@@ -10,7 +10,7 @@ import presetStyle from '../../assets/styles/style';
 import walletActions from '../../redux/wallet/actions';
 import BasePageGereral from '../base/base.page.general';
 import CONSTANTS from '../../common/constants';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 20,
   },
   title: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     letterSpacing: 0.25,
     fontWeight: 'bold',

@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
-import color from './color.ts';
+import color from './color';
 
 const coinListItemStyles = StyleSheet.create({
   sectionTitle: {
     fontFamily: 'Avenir-Heavy',
     marginBottom: 10,
     fontSize: 14,
-    color: '#000',
+    color: color.black,
     paddingHorizontal: 10,
   },
   itemView: {

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import color from '../../../assets/styles/color';
 
 const { width } = Dimensions.get('window');
 const viewWidth = width * 0.9;
@@ -40,7 +41,7 @@ export default class AdsCarousel extends PureComponent {
             width: 16,
             height: 2,
             borderRadius: 2,
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backgroundColor: color.whiteA92,
           }}
           dotContainerStyle={{ marginHorizontal: 4 }}
           inactiveDotOpacity={0.4}

@@ -6,6 +6,7 @@ import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
 import DAppStackNavigator from './stack.dapp';
 import TabBar from './components/bottom.tab';
+import color from '../assets/styles/color';
 
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
@@ -116,8 +117,8 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#df394d',
-      inactiveTintColor: 'gray',
+      activeTintColor: color.ceriseRed,
+      inactiveTintColor: color.gray,
     },
   },
 );

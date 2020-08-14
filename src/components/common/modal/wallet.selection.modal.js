@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import common from '../../../common/common';
@@ -22,12 +22,12 @@ const TOKEN_ITEM_WIDTH = (TOKEN_ROW_WIDTH - 50) / 2;
 const styles = StyleSheet.create({
   backgroundView: {
     flex: 1,
-    backgroundColor: 'rgba(8, 9, 18, 0.6)',
+    backgroundColor: color.ebonyA60,
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     borderRadius: 12,
     width: MODAL_WIDTH,
   },
@@ -37,12 +37,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 17,
     fontFamily: 'Avenir-Heavy',
-    color: 'black',
+    color: color.black,
   },
   line: {
     width: '100%',
     height: 1,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: color.alto,
   },
   flatlist: {
     marginHorizontal: 15,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   noWalletText: {
     fontFamily: 'Avenir-Book',
     fontSize: 16,
-    color: 'black',
+    color: color.black,
   },
   confirmBtnView: {
     width: '80%',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   confirmBtnFont: {
-    color: '#F3F3F3',
+    color: color.concrete,
     fontFamily: 'Avenir-Heavy',
     fontSize: 16,
   },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   cancelBtnFont: {
-    color: '#B1B1B1',
+    color: color.grayB1,
     fontFamily: 'Avenir-Roman',
     fontSize: 16,
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     height: 13,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#CBC6C6',
+    borderColor: color.lightGray,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   mainnet: {
-    backgroundColor: 'rgba(2, 140, 255, 0.65)',
+    backgroundColor: color.azureRadianceA65,
     borderRadius: 4,
     padding: 5,
     width: 49,
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
   network: {
     fontFamily: 'Avenir-Book',
     fontSize: 10,
-    color: 'white',
+    color: color.white,
   },
   address: {
-    color: 'rgba(0, 0, 0, 0.8)',
+    color: color.blackA80,
     fontSize: 16,
     fontFamily: 'Avenir-Book',
     marginLeft: 11,

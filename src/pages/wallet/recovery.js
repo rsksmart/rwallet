@@ -13,7 +13,7 @@ import Loc from '../../components/common/misc/loc';
 import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontFamily: 'Avenir-Heavy',
     fontSize: 14,
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
   },
   walletName: {
@@ -46,13 +46,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   buttonView: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
     width: '100%',
     alignItems: 'center',
     paddingVertical: 15,
   },
   bottomBorder: {
-    borderBottomColor: '#bbb',
+    borderBottomColor: color.silver,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
@@ -71,10 +71,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 200,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   phraseView: {
-    borderBottomColor: '#bbb',
+    borderBottomColor: color.silver,
     borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: color.component.input.backgroundColor,
     borderColor: color.component.input.borderColor,
@@ -394,7 +394,7 @@ class WalletRecovery extends Component {
                   <TouchableOpacity onPress={this.onTokenPressed}>
                     <View style={styles.row}>
                       <Text style={[flex.flex1, styles.fieldText]}>{selectedCoin}</Text>
-                      <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
+                      <EvilIcons name="chevron-down" color={color.dustyGray} size={30} />
                     </View>
                   </TouchableOpacity>
                 </View>

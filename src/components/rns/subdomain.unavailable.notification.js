@@ -3,7 +3,7 @@ import {
   Modal, View, StyleSheet, Text, FlatList, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
 import notificationStyles from '../../assets/styles/notification.styles';
 import Loc from '../common/misc/loc';

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   scanView: {
@@ -12,23 +12,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#9B9B9B',
+    backgroundColor: color.dustyGray,
   },
   title: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#000',
+    color: color.black,
     marginTop: 22,
   },
   text: {
-    color: '#0B0B0B',
+    color: this.codGray,
     fontSize: 16,
     lineHeight: 22,
     marginTop: 15,
     marginBottom: 30,
   },
   line: {
-    borderBottomColor: '#DCDCDC',
+    borderBottomColor: color.gainsboro,
     width: '100%',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 15,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 const DefaultModalView = ({
   title, message, onCancelPressed, onConfirmPressed, cancelText, confirmText,
 }) => (
-  <View style={{ marginHorizontal: 25, backgroundColor: 'white', borderRadius: 5 }}>
+  <View style={{ marginHorizontal: 25, backgroundColor: color.white, borderRadius: 5 }}>
     <View style={{ paddingHorizontal: 20 }}>
       <Loc style={[styles.title]} text={title} />
       <Loc style={[styles.text]} text={message} />

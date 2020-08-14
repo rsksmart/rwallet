@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {
   View, Text, Animated, StyleSheet,
 } from 'react-native';
-
 import PropTypes from 'prop-types';
+
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   animatedToastViewContainer: {
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignSelf: 'stretch',
     textAlign: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: color.transparent,
   },
 });
 
@@ -154,7 +155,7 @@ Toast.propTypes = {
 };
 
 Toast.defaultProps = {
-  backgroundColor: '#666666',
+  backgroundColor: color.doveGray,
   textColor: 'white',
   orientation: 'xAxis',
   position: 'top',

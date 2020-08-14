@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Feather from 'react-native-vector-icons/Feather';
 import Loc from '../../components/common/misc/loc';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   termRow: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '300',
     letterSpacing: 0.32,
-    color: '#000000',
+    color: color.black,
   },
 });
 

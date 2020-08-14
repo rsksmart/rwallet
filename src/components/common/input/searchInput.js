@@ -3,7 +3,7 @@ import {
   StyleSheet, View, TextInput, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   textInput: {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     width: '87%',
     height: 28,
     marginTop: 14,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: color.wildSand,
     borderRadius: 35,
     flexDirection: 'row',
     alignItems: 'center',
