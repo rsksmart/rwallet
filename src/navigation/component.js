@@ -11,7 +11,7 @@ import { BlurView } from '@react-native-community/blur';
 import UpdateModal from '../components/update/update.modal';
 import Start from '../pages/start/start';
 import TermsPage from '../pages/start/terms';
-import PrimaryTabNavigatorComp from './tab.primary';
+import PrimaryTabNavigator from './tab.primary';
 import Notifications from '../components/common/notification/notifications';
 import Confirmation from '../components/common/confirmation/confirmation';
 import PasscodeModals from '../components/common/passcode/passcode.modals';
@@ -33,7 +33,7 @@ const SwitchNavi = createAppContainer(createSwitchNavigator(
       path: 'start',
     },
     PrimaryTabNavigator: {
-      screen: PrimaryTabNavigatorComp,
+      screen: PrimaryTabNavigator,
       path: 'tab',
     },
     TermsPage: {

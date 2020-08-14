@@ -74,7 +74,7 @@
         "importWalletNote": "Restaurar sua carteira usando a frase de recuperação"
       },
       "selectCurrency": {
-        "title": "Selecionar moeda da carteira",
+        "title": "Selecione Ativos da Carteira",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },
@@ -110,7 +110,7 @@
         "title": "Verificar impressão digital"
       },
       "scan": {
-        "title": "Varredura",
+        "title": "Digitalizar",
         "cameraPermission": {
           "title": "Permissão para usar a câmera",
           "message": "Precisamos da sua permissão para usar sua câmera"
@@ -118,7 +118,7 @@
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "transferCompleted": {
-        "title": "Mandar",
+        "title": "Enviar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
         "viewExplorer": "Clique para ver no explorer"
@@ -136,7 +136,9 @@
         "have": "Eu tenho %{balance} no %{wallet}",
         "min": "MIN",
         "half": "HALF",
-        "all": "TUDO"
+        "all": "TUDO",
+        "exchanging": "Troca",
+        "receiving": "Recebendo"
       },
       "swapSelection": {
         "title": "Selecionar ativo",
@@ -161,7 +163,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
-        "question": "Deseja adicionar esses ativos?",
+        "question": "Deseja adicionar este recurso?",
         "token": "De ativos",
         "symbol": "Símbolo de ativos",
         "decimals": "Decimais de precisão",
@@ -180,8 +182,8 @@
         "rnsName": "Apelido RNS",
         "anotherAddress": "Outro endereço",
         "nameTooShort": "Apelido contém pelo menos {{count}} caracteres",
-        "nameUnavailable": "Desculpe, o nome digitado não está disponível",
-        "nameAvailable": "O nome digitado está disponível",
+        "nameUnavailable": "Desculpe, o apelido digitado não está disponível",
+        "nameAvailable": "O apelido digitado está disponível",
         "selectAddress": "Selecione um endereço",
         "confirmNotice": {
           "one": "Confirme que você deseja criar apelidos para menos de 1 carteira.",
@@ -238,7 +240,8 @@
         "title": "Autenticação de dois fatores",
         "setPasscode": "Definir código de acesso",
         "resetPasscode": "Redefinir senha",
-        "useFingerprint": "Usar impressão digital"
+        "useFingerprint": "Usar impressão digital",
+        "useBiometrics": "Use biometria"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -281,7 +284,10 @@
     "Spanish": "Espanhol",
     "Portuguese": "Português",
     "Chinese": "Chinês",
-    "Brazilian Portuguese": "Portugues do Brasil"
+    "Brazilian Portuguese": "Portugues do Brasil",
+    "Japanese": "Japonês",
+    "Russian": "Russa",
+    "Korean": "Coreana"
   },
   "button": {
     "save": "GUARDAR",
@@ -292,16 +298,16 @@
     "CONFIRM": "CONFIRME",
     "retry": "Repetir",
     "IMPORT": "IMPORTAR",
-    "Clear": "Claro",
+    "Clear": "Limpar",
     "startOver": "RECOMEÇAR",
-    "Copy": "cópia de",
+    "Copy": "copiar",
     "confirm": "confirme",
     "cancel": "Cancelar",
-    "Send All": "Envie todos",
+    "sendAll": "Envie todos",
     "goToWallet": "IR PARA A CARTEIRA",
     "backToWallet": "VOLTAR À CARTEIRA",
     "backToSetting": "VOLTAR À CONFIGURAÇÃO",
-    "Send": "Mandar",
+    "Send": "Enviar",
     "Receive": "Receber",
     "Swap": "Troca",
     "Delete": "Excluir",
@@ -310,7 +316,7 @@
     "Exchange": "Troca",
     "addAsset": "Adicionar ativo",
     "ok": "Está bem",
-    "name": "Nome",
+    "nickname": "Apelido",
     "pending": "Pendente",
     "done": "Feito",
     "share": "COMPARTILHAR"
@@ -390,7 +396,7 @@
     },
     "subdomainCopied": {
       "title": "Copiado",
-      "body": "O subdomínio foi copiado para a área de transferência."
+      "body": "O apelido foi copiado para a área de transferência."
     },
     "txIdCopied": {
       "title": "Copied",
@@ -420,6 +426,12 @@
         "touchToVerify": "Toque para verificar o ID do rosto",
         "nativeNote": "Por favor, aponte para a câmera para reconhecimento de rosto",
         "notMatch": "O FaceID não marcha. Por favor, tente novamente."
+      },
+      "biometrics": {
+        "title": "Biometria",
+        "touchToVerify": "Toque para verificar a biometria",
+        "nativeNote": "Verifique sua biometria",
+        "notMatch": "A biometria não corresponde. Por favor, tente novamente."
       },
       "failedAndTryPasscode": "A autenticação falhou. Por favor, tente a senha.",
       "failedAndTryAgain": "A autenticação falhou. Por favor, tente novamente."
@@ -461,11 +473,11 @@
     },
     "rnsNameUnavailable": {
       "title": "Apelido do RNS indisponível",
-      "body": "Alguns apelidos não estão disponíveis. Por favor, verifique a lista e tente outro apelido."
+      "body": "Os apelidos inseridos abaixo não estão disponíveis. Por favor, tente novamente com apelidos diferentes."
     },
     "rnsSubdomainNotFound": {
-      "title": "Subdomínio RNS não encontrado",
-      "body": "O subdomínio RNS não foi encontrado no servidor."
+      "title": "Apelido RNS não encontrado",
+      "body": "O apelido do RNS não foi encontrado no servidor."
     },
     "rnsNewFeature": {
       "title": "Enviar e receber ficou mais fácil",
@@ -484,6 +496,12 @@
     "rnsExceeded": {
       "title": "Número máximo alcançado",
       "body": "Não podem ser criados mais de {{count}} apelidos por dia."
+    },
+    "chooseBTCAddressType": {
+      "title": "Escolha o tipo de endereço",
+      "body": "Por favor, selecione o tipo de endereço bitcoin",
+      "legacy": "legado",
+      "segwit": "segwit"
     }
   },
   "currency": {

@@ -23,8 +23,7 @@ function* createKeyRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.error(message);
+    console.warn(err.message);
   }
 }
 
@@ -42,8 +41,7 @@ function* deleteKeyRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    console.error(message);
+    console.warn(err.message);
   }
 }
 
@@ -54,10 +52,9 @@ function* renameKeyRequest(action) {
     yield put({ type: actions.WALLET_NAME_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, { err });
-    const notification = createErrorNotification('modal.incorrectKeyName.title', message.message);
+    console.warn(err.message);
+    const notification = createErrorNotification('modal.incorrectKeyName.title', err.message);
     yield put(appActions.addNotification(notification));
-    // console.error(message);
   }
 }
 
@@ -78,10 +75,7 @@ function* addTokenRequest(action) {
     console.log(error);
     if (error.message === 'err.exsistedtoken') {
       yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'error', error } });
-      return;
     }
-    const message = yield call(ParseHelper.handleError, error);
-    console.error(message);
   }
 }
 
@@ -100,8 +94,7 @@ function* deleteTokenRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (err) {
-    const message = yield call(ParseHelper.handleError, err);
-    console.error(message);
+    console.error(err.message);
   }
 }
 
@@ -378,9 +371,17 @@ function* subscribeBlockHeights() {
   let subscription;
   let subscriptionChannel;
   try {
+    const state = yield select();
     subscription = yield call(ParseHelper.subscribeBlockHeights);
     subscriptionChannel = yield call(createBlockHeightSubscriptionChannel, subscription);
-    yield put({ type: actions.SET_TRANSACTIONS_CHANNEL, value: subscriptionChannel });
+
+    // When resubscribing we need to close the last channel
+    const blockHeightsChannel = state.Wallet.get('blockHeightsChannel');
+    if (blockHeightsChannel) {
+      blockHeightsChannel.close();
+    }
+    yield put({ type: actions.SET_BLOCK_HEIGHTS_CHANNEL, value: subscriptionChannel });
+
     while (true) {
       const payload = yield take(subscriptionChannel);
       yield put(payload);
@@ -392,7 +393,7 @@ function* subscribeBlockHeights() {
       subscriptionChannel.close();
       subscription.close();
     } else {
-      console.log('Subscription disconnected: Transactions');
+      console.log('Subscription disconnected: subscribeBlockHeights');
     }
   }
 }
@@ -402,6 +403,20 @@ function* subscribeBlockHeights() {
  */
 function* initLiveQueryBlockHeightsRequest() {
   yield call(subscribeBlockHeights);
+}
+
+/**
+ * get balance request
+ */
+function* getBalanceRequest(action) {
+  try {
+    const { address, symbol } = action.payload;
+    const balance = yield call(ParseHelper.getBalance, action.payload);
+    const item = { balance, address, symbol };
+    yield put({ type: actions.FETCH_TOKENS_RESULT, value: [item] });
+  } catch (error) {
+    console.log('getBalanceRequest, error:', error);
+  }
 }
 
 export default function* () {
@@ -423,5 +438,7 @@ export default function* () {
 
     takeEvery(actions.FETCH_TOKENS, fetchTokensRequest),
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
+
+    takeEvery(actions.GET_BALANCE, getBalanceRequest),
   ]);
 }

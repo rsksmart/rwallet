@@ -8,7 +8,10 @@ import en from './translations/en.json';
 import es from './translations/es.json';
 import pt from './translations/pt.json';
 import zh from './translations/zh.json';
-import ptBR from './translations/ptBR.json';
+import ptBR from './translations/pt-BR.json';
+import ja from './translations/ja.json';
+import ko from './translations/ko.json';
+import ru from './translations/ru.json';
 
 // Change the default separator
 // https://github.com/AlexanderZaytsev/react-native-i18n/issues/73
@@ -19,7 +22,7 @@ I18n.fallbacks = true;
 
 // Define the supported translations
 I18n.translations = {
-  en, es, pt, zh, ptBR,
+  en, es, pt, zh, 'pt-BR': ptBR, ja, ko, ru,
 };
 
 const currentLocale = I18n.currentLocale();
@@ -38,17 +41,26 @@ export function strings(name, params = {}) {
 
 /**
  * get matched language from current locale
+ * If currentLocale is be found in I18n.translations, return it. Otherwise return upper locale.
  * for example
- * If currentLocale is en-us, en-nz or en-ca, return en
- * If currentLocale is zh-cn, zh-hk or zh-tw, return zh
+ * If currentLocale is pt-BR return pt-BR
+ * If currentLocale is en-US, en-NZ or en-CA, return en
+ * If currentLocale is zh-CN, zh-HK or zh-TW, return zh
  */
 export function getCurrentLanguage() {
+  const keys = Object.keys(I18n.translations);
+  // Precise matching
+  let foundLanguage = _.find(keys, (key) => key === currentLocale);
+  if (foundLanguage) {
+    return foundLanguage;
+  }
+  // Preset default language
   let currentLanguage = config.defaultSettings.language;
+  // Find upper locale
   const regex = /^([a-z]+)[_-].*/g;
   const language = currentLocale.replace(regex, '$1');
-  const keys = Object.keys(I18n.translations);
-  const foundLanuage = _.find(keys, (key) => key === language);
-  currentLanguage = foundLanuage || currentLanguage;
+  foundLanguage = _.find(keys, (key) => key === language);
+  currentLanguage = foundLanguage || currentLanguage;
   return currentLanguage;
 }
 

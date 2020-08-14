@@ -4,6 +4,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import common from '../common';
+import storage from '../storage';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -45,23 +46,21 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, derivationPath, contractAddress, name, precision) {
+  constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
-    // metadata:{network, networkId, icon, queryKey, defaultName}
+    // metadata:{network, networkId, icon, defaultName}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
-    this.precision = precision;
-    this.contractAddress = contractAddress;
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
-    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
-    this.name = name || this.metadata.defaultName;
+    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.name = this.metadata.defaultName;
     this.networkId = this.metadata.networkId;
   }
 
@@ -149,7 +148,7 @@ export default class RBTCCoin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      derivationPath: this.derivationPath,
+      path: this.path,
       address: this.address,
       subdomain: this.subdomain,
       objectId: this.objectId,
@@ -161,13 +160,22 @@ export default class RBTCCoin {
     };
   }
 
+  toDerivationJson() {
+    const {
+      symbol, type, path, address,
+    } = this;
+    return {
+      symbol, type, path, address,
+    };
+  }
+
   static fromJSON(json) {
     const {
-      id, amount, address, objectId,
+      symbol, type, path, address, objectId,
     } = json;
-    const instance = new RBTCCoin(id, amount, address);
+    const instance = new RBTCCoin(symbol, type, path);
+    instance.address = address;
     instance.objectId = objectId;
-
     return instance;
   }
 
@@ -212,10 +220,6 @@ export default class RBTCCoin {
     return this.metadata.icon;
   }
 
-  get queryKey() {
-    return this.metadata.queryKey;
-  }
-
   get defaultName() {
     return this.name;
   }
@@ -231,5 +235,38 @@ export default class RBTCCoin {
     let serialized = '';
     if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
     return serialized;
+  }
+
+  setupWithDerivation = (derivation) => {
+    const { path, address, privateKey } = derivation;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+  }
+
+  savePrivateKey = async (walletId) => {
+    const { symbol, type, privateKey } = this;
+    try {
+      await storage.setPrivateKey(walletId, symbol, type, privateKey);
+    } catch (ex) {
+      console.log('savePrivateKey, error', ex.message);
+    }
+  }
+
+  restorePrivateKey = async (walletId) => {
+    try {
+      const { symbol, type } = this;
+      const privateKey = await storage.getPrivateKey(walletId, symbol, type);
+      this.privateKey = privateKey;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  setCustomTokenData = async (data) => {
+    const { contractAddress, name, precision } = data;
+    this.precision = precision;
+    this.contractAddress = contractAddress;
+    this.name = name || this.metadata.defaultName;
   }
 }

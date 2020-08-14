@@ -100,6 +100,7 @@ def getCurrentTime() {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -154,12 +155,13 @@ android {
         }
         variant.outputs.all {
             def buildType = variant.buildType.name
-            outputFileName = "rWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
+            outputFileName = "RWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
         }
     }
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':@imstar15_react-native-firebase')
     implementation project(':react-native-fs')
     implementation project(':react-native-view-shot')

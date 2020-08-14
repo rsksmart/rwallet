@@ -14,7 +14,7 @@ import { strings } from '../../../common/i18n';
  * @returns element
  */
 const Loc = ({
-  text, style, caseType, interpolates,
+  text, style, caseType, interpolates, numberOfLines,
 }) => {
   let translation = strings(text, interpolates);
   if (caseType === 'upper') {
@@ -26,7 +26,7 @@ const Loc = ({
       translation += _.capitalize(word) + (index === words.length ? '' : ' ');
     });
   }
-  return <Text style={style}>{ translation }</Text>;
+  return <Text style={style} numberOfLines={numberOfLines}>{ translation }</Text>;
 };
 
 Loc.propTypes = {
@@ -34,12 +34,14 @@ Loc.propTypes = {
   style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   caseType: PropTypes.string,
   interpolates: PropTypes.shape({}),
+  numberOfLines: PropTypes.number,
 };
 
 Loc.defaultProps = {
   style: null,
   caseType: undefined,
   interpolates: undefined,
+  numberOfLines: undefined,
 };
 
 const mapStateToProps = (state) => ({

@@ -5,7 +5,7 @@
   Created by star on 2020/5/25.
 */
 {
-  "NSCameraUsageDescription" = "O RIF Wallet precisa acessar sua câmera para digitalizar o código QR do destinatário.";
-  "NSFaceIDUsageDescription" = "O RIF Wallet requer acesso ao FaceID para permitir acesso rápido e seguro.";
-  "NSPhotoLibraryUsageDescription" = "O RIF Wallet precisa de acesso à Biblioteca de fotos.";
+  "NSCameraUsageDescription" = "O RWallet precisa acessar sua câmera para digitalizar o código QR do destinatário.";
+  "NSFaceIDUsageDescription" = "O RWallet requer acesso ao FaceID para permitir acesso rápido e seguro.";
+  "NSPhotoLibraryUsageDescription" = "O RWallet precisa de acesso à Biblioteca de fotos.";
 }

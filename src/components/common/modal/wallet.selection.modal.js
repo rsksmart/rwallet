@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   tokenText: {
     fontFamily: 'Avenir-Roman',
     color: color.component.word,
-    fontSize: 10,
+    fontSize: 13,
   },
 });
 

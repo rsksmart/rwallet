@@ -15,6 +15,7 @@ import Switch from '../../components/common/switch/switch';
 import { createErrorNotification, getErrorNotification, getDefaultTxFailedErrorNotification } from '../../common/notification.controller';
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
+import walletActions from '../../redux/wallet/actions';
 import Transaction from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
@@ -26,6 +27,7 @@ import parseHelper from '../../common/parse';
 import definitions from '../../common/definitions';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
+import ERROR_CODE from '../../common/errors';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -119,7 +121,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInputIcon: {
-    marginRight: 20,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    paddingRight: 15,
   },
   question: {
     fontSize: 16,
@@ -349,9 +353,9 @@ class Transfer extends Component {
       onDetectedAction: 'backToTransfer',
       onQrcodeDetected: (address) => {
         console.log('onQrcodeDetected, address: ', address);
+        // Fill in the address and call onToInputBlur to check the content
         this.setState({ to: address }, () => {
-          this.requestFees(false);
-          this.isAddressValid = true;
+          this.onToInputBlur();
         });
       },
     });
@@ -764,8 +768,9 @@ class Transfer extends Component {
   }
 
   async confirm(toAddress) {
-    const { navigation, addNotification } = this.props;
+    const { navigation, addNotification, getBalance } = this.props;
     const { coin } = this;
+    const { symbol, type, address } = coin;
     const { memo } = this.state;
     const { amount } = this.state;
     try {
@@ -790,6 +795,11 @@ class Transfer extends Component {
       const buttonText = 'button.retry';
       const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
+      if (error.code === ERROR_CODE.NOT_ENOUGH_BALANCE || ERROR_CODE.NOT_ENOUGH_BTC || ERROR_CODE.NOT_ENOUGH_RBTC) {
+        getBalance({
+          symbol, type, address, needFetch: true,
+        });
+      }
       // this.resetConfirm();
     }
   }
@@ -924,7 +934,7 @@ class Transfer extends Component {
     if (coin && coin.balance) {
       balanceText = common.getBalanceString(coin.balance, symbol);
       const balanceValue = common.getCoinValue(coin.balance, symbol, type, currency, prices);
-      balanceValueText = common.getAssetValueString(balanceValue);
+      balanceValueText = common.getAssetValueString(balanceValue) || '0';
     }
 
     return (
@@ -939,7 +949,7 @@ class Transfer extends Component {
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>
               <Loc style={[styles.sending]} text="txState.Sending" />
-              <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="Send All" /></TouchableOpacity>
+              <TouchableOpacity style={[styles.sendAll]} onPress={this.onSendAllPress}><Loc style={[styles.sendAllText]} text="button.sendAll" /></TouchableOpacity>
             </View>
             <View><Text style={styles.balance}>{`${strings('page.wallet.transfer.balance')}: ${balanceText} ${common.getSymbolName(symbol, type)} (${common.getCurrencySymbol(currency)}${balanceValueText})`}</Text></View>
             <View style={styles.textInputView}>
@@ -1048,6 +1058,7 @@ Transfer.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currency: PropTypes.string.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  getBalance: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -1057,6 +1068,7 @@ const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   isFingerprint: state.App.get('fingerprint'),
   passcode: state.App.get('passcode'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1073,6 +1085,7 @@ const mapDispatchToProps = (dispatch) => ({
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
+  getBalance: (params) => dispatch(walletActions.getBalance(params)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transfer);

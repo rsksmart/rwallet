@@ -74,7 +74,7 @@
         "importWalletNote": "使用助记词还原您的钱包"
       },
       "selectCurrency": {
-        "title": "选择钱包类型",
+        "title": "选择钱包资产",
         "mainnet": "正式网络",
         "testnet": "测试网络"
       },
@@ -136,7 +136,9 @@
         "have": "我有%{balance}在%{wallet}",
         "min": "最小",
         "half": "一般",
-        "all": "所有"
+        "all": "所有",
+        "exchanging": "将兑换",
+        "receiving": "将收到"
       },
       "swapSelection": {
         "title": "选择资产",
@@ -180,8 +182,8 @@
         "rnsName": "RNS昵称",
         "anotherAddress": "另一个地址",
         "nameTooShort": "昵称至少包含{{count}}个字符",
-        "nameUnavailable": "抱歉，您输入的名字不可用",
-        "nameAvailable": "输入的名字可用",
+        "nameUnavailable": "抱歉，您输入的昵称不可用",
+        "nameAvailable": "输入的昵称可用",
         "selectAddress": "选择一个地址",
         "confirmNotice": {
           "one": "请确认您要为以下的1个钱包创建昵称。",
@@ -239,7 +241,8 @@
         "setPasscode": "设置密码",
         "resetPasscode": "重置密码",
         "useFingerprint": "使用指纹解锁",
-        "useFaceID": "使用人脸识别"
+        "useFaceID": "使用人脸识别",
+        "useBiometrics": "使用生物识别"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -282,7 +285,10 @@
     "Spanish": "西班牙语",
     "Portuguese": "葡萄牙语",
     "Chinese": "中文",
-    "Brazilian Portuguese": "巴西葡萄牙语"
+    "Brazilian Portuguese": "巴西葡萄牙语",
+    "Japanese": "日语",
+    "Russian": "俄语",
+    "Korean": "韩语"
   },
   "button": {
     "save": "保存",
@@ -298,7 +304,7 @@
     "Copy": "复制",
     "confirm": "确认",
     "cancel": "取消",
-    "Send All": "全部发送",
+    "sendAll": "全部发送",
     "CONFIRM & FINISH": "确认完成",
     "goToWallet": "查看钱包",
     "backToWallet": "查看钱包",
@@ -312,7 +318,7 @@
     "Exchange": "兑换",
     "addAsset": "添加资产",
     "ok": "好的",
-    "name": "名字",
+    "nickname": "昵称",
     "pending": "等待中",
     "done": "已完成",
     "share": "分享"
@@ -392,7 +398,7 @@
     },
     "subdomainCopied": {
       "title": "已复制",
-      "body": "域名已复制。"
+      "body": "昵称已复制。"
     },
     "txIdCopied": {
       "title": "已复制",
@@ -414,7 +420,7 @@
       "fingerprint": {
         "title": "指纹解锁",
         "touchToVerify": "点击进行指纹解锁",
-        "nativeNote": "通过Home键验证已有手机指纹",
+        "nativeNote": "请验证已有指纹",
         "notMatch": "指纹不匹配，请重试。"
       },
       "faceID": {
@@ -422,6 +428,12 @@
         "touchToVerify": "点击进行人脸识别",
         "nativeNote": "请对准摄像头进行人脸识别",
         "notMatch": "人脸识别不匹配，请重试。"
+      },
+      "biometrics": {
+        "title": "生物识别",
+        "touchToVerify": "点击以验证生物特征",
+        "nativeNote": "请验证您的生物特征",
+        "notMatch": "生物特征不匹配，请重试。"
       },
       "failedAndTryPasscode": "验证失败，请尝试密码解锁。",
       "failedAndTryAgain": "验证失败，请重试。"
@@ -463,11 +475,11 @@
     },
     "rnsNameUnavailable": {
       "title": "RNS昵称无效",
-      "body": "一些昵称无效。请检查列表，并尝试别的昵称。"
+      "body": "在下面输入的昵称不可用，请使用其他昵称重试。"
     },
     "rnsSubdomainNotFound": {
-      "title": "RNS域名未找到",
-      "body": "RNS域名注册信息在服务器上未找到."
+      "title": "RNS昵称未找到",
+      "body": "RNS昵称注册信息在服务器上未找到."
     },
     "rnsNewFeature": {
       "title": "发送接收变得更容易",
@@ -486,6 +498,12 @@
     "rnsExceeded": {
       "title": "创建超额",
       "body": "每天最多只能创建{{count}}个钱包昵称。"
+    },
+    "chooseBTCAddressType": {
+      "title": "选择地址类型",
+      "body": "请选择比特币地址类型",
+      "legacy": "普通",
+      "segwit": "隔离见证"
     }
   },
   "currency": {

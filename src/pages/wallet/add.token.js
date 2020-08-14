@@ -18,6 +18,9 @@ import references from '../../assets/references';
 import walletActions from '../../redux/wallet/actions';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
+import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
+import appActions from '../../redux/app/actions';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -116,7 +119,6 @@ class AddToken extends Component {
   constructor(props) {
     super(props);
     this.wallet = props.navigation.state.params.wallet;
-    this.onSwitchValueChanged = this.onSwitchValueChanged.bind(this);
     this.onAddCustomTokenPressed = this.onAddCustomTokenPressed.bind(this);
     const listData = this.createListData();
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
@@ -130,28 +132,45 @@ class AddToken extends Component {
     }
   }
 
-  onSwitchValueChanged(index, value) {
+  onSwitchValueChanged = (index, value) => {
     const {
-      walletManager, addToken, deleteToken, resetWalletsUpdated,
+      walletManager, addToken, deleteToken, resetWalletsUpdated, addConfirmation,
     } = this.props;
     const { listData } = this.state;
-    listData[index].selected = value;
+    const listItem = listData[index];
+    listItem.selected = value;
+
+    if (listItem.selected && listItem.token.symbol === 'BTC' && !this.wallet.getBtcAddressType()) {
+      // If the BTC address type has not been set before, when we choose BTC, we should ask the user for the BTC address type
+      const confirmation = createBTCAddressTypeConfirmation(() => {
+        this.addBTCToken(listItem.token, definitions.BtcAddressType.legacy);
+      }, () => {
+        this.addBTCToken(listItem.token, definitions.BtcAddressType.segwit);
+      });
+      addConfirmation(confirmation);
+    } else if (listItem.selected) {
+      addToken(walletManager, this.wallet, listItem.token);
+    } else {
+      deleteToken(walletManager, this.wallet, listItem.token);
+    }
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.setState({ listData, selectedTokenCount });
     // Before changing the token, force to reset the isWalletsUpdated state.
     // Avoid other pages not being able to detect the change of state.
     resetWalletsUpdated();
-    if (listData[index].selected) {
-      addToken(walletManager, this.wallet, listData[index].token);
-    } else {
-      deleteToken(walletManager, this.wallet, listData[index].token);
-    }
   }
 
   onAddCustomTokenPressed() {
     const { navigation, resetWalletsUpdated } = this.props;
     resetWalletsUpdated();
     navigation.navigate('AddCustomToken', navigation.state.params);
+  }
+
+  addBTCToken = (token, btcAddressType) => {
+    const { walletManager, addToken } = this.props;
+    const newToken = token;
+    newToken.addressType = btcAddressType;
+    addToken(walletManager, this.wallet, newToken);
   }
 
   createListData() {
@@ -287,6 +306,7 @@ AddToken.propTypes = {
   walletManager: PropTypes.shape({}).isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -299,5 +319,6 @@ const mapDispatchToProps = (dispatch) => ({
   deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
   addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddToken);

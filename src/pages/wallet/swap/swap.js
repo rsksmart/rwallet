@@ -27,7 +27,7 @@ import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { strings } from '../../../common/i18n';
-
+import ERROR_CODE from '../../../common/errors';
 
 const styles = StyleSheet.create({
   body: {
@@ -426,13 +426,14 @@ class Swap extends Component {
 
   exchange = async () => {
     const {
-      navigation, swapSource, swapDest, addNotification,
+      navigation, swapSource, swapDest, addNotification, getBalance,
     } = this.props;
     const { sourceAmount, limitMaxDepositCoin } = this.state;
-
+    const {
+      address: sourceAddress, id: sourceId, symbol: sourceSymbol, type: sourceType,
+    } = swapSource.coin;
     try {
       this.setState({ isLoading: true });
-      const { address: sourceAddress, id: sourceId, symbol: sourceSymbol } = swapSource.coin;
       const { address: destAddress, id: destId } = swapDest.coin;
       const sourceCoin = sourceId.toLowerCase();
       const destCoin = destId.toLowerCase();
@@ -472,6 +473,11 @@ class Swap extends Component {
       const buttonText = 'button.retry';
       const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
+      if (error.code === ERROR_CODE.NOT_ENOUGH_BALANCE || ERROR_CODE.NOT_ENOUGH_BTC || ERROR_CODE.NOT_ENOUGH_RBTC) {
+        getBalance({
+          symbol: sourceSymbol, type: sourceType, address: sourceAddress, needFetch: true,
+        });
+      }
     }
   }
 
@@ -721,7 +727,7 @@ class Swap extends Component {
       <View>
         <View style={[styles.operationView, space.marginTop_27]}>
           <View style={styles.operationLeft}>
-            <Text>Exchanging</Text>
+            <Text>{strings('page.wallet.swap.exchanging')}</Text>
           </View>
           <View style={styles.operationRight}>
             {sourceAmount && <Text style={styles.operationAmount}>{sourceAmount.toString()}</Text>}
@@ -730,7 +736,7 @@ class Swap extends Component {
         </View>
         <View style={[styles.operationView, space.marginTop_10]}>
           <View style={styles.operationLeft}>
-            <Text>Receiving</Text>
+            <Text>{strings('page.wallet.swap.receiving')}</Text>
           </View>
           <View style={styles.operationRight}>
             {destAmount && <Text style={[styles.operationAmount, styles.receivingAmount]}>{`+${destAmount}`}</Text>}
@@ -918,6 +924,7 @@ Swap.propTypes = {
   resetSwapRateError: PropTypes.func.isRequired,
   passcode: PropTypes.string,
   language: PropTypes.string.isRequired,
+  getBalance: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
@@ -937,6 +944,7 @@ const mapStateToProps = (state) => ({
   swapRatesError: state.Wallet.get('swapRatesError'),
   passcode: state.App.get('passcode'),
   language: state.App.get('language'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -955,6 +963,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
   getSwapRate: (sourceCoinId, destCoinId) => dispatch(walletActions.getSwapRate(sourceCoinId, destCoinId)),
   resetSwapRateError: () => dispatch(walletActions.resetSwapRateResultError()),
+  getBalance: (params) => dispatch(walletActions.getBalance(params)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);
