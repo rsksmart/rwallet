@@ -102,7 +102,6 @@ class PasscodeModalBase extends PureComponent {
 
   onPressButton(i) {
     const { passcodeOnFill } = this.props;
-    // eslint-disable-next-line react/destructuring-assignment
     this.setState((prevState) => ({ input: prevState.input + i }), () => {
       const { input } = this.state;
       if (input.length >= 4) {

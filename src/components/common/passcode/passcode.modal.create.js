@@ -1,4 +1,3 @@
-/* eslint "default-case": "off" */
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
@@ -60,6 +59,7 @@ class CreatePasscodeModal extends PureComponent {
           this.baseModal.rejectPasscord(flow.title);
         }
         break;
+      default:
     }
   };
 

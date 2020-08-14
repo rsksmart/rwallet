@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import * as PropTypes from 'prop-types';
 import LoadingBar from './loading-bar';
 
-import color from '../../../../assets/styles/color';
+import presetColor from '../../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,14 +62,25 @@ class ProgressBarWebView extends React.PureComponent {
   };
 
   render() {
-    const { height, forwardedRef } = this.props;
-    const { percent, color: loadingBarColor, visible } = this.state;
+    const {
+      height, forwardedRef, errorColor, disappearDuration,
+      source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded,
+      onNavigationStateChange, onMessage,
+    } = this.props;
+    const { percent, color, visible } = this.state;
     return (
       <View style={styles.container}>
-        {visible && <LoadingBar height={height} color={loadingBarColor} percent={percent} />}
+        {visible && <LoadingBar height={height} color={color} percent={percent} />}
         <WebView
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...this.props}
+          source={source}
+          javaScriptEnabled={javaScriptEnabled}
+          injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
+          onNavigationStateChange={onNavigationStateChange}
+          onMessage={onMessage}
+          height={height}
+          color={color}
+          errorColor={errorColor}
+          disappearDuration={disappearDuration}
           ref={forwardedRef}
           onLoadStart={this.onLoadStart}
           onLoadEnd={this.onLoadEnd}
@@ -91,21 +102,52 @@ ProgressBarWebView.propTypes = {
   onLoadStart: PropTypes.func,
   onLoadEnd: PropTypes.func,
   forwardedRef: PropTypes.shape({}),
+  source: PropTypes.shape({}),
+  javaScriptEnabled: PropTypes.bool,
+  injectedJavaScriptBeforeContentLoaded: PropTypes.string,
+  onNavigationStateChange: PropTypes.func,
+  onMessage: PropTypes.func,
 };
 
 ProgressBarWebView.defaultProps = {
   height: 3,
-  color: color.brightBlue,
-  errorColor: color.scarlet,
+  color: presetColor.brightBlue,
+  errorColor: presetColor.scarlet,
   disappearDuration: 300,
   onLoadProgress: undefined,
   onError: undefined,
   onLoadStart: undefined,
   onLoadEnd: undefined,
   forwardedRef: undefined,
+  source: undefined,
+  javaScriptEnabled: false,
+  injectedJavaScriptBeforeContentLoaded: undefined,
+  onNavigationStateChange: undefined,
+  onMessage: undefined,
 };
 
-export default React.forwardRef((props, ref) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <ProgressBarWebView {...props} forwardedRef={ref} />
-));
+export default React.forwardRef((properties, ref) => {
+  const {
+    source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded, onNavigationStateChange, onMessage,
+    height, color, errorColor, disappearDuration,
+    onLoadProgress, onError, onLoadStart, onLoadEnd,
+  } = properties;
+  return (
+    <ProgressBarWebView
+      source={source}
+      javaScriptEnabled={javaScriptEnabled}
+      injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
+      onNavigationStateChange={onNavigationStateChange}
+      onMessage={onMessage}
+      forwardedRef={ref}
+      height={height}
+      color={color}
+      errorColor={errorColor}
+      disappearDuration={disappearDuration}
+      onLoadProgress={onLoadProgress}
+      onError={onError}
+      onLoadStart={onLoadStart}
+      onLoadEnd={onLoadEnd}
+    />
+  );
+});
