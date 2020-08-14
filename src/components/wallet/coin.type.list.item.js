@@ -44,7 +44,7 @@ export default class Item extends Component {
   }
 
   render() {
-    const { data, isDisabled } = this.props;
+    const { data } = this.props;
     const { value } = this.state;
     return (
       <View style={styles.item}>
@@ -54,7 +54,6 @@ export default class Item extends Component {
           <Switch
             value={value}
             onValueChange={this.onValueChange}
-            disabled={isDisabled}
           />
         </View>
       </View>
@@ -69,6 +68,5 @@ Item.propTypes = {
     coin: PropTypes.string,
     selected: PropTypes.bool.isRequired,
   }).isRequired,
-  isDisabled: PropTypes.bool.isRequired,
   onValueChange: PropTypes.func.isRequired,
 };
