@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Animated, StyleSheet, Image } from 'react-native';
 
-// eslint-disable-next-line import/no-unresolved
 import NotificationBar from './notification.bar';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color.ts';

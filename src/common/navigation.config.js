@@ -1,5 +1,4 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
+import _ from 'lodash';
 import { Text } from 'react-native';
 import React from 'react';
 
@@ -32,7 +31,6 @@ import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
 import ExchangeIndex from '../pages/wallet/swap';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
-/* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
@@ -333,26 +331,26 @@ const routeConfigMap = {
 };
 
 function hasEqualKey(obj1, obj2) {
-  for (const o1 in obj1) {
-    for (const o2 in obj2) {
-      if (o1 === o2) {
-        return o1;
-      }
-    }
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  const equalKeys = _.intersection(keys1, keys2);
+  if (equalKeys.length === 0) {
+    return false;
   }
-  return false;
+  return equalKeys[0];
 }
 
 const routeConfigMaps = (() => {
   let ret = {};
-  for (const key in routeConfigMap) {
+  const keys = Object.keys(routeConfigMap);
+  _.each(keys, (key) => {
     const crt = routeConfigMap[key];
     const equalKey = hasEqualKey(ret, crt);
     if (equalKey) {
       console.error(`导航配置地图错误，定义了相同名称:${equalKey}`);
     }
     ret = { ...ret, ...crt };
-  }
+  });
   return ret;
 })();
 

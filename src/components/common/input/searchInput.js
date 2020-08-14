@@ -55,7 +55,6 @@ export default function SearchInput({
   );
 }
 SearchInput.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   placeholder: PropTypes.string.isRequired,
   placeholderTextColor: PropTypes.string,
   onChangeText: PropTypes.func,

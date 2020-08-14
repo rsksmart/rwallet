@@ -1,4 +1,3 @@
-/* eslint class-methods-use-this: 0 */
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSecureStorage from 'rn-secure-storage';
@@ -57,7 +56,6 @@ class RNStorage {
    * @param {object} params { key: "" }
    */
   async load(params) {
-    // eslint-disable-next-line no-return-await
     return this.instance.load(params)
       .catch((err) => {
       // any exception including data not found goes to catch()
@@ -216,16 +214,12 @@ class RNStorage {
    * Set Passcode using secure storage
    * @param {string} passcode String of Passcode
    */
-  setPasscode(passcode) {
-    return RNStorage.secureSet(SECURE_KEY_PASSCODE, passcode);
-  }
+  setPasscode = (passcode) => RNStorage.secureSet(SECURE_KEY_PASSCODE, passcode)
 
   /**
    * Return Passcode from secure storage; null if not found or failed
    */
-  getPasscode() {
-    return RNStorage.secureGet(SECURE_KEY_PASSCODE);
-  }
+  getPasscode = () => RNStorage.secureGet(SECURE_KEY_PASSCODE)
 
   /**
    * Set dapps using normal storage
@@ -284,25 +278,17 @@ class RNStorage {
    * @param {string} id Key local Id
    * @param {string} phrase String of Mnemonic Phrase
    */
-  setMnemonicPhrase(id, phrase) {
-    return RNStorage.secureSet(`${SECURE_KEY_PHRASE_PREFIX}${id}`, phrase);
-  }
+  setMnemonicPhrase = (id, phrase) => RNStorage.secureSet(`${SECURE_KEY_PHRASE_PREFIX}${id}`, phrase)
 
   /**
    * Return Mnemonic Phrase from secure storage; null if not found or failed
    * @param {string} id Key local Id
    */
-  getMnemonicPhrase(id) {
-    return RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`);
-  }
+  getMnemonicPhrase = (id) => RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`)
 
-  setPrivateKey(id, symbol, type, privateKey) {
-    return RNStorage.secureSet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`, privateKey);
-  }
+  setPrivateKey = (id, symbol, type, privateKey) => RNStorage.secureSet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`, privateKey)
 
-  getPrivateKey(id, symbol, type) {
-    return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
-  }
+  getPrivateKey = (id, symbol, type) => RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`)
 
   async getIsShowRnsFeature() {
     const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
