@@ -406,6 +406,20 @@ function* initLiveQueryBlockHeightsRequest() {
   yield call(subscribeBlockHeights);
 }
 
+/**
+ * get balance request
+ */
+function* getBalanceRequest(action) {
+  try {
+    const { address, symbol } = action.payload;
+    const balance = yield call(ParseHelper.getBalance, action.payload);
+    const item = { balance, address, symbol };
+    yield put({ type: actions.FETCH_TOKENS_RESULT, value: [item] });
+  } catch (error) {
+    console.log('getBalanceRequest, error:', error);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -425,5 +439,7 @@ export default function* () {
 
     takeEvery(actions.FETCH_TOKENS, fetchTokensRequest),
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
+
+    takeEvery(actions.GET_BALANCE, getBalanceRequest),
   ]);
 }

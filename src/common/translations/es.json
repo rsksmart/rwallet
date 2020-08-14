@@ -74,7 +74,7 @@
         "importWalletNote": "Restaura tu billetera usando la frase de recuperación"
       },
       "selectCurrency": {
-        "title": "Seleccionar moneda de Wallet",
+        "title": "Seleccionar activos de Wallet",
         "mainnet": "Mainnet",
         "testnet": "Testnet"
       },
@@ -136,7 +136,9 @@
         "have": "Tengo %{balance} en %{wallet}",
         "min": "MIN",
         "half": "MEDIO",
-        "all": "TODAS"
+        "all": "TODAS",
+        "exchanging": "Intercambiar",
+        "receiving": "Recepción"
       },
       "swapSelection": {
         "title": "Seleccione activo",
@@ -161,7 +163,7 @@
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",
-        "question": "¿Desea agregar estos activos?",
+        "question": "¿Desea agregar este activo?",
         "token": "Activo",
         "symbol": "Símbolo de activo",
         "decimals": "Decimales de precisión",
@@ -180,8 +182,8 @@
         "rnsName": "Apodo RNS",
         "anotherAddress": "Otra dirección",
         "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
-        "nameUnavailable": "Lo sentimos, el nombre ingresado no está disponible",
-        "nameAvailable": "El nombre ingresado está disponible",
+        "nameUnavailable": "Lo sentimos, el sobrenombre ingresado no está disponible",
+        "nameAvailable": "El apodo ingresado está disponible",
         "selectAddress": "Seleccione una direccion",
         "confirmNotice": {
           "one": "Confirme que desea crear apodos para menos de 1 billetera.",
@@ -238,7 +240,9 @@
         "title": "Autenticación de dos factores",
         "setPasscode": "Código de acceso establecido",
         "resetPasscode": "Restablecer contraseña",
-        "useFingerprint": "Usar huella digital"
+        "useFingerprint": "Usar huella digital",
+        "useFaceID": "Usar Face ID",
+        "useBiometrics": "Usar biometría"
       },
       "resetPasscodeSuccess" :{
         "title": {
@@ -282,7 +286,10 @@
     "Spanish": "Español",
     "Portuguese": "Portugués",
     "Chinese": "Chino",
-    "Brazilian Portuguese": "Portuguesa brasileña"
+    "Brazilian Portuguese": "Portuguesa brasileña",
+    "Japanese": "Japonés",
+    "Russian": "Ruso",
+    "Korean": "Koreano"
   },
   "button": {
     "save": "GUARDAR",
@@ -298,7 +305,7 @@
     "Copy": "Copiar",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
-    "Send All": "Envia todo",
+    "sendAll": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
     "backToSetting": "VOLVER A LA CONFIGURACIÓN",
@@ -311,7 +318,7 @@
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
     "ok": "Okay",
-    "name": "Nombre",
+    "nickname": "Apodo",
     "pending": "Pendiente",
     "done": "Hecho",
     "share": "COMPARTIR"
@@ -391,7 +398,7 @@
     },
     "subdomainCopied": {
       "title": "Copiado",
-      "body": "El subdominio se ha copiado al portapapeles."
+      "body": "El apodo se ha copiado en el portapapeles."
     },
     "txIdCopied": {
       "title": "Copied",
@@ -421,6 +428,12 @@
         "touchToVerify": "Toque para verificar la identificación de la cara",
         "nativeNote": "Apunte a la cámara para el reconocimiento facial",
         "notMatch": "FaceID no marcha. Inténtalo de nuevo."
+      },
+      "biometrics": {
+        "title": "Biometría",
+        "touchToVerify": "Toque para verificar la biometría",
+        "nativeNote": "Verifique sus datos biométricos",
+        "notMatch": "La biometría no coincide. Inténtalo de nuevo."
       },
       "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
       "failedAndTryAgain": "Autenticación fallida. Inténtalo de nuevo."
@@ -462,11 +475,11 @@
     },
     "rnsNameUnavailable": {
       "title": "Apodo RNS no disponible",
-      "body": "Algunos apodos no están disponibles. Verifique la lista y vuelva a intentar el apodo anterior."
+      "body": "Los sobrenombres ingresados ​​a continuación no están disponibles. Vuelve a intentarlo con diferentes apodos."
     },
     "rnsSubdomainNotFound": {
-      "title": "Subdominio RNS no encontrado",
-      "body": "El subdominio RNS no se encuentra en el servidor."
+      "title": "Apodo RNS no encontrado",
+      "body": "El apodo de RNS no se encuentra en el servidor."
     },
     "rnsNewFeature": {
       "title": "Enviar y recibir es más fácil",
@@ -485,6 +498,12 @@
     "rnsExceeded": {
       "title": "Número máximo alcanzado",
       "body": "No se pueden crear más de {{count}} apodos por día."
+    },
+    "chooseBTCAddressType": {
+      "title": "Elegir tipo de dirección",
+      "body": "Por favor seleccione el tipo de dirección de bitcoin",
+      "legacy": "legado",
+      "segwit": "segwit"
     }
   },
   "currency": {

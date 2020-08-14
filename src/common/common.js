@@ -12,6 +12,10 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import 'moment/locale/es';
 import 'moment/locale/pt';
+import 'moment/locale/pt-br';
+import 'moment/locale/ja';
+import 'moment/locale/ko';
+import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
 import definitions from './definitions';
@@ -308,11 +312,11 @@ const common = {
   async getBiometryType() {
     try {
       const biometryType = await FingerprintScanner.isSensorAvailable();
-      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FINGERPRINT || biometryType === BIOMETRY_TYPES.FACE_ID) {
+      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FACE_ID || biometryType === BIOMETRY_TYPES.Biometrics) {
         return biometryType;
       }
     } catch (error) {
-      console.log('The device does not support fingerprint');
+      console.log('The device does not support fingerprint, error: ', error);
     }
     return null;
   },
@@ -322,6 +326,20 @@ const common = {
       if (err) reject(err);
       else resolve(bytes);
     }));
+  },
+
+  /**
+   * Init price object with { symbol, price: {} }
+   * Return new price object
+   * @param {symbol} the price symbol
+   * @param {priceKeys} the price keys
+   */
+  initPriceObject(symbol, priceKeys) {
+    const priceObject = { symbol, price: {} };
+    _.each(priceKeys, (key) => {
+      priceObject.price[key] = '0';
+    });
+    return priceObject;
   },
 
   /**
@@ -353,6 +371,26 @@ const common = {
         docPrice.price[key] = (currency / usdPrice).toString();
       }
     });
+
+    let rdocPrice = _.find(newPrice, { symbol: 'RDOC' });
+    if (_.isUndefined(rdocPrice)) {
+      rdocPrice = _.cloneDeep(docPrice);
+      rdocPrice.symbol = 'RDOC';
+      newPrice.push(rdocPrice);
+    }
+
+    let rifPrice = _.find(newPrice, { symbol: 'RIF' });
+    if (_.isUndefined(rifPrice)) {
+      rifPrice = this.initPriceObject('RIF', btcPriceKeys);
+      newPrice.push(rifPrice);
+    }
+
+    let rifpPrice = _.find(newPrice, { symbol: 'RIFP' });
+    if (_.isUndefined(rifpPrice)) {
+      rifpPrice = _.cloneDeep(rifPrice);
+      rifpPrice.symbol = 'RIFP';
+      newPrice.push(rifpPrice);
+    }
     return newPrice;
   },
 
@@ -360,14 +398,27 @@ const common = {
     I18n.locale = language;
   },
 
+  normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
+  },
+
+  convertToMomentLocale(locale) {
+    let newLocale = this.normalizeLocale(locale);
+    // The locale code of Brazilian Portuguese is ptbr in Mi Note 9s and Mi Max.
+    // We need to convert it to 'pt-br'.
+    newLocale = newLocale === 'ptbr' ? 'pt-br' : newLocale;
+    newLocale = newLocale === 'zh' ? 'zh-cn' : newLocale;
+    return newLocale;
+  },
+
   setMomentLocale(locale) {
-    let newLocale = locale;
-    if (locale === 'zh') {
-      newLocale = 'zh-cn';
-    } else if (locale === 'ptBR') {
-      newLocale = 'pt-br';
+    try {
+      // pt-BR will be normalize to pt-br
+      const newLocale = this.convertToMomentLocale(locale);
+      moment.locale(newLocale);
+    } catch (error) {
+      console.warn('Failed to set moment locale, locale: ', locale);
     }
-    moment.locale(newLocale);
   },
 
   estimateBtcSize({
@@ -497,6 +548,43 @@ const common = {
   // get redux store
   getStore() {
     return this.store;
+  },
+
+  // get domain from url
+  getDomain(url) {
+    try {
+      let domain = url.toLowerCase();
+      if (domain.startsWith('http://')) {
+        domain = domain.substring(7, domain.length);
+      }
+      if (domain.startsWith('https://')) {
+        domain = domain.substring(8, domain.length);
+      }
+      if (domain.startsWith('www.')) {
+        domain = domain.substring(4, domain.length);
+      }
+
+      // delete sub route
+      [domain] = _.split(domain, '/');
+
+      // delete params
+      [domain] = _.split(domain, '?');
+
+      return domain;
+    } catch (error) {
+      return url;
+    }
+  },
+
+  // completion dapp url with 'http'
+  completionUrl(url) {
+    try {
+      let newUrl = url.toLowerCase();
+      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `http://${newUrl}`;
+      return newUrl;
+    } catch (error) {
+      return url;
+    }
   },
 };
 

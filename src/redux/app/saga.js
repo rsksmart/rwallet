@@ -4,6 +4,7 @@ import {
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
+import { getUniqueId } from 'react-native-device-info';
 
 /* Actions */
 import actions from './actions';
@@ -17,6 +18,7 @@ import walletManager from '../../common/wallet/walletManager';
 import definitions from '../../common/definitions';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
+import config from '../../../config';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
@@ -32,7 +34,10 @@ function* updateUserRequest() {
       return;
     }
     const fcmToken = state.App.get('fcmToken');
-    const updatedParseUser = yield call(ParseHelper.updateUser, { wallets: walletManager.wallets, settings, fcmToken });
+    const deviceId = yield call(getUniqueId);
+    const updatedParseUser = yield call(ParseHelper.updateUser, {
+      wallets: walletManager.wallets, settings, fcmToken, deviceId,
+    });
 
     // Update coin's objectId and return isDirty true if there's coin updated
     const addressesJSON = _.map(updatedParseUser.get('wallets'), (wallet) => wallet.toJSON());
@@ -53,6 +58,14 @@ function* updateUserRequest() {
 function* initFromStorageRequest() {
   try {
     // yield call(storage.remove, 'wallets');
+
+    // If the storage version is lower, upgrade
+    const storageVersion = yield call(storage.getStorageVersion);
+    if (!storageVersion || config.storageVersion > storageVersion) {
+      // TODO: upgrade from old version
+      // update current storage version
+      yield call(storage.setStorageVersion, config.storageVersion);
+    }
 
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
@@ -272,6 +285,7 @@ function* setPasscodeRequest(action) {
       type: actions.UPDATE_PASSCODE,
       passcode,
     });
+    yield put(actions.lockApp(false));
   } catch (error) {
     console.log('setPasscodeRequest, error: ', error);
   }

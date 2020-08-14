@@ -7,6 +7,7 @@ import parseDataUtil from './parseDataUtil';
 import definitions from './definitions';
 import actions from '../redux/app/actions';
 import common from './common';
+import cointype from './wallet/cointype';
 
 const parseConfig = config && config.parse;
 
@@ -78,7 +79,9 @@ class ParseHelper {
    * @param {array} param0.settings
    * @returns {parseUser} saved User
    */
-  static async updateUser({ wallets, settings, fcmToken }) {
+  static async updateUser({
+    wallets, settings, fcmToken, deviceId,
+  }) {
     const parseUser = await ParseHelper.getUser();
     await parseUser.fetch();
 
@@ -89,6 +92,10 @@ class ParseHelper {
 
     if (!_.isNil(fcmToken)) {
       parseUser.set('fcmToken', fcmToken);
+    }
+
+    if (!_.isNil(deviceId)) {
+      parseUser.set('deviceId', deviceId);
     }
 
     // Only set wallets when it's defined.
@@ -440,6 +447,21 @@ class ParseHelper {
       return current.isSameOrAfter(start) && current.isSameOrBefore(end);
     });
     return filterAds;
+  }
+
+  static async getBalance({
+    type, symbol, address, needFetch,
+  }) {
+    const { chain } = cointype[symbol];
+    const params = {
+      name: chain, type, symbol, address, needFetch,
+    };
+    console.log('getBalance, params: ', params);
+    const result = await Parse.Cloud.run('getBalance', {
+      name: chain, type, symbol, address, needFetch,
+    });
+    console.log('getBalance, result: ', result);
+    return result;
   }
 }
 

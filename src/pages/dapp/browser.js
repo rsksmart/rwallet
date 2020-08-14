@@ -10,10 +10,11 @@ import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
 import appActions from '../../redux/app/actions';
-import BrowerHeader from '../../components/headers/header.browser';
+import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import CONSTANTS from '../../common/constants.json';
+import common from '../../common/common';
 
 const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
 
@@ -233,8 +234,15 @@ class DAppBrowser extends Component {
               callback(err, res)
             }
 
-            window.ethereum.send = sendAsync
-            window.ethereum.sendAsync = sendAsync
+            // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
+            setTimeout(() => {
+              if (!window.ethereum.send) {
+                window.ethereum.send = sendAsync
+              }
+              if (!window.ethereum.sendAsync) {
+                window.ethereum.sendAsync = sendAsync
+              }
+            }, 1000)
           }
 
           initWeb3()
@@ -298,7 +306,7 @@ class DAppBrowser extends Component {
               const result = { id, result: signature };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('personal_sign err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
@@ -308,7 +316,7 @@ class DAppBrowser extends Component {
         case 'eth_sendTransaction': {
           callAuthVerify(async () => {
             try {
-              const nonce = await this.provider.getTransactionCount(address);
+              const nonce = await this.provider.getTransactionCount(address, 'pending');
               const txData = {
                 nonce,
                 data: params[0].data,
@@ -324,7 +332,7 @@ class DAppBrowser extends Component {
               const result = { id, result: res.hash };
               this.webview.current.postMessage(JSON.stringify(result));
             } catch (err) {
-              console.log('err: ', err);
+              console.log('eth_sendTransaction err: ', err);
               this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
             }
           }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
@@ -367,7 +375,7 @@ class DAppBrowser extends Component {
 
   getWebView = (address, url) => {
     const { web3JsContent, ethersJsContent } = this.state;
-    const dappUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `http://${url}`;
+    const dappUrl = common.completionUrl(url);
     if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView
@@ -393,7 +401,7 @@ class DAppBrowser extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <BrowerHeader
+        <BrowserHeader
           title={(title && (title[language] || title.en)) || url}
           onBackButtonPress={() => {
             const { canGoBack } = this.state;

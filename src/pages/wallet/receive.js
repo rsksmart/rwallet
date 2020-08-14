@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     marginLeft: 18,
   },
   subdomainText: {
-    color: color.app.theme,
     fontFamily: 'Avenir-Black',
     fontSize: 17,
   },
@@ -52,6 +51,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Book',
     fontSize: 16,
     textAlign: 'center',
+    flex: 1,
   },
   qrView: {
     marginTop: DEVICE.screenHeight * 0.09,
@@ -193,7 +193,7 @@ class WalletReceive extends Component {
               <View style={[styles.addressContainer]}>
                 {subdomain && (
                   <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
-                    <Text style={[styles.subdomainText]}>{subdomain}</Text>
+                    <Text style={[styles.addressText, styles.subdomainText]}>{subdomain}</Text>
                     <Image style={styles.copyIcon} source={references.images.copyIcon} />
                   </TouchableOpacity>
                 )}

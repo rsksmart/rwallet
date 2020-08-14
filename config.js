@@ -19,13 +19,16 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
       { name: 'Portuguese', id: 'pt' },
       { name: 'Chinese', id: 'zh' },
-      { name: 'Brazilian Portuguese', id: 'ptBR' },
+      { name: 'Brazilian Portuguese', id: 'pt-BR' },
+      { name: 'Japanese', id: 'ja' },
+      { name: 'Russian', id: 'ru' },
+      { name: 'Korean', id: 'ko' },
     ],
     currencies: [
       { name: 'USD', symbol: '$' },
@@ -80,8 +83,19 @@ const config = {
   appLock: {
     timeout: 300000,
   },
-  termsUrl: 'https://www.rsk.co/terms-conditions',
+  termsUrl: {
+    en: 'https://www.rsk.co/terms-conditions',
+    zh: 'https://www.rsk.co/zh-Hans/terms-conditions',
+    es: 'https://www.rsk.co/es/terms-conditions',
+    pt: 'https://www.rsk.co/pt-pt/terms-conditions',
+    'pt-BR': 'https://www.rsk.co/pt-pt/terms-conditions',
+    ru: 'https://www.rsk.co/ru/terms-conditions',
+    ko: 'https://www.rsk.co/ko/terms-conditions',
+    ja: 'https://www.rsk.co/ja/terms-conditions',
+  },
   rnsDomain: 'wallet.rsk',
+  storageVersion: 3,
+  defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
 
 export default config;

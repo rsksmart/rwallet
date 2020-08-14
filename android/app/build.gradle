@@ -100,6 +100,7 @@ def getCurrentTime() {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -160,6 +161,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':@imstar15_react-native-firebase')
     implementation project(':react-native-fs')
     implementation project(':react-native-view-shot')

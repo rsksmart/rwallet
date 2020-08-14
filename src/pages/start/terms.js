@@ -71,6 +71,7 @@ class TermsPage extends Component {
 
   render() {
     const { isTermsWebViewVisible } = this.state;
+    const { language } = this.props;
     return (
       <SafeAreaView>
         <View style={styles.page}>
@@ -95,7 +96,7 @@ class TermsPage extends Component {
         </View>
         <WebViewModal
           title={strings('page.start.terms.termsOfUse')}
-          url={config.termsUrl}
+          url={config.termsUrl[language]}
           visible={isTermsWebViewVisible}
           onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
         />
@@ -111,6 +112,7 @@ TermsPage.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  language: PropTypes.string.isRequired,
 };
 
 

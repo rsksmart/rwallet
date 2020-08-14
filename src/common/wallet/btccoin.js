@@ -1,93 +1,69 @@
-import { fromSeed, fromBase58 } from 'bip32';
+import { fromSeed } from 'bip32';
 import _ from 'lodash';
 import { payments } from 'bitcoinjs-lib';
 
 import coinType from './cointype';
-import PathKeyPair from './pathkeypair';
 import common from '../common';
+import storage from '../storage';
+
+const privateKeySuffix = {
+  legacy: '',
+  segwit: '|segwit',
+};
 
 export default class Coin {
-  constructor(symbol, type, derivationPath) {
+  constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
-    // metadata:{network, networkId, icon, queryKey, defaultName}
+    // metadata:{network, networkId, icon, defaultName}
     this.metadata = coinType[this.id];
     this.chain = this.metadata.chain;
     this.type = type;
     this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
-    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+  }
+
+  deriveSegwit= (root, network) => {
+    const path = `m/84'/${this.networkId}'/${this.account}'/0/0`;
+    const keyPair = root.derivePath(path);
+    const { address } = payments.p2wpkh({ pubkey: keyPair.publicKey, network });
+    return {
+      path,
+      address,
+      privateKey: keyPair.privateKey.toString('hex'),
+    };
+  }
+
+  deriveLegacy = (root, network) => {
+    const path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    const keyPair = root.derivePath(path);
+    const { address } = payments.p2pkh({ pubkey: keyPair.publicKey, network });
+    return {
+      path,
+      address,
+      privateKey: keyPair.privateKey.toString('hex'),
+    };
   }
 
   derive(seed) {
     const network = this.metadata && this.metadata.network;
-
     try {
-      const master = fromSeed(seed, network).toBase58();
-      const accountNode = Coin.generateAccountNode(master, network, this.networkId, this.account);
-      const changeNode = Coin.generateChangeNode(accountNode, network, 0);
-      const addressNode = Coin.generateAddressNode(changeNode, network, 0);
-      this.address = Coin.generateAddress(addressNode, network);
-      // this.addressPublicKey = addressNode.public_key;
-      // console.log('this.addressPublicKey = addressNode.public_key;');
-      const privateKeyBuffer = Coin.getPrivateKeyBuffer(master, addressNode, network);
-      // console.log(`[PK]this.addressPrivateKey: ${this.addressPrivateKey}`);
-      this.privateKey = privateKeyBuffer.toString('hex');
+      const root = fromSeed(seed, network);
+      this.addresses = {
+        legacy: this.deriveLegacy(root, network),
+        segwit: this.deriveSegwit(root, network),
+      };
+      const { path, address, privateKey } = this.addresses.legacy;
+      this.path = path;
+      this.address = address;
+      this.privateKey = privateKey;
+      console.log(`path: ${path}, address: ${this.address}, privateKey: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
     }
-
-    // console.log(`derive(), ${this.id}.address:`, this.address, ', privateKey:', this.privateKey);
-  }
-
-  static getPrivateKeyBuffer(master, addressNode, network) {
-    let privateKey = Coin.derivePathFromNode(master, addressNode.path, network);
-    privateKey = fromBase58(privateKey, network).privateKey;
-    return privateKey;
-  }
-
-  static generateAccountNode(master, network, networkId, account) {
-    const path = `m/44'/${networkId}'/${account}'`;
-    const pk = fromBase58(master, network)
-      .derivePath(path)
-      .neutered()
-      .toBase58();
-    return new PathKeyPair(path, pk);
-  }
-
-  static generateChangeNode(accountNode, network, index) {
-    const path = `${accountNode.path}/${index}`;
-    const publickey = this.deriveChildFromNode(accountNode.public_key, network, index);
-    return new PathKeyPair(path, publickey);
-  }
-
-  static generateAddressNode(changeNode, network, index) {
-    const pk = changeNode;
-    const path = `${pk.path}/${index}`;
-    const result = this.deriveChildFromNode(pk.public_key, network, index);
-    return new PathKeyPair(path, result);
-  }
-
-  static generateAddress(addressNode, network) {
-    const options = {
-      pubkey: fromBase58(addressNode.public_key, network).publicKey,
-      network,
-    };
-
-    return payments.p2pkh(options).address;
-  }
-
-  static deriveChildFromNode(node, network, index) {
-    const t = fromBase58(node, network).derive(index);
-    return t.toBase58();
-  }
-
-  static derivePathFromNode(node, path, network) {
-    return fromBase58(node, network)
-      .derivePath(path)
-      .toBase58();
   }
 
   /**
@@ -99,18 +75,36 @@ export default class Coin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      derivationPath: this.derivationPath,
+      path: this.path,
       address: this.address,
       objectId: this.objectId,
       balance: this.balance ? this.balance.toString() : undefined,
+      addressType: this.addressType,
+    };
+  }
+
+  toDerivationJson() {
+    const {
+      symbol, type, path, address, addressType,
+    } = this;
+    return {
+      symbol,
+      type,
+      path,
+      address,
+      addressType,
+      addresses: this.getAddressesWithoutPrivateKey(),
     };
   }
 
   static fromJSON(json) {
     const {
-      symbol, type, derivationPath, objectId,
+      symbol, type, path, addressType, address, addresses, objectId,
     } = json;
-    const instance = new Coin(symbol, type, derivationPath);
+    const instance = new Coin(symbol, type, path);
+    instance.addressType = addressType;
+    instance.address = address;
+    instance.addresses = addresses;
     instance.objectId = objectId;
     return instance;
   }
@@ -156,11 +150,72 @@ export default class Coin {
     return this.metadata.icon;
   }
 
-  get queryKey() {
-    return this.metadata.queryKey;
-  }
-
   get defaultName() {
     return this.metadata.defaultName;
+  }
+
+  setupWithDerivation = (derivation) => {
+    const { addressType } = derivation;
+    const { address, privateKey, path } = derivation.addresses[addressType];
+    this.addressType = addressType;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+  }
+
+  /**
+   * Save private key, type for segwit private key is Mainnet/segwit or Testnet/segwit
+   * @param {*} walletId
+   */
+  savePrivateKey = async (walletId) => {
+    const { symbol, type } = this;
+    try {
+      let newType = type + privateKeySuffix.legacy;
+      await storage.setPrivateKey(walletId, symbol, newType, this.addresses.legacy.privateKey);
+      newType = this.type + privateKeySuffix.segwit;
+      await storage.setPrivateKey(walletId, symbol, newType, this.addresses.segwit.privateKey);
+    } catch (ex) {
+      console.log('savePrivateKey, error', ex.message);
+    }
+  }
+
+  /**
+   * Restore private key, type for segwit private key is Mainnet/segwit or Testnet/segwit
+   * @param {*} walletId
+   */
+  restorePrivateKey = async (walletId) => {
+    try {
+      const { symbol, type } = this;
+      let newType = type + privateKeySuffix.legacy;
+      const legacyPrivateKey = await storage.getPrivateKey(walletId, symbol, newType);
+      this.addresses.legacy.privateKey = legacyPrivateKey;
+      newType = type + privateKeySuffix.segwit;
+      const segwitPrivateKey = await storage.getPrivateKey(walletId, symbol, newType);
+      this.addresses.segwit.privateKey = segwitPrivateKey;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  getAddressesWithoutPrivateKey = () => {
+    const newAddresses = {};
+    const keys = Object.keys(this.addresses);
+    _.each(keys, (key) => {
+      const { path, address } = this.addresses[key];
+      newAddresses[key] = { path, address };
+    });
+    return newAddresses;
+  };
+
+  setAddressType = (addressType) => {
+    if (!(this.addresses && this.addresses[addressType])) {
+      console.warn(`the address of ${addressType} is not exist!`);
+      return;
+    }
+    const { address, path, privateKey } = this.addresses[addressType];
+    this.addressType = addressType;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
   }
 }

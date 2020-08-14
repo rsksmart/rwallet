@@ -38,6 +38,17 @@ const createDappWarningConfirmation = (title, message, confirmationCallback, con
   confirmationCancelCallback,
 });
 
+const createBTCAddressTypeConfirmation = (confirmationCallback, confirmationCancelCallback) => ({
+  id: Date.now(),
+  type: 'info',
+  title: 'modal.chooseBTCAddressType.title',
+  message: 'modal.chooseBTCAddressType.body',
+  confirmText: 'modal.chooseBTCAddressType.legacy',
+  cancelText: 'modal.chooseBTCAddressType.segwit',
+  confirmationCallback,
+  confirmationCancelCallback,
+});
+
 export {
-  createInfoConfirmation, createErrorConfirmation, createNewFeatureConfirmation, createDappWarningConfirmation,
+  createInfoConfirmation, createErrorConfirmation, createNewFeatureConfirmation, createDappWarningConfirmation, createBTCAddressTypeConfirmation,
 };

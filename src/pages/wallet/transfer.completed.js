@@ -91,14 +91,13 @@ export default class TransferCompleted extends Component {
 
   constructor(props) {
     super(props);
-    this.onBackPress = this.onBackPress.bind(this);
     this.onExplorePress = this.onExplorePress.bind(this);
   }
 
-  onBackPress() {
+  onBackPress = () => {
     const { navigation } = this.props;
-    const statckActions = StackActions.popToTop();
-    navigation.dispatch(statckActions);
+    const stackActions = StackActions.pop({ n: 2 });
+    navigation.dispatch(stackActions);
     navigation.navigate('Home');
   }
 
