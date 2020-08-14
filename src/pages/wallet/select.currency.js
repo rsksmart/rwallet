@@ -44,7 +44,7 @@ class WalletSelectCurrency extends Component {
       const { navigation } = this.props;
       this.state = {
         isLoading: false,
-        isCanSubmit: true,
+        canSubmit: true,
       };
       this.phrase = navigation.state.params ? navigation.state.params.phrases : '';
       this.isImportWallet = !!this.phrase;
@@ -134,7 +134,7 @@ class WalletSelectCurrency extends Component {
       const selectedMainnetItems = _.filter(this.mainnet, { selected: true });
       const selectedTestnetItems = _.filter(this.testnet, { selected: true });
       const selectedCount = selectedMainnetItems.length + selectedTestnetItems.length;
-      this.setState({ isCanSubmit: selectedCount !== 0 });
+      this.setState({ canSubmit: selectedCount !== 0 });
     }
 
     requestCreateWallet(phrase, coins) {
@@ -178,11 +178,11 @@ class WalletSelectCurrency extends Component {
     )
 
     render() {
-      const { isLoading, isCanSubmit } = this.state;
+      const { isLoading, canSubmit } = this.state;
       const { navigation } = this.props;
       const bottomBtnText = this.isImportWallet ? 'button.IMPORT' : 'button.create';
 
-      const bottomButton = (<Button text={bottomBtnText} onPress={this.onCreateButtonPress} disabled={!isCanSubmit} />);
+      const bottomButton = (<Button text={bottomBtnText} onPress={this.onCreateButtonPress} disabled={!canSubmit} />);
 
       return (
         <BasePageGereral
