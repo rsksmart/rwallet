@@ -318,7 +318,8 @@
     "nickname": "Nickname",
     "pending": "Pending",
     "done": "Done",
-    "share": "SHARE"
+    "share": "SHARE",
+    "update": "Update"
   },
   "txState": {
     "Sent": "Sent",

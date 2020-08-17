@@ -16,6 +16,7 @@ const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 const USE_TRANSACTION_FALLBACK_ADDRESSES = 'useTransactionFallbackAddress';
 const STORAGE_VERSION = 'storageVersion';
+const LATEST_VERSION = 'latestVersion';
 
 class RNStorage {
   constructor() {
@@ -367,6 +368,13 @@ class RNStorage {
   }
 
   getStorageVersion = async () => this.load({ key: STORAGE_VERSION })
+
+  getLatestVersion = async () => {
+    const latestVersion = await this.load({ key: LATEST_VERSION });
+    return latestVersion;
+  }
+
+  setLatestVersion = async (version) => this.save(LATEST_VERSION, version)
 }
 
 export default new RNStorage();

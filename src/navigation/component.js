@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Platform, Modal, StyleSheet,
+  View, Platform, StyleSheet, Modal,
 } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -99,16 +99,16 @@ class RootComponent extends Component {
   }
 
   onStorageRead = (props) => {
-    const { login } = props;
+    const { login, getServerInfo } = props;
+    getServerInfo();
     login();
   }
 
   onUserLogin = (props) => {
     const {
-      getServerInfo, updateUser, initLiveQueryPrice, initLiveQueryTokens, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
+      updateUser, initLiveQueryPrice, initLiveQueryTokens, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
     } = props;
     const tokens = walletManager.getTokens();
-    getServerInfo();
     updateUser();
     initLiveQueryPrice();
     initLiveQueryTokens(tokens);
@@ -123,6 +123,8 @@ class RootComponent extends Component {
       isShowConfirmation, confirmation, removeConfirmation, confirmationCallback, confirmationCancelCallback,
       isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
       isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification, fingerprintPasscodeDisabled,
+      isShowUpdateModal, hideUpdateModal,
+      clientVersionInfo,
     } = this.props;
 
     const isShowAuthVerifyModal = showPasscode || isShowFingerprintModal;
@@ -131,7 +133,7 @@ class RootComponent extends Component {
       <View style={[flex.flex1]}>
         <Root>
           <SwitchNavi uriPrefix={uriPrefix} />
-          {false && <UpdateModal showUpdate mandatory={false} />}
+          {isShowUpdateModal && <UpdateModal clientVersionInfo={clientVersionInfo} onUpdateModalClose={hideUpdateModal} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} notificationCloseCallback={notificationCloseCallback} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
 
@@ -202,6 +204,9 @@ RootComponent.propTypes = {
   resetInAppNotification: PropTypes.func.isRequired,
   processNotification: PropTypes.func.isRequired,
   fingerprintPasscodeDisabled: PropTypes.bool,
+  isShowUpdateModal: PropTypes.bool.isRequired,
+  hideUpdateModal: PropTypes.func.isRequired,
+  clientVersionInfo: PropTypes.shape({}),
 };
 
 RootComponent.defaultProps = {
@@ -219,6 +224,7 @@ RootComponent.defaultProps = {
   fingerprintUsePasscode: null,
   inAppNotification: undefined,
   fingerprintPasscodeDisabled: false,
+  clientVersionInfo: undefined,
 };
 
 export default RootComponent;

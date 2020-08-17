@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {
   call, all, takeEvery, put, select, take,
 } from 'redux-saga/effects';
@@ -371,7 +372,10 @@ function* initFcmRequest() {
 function* getServerInfoRequest() {
   // 2. Test server connection and get Server info
   try {
-    const response = yield call(ParseHelper.getServerInfo);
+    const state = yield select();
+    const osType = Platform.OS === 'ios' ? 'iOS' : 'Android';
+    const language = state.App.get('language');
+    const response = yield call(ParseHelper.getServerInfo, osType, language);
 
     // Sets state in reducer for success
     yield put({
@@ -445,6 +449,19 @@ function* receiveNotificationRequest(action) {
   return null;
 }
 
+function* showUpdateModalRequest() {
+  yield put(actions.setUpdateModal(true));
+}
+
+function* hideUpdateModalRequest() {
+  const state = yield select();
+  const clientVersionInfo = state.App.get('clientVersionInfo');
+  const latestClientVersion = clientVersionInfo && clientVersionInfo.latestClientVersion;
+  // Record the latest version number to prevent multiple prompts
+  yield call(storage.setLatestVersion, latestClientVersion);
+  yield put(actions.setUpdateModal(false));
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -471,5 +488,8 @@ export default function* () {
     takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
+
+    takeEvery(actions.SHOW_UPDATE_MODAL, showUpdateModalRequest),
+    takeEvery(actions.HIDE_UPDATE_MODAL, hideUpdateModalRequest),
   ]);
 }

@@ -71,6 +71,10 @@ const actions = {
   SET_PAGE: 'SET_PAGE',
   RESET_PAGE: 'RESET_PAGE',
 
+  SHOW_UPDATE_MODAL: 'SHOW_UPDATE_MODAL',
+  HIDE_UPDATE_MODAL: 'HIDE_UPDATE_MODAL',
+  SET_UPDATE_MODAL: 'SET_UPDATE_MODAL',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -228,6 +232,16 @@ const actions = {
   }),
   resetPage: () => ({
     type: actions.RESET_PAGE,
+  }),
+  showUpdateModal: () => ({
+    type: actions.SHOW_UPDATE_MODAL,
+  }),
+  hideUpdateModal: () => ({
+    type: actions.HIDE_UPDATE_MODAL,
+  }),
+  setUpdateModal: (visible) => ({
+    type: actions.SET_UPDATE_MODAL,
+    visible,
   }),
 };
 

@@ -35,6 +35,8 @@ const mapStateToProps = (state) => ({
 
   inAppNotification: state.App.get('inAppNotification'),
   isShowInAppNotification: state.App.get('isShowInAppNotification'),
+  isShowUpdateModal: state.App.get('isShowUpdateModal'),
+  clientVersionInfo: state.App.get('clientVersionInfo'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -62,6 +64,8 @@ const mapDispatchToProps = (dispatch) => ({
 
   resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
   processNotification: (notification) => dispatch(appActions.processNotification(notification)),
+
+  hideUpdateModal: () => dispatch(appActions.hideUpdateModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);
