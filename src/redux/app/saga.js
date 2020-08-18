@@ -67,6 +67,7 @@ function* initFromStorageRequest() {
       yield call(storage.setStorageVersion, config.storageVersion);
     }
 
+    // Restore update version info from storage
     const updateVersionInfo = yield call(storage.getUpdateVersionInfo);
     if (updateVersionInfo) {
       yield put(actions.setUpdateVersionInfo(updateVersionInfo));

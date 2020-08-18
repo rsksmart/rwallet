@@ -50,8 +50,8 @@ const initState = new Map({
   advertisements: undefined,
   recentDapps: undefined,
   page: undefined,
-  isShowUpdateModal: false,
-  isShowedUpdateModal: false,
+  isShowUpdateModal: false, // show update modal
+  isShowedUpdateModal: false, //  This time the app launch has showed update modal
 });
 
 export default function appReducer(state = initState, action) {
