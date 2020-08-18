@@ -36,7 +36,8 @@ const mapStateToProps = (state) => ({
   inAppNotification: state.App.get('inAppNotification'),
   isShowInAppNotification: state.App.get('isShowInAppNotification'),
   isShowUpdateModal: state.App.get('isShowUpdateModal'),
-  clientVersionInfo: state.App.get('clientVersionInfo'),
+
+  updateVersionInfo: state.App.get('updateVersionInfo'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -67,6 +67,11 @@ function* initFromStorageRequest() {
       yield call(storage.setStorageVersion, config.storageVersion);
     }
 
+    const updateVersionInfo = yield call(storage.getUpdateVersionInfo);
+    if (updateVersionInfo) {
+      yield put(actions.setUpdateVersionInfo(updateVersionInfo));
+    }
+
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
@@ -373,14 +378,25 @@ function* getServerInfoRequest() {
   // 2. Test server connection and get Server info
   try {
     const state = yield select();
-    const osType = Platform.OS === 'ios' ? 'iOS' : 'Android';
     const language = state.App.get('language');
-    const response = yield call(ParseHelper.getServerInfo, osType, language);
+    const serverInfo = yield call(ParseHelper.getServerInfo, Platform.OS, language);
+    const serverVersion = serverInfo.version;
+    const updateVersionInfo = {
+      latestClientVersion: serverInfo.latestClientVersion,
+      url: serverInfo.url,
+      title: serverInfo.title,
+      body: serverInfo.body,
+      forceUpdate: serverInfo.forceUpdate,
+    };
+    yield call(storage.setUpdateVersionInfo, updateVersionInfo);
 
     // Sets state in reducer for success
     yield put({
       type: actions.GET_SERVER_INFO_RESULT,
-      value: response,
+      value: {
+        serverVersion,
+        updateVersionInfo,
+      },
     });
   } catch (err) {
     console.log(err.message);
@@ -454,11 +470,6 @@ function* showUpdateModalRequest() {
 }
 
 function* hideUpdateModalRequest() {
-  const state = yield select();
-  const clientVersionInfo = state.App.get('clientVersionInfo');
-  const latestClientVersion = clientVersionInfo && clientVersionInfo.latestClientVersion;
-  // Record the latest version number to prevent multiple prompts
-  yield call(storage.setLatestVersion, latestClientVersion);
   yield put(actions.setUpdateModal(false));
 }
 

@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
 
 class UpdateModal extends Component {
   onUpdateButtonPressed = () => {
-    const { clientVersionInfo } = this.props;
-    const { url } = clientVersionInfo;
+    const { updateVersionInfo } = this.props;
+    const { url } = updateVersionInfo;
     Linking.canOpenURL(url)
       .then((supported) => {
         if (supported) {
@@ -50,8 +50,8 @@ class UpdateModal extends Component {
   }
 
   renderButtons = () => {
-    const { clientVersionInfo } = this.props;
-    const { forceUpdate } = clientVersionInfo;
+    const { updateVersionInfo } = this.props;
+    const { forceUpdate } = updateVersionInfo;
     let buttons = null;
     if (forceUpdate) {
       buttons = (
@@ -75,8 +75,8 @@ class UpdateModal extends Component {
   }
 
   render() {
-    const { clientVersionInfo } = this.props;
-    const { title, body } = clientVersionInfo;
+    const { updateVersionInfo } = this.props;
+    const { title, body } = updateVersionInfo;
     return (
       <Modal transparent onRequestClose={() => {}}>
         <View style={notificationStyles.backgroundBoard}>
@@ -96,7 +96,7 @@ class UpdateModal extends Component {
 
 UpdateModal.propTypes = {
   onUpdateModalClose: PropTypes.func,
-  clientVersionInfo: PropTypes.shape({
+  updateVersionInfo: PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.string,
     url: PropTypes.string,

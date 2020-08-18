@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty, debounce } from 'lodash';
 import PropTypes from 'prop-types';
+import VersionNumber from 'react-native-version-number';
 import List from './list';
 import AddIndex from './add.index';
 import appActions from '../../../redux/app/actions';
@@ -10,7 +11,6 @@ import config from '../../../../config';
 import fcmHelper from '../../../common/fcmHelper';
 import { createErrorInAppNotification } from '../../../components/common/inapp.notification/notification';
 import { strings } from '../../../common/i18n';
-import storage from '../../../common/storage';
 
 class Dashboard extends Component {
     static navigationOptions = () => ({
@@ -42,7 +42,7 @@ class Dashboard extends Component {
       );
       this.showLoginError(this.props);
       if (isEmpty(wallets)) {
-        this.showUpdateModal();
+        this.showUpdateModal(this.props);
       }
     }
 
@@ -51,7 +51,7 @@ class Dashboard extends Component {
       const { appLock: lastAppLock } = this.props;
       // If app is unlocked by user, show update modal
       if (!appLock && lastAppLock) {
-        this.showUpdateModal();
+        this.showUpdateModal(nextProps);
         return;
       }
       if (!appLock) {
@@ -66,11 +66,15 @@ class Dashboard extends Component {
       timer.clearTimeout(this);
     }
 
-    showUpdateModal = async () => {
-      const { showUpdateModal, clientVersionInfo } = this.props;
-      const latestVersion = await storage.getLatestVersion();
-      const latestClientVersion = clientVersionInfo && clientVersionInfo.latestClientVersion;
-      if (latestClientVersion && latestClientVersion !== latestVersion) {
+    /**
+     * showUpdateModal
+     * If update version is different from current version, show update modal
+     */
+    showUpdateModal = async (props) => {
+      const { showUpdateModal, updateVersionInfo, isShowedUpdateModal } = props;
+      const latestClientVersion = updateVersionInfo && updateVersionInfo.latestClientVersion;
+      const version = VersionNumber.appVersion;
+      if (!isShowedUpdateModal && latestClientVersion && latestClientVersion !== version) {
         showUpdateModal();
       }
     }
@@ -146,8 +150,7 @@ Dashboard.propTypes = {
   resetFcmNavParams: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   page: PropTypes.string,
-  showUpdateModal: PropTypes.func.isRequired,
-  clientVersionInfo: PropTypes.shape({
+  updateVersionInfo: PropTypes.shape({
     latestClientVersion: PropTypes.string,
   }),
 };
@@ -156,7 +159,7 @@ Dashboard.defaultProps = {
   wallets: undefined,
   fcmNavParams: undefined,
   page: undefined,
-  clientVersionInfo: undefined,
+  updateVersionInfo: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -167,7 +170,8 @@ const mapStateToProps = (state) => ({
   isLoginError: state.App.get('isLoginError'),
   language: state.App.get('language'),
   page: state.App.get('page'),
-  clientVersionInfo: state.App.get('clientVersionInfo'),
+  updateVersionInfo: state.App.get('updateVersionInfo'),
+  isShowedUpdateModal: state.App.get('isShowedUpdateModal'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

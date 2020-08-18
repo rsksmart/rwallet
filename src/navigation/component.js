@@ -124,7 +124,7 @@ class RootComponent extends Component {
       isShowFingerprintModal, hideFingerprintModal, fingerprintCallback, fingerprintFallback, fingerprintUsePasscode,
       isShowInAppNotification, inAppNotification, resetInAppNotification, processNotification, fingerprintPasscodeDisabled,
       isShowUpdateModal, hideUpdateModal,
-      clientVersionInfo,
+      updateVersionInfo,
     } = this.props;
 
     const isShowAuthVerifyModal = showPasscode || isShowFingerprintModal;
@@ -133,7 +133,7 @@ class RootComponent extends Component {
       <View style={[flex.flex1]}>
         <Root>
           <SwitchNavi uriPrefix={uriPrefix} />
-          {isShowUpdateModal && <UpdateModal clientVersionInfo={clientVersionInfo} onUpdateModalClose={hideUpdateModal} />}
+          {isShowUpdateModal && <UpdateModal updateVersionInfo={updateVersionInfo} onUpdateModalClose={hideUpdateModal} />}
           <Notifications showNotification={showNotification} notification={notification} removeNotification={removeNotification} notificationCloseCallback={notificationCloseCallback} />
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
 
@@ -206,7 +206,7 @@ RootComponent.propTypes = {
   fingerprintPasscodeDisabled: PropTypes.bool,
   isShowUpdateModal: PropTypes.bool.isRequired,
   hideUpdateModal: PropTypes.func.isRequired,
-  clientVersionInfo: PropTypes.shape({}),
+  updateVersionInfo: PropTypes.shape({}),
 };
 
 RootComponent.defaultProps = {
@@ -224,7 +224,7 @@ RootComponent.defaultProps = {
   fingerprintUsePasscode: null,
   inAppNotification: undefined,
   fingerprintPasscodeDisabled: false,
-  clientVersionInfo: undefined,
+  updateVersionInfo: undefined,
 };
 
 export default RootComponent;

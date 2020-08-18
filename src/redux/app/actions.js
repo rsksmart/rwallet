@@ -75,6 +75,8 @@ const actions = {
   HIDE_UPDATE_MODAL: 'HIDE_UPDATE_MODAL',
   SET_UPDATE_MODAL: 'SET_UPDATE_MODAL',
 
+  SET_UPDATE_VERSION_INFO: 'SET_UPDATE_VERSION_INFO',
+
   // Functions definition
   initializeFromStorage: () => ({
     type: actions.INIT_FROM_STORAGE,
@@ -242,6 +244,10 @@ const actions = {
   setUpdateModal: (visible) => ({
     type: actions.SET_UPDATE_MODAL,
     visible,
+  }),
+  setUpdateVersionInfo: (updateVersionInfo) => ({
+    type: actions.SET_UPDATE_VERSION_INFO,
+    updateVersionInfo,
   }),
 };
 

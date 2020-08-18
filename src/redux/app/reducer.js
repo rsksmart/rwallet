@@ -16,7 +16,7 @@ const initState = new Map({
 
   isPageLoading: false,
   serverVersion: undefined,
-  clientVersionInfo: undefined,
+  updateVersionInfo: undefined,
 
   error: undefined,
   transactions: undefined,
@@ -51,6 +51,7 @@ const initState = new Map({
   recentDapps: undefined,
   page: undefined,
   isShowUpdateModal: false,
+  isShowedUpdateModal: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -61,20 +62,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_SERVER_INFO_RESULT:
     {
-      if (!action.value) {
-        return state;
-      }
-      const serverInfo = action.value;
-      const serverVersion = action.value.version;
-      const clientVersionInfo = {
-        latestClientVersion: serverInfo.latestClientVersion,
-        url: serverInfo.url,
-        title: serverInfo.title,
-        body: serverInfo.body,
-        forceUpdate: serverInfo.forceUpdate,
-      };
+      const { serverVersion, updateVersionInfo } = action.value;
       return state.set('serverVersion', serverVersion)
-        .set('clientVersionInfo', clientVersionInfo);
+        .set('updateVersionInfo', updateVersionInfo);
     }
     case actions.CREATE_RAW_TRANSATION_RESULT:
     {
@@ -189,8 +179,15 @@ export default function appReducer(state = initState, action) {
       return state.set('page', action.page);
     case actions.RESET_PAGE:
       return state.set('page', null);
-    case actions.SET_UPDATE_MODAL:
-      return state.set('isShowUpdateModal', action.visible);
+    case actions.SET_UPDATE_MODAL: {
+      let newState = state.set('isShowUpdateModal', action.visible);
+      if (action.visible) {
+        newState = newState.set('isShowedUpdateModal', true);
+      }
+      return newState;
+    }
+    case actions.SET_UPDATE_VERSION_INFO:
+      return state.set('updateVersionInfo', action.updateVersionInfo);
     default:
       return state;
   }
