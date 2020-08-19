@@ -321,7 +321,8 @@
     "nickname": "Apodo",
     "pending": "Pendiente",
     "done": "Hecho",
-    "share": "COMPARTIR"
+    "share": "COMPARTIR",
+    "update": "Actualizar"
   },
   "txState": {
     "Sent": "Enviado",

@@ -199,8 +199,8 @@ class ParseHelper {
     return Parse.Cloud.run('sendSignedTransaction', { name, hash, type });
   }
 
-  static getServerInfo() {
-    return Parse.Cloud.run('getServerInfo');
+  static getServerInfo(osType, language) {
+    return Parse.Cloud.run('getServerInfo', { osType, language });
   }
 
   /**

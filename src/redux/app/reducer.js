@@ -16,6 +16,8 @@ const initState = new Map({
 
   isPageLoading: false,
   serverVersion: undefined,
+  updateVersionInfo: undefined,
+
   error: undefined,
   transactions: undefined,
   showNotification: false,
@@ -48,6 +50,8 @@ const initState = new Map({
   advertisements: undefined,
   recentDapps: undefined,
   page: undefined,
+  isShowUpdateModal: false, // show update modal
+  isShowedUpdateModal: false, //  This time the app launch has showed update modal
 });
 
 export default function appReducer(state = initState, action) {
@@ -58,8 +62,9 @@ export default function appReducer(state = initState, action) {
     }
     case actions.GET_SERVER_INFO_RESULT:
     {
-      const serverVersion = action.value && action.value.version;
-      return state.set('serverVersion', serverVersion);
+      const { serverVersion, updateVersionInfo } = action.value;
+      return state.set('serverVersion', serverVersion)
+        .set('updateVersionInfo', updateVersionInfo);
     }
     case actions.CREATE_RAW_TRANSATION_RESULT:
     {
@@ -174,6 +179,15 @@ export default function appReducer(state = initState, action) {
       return state.set('page', action.page);
     case actions.RESET_PAGE:
       return state.set('page', null);
+    case actions.SET_UPDATE_MODAL: {
+      let newState = state.set('isShowUpdateModal', action.visible);
+      if (action.visible) {
+        newState = newState.set('isShowedUpdateModal', true);
+      }
+      return newState;
+    }
+    case actions.SET_UPDATE_VERSION_INFO:
+      return state.set('updateVersionInfo', action.updateVersionInfo);
     default:
       return state;
   }

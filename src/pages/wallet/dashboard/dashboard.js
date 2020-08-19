@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty, debounce } from 'lodash';
-
 import PropTypes from 'prop-types';
+import VersionNumber from 'react-native-version-number';
 import List from './list';
 import AddIndex from './add.index';
 import appActions from '../../../redux/app/actions';
@@ -32,7 +32,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-      const { navigation } = this.props;
+      const { navigation, wallets } = this.props;
       this.willFocusSubscription = navigation.addListener('willFocus', this.doAuthVerify);
       this.didBlurSubscription = navigation.addListener(
         'didBlur',
@@ -41,10 +41,19 @@ class Dashboard extends Component {
         },
       );
       this.showLoginError(this.props);
+      if (isEmpty(wallets)) {
+        this.showUpdateModal(this.props);
+      }
     }
 
     componentWillReceiveProps(nextProps) {
       const { fcmNavParams, appLock } = nextProps;
+      const { appLock: lastAppLock } = this.props;
+      // If app is unlocked by user, show update modal
+      if (!appLock && lastAppLock) {
+        this.showUpdateModal(nextProps);
+        return;
+      }
       if (!appLock) {
         this.callFcmNavigate(fcmNavParams);
       }
@@ -55,6 +64,19 @@ class Dashboard extends Component {
       this.willFocusSubscription.remove();
       this.didBlurSubscription.remove();
       timer.clearTimeout(this);
+    }
+
+    /**
+     * showUpdateModal
+     * If update version is different from current version, show update modal
+     */
+    showUpdateModal = async (props) => {
+      const { showUpdateModal, updateVersionInfo, isShowedUpdateModal } = props;
+      const latestClientVersion = updateVersionInfo && updateVersionInfo.latestClientVersion;
+      const version = VersionNumber.appVersion;
+      if (!isShowedUpdateModal && latestClientVersion && latestClientVersion !== version) {
+        showUpdateModal();
+      }
     }
 
     showLoginError = (props) => {
@@ -128,12 +150,16 @@ Dashboard.propTypes = {
   resetFcmNavParams: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   page: PropTypes.string,
+  updateVersionInfo: PropTypes.shape({
+    latestClientVersion: PropTypes.string,
+  }),
 };
 
 Dashboard.defaultProps = {
   wallets: undefined,
   fcmNavParams: undefined,
   page: undefined,
+  updateVersionInfo: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -144,6 +170,8 @@ const mapStateToProps = (state) => ({
   isLoginError: state.App.get('isLoginError'),
   language: state.App.get('language'),
   page: state.App.get('page'),
+  updateVersionInfo: state.App.get('updateVersionInfo'),
+  isShowedUpdateModal: state.App.get('isShowedUpdateModal'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -158,6 +186,7 @@ const mapDispatchToProps = (dispatch) => ({
   callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
   showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
   resetLoginError: () => dispatch(appActions.resetLoginError()),
+  showUpdateModal: () => dispatch(appActions.showUpdateModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

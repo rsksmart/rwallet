@@ -319,7 +319,8 @@
     "nickname": "Apelido",
     "pending": "Pendente",
     "done": "Feito",
-    "share": "COMPARTILHAR"
+    "share": "COMPARTILHAR",
+    "update": "Atualizar"
   },
   "txState": {
     "Sent": "Enviei",
