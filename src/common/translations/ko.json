@@ -336,7 +336,8 @@
     "nickname": "별명",
     "pending": "처리 중",
     "done": "완료",
-    "share": "공유"
+    "share": "공유",
+    "update": "최신 정보"
   },
   "txState": {
     "Sent": "전송 완료",

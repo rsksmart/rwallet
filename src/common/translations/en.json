@@ -331,7 +331,8 @@
     "pending": "Pending",
     "done": "Done",
     "share": "SHARE",
-    "check": "CHECK"
+    "check": "CHECK",
+    "update": "Update"
   },
   "txState": {
     "Sent": "Sent",

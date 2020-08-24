@@ -85,21 +85,26 @@ class WalletList extends Component {
   componentDidMount() {
     const { navigation } = this.props;
     this.willFocusSubscription = navigation.addListener('willFocus', () => {
-      const { appLock } = this.props;
-      if (!appLock) {
+      const { appLock, isShowUpdateModal } = this.props;
+      // When the unlock UI is closed or the upgrade UI is closed
+      // the rns function prompt is triggered
+      if (!appLock && !isShowUpdateModal) {
         this.showRnsNewFeatureConfirmation();
       }
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { appLock: lastAppLock } = this.props;
     const {
-      updateTimestamp, currency, navigation, walletManager, appLock,
+      updateTimestamp: lastUpdateTimeStamp,
+      isShowUpdateModal: lastIsShowUpdateModal,
+      appLock: lastAppLock,
+    } = this.props;
+    const {
+      updateTimestamp, currency, navigation, walletManager, appLock, isShowUpdateModal,
     } = nextProps;
 
     const { wallets } = walletManager;
-    const { updateTimestamp: lastUpdateTimeStamp } = this.props;
 
     const newState = this.state;
 
@@ -110,9 +115,12 @@ class WalletList extends Component {
       newState.listData = WalletList.createListData(wallets, newState.currencySymbol, navigation);
     }
 
-    // If app is unlocked by user, show RnsNewFeatureConfirmation
-    if (!appLock && lastAppLock) {
-      this.showRnsNewFeatureConfirmation();
+    // When the unlock UI is closed or the upgrade UI is closed
+    // the rns function prompt is triggered
+    if (!isShowUpdateModal) {
+      if (lastIsShowUpdateModal || (!appLock && lastAppLock)) {
+        this.showRnsNewFeatureConfirmation();
+      }
     }
 
     this.setState(newState);
@@ -207,6 +215,7 @@ WalletList.propTypes = {
   resetSwap: PropTypes.func.isRequired,
   addConfirmation: PropTypes.func.isRequired,
   appLock: PropTypes.bool.isRequired,
+  isShowUpdateModal: PropTypes.bool.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -218,6 +227,7 @@ const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
   appLock: state.App.get('appLock'),
+  isShowUpdateModal: state.App.get('isShowUpdateModal'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
 });
 

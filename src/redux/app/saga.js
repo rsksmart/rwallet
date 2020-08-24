@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {
   call, all, takeEvery, put, select, take,
 } from 'redux-saga/effects';
@@ -69,6 +70,11 @@ function* initFromStorageRequest() {
     const isReadOnlyWalletIntroShowed = yield call(storage.getReadOnlyWalletIntroShowed);
     if (isReadOnlyWalletIntroShowed) {
       yield put(actions.setReadOnlyWalletIntroShowed());
+    }
+    // Restore update version info from storage
+    const updateVersionInfo = yield call(storage.getUpdateVersionInfo);
+    if (updateVersionInfo) {
+      yield put(actions.setUpdateVersionInfo(updateVersionInfo));
     }
 
     // 1. Deserialize Settings from permenate storage
@@ -376,12 +382,26 @@ function* initFcmRequest() {
 function* getServerInfoRequest() {
   // 2. Test server connection and get Server info
   try {
-    const response = yield call(ParseHelper.getServerInfo);
+    const state = yield select();
+    const language = state.App.get('language');
+    const serverInfo = yield call(ParseHelper.getServerInfo, Platform.OS, language);
+    const serverVersion = serverInfo.version;
+    const updateVersionInfo = {
+      latestClientVersion: serverInfo.latestClientVersion,
+      url: serverInfo.url,
+      title: serverInfo.title,
+      body: serverInfo.body,
+      forceUpdate: serverInfo.forceUpdate,
+    };
+    yield call(storage.setUpdateVersionInfo, updateVersionInfo);
 
     // Sets state in reducer for success
     yield put({
       type: actions.GET_SERVER_INFO_RESULT,
-      value: response,
+      value: {
+        serverVersion,
+        updateVersionInfo,
+      },
     });
   } catch (err) {
     console.log(err.message);
@@ -455,6 +475,14 @@ function* showReadOnlyWalletIntroRequest() {
   yield put(actions.setReadOnlyWalletIntroShowed());
 }
 
+function* showUpdateModalRequest() {
+  yield put(actions.setUpdateModal(true));
+}
+
+function* hideUpdateModalRequest() {
+  yield put(actions.setUpdateModal(false));
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -483,5 +511,8 @@ export default function* () {
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
 
     takeEvery(actions.SHOW_READ_ONLY_WALLET_INTRO, showReadOnlyWalletIntroRequest),
+
+    takeEvery(actions.SHOW_UPDATE_MODAL, showUpdateModalRequest),
+    takeEvery(actions.HIDE_UPDATE_MODAL, hideUpdateModalRequest),
   ]);
 }

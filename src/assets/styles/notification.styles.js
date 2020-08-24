@@ -19,14 +19,14 @@ const styles = StyleSheet.create({
     borderBottomColor: color.gainsboro,
     width: '100%',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 15,
   },
   button: {
     color: color.app.theme,
     textAlign: 'center',
     fontWeight: '900',
     fontSize: 16,
-    marginBottom: 15,
+    marginTop: 12,
+    marginBottom: 11,
   },
   errorButtonText: {
     color: color.warningText,

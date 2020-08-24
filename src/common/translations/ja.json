@@ -330,7 +330,8 @@
     "nickname": "ニックネーム",
     "pending": "保留中",
     "done": "完了です",
-    "share": "シェア"
+    "share": "シェア",
+    "update": "更新"
   },
   "txState": {
     "Sent": "送金されました",
