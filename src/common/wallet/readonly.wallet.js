@@ -20,7 +20,7 @@ export default class ReadOnlyWallet {
   static create({
     id, name, chain, type, address, coins,
   }) {
-    const wallet = new ReadOnlyWallet(id, name, chain, type, address, address);
+    const wallet = new ReadOnlyWallet(id, name, chain, type, address);
     wallet.createCoins(coins);
     return wallet;
   }

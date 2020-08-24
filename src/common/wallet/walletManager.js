@@ -99,12 +99,7 @@ class WalletManager {
       // Re-create Wallet objects based on result.wallets JSON
       const promises = [];
       _.each(result.wallets, (wallet) => {
-        let promise = wallet.walletType === definitions.WalletType.readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
-        if (wallet.address) {
-          promise = ReadOnlyWallet.fromJSON(wallet);
-        } else {
-          promise = Wallet.fromJSON(wallet);
-        }
+        const promise = wallet.walletType === definitions.WalletType.readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
         promises.push(promise);
       });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
@@ -315,17 +310,6 @@ class WalletManager {
     await this.serialize();
 
     return wallet;
-  }
-
-  findToken = (symbol, type, address) => {
-    for (let i = 0; i < this.wallets.length; i += 1) {
-      const { coins } = this.wallets[i];
-      const coin = _.find(coins, { address, type, symbol });
-      if (coin) {
-        return coin;
-      }
-    }
-    return null;
   }
 }
 
