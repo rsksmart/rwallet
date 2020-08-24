@@ -425,8 +425,11 @@ function* createReadOnlyWalletRequest(action) {
   } = action.payload;
   try {
     const state = yield select();
+    const currency = state.App.get('currency');
+    const prices = state.Price.get('prices');
     const walletManager = state.Wallet.get('walletManager');
     yield call(walletManager.createReadOnlyWallet, chain, type, address, coins);
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
     const tokens = walletManager.getTokens();
