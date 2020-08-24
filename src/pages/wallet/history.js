@@ -344,6 +344,7 @@ class History extends Component {
 
     const { navigation } = props;
     this.coin = navigation.state.params.coin;
+    this.walletType = navigation.state.params.walletType;
 
     this.state = {
       isRefreshing: false,
@@ -601,8 +602,9 @@ class History extends Component {
             }
             <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
-                style={styles.ButtonView}
+                style={[styles.ButtonView, { opacity: this.walletType !== definitions.WalletType.readonly ? 1 : 0.5 }]}
                 onPress={this.onSendButtonClick}
+                disabled={this.walletType === definitions.WalletType.readonly}
               >
                 <Image source={send} />
                 <Loc style={[styles.sendText]} text="button.Send" />
@@ -619,7 +621,7 @@ class History extends Component {
                 <View style={{ flexDirection: 'row' }}>
                   <View style={styles.spliteLine} />
                   <TouchableOpacity
-                    style={[styles.ButtonView]}
+                    style={[styles.ButtonView, { opacity: this.walletType !== definitions.WalletType.readonly ? 1 : 0.5 }]}
                     onPress={this.onRnsButtonClick}
                   >
                     <Image source={rnsName} />

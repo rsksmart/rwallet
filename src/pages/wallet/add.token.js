@@ -119,7 +119,6 @@ class AddToken extends Component {
   constructor(props) {
     super(props);
     this.wallet = props.navigation.state.params.wallet;
-    this.onAddCustomTokenPressed = this.onAddCustomTokenPressed.bind(this);
     const listData = this.createListData();
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.state = { listData, tokenCount: listData.length, selectedTokenCount };
@@ -160,7 +159,7 @@ class AddToken extends Component {
     resetWalletsUpdated();
   }
 
-  onAddCustomTokenPressed() {
+  onAddCustomTokenPressed = () => {
     const { navigation, resetWalletsUpdated } = this.props;
     resetWalletsUpdated();
     navigation.navigate('AddCustomToken', navigation.state.params);
@@ -206,8 +205,14 @@ class AddToken extends Component {
 
     // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      listData.push(createItem(token, 'Mainnet'));
-      listData.push(createItem(token, 'Testnet'));
+      if (this.wallet.walletType === definitions.WalletType.readonly) {
+        if (token !== 'BTC') {
+          listData.push(createItem(token, this.wallet.type));
+        }
+      } else {
+        listData.push(createItem(token, 'Mainnet'));
+        listData.push(createItem(token, 'Testnet'));
+      }
     });
 
     listData = common.sortTokens(listData);

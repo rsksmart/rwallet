@@ -4,6 +4,8 @@ import Wallet from './wallet';
 import storage from '../storage';
 import common from '../common';
 import CONSTANTS from '../constants.json';
+import ReadOnlyWallet from './readonly.wallet';
+import definitions from '../definitions';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -95,7 +97,16 @@ class WalletManager {
         this.currentKeyId = result.currentKeyId;
       }
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
+      const promises = [];
+      _.each(result.wallets, (wallet) => {
+        let promise = wallet.walletType === definitions.WalletType.readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
+        if (wallet.address) {
+          promise = ReadOnlyWallet.fromJSON(wallet);
+        } else {
+          promise = Wallet.fromJSON(wallet);
+        }
+        promises.push(promise);
+      });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 
@@ -165,7 +176,7 @@ class WalletManager {
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol);
+      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol && item.type === token.type);
 
       if (matchedToken) {
         // update balance
@@ -279,6 +290,37 @@ class WalletManager {
     for (let i = 0; i < this.wallets.length; i += 1) {
       const wallet = this.wallets[i];
       const coin = _.find(wallet.coins, { address, symbol, type });
+      if (coin) {
+        return coin;
+      }
+    }
+    return null;
+  }
+
+  createReadOnlyWallet = async (chain, type, address, coins) => {
+    console.log('walletManager.createReadOnlyWallet, coins', coins);
+
+    // 2. Create a Wallet instance and save into wallets
+    const wallet = ReadOnlyWallet.create({
+      id: this.currentKeyId, name: null, chain, type, address, coins,
+    });
+
+    console.log(`createReadOnlyWallet, address: ${address}`);
+    this.wallets.unshift(wallet);
+
+    // Increment current pointer
+    this.currentKeyId += 1;
+
+    // Save to storage
+    await this.serialize();
+
+    return wallet;
+  }
+
+  findToken = (symbol, type, address) => {
+    for (let i = 0; i < this.wallets.length; i += 1) {
+      const { coins } = this.wallets[i];
+      const coin = _.find(coins, { address, type, symbol });
       if (coin) {
         return coin;
       }

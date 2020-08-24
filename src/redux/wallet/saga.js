@@ -419,6 +419,24 @@ function* getBalanceRequest(action) {
   }
 }
 
+function* createReadOnlyWalletRequest(action) {
+  const {
+    chain, type, address, coins,
+  } = action.payload;
+  try {
+    const state = yield select();
+    const walletManager = state.Wallet.get('walletManager');
+    yield call(walletManager.createReadOnlyWallet, chain, type, address, coins);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
+  } catch (err) {
+    console.warn(err.message);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -440,5 +458,6 @@ export default function* () {
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
 
     takeEvery(actions.GET_BALANCE, getBalanceRequest),
+    takeEvery(actions.CREATE_READ_ONLY_WALLET, createReadOnlyWalletRequest),
   ]);
 }

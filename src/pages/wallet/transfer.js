@@ -426,7 +426,7 @@ class Transfer extends Component {
       }
     }
 
-    if (!common.isWalletAddress(checksumAddress, symbol, type, networkId)) {
+    if (!common.isWalletAddress(checksumAddress, symbol, type)) {
       this.showInvalidAddressNotification();
       return;
     }
@@ -467,7 +467,7 @@ class Transfer extends Component {
   onToInputBlur = async () => {
     const { navigation, addConfirmation } = this.props;
     const { to } = this.state;
-    const { symbol, type, networkId } = this.coin;
+    const { symbol, type } = this.coin;
     this.setState({ enableConfirm: false });
     if (_.isEmpty(to)) return;
     let address = null;
@@ -499,7 +499,7 @@ class Transfer extends Component {
     } else {
       address = to;
     }
-    this.isAddressValid = common.isWalletAddress(address, symbol, type, networkId);
+    this.isAddressValid = common.isWalletAddress(address, symbol, type);
     if (!this.isAddressValid) {
       this.showInvalidAddressNotification();
       return;
@@ -537,11 +537,6 @@ class Transfer extends Component {
       feeParams = { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
     }
     return feeParams;
-  }
-
-  querySubdomainAddress = async (subdomain, type) => {
-    const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(subdomain, type), this);
-    return subdomains;
   }
 
   /**

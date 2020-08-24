@@ -69,8 +69,8 @@ class WalletSelectCurrency extends Component {
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
       if (isWalletsUpdated && isLoading) {
         this.setState({ isLoading: false });
-        const statckActions = StackActions.popToTop();
-        navigation.dispatch(statckActions);
+        const stackActions = StackActions.popToTop();
+        navigation.dispatch(stackActions);
       }
     }
 

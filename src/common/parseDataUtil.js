@@ -41,6 +41,7 @@ const parseDataUtil = {
       balance: tokenObj.get('balance'),
       address: tokenObj.get('address'),
       symbol: tokenObj.get('symbol'),
+      type: tokenObj.get('type'),
       subdomain: tokenObj.get('subdomain'),
     };
     return balance;

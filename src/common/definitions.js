@@ -50,6 +50,11 @@ const BtcAddressType = {
   segwit: 'segwit',
 };
 
+const WalletType = {
+  normal: 'normal',
+  readonly: 'readonly',
+};
+
 export default {
   txStatus,
   btcPreferenceFee,
@@ -58,4 +63,5 @@ export default {
   blockHeightKeys,
   SUBDOMAIN_STATUS,
   BtcAddressType,
+  WalletType,
 };

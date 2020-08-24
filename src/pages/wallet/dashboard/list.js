@@ -55,7 +55,7 @@ class WalletList extends Component {
           worth: worthText,
           amount: amountText,
           icon: coin.icon,
-          onPress: () => navigation.navigate('WalletHistory', { coin }),
+          onPress: () => navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType }),
         };
         wal.coins.push(item);
       });

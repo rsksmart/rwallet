@@ -66,6 +66,11 @@ function* initFromStorageRequest() {
       yield call(storage.setStorageVersion, config.storageVersion);
     }
 
+    const isReadOnlyWalletIntroShowed = yield call(storage.getReadOnlyWalletIntroShowed);
+    if (isReadOnlyWalletIntroShowed) {
+      yield put(actions.setReadOnlyWalletIntroShowed());
+    }
+
     // 1. Deserialize Settings from permenate storage
     yield call(settings.deserialize);
 
@@ -445,6 +450,11 @@ function* receiveNotificationRequest(action) {
   return null;
 }
 
+function* showReadOnlyWalletIntroRequest() {
+  yield call(storage.setReadOnlyWalletIntroShowed);
+  yield put(actions.setReadOnlyWalletIntroShowed());
+}
+
 export default function* () {
   yield all([
     // When app loading action is fired, try to fetch server info
@@ -471,5 +481,7 @@ export default function* () {
     takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
+
+    takeEvery(actions.SHOW_READ_ONLY_WALLET_INTRO, showReadOnlyWalletIntroRequest),
   ]);
 }

@@ -26,6 +26,7 @@ export default class Wallet {
     this.coins = [];
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
     this.derivations = undefined;
+    this.walletType = definitions.WalletType.normal;
   }
 
   /**
@@ -154,6 +155,7 @@ export default class Wallet {
     const result = {
       id: this.id,
       name: this.name,
+      walletType: this.walletType,
       // createdAt: this.createdAt,
       coins: this.coins.map((coin) => coin.toJSON()),
       derivations: newDerivations,

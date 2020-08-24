@@ -69,7 +69,7 @@ class Scan extends Component {
           return false;
         }
       }
-      const isAddress = common.isWalletAddress(toAddress, symbol, type, networkId);
+      const isAddress = common.isWalletAddress(toAddress, symbol, type);
       if (!isAddress) {
         return false;
       }

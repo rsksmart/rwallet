@@ -20,6 +20,7 @@ import config from '../../config';
 import I18n from './i18n';
 import definitions from './definitions';
 import CONSTANTS from './constants.json';
+import cointype from './wallet/cointype';
 
 const { BIOMETRY_TYPES } = CONSTANTS;
 
@@ -253,11 +254,12 @@ const common = {
    * @param {string} type, MainTest or Testnet
    * @param {string} networkId
    */
-  isWalletAddress(address, symbol, type, networkId) {
+  isWalletAddress(address, symbol, type) {
     if (symbol === 'BTC') {
       return common.isBtcAddress(address, type);
     }
     try {
+      const { networkId } = this.getCoinType(symbol, type);
       Rsk3.utils.toChecksumAddress(address, networkId);
       return true;
     } catch (error) {
@@ -585,6 +587,15 @@ const common = {
     } catch (error) {
       return url;
     }
+  },
+
+  getCoinId(symbol, type) {
+    return type === 'Mainnet' ? symbol : `${symbol}${type}`;
+  },
+
+  getCoinType(symbol, type) {
+    const coinId = this.getCoinId(symbol, type);
+    return cointype[coinId];
   },
 };
 

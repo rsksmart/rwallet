@@ -19,6 +19,7 @@ import appActions from '../../redux/app/actions';
 import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
+import definitions from '../../common/definitions';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -148,8 +149,14 @@ class AddCustomToken extends Component {
       } = this;
       try {
         this.setState({ isLoadingBalance: true });
-        const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, derivation.address), this);
+        let address = null;
+        if (this.wallet.walletType === definitions.WalletType.readonly) {
+          address = this.wallet.address;
+        } else {
+          const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });
+          address = derivation.address;
+        }
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, address), this);
         console.log('UserTokenBalance: ', result);
         this.setState({ balance: common.weiToCoin(result.balance) });
       } catch (error) {

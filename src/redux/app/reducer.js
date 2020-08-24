@@ -48,6 +48,7 @@ const initState = new Map({
   advertisements: undefined,
   recentDapps: undefined,
   page: undefined,
+  isReadOnlyWalletIntroShowed: false,
 });
 
 export default function appReducer(state = initState, action) {
@@ -174,6 +175,8 @@ export default function appReducer(state = initState, action) {
       return state.set('page', action.page);
     case actions.RESET_PAGE:
       return state.set('page', null);
+    case actions.SET_READ_ONLY_WALLET_INTRO_SHOWED:
+      return state.set('isReadOnlyWalletIntroShowed', true);
     default:
       return state;
   }
