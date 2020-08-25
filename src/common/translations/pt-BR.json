@@ -202,9 +202,9 @@
         "title": "Adicionar carteira somente leitura",
         "address": "Endereço da carteira",
         "note": "Insira um endereço de carteira BTC, RBTC ou nome RNS a ser monitorado.",
-        "question": "Encontramos abaixo ativos nesta carteira. Você gostaria de monitorar este endereço?",
-        "rnsQuestion": "Encontramos o endereço da carteira e os ativos abaixo. Você gostaria de monitorar este endereço?",
-        "rnsInvalid": "Desculpe, o nome RNS não está associado a um endereço de carteira no blockchain do Rootstock. Por favor, tente novamente.",
+        "question": "Encontramos abaixo os seguintes ativos nesta carteira. Você deseja monitorar este endereço?",
+        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes ativos. Você deseja monitorar este endereço?",
+        "rnsInvalid": "Desculpe, o nome RNS não está associado a um endereço de carteira na blockchain da Rootstock. Por favor, tente novamente.",
         "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
       }
     },
@@ -532,7 +532,7 @@
       "segwit": "segwit"
     },
     "readOnlyWallet": {
-      "title": "Read-only Wallet",
+      "title": "Carteira somente leitura",
       "body": "O recurso de carteira somente leitura permite que você monitore ativos em blockchain sem importar chaves privadas.\n\nAs entradas atualmente permitidas são o endereço Bitcoin (SegWit e Legacy), endereço Rootstock ou apelido RNS."
     }
   },

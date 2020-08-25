@@ -517,7 +517,7 @@
       "segwit": "segwit"
     },
     "readOnlyWallet": {
-      "title": "Read-only Wallet",
+      "title": "Carteira somente leitura",
       "body": "O recurso de carteira somente leitura permite que você monitore ativos em blockchain sem importar chaves privadas.\n\nAs entradas atualmente permitidas são o endereço Bitcoin (SegWit e Legacy), endereço Rootstock ou apelido RNS."
     }
   },
