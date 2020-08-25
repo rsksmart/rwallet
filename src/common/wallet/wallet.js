@@ -300,6 +300,4 @@ export default class Wallet extends BasicWallet {
     const derivation = _.find(this.derivations, { symbol: 'BTC', type: 'Mainnet' });
     return derivation.addressType;
   }
-
-  getOperableTokens = () => this.coins;
 }

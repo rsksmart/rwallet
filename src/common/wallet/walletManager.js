@@ -311,6 +311,8 @@ class WalletManager {
 
     return wallet;
   }
+
+  getNormalWallets = () => _.filter(this.wallets, { walletType: definitions.WalletType.Normal });
 }
 
 export default new WalletManager();

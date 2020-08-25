@@ -88,6 +88,4 @@ export default class ReadOnlyWallet extends BasicWallet {
     const wallet = ReadOnlyWallet.restore(json);
     return { isNeedSave: false, wallet };
   }
-
-  getOperableTokens = () => [];
 }

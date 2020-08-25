@@ -18,6 +18,7 @@ import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
 import { createNewFeatureConfirmation } from '../../../common/confirmation.controller';
 import storage from '../../../common/storage';
+import definitions from '../../../common/definitions';
 
 const WALLET_PAGE_WIDTH = screen.width - 50;
 
@@ -134,7 +135,11 @@ class WalletList extends Component {
     const { addConfirmation, navigation } = this.props;
     const { walletManager } = this.props;
     const { wallets } = walletManager;
-    const coin = _.find(wallets[0].coins, { chain: 'Rootstock' });
+    const wallet = _.find(wallets, { walletType: definitions.WalletType.Normal });
+    if (!wallet) {
+      return;
+    }
+    const coin = _.find(wallet.coins, { chain: 'Rootstock' });
     if (coin) {
       const infoConfirmation = createNewFeatureConfirmation(
         'modal.rnsNewFeature.title',

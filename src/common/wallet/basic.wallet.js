@@ -50,11 +50,4 @@ export default class BasicWallet {
 
     return isDirty;
   }
-
-  /**
-   * getOperableTokens, get tokens which can send coins and create rns nickname.
-   */
-  getOperableTokens = () => {
-    throw new Error('Method not implemented.');
-  }
 }
