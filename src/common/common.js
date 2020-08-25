@@ -590,7 +590,12 @@ const common = {
   },
 
   getCoinId(symbol, type) {
-    return type === 'Mainnet' ? symbol : `${symbol}${type}`;
+    const foundSymbol = _.find(supportedTokens, (token) => token === symbol);
+    if (foundSymbol) {
+      return type === 'Mainnet' ? symbol : `${symbol}${type}`;
+    }
+    const customToken = 'CustomToken';
+    return type === 'Mainnet' ? customToken : `${customToken}${type}`;
   },
 
   getCoinType(symbol, type) {

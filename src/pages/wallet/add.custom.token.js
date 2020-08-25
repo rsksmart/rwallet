@@ -74,7 +74,7 @@ class AddCustomToken extends Component {
         isCanConfirm: false,
       };
       this.wallet = props.navigation.state.params.wallet;
-      this.type = this.wallet.walletType === definitions.WalletType.readonly ? this.wallet.type : 'Mainnet';
+      this.type = this.wallet.walletType === definitions.WalletType.Readonly ? this.wallet.type : 'Mainnet';
       this.chain = 'Rootstock';
     }
 
@@ -169,7 +169,7 @@ class AddCustomToken extends Component {
                 onChangeText={this.onAddressInputChanged}
               />
             </View>
-            { this.wallet.walletType !== definitions.WalletType.readonly && (
+            { this.wallet.walletType !== definitions.WalletType.Readonly && (
               <View style={[styles.switchView]}>
                 <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
                 <Switch

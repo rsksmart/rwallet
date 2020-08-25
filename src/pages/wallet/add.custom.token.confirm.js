@@ -150,7 +150,7 @@ class AddCustomToken extends Component {
       try {
         this.setState({ isLoadingBalance: true });
         let address = null;
-        if (this.wallet.walletType === definitions.WalletType.readonly) {
+        if (this.wallet.walletType === definitions.WalletType.Readonly) {
           address = this.wallet.address;
         } else {
           const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });

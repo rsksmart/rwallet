@@ -99,7 +99,7 @@ class WalletManager {
       // Re-create Wallet objects based on result.wallets JSON
       const promises = [];
       _.each(result.wallets, (wallet) => {
-        const promise = wallet.walletType === definitions.WalletType.readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
+        const promise = wallet.walletType === definitions.WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
         promises.push(promise);
       });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));

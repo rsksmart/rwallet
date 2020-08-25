@@ -51,8 +51,8 @@ const BtcAddressType = {
 };
 
 const WalletType = {
-  normal: 'normal',
-  readonly: 'readonly',
+  Normal: 'Normal',
+  Readonly: 'Readonly',
 };
 
 export default {

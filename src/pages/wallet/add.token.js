@@ -205,7 +205,7 @@ class AddToken extends Component {
 
     // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      if (this.wallet.walletType === definitions.WalletType.readonly) {
+      if (this.wallet.walletType === definitions.WalletType.Readonly) {
         if (token !== 'BTC') {
           listData.push(createItem(token, this.wallet.type));
         }

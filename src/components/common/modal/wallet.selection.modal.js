@@ -11,7 +11,6 @@ import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import common from '../../../common/common';
-import definitions from '../../../common/definitions';
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
@@ -287,10 +286,7 @@ class WalletSelection extends PureComponent {
       }
       _.forEach(networks, (network) => {
         _.forEach(wallets, (wallet) => {
-          const { coins } = wallet;
-          if (wallet.walletType === definitions.WalletType.readonly) {
-            return;
-          }
+          const coins = wallet.getOperableTokens();
           // Get all rsk tokens
           const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
           // If dapp support token list is empty, needs to show all rsk tokens
