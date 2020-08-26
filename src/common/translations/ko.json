@@ -337,6 +337,7 @@
     "pending": "처리 중",
     "done": "완료",
     "share": "공유",
+    "check": "검사",
     "update": "최신 정보"
   },
   "txState": {

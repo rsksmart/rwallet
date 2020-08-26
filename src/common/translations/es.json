@@ -334,6 +334,7 @@
     "pending": "Pendiente",
     "done": "Hecho",
     "share": "COMPARTIR",
+    "check": "CHEQUE",
     "update": "Actualizar"
   },
   "txState": {

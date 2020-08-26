@@ -334,6 +334,7 @@
     "pending": "等待中",
     "done": "已完成",
     "share": "分享",
+    "check": "检查",
     "update": "更新"
   },
   "txState": {

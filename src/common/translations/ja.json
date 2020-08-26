@@ -331,6 +331,7 @@
     "pending": "保留中",
     "done": "完了です",
     "share": "シェア",
+    "check": "小切手",
     "update": "更新"
   },
   "txState": {

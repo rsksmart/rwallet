@@ -332,6 +332,7 @@
     "pending": "Pendente",
     "done": "Feito",
     "share": "COMPARTILHAR",
+    "check": "VERIFICA",
     "update": "Atualizar"
   },
   "txState": {
