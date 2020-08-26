@@ -268,9 +268,9 @@ function* fetchTransactions(action) {
   const {
     token, fetchCount, skipCount, timestamp,
   } = action.payload;
-  const { symbol, address } = token;
+  const { symbol, type, address } = token;
   try {
-    const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
+    const transactions = yield call(ParseHelper.fetchTransactions, symbol, type, address, skipCount, fetchCount);
     token.transactions = token.transactions || [];
     addTokenTransactions(token, transactions);
   } catch (error) {

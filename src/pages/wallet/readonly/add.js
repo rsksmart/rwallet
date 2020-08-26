@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Rsk3 from '@rsksmart/rsk3';
 import Header from '../../../components/headers/header';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
@@ -141,6 +142,8 @@ class AddReadOnlyWallet extends Component {
       }
 
       const isWalletAddress = common.isWalletAddress(newAddress, symbol, type);
+      const { networkId } = common.getCoinType(symbol, type);
+      newAddress = Rsk3.utils.toChecksumAddress(address, networkId);
       if (!isWalletAddress) {
         this.setState({ errorText: strings('page.wallet.transfer.unavailableAddress'), canSubmit: false });
         return;

@@ -133,7 +133,7 @@ class AddReadOnlyWalletConfirmation extends Component {
       const customButton = (
         <View>
           <Button text="button.confirm" onPress={this.onConfirm} />
-          <Button style={styles.cancelButtonView} type="cancel" text="button.cancel" onPress={this.onBackButtonPress} />
+          <Button style={styles.cancelButtonView} type="cancel" text="button.Reset" onPress={this.onBackButtonPress} />
         </View>
       );
       return (

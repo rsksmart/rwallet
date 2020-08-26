@@ -26,7 +26,7 @@
         "allAssets": "All Assets",
         "addAsset": "Add Asset",
         "addWallet": "Add Wallet",
-        "readOnly": "read-only"
+        "readOnly": "Read-only"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -519,6 +519,10 @@
     "readOnlyWallet": {
       "title": "Read-only Wallet",
       "body": "Read-only Wallet feature allows you to monitor assets on blockchain without importing private keys.\n\nCurrently allowed inputs are Bitcoin address (both SegWit and Legacy), Rootstock address, or RNS nickname."
+    },
+    "readOnlyLimit": {
+      "title": "Operation not available",
+      "body": "Send, Swap and Scan QR Code operations are not available for a Read-only wallet. To enable those, please Import this wallet with its 12-word phrases."
     }
   },
   "currency": {

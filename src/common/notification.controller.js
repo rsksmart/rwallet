@@ -117,3 +117,5 @@ export const getDefaultTxFailedErrorNotification = (buttonText, notificationClos
   buttonText,
   notificationCloseCallback,
 );
+
+export const createReadOnlyLimitNotification = () => createInfoNotification('modal.readOnlyLimit.title', 'modal.readOnlyLimit.body');

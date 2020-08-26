@@ -98,6 +98,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     marginLeft: 10,
   },
+  disableText: {
+    color: color.nevada,
+  },
   receiveText: {
     color: color.mantis,
     fontFamily: 'Avenir-Medium',
@@ -205,6 +208,8 @@ const WalletPage = (props) => {
     name, coins, assetValue, wallet: { walletType, chain },
   } = walletData;
 
+  const isReadOnlyWallet = walletType === definitions.WalletType.Readonly;
+
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
   const addAssetDisabled = walletType === definitions.WalletType.Readonly && chain === 'Bitcoin';
   const addAssetButton = (
@@ -221,13 +226,12 @@ const WalletPage = (props) => {
         <View style={flex.flex1}>
           <View style={styles.walletTitleView}>
             <Text style={styles.headerTitle}>{name}</Text>
-            { walletType === definitions.WalletType.Readonly && <View style={styles.readonly}><Loc text="page.wallet.list.readOnly" /></View> }
+            { isReadOnlyWallet && <View style={styles.readonly}><Loc text="page.wallet.list.readOnly" /></View> }
           </View>
         </View>
         <TouchableOpacity
-          style={[styles.scanView, walletType === definitions.WalletType.Readonly ? { opacity: 0.5 } : null]}
+          style={[styles.scanView, isReadOnlyWallet ? { opacity: 0.5 } : null]}
           onPress={() => onScanQrcodePressed()}
-          disabled={walletType === definitions.WalletType.Readonly}
         >
           <Image style={[styles.scan]} source={references.images.scan} />
         </TouchableOpacity>
@@ -241,9 +245,9 @@ const WalletPage = (props) => {
           <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{assetValueText}</ResponsiveText>
           <View style={styles.myAssetsButtonsView}>
             <View style={styles.myAssetsButtonsContainer}>
-              <TouchableOpacity style={[styles.ButtonView, { opacity: walletType !== definitions.WalletType.Readonly ? 1 : 0.5 }]} disabled={walletType === definitions.WalletType.Readonly} onPress={onSendPressed}>
-                <Image source={references.images.send} />
-                <Loc style={[styles.sendText]} text="button.Send" />
+              <TouchableOpacity style={[styles.ButtonView, { opacity: isReadOnlyWallet ? 0.5 : 1 }]} onPress={onSendPressed}>
+                <Image source={isReadOnlyWallet ? references.images.send_gray : references.images.send} />
+                <Loc style={[styles.sendText, isReadOnlyWallet ? styles.disableText : null]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.splitLine} />
               <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed}>
@@ -251,7 +255,7 @@ const WalletPage = (props) => {
                 <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>
               <View style={styles.splitLine} />
-              <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin ? 1 : 0.5 }]} disabled={!hasSwappableCoin} onPress={onSwapPressed}>
+              <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin && !isReadOnlyWallet ? 1 : 0.5 }]} disabled={!hasSwappableCoin} onPress={onSwapPressed}>
                 <Image source={references.images.swap} />
                 <Loc style={[styles.swapText]} text="button.Swap" />
               </TouchableOpacity>

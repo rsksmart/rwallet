@@ -26,7 +26,7 @@
         "allAssets": "Todos los activos",
         "addAsset": "Agregar activo",
         "addWallet": "Agregar billetera",
-        "readOnly": "solo lectura"
+        "readOnly": "Solo lectura"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -521,6 +521,10 @@
     "readOnlyWallet": {
       "title": "Billetera de solo lectura",
       "body": "La función Wallet de solo lectura le permite monitorear activos en blockchain sin importar claves privadas.\n\nLas entradas actualmente permitidas son la dirección de Bitcoin (tanto SegWit como Legacy), dirección de Rootstock o apodo de RNS."
+    },
+    "readOnlyLimit": {
+      "title": "Operación no disponible",
+      "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
     }
   },
   "currency": {

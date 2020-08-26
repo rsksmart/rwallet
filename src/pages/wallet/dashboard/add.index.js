@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
 import BasePageGereral from '../../base/base.page.general';
@@ -37,7 +36,7 @@ class WalletAddIndex extends Component {
         id: '3',
         title: 'page.wallet.add.addReadOnlyWallet',
         text: 'page.wallet.add.addReadOnlyWalletNote',
-        icon: (<SimpleLineIcons name="people" size={25} style={{ color: color.emperor }} />),
+        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
         onPress: () => {
           this.createWalletFlow('AddReadOnlyWallet');
         },

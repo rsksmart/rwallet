@@ -27,7 +27,7 @@
         "allAssets": "Todos os ativos",
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
-        "readOnly": "somente leitura"
+        "readOnly": "Somente leitura"
       },
       "history": {
         "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
@@ -534,6 +534,10 @@
     "readOnlyWallet": {
       "title": "Carteira somente leitura",
       "body": "O recurso de carteira somente leitura permite que você monitore ativos em blockchain sem importar chaves privadas.\n\nAs entradas atualmente permitidas são o endereço Bitcoin (SegWit e Legacy), endereço Rootstock ou apelido RNS."
+    },
+    "readOnlyLimit": {
+      "title": "Operação não disponível",
+      "body": "As operações de Enviar, Trocar e Ler QR Code não estão disponíveis para uma carteira somente leitura. Para habilitá-los, importe esta carteira com suas frases de 12 palavras."
     }
   },
   "currency": {
@@ -543,5 +547,11 @@
     "KRW": "Won Sul-Coreano",
     "CNY": "Yuan chinês",
     "GBP": "Libra esterlina"
+  },
+  "notification": {
+    "networkError": {
+      "title": "Erro de rede",
+      "body": "Seu dispositivo não pode se conectar ao servidor."
+    }
   }
 }

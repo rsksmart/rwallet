@@ -253,14 +253,16 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @memberof ParseHelper
    */
-  static async fetchTransactions(symbol, address, skipCount, fetchCount) {
+  static async fetchTransactions(symbol, type, address, skipCount, fetchCount) {
     const queryFrom = new Parse.Query(ParseTransaction);
     queryFrom.equalTo('from', address);
+    const queryType = new Parse.Query(ParseTransaction);
+    queryType.equalTo('type', type);
     const queryTo = new Parse.Query(ParseTransaction);
     queryTo.equalTo('to', address);
     const querySymbol = new Parse.Query(ParseTransaction);
     querySymbol.equalTo('symbol', symbol);
-    const query = Parse.Query.and(Parse.Query.or(queryFrom, queryTo), querySymbol).descending('createdAt');
+    const query = Parse.Query.and(Parse.Query.and(Parse.Query.or(queryFrom, queryTo), queryType), querySymbol).descending('createdAt');
     const results = await query.skip(skipCount).limit(fetchCount).find();
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
