@@ -65,7 +65,8 @@ class AddReadOnlyWallet extends Component {
     }
 
     onChangeText = (text) => {
-      this.setState({ address: text, errorText: '', canSubmit: true });
+      const address = text.trim();
+      this.setState({ address, errorText: '', canSubmit: true });
     }
 
     onSwitchValueChanged = (value) => {
