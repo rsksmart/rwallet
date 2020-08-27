@@ -20,6 +20,7 @@ import common from '../../../common/common';
 import Switch from '../../../components/common/switch/switch';
 import { strings } from '../../../common/i18n';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
+import config from '../../../../config';
 
 const styles = StyleSheet.create({
   addAsset: {
@@ -50,7 +51,13 @@ class AddReadOnlyWalletConfirmation extends Component {
       this.type = type;
       this.address = address;
       this.subdomain = subdomain;
-      let coins = chain === 'Rootstock' ? [{ symbol: 'RBTC' }, { symbol: 'RIF' }] : [{ symbol: 'BTC' }];
+      let coins = [];
+      if (chain === 'Rootstock') {
+        const { consts: { supportedTokens } } = config;
+        coins = _.map(_.filter(supportedTokens, (token) => token !== 'BTC'), (token) => ({ symbol: token }));
+      } else {
+        coins = [{ symbol: 'BTC' }];
+      }
       coins = _.map(coins, (coin) => {
         const { symbol } = coin;
         const { icon, defaultName: name } = common.getCoinType(symbol, type);
@@ -63,16 +70,15 @@ class AddReadOnlyWalletConfirmation extends Component {
 
     async componentDidMount() {
       const { coins } = this.state;
-      const newCoins = [...coins];
       const { type, address } = this;
-      const promises = _.map(newCoins, (coin) => CancelablePromiseUtil.makeCancelable(parseHelper.getBalance({
-        type, symbol: coin.symbol, address, needFetch: false,
-      })));
-      const balances = await Promise.all(promises);
-      _.each(balances, (balance, index) => {
+      _.each(coins, async (coin, index) => {
+        const balance = await CancelablePromiseUtil.makeCancelable(parseHelper.getBalance({
+          type, symbol: coin.symbol, address, needFetch: false,
+        }));
+        const newCoins = [...coins];
         newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance);
+        this.setState({ coins: newCoins });
       });
-      this.setState({ coins: newCoins });
     }
 
     componentWillUnmount() {
