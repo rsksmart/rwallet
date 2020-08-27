@@ -253,12 +253,12 @@
       },
       "resetPasscodeSuccess" :{
         "create": {
-          "title": "Definir código de acesso",
-          "body": "Conjunto concluído!"
+          "title": "Definir PIN",
+          "body": "PIN configurado com sucesso!"
         } ,
         "reset": {
-          "title": "Redefinir senha",
-          "body": "Reinicialização concluída!"
+          "title": "Redefinir PIN",
+          "body": "Redefinição concluída!"
         }
       },
       "keySettings": {
