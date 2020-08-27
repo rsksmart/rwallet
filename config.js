@@ -1,4 +1,4 @@
-import { PARSE_SERVER_URL, RWALLET_API_KEY } from 'react-native-dotenv';
+import { PARSE_SERVER_URL, RWALLET_API_KEY, RWALLET_ENV } from 'react-native-dotenv';
 import { isEmpty } from 'lodash';
 
 if (isEmpty(PARSE_SERVER_URL)) {
@@ -11,6 +11,7 @@ const config = {
     javascriptKey: '',
     serverURL: PARSE_SERVER_URL,
     rwalletApiKey: RWALLET_API_KEY,
+    rwalletEnv: RWALLET_ENV,
   },
   defaultSettings: {
     username: undefined,
@@ -97,5 +98,7 @@ const config = {
   storageVersion: 3,
   defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
+
+
 
 export default config;
