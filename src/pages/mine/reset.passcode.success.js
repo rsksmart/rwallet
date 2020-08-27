@@ -6,15 +6,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StackActions, NavigationActions } from 'react-navigation';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Header from '../../components/headers/header';
+import Header, { headerVisibleHeight } from '../../components/headers/header';
 import BasePageSimple from '../base/base.page.simple';
 import color from '../../assets/styles/color';
 import Button from '../../components/common/button/button';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import { strings } from '../../common/i18n';
 
+const bottomHeight = 70;
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+const contentHeight = Dimensions.get('window').height - headerVisibleHeight - bottomHeight;
 
 const completed = require('../../assets/images/icon/completed.png');
 
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   check: {
-    marginBottom: screenHeight * 0.04,
+    marginBottom: contentHeight * 0.04,
   },
   title: {
     fontSize: 25,
@@ -40,8 +41,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Book',
   },
   titleLayout: {
-    width: screenWidth * 0.75,
+    width: screenWidth * 0.55,
     justifyContent: 'center',
+  },
+  wrapper: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  centerView: {
+    alignItems: 'center',
+    marginTop: -contentHeight * 0.25,
+  },
+  button: {
+    marginBottom: contentHeight * 0.037,
   },
 });
 
@@ -70,7 +82,8 @@ class ResetPasscodeSuccess extends Component {
     render() {
       const { navigation } = this.props;
       const { operation } = navigation.state.params;
-      const title = operation === 'create' ? 'page.mine.resetPasscodeSuccess.title.create' : 'page.mine.resetPasscodeSuccess.title.reset';
+      const title = `page.mine.resetPasscodeSuccess.${operation}.title`;
+      const body = `page.mine.resetPasscodeSuccess.${operation}.body`;
       return (
         <BasePageSimple
           isSafeView
@@ -78,20 +91,20 @@ class ResetPasscodeSuccess extends Component {
           hasLoader={false}
           headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title={title} />}
         >
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={styles.wrapper}>
             <View style={styles.content}>
-              <View style={{ alignItems: 'center', marginTop: -screenHeight * 0.172 }}>
+              <View style={styles.centerView}>
                 <AutoHeightImage style={styles.check} source={completed} width={screenWidth * 0.27} />
                 <ResponsiveText
                   layoutStyle={styles.titleLayout}
                   fontStyle={styles.title}
-                  maxFontSize={20}
+                  maxFontSize={100}
                 >
-                  {strings(title)}
+                  {strings(body)}
                 </ResponsiveText>
               </View>
             </View>
-            <Button style={{ marginBottom: screenHeight * 0.037 }} text="button.backToSetting" onPress={this.onBackButtonPress} />
+            <Button style={styles.button} text="button.backToSetting" onPress={this.onBackButtonPress} />
           </View>
         </BasePageSimple>
       );

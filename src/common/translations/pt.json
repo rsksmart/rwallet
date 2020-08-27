@@ -256,9 +256,13 @@
         "useBiometrics": "Use biometria"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "Definir código de acesso",
-          "reset": "Redefinir sucesso da senha"
+        "create": {
+          "title": "Definir código de acesso",
+          "body": "Conjunto concluído!"
+        } ,
+        "reset": {
+          "title": "Redefinir senha",
+          "body": "Reinicialização concluída!"
         }
       },
       "keySettings": {

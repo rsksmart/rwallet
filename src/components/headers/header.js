@@ -14,6 +14,7 @@ const header = require('../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerMarginTop = -150 + screenHelper.topHeight;
+export const headerVisibleHeight = headerHeight + headerMarginTop;
 
 const styles = StyleSheet.create({
   headerImage: {

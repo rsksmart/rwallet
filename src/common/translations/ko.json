@@ -260,9 +260,13 @@
         "useBiometrics": "생체 인식 사용"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "패스코드 설정 성공",
-          "reset": "패스코드 재설정 성공"
+        "create": {
+          "title": "비밀번호 설정",
+          "body": "세트 완료!"
+        } ,
+        "reset": {
+          "title": "비밀번호 재설정",
+          "body": "재설정 완료!"
         }
       },
       "keySettings": {

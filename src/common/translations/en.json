@@ -254,9 +254,13 @@
         "useBiometrics": "Use Biometrics"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "Set Passcode Success",
-          "reset": "Reset Passcode Success"
+        "create": {
+          "title": "Set Passcode",
+          "body": "Set completed!"
+        } ,
+        "reset": {
+          "title": "Reset Passcode",
+          "body": "Reset completed!"
         }
       },
       "keySettings": {
