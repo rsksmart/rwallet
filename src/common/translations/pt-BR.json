@@ -75,7 +75,7 @@
         "importWallet": "Importar carteira existente",
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação",
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
-        "addReadOnlyWalletNote": "Monitore ativos sem chaves"
+        "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
