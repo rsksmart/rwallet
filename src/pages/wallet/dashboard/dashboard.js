@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty, debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import VersionNumber from 'react-native-version-number';
+import compareVersions from 'compare-versions';
 import List from './list';
 import AddIndex from './add.index';
 import appActions from '../../../redux/app/actions';
@@ -74,7 +75,7 @@ class Dashboard extends Component {
       const { showUpdateModal, updateVersionInfo, isShowedUpdateModal } = props;
       const latestClientVersion = updateVersionInfo && updateVersionInfo.latestClientVersion;
       const version = VersionNumber.appVersion;
-      if (!isShowedUpdateModal && latestClientVersion && latestClientVersion !== version) {
+      if (!isShowedUpdateModal && latestClientVersion && compareVersions(latestClientVersion, version) > 0) {
         showUpdateModal();
       }
     }
