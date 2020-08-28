@@ -16,7 +16,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageSimple from '../base/base.page.simple';
-import definitions from '../../common/definitions';
+import { WalletType, TxStatus } from '../../common/constants';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
@@ -306,15 +306,15 @@ class History extends Component {
       const isSender = address === transaction.from;
       let state = 'Failed';
       switch (transaction.status) {
-        case definitions.txStatus.PENDING:
+        case TxStatus.PENDING:
           state = isSender ? 'Sending' : 'Receiving';
           break;
-        case definitions.txStatus.SUCCESS:
+        case TxStatus.SUCCESS:
           state = isSender ? 'Sent' : 'Received';
           break;
         default:
       }
-      const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
+      const datetime = transaction.status === TxStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
       let datetimeText = '';
       if (datetime) {
         const daysElapsed = moment().diff(datetime, 'days');
@@ -459,7 +459,7 @@ class History extends Component {
 
   onSendButtonClick() {
     const { navigation, addNotification } = this.props;
-    if (this.walletType === definitions.WalletType.Readonly) {
+    if (this.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
@@ -473,7 +473,7 @@ class History extends Component {
 
   onRnsButtonClick = async () => {
     const { navigation, addNotification } = this.props;
-    if (this.walletType === definitions.WalletType.Readonly) {
+    if (this.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
@@ -596,7 +596,7 @@ class History extends Component {
     const chain = this.coin && this.coin.chain;
     const symbolName = common.getSymbolName(symbol, type);
 
-    const isReadOnlyWallet = this.walletType === definitions.WalletType.Readonly;
+    const isReadOnlyWallet = this.walletType === WalletType.Readonly;
 
     return (
       <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>

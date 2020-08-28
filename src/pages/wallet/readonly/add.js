@@ -18,7 +18,7 @@ import readOnlyStyles from '../../../assets/styles/readonly';
 import common from '../../../common/common';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import parseHelper from '../../../common/parse';
-import definitions from '../../../common/definitions';
+import { defaultErrorNotification } from '../../../common/constants';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import { strings } from '../../../common/i18n';
 import appActions from '../../../redux/app/actions';
@@ -122,8 +122,8 @@ class AddReadOnlyWallet extends Component {
           }
         } catch (error) {
           const confirmation = createErrorConfirmation(
-            definitions.defaultErrorNotification.title,
-            definitions.defaultErrorNotification.message,
+            defaultErrorNotification.title,
+            defaultErrorNotification.message,
             'button.retry',
             () => this.onCheck(),
             () => null,

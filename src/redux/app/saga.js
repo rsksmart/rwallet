@@ -15,7 +15,7 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import common from '../../common/common';
 import walletManager from '../../common/wallet/walletManager';
-import definitions from '../../common/definitions';
+import { defaultErrorNotification } from '../../common/constants';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
 import config from '../../../config';
@@ -214,7 +214,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -231,7 +231,7 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -255,7 +255,7 @@ function* renameRequest(action) {
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
   }

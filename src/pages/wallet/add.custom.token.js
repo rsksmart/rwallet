@@ -19,7 +19,7 @@ import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import common from '../../common/common';
 import coinType from '../../common/wallet/cointype';
-import definitions from '../../common/definitions';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -74,7 +74,7 @@ class AddCustomToken extends Component {
         isCanConfirm: false,
       };
       this.wallet = props.navigation.state.params.wallet;
-      this.type = this.wallet.walletType === definitions.WalletType.Readonly ? this.wallet.type : 'Mainnet';
+      this.type = this.wallet.walletType === WalletType.Readonly ? this.wallet.type : 'Mainnet';
       this.chain = 'Rootstock';
     }
 
@@ -169,7 +169,7 @@ class AddCustomToken extends Component {
                 onChangeText={this.onAddressInputChanged}
               />
             </View>
-            { this.wallet.walletType !== definitions.WalletType.Readonly && (
+            { this.wallet.walletType !== WalletType.Readonly && (
               <View style={[styles.switchView]}>
                 <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
                 <Switch

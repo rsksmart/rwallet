@@ -12,11 +12,9 @@ export default class BasicWallet {
 
   // create coins and add to list
   createCoins = (coins) => {
-    if (!_.isEmpty(coins)) {
-      coins.forEach((item) => {
-        this.addToken(item);
-      });
-    }
+    _.each(coins, (coin) => {
+      this.addToken(coin);
+    });
   }
 
   /**

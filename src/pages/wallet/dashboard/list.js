@@ -18,7 +18,7 @@ import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
 import { createNewFeatureConfirmation } from '../../../common/confirmation.controller';
 import storage from '../../../common/storage';
-import definitions from '../../../common/definitions';
+import { WalletType } from '../../../common/constants';
 import { createReadOnlyLimitNotification } from '../../../common/notification.controller';
 
 const WALLET_PAGE_WIDTH = screen.width - 50;
@@ -136,7 +136,7 @@ class WalletList extends Component {
     const { addConfirmation, navigation } = this.props;
     const { walletManager } = this.props;
     const { wallets } = walletManager;
-    const wallet = _.find(wallets, { walletType: definitions.WalletType.Normal });
+    const wallet = _.find(wallets, { walletType: WalletType.Normal });
     if (!wallet) {
       return;
     }
@@ -161,7 +161,7 @@ class WalletList extends Component {
 
   onSwapPressed = (wallet) => {
     const { resetSwap, navigation, addNotification } = this.props;
-    if (wallet.walletType === definitions.WalletType.Readonly) {
+    if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
@@ -171,7 +171,7 @@ class WalletList extends Component {
 
   onSendPressed = (wallet) => {
     const { navigation, addNotification } = this.props;
-    if (wallet.walletType === definitions.WalletType.Readonly) {
+    if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
@@ -185,7 +185,7 @@ class WalletList extends Component {
 
   onScanQrcodePressed = (wallet) => {
     const { navigation, addNotification } = this.props;
-    if (wallet.walletType === definitions.WalletType.Readonly) {
+    if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }

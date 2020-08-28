@@ -3,9 +3,8 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import common from '../common';
-import CONSTANTS from '../constants.json';
+import { KEYNAME_MAX_LENGTH, WalletType } from '../constants';
 import ReadOnlyWallet from './readonly.wallet';
-import definitions from '../definitions';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -97,11 +96,7 @@ class WalletManager {
         this.currentKeyId = result.currentKeyId;
       }
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = [];
-      _.each(result.wallets, (wallet) => {
-        const promise = wallet.walletType === definitions.WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet);
-        promises.push(promise);
-      });
+      const promises = _.map(result.wallets, (wallet) => (wallet.walletType === WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet)));
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 
@@ -258,7 +253,7 @@ class WalletManager {
   async renameWallet(wallet, name) {
     if (name.length < 1) {
       throw new Error('modal.incorrectKeyName.tooShort');
-    } else if (name.length > CONSTANTS.KEYNAME_MAX_LENGTH) {
+    } else if (name.length > KEYNAME_MAX_LENGTH) {
       throw new Error('modal.incorrectKeyName.tooLong');
     }
     const regex = /^[a-zA-Z0-9 ]+$/g;
@@ -312,7 +307,7 @@ class WalletManager {
     return wallet;
   }
 
-  getNormalWallets = () => _.filter(this.wallets, { walletType: definitions.WalletType.Normal });
+  getNormalWallets = () => _.filter(this.wallets, { walletType: WalletType.Normal });
 }
 
 export default new WalletManager();

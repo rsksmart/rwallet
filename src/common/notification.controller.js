@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import definitions from './definitions';
+import { defaultErrorNotification } from './constants';
 import ERROR_CODE from './errors';
 import { strings } from './i18n';
 
@@ -105,8 +105,8 @@ export const getErrorNotification = (errorCode, buttonText, messageParams, notif
 };
 
 export const getDefaultErrorNotification = (buttonText, notificationCloseCallback) => createErrorNotification(
-  definitions.defaultErrorNotification.title,
-  definitions.defaultErrorNotification.message,
+  defaultErrorNotification.title,
+  defaultErrorNotification.message,
   buttonText,
   notificationCloseCallback,
 );

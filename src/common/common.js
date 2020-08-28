@@ -18,11 +18,8 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import definitions from './definitions';
-import CONSTANTS from './constants.json';
+import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
 import cointype from './wallet/cointype';
-
-const { BIOMETRY_TYPES } = CONSTANTS;
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -438,7 +435,7 @@ const common = {
     // Find out transactions which combines amount
     for (let i = 0; i < transactions.length; i += 1) {
       const tx = transactions[i];
-      if (tx.status === definitions.txStatus.SUCCESS) {
+      if (tx.status === TxStatus.SUCCESS) {
         const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
         sum = sum.plus(txAmount);
         inputTxs.push(tx.hash);
@@ -594,8 +591,7 @@ const common = {
     if (foundSymbol) {
       return type === 'Mainnet' ? symbol : `${symbol}${type}`;
     }
-    const customToken = 'CustomToken';
-    return type === 'Mainnet' ? customToken : `${customToken}${type}`;
+    return type === 'Mainnet' ? CustomToken : `${CustomToken}${type}`;
   },
 
   getCoinType(symbol, type) {

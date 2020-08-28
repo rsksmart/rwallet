@@ -13,10 +13,10 @@ import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import CONSTANTS from '../../common/constants.json';
+import { NETWORK } from '../../common/constants';
 import common from '../../common/common';
 
-const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
+const { MAINNET, TESTNET } = NETWORK;
 
 const styles = StyleSheet.create({
   loading: {

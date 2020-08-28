@@ -9,10 +9,8 @@ import color from '../../../assets/styles/color';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
 import common from '../../../common/common';
-import CONSTANTS from '../../../common/constants.json';
+import { BIOMETRY_TYPES } from '../../../common/constants';
 import { DEVICE } from '../../../common/info';
-
-const { BIOMETRY_TYPES } = CONSTANTS;
 
 const styles = StyleSheet.create({
   container: {

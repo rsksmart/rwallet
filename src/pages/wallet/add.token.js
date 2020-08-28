@@ -20,7 +20,7 @@ import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
-import definitions from '../../common/definitions';
+import { WalletType, BtcAddressType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -142,9 +142,9 @@ class AddToken extends Component {
     if (listItem.selected && listItem.token.symbol === 'BTC' && !this.wallet.getBtcAddressType()) {
       // If the BTC address type has not been set before, when we choose BTC, we should ask the user for the BTC address type
       const confirmation = createBTCAddressTypeConfirmation(() => {
-        this.addBTCToken(listItem.token, definitions.BtcAddressType.legacy);
+        this.addBTCToken(listItem.token, BtcAddressType.legacy);
       }, () => {
-        this.addBTCToken(listItem.token, definitions.BtcAddressType.segwit);
+        this.addBTCToken(listItem.token, BtcAddressType.segwit);
       });
       addConfirmation(confirmation);
     } else if (listItem.selected) {
@@ -205,7 +205,7 @@ class AddToken extends Component {
 
     // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      if (this.wallet.walletType === definitions.WalletType.Readonly) {
+      if (this.wallet.walletType === WalletType.Readonly) {
         if (token !== 'BTC') {
           listData.push(createItem(token, this.wallet.type));
         }

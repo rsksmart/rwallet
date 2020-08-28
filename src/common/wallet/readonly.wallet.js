@@ -2,12 +2,12 @@ import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
-import definitions from '../definitions';
+import { WalletType } from '../constants';
 import BasicWallet from './basic.wallet';
 
 export default class ReadOnlyWallet extends BasicWallet {
   constructor(id, name, chain, type, address) {
-    super(id, name, definitions.WalletType.Readonly);
+    super(id, name, WalletType.Readonly);
     this.chain = chain;
     this.type = type;
     this.address = address;

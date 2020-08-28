@@ -14,7 +14,7 @@ import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import color from '../../../assets/styles/color';
-import definitions from '../../../common/definitions';
+import { WalletType } from '../../../common/constants';
 
 const styles = StyleSheet.create({
   addAsset: {
@@ -208,10 +208,10 @@ const WalletPage = (props) => {
     name, coins, assetValue, wallet: { walletType, chain },
   } = walletData;
 
-  const isReadOnlyWallet = walletType === definitions.WalletType.Readonly;
+  const isReadOnlyWallet = walletType === WalletType.Readonly;
 
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
-  const addAssetDisabled = walletType === definitions.WalletType.Readonly && chain === 'Bitcoin';
+  const addAssetDisabled = walletType === WalletType.Readonly && chain === 'Bitcoin';
   const addAssetButton = (
     <View style={styles.addAssetView}>
       <TouchableOpacity style={[styles.addAsset, { opacity: !addAssetDisabled ? 1 : 0.5 }]} disabled={addAssetDisabled} onPress={onAddAssetPressed}>

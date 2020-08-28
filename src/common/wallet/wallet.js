@@ -5,7 +5,7 @@ import RBTCCoin from './rbtccoin';
 import storage from '../storage';
 import coinType from './cointype';
 import common from '../common';
-import definitions from '../definitions';
+import { WalletType, BtcAddressType } from '../constants';
 import BasicWallet from './basic.wallet';
 
 const bip39 = require('bip39');
@@ -19,7 +19,7 @@ const derivationTypes = [
 
 export default class Wallet extends BasicWallet {
   constructor({ id, name, mnemonic }) {
-    super(id, name, definitions.WalletType.Normal);
+    super(id, name, WalletType.Normal);
     this.mnemonic = mnemonic;
     this.assetValue = new BigNumber(0);
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
@@ -187,7 +187,7 @@ export default class Wallet extends BasicWallet {
           isNeedSave = true;
           coin = new Coin(symbol, type, path);
           coin.derive(seed);
-          coin.setAddressType(definitions.BtcAddressType.legacy);
+          coin.setAddressType(BtcAddressType.legacy);
           await coin.savePrivateKey(id);
         } else {
           // restore derivation

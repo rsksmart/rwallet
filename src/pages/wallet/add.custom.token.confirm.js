@@ -19,7 +19,7 @@ import appActions from '../../redux/app/actions';
 import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
-import definitions from '../../common/definitions';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -150,7 +150,7 @@ class AddCustomToken extends Component {
       try {
         this.setState({ isLoadingBalance: true });
         let address = null;
-        if (this.wallet.walletType === definitions.WalletType.Readonly) {
+        if (this.wallet.walletType === WalletType.Readonly) {
           address = this.wallet.address;
         } else {
           const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });

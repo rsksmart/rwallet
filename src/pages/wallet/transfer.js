@@ -22,9 +22,10 @@ import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
-import CONSTANTS from '../../common/constants.json';
+import {
+  MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS, defaultErrorNotification,
+} from '../../common/constants';
 import parseHelper from '../../common/parse';
-import definitions from '../../common/definitions';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import ERROR_CODE from '../../common/errors';
@@ -238,9 +239,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const {
-  MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
-} = CONSTANTS;
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -486,8 +484,8 @@ class Transfer extends Component {
         }
       } catch (error) {
         const confirmation = createErrorConfirmation(
-          definitions.defaultErrorNotification.title,
-          definitions.defaultErrorNotification.message,
+          defaultErrorNotification.title,
+          defaultErrorNotification.message,
           'button.retry',
           () => this.onToInputBlur(),
           () => navigation.goBack(),
@@ -616,8 +614,8 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log('loadTransactionFees, error: ', error);
       const confirmation = createErrorConfirmation(
-        definitions.defaultErrorNotification.title,
-        definitions.defaultErrorNotification.message,
+        defaultErrorNotification.title,
+        defaultErrorNotification.message,
         'button.retry',
         () => this.requestFees(isAllBalance),
         () => navigation.goBack(),
