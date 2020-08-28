@@ -395,7 +395,7 @@
       "invalid": "O nome da carteira contém caracteres inválidos."
     },
     "guardPhrase": {
-      "title": "Proteja sua frase de recuperação",
+      "title": "Proteja sua frase secreta de recuperação",
       "body": "Sua frase secreta de recuperação é composta por 12 palavras geradas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
     },
     "incorrectBackupPhrase": {
