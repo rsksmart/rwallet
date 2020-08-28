@@ -84,7 +84,7 @@
       },
       "recovery": {
         "title": "Importar carteira",
-        "note": "Digite a frase de recuperação (geralmente 12 palavras)",
+        "note": "Digite a frase secreta de recuperação (geralmente 12 palavras)",
         "advancedOptions": "Opções avançadas",
         "specifyPath": "Especificar caminho de derivação",
         "coin": "Moeda",
@@ -121,7 +121,7 @@
         "title": "Enviar",
         "body": "Transferência concluída!",
         "note": "Sua transação está a caminho.",
-        "viewExplorer": "Clique para ver no explorer"
+        "viewExplorer": "Clique para ver na blockchain"
       },
       "swap": {
         "title": "Trocar",
@@ -359,7 +359,7 @@
     },
     "tooManyPhrase": {
       "title": "Muitas palavras",
-      "body": "A frase de recuperação deve conter 12 palavras."
+      "body": "A frase secreta de recuperação deve conter 12 palavras."
     },
     "amountExceeds": {
       "title": "Saldo insuficiente",
