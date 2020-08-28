@@ -97,12 +97,12 @@
         "note3": "somewhere safe"
       },
       "verifyPhrase": {
-        "title": "Verify Your Phrase",
+        "title": "Verify Your Secret Phrase",
         "note": "Tap each word in the correct order",
         "isCorrect": "Is this correct?"
       },
       "verifyPhraseSuccess": {
-        "title": "Verify Phrase Success",
+        "title": "Verify Secret Phrase Success",
         "body": "Your secret recovery phrase is verified",
         "note": "Be sure to store your secret recovery phrase in a safe and secure place"
       },
