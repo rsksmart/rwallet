@@ -103,7 +103,7 @@
       },
       "verifyPhraseSuccess": {
         "title": "Sucesso na verificação da frase secreta",
-        "body": "Sua frase secreta de recuperação foi verificada",
+        "body": "Sua frase foi verificada",
         "note": "Certifique-se de armazenar sua frase secreta de recuperação em um local seguro"
       },
       "verifyFingerprint": {
