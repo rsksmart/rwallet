@@ -13,7 +13,7 @@
       },
       "terms": {
         "term1": "Entendo que meus fundos estão mantidos com segurança neste dispositivo e não por uma empresa.",
-        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
+        "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase secreta de recuperação.",
         "term3": "Eu li, compreendi e concordo com os Termos de Uso.",
         "viewTerms": "Ver Termos de Uso",
         "button": "Confirmar e Aceitar",
@@ -72,7 +72,7 @@
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
-        "importWalletNote": "Restaure sua carteira usando a frase de recuperação"
+        "importWalletNote": "Restaure sua carteira usando a frase secreta de recuperação"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
@@ -91,20 +91,20 @@
         "derivationPath": "Caminho de derivação"
       },
       "recoveryPhrase": {
-        "title": "Frase de recuperação",
+        "title": "Frase secreta de recuperação",
         "note1": "Anote ou copie estas palavras",
         "note2": "nesta ordem e guarde-as",
         "note3": "em algum lugar seguro"
       },
       "verifyPhrase": {
-        "title": "Verifique sua frase",
+        "title": "Verifique sua frase secreta",
         "note": "Toque em cada palavra na ordem correta",
         "isCorrect": "Isso está correto?"
       },
       "verifyPhraseSuccess": {
-        "title": "Sucesso na verificação da frase",
-        "body": "Sua frase de recuperação foi verificada",
-        "note": "Certifique-se de armazenar sua frase de recuperação em um local seguro"
+        "title": "Sucesso na verificação da frase secreta",
+        "body": "Sua frase secreta de recuperação foi verificada",
+        "note": "Certifique-se de armazenar sua frase secreta de recuperação em um local seguro"
       },
       "verifyFingerprint": {
         "title": "Verificar impressão digital"
@@ -351,10 +351,10 @@
     },
     "unableRecover": {
       "title": "Não foi possível restaurar",
-      "body": "Não podemos importar uma carteira com sua frase de recuperação. Verifique se a frase está correta."
+      "body": "Não podemos importar uma carteira com sua frase secreta de recuperação. Verifique se a frase está correta."
     },
     "duplicatePhrase": {
-      "title Phrase": "Frase duplicada",
+      "title Phrase": "Frase secreta duplicada",
       "body": "Esta frase já foi importada no aplicativo. Por favor, tente com uma frase diferente."
     },
     "tooManyPhrase": {
@@ -396,11 +396,11 @@
     },
     "guardPhrase": {
       "title": "Proteja sua frase de recuperação",
-      "body": "Sua frase de recuperação é composta por 12 palavras geradas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
+      "body": "Sua frase secreta de recuperação é composta por 12 palavras geradas aleatoriamente. Por favor, escreva cuidadosamente cada palavra na ordem em que aparecem."
     },
     "incorrectBackupPhrase": {
-      "title": "Frase de backup incorreta",
-      "body": "É importante que você anote sua frase de recuperação corretamente. Se algo acontecer com sua carteira, você precisará recuperar seu dinheiro. Por favor revise e tente novamente."
+      "title": "Frase secreta de recuperação incorreta",
+      "body": "É importante que você anote sua frase secreta de recuperação corretamente. Se algo acontecer com sua carteira, você precisará recuperar seu dinheiro. Por favor revise e tente novamente."
     },
     "phraseCopied": {
       "title": "Copiado",
