@@ -12,7 +12,7 @@
       },
       "terms": {
         "term1": "I understand that my funds are held securely on this device, not by a company.",
-        "term2": "I understand that if this app is moved to another device or deleted, my funds can only be recovered with the recovery phrase.",
+        "term2": "I understand that if this app is moved to another device or deleted, my funds can only be recovered with the secret recovery phrase.",
         "term3": "I have read, understood, and agreed to the Terms of Use.",
         "viewTerms": "View Complete Terms of Use",
         "button": "Confirm & Accept",
@@ -71,7 +71,7 @@
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
         "importWallet": "Import Existing Wallet",
-        "importWalletNote": "Restore your wallet using the recovery phrase"
+        "importWalletNote": "Restore your wallet using the secret recovery phrase"
       },
       "selectCurrency": {
         "title": "Select Wallet Assets",
@@ -83,7 +83,7 @@
       },
       "recovery": {
         "title": "Import Wallet",
-        "note": "Type the recovery phrase (usually 12 words)",
+        "note": "Type the secret recovery phrase (usually 12 words)",
         "advancedOptions": "Advanced Options",
         "specifyPath": "Specify derivation path",
         "coin": "Coin",
@@ -91,7 +91,7 @@
         "derivationPath": "Derivation Path"
       },
       "recoveryPhrase": {
-        "title": "Recovery Phrase",
+        "title": "Secret Recovery Phrase",
         "note1": "Write down or copy these words",
         "note2": "in the right order and save them",
         "note3": "somewhere safe"
@@ -103,8 +103,8 @@
       },
       "verifyPhraseSuccess": {
         "title": "Verify Phrase Success",
-        "body": "Your recovery phrase is verified",
-        "note": "Be sure to store your recovery phrase in a safe and secure place"
+        "body": "Your secret recovery phrase is verified",
+        "note": "Be sure to store your secret recovery phrase in a safe and secure place"
       },
       "scan": {
         "title": "Scan",
