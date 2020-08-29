@@ -1,59 +1,24 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Dimensions,
+  View, Text, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StackActions, NavigationActions } from 'react-navigation';
-import AutoHeightImage from 'react-native-auto-height-image';
-import Header, { headerVisibleHeight } from '../../components/headers/header';
+import Header from '../../components/headers/header';
 import BasePageSimple from '../base/base.page.simple';
-import color from '../../assets/styles/color';
 import Button from '../../components/common/button/button';
-import ResponsiveText from '../../components/common/misc/responsive.text';
 import { strings } from '../../common/i18n';
-
-const bottomHeight = 70;
-const screenWidth = Dimensions.get('window').width;
-const contentHeight = Dimensions.get('window').height - headerVisibleHeight - bottomHeight;
-
-const completed = require('../../assets/images/icon/completed.png');
+import operationSuccessStyles from '../../assets/styles/operation.success.style';
+import color from '../../assets/styles/color';
+import CompletedIcon from '../../components/common/image/completed.icon';
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  check: {
-    marginBottom: contentHeight * 0.04,
-  },
   title: {
-    fontSize: 25,
+    fontSize: 24,
     color: color.black,
     fontFamily: 'Avenir-Book',
-  },
-  titleLayout: {
-    width: screenWidth * 0.55,
-    justifyContent: 'center',
-  },
-  wrapper: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  centerView: {
-    alignItems: 'center',
-    marginTop: -contentHeight * 0.25,
-  },
-  button: {
-    marginBottom: contentHeight * 0.037,
+    textAlign: 'center',
   },
 });
 
@@ -62,12 +27,7 @@ class ResetPasscodeSuccess extends Component {
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.onBackButtonPress = this.onBackButtonPress.bind(this);
-    }
-
-    onBackButtonPress() {
+    onBackButtonPressed = () => {
       const { navigation } = this.props;
       const resetAction = StackActions.reset({
         index: 1,
@@ -89,22 +49,16 @@ class ResetPasscodeSuccess extends Component {
           isSafeView
           hasBottomBtn
           hasLoader={false}
-          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title={title} />}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPressed} title={title} />}
         >
-          <View style={styles.wrapper}>
-            <View style={styles.content}>
-              <View style={styles.centerView}>
-                <AutoHeightImage style={styles.check} source={completed} width={screenWidth * 0.27} />
-                <ResponsiveText
-                  layoutStyle={styles.titleLayout}
-                  fontStyle={styles.title}
-                  maxFontSize={100}
-                >
-                  {strings(body)}
-                </ResponsiveText>
+          <View style={operationSuccessStyles.wrapper}>
+            <View style={operationSuccessStyles.content}>
+              <View style={operationSuccessStyles.centerView}>
+                <CompletedIcon style={operationSuccessStyles.check} />
+                <Text style={styles.title}>{strings(body)}</Text>
               </View>
             </View>
-            <Button style={styles.button} text="button.backToSetting" onPress={this.onBackButtonPress} />
+            <Button style={operationSuccessStyles.button} text="button.backToSetting" onPress={this.onBackButtonPressed} />
           </View>
         </BasePageSimple>
       );

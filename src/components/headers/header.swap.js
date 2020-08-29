@@ -9,6 +9,7 @@ const header = require('../../assets/images/misc/header.earn.png');
 const headerHeight = 630;
 const headerTopOffset = -200;
 const headerMarginTop = headerTopOffset + screenHelper.topHeight;
+export const headerVisibleHeight = headerHeight + headerMarginTop;
 
 const styles = StyleSheet.create({
   headerImage: {
