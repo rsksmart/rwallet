@@ -19,6 +19,8 @@ import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
+import WalletConnectionScan from '../pages/wallet/wallet.connection.scan';
+import WalletConnectionPage from '../pages/wallet/wallet.connection.page';
 import Transaction from '../pages/wallet/transaction';
 import Swap from '../pages/wallet/swap/swap';
 import SwapSelection from '../pages/wallet/swap/swap.selection';
@@ -109,6 +111,20 @@ const routeConfigMap = {
       path: 'SelectWallet',
       navigationOptions: () => ({
         headerTitle: 'Select Wallet',
+      }),
+    },
+    WalletConnectionScan: {
+      screen: WalletConnectionScan,
+      path: 'WalletConnectionScan',
+      navigationOptions: () => ({
+        headerTitle: 'Scan',
+      }),
+    },
+    WalletConnectionPage: {
+      screen: WalletConnectionPage,
+      path: 'WalletConnectionPage',
+      navigationOptions: () => ({
+        headerTitle: 'WalletConnectionPage',
       }),
     },
     StartPage: {
