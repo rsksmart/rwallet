@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Platform, StyleSheet, Modal,
+  View, Platform, StyleSheet, Modal, BackHandler,
 } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -138,7 +138,7 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
 
           { isShowAuthVerifyModal && (
-            <Modal animationType="fade" transparent>
+            <Modal animationType="fade" transparent onRequestClose={() => BackHandler.exitApp()}>
               <BlurView
                 blurType="dark"
                 blurAmount={10}

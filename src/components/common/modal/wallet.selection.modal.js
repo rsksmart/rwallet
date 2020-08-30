@@ -321,6 +321,7 @@ class WalletSelection extends PureComponent {
         animationType="fade"
         transparent
         visible={visible}
+        onRequestClose={closeFunction}
       >
         <View style={styles.backgroundView}>
           <View style={styles.modalView}>
