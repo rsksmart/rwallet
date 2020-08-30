@@ -534,7 +534,7 @@
     },
     "readOnlyWallet": {
       "title": "Carteira somente leitura",
-      "body": "Carteiras somente leitura permitem que você monitore ativos na blockchain sem a necessidade de importar as chaves privadas.\n\nAtualmente são permitidos endereço Bitcoin (SegWit e Legacy), endereço Rootstock ou apelido RNS."
+      "body": "Carteiras somente leitura permitem que você monitore ativos na blockchain sem a necessidade de importar as chaves de gasto.\n\nAtualmente são permitidos endereços Bitcoin (SegWit e Legacy), endereços Rootstock ou apelidos RNS."
     },
     "readOnlyLimit": {
       "title": "Operação não disponível",
