@@ -7,6 +7,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import Rsk3 from '@rsksmart/rsk3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
+import InputDataDecoder from 'ethereum-input-data-decoder';
 import moment from 'moment';
 // import moment locales
 import 'moment/locale/zh-cn';
@@ -585,6 +586,20 @@ const common = {
     } catch (error) {
       return url;
     }
+  },
+
+  /**
+   * Decode ethereum transaction input data
+   * return contract function name, types and other info
+   * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
+   * returns { method: 'registerOffChainDonation', type: ['address', 'unit256', 'uint256', 'string', 'bytes32'], ... }
+   * @param {*} abi, contract address abi
+   * @param {*} input, transaction's input
+   */
+  ethereumInputDecoder(abi, input) {
+    const decoder = new InputDataDecoder(abi);
+    const result = decoder.decodeData(input);
+    return result;
   },
 };
 
