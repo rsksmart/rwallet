@@ -138,7 +138,17 @@ class RootComponent extends Component {
           <Confirmation isShowConfirmation={isShowConfirmation} confirmation={confirmation} removeConfirmation={removeConfirmation} confirmationCallback={confirmationCallback} confirmationCancelCallback={confirmationCancelCallback} />
 
           { isShowAuthVerifyModal && (
-            <Modal animationType="fade" transparent onRequestClose={() => BackHandler.exitApp()}>
+            <Modal
+              animationType="fade"
+              transparent
+              onRequestClose={() => {
+                if (passcodeFallback) {
+                  closePasscodeModal();
+                } else {
+                  BackHandler.exitApp();
+                }
+              }}
+            >
               <BlurView
                 blurType="dark"
                 blurAmount={10}
