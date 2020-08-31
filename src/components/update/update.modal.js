@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Modal, TouchableOpacity, Linking, StyleSheet,
+  View, Text, Modal, TouchableOpacity, Linking, StyleSheet, BackHandler,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import space from '../../assets/styles/space';
@@ -76,9 +76,18 @@ class UpdateModal extends Component {
 
   render() {
     const { updateVersionInfo } = this.props;
-    const { title, body } = updateVersionInfo;
+    const { title, body, forceUpdate } = updateVersionInfo;
     return (
-      <Modal transparent onRequestClose={() => {}}>
+      <Modal
+        transparent
+        onRequestClose={() => {
+          if (!forceUpdate) {
+            this.onCancelButtonPressed();
+          } else {
+            BackHandler.exitApp();
+          }
+        }}
+      >
         <View style={notificationStyles.backgroundBoard}>
           <View style={notificationStyles.frontBoard}>
             <View style={space.paddingHorizontal_20}>

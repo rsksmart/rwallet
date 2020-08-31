@@ -96,7 +96,7 @@ class SelectionModal extends Component {
     const { title, items } = this.props;
     const { currentIndex, visible } = this.state;
     return (
-      <Modal visible={visible} transparent>
+      <Modal visible={visible} transparent onRequestClose={this.onCancelPressed}>
         <View style={styles.container}>
           <View style={styles.panel}>
             <View style={[styles.row, styles.titleView]}><Text style={styles.title}>{title}</Text></View>
