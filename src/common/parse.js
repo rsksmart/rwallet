@@ -4,7 +4,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
-import definitions from './definitions';
+import { blockHeightKeys } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
 import cointype from './wallet/cointype';
@@ -253,14 +253,13 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @memberof ParseHelper
    */
-  static async fetchTransactions(symbol, address, skipCount, fetchCount) {
-    const queryFrom = new Parse.Query(ParseTransaction);
-    queryFrom.equalTo('from', address);
-    const queryTo = new Parse.Query(ParseTransaction);
-    queryTo.equalTo('to', address);
-    const querySymbol = new Parse.Query(ParseTransaction);
-    querySymbol.equalTo('symbol', symbol);
-    const query = Parse.Query.and(Parse.Query.or(queryFrom, queryTo), querySymbol).descending('createdAt');
+  static async fetchTransactions(symbol, type, address, skipCount, fetchCount) {
+    const query = new Parse.Query(ParseTransaction)
+      .equalTo('from', address)
+      .equalTo('type', type)
+      .equalTo('to', address)
+      .equalTo('symbol', symbol)
+      .descending('createdAt');
     const results = await query.skip(skipCount).limit(fetchCount).find();
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
@@ -375,14 +374,14 @@ class ParseHelper {
 
   static async subscribeBlockHeights() {
     const query = new Parse.Query('Global');
-    query.containedIn('key', definitions.blockHeightKeys);
+    query.containedIn('key', blockHeightKeys);
     const subscription = await query.subscribe();
     return subscription;
   }
 
   static async fetchBlockHeights() {
     const query = new Parse.Query('Global');
-    query.containedIn('key', definitions.blockHeightKeys);
+    query.containedIn('key', blockHeightKeys);
     const rows = await query.find();
     const blockHeights = rows.map(parseDataUtil.getBlockHeight);
     return blockHeights;

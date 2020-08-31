@@ -20,7 +20,7 @@ import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
 import coinType from '../../common/wallet/cointype';
-import definitions from '../../common/definitions';
+import { BtcAddressType } from '../../common/constants';
 
 const bip39 = require('bip39');
 
@@ -156,13 +156,13 @@ class WalletRecovery extends Component {
         {
           symbol: 'BTC',
           prefix: "m/44'/0'/",
-          addressType: definitions.BtcAddressType.legacy,
+          addressType: BtcAddressType.legacy,
           displayText: `${coinType.BTC.defaultName} (BTC)`,
         },
         {
           symbol: 'BTC',
           prefix: "m/84'/0'/",
-          addressType: definitions.BtcAddressType.segwit,
+          addressType: BtcAddressType.segwit,
           displayText: `${coinType.BTC.defaultName} (BTC-SegWit)`,
         },
         {

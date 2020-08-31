@@ -16,13 +16,16 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageSimple from '../base/base.page.simple';
-import definitions from '../../common/definitions';
+import { WalletType, TxStatus } from '../../common/constants';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
+import appActions from '../../redux/app/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color';
+import references from '../../assets/references';
+import { createReadOnlyLimitNotification } from '../../common/notification.controller';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -30,7 +33,6 @@ const { getCurrencySymbol } = common;
 
 const sending = require('../../assets/images/icon/sending.png');
 const failed = require('../../assets/images/icon/failed.png');
-const send = require('../../assets/images/icon/send.png');
 const receive = require('../../assets/images/icon/receive.png');
 const rnsName = require('../../assets/images/icon/rnsName.png');
 
@@ -121,6 +123,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
+  },
+  disableText: {
+    color: color.nevada,
   },
   receiveText: {
     color: color.mantis,
@@ -301,15 +306,15 @@ class History extends Component {
       const isSender = address === transaction.from;
       let state = 'Failed';
       switch (transaction.status) {
-        case definitions.txStatus.PENDING:
+        case TxStatus.PENDING:
           state = isSender ? 'Sending' : 'Receiving';
           break;
-        case definitions.txStatus.SUCCESS:
+        case TxStatus.SUCCESS:
           state = isSender ? 'Sent' : 'Received';
           break;
         default:
       }
-      const datetime = transaction.status === definitions.txStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
+      const datetime = transaction.status === TxStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
       let datetimeText = '';
       if (datetime) {
         const daysElapsed = moment().diff(datetime, 'days');
@@ -344,6 +349,7 @@ class History extends Component {
 
     const { navigation } = props;
     this.coin = navigation.state.params.coin;
+    this.walletType = navigation.state.params.walletType;
 
     this.state = {
       isRefreshing: false,
@@ -452,7 +458,11 @@ class History extends Component {
   }
 
   onSendButtonClick() {
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
+    if (this.walletType === WalletType.Readonly) {
+      addNotification(createReadOnlyLimitNotification());
+      return;
+    }
     navigation.navigate('Transfer', navigation.state.params);
   }
 
@@ -462,7 +472,11 @@ class History extends Component {
   }
 
   onRnsButtonClick = async () => {
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
+    if (this.walletType === WalletType.Readonly) {
+      addNotification(createReadOnlyLimitNotification());
+      return;
+    }
     const subdomains = await storage.getRnsRegisteringSubdomains();
     console.log('Registering subdomains: ', subdomains);
     if (subdomains) {
@@ -582,6 +596,8 @@ class History extends Component {
     const chain = this.coin && this.coin.chain;
     const symbolName = common.getSymbolName(symbol, type);
 
+    const isReadOnlyWallet = this.walletType === WalletType.Readonly;
+
     return (
       <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
@@ -601,11 +617,11 @@ class History extends Component {
             }
             <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
-                style={styles.ButtonView}
+                style={[styles.ButtonView, { opacity: isReadOnlyWallet ? 0.5 : 1 }]}
                 onPress={this.onSendButtonClick}
               >
-                <Image source={send} />
-                <Loc style={[styles.sendText]} text="button.Send" />
+                <Image source={isReadOnlyWallet ? references.images.send_gray : references.images.send} />
+                <Loc style={[styles.sendText, isReadOnlyWallet ? styles.disableText : null]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.spliteLine} />
               <TouchableOpacity
@@ -619,7 +635,7 @@ class History extends Component {
                 <View style={{ flexDirection: 'row' }}>
                   <View style={styles.spliteLine} />
                   <TouchableOpacity
-                    style={[styles.ButtonView]}
+                    style={[styles.ButtonView, { opacity: isReadOnlyWallet ? 0.5 : 1 }]}
                     onPress={this.onRnsButtonClick}
                   >
                     <Image source={rnsName} />
@@ -655,6 +671,7 @@ History.propTypes = {
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   fetchTransactions: PropTypes.func.isRequired,
   txTimestamp: PropTypes.number,
+  addNotification: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -673,6 +690,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

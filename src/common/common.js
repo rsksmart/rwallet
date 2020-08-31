@@ -18,10 +18,8 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import definitions from './definitions';
-import CONSTANTS from './constants.json';
-
-const { BIOMETRY_TYPES } = CONSTANTS;
+import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
+import cointype from './wallet/cointype';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -253,11 +251,12 @@ const common = {
    * @param {string} type, MainTest or Testnet
    * @param {string} networkId
    */
-  isWalletAddress(address, symbol, type, networkId) {
+  isWalletAddress(address, symbol, type) {
     if (symbol === 'BTC') {
       return common.isBtcAddress(address, type);
     }
     try {
+      const { networkId } = this.getCoinType(symbol, type);
       Rsk3.utils.toChecksumAddress(address, networkId);
       return true;
     } catch (error) {
@@ -436,7 +435,7 @@ const common = {
     // Find out transactions which combines amount
     for (let i = 0; i < transactions.length; i += 1) {
       const tx = transactions[i];
-      if (tx.status === definitions.txStatus.SUCCESS) {
+      if (tx.status === TxStatus.SUCCESS) {
         const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
         sum = sum.plus(txAmount);
         inputTxs.push(tx.hash);
@@ -585,6 +584,19 @@ const common = {
     } catch (error) {
       return url;
     }
+  },
+
+  getCoinId(symbol, type) {
+    const foundSymbol = _.find(supportedTokens, (token) => token === symbol);
+    if (foundSymbol) {
+      return type === 'Mainnet' ? symbol : `${symbol}${type}`;
+    }
+    return type === 'Mainnet' ? CustomToken : `${CustomToken}${type}`;
+  },
+
+  getCoinType(symbol, type) {
+    const coinId = this.getCoinId(symbol, type);
+    return cointype[coinId];
   },
 };
 

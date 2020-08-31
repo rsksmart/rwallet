@@ -19,6 +19,7 @@ import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import common from '../../common/common';
 import coinType from '../../common/wallet/cointype';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -72,7 +73,8 @@ class AddCustomToken extends Component {
         isMainnet: true,
         isCanConfirm: false,
       };
-      this.type = 'Mainnet';
+      this.wallet = props.navigation.state.params.wallet;
+      this.type = this.wallet.walletType === WalletType.Readonly ? this.wallet.type : 'Mainnet';
       this.chain = 'Rootstock';
     }
 
@@ -112,7 +114,7 @@ class AddCustomToken extends Component {
       const { type, chain } = this;
       try {
         const contractAddress = Rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
-        const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type, coinType.RBTC.networkId);
+        const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type);
         if (!isWalletAddress) {
           throw new Error();
         }
@@ -167,13 +169,15 @@ class AddCustomToken extends Component {
                 onChangeText={this.onAddressInputChanged}
               />
             </View>
-            <View style={[styles.switchView]}>
-              <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
-              <Switch
-                value={isMainnet}
-                onValueChange={this.onSwitchValueChanged}
-              />
-            </View>
+            { this.wallet.walletType !== WalletType.Readonly && (
+              <View style={[styles.switchView]}>
+                <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+                <Switch
+                  value={isMainnet}
+                  onValueChange={this.onSwitchValueChanged}
+                />
+              </View>
+            ) }
           </View>
         </BasePageGereral>
       );

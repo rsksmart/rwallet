@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import definitions from './definitions';
+import { blockHeightKeyInfos } from './constants';
 
 const parseDataUtil = {
   /**
@@ -41,6 +41,7 @@ const parseDataUtil = {
       balance: tokenObj.get('balance'),
       address: tokenObj.get('address'),
       symbol: tokenObj.get('symbol'),
+      type: tokenObj.get('type'),
       subdomain: tokenObj.get('subdomain'),
     };
     return balance;
@@ -53,7 +54,6 @@ const parseDataUtil = {
   getBlockHeight(row) {
     const key = row.get('key');
     const { value } = row.get('valObj');
-    const { blockHeightKeyInfos } = definitions;
     return { ...blockHeightKeyInfos[key], blockHeight: value };
   },
 

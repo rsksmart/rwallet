@@ -58,6 +58,8 @@ const actions = {
   SET_SUBDOMAINS: 'SET_SUBDOMAINS',
   GET_BALANCE: 'GET_BALANCE',
 
+  CREATE_READ_ONLY_WALLET: 'CREATE_READ_ONLY_WALLET',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -173,6 +175,12 @@ const actions = {
     type: actions.GET_BALANCE,
     payload: {
       symbol, type, address, needFetch,
+    },
+  }),
+  createReadOnlyWallet: (chain, type, address, coins) => ({
+    type: actions.CREATE_READ_ONLY_WALLET,
+    payload: {
+      chain, type, address, coins,
     },
   }),
 };

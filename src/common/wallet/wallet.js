@@ -5,10 +5,10 @@ import RBTCCoin from './rbtccoin';
 import storage from '../storage';
 import coinType from './cointype';
 import common from '../common';
-import definitions from '../definitions';
+import { WalletType, BtcAddressType } from '../constants';
+import BasicWallet from './basic.wallet';
 
 const bip39 = require('bip39');
-const ordinal = require('ordinal');
 
 const derivationTypes = [
   { symbol: 'BTC', type: 'Mainnet' },
@@ -17,13 +17,11 @@ const derivationTypes = [
   { symbol: 'RBTC', type: 'Testnet' },
 ];
 
-export default class Wallet {
+export default class Wallet extends BasicWallet {
   constructor({ id, name, mnemonic }) {
-    this.id = id;
-    this.name = name || `My ${ordinal(id + 1)} Wallet`;
+    super(id, name, WalletType.Normal);
     this.mnemonic = mnemonic;
     this.assetValue = new BigNumber(0);
-    this.coins = [];
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
     this.derivations = undefined;
   }
@@ -56,15 +54,6 @@ export default class Wallet {
   restoreTokensWithDerivations(coins, derivations) {
     this.derivations = derivations;
     this.createCoins(coins);
-  }
-
-  // create coins and add to list
-  createCoins(coins) {
-    if (!_.isEmpty(coins)) {
-      coins.forEach((item) => {
-        this.addToken(item);
-      });
-    }
   }
 
   /**
@@ -148,12 +137,13 @@ export default class Wallet {
   /**
    * Returns a JSON to save required data to backend server; empty array if there's no coins
    */
-  toJSON() {
+  toJSON = () => {
     const newDerivations = _.map(this.derivations, (derivation) => derivation.toDerivationJson());
 
     const result = {
       id: this.id,
       name: this.name,
+      walletType: this.walletType,
       // createdAt: this.createdAt,
       coins: this.coins.map((coin) => coin.toJSON()),
       derivations: newDerivations,
@@ -197,7 +187,7 @@ export default class Wallet {
           isNeedSave = true;
           coin = new Coin(symbol, type, path);
           coin.derive(seed);
-          coin.setAddressType(definitions.BtcAddressType.legacy);
+          coin.setAddressType(BtcAddressType.legacy);
           await coin.savePrivateKey(id);
         } else {
           // restore derivation
@@ -227,24 +217,6 @@ export default class Wallet {
     });
 
     return { isNeedSave, wallet };
-  }
-
-  /**
-   * Set Coin's objectId to values in parseWallets, and return true if there's any change
-   * @param {array} addresses Array of JSON objects
-   * @returns True if any Coin is updated
-   */
-  updateCoinObjectIds(addresses) {
-    const { coins } = this;
-
-    let isDirty = false;
-    _.each(coins, (coin) => {
-      if (coin.updateCoinObjectIds(addresses)) {
-        isDirty = true;
-      }
-    });
-
-    return isDirty;
   }
 
   /**

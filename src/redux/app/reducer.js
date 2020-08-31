@@ -50,6 +50,7 @@ const initState = new Map({
   advertisements: undefined,
   recentDapps: undefined,
   page: undefined,
+  isReadOnlyWalletIntroShowed: false,
   isShowUpdateModal: false, // show update modal
   isShowedUpdateModal: false, //  This time the app launch has showed update modal
 });
@@ -179,6 +180,8 @@ export default function appReducer(state = initState, action) {
       return state.set('page', action.page);
     case actions.RESET_PAGE:
       return state.set('page', null);
+    case actions.SET_READ_ONLY_WALLET_INTRO_SHOWED:
+      return state.set('isReadOnlyWalletIntroShowed', true);
     case actions.SET_UPDATE_MODAL: {
       let newState = state.set('isShowUpdateModal', action.visible);
       if (action.visible) {

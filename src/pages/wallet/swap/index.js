@@ -16,10 +16,11 @@ class SwapIndex extends Component {
   }
 
   componentDidMount() {
-    const { navigation, wallets } = this.props;
+    const { navigation, walletManager } = this.props;
     this.willFocusSubscription = navigation.addListener(
       'willFocus',
       () => {
+        const wallets = walletManager.getNormalWallets();
         const component = this.getComponent(wallets, navigation);
         this.setState({ component });
       },
@@ -60,7 +61,9 @@ class SwapIndex extends Component {
 }
 
 SwapIndex.propTypes = {
-  wallets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  walletManager: PropTypes.shape({
+    getNormalWallets: PropTypes.func.isRequired,
+  }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -71,7 +74,7 @@ SwapIndex.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  walletManager: state.Wallet.get('walletManager'),
 });
 
 export default connect(mapStateToProps)(SwapIndex);

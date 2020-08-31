@@ -11,10 +11,8 @@ import Switch from '../../components/common/switch/switch';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
-import CONSTANS from '../../common/constants.json';
+import { BIOMETRY_TYPES } from '../../common/constants';
 import color from '../../assets/styles/color';
-
-const { BIOMETRY_TYPES } = CONSTANS;
 
 const styles = StyleSheet.create({
   body: {

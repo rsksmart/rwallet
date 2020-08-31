@@ -25,7 +25,8 @@
         "myAssets": "Mis activos",
         "allAssets": "Todos los activos",
         "addAsset": "Agregar activo",
-        "addWallet": "Agregar billetera"
+        "addWallet": "Agregar billetera",
+        "readOnly": "Solo lectura"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -71,7 +72,9 @@
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
         "importWallet": "Importar billetera existente",
-        "importWalletNote": "Restaura tu billetera usando la frase de recuperación"
+        "importWalletNote": "Restaura tu billetera usando la frase de recuperación",
+        "addReadOnlyWallet": "Agregar billetera de solo lectura",
+        "addReadOnlyWalletNote": "Monitorear activos sin claves"
       },
       "selectCurrency": {
         "title": "Seleccionar activos de Wallet",
@@ -194,6 +197,15 @@
         "pending": "Registro a la espera de ser confirmado.",
         "success": "¡Éxito! Tu apodo es creado.",
         "failed": "¡Ha fallado! No se pudo registrar su apodo."
+      },
+      "addReadOnlyWallet": {
+        "title": "Agregar Wallet de solo lectura",
+        "address": "Dirección de Wallet",
+        "note": "Ingrese un BTC, una dirección de billetera RBTC o un nombre RNS para monitorear.",
+        "question": "Encontramos los siguientes activos en esta billetera. ¿Le gustaría monitorear esta dirección?",
+        "rnsQuestion": "Encontramos la dirección de la billetera y los activos a continuación. ¿Le gustaría monitorear esta dirección?",
+        "rnsInvalid": "Lo sentimos, el nombre de RNS no está asociado con una dirección de billetera en la cadena de bloques de Rootstock. Vuelva a intentarlo",
+        "duplicateAddress": "Esta dirección ya está importada en la aplicación. Intente con una dirección diferente."
       }
     },
     "dapp": {
@@ -322,6 +334,7 @@
     "pending": "Pendiente",
     "done": "Hecho",
     "share": "COMPARTIR",
+    "check": "CHEQUE",
     "update": "Actualizar"
   },
   "txState": {
@@ -505,6 +518,14 @@
       "body": "Por favor seleccione el tipo de dirección de bitcoin",
       "legacy": "legado",
       "segwit": "segwit"
+    },
+    "readOnlyWallet": {
+      "title": "Billetera de solo lectura",
+      "body": "La función Wallet de solo lectura le permite monitorear activos en blockchain sin importar claves privadas.\n\nLas entradas actualmente permitidas son la dirección de Bitcoin (tanto SegWit como Legacy), dirección de Rootstock o apodo de RNS."
+    },
+    "readOnlyLimit": {
+      "title": "Operación no disponible",
+      "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
     }
   },
   "currency": {

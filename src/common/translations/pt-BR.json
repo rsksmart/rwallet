@@ -26,7 +26,8 @@
         "myAssets": "Meus ativos",
         "allAssets": "Todos os ativos",
         "addAsset": "Adicionar ativo",
-        "addWallet": "Adicionar carteira"
+        "addWallet": "Adicionar carteira",
+        "readOnly": "Somente leitura"
       },
       "history": {
         "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
@@ -72,7 +73,9 @@
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
-        "importWalletNote": "Restaure sua carteira usando a frase de recuperação"
+        "importWalletNote": "Restaure sua carteira usando a frase de recuperação",
+        "addReadOnlyWallet": "Adicionar carteira somente leitura",
+        "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
@@ -194,6 +197,15 @@
         "pending": "Registro aguardando confirmação.",
         "success": "Sucesso! Seu apelido foi criado.",
         "failed": "Falhou! Seu apelido não foi registrado."
+      },
+      "addReadOnlyWallet": {
+        "title": "Adicionar carteira somente leitura",
+        "address": "Endereço da carteira",
+        "note": "Insira um endereço de carteira BTC, RBTC ou nome RNS a ser monitorado.",
+        "question": "Encontramos abaixo os seguintes ativos nesta carteira. Você deseja monitorar este endereço?",
+        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes ativos. Você deseja monitorar este endereço?",
+        "rnsInvalid": "Desculpe, o apelido RNS não está associado a um endereço de carteira na blockchain da Rootstock. Por favor, tente novamente.",
+        "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
       }
     },
     "dapp": {
@@ -335,6 +347,7 @@
     "pending": "Pendente",
     "done": "Pronto",
     "share": "COMPARTILHAR",
+    "check": "VERIFICAR",
     "update": "Atualizar"
   },
   "txState": {
@@ -518,6 +531,14 @@
       "body": "Por favor, selecione o tipo de endereço bitcoin",
       "legacy": "legacy",
       "segwit": "segwit"
+    },
+    "readOnlyWallet": {
+      "title": "Carteira somente leitura",
+      "body": "Carteiras somente leitura permitem que você monitore ativos na blockchain sem a necessidade de importar as chaves de gasto.\n\nAtualmente são permitidos endereços Bitcoin (SegWit e Legacy), endereços Rootstock ou apelidos RNS."
+    },
+    "readOnlyLimit": {
+      "title": "Operação não disponível",
+      "body": "As funções Enviar, Trocar e Ler código QR não estão disponíveis para carteiras somente leitura. Para habilitá-las, importe esta carteira usando a sua frase de recuperação de 12 palavras."
     }
   },
   "currency": {
@@ -527,5 +548,11 @@
     "KRW": "Won Sul-Coreano",
     "CNY": "Yuan chinês",
     "GBP": "Libra esterlina"
+  },
+  "notification": {
+    "networkError": {
+      "title": "Erro de rede",
+      "body": "Seu dispositivo não pode se conectar ao servidor."
+    }
   }
 }

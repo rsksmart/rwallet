@@ -25,7 +25,8 @@
         "myAssets": "我的资产",
         "allAssets": "所有资产",
         "addAsset": "添加资产",
-        "addWallet": "添加钱包"
+        "addWallet": "添加钱包",
+        "readOnly": "只读"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",
@@ -71,7 +72,9 @@
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
-        "importWalletNote": "使用助记词还原您的钱包"
+        "importWalletNote": "使用助记词还原您的钱包",
+        "addReadOnlyWallet": "添加只读钱包",
+        "addReadOnlyWalletNote": "无需密钥即可监视资产"
       },
       "selectCurrency": {
         "title": "选择钱包资产",
@@ -194,6 +197,15 @@
         "pending": "注册等待被确认",
         "success": "成功! 您的昵称已被创建.",
         "failed": "失败！您的昵称注册失败."
+      },
+      "addReadOnlyWallet": {
+        "title": "添加只读钱包",
+        "address": "钱包地址",
+        "note": "请输入要监视的BTC，RBTC钱包地址或RNS名称。",
+        "question": "我们在此钱包中找到以下资产，您要监视此地址吗？",
+        "rnsQuestion": "我们在此钱包中找到以下地址和资产，您要监视此地址吗？",
+        "rnsInvalid": "抱歉，RNS名称与Rootstock区块链上的钱包地址没有关联，请再试。",
+        "duplicateAddress": "此地址已导入到应用程序中，请尝试使用其他地址。"
       }
     },
     "dapp": {
@@ -322,6 +334,7 @@
     "pending": "等待中",
     "done": "已完成",
     "share": "分享",
+    "check": "检查",
     "update": "更新"
   },
   "txState": {
@@ -505,6 +518,14 @@
       "body": "请选择比特币地址类型",
       "legacy": "普通",
       "segwit": "隔离见证"
+    },
+    "readOnlyWallet": {
+      "title": "只读钱包",
+      "body": "只读钱包功能允许您在不导入私钥的情况下监视区块链上的资产。\n\n当前允许的输入为比特币地址（SegWit和Legacy两者），根目录地址或RNS昵称。"
+    },
+    "readOnlyLimit": {
+      "title": "操作不可用",
+      "body": "发送，交换和扫描二维码操作不适用于只读钱包。要启用这些功能，请导入包含12个单词的短语的钱包。"
     }
   },
   "currency": {

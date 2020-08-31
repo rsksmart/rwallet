@@ -186,7 +186,7 @@ class RnsAddress extends Component {
     super(props);
     const { walletManager, navigation } = props;
     const { coin } = navigation.state.params;
-    const { wallets } = walletManager;
+    const wallets = walletManager.getNormalWallets();
 
     this.tokens = getTokens(wallets);
 
@@ -501,7 +501,7 @@ RnsAddress.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({
-    wallets: PropTypes.array,
+    getNormalWallets: PropTypes.func.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
 };

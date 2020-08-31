@@ -15,7 +15,7 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import common from '../../common/common';
 import walletManager from '../../common/wallet/walletManager';
-import definitions from '../../common/definitions';
+import { defaultErrorNotification } from '../../common/constants';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
 import config from '../../../config';
@@ -67,6 +67,10 @@ function* initFromStorageRequest() {
       yield call(storage.setStorageVersion, config.storageVersion);
     }
 
+    const isReadOnlyWalletIntroShowed = yield call(storage.getReadOnlyWalletIntroShowed);
+    if (isReadOnlyWalletIntroShowed) {
+      yield put(actions.setReadOnlyWalletIntroShowed());
+    }
     // Restore update version info from storage
     const updateVersionInfo = yield call(storage.getUpdateVersionInfo);
     if (updateVersionInfo) {
@@ -210,7 +214,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -227,7 +231,7 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -251,7 +255,7 @@ function* renameRequest(action) {
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
   }
@@ -466,6 +470,11 @@ function* receiveNotificationRequest(action) {
   return null;
 }
 
+function* showReadOnlyWalletIntroRequest() {
+  yield call(storage.setReadOnlyWalletIntroShowed);
+  yield put(actions.setReadOnlyWalletIntroShowed());
+}
+
 function* showUpdateModalRequest() {
   yield put(actions.setUpdateModal(true));
 }
@@ -500,6 +509,8 @@ export default function* () {
     takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
+
+    takeEvery(actions.SHOW_READ_ONLY_WALLET_INTRO, showReadOnlyWalletIntroRequest),
 
     takeEvery(actions.SHOW_UPDATE_MODAL, showUpdateModalRequest),
     takeEvery(actions.HIDE_UPDATE_MODAL, hideUpdateModalRequest),

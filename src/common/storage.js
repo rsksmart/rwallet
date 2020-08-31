@@ -16,6 +16,7 @@ const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
 const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
 const USE_TRANSACTION_FALLBACK_ADDRESSES = 'useTransactionFallbackAddress';
 const STORAGE_VERSION = 'storageVersion';
+const IS_READ_ONLY_WALLET_INTRO_SHOWED = 'isReadOnlyWalletIntroShowed';
 const UPDATE_VERSION_INFO = 'updateVersionInfo';
 
 class RNStorage {
@@ -368,6 +369,10 @@ class RNStorage {
   }
 
   getStorageVersion = async () => this.load({ key: STORAGE_VERSION })
+
+  setReadOnlyWalletIntroShowed = async () => this.save(IS_READ_ONLY_WALLET_INTRO_SHOWED, true);
+
+  getReadOnlyWalletIntroShowed = async () => this.load({ key: IS_READ_ONLY_WALLET_INTRO_SHOWED });
 
   /**
    * Get update version info that is fetched from server.

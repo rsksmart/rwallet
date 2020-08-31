@@ -18,6 +18,8 @@ import screenHelper from '../../../common/screenHelper';
 import { screen } from '../../../common/info';
 import { createNewFeatureConfirmation } from '../../../common/confirmation.controller';
 import storage from '../../../common/storage';
+import { WalletType } from '../../../common/constants';
+import { createReadOnlyLimitNotification } from '../../../common/notification.controller';
 
 const WALLET_PAGE_WIDTH = screen.width - 50;
 
@@ -55,7 +57,7 @@ class WalletList extends Component {
           worth: worthText,
           amount: amountText,
           icon: coin.icon,
-          onPress: () => navigation.navigate('WalletHistory', { coin }),
+          onPress: () => navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType }),
         };
         wal.coins.push(item);
       });
@@ -134,7 +136,11 @@ class WalletList extends Component {
     const { addConfirmation, navigation } = this.props;
     const { walletManager } = this.props;
     const { wallets } = walletManager;
-    const coin = _.find(wallets[0].coins, { chain: 'Rootstock' });
+    const wallet = _.find(wallets, { walletType: WalletType.Normal });
+    if (!wallet) {
+      return;
+    }
+    const coin = _.find(wallet.coins, { chain: 'Rootstock' });
     if (coin) {
       const infoConfirmation = createNewFeatureConfirmation(
         'modal.rnsNewFeature.title',
@@ -154,9 +160,40 @@ class WalletList extends Component {
   }
 
   onSwapPressed = (wallet) => {
-    const { resetSwap, navigation } = this.props;
+    const { resetSwap, navigation, addNotification } = this.props;
+    if (wallet.walletType === WalletType.Readonly) {
+      addNotification(createReadOnlyLimitNotification());
+      return;
+    }
     resetSwap();
     navigation.navigate('SwapSelection', { selectionType: 'source', init: true, wallet });
+  }
+
+  onSendPressed = (wallet) => {
+    const { navigation, addNotification } = this.props;
+    if (wallet.walletType === WalletType.Readonly) {
+      addNotification(createReadOnlyLimitNotification());
+      return;
+    }
+    navigation.navigate('SelectWallet', { operation: 'send', wallet });
+  }
+
+  onReceivePressed = (wallet) => {
+    const { navigation } = this.props;
+    navigation.navigate('SelectWallet', { operation: 'receive', wallet });
+  }
+
+  onScanQrcodePressed = (wallet) => {
+    const { navigation, addNotification } = this.props;
+    if (wallet.walletType === WalletType.Readonly) {
+      addNotification(createReadOnlyLimitNotification());
+      return;
+    }
+    navigation.navigate('SelectWallet', {
+      operation: 'scan',
+      wallet,
+      onDetectedAction: 'navigateToTransfer',
+    });
   }
 
   render() {
@@ -168,13 +205,9 @@ class WalletList extends Component {
       return {
         index,
         walletData,
-        onSendPressed: () => navigation.navigate('SelectWallet', { operation: 'send', wallet: walletData.wallet }),
-        onReceivePressed: () => navigation.navigate('SelectWallet', { operation: 'receive', wallet: walletData.wallet }),
-        onScanQrcodePressed: () => navigation.navigate('SelectWallet', {
-          operation: 'scan',
-          wallet: walletData.wallet,
-          onDetectedAction: 'navigateToTransfer',
-        }),
+        onSendPressed: () => this.onSendPressed(walletData.wallet),
+        onReceivePressed: () => this.onReceivePressed(walletData.wallet),
+        onScanQrcodePressed: () => this.onScanQrcodePressed(walletData.wallet),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
         onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
         currencySymbol,
@@ -216,6 +249,7 @@ WalletList.propTypes = {
   addConfirmation: PropTypes.func.isRequired,
   appLock: PropTypes.bool.isRequired,
   isShowUpdateModal: PropTypes.bool.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 WalletList.defaultProps = {
@@ -235,6 +269,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
   showInAppNotification: (inAppNotification) => dispatch(appActions.showInAppNotification(inAppNotification)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletList);

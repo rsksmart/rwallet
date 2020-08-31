@@ -25,7 +25,8 @@
         "myAssets": "My Assets",
         "allAssets": "All Assets",
         "addAsset": "Add Asset",
-        "addWallet": "Add Wallet"
+        "addWallet": "Add Wallet",
+        "readOnly": "Read-only"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -71,7 +72,9 @@
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
         "importWallet": "Import Existing Wallet",
-        "importWalletNote": "Restore your wallet using the recovery phrase"
+        "importWalletNote": "Restore your wallet using the recovery phrase",
+        "addReadOnlyWallet": "Add Read-only Wallet",
+        "addReadOnlyWalletNote": "Monitor assets without keys"
       },
       "selectCurrency": {
         "title": "Select Wallet Assets",
@@ -191,6 +194,15 @@
         "pending": "Registration waiting to be confirmed.",
         "success": "Success! Your nickname is created.",
         "failed": "Failed! Your nickname is failed to register."
+      },
+      "addReadOnlyWallet": {
+        "title": "Add Read-only Wallet",
+        "address": "Wallet Address",
+        "note": "Please enter a BTC, RBTC wallet address or RNS name to be monitored.",
+        "question": "We found below assets in this wallet. Would you like to monitor this address?",
+        "rnsQuestion": "We found the wallet address and below assets. Would you like to monitor this address?",
+        "rnsInvalid": "Sorry, the RNS name is not associated with a wallet address on Rootstock blockchain. Please try again.",
+        "duplicateAddress": "This address is already imported in the app. Please try with a different address."
       }
     },
     "dapp": {
@@ -319,6 +331,7 @@
     "pending": "Pending",
     "done": "Done",
     "share": "SHARE",
+    "check": "CHECK",
     "update": "Update"
   },
   "txState": {
@@ -502,6 +515,14 @@
       "body": "Please select bitcoin address type",
       "legacy": "legacy",
       "segwit": "segwit"
+    },
+    "readOnlyWallet": {
+      "title": "Read-only Wallet",
+      "body": "Read-only Wallet feature allows you to monitor assets on blockchain without importing private keys.\n\nCurrently allowed inputs are Bitcoin address (both SegWit and Legacy), Rootstock address, or RNS nickname."
+    },
+    "readOnlyLimit": {
+      "title": "Operation not available",
+      "body": "Send, Swap and Scan QR Code operations are not available for a Read-only wallet. To enable those, please Import this wallet with its 12-word phrases."
     }
   },
   "currency": {

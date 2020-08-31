@@ -268,9 +268,9 @@ function* fetchTransactions(action) {
   const {
     token, fetchCount, skipCount, timestamp,
   } = action.payload;
-  const { symbol, address } = token;
+  const { symbol, type, address } = token;
   try {
-    const transactions = yield call(ParseHelper.fetchTransactions, symbol, address, skipCount, fetchCount);
+    const transactions = yield call(ParseHelper.fetchTransactions, symbol, type, address, skipCount, fetchCount);
     token.transactions = token.transactions || [];
     addTokenTransactions(token, transactions);
   } catch (error) {
@@ -419,6 +419,27 @@ function* getBalanceRequest(action) {
   }
 }
 
+function* createReadOnlyWalletRequest(action) {
+  const {
+    chain, type, address, coins,
+  } = action.payload;
+  try {
+    const state = yield select();
+    const currency = state.App.get('currency');
+    const prices = state.Price.get('prices');
+    const walletManager = state.Wallet.get('walletManager');
+    yield call(walletManager.createReadOnlyWallet, chain, type, address, coins);
+    yield put({ type: actions.UPDATE_ASSET_VALUE, payload: { currency, prices } });
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
+  } catch (err) {
+    console.warn(err.message);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -440,5 +461,6 @@ export default function* () {
     takeEvery(actions.FETCH_LATEST_BLOCK_HEIGHT, fetchBlockHeightsRequest),
 
     takeEvery(actions.GET_BALANCE, getBalanceRequest),
+    takeEvery(actions.CREATE_READ_ONLY_WALLET, createReadOnlyWalletRequest),
   ]);
 }

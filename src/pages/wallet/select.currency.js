@@ -18,7 +18,7 @@ import coinType from '../../common/wallet/cointype';
 import common from '../../common/common';
 import Item from '../../components/wallet/coin.type.list.item';
 import color from '../../assets/styles/color';
-import definitions from '../../common/definitions';
+import { BtcAddressType } from '../../common/constants';
 import Button from '../../components/common/button/button';
 
 const styles = StyleSheet.create({
@@ -69,8 +69,8 @@ class WalletSelectCurrency extends Component {
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
       if (isWalletsUpdated && isLoading) {
         this.setState({ isLoading: false });
-        const statckActions = StackActions.popToTop();
-        navigation.dispatch(statckActions);
+        const stackActions = StackActions.popToTop();
+        navigation.dispatch(stackActions);
       }
     }
 
@@ -115,9 +115,9 @@ class WalletSelectCurrency extends Component {
       }
       // Ask users for BTC address type
       const notification = createBTCAddressTypeConfirmation(() => {
-        this.createCoins(definitions.BtcAddressType.legacy);
+        this.createCoins(BtcAddressType.legacy);
       }, () => {
-        this.createCoins(definitions.BtcAddressType.segwit);
+        this.createCoins(BtcAddressType.segwit);
       });
       addConfirmation(notification);
     }
