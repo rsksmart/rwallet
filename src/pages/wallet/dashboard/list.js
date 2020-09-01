@@ -176,6 +176,7 @@ class WalletList extends Component {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
     if (coins.length === 1) {
       navigation.navigate('Transfer', { wallet, coin: coins[0] });
       return;
@@ -186,6 +187,7 @@ class WalletList extends Component {
   onReceivePressed = (wallet) => {
     const { navigation } = this.props;
     const { coins } = wallet;
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
     if (coins.length === 1) {
       navigation.navigate('WalletReceive', { coin: coins[0] });
       return;
@@ -200,6 +202,7 @@ class WalletList extends Component {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
     if (coins.length === 1) {
       navigation.navigate('Scan', { coin: coins[0], onDetectedAction: 'navigateToTransfer' });
       return;
