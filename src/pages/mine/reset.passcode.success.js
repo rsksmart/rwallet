@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,9 +13,11 @@ import operationSuccessStyles from '../../assets/styles/operation.success.style'
 import color from '../../assets/styles/color';
 import CompletedIcon from '../../components/common/image/completed.icon';
 
+const screenWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   title: {
-    fontSize: 24,
+    fontSize: screenWidth > 400 ? 24 : 22,
     color: color.black,
     fontFamily: 'Avenir-Book',
     textAlign: 'center',
