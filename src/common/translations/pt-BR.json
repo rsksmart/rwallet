@@ -252,9 +252,13 @@
         "useBiometrics": "Usar biometria"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "PIN configurado com sucesso",
-          "reset": "PIN alterado com sucesso"
+        "create": {
+          "title": "Definir PIN",
+          "body": "PIN configurado com sucesso!"
+        } ,
+        "reset": {
+          "title": "Redefinir PIN",
+          "body": "Redefinição concluída!"
         }
       },
       "keySettings": {

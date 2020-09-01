@@ -257,9 +257,13 @@
         "useBiometrics": "Usar biometría"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "Código de acceso establecido",
-          "reset": "Contraseña restablecida exitosamente"
+        "create": {
+          "title": "Código de acceso establecido",
+          "body": "¡Conjunto completado!"
+        } ,
+        "reset": {
+          "title": "Restablecer contraseña",
+          "body": "¡Reinicio completado!"
         }
       },
       "keySettings": {

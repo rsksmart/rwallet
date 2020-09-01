@@ -257,9 +257,13 @@
         "useBiometrics": "使用生物识别"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "设置密码成功",
-          "reset": "重置密码成功"
+        "create": {
+          "title": "设置密码",
+          "body": "设置成功！"
+        } ,
+        "reset": {
+          "title": "重置密码",
+          "body": "重置成功！"
         }
       },
       "keySettings": {

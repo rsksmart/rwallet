@@ -254,9 +254,13 @@
         "useBiometrics": "生体認証を使用する"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "パスコードを設定しました",
-          "reset": "パスコードをリセットしました"
+        "create": {
+          "title": "パスコードを設定",
+          "body": "セット完了！"
+        } ,
+        "reset": {
+          "title": "パスコードをリセット",
+          "body": "リセットが完了しました！"
         }
       },
       "keySettings": {
