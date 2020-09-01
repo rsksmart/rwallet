@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { ethers } from 'ethers';
-import { Picker } from '@react-native-community/picker';
 import Rsk3 from '@rsksmart/rsk3';
 
 import BasePageSimple from '../base/base.page.simple';
@@ -429,14 +428,6 @@ class WalletConnectionPage extends Component {
           {
             connected ? (
               <View style={{ marginTop: 20, alignSelf: 'flex-end', alignItems: 'flex-end' }}>
-                {/*
-                <Picker
-                  selectedValue={selectedWallet}
-                  style={{ height: 50, width: 100 }}
-                  onValueChange={(itemValue, itemIndex) => this.setState({ selectedWallet: itemValue })}
-                >
-                  {_.map(wallets, (wallet) => <Picker.Item label={wallet.address} value={wallet.address} />)}
-                </Picker> */}
                 <Text style={{ marginRight: 20 }}>{selectedWallet.address}</Text>
                 <TouchableOpacity
                   style={{
