@@ -171,8 +171,14 @@ class WalletList extends Component {
 
   onSendPressed = (wallet) => {
     const { navigation, addNotification } = this.props;
+    const { coins } = wallet;
     if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
+      return;
+    }
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
+    if (coins.length === 1) {
+      navigation.navigate('Transfer', { wallet, coin: coins[0] });
       return;
     }
     navigation.navigate('SelectWallet', { operation: 'send', wallet });
@@ -180,13 +186,25 @@ class WalletList extends Component {
 
   onReceivePressed = (wallet) => {
     const { navigation } = this.props;
+    const { coins } = wallet;
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
+    if (coins.length === 1) {
+      navigation.navigate('WalletReceive', { coin: coins[0] });
+      return;
+    }
     navigation.navigate('SelectWallet', { operation: 'receive', wallet });
   }
 
   onScanQrcodePressed = (wallet) => {
     const { navigation, addNotification } = this.props;
+    const { coins } = wallet;
     if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
+      return;
+    }
+    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
+    if (coins.length === 1) {
+      navigation.navigate('Scan', { coin: coins[0], onDetectedAction: 'navigateToTransfer' });
       return;
     }
     navigation.navigate('SelectWallet', {
