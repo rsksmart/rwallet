@@ -7,7 +7,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import Rsk3 from '@rsksmart/rsk3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
-import InputDataDecoder from 'ethereum-input-data-decoder';
+import InputDataDecoder from 'rn-ethereum-input-data-decoder';
 import moment from 'moment';
 // import moment locales
 import 'moment/locale/zh-cn';

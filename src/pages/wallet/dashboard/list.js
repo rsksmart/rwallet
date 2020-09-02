@@ -175,7 +175,7 @@ class WalletList extends Component {
         //   wallet: walletData.wallet,
         //   onDetectedAction: 'navigateToTransfer',
         // }),
-        onScanQrcodePressed: () => navigation.navigate('WalletConnectionScan'),
+        onScanQrcodePressed: () => navigation.navigate('Scan', { wallet: walletData.wallet }),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
         onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
         currencySymbol,

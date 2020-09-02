@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,
+  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Alert,
 } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import WalletConnect from '@walletconnect/client';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,6 +14,8 @@ import BasePageSimple from '../base/base.page.simple';
 import { strings } from '../../common/i18n';
 import OperationHeader from '../../components/headers/header.operation';
 import CONSTANTS from '../../common/constants.json';
+import common from '../../common/common';
+import apiHelper from '../../common/apiHelper';
 
 const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
 
@@ -25,7 +28,6 @@ class WalletConnectionPage extends Component {
     super(props);
 
     this.state = {
-      uri: '',
       connector: null,
       loading: true,
       peerMeta: {
@@ -36,9 +38,7 @@ class WalletConnectionPage extends Component {
         ssl: false,
       },
       connected: false,
-      chainId: 1,
-      requests: [],
-      results: [],
+      chainId: 30,
       // payload: {
       //   method: 'eth_sendTransaction',
       //   params: [
@@ -62,7 +62,31 @@ class WalletConnectionPage extends Component {
   componentDidMount() {
     this.initWalletConnect();
     this.initWallets();
-    this.initNetwork('Testnet');
+    this.initNetwork('Mainnet');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { payload } = this.state;
+    const { payload: prevPayload } = prevState;
+    const { navigation } = this.props;
+    const { wallet } = navigation.state.params;
+
+    // If payload.method === 'eth_sendTransaction' and contract function is 'transfer', jump to Transfer Token Page
+    if (payload && payload.method === 'eth_sendTransaction' && (!prevPayload || prevPayload.method !== 'eth_sendTransaction')) {
+      const { params } = payload;
+      const inputData = params[0].data;
+      const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+      apiHelper.getAbiByAddress(toAddress).then((res) => {
+        const { abi, symbol } = res;
+        const input = common.ethereumInputDecoder(abi, inputData);
+        if (input && input.method === 'transfer') {
+          const coin = _.filter(wallet.coins, (item) => item.symbol === symbol);
+          navigation.navigate('Transfer', {
+            coin, toAddress, approveRequest: this.approveRequest,
+          });
+        }
+      });
+    }
   }
 
   initWalletConnect = async () => {
@@ -78,10 +102,11 @@ class WalletConnectionPage extends Component {
         await connector.createSession();
       }
 
+      console.log('connector: ', connector);
+
       await this.setState({
         loading: false,
         connector,
-        uri: connector.uri,
       });
 
       this.subscribeToEvents();
@@ -111,11 +136,11 @@ class WalletConnectionPage extends Component {
     }
   }
 
-  initNetwork = (network) => {
+  initNetwork = async (network) => {
     this.rskEndpoint = network === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-    this.networkVersion = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    this.rsk3 = new Rsk3(this.rskEndpoint);
     this.provider = new ethers.providers.JsonRpcProvider(this.rskEndpoint);
+    const chainId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    this.setState({ chainId });
   }
 
   subscribeToEvents = () => {
@@ -190,7 +215,6 @@ class WalletConnectionPage extends Component {
   approveSession = () => {
     console.log('ACTION', 'approveSession');
     const { connector, chainId, selectedWallet } = this.state;
-    // const addresses = _.map(wallets, (wallet) => wallet.address);
     if (connector) {
       connector.approveSession({ chainId, accounts: [Rsk3.utils.toChecksumAddress(selectedWallet.address)] });
     }
@@ -216,64 +240,88 @@ class WalletConnectionPage extends Component {
     }
   };
 
-  approveRequest = async () => {
-    const { connector, payload, selectedWallet } = this.state;
+  signMessage = async (signWallet) => {
+    const { payload: { params } } = this.state;
+    const message = Rsk3.utils.hexToAscii(params[0]);
+    const signature = await signWallet.signMessage(message);
+    return signature;
+  }
+
+  signTransaction = async (signWallet) => {
+    const { selectedWallet: { address }, payload: { params } } = this.state;
+    const nonce = await this.provider.getTransactionCount(Rsk3.utils.toChecksumAddress(address), 'pending');
+    const gasPrice = await this.provider.getGasPrice();
+    const txData = {
+      nonce,
+      data: params[0].data,
+      gas: params[0].gas || 600000,
+      gasPrice: params[0].gasPrice || gasPrice,
+      to: Rsk3.utils.toChecksumAddress(params[0].to),
+      value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+    };
+    const rawTransaction = await signWallet.sign(txData);
+
+    return rawTransaction;
+  }
+
+  sendRawTransaction = async (rawTransaction) => {
+    const res = await this.provider.sendTransaction(rawTransaction);
+    return res.hash;
+  }
+
+  handleCallRequest = async () => {
+    const { selectedWallet: { privateKey }, payload, connector } = this.state;
     const { id, method, params } = payload;
-    const { address, privateKey } = selectedWallet;
 
-    console.log('params: ', params);
-
+    let result = null;
     const signWallet = new ethers.Wallet(privateKey, this.provider);
+    switch (method) {
+      case 'personal_sign': {
+        result = await this.signMessage(signWallet);
+        await connector.approveRequest({ id, result });
+        break;
+      }
+
+      case 'eth_sign': {
+        result = await this.signMessage(signWallet);
+        await connector.approveRequest({ id, result });
+        break;
+      }
+
+      case 'eth_signTypedData': {
+        break;
+      }
+
+      case 'eth_sendTransaction': {
+        const rawTransaction = await this.signTransaction(signWallet);
+        result = await this.sendRawTransaction(rawTransaction);
+        break;
+      }
+
+      case 'eth_signTransaction': {
+        result = await this.signTransaction(signWallet);
+        await connector.approveRequest({ id, result });
+        break;
+      }
+
+      case 'eth_sendRawTransaction': {
+        const rawTransaction = params[0];
+        result = await this.sendRawTransaction(rawTransaction);
+        await connector.approveRequest({ id, result });
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
+  approveRequest = async () => {
+    const { connector, payload } = this.state;
+    const { id } = payload;
 
     try {
-      let result = {};
-      switch (method) {
-        case 'eth_sendTransaction': {
-          // result = {
-          //   id,
-          //   result: '0x41791102999c339c844880b23950704cc43aa840f3739e365323cda4dfa89e7a',
-          // };
-          const nonce = await this.provider.getTransactionCount(Rsk3.utils.toChecksumAddress(address), 'pending');
-          console.log('nonce: ', nonce);
-          const txData = {
-            nonce,
-            data: params[0].data,
-            gasLimit: params[0].gas || 600000,
-            gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-            to: Rsk3.utils.toChecksumAddress(params[0].to),
-            value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-          };
-          console.log('txData: ', txData);
-          const signedTransaction = await signWallet.sign(txData);
-          const res = await this.provider.sendTransaction(signedTransaction);
-          result = { id, result: res.hash };
-          break;
-        }
-
-        case 'personal_sign': {
-          const message = this.rsk3.utils.hexToAscii(params[0]);
-          const signature = await signWallet.signMessage(message);
-          result = {
-            id,
-            result: signature,
-          };
-          break;
-        }
-
-        case 'eth_signTypedData': {
-          const message = params[1];
-          const signature = await signWallet.signMessage(message);
-          result = {
-            id,
-            result: signature,
-          };
-          break;
-        }
-
-        default:
-          break;
-      }
-      connector.approveRequest(result);
+      this.handleCallRequest();
     } catch (error) {
       console.error(error);
       if (connector) {
@@ -413,11 +461,8 @@ class WalletConnectionPage extends Component {
   render() {
     const { navigation } = this.props;
     const {
-      peerMeta, connected, payload, connector, loading, wallets, selectedWallet,
+      peerMeta, connected, payload, loading, selectedWallet,
     } = this.state;
-    console.log('peerMeta: ', peerMeta);
-    console.log('payload: ', payload);
-    console.log('connector: ', connector);
 
     return (
       <BasePageSimple
