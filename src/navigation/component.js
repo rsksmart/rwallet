@@ -116,6 +116,15 @@ class RootComponent extends Component {
     initLiveQueryBlockHeights();
   }
 
+  onRequestClose = () => {
+    const { passcodeFallback, closePasscodeModal } = this.props;
+    if (passcodeFallback) {
+      closePasscodeModal();
+    } else {
+      BackHandler.exitApp();
+    }
+  }
+
   render() {
     const {
       showNotification, notification, removeNotification, notificationCloseCallback,
@@ -141,13 +150,7 @@ class RootComponent extends Component {
             <Modal
               animationType="fade"
               transparent
-              onRequestClose={() => {
-                if (passcodeFallback) {
-                  closePasscodeModal();
-                } else {
-                  BackHandler.exitApp();
-                }
-              }}
+              onRequestClose={this.onRequestClose}
             >
               <BlurView
                 blurType="dark"
