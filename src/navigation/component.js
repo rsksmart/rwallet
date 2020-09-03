@@ -117,9 +117,13 @@ class RootComponent extends Component {
   }
 
   onRequestClose = () => {
-    const { passcodeFallback, closePasscodeModal } = this.props;
-    if (passcodeFallback) {
+    const {
+      passcodeFallback, closePasscodeModal, showPasscode, hideFingerprintModal, isShowFingerprintModal, fingerprintFallback,
+    } = this.props;
+    if (showPasscode && passcodeFallback) {
       closePasscodeModal();
+    } else if (isShowFingerprintModal && fingerprintFallback) {
+      hideFingerprintModal();
     } else {
       BackHandler.exitApp();
     }
