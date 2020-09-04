@@ -120,11 +120,15 @@ class RootComponent extends Component {
     const {
       passcodeFallback, closePasscodeModal, showPasscode, hideFingerprintModal, isShowFingerprintModal, fingerprintFallback,
     } = this.props;
-    if (showPasscode && passcodeFallback) {
-      passcodeFallback();
+    if (showPasscode) {
+      if (passcodeFallback) {
+        passcodeFallback();
+      }
       closePasscodeModal();
-    } else if (isShowFingerprintModal && fingerprintFallback) {
-      fingerprintFallback();
+    } else if (isShowFingerprintModal) {
+      if (fingerprintFallback) {
+        fingerprintFallback();
+      }
       hideFingerprintModal();
     }
   }
