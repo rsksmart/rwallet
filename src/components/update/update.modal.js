@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Modal, TouchableOpacity, Linking, StyleSheet, BackHandler,
+  View, Text, Modal, TouchableOpacity, Linking, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import space from '../../assets/styles/space';
@@ -54,8 +54,6 @@ class UpdateModal extends Component {
     const { forceUpdate } = updateVersionInfo;
     if (!forceUpdate) {
       this.onCancelButtonPressed();
-    } else {
-      BackHandler.exitApp();
     }
   }
 
