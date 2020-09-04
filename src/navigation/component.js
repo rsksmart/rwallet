@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Platform, StyleSheet, Modal, BackHandler,
+  View, Platform, StyleSheet, Modal,
 } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { Root } from 'native-base';
@@ -126,8 +126,6 @@ class RootComponent extends Component {
     } else if (isShowFingerprintModal && fingerprintFallback) {
       fingerprintFallback();
       hideFingerprintModal();
-    } else {
-      BackHandler.exitApp();
     }
   }
 
