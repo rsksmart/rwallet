@@ -56,6 +56,7 @@ export default class ConfirmationPanel extends Component {
         animationType={animationType}
         transparent={transparent}
         visible
+        onRequestClose={this.onCancelPressed}
       >
         <View style={styles.modalViewWrapper}>
           <ModalView

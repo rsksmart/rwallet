@@ -111,7 +111,7 @@ class CreateRnsConfirmation extends Component {
     const { visible } = this.state;
     const { data } = this.props;
     return (
-      <Modal visible={visible} transparent>
+      <Modal visible={visible} transparent onRequestClose={this.onCancelPressed}>
         <View style={styles.container}>
           <View style={styles.panel}>
             <Loc style={[styles.title, space.marginTop_50]} text="button.confirm" />

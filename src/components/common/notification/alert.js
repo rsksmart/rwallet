@@ -40,6 +40,7 @@ class Alert extends Component {
         transparent={transparent}
         visible
         onShow={this.startShow}
+        onRequestClose={this.onCloseButtonPress}
       >
         <View style={notificationStyles.backgroundBoard}>
           <View style={notificationStyles.frontBoard}>

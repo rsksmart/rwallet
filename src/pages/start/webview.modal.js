@@ -8,6 +8,7 @@ const WebViewModal = ({ url, visible, onClose }) => (
   <Modal
     animationType="slide"
     visible={visible}
+    onRequestClose={onClose}
   >
     <View style={{ flex: 1 }}>
       <OperationHeader title="Back" onBackButtonPress={onClose} />

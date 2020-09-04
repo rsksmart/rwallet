@@ -28,7 +28,6 @@ class SubdomainUnavailableNotification extends Component {
     this.setState({ visible: true });
   }
 
-
   onCloseButtonPress = () => {
     this.setState({ visible: false });
   }
@@ -46,7 +45,7 @@ class SubdomainUnavailableNotification extends Component {
     const { visible } = this.state;
     const { data } = this.props;
     return (
-      <Modal visible={visible} transparent>
+      <Modal visible={visible} transparent onRequestClose={this.onCloseButtonPress}>
         <View style={notificationStyles.backgroundBoard}>
           <View style={notificationStyles.frontBoard}>
             <View style={[space.paddingHorizontal_20, space.paddingBottom_10]}>
