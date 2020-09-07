@@ -105,8 +105,6 @@ class DAppBrowser extends Component {
           let resolver = {}
           let rejecter = {}
 
-          // alert(1)
-
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
             try {
               const passData = data.data ? JSON.parse(data.data) : data.data
@@ -117,7 +115,7 @@ class DAppBrowser extends Component {
                 resolver[id](result)
               }
             } catch(err) {
-              console.log('err: ', err)
+              console.log('listener message err: ', err)
             }
           })
 
@@ -135,8 +133,9 @@ class DAppBrowser extends Component {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
             const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
-            const web3 = new Web3(new Web3.providers.HttpProvider(rskEndpoint));
-            window.ethereum = web3;
+            const web3Provider = new Web3.providers.HttpProvider(rskEndpoint)
+            const web3 = new Web3(web3Provider);
+            window.ethereum = web3Provider;
             window.ethereum.selectedAddress = '${address}'
             window.ethereum.networkVersion = '${this.networkVersion}'
             window.web3 = web3
@@ -230,7 +229,7 @@ class DAppBrowser extends Component {
                 res = {id, jsonrpc, method, result}
               } catch(err) {
                 err = err
-                console.log('err: ', err)
+                console.log('sendAsync err: ', err)
               }
               
               console.log('res: ', res)
@@ -268,11 +267,10 @@ class DAppBrowser extends Component {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, params, id } = payload;
+
     try {
       const { callAuthVerify } = this.props;
       const { wallet: { coins, address } } = this.state;
-
-      console.log('123 payload: ', payload);
 
       switch (method) {
         case 'eth_estimateGas': {
@@ -394,6 +392,7 @@ class DAppBrowser extends Component {
           injectedJavaScriptBeforeContentLoaded={this.injectJavaScript(address)}
           onNavigationStateChange={this.onNavigationStateChange}
           onMessage={this.onMessage}
+          incognito
         />
       );
     }
