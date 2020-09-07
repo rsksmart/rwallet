@@ -105,6 +105,8 @@ class DAppBrowser extends Component {
           let resolver = {}
           let rejecter = {}
 
+          // alert(1)
+
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
             try {
               const passData = data.data ? JSON.parse(data.data) : data.data
@@ -121,6 +123,7 @@ class DAppBrowser extends Component {
 
           communicateWithRN = (payload) => {
             return new Promise((resolve, reject) => {
+              console.log('JSON.stringify(payload): ', JSON.stringify(payload))
               window.ReactNativeWebView.postMessage(JSON.stringify(payload))
               const { id } = payload
               resolver[id] = resolve
@@ -132,7 +135,7 @@ class DAppBrowser extends Component {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
             const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
-            const web3 = new Web3(provider);
+            const web3 = new Web3(new Web3.providers.HttpProvider(rskEndpoint));
             window.ethereum = web3;
             window.ethereum.selectedAddress = '${address}'
             window.ethereum.networkVersion = '${this.networkVersion}'
@@ -218,7 +221,7 @@ class DAppBrowser extends Component {
               try {
                 if (method === 'net_version') {
                   result = '${this.networkVersion}'
-                } else if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
+                } else if (method === 'eth_requestAccounts' || method === 'eth_accounts' || payload === 'eth_accounts') {
                   result = ['${address}']
                 } else {
                   result = await communicateWithRN(payload)
@@ -269,6 +272,8 @@ class DAppBrowser extends Component {
       const { callAuthVerify } = this.props;
       const { wallet: { coins, address } } = this.state;
 
+      console.log('123 payload: ', payload);
+
       switch (method) {
         case 'eth_estimateGas': {
           const res = await this.provider.estimateGas(params[0]);
@@ -290,7 +295,9 @@ class DAppBrowser extends Component {
         }
 
         case 'eth_getBlockByNumber': {
-          const res = await this.rsk3.getBlock(params[0]);
+          let res = 0;
+          const blockNumber = (params[0] && params[0] === '0x0') ? 'latest' : params[0];
+          res = await this.rsk3.getBlock(blockNumber);
           const result = { id, result: res };
           this.webview.current.postMessage(JSON.stringify(result));
           break;
@@ -380,6 +387,8 @@ class DAppBrowser extends Component {
       return (
         <ProgressWebView
           source={{ uri: dappUrl }}
+          // source={{ uri: 'http://localhost:3000' }}
+          // source={{ uri: 'https://app.rskswap.com/swap' }}
           ref={this.webview}
           javaScriptEnabled
           injectedJavaScriptBeforeContentLoaded={this.injectJavaScript(address)}
