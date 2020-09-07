@@ -175,12 +175,12 @@ class PasscodeModalBase extends PureComponent {
           <View style={styles.buttonView}>
             {isShowReset && (
               <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
-                <Loc style={[styles.buttonText]} text="button.Reset" />
+                <Image source={references.images.passcodeReset} />
               </TouchableOpacity>
             )}
             {showCancel && (
               <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                <Image source={references.images.passcodeReset} />
+                <Image source={references.images.passcodeCancel} />
               </TouchableOpacity>
             )}
             {this.renderButtons()}
