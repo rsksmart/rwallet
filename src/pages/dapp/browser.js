@@ -294,6 +294,7 @@ class DAppBrowser extends Component {
 
         case 'eth_getBlockByNumber': {
           let res = 0;
+          // Get latest block info when passed block number is 0.
           const blockNumber = (params[0] && params[0] === '0x0') ? 'latest' : params[0];
           res = await this.rsk3.getBlock(blockNumber);
           const result = { id, result: res };
