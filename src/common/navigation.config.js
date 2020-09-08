@@ -44,6 +44,7 @@ import RnsCreateName from '../pages/wallet/rns/create';
 import RnsStatus from '../pages/wallet/rns/status';
 import AddReadOnlyWallet from '../pages/wallet/readonly/add';
 import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
+import CreateMultisigToken from '../pages/wallet/multisig/create';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -237,6 +238,13 @@ const routeConfigMap = {
       path: 'AddReadOnlyWalletConfirmation',
       navigationOptions: () => ({
         headerTitle: 'AddReadOnlyWalletConfirmation',
+      }),
+    },
+    CreateMultisigToken: {
+      screen: CreateMultisigToken,
+      path: 'CreateMultisigToken',
+      navigationOptions: () => ({
+        headerTitle: 'CreateMultisigToken',
       }),
     },
   },

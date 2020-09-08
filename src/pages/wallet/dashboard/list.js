@@ -227,7 +227,8 @@ class WalletList extends Component {
         onReceivePressed: () => this.onReceivePressed(walletData.wallet),
         onScanQrcodePressed: () => this.onScanQrcodePressed(walletData.wallet),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
-        onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
+        // onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
+        onAddAssetPressed: () => navigation.navigate('CreateMultisigToken'),
         currencySymbol,
         hasSwappableCoin,
       };
