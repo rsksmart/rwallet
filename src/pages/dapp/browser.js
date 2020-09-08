@@ -385,8 +385,6 @@ class DAppBrowser extends Component {
       return (
         <ProgressWebView
           source={{ uri: dappUrl }}
-          // source={{ uri: 'http://localhost:3000' }}
-          // source={{ uri: 'https://app.rskswap.com/swap' }}
           ref={this.webview}
           javaScriptEnabled
           injectedJavaScriptBeforeContentLoaded={this.injectJavaScript(address)}
