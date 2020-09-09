@@ -263,105 +263,147 @@ class DAppBrowser extends Component {
     this.setState({ canGoBack });
   }
 
+  handleEthEstimateGas = async (payload) => {
+    const { params, id } = payload;
+    const res = await this.provider.estimateGas(params[0]);
+    const estimateGas = res.toNumber();
+    const result = { id, result: estimateGas };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handleEthGasPrice = async (payload) => {
+    const { id } = payload;
+    const res = await this.provider.getGasPrice();
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handleEthCall = async (payload) => {
+    const { id, params } = payload;
+    const res = await this.provider.call(params[0], params[1]);
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handleEthGetBlockByNumber = async (payload) => {
+    const { id, params } = payload;
+    let res = 0;
+    // Get latest block info when passed block number is 0.
+    const blockNumber = (params[0] && params[0] === '0x0') ? 'latest' : params[0];
+    res = await this.rsk3.getBlock(blockNumber);
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handlePersonalSign = async (payload) => {
+    const { callAuthVerify } = this.props;
+    const { wallet: { coins } } = this.state;
+    const { id, params } = payload;
+    callAuthVerify(async () => {
+      try {
+        const { privateKey } = coins[0];
+        const signWallet = new ethers.Wallet(privateKey, this.provider);
+        const message = this.rsk3.utils.hexToAscii(params[0]);
+        const signature = await signWallet.signMessage(message);
+        const result = { id, result: signature };
+        this.webview.current.postMessage(JSON.stringify(result));
+      } catch (err) {
+        console.log('personal_sign err: ', err);
+        this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+      }
+    }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+  }
+
+  handleEthSendTransaction = async (payload) => {
+    const { callAuthVerify } = this.props;
+    const { wallet: { coins, address } } = this.state;
+    const { id, params } = payload;
+    callAuthVerify(async () => {
+      try {
+        const nonce = await this.provider.getTransactionCount(address, 'pending');
+        const txData = {
+          nonce,
+          data: params[0].data,
+          gasLimit: params[0].gas || 600000,
+          gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+          to: params[0].to,
+          value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+        };
+        const { privateKey } = coins[0];
+        const signWallet = new ethers.Wallet(privateKey, this.provider);
+        const signedTransaction = await signWallet.sign(txData);
+        const res = await this.provider.sendTransaction(signedTransaction);
+        const result = { id, result: res.hash };
+        this.webview.current.postMessage(JSON.stringify(result));
+      } catch (err) {
+        console.log('eth_sendTransaction err: ', err);
+        this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+      }
+    }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+  }
+
+  handleEthGetTransactionReceipt = async (payload) => {
+    const { id, params } = payload;
+    let res = await this.rsk3.getTransactionReceipt(params[0]);
+    if (!res) {
+      res = '';
+    } else {
+      // RNS and tRif faucet's transaction status judge condition: parseInt(status, 16) === 1, so need set true to 1 and false to 0
+      res.status = res.status ? 1 : 0;
+    }
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handleEthGetTransactionByHash = async (payload) => {
+    const { id, params } = payload;
+    const res = await this.provider.getTransaction(params[0]);
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
   onMessage = async (event) => {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
-    const { method, params, id } = payload;
+    const { method, id } = payload;
 
     try {
-      const { callAuthVerify } = this.props;
-      const { wallet: { coins, address } } = this.state;
-
       switch (method) {
         case 'eth_estimateGas': {
-          const res = await this.provider.estimateGas(params[0]);
-          const result = { id, result: res.toNumber() };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthEstimateGas(payload);
           break;
         }
         case 'eth_gasPrice': {
-          const res = await this.provider.getGasPrice();
-          const result = { id, result: res };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthGasPrice(payload);
           break;
         }
         case 'eth_call': {
-          const res = await this.provider.call(params[0], params[1]);
-          const result = { id, result: res };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthCall(payload);
           break;
         }
 
         case 'eth_getBlockByNumber': {
-          let res = 0;
-          // Get latest block info when passed block number is 0.
-          const blockNumber = (params[0] && params[0] === '0x0') ? 'latest' : params[0];
-          res = await this.rsk3.getBlock(blockNumber);
-          const result = { id, result: res };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthGetBlockByNumber(payload);
           break;
         }
 
         case 'personal_sign': {
-          callAuthVerify(async () => {
-            try {
-              const { privateKey } = coins[0];
-              const signWallet = new ethers.Wallet(privateKey, this.provider);
-              const message = this.rsk3.utils.hexToAscii(params[0]);
-              const signature = await signWallet.signMessage(message);
-              const result = { id, result: signature };
-              this.webview.current.postMessage(JSON.stringify(result));
-            } catch (err) {
-              console.log('personal_sign err: ', err);
-              this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
-            }
-          }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+          this.handlePersonalSign(payload);
           break;
         }
 
         case 'eth_sendTransaction': {
-          callAuthVerify(async () => {
-            try {
-              const nonce = await this.provider.getTransactionCount(address, 'pending');
-              const txData = {
-                nonce,
-                data: params[0].data,
-                gasLimit: params[0].gas || 600000,
-                gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-                to: params[0].to,
-                value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-              };
-              const { privateKey } = coins[0];
-              const signWallet = new ethers.Wallet(privateKey, this.provider);
-              const signedTransaction = await signWallet.sign(txData);
-              const res = await this.provider.sendTransaction(signedTransaction);
-              const result = { id, result: res.hash };
-              this.webview.current.postMessage(JSON.stringify(result));
-            } catch (err) {
-              console.log('eth_sendTransaction err: ', err);
-              this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
-            }
-          }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+          this.handleEthSendTransaction(payload);
           break;
         }
 
         case 'eth_getTransactionReceipt': {
-          let res = await this.rsk3.getTransactionReceipt(params[0]);
-          if (!res) {
-            res = '';
-          } else {
-            // RNS and tRif faucet's transaction status judge condition: parseInt(status, 16) === 1, so need set true to 1 and false to 0
-            res.status = res.status ? 1 : 0;
-          }
-          const result = { id, result: res };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthGetTransactionReceipt(payload);
           break;
         }
 
         case 'eth_getTransactionByHash': {
-          const res = await this.provider.getTransaction(params[0]);
-          const result = { id, result: res };
-          this.webview.current.postMessage(JSON.stringify(result));
+          this.handleEthGetTransactionByHash(payload);
           break;
         }
 
