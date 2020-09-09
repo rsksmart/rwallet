@@ -370,40 +370,40 @@ class DAppBrowser extends Component {
     try {
       switch (method) {
         case 'eth_estimateGas': {
-          this.handleEthEstimateGas(payload);
+          await this.handleEthEstimateGas(payload);
           break;
         }
         case 'eth_gasPrice': {
-          this.handleEthGasPrice(payload);
+          await this.handleEthGasPrice(payload);
           break;
         }
         case 'eth_call': {
-          this.handleEthCall(payload);
+          await this.handleEthCall(payload);
           break;
         }
 
         case 'eth_getBlockByNumber': {
-          this.handleEthGetBlockByNumber(payload);
+          await this.handleEthGetBlockByNumber(payload);
           break;
         }
 
         case 'personal_sign': {
-          this.handlePersonalSign(payload);
+          await this.handlePersonalSign(payload);
           break;
         }
 
         case 'eth_sendTransaction': {
-          this.handleEthSendTransaction(payload);
+          await this.handleEthSendTransaction(payload);
           break;
         }
 
         case 'eth_getTransactionReceipt': {
-          this.handleEthGetTransactionReceipt(payload);
+          await this.handleEthGetTransactionReceipt(payload);
           break;
         }
 
         case 'eth_getTransactionByHash': {
-          this.handleEthGetTransactionByHash(payload);
+          await this.handleEthGetTransactionByHash(payload);
           break;
         }
 
