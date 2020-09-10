@@ -34,6 +34,7 @@ export default class Coin {
       path,
       address,
       privateKey: keyPair.privateKey.toString('hex'),
+      publicKey: keyPair.publicKey.toString('hex'),
     };
   }
 
@@ -45,6 +46,7 @@ export default class Coin {
       path,
       address,
       privateKey: keyPair.privateKey.toString('hex'),
+      publicKey: keyPair.publicKey.toString('hex'),
     };
   }
 
@@ -56,10 +58,13 @@ export default class Coin {
         legacy: this.deriveLegacy(root, network),
         segwit: this.deriveSegwit(root, network),
       };
-      const { path, address, privateKey } = this.addresses.legacy;
+      const {
+        path, address, privateKey, publicKey,
+      } = this.addresses.legacy;
       this.path = path;
       this.address = address;
       this.privateKey = privateKey;
+      this.publicKey = publicKey;
       console.log(`path: ${path}, address: ${this.address}, privateKey: ${this.privateKey}`);
     } catch (ex) {
       console.error(ex);
@@ -80,12 +85,13 @@ export default class Coin {
       objectId: this.objectId,
       balance: this.balance ? this.balance.toString() : undefined,
       addressType: this.addressType,
+      publicKey: this.publicKey,
     };
   }
 
   toDerivationJson() {
     const {
-      symbol, type, path, address, addressType,
+      symbol, type, path, address, addressType, publicKey,
     } = this;
     return {
       symbol,
@@ -94,18 +100,20 @@ export default class Coin {
       address,
       addressType,
       addresses: this.getAddressesWithoutPrivateKey(),
+      publicKey,
     };
   }
 
   static fromJSON(json) {
     const {
-      symbol, type, path, addressType, address, addresses, objectId,
+      symbol, type, path, addressType, address, addresses, objectId, publicKey,
     } = json;
     const instance = new Coin(symbol, type, path);
     instance.addressType = addressType;
     instance.address = address;
     instance.addresses = addresses;
     instance.objectId = objectId;
+    instance.publicKey = publicKey;
     return instance;
   }
 
@@ -156,11 +164,14 @@ export default class Coin {
 
   setupWithDerivation = (derivation) => {
     const { addressType } = derivation;
-    const { address, privateKey, path } = derivation.addresses[addressType];
+    const {
+      address, privateKey, publicKey, path,
+    } = derivation.addresses[addressType];
     this.addressType = addressType;
     this.path = path;
     this.address = address;
     this.privateKey = privateKey;
+    this.publicKey = publicKey;
   }
 
   /**
@@ -212,10 +223,13 @@ export default class Coin {
       console.warn(`the address of ${addressType} is not exist!`);
       return;
     }
-    const { address, path, privateKey } = this.addresses[addressType];
+    const {
+      address, path, privateKey, publicKey,
+    } = this.addresses[addressType];
     this.addressType = addressType;
     this.path = path;
     this.address = address;
     this.privateKey = privateKey;
+    this.publicKey = publicKey;
   }
 }

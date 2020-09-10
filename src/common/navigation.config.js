@@ -44,7 +44,9 @@ import RnsCreateName from '../pages/wallet/rns/create';
 import RnsStatus from '../pages/wallet/rns/status';
 import AddReadOnlyWallet from '../pages/wallet/readonly/add';
 import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
-import CreateMultisigToken from '../pages/wallet/multisig/create';
+import CreateMultisigAddress from '../pages/wallet/multisig/create';
+import JoinMultisigAddress from '../pages/wallet/multisig/join';
+import MultisigAddressInvitation from '../pages/wallet/multisig/invitation';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -240,11 +242,25 @@ const routeConfigMap = {
         headerTitle: 'AddReadOnlyWalletConfirmation',
       }),
     },
-    CreateMultisigToken: {
-      screen: CreateMultisigToken,
-      path: 'CreateMultisigToken',
+    CreateMultisigAddress: {
+      screen: CreateMultisigAddress,
+      path: 'CreateMultisigAddress',
       navigationOptions: () => ({
-        headerTitle: 'CreateMultisigToken',
+        headerTitle: 'CreateMultisigAddress',
+      }),
+    },
+    JoinMultisigAddress: {
+      screen: JoinMultisigAddress,
+      path: 'JoinMultisigAddress',
+      navigationOptions: () => ({
+        headerTitle: 'JoinMultisigAddress',
+      }),
+    },
+    MultisigAddressInvitation: {
+      screen: MultisigAddressInvitation,
+      path: 'MultisigAddressInvitation',
+      navigationOptions: () => ({
+        headerTitle: 'MultisigAddressInvitation',
       }),
     },
   },

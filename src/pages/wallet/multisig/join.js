@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, Switch,
+  View, StyleSheet, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class CreateMultisigAddress extends Component {
+class JoinMultisigAddress extends Component {
     static navigationOptions = () => ({
       header: null,
     });
@@ -30,84 +30,52 @@ class CreateMultisigAddress extends Component {
       this.state = {
         isLoading: false,
         canSubmit: true,
-        walletName: 'Multisig Wallet',
-        userName: 'cxy',
-        signatures: '2',
-        copayers: '2',
-        isMainnet: true,
+        userName: null,
+        invitationCode: null,
       };
     }
 
-    onCreateButtonPressed = async () => {
-      console.log('onCreateButtonPressed');
-      const {
-        userName, signatures, copayers, isMainnet,
-      } = this.state;
+    onJoinButtonPressed = async () => {
+      console.log('onJoinButtonPressed');
+      const { userName, invitationCode } = this.state;
       // const { navigation } = this.props;
-      const type = isMainnet ? 'Mainnet' : 'Testnet';
       const { walletManager } = this.props;
       const wallet = walletManager.wallets[0];
       const { derivations } = wallet;
-      const derivation = _.find(derivations, { symbol: 'BTC', type });
+      const derivation = _.find(derivations, { symbol: 'BTC', type: 'Mainnet' });
       const { publicKey } = derivation;
-      const signatureNumber = parseInt(signatures, 10);
-      const copayerNumber = parseInt(copayers, 10);
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress({
-        signatureNumber, copayerNumber, publicKey, type, name: userName,
+      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.joinMultisigAddress({
+        invitationCode, publicKey, name: userName,
       }));
       console.log('result: ', result);
-      // navigation.navigate('JoinMultisigAddress');
     }
 
-    onWalletNameChanged = (text) => {
-      this.setState({ walletName: text });
+    onInvitationCodeChanged = (text) => {
+      this.setState({ invitationCode: text });
     }
 
     onUserNameChanged = (text) => {
       this.setState({ userName: text });
     }
 
-    onSwitchValueChanged = (value) => {
-      this.setState({ isMainnet: value });
-    }
-
-    onSignaturesChanged = (text) => {
-      this.setState({ signatures: text });
-    }
-
-    onCopayersChanged = (text) => {
-      this.setState({ copayers: text });
-    }
-
     render() {
       const {
-        isLoading, canSubmit, walletName, userName, isMainnet, signatures, copayers,
+        isLoading, canSubmit, userName, invitationCode,
       } = this.state;
       const { navigation } = this.props;
-      const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
+      const customButton = (<Button text="button.join" onPress={this.onJoinButtonPressed} disabled={!canSubmit} />);
       return (
         <BasePageGereral
           isSafeView
           hasBottomBtn
           hasLoader
           isLoading={isLoading}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.createMultisigAddress.title" />}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.joinMultisigAddress.title" />}
           customBottomButton={customButton}
         >
           <View style={styles.body}>
             <View>
-              <Loc text="page.wallet.createMultisigAddress.walletName" />
-              <TextInput
-                style={[presetStyle.textInput]}
-                value={walletName}
-                onChangeText={this.onWalletNameChanged}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
-            </View>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.userName" />
+              <Loc text="page.wallet.joinMultisigAddress.userName" />
               <TextInput
                 style={[presetStyle.textInput]}
                 value={userName}
@@ -118,30 +86,15 @@ class CreateMultisigAddress extends Component {
               />
             </View>
             <View>
-              <Loc text="page.wallet.createMultisigAddress.signatures" />
+              <Loc text="page.wallet.joinMultisigAddress.invitationCode" />
               <TextInput
                 style={[presetStyle.textInput]}
-                value={signatures}
-                onChangeText={this.onSignaturesChanged}
+                value={invitationCode}
+                onChangeText={this.onInvitationCodeChanged}
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
               />
-            </View>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.copayers" />
-              <TextInput
-                style={[presetStyle.textInput]}
-                value={copayers}
-                onChangeText={this.onCopayersChanged}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
-            </View>
-            <View>
-              <Loc text="page.wallet.addCustomToken.mainnet" />
-              <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
             </View>
           </View>
         </BasePageGereral>
@@ -149,7 +102,7 @@ class CreateMultisigAddress extends Component {
     }
 }
 
-CreateMultisigAddress.propTypes = {
+JoinMultisigAddress.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -172,4 +125,4 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMultisigAddress);
+export default connect(mapStateToProps, mapDispatchToProps)(JoinMultisigAddress);

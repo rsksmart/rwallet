@@ -203,6 +203,12 @@
         "rnsQuestion": "ウォレットアドレスとその下のアセットが見つかりました。このアドレスを監視しますか？",
         "rnsInvalid": "RNS名は、Rootstockブロックチェーンのウォレットアドレスに関連付けられていません。もう一度お試しください。",
         "duplicateAddress": "このアドレスはすでにアプリにインポートされています。別のアドレスでお試しください。"
+      },
+      "createMultisigAddress": {
+        "title": "マルチシグアドレスの作成"
+      },
+      "joinMultisigAddress": {
+        "title": "Join Multisig Address"
       }
     },
     "dapp": {

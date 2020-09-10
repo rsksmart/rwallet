@@ -206,6 +206,12 @@
         "rnsQuestion": "我们在此钱包中找到以下地址和资产，您要监视此地址吗？",
         "rnsInvalid": "抱歉，RNS名称与Rootstock区块链上的钱包地址没有关联，请再试。",
         "duplicateAddress": "此地址已导入到应用程序中，请尝试使用其他地址。"
+      },
+      "createMultisigAddress": {
+        "title": "创建多重签名地址"
+      },
+      "joinMultisigAddress": {
+        "title": "加入多重签名地址"
       }
     },
     "dapp": {

@@ -206,6 +206,12 @@
         "rnsQuestion": "Encontramos la dirección de la billetera y los activos a continuación. ¿Le gustaría monitorear esta dirección?",
         "rnsInvalid": "Lo sentimos, el nombre de RNS no está asociado con una dirección de billetera en la cadena de bloques de Rootstock. Vuelva a intentarlo",
         "duplicateAddress": "Esta dirección ya está importada en la aplicación. Intente con una dirección diferente."
+      },
+      "createMultisigAddress": {
+        "title": "Crear dirección de firma múltiple"
+      },
+      "joinMultisigAddress": {
+        "title": "Join Multisig Address"
       }
     },
     "dapp": {

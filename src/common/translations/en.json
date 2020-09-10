@@ -203,6 +203,18 @@
         "rnsQuestion": "We found the wallet address and below assets. Would you like to monitor this address?",
         "rnsInvalid": "Sorry, the RNS name is not associated with a wallet address on Rootstock blockchain. Please try again.",
         "duplicateAddress": "This address is already imported in the app. Please try with a different address."
+      },
+      "createMultisigAddress": {
+        "title": "Create Multisig Address",
+        "walletName": "Wallet Name",
+        "userName": "Your Name",
+        "signatures": "Require number of signatures",
+        "copayers": "Total number of copayers"
+      },
+      "joinMultisigAddress": {
+        "title": "Join Multisig Address",
+        "userName": "Your Name",
+        "invitationCode": "Wallet Invitation"
       }
     },
     "dapp": {
@@ -310,6 +322,7 @@
     "Next": "Next",
     "gotIt": "GOT IT",
     "create": "CREATE",
+    "join": "JOIN",
     "CONFIRM": "CONFIRM",
     "retry": "Retry",
     "IMPORT": "IMPORT",

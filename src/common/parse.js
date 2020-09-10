@@ -458,11 +458,27 @@ class ParseHelper {
     const params = {
       name: chain, type, symbol, address, needFetch,
     };
-    console.log('getBalance, params: ', params);
-    const result = await Parse.Cloud.run('getBalance', {
-      name: chain, type, symbol, address, needFetch,
-    });
-    console.log('getBalance, result: ', result);
+    const result = await Parse.Cloud.run('getBalance', params);
+    return result;
+  }
+
+  static async createMultisigAddress({
+    signatureNumber, copayerNumber, publicKey, type, name,
+  }) {
+    const params = {
+      signatureNumber, copayerNumber, publicKey, type, name,
+    };
+    const result = await Parse.Cloud.run('createMultisigAddress', params);
+    return result;
+  }
+
+  static async joinMultisigAddress({
+    invitationCode, publicKey, name,
+  }) {
+    const params = {
+      invitationCode, publicKey, name,
+    };
+    const result = await Parse.Cloud.run('joinMultisigAddress', params);
     return result;
   }
 }

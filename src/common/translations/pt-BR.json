@@ -206,6 +206,12 @@
         "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes ativos. Você deseja monitorar este endereço?",
         "rnsInvalid": "Desculpe, o apelido RNS não está associado a um endereço de carteira na blockchain da Rootstock. Por favor, tente novamente.",
         "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
+      },
+      "createMultisigAddress": {
+        "title": "Criar Endereço Multisig"
+      },
+      "joinMultisigAddress": {
+        "title": "Join Multisig Address"
       }
     },
     "dapp": {
