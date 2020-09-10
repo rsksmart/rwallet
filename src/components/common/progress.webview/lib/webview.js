@@ -65,7 +65,7 @@ class ProgressBarWebView extends React.PureComponent {
     const {
       height, forwardedRef, errorColor, disappearDuration,
       source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded,
-      onNavigationStateChange, onMessage,
+      onNavigationStateChange, onMessage, incognito,
     } = this.props;
     const { percent, color, visible } = this.state;
     return (
@@ -86,6 +86,7 @@ class ProgressBarWebView extends React.PureComponent {
           onLoadEnd={this.onLoadEnd}
           onLoadProgress={this.onLoadProgress}
           onError={this.onError}
+          incognito={incognito}
         />
       </View>
     );
@@ -107,6 +108,7 @@ ProgressBarWebView.propTypes = {
   injectedJavaScriptBeforeContentLoaded: PropTypes.string,
   onNavigationStateChange: PropTypes.func,
   onMessage: PropTypes.func,
+  incognito: PropTypes.bool,
 };
 
 ProgressBarWebView.defaultProps = {
@@ -124,12 +126,13 @@ ProgressBarWebView.defaultProps = {
   injectedJavaScriptBeforeContentLoaded: undefined,
   onNavigationStateChange: undefined,
   onMessage: undefined,
+  incognito: false,
 };
 
 export default React.forwardRef((properties, ref) => {
   const {
     source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded, onNavigationStateChange, onMessage,
-    height, color, errorColor, disappearDuration,
+    height, color, errorColor, disappearDuration, incognito,
     onLoadProgress, onError, onLoadStart, onLoadEnd,
   } = properties;
   return (
@@ -148,6 +151,7 @@ export default React.forwardRef((properties, ref) => {
       onError={onError}
       onLoadStart={onLoadStart}
       onLoadEnd={onLoadEnd}
+      incognito={incognito}
     />
   );
 });
