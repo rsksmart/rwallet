@@ -48,17 +48,18 @@ class Application {
 
     // If result is null; meaning there's no Application in storage
     // therefore we create a new one here
-    const newId = await Application.createId();
-    this.set('id', newId);
-
-    // If there is no valid settings yet, we save default into storage
-    this.serialize();
+    const newId = await this.createId();
+    await this.saveId(newId);
   }
 
-  static createId() {
-    return new Promise((resolve) => {
-      UUIDGenerator.getRandomUUID((uuid) => resolve(uuid));
-    });
+  createId = async () => new Promise((resolve) => {
+    UUIDGenerator.getRandomUUID((uuid) => resolve(uuid));
+  })
+
+  saveId = async (id) => {
+    console.log('saveId, id: ', id);
+    this.set('id', id);
+    await this.serialize();
   }
 }
 

@@ -8,6 +8,11 @@ import { blockHeightKeys } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
 import cointype from './wallet/cointype';
+import application from './application';
+import storage from './storage';
+import fcmHelper from './fcmHelper';
+
+const randomstring = require('randomstring');
 
 const parseConfig = config && config.parse;
 
@@ -43,27 +48,55 @@ class ParseHelper {
     return user;
   }
 
-  static signInOrSignUp(appId) {
-    console.log('parse::signInOrSignUp, appId: ', appId);
-    // Set appId as username and password.
-    // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
-    const username = appId;
-    const password = appId;
 
+  static async signUp() {
+    const newId = await application.createId();
+    const password = randomstring.generate();
+
+    console.log(`parse::signUp, username: ${newId}, password: ${password}`);
+
+    // Sign up
+    const user = new Parse.User();
+    user.set('username', newId);
+    user.set('password', password);
+    await user.signUp();
+
+    // Set user ACL
+    // Protect user information from being read by others
+    user.setACL(new Parse.ACL(user));
+    await user.save();
+
+    // Save username and password to storage
+    await application.saveId(newId);
+    await storage.setUserPassword(password);
+
+    // refresh fcm token
+    fcmHelper.refreshFcmToken();
+
+    console.log(`parse::signUp success, username: ${newId}`);
+
+    return user;
+  }
+
+  static async signInOrSignUp(username, password) {
+    console.log(`parse::signInOrSignUp, username: ${username}, password: ${password}`);
+
+    // If password is null, it's new user, call sign up.
+    if (_.isEmpty(password)) {
+      const user = await ParseHelper.signUp();
+      return user;
+    }
+
+    // login
     return Parse.User.logIn(username, password)
-      .catch((err) => {
-        console.log('signInOrSignUp, err: ', err, err.message);
-        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
+      .catch(async (err) => {
+        console.log('signInOrSignUp, err: ', JSON.stringify(err), err.message);
+        // If username/password is Invalid, logout and sign up
+        if (err.message === 'Invalid username/password.' || err.message === 'Password must be a string.') { // Call sign up if we can't log in using appId
           console.log(`User not found with appId ${username}. Signing up ...`);
-          const user = new Parse.User();
-
-          user.set('username', username);
-          user.set('password', password);
-          // console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
-          // user.set('deviceId', DeviceInfo.getDeviceId());
-
-          // TODO: other information needed to be set here.
-          return user.signUp();
+          await Parse.User.logOut();
+          const user = await ParseHelper.signUp();
+          return user;
         }
 
         return Promise.reject();
@@ -477,6 +510,7 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
           const result = await targetValue.apply(this, args);
           return result;
         } catch (error) {
+          console.log('ParseHelperProxy, error', error.code);
           console.log('ParseHelperProxy, error', error.message);
           // When the session expires, we need to relogin
           if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
