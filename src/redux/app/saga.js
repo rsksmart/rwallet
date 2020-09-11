@@ -163,12 +163,9 @@ function* loginRequest(action) {
     const newAppId = application.get('id');
     console.log(`User found with appId ${newAppId}. Sign in successful.`);
 
-    yield put(actions.resetLoginError());
-    yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
     console.log(err.message);
-    yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
     yield put(actions.login(isRelogin));
   }

@@ -57,7 +57,6 @@ class Application {
   })
 
   saveId = async (id) => {
-    console.log('saveId, id: ', id);
     this.set('id', id);
     await this.serialize();
   }

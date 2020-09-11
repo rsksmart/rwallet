@@ -81,9 +81,8 @@ class FcmHelper {
 
   refreshFcmToken = async () => {
     await firebase.messaging().deleteToken();
-    const fcmToken = await firebase.messaging().getToken();
-    console.log('FirebaseMessaging, Your Firebase Token is: ', fcmToken);
-    return fcmToken;
+    const token = await this.getFcmToken();
+    return token;
   }
 }
 
