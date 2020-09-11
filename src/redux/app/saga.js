@@ -163,6 +163,7 @@ function* loginRequest(action) {
     const newAppId = application.get('id');
     console.log(`User found with appId ${newAppId}. Sign in successful.`);
 
+    yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
     console.log(err.message);

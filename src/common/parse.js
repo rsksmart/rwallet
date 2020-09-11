@@ -94,6 +94,10 @@ class ParseHelper {
         // If username/password is Invalid, logout and sign up
         if (err.message === 'Invalid username/password.' || err.message === 'Password must be a string.') { // Call sign up if we can't log in using appId
           console.log(`User not found with appId ${username}. Signing up ...`);
+          // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
+          // The error will be caught by outer function, and call this function agin.
+          // It will not get error and call signUp
+          // This can be seen as a retry after an unexpected failure
           await Parse.User.logOut();
           const user = await ParseHelper.signUp();
           return user;
