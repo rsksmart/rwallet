@@ -8,7 +8,6 @@ import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
 import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
-import { TxStatus } from '../../common/constants';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
@@ -212,12 +211,7 @@ function addTokenTransactions(token, transactions) {
       newToken.transactions[txIndex] = transaction;
     }
   });
-  // newToken.transactions = newToken.transactions.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-  newToken.transactions = newToken.transactions.sort((a, b) => {
-    const timeA = a.status === TxStatus.SUCCESS ? a.confirmedAt : a.createdAt;
-    const timeB = b.status === TxStatus.SUCCESS ? b.confirmedAt : b.createdAt;
-    return timeA < timeB ? 1 : -1;
-  });
+  newToken.transactions = newToken.transactions.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
 }
 
 function* updateTransactionRequest(action) {

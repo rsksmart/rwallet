@@ -100,8 +100,8 @@ class Transaction extends Component {
     header: null,
   });
 
-  static processViewData(transation, latestBlockHeights) {
-    const { rawTransaction } = transation;
+  static processViewData(transaction, latestBlockHeights) {
+    const { rawTransaction } = transaction;
     const {
       chain, symbol, type, value, blockHeight, hash, memo, from, to,
     } = rawTransaction;
@@ -110,9 +110,9 @@ class Transaction extends Component {
       const amount = common.convertUnitToCoinAmount(symbol, value);
       amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
     }
-    const datetimeText = transation.datetime ? transation.datetime.format('LLL') : '';
+    const dateTimeText = rawTransaction.dateTime ? rawTransaction.dateTime.format('LLL') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
-    if (transation.state === 'Sent' || transation.state === 'Received') {
+    if (transaction.state === 'Sent' || transaction.state === 'Received') {
       let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, chain, type);
       latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
       confirmations = latestBlockHeight - blockHeight;
@@ -120,14 +120,14 @@ class Transaction extends Component {
       confirmations = confirmations >= 6 ? '6+' : confirmations;
     }
     return {
-      transactionState: transation.state,
+      transactionState: transaction.state,
       transactionId: hash,
       amount: amountText,
-      stateIcon: stateIcons[transation.state],
-      datetime: datetimeText,
+      stateIcon: stateIcons[transaction.state],
+      dateTime: dateTimeText,
       confirmations,
       memo: memo || strings('page.wallet.transaction.noMemo'),
-      title: `${transation.state} Funds`,
+      title: `${transaction.state} Funds`,
       isRefreshing: false,
       from,
       to,
@@ -137,15 +137,15 @@ class Transaction extends Component {
   constructor(props) {
     super(props);
     const { navigation, latestBlockHeights } = this.props;
-    const transation = navigation.state.params;
-    this.state = Transaction.processViewData(transation, latestBlockHeights);
+    const transaction = navigation.state.params;
+    this.state = Transaction.processViewData(transaction, latestBlockHeights);
     this.onLinkPress = this.onLinkPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     const { navigation, latestBlockHeights } = nextProps;
-    const transation = navigation.state.params;
-    this.setState(Transaction.processViewData(transation, latestBlockHeights));
+    const transaction = navigation.state.params;
+    this.setState(Transaction.processViewData(transaction, latestBlockHeights));
   }
 
   onRefresh = () => {
@@ -158,8 +158,8 @@ class Transaction extends Component {
 
   onLinkPress() {
     const { navigation } = this.props;
-    const transation = navigation.state.params;
-    const { rawTransaction } = transation;
+    const transaction = navigation.state.params;
+    const { rawTransaction } = transaction;
     const url = common.getTransactionUrl(rawTransaction.symbol, rawTransaction.type, rawTransaction.hash);
     Linking.openURL(url);
   }
@@ -200,7 +200,7 @@ class Transaction extends Component {
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
+      transactionState, transactionId, amount, dateTime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
     } = this.state;
 
     const txStateText = strings(`txState.${transactionState}`);
@@ -233,7 +233,7 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.date" />
-            <Text>{datetime}</Text>
+            <Text>{dateTime}</Text>
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.from" />
