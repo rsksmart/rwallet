@@ -149,24 +149,33 @@ function* initFromStorageRequest() {
 function* loginRequest(action) {
   const { isRelogin } = action;
   try {
-    // Read Parse.User from storage, if not, sign in or sign up
-    const user = yield call(ParseHelper.getUser);
-    console.log('loginRequest, read from storage, user: ', user);
-    // If you need to log in again, or the user exists, call ParseHelper.signInOrSignUp
-    // Else use the user from storage
-    const appId = application.get('id');
-    if (!user || isRelogin) {
-      const password = yield call(storage.getUserPassword);
-      yield call(ParseHelper.signInOrSignUp, appId, password);
+    const password = yield call(storage.getUserPassword);
+    // If the password does not exist, it means this is a new user, then sign up.
+    // Else login.
+    if (_.isEmpty(password)) {
+      yield call(ParseHelper.signUp);
+    } else {
+      // Read Parse.User from storage, if not, sign in or sign up
+      const user = yield call(ParseHelper.getUser);
+      console.log('loginRequest, read from storage, user: ', user);
+      // If you need to log in again, or the user exists, call ParseHelper.signInOrSignUp
+      // Else use the user from storage
+      if (!user || isRelogin) {
+        console.log('loginRequest, read from storage, user: ', user);
+        const appId = application.get('id');
+        yield call(ParseHelper.signInOrSignUp, appId, password);
+      }
     }
 
     const newAppId = application.get('id');
     console.log(`User found with appId ${newAppId}. Sign in successful.`);
 
+    yield put(actions.resetLoginError());
     yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
     console.log(err.message);
+    yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
     yield put(actions.login(isRelogin));
   }

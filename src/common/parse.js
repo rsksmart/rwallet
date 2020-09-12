@@ -50,10 +50,22 @@ class ParseHelper {
 
 
   static async signUp() {
+    const currentUser = await ParseHelper.getUser();
+    if (currentUser) {
+      // In order to register new user when user is delete on server.
+      // We need to log out, else Parse.User.signUp() will always receive error: 209, Invalid session token
+      // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
+      // The error will be caught by outer function, and retry.
+      // And It will not get error again and call signUp.
+      // This can be seen as a retry after an unexpected failure (User is deleted by server).
+      console.log('User log out!');
+      await Parse.User.logOut();
+    }
+
     const newId = await application.createId();
     const password = randomstring.generate();
 
-    console.log(`parse::signUp, username: ${newId}, password: ${password}`);
+    console.log(`parse::signUp, username: ${newId}`);
 
     // Sign up
     const user = new Parse.User();
@@ -78,33 +90,9 @@ class ParseHelper {
     return user;
   }
 
-  static async signInOrSignUp(username, password) {
-    console.log(`parse::signInOrSignUp, username: ${username}, password: ${password}`);
-
-    // If password is null, it's new user, call sign up.
-    if (_.isEmpty(password)) {
-      const user = await ParseHelper.signUp();
-      return user;
-    }
-
-    // login
-    return Parse.User.logIn(username, password)
-      .catch(async (err) => {
-        console.log('signInOrSignUp, err: ', JSON.stringify(err), err.message);
-        // If username/password is Invalid, logout and sign up
-        if (err.message === 'Invalid username/password.' || err.message === 'Password must be a string.') { // Call sign up if we can't log in using appId
-          console.log(`User not found with appId ${username}. Signing up ...`);
-          // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
-          // The error will be caught by outer function, and call this function agin.
-          // It will not get error and call signUp
-          // This can be seen as a retry after an unexpected failure
-          await Parse.User.logOut();
-          const user = await ParseHelper.signUp();
-          return user;
-        }
-
-        return Promise.reject();
-      });
+  static async signIn(username, password) {
+    console.log(`parse::signInOrSignUp, username: ${username}`);
+    return Parse.User.logIn(username, password);
   }
 
   /**
