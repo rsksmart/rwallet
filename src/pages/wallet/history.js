@@ -314,7 +314,7 @@ class History extends Component {
           break;
         default:
       }
-      const datetime = transaction.status === TxStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
+      const datetime = transaction.dateTime;
       let datetimeText = '';
       if (datetime) {
         const daysElapsed = moment().diff(datetime, 'days');
@@ -331,7 +331,6 @@ class History extends Component {
       }
       transactions.push({
         state,
-        datetime,
         datetimeText,
         amountText,
         rawTransaction: transaction,
