@@ -254,10 +254,12 @@ class ParseHelper {
    * @memberof ParseHelper
    */
   static async fetchTransactions(symbol, type, address, skipCount, fetchCount) {
-    const query = new Parse.Query(ParseTransaction)
-      .equalTo('from', address)
+    const queryFrom = new Parse.Query(ParseTransaction);
+    queryFrom.equalTo('from', address);
+    const queryTo = new Parse.Query(ParseTransaction);
+    queryTo.equalTo('to', address);
+    const query = Parse.Query.or(queryFrom, queryTo)
       .equalTo('type', type)
-      .equalTo('to', address)
       .equalTo('symbol', symbol)
       .descending('createdAt');
     const results = await query.skip(skipCount).limit(fetchCount).find();
