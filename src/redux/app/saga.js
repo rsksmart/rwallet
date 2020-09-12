@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import {
-  call, all, takeEvery, put, select, take,
+  call, all, takeEvery, put, select, take, delay,
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
@@ -24,6 +24,8 @@ import config from '../../../config';
 import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
+
+const RELOGIN_DELAY_TIME = 7000;
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
@@ -152,19 +154,33 @@ function* loginRequest(action) {
     const password = yield call(storage.getUserPassword);
     // If the password does not exist, it means this is a new user, then sign up.
     // Else login.
+    const currentUser = yield call(ParseHelper.getUser);
+    console.log('loginRequest, read from storage, user: ', currentUser);
+
     if (_.isEmpty(password)) {
-      yield call(ParseHelper.signUp);
-    } else {
-      // Read Parse.User from storage, if not, sign in or sign up
-      const user = yield call(ParseHelper.getUser);
-      console.log('loginRequest, read from storage, user: ', user);
-      // If you need to log in again, or the user exists, call ParseHelper.signInOrSignUp
-      // Else use the user from storage
-      if (!user || isRelogin) {
-        console.log('loginRequest, read from storage, user: ', user);
-        const appId = application.get('id');
-        yield call(ParseHelper.signInOrSignUp, appId, password);
+      if (currentUser) {
+        // In order to register new user when user is delete on server.
+        // We need to log out, otherwise Parse.User.signUp() will always receive error: 209, Invalid session token
+        yield call(ParseHelper.logOut);
       }
+
+      // Sign up
+      const username = yield call(application.createId);
+      const newPassword = common.randomString(11);
+      yield call(ParseHelper.signUp, username, newPassword);
+
+      // Save username and password to storage
+      yield call(application.saveId, username);
+      yield call(storage.setUserPassword, newPassword);
+
+      // refresh fcm token
+      fcmHelper.refreshFcmToken();
+    } else if (!currentUser || isRelogin) {
+      // Read Parse.User from storage, if not, sign in or sign up
+      // If you need to log in again, or the user exists, call ParseHelper.signIn
+      // Else use the user from storage
+      const appId = application.get('id');
+      yield call(ParseHelper.signIn, appId, password);
     }
 
     const newAppId = application.get('id');
@@ -174,9 +190,10 @@ function* loginRequest(action) {
     yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
-    console.log(err.message);
+    console.log('loginRequest, error: ', err.message);
     yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
+    yield delay(RELOGIN_DELAY_TIME);
     yield put(actions.login(isRelogin));
   }
 }

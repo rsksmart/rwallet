@@ -8,11 +8,6 @@ import { blockHeightKeys } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
 import cointype from './wallet/cointype';
-import application from './application';
-import storage from './storage';
-import fcmHelper from './fcmHelper';
-
-const randomstring = require('randomstring');
 
 const parseConfig = config && config.parse;
 
@@ -49,27 +44,12 @@ class ParseHelper {
   }
 
 
-  static async signUp() {
-    const currentUser = await ParseHelper.getUser();
-    if (currentUser) {
-      // In order to register new user when user is delete on server.
-      // We need to log out, else Parse.User.signUp() will always receive error: 209, Invalid session token
-      // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
-      // The error will be caught by outer function, and retry.
-      // And It will not get error again and call signUp.
-      // This can be seen as a retry after an unexpected failure (User is deleted by server).
-      console.log('User log out!');
-      await Parse.User.logOut();
-    }
-
-    const newId = await application.createId();
-    const password = randomstring.generate();
-
-    console.log(`parse::signUp, username: ${newId}`);
+  static async signUp(username, password) {
+    console.log(`ParseHelper.signUp, username: ${username}`);
 
     // Sign up
     const user = new Parse.User();
-    user.set('username', newId);
+    user.set('username', username);
     user.set('password', password);
     await user.signUp();
 
@@ -78,21 +58,28 @@ class ParseHelper {
     user.setACL(new Parse.ACL(user));
     await user.save();
 
-    // Save username and password to storage
-    await application.saveId(newId);
-    await storage.setUserPassword(password);
-
-    // refresh fcm token
-    fcmHelper.refreshFcmToken();
-
-    console.log(`parse::signUp success, username: ${newId}`);
+    console.log(`ParseHelper.signUp success, username: ${username}`);
 
     return user;
   }
 
   static async signIn(username, password) {
-    console.log(`parse::signInOrSignUp, username: ${username}`);
+    console.log(`ParseHelper.signIn, username: ${username}`);
     return Parse.User.logIn(username, password);
+  }
+
+  static async logOut() {
+    console.log('ParseHelper.logOut');
+    // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
+    // Ignore the error.
+    try {
+      await Parse.User.logOut();
+    } catch (error) {
+      console.log('ParseHelper.logOut, error: ', error.message);
+      if (error.code !== Parse.Error.INVALID_SESSION_TOKEN) {
+        throw error;
+      }
+    }
   }
 
   /**
