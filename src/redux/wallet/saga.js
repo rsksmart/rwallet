@@ -211,7 +211,8 @@ function addTokenTransactions(token, transactions) {
       newToken.transactions[txIndex] = transaction;
     }
   });
-  newToken.transactions = newToken.transactions.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
+  // sort transactions. If dateTime is nil, put it to tail.
+  newToken.transactions = newToken.transactions.sort((a, b) => ((!a.dateTime || a.dateTime < b.dateTime) ? 1 : -1));
 }
 
 function* updateTransactionRequest(action) {

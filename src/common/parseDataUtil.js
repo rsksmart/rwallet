@@ -10,7 +10,8 @@ const parseDataUtil = {
   getTransaction(txObject) {
     const status = txObject.get('status');
     let dateTime = status === TxStatus.SUCCESS ? txObject.get('confirmedAt') : txObject.get('createdAt');
-    dateTime = dateTime ? moment(dateTime) : moment(0);
+    // Handling the case where datetime is undefined
+    dateTime = dateTime ? moment(dateTime) : undefined;
     const transaction = {
       chain: txObject.get('chain'),
       type: txObject.get('type'),
