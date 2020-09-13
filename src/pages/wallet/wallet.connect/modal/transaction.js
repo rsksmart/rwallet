@@ -34,12 +34,12 @@ export default function TransactionModal({
   txData, dappUrl, cancelPress, confirmPress, txType,
 }) {
   const {
-    value, from, to, data, gas, gasPrice,
+    value, from, to, data, gasLimit, gasPrice,
   } = txData;
   const amount = Rsk3.utils.hexToNumber(value);
-  const gasNumber = Rsk3.utils.hexToNumber(gas);
+  const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
   const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-  const feeWei = gasNumber * gasPriceNumber;
+  const feeWei = gasLimitNumber * gasPriceNumber;
   const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
   return (
     <BaseModal
@@ -96,7 +96,7 @@ TransactionModal.propTypes = {
     data: PropTypes.string,
     from: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
-    gas: PropTypes.string.isRequired,
+    gasLimit: PropTypes.string.isRequired,
     gasPrice: PropTypes.string.isRequired,
   }).isRequired,
   confirmPress: PropTypes.func.isRequired,

@@ -609,6 +609,9 @@ const common = {
    * @param {*} showLength, the length of shown characters at the start and the end
    */
   ellipsisString(string, showLength) {
+    if (!string) {
+      return '';
+    }
     const { length } = string;
     if (length <= showLength * 2) {
       return string;

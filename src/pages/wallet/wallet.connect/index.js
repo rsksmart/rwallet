@@ -161,6 +161,7 @@ class WalletConnectPage extends Component {
       chainId: 30,
       payload: null,
       inputDecode: null,
+      symbol: null,
       selectedWallet: {},
       contentView: null,
       modalView: null,
@@ -183,7 +184,7 @@ class WalletConnectPage extends Component {
       const selectedWallet = await this.getWallet();
       if (selectedWallet) {
         await this.setState({ selectedWallet });
-        this.initWalletConnect();
+        await this.initWalletConnect();
         this.initNetwork();
       } else {
         // If current wallet has no mainnet rsk asset, need to go back
@@ -444,15 +445,20 @@ class WalletConnectPage extends Component {
   }
 
   popupAllowanceModal = async () => {
-    const { peerMeta } = this.state;
+    const { peerMeta, symbol, txData } = this.state;
+    const { gasLimit, gasPrice } = txData;
+    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
+    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
+    const feeWei = gasLimitNumber * gasPriceNumber;
+    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
     this.setState({
       modalView: (
         <AllowanceModal
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          asset="RIF"
-          fee="0.00006"
+          asset={symbol}
+          fee={fee}
         />
       ),
     });
@@ -473,18 +479,8 @@ class WalletConnectPage extends Component {
   }
 
   popupTransactionModal = async (contractMethod = 'Smart Contract Call') => {
-    const { selectedWallet: { address }, payload: { params }, peerMeta } = this.state;
-
-    const gasPrice = await this.provider.getGasPrice();
-
-    const txData = {
-      data: params[0].data,
-      gas: params[0].gas || '600000',
-      gasPrice: params[0].gasPrice || gasPrice,
-      from: Rsk3.utils.toChecksumAddress(address),
-      to: Rsk3.utils.toChecksumAddress(params[0].to),
-      value: params[0].value || '0',
-    };
+    const { peerMeta, txData, selectedWallet: { address } } = this.state;
+    const value = Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(txData.value)}`, 'ether');
 
     this.setState({
       modalView: (
@@ -492,7 +488,7 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          txData={txData}
+          txData={{ ...txData, value, from: address }}
           txType={contractMethod}
         />
       ),
@@ -523,10 +519,11 @@ class WalletConnectPage extends Component {
       case 'eth_sendTransaction': {
         const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
         const inputData = params[0].data;
-        apiHelper.getAbiByAddress(toAddress).then((res) => {
-          const { abi } = res;
+        apiHelper.getAbiByAddress(toAddress).then(async (res) => {
+          const { abi, symbol } = res;
           const input = common.ethereumInputDecoder(abi, inputData);
-          this.setState({ inputDecode: input });
+          const txData = await this.generateTxData();
+          await this.setState({ inputDecode: input, symbol, txData });
           if (input && input.method === 'approve') {
             this.popupAllowanceModal();
           } else {
@@ -619,6 +616,24 @@ class WalletConnectPage extends Component {
     }, 500);
   }
 
+  generateTxData = async () => {
+    const { selectedWallet: { address }, payload: { params } } = this.state;
+    const nonce = await this.provider.getTransactionCount(address, 'pending');
+
+    // Get Mainnet current gas price
+    const gasPrice = await this.provider.getGasPrice();
+    const txData = {
+      nonce,
+      data: params[0].data,
+      gasLimit: params[0].gas || '0x927c0', // Set default gasLimit to 600000(hex: 0x927c0),
+      gasPrice: params[0].gasPrice || gasPrice,
+      to: Rsk3.utils.toChecksumAddress(params[0].to),
+      value: params[0].value || '0x0',
+    };
+
+    return txData;
+  }
+
   signMessage = async (signWallet, message) => {
     const signature = await signWallet.signMessage(message);
     return signature;
@@ -626,20 +641,7 @@ class WalletConnectPage extends Component {
 
   sendTransaction = async (signWallet) => {
     try {
-      const { selectedWallet: { address }, payload: { params } } = this.state;
-      const nonce = await this.provider.getTransactionCount(address, 'pending');
-
-      // Get Mainnet current gas price
-      const gasPrice = await this.provider.getGasPrice();
-      const value = params[0].value ? Rsk3.utils.toHex(Rsk3.utils.toBN(params[0].gasPrice)) : '0x0';
-      const txData = {
-        nonce,
-        data: params[0].data,
-        gasLimit: params[0].gas || 600000,
-        gasPrice: params[0].gasPrice || gasPrice,
-        to: Rsk3.utils.toChecksumAddress(params[0].to),
-        value,
-      };
+      const { txData } = this.state;
       const rawTransaction = await signWallet.sign(txData);
       const res = await this.provider.sendTransaction(rawTransaction);
       const { hash } = res;
