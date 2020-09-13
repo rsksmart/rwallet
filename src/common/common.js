@@ -629,7 +629,7 @@ const common = {
    */
   getServerUrl(baseUrl, environment) {
     if (!_.isEmpty(environment) && environment !== 'Production') {
-      const regex = /^([\w.]*:\/\/)([\w.]*)\S*/g;
+      const regex = /^([\w.]*:\/\/)(.*)\S*/g;
       const matches = regex.exec(baseUrl);
       const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
       return url;
