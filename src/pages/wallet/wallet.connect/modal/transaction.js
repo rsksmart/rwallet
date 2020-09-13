@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 
+import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
 import CONSTANTS from '../../../../common/constants.json';
@@ -43,41 +44,41 @@ export default function TransactionModal({
   const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
   return (
     <BaseModal
-      title="Approve Transaction"
-      description={`By clicking on Confirm, you agree to sign the transaction originated from ${dappUrl}`}
+      title={strings('page.wallet.walletconnect.approveMessage')}
+      description={strings('page.wallet.walletconnect.approveMessageDesc', { dappUrl })}
       content={(
         <>
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Amount</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
             <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
           </View>
 
           {
               txType && (
                 <View style={styles.line}>
-                  <Text style={styles.lineTitle}>Type</Text>
+                  <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.type')}</Text>
                   <Text style={styles.lineValue}>{txType}</Text>
                 </View>
               )
             }
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>From</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
             <Text style={styles.lineValue}>{common.ellipsisString(from, 7)}</Text>
           </View>
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>To</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
             <Text style={styles.lineValue}>{common.ellipsisString(to, 7)}</Text>
           </View>
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Miner Fee</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
             <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
           </View>
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Data</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.data')}</Text>
             <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
           </View>
         </>

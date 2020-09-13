@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../../common/i18n';
 import color from '../../../../assets/styles/color';
 import CONSTANTS from '../../../../common/constants.json';
 
@@ -58,11 +59,11 @@ export default class BaseModal extends PureComponent {
           style={styles.confirmBtnView}
           onPress={confirmPress}
         >
-          <Text style={[styles.confirmBtnFont]}>Confirm</Text>
+          <Text style={[styles.confirmBtnFont]}>{strings('page.wallet.walletconnect.confirm')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.cancelBtnView} onPress={cancelPress}>
-          <Text style={[styles.cancelBtnFont]}>Cancel</Text>
+          <Text style={[styles.cancelBtnFont]}>{strings('page.wallet.walletconnect.cancel')}</Text>
         </TouchableOpacity>
       </>
     );
@@ -76,7 +77,7 @@ export default class BaseModal extends PureComponent {
           style={styles.confirmBtnView}
           onPress={cancelPress}
         >
-          <Text style={[styles.confirmBtnFont]}>Got It</Text>
+          <Text style={[styles.confirmBtnFont]}>{strings('page.wallet.walletconnect.gotIt')}</Text>
         </TouchableOpacity>
       </>
     );

@@ -189,7 +189,7 @@ class WalletConnectPage extends Component {
       } else {
         // If current wallet has no mainnet rsk asset, need to go back
         Alert.alert(
-          'Please select a wallet that has at least one mainnet rsk asset',
+          strings('page.wallet.walletconnect.selectAvailableWallet'),
           '',
           [
             {
@@ -557,7 +557,7 @@ class WalletConnectPage extends Component {
           const message = Rsk3.utils.hexToAscii(params[0]);
           result = await this.signMessage(signWallet, message);
           await connector.approveRequest({ id, result });
-          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closeModalPress} />) });
+          this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
           break;
         }
 
@@ -565,7 +565,7 @@ class WalletConnectPage extends Component {
           const message = Rsk3.utils.hexToAscii(params[1]);
           result = await this.signMessage(signWallet, message);
           await connector.approveRequest({ id, result });
-          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closeModalPress} />) });
+          this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
           break;
         }
 
@@ -584,9 +584,9 @@ class WalletConnectPage extends Component {
 
           setTimeout(() => {
             if (inputDecode && inputDecode.method === 'approve') {
-              this.setState({ modalView: (<SuccessModal title="Allowance Approved" cancelPress={this.closeModalPress} />) });
+              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
             } else {
-              this.setState({ modalView: (<SuccessModal title="Transaction Approved" cancelPress={this.closeModalPress} />) });
+              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
             }
           }, 500);
           break;
@@ -677,14 +677,14 @@ class WalletConnectPage extends Component {
   renderWalletConnectingView = () => (
     <View>
       <ActivityIndicator size="large" />
-      <Text style={styles.loadingFont}>Wallet is connecting...</Text>
+      <Text style={styles.loadingFont}>{strings('page.wallet.walletconnect.isConnecting')}</Text>
     </View>
   )
 
   renderTransactionSigningView = () => (
     <View>
       <ActivityIndicator size="large" />
-      <Text style={styles.loadingFont}>Transaction is signing...</Text>
+      <Text style={styles.loadingFont}>{strings('page.wallet.walletconnect.isSigning')}</Text>
     </View>
   )
 

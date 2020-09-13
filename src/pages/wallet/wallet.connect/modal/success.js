@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import CONSTANTS from '../../../../common/constants.json';
 
@@ -41,5 +42,5 @@ SuccessModal.propTypes = {
 };
 
 SuccessModal.defaultProps = {
-  description: 'Success! Your transaction has been published to blockchain. Once confirmed, it should show in the dapp.',
+  description: strings('page.wallet.walletconnect.successDesc'),
 };

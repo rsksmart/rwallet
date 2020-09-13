@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
 import CONSTANTS from '../../../../common/constants.json';
@@ -33,12 +34,12 @@ export default function MessageModal({
 }) {
   return (
     <BaseModal
-      title="Approve Sign Message"
-      description={`By clicking on Confirm, you agree to sign the message originated from ${dappUrl}`}
+      title={strings('page.wallet.walletconnect.approveMessage')}
+      description={strings('page.wallet.walletconnect.approveMessageDesc', { dappUrl })}
       content={(
         <>
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Message</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.message')}</Text>
             <Text style={styles.lineValue}>{message}</Text>
           </View>
         </>

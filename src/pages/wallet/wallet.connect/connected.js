@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 
@@ -112,11 +113,9 @@ class WalletConnected extends Component {
         </View>
 
         <View style={styles.block}>
-          <Text style={styles.title}>Connected</Text>
+          <Text style={styles.title}>{strings('page.wallet.walletconnect.connected')}</Text>
           <Text style={styles.content}>
-            {dappName}
-            {' '}
-            is conected to your wallet
+            {strings('page.wallet.walletconnect.connectedWallet', { dappName })}
           </Text>
           <View style={styles.address}>
             <Text style={styles.content}>{address}</Text>
@@ -124,19 +123,15 @@ class WalletConnected extends Component {
         </View>
 
         <View style={styles.block}>
-          <Text style={styles.title}>Waiting for operations</Text>
+          <Text style={styles.title}>{strings('page.wallet.walletconnect.waitingForOperations')}</Text>
           <Text style={styles.content}>
-            Please perform any operations from the
-            {' '}
-            {dappName}
-            {' '}
-            dapp. RWallet will prompt to ask for signature approval, if requested.
+            {strings('page.wallet.walletconnect.waitingForOperationsDesc', { dappName })}
           </Text>
         </View>
 
         <View style={styles.btnsView}>
           <TouchableOpacity style={[styles.btn, styles.rejectBtn]} onPress={disconnect}>
-            <Text style={styles.rejectText}>Disconnect</Text>
+            <Text style={styles.rejectText}>{strings('page.wallet.walletconnect.disconnect')}</Text>
           </TouchableOpacity>
         </View>
       </>

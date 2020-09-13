@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
 import CONSTANTS from '../../../../common/constants.json';
@@ -32,22 +33,22 @@ export default function AllowanceModal({
 }) {
   return (
     <BaseModal
-      title="Approve Allowance"
-      description={`By clicking on Confirm, you agree to allow ${dappUrl} to transfer tokens on your behalf.`}
+      title={strings('page.wallet.walletconnect.approveAllowance')}
+      description={strings('page.wallet.walletconnect.approveAllowanceDesc', { dappUrl })}
       content={(
         <>
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Asset</Text>
+            <Text style={styles.lineTitle}>{strings('Asset')}</Text>
             <Text style={styles.lineValue}>{asset}</Text>
           </View>
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Permission</Text>
-            <Text style={styles.lineValue}>Allowance</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.permission')}</Text>
+            <Text style={styles.lineValue}>{strings('page.wallet.walletconnect.allowance')}</Text>
           </View>
 
           <View style={styles.line}>
-            <Text style={styles.lineTitle}>Miner Fee</Text>
+            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
             <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
           </View>
         </>

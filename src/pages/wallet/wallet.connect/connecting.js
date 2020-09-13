@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 
@@ -112,11 +113,9 @@ class WalletConnecting extends Component {
         </View>
 
         <View style={styles.block}>
-          <Text style={styles.title}>Request</Text>
+          <Text style={styles.title}>{strings('page.wallet.walletconnect.request')}</Text>
           <Text style={styles.content}>
-            {dappName}
-            {' '}
-            requests to connect your wallet
+            {strings('page.wallet.walletconnect.connectWallet', { dappName })}
           </Text>
           <View style={styles.address}>
             <Text style={styles.content}>{address}</Text>
@@ -124,19 +123,19 @@ class WalletConnecting extends Component {
         </View>
 
         <View style={styles.block}>
-          <Text style={styles.title}>Concent</Text>
-          <Text style={styles.content}>Clicking on Allow, you agree to,</Text>
-          <Text style={styles.content}>- Allow getting current wallet address</Text>
-          <Text style={styles.content}>- Allow signature request from the current wallet</Text>
+          <Text style={styles.title}>{strings('page.wallet.walletconnect.content')}</Text>
+          <Text style={styles.content}>{strings('page.wallet.walletconnect.agreeTo')}</Text>
+          <Text style={styles.content}>{strings('page.wallet.walletconnect.agreeOne')}</Text>
+          <Text style={styles.content}>{strings('page.wallet.walletconnect.agreeTwo')}</Text>
         </View>
 
         <View style={styles.btnsView}>
           <TouchableOpacity style={[styles.btn, styles.rejectBtn]} onPress={reject}>
-            <Text style={styles.rejectText}>Reject</Text>
+            <Text style={styles.rejectText}>{strings('page.wallet.walletconnect.reject')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.btn, styles.allowBtn]} onPress={approve}>
-            <Text style={styles.allowText}>Allow</Text>
+            <Text style={styles.allowText}>{strings('page.wallet.walletconnect.allow')}</Text>
           </TouchableOpacity>
         </View>
       </>

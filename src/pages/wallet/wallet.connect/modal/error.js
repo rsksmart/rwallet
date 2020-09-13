@@ -2,8 +2,9 @@ import React from 'react';
 import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 
+import { strings } from '../../../../common/i18n';
 import color from '../../../../assets/styles/color';
 
 const styles = StyleSheet.create({
@@ -63,7 +64,10 @@ export default function ErrorModal({
     <View>
       <View style={styles.row}>
         <Image style={styles.image} source={ERROR_IMAGE} />
-        <Text style={styles.title}>Error!</Text>
+        <Text style={styles.title}>
+          {strings('page.wallet.walletconnect.error')}
+          !
+        </Text>
       </View>
       <Text style={styles.description}>
         {description}
@@ -73,11 +77,11 @@ export default function ErrorModal({
         style={styles.tryAgainBtnView}
         onPress={tryAgain}
       >
-        <Text style={[styles.tryAgainBtnFont]}>Try again</Text>
+        <Text style={[styles.tryAgainBtnFont]}>{strings('page.wallet.walletconnect.tryAgain')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.tryLaterBtnView} onPress={tryLater}>
-        <Text style={[styles.tryLaterBtnFont]}>Try it later</Text>
+        <Text style={[styles.tryLaterBtnFont]}>{strings('page.wallet.walletconnect.tryLater')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -90,5 +94,5 @@ ErrorModal.propTypes = {
 };
 
 ErrorModal.defaultProps = {
-  description: 'Error! An error occurred, please try again later (there may be many reasons, such as network problems, user rejection, incorrect passcode, insufficient handling fee, etc.)',
+  description: string('page.wallet.walletconnect.errorDesc'),
 };
