@@ -10,7 +10,7 @@ const screenWidth = Dimensions.get('window').width;
 const CompletedIcon = ({ style, percent }) => (<AutoHeightImage style={style} source={references.images.completed} width={screenWidth * percent} />);
 
 CompletedIcon.propTypes = {
-  style: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   percent: PropTypes.number,
 };
 
