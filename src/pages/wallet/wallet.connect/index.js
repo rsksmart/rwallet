@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir',
   },
   dappUrl: {
-    color: '#9B9B9B',
+    color: color.dustyGray,
     fontSize: 15,
     fontFamily: 'Avenir',
     marginTop: 6,
@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
   },
   content: {
     fontFamily: 'Avenir',
-    color: '#2D2D2D',
+    color: color.mineShaft,
     fontSize: 15,
     marginTop: 8,
   },
   address: {
     width: '100%',
     height: 53,
-    backgroundColor: '#F3F3F3',
+    backgroundColor: color.concrete,
     marginTop: 12,
-    shadowColor: '#909090',
+    shadowColor: color.approxGray,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -105,18 +105,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rejectBtn: {
-    borderColor: '#028CFF',
+    borderColor: color.vividBlue,
     borderWidth: 2,
   },
   rejectText: {
     fontFamily: 'Avenir',
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#028CFF',
+    color: color.vividBlue,
   },
   allowBtn: {
     marginTop: 18,
-    backgroundColor: '#028CFF',
+    backgroundColor: color.vividBlue,
   },
   allowText: {
     fontFamily: 'Avenir',

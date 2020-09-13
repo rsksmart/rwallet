@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir',
   },
   lineValue: {
-    color: '#9B9B9B',
+    color: color.dustyGray,
     fontSize: 15,
     fontFamily: 'Avenir',
     width: '60%',
