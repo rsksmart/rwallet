@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -28,30 +28,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class MessageModal extends PureComponent {
-  render() {
-    const {
-      message, dappUrl, cancelPress, confirmPress,
-    } = this.props;
-
-    return (
-      <BaseModal
-        title="Approve Sign Message"
-        description={`By clicking on Confirm, you agree to sign the message originated from ${dappUrl}`}
-        content={(
-          <>
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>Message</Text>
-              <Text style={styles.lineValue}>{message}</Text>
-            </View>
-          </>
+export default function MessageModal({
+  message, dappUrl, cancelPress, confirmPress,
+}) {
+  return (
+    <BaseModal
+      title="Approve Sign Message"
+      description={`By clicking on Confirm, you agree to sign the message originated from ${dappUrl}`}
+      content={(
+        <>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>Message</Text>
+            <Text style={styles.lineValue}>{message}</Text>
+          </View>
+        </>
         )}
-        confirmPress={confirmPress}
-        cancelPress={cancelPress}
-        modalType={MODAL_TYPE.CONFIRMATION}
-      />
-    );
-  }
+      confirmPress={confirmPress}
+      cancelPress={cancelPress}
+      modalType={MODAL_TYPE.CONFIRMATION}
+    />
+  );
 }
 
 MessageModal.propTypes = {

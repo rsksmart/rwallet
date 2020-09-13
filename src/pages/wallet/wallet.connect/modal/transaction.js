@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
@@ -30,36 +30,29 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class TransactionModal extends PureComponent {
-  render() {
-    const {
-      txData, dappUrl, cancelPress, confirmPress, txType,
-    } = this.props;
-    const {
-      value, from, to, data, gas, gasPrice,
-    } = txData;
-    const amount = Rsk3.utils.hexToNumber(value);
-    const gasNumber = Rsk3.utils.hexToNumber(gas);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+export default function TransactionModal({
+  txData, dappUrl, cancelPress, confirmPress, txType,
+}) {
+  const {
+    value, from, to, data, gas, gasPrice,
+  } = txData;
+  const amount = Rsk3.utils.hexToNumber(value);
+  const gasNumber = Rsk3.utils.hexToNumber(gas);
+  const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
+  const feeWei = gasNumber * gasPriceNumber;
+  const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+  return (
+    <BaseModal
+      title="Approve Transaction"
+      description={`By clicking on Confirm, you agree to sign the transaction originated from ${dappUrl}`}
+      content={(
+        <>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>Amount</Text>
+            <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
+          </View>
 
-    return (
-      <BaseModal
-        title="Approve Transaction"
-        description={`By clicking on Confirm, you agree to sign the transaction originated from ${dappUrl}`}
-        content={(
-          <>
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>Amount</Text>
-              <Text style={styles.lineValue}>
-                {amount}
-                {' '}
-                RBTC
-              </Text>
-            </View>
-
-            {
+          {
               txType && (
                 <View style={styles.line}>
                   <Text style={styles.lineTitle}>Type</Text>
@@ -68,37 +61,32 @@ export default class TransactionModal extends PureComponent {
               )
             }
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>From</Text>
-              <Text style={styles.lineValue}>{common.ellipsisString(from, 7)}</Text>
-            </View>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>From</Text>
+            <Text style={styles.lineValue}>{common.ellipsisString(from, 7)}</Text>
+          </View>
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>To</Text>
-              <Text style={styles.lineValue}>{common.ellipsisString(to, 7)}</Text>
-            </View>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>To</Text>
+            <Text style={styles.lineValue}>{common.ellipsisString(to, 7)}</Text>
+          </View>
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>Miner Fee</Text>
-              <Text style={styles.lineValue}>
-                {fee}
-                {' '}
-                RBTC
-              </Text>
-            </View>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>Miner Fee</Text>
+            <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
+          </View>
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>Data</Text>
-              <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
-            </View>
-          </>
+          <View style={styles.line}>
+            <Text style={styles.lineTitle}>Data</Text>
+            <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
+          </View>
+        </>
         )}
-        confirmPress={confirmPress}
-        cancelPress={cancelPress}
-        modalType={MODAL_TYPE.CONFIRMATION}
-      />
-    );
-  }
+      confirmPress={confirmPress}
+      cancelPress={cancelPress}
+      modalType={MODAL_TYPE.CONFIRMATION}
+    />
+  );
 }
 
 TransactionModal.propTypes = {

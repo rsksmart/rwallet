@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
@@ -56,35 +56,31 @@ const styles = StyleSheet.create({
 
 const ERROR_IMAGE = require('../../../../assets/images/icon/error.png');
 
-export default class ErrorModal extends PureComponent {
-  render() {
-    const {
-      description, tryAgain, tryLater,
-    } = this.props;
-
-    return (
-      <View>
-        <View style={styles.row}>
-          <Image style={styles.image} source={ERROR_IMAGE} />
-          <Text style={styles.title}>Error!</Text>
-        </View>
-        <Text style={styles.description}>
-          {description}
-        </Text>
-
-        <TouchableOpacity
-          style={styles.tryAgainBtnView}
-          onPress={tryAgain}
-        >
-          <Text style={[styles.tryAgainBtnFont]}>Try again</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tryLaterBtnView} onPress={tryLater}>
-          <Text style={[styles.tryLaterBtnFont]}>Try it later</Text>
-        </TouchableOpacity>
+export default function ErrorModal({
+  description, tryAgain, tryLater,
+}) {
+  return (
+    <View>
+      <View style={styles.row}>
+        <Image style={styles.image} source={ERROR_IMAGE} />
+        <Text style={styles.title}>Error!</Text>
       </View>
-    );
-  }
+      <Text style={styles.description}>
+        {description}
+      </Text>
+
+      <TouchableOpacity
+        style={styles.tryAgainBtnView}
+        onPress={tryAgain}
+      >
+        <Text style={[styles.tryAgainBtnFont]}>Try again</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.tryLaterBtnView} onPress={tryLater}>
+        <Text style={[styles.tryLaterBtnFont]}>Try it later</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 ErrorModal.propTypes = {

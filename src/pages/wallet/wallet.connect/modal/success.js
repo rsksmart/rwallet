@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -16,26 +16,22 @@ const styles = StyleSheet.create({
 
 const COMPLETED_IMAGE = require('../../../../assets/images/icon/completed.png');
 
-export default class SuccessModal extends PureComponent {
-  render() {
-    const {
-      title, cancelPress, description,
-    } = this.props;
-
-    return (
-      <BaseModal
-        title={title}
-        description={description}
-        content={(
-          <>
-            <Image style={styles.image} source={COMPLETED_IMAGE} />
-          </>
+export default function SuccessModal({
+  title, cancelPress, description,
+}) {
+  return (
+    <BaseModal
+      title={title}
+      description={description}
+      content={(
+        <>
+          <Image style={styles.image} source={COMPLETED_IMAGE} />
+        </>
         )}
-        cancelPress={cancelPress}
-        modalType={MODAL_TYPE.NOTIFICATION}
-      />
-    );
-  }
+      cancelPress={cancelPress}
+      modalType={MODAL_TYPE.NOTIFICATION}
+    />
+  );
 }
 
 SuccessModal.propTypes = {

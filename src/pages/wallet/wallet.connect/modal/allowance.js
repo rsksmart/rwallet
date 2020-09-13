@@ -48,11 +48,7 @@ export default function AllowanceModal({
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>Miner Fee</Text>
-            <Text style={styles.lineValue}>
-              {fee}
-              {' '}
-              RBTC
-            </Text>
+            <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
           </View>
         </>
       )}

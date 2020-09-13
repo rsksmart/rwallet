@@ -29,7 +29,7 @@ import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 
-const { NETWORK: { MAINNET, TESTNET } } = CONSTANTS;
+const { NETWORK: { MAINNET } } = CONSTANTS;
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
@@ -173,6 +173,8 @@ class WalletConnectPage extends Component {
       'hardwareBackPress',
       this.backAction,
     );
+
+    // setTimeout 500 in order to ui change smoothly
     setTimeout(async () => {
       await this.setState({
         modalView: this.renderWalletConnectingView(),
@@ -182,10 +184,11 @@ class WalletConnectPage extends Component {
       if (selectedWallet) {
         await this.setState({ selectedWallet });
         this.initWalletConnect();
-        this.initNetwork('Mainnet');
+        this.initNetwork();
       } else {
+        // If current wallet has no mainnet rsk asset, need to go back
         Alert.alert(
-          'Please select the wallet has rsk asset',
+          'Please select a wallet that has at least one mainnet rsk asset',
           '',
           [
             {
@@ -224,19 +227,24 @@ class WalletConnectPage extends Component {
     navigation.dispatch(resetAction);
   }
 
-  renderWalletConnectingView = () => (
-    <View>
-      <ActivityIndicator size="large" />
-      <Text style={styles.loadingFont}>Wallet is connecting...</Text>
-    </View>
-  )
-
-  renderTransactionSigningView = () => (
-    <View>
-      <ActivityIndicator size="large" />
-      <Text style={styles.loadingFont}>Transaction is signing...</Text>
-    </View>
-  )
+  // Get current wallet's address and private key
+  getWallet = () => {
+    const { navigation: { state: { params: { wallet } } } } = this.props;
+    const ethWallets = [];
+    const { coins } = wallet;
+    const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
+    if (!_.isEmpty(ethChainCoins)) {
+      ethWallets.push({
+        address: ethChainCoins[0].address,
+        privateKey: ethChainCoins[0].privateKey,
+      });
+      return {
+        address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
+        privateKey: ethChainCoins[0].privateKey,
+      };
+    }
+    return null;
+  }
 
   initWalletConnect = async () => {
     const { navigation } = this.props;
@@ -260,28 +268,10 @@ class WalletConnectPage extends Component {
     }
   }
 
-  getWallet = () => {
-    const { navigation: { state: { params: { wallet } } } } = this.props;
-    const ethWallets = [];
-    const { coins } = wallet;
-    const ethChainCoins = _.filter(coins, (coin) => coin.id !== 'BTC');
-    if (!_.isEmpty(ethChainCoins)) {
-      ethWallets.push({
-        address: ethChainCoins[0].address,
-        privateKey: ethChainCoins[0].privateKey,
-      });
-      return {
-        address: ethChainCoins[0].address,
-        privateKey: ethChainCoins[0].privateKey,
-      };
-    }
-    return null;
-  }
-
-  initNetwork = async (network) => {
-    this.rskEndpoint = network === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
+  initNetwork = async () => {
+    this.rskEndpoint = MAINNET.RSK_END_POINT;
     this.provider = new ethers.providers.JsonRpcProvider(this.rskEndpoint);
-    const chainId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    const chainId = MAINNET.NETWORK_VERSION;
     this.setState({ chainId });
   }
 
@@ -301,11 +291,10 @@ class WalletConnectPage extends Component {
         const { peerMeta } = payload.params[0];
         console.log('payload: ', payload);
         console.log('peerMeta: ', peerMeta);
-        const address = Rsk3.utils.toChecksumAddress(selectedWallet.address);
         this.setState({
           peerMeta,
           modalView: null,
-          contentView: <WalletConnecting approve={this.approveSession} reject={this.rejectSession} address={address} dappName={peerMeta.name} dappUrl={peerMeta.url} />,
+          contentView: <WalletConnecting approve={this.approveSession} reject={this.rejectSession} address={selectedWallet.address} dappName={peerMeta.name} dappUrl={peerMeta.url} />,
           connector,
         });
       });
@@ -362,19 +351,17 @@ class WalletConnectPage extends Component {
       connector, chainId, selectedWallet, peerMeta,
     } = this.state;
     console.log('connector: ', connector);
-    const address = Rsk3.utils.toChecksumAddress(selectedWallet.address);
+    const { address } = selectedWallet;
     if (connector) {
       connector.approveSession({ chainId, accounts: [address] });
     }
-    const dappName = peerMeta.name;
-    const dappUrl = peerMeta.url;
     this.setState({
       connector,
       contentView: (
         <WalletConnected
           disconnect={this.popupDisconnectModal}
-          dappName={dappName}
-          dappUrl={dappUrl}
+          dappName={peerMeta.name}
+          dappUrl={peerMeta.url}
           address={address}
         />),
     });
@@ -394,68 +381,74 @@ class WalletConnectPage extends Component {
   killSession = () => {
     console.log('ACTION', 'killSession');
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector) {
       connector.killSession();
-      navigation.goBack();
     }
   };
 
-  signMessage = async (signWallet, message) => {
-    const signature = await signWallet.signMessage(message);
-    return signature;
+  approveRequest = async () => {
+    console.log('approveRequest');
+    const { callAuthVerify } = this.props;
+
+    await this.setState({ modalView: null });
+
+    setTimeout(async () => {
+      callAuthVerify(async () => {
+        try {
+          console.log('handleCallRequest');
+          await this.handleCallRequest();
+          await this.closeRequest();
+        } catch (err) {
+          console.log('approve request: ', err);
+          this.handleError();
+        }
+      }, () => {
+        this.handleError();
+      });
+    }, 500);
   }
 
-  sendTransaction = async (signWallet) => {
-    try {
-      const { selectedWallet: { address }, payload: { params } } = this.state;
-      const nonce = await this.provider.getTransactionCount(Rsk3.utils.toChecksumAddress(address), 'pending');
-      const gasPrice = await this.provider.getGasPrice();
-      const value = params[0].value ? Rsk3.utils.toHex(Rsk3.utils.toBN(params[0].gasPrice)) : '0x0';
-      const txData = {
-        nonce,
-        data: params[0].data,
-        gasLimit: params[0].gas || 600000,
-        gasPrice: params[0].gasPrice || gasPrice,
-        to: Rsk3.utils.toChecksumAddress(params[0].to),
-        value,
-      };
-      console.log('txData: ', txData);
-      const rawTransaction = await signWallet.sign(txData);
-      console.log('rawTransaction: ', rawTransaction);
-      const res = await this.provider.sendTransaction(rawTransaction);
-      const { hash } = res;
-      console.log('hash: ', hash);
-      return hash;
-    } catch (error) {
-      console.log('send transaction error: ', error);
-      throw error;
+  rejectRequest = async () => {
+    console.log('rejectRequest');
+    const { connector, payload } = this.state;
+    if (connector) {
+      connector.rejectRequest({
+        id: payload.id,
+        error: { message: 'Failed or Rejected Request' },
+      });
     }
-  }
+    await this.closeRequest();
+    await this.setState({ connector, modalView: null });
+  };
+
+  closeRequest = async () => {
+    await this.setState({
+      payload: null,
+    });
+  };
 
   popupDisconnectModal = async () => {
     const { navigation } = this.props;
     this.setState({
       modalView: <DisconnectModal
         confirmPress={() => {
-          this.closePress();
+          this.closeModalPress();
           this.killSession();
           setTimeout(() => {
             navigation.goBack();
           }, 500);
         }}
-        cancelPress={this.closePress}
+        cancelPress={this.closeModalPress}
       />,
     });
   }
 
   popupAllowanceModal = async () => {
     const { peerMeta } = this.state;
-    const dappUrl = peerMeta.url;
     this.setState({
       modalView: (
         <AllowanceModal
-          dappUrl={dappUrl}
+          dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           asset="RIF"
@@ -467,11 +460,10 @@ class WalletConnectPage extends Component {
 
   popupMessaageModal = async (message) => {
     const { peerMeta } = this.state;
-    const dappUrl = peerMeta.url;
     this.setState({
       modalView: (
         <MessageModal
-          dappUrl={dappUrl}
+          dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           message={message}
@@ -494,12 +486,10 @@ class WalletConnectPage extends Component {
       value: params[0].value || '0',
     };
 
-    const dappUrl = peerMeta.url;
-
     this.setState({
       modalView: (
         <TransactionModal
-          dappUrl={dappUrl}
+          dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           txData={txData}
@@ -570,7 +560,7 @@ class WalletConnectPage extends Component {
           const message = Rsk3.utils.hexToAscii(params[0]);
           result = await this.signMessage(signWallet, message);
           await connector.approveRequest({ id, result });
-          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closePress} />) });
+          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closeModalPress} />) });
           break;
         }
 
@@ -578,7 +568,7 @@ class WalletConnectPage extends Component {
           const message = Rsk3.utils.hexToAscii(params[1]);
           result = await this.signMessage(signWallet, message);
           await connector.approveRequest({ id, result });
-          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closePress} />) });
+          this.setState({ modalView: (<SuccessModal title="Sign Approved" description="Success! Your message has been signed and it should show in the dapp" cancelPress={this.closeModalPress} />) });
           break;
         }
 
@@ -587,16 +577,19 @@ class WalletConnectPage extends Component {
         }
 
         case 'eth_sendTransaction': {
+          // Show loading when transaction is signing or sending
           await this.setState({ modalView: this.renderTransactionSigningView() });
           result = await this.sendTransaction(signWallet);
+
+          // Close loading when transaction is signed and finished to the blockchain
           await this.setState({ modalView: null });
           await connector.approveRequest({ id, result });
 
           setTimeout(() => {
             if (inputDecode && inputDecode.method === 'approve') {
-              this.setState({ modalView: (<SuccessModal title="Allowance Approved" cancelPress={this.closePress} />) });
+              this.setState({ modalView: (<SuccessModal title="Allowance Approved" cancelPress={this.closeModalPress} />) });
             } else {
-              this.setState({ modalView: (<SuccessModal title="Transaction Approved" cancelPress={this.closePress} />) });
+              this.setState({ modalView: (<SuccessModal title="Transaction Approved" cancelPress={this.closeModalPress} />) });
             }
           }, 500);
           break;
@@ -626,49 +619,38 @@ class WalletConnectPage extends Component {
     }, 500);
   }
 
-  approveRequest = async () => {
-    console.log('approveRequest');
-    const { callAuthVerify } = this.props;
-
-    await this.setState({ modalView: null });
-
-    setTimeout(async () => {
-      callAuthVerify(async () => {
-        try {
-          console.log('handleCallRequest');
-          await this.handleCallRequest();
-          await this.closeRequest();
-        } catch (err) {
-          console.log('approve request: ', err);
-          this.handleError();
-        }
-      }, () => {
-        this.closeRequest();
-        this.handleError();
-      });
-    }, 500);
+  signMessage = async (signWallet, message) => {
+    const signature = await signWallet.signMessage(message);
+    return signature;
   }
 
-  rejectRequest = async () => {
-    console.log('rejectRequest');
-    const { connector, payload } = this.state;
-    if (connector) {
-      connector.rejectRequest({
-        id: payload.id,
-        error: { message: 'Failed or Rejected Request' },
-      });
+  sendTransaction = async (signWallet) => {
+    try {
+      const { selectedWallet: { address }, payload: { params } } = this.state;
+      const nonce = await this.provider.getTransactionCount(address, 'pending');
+
+      // Get Mainnet current gas price
+      const gasPrice = await this.provider.getGasPrice();
+      const value = params[0].value ? Rsk3.utils.toHex(Rsk3.utils.toBN(params[0].gasPrice)) : '0x0';
+      const txData = {
+        nonce,
+        data: params[0].data,
+        gasLimit: params[0].gas || 600000,
+        gasPrice: params[0].gasPrice || gasPrice,
+        to: Rsk3.utils.toChecksumAddress(params[0].to),
+        value,
+      };
+      const rawTransaction = await signWallet.sign(txData);
+      const res = await this.provider.sendTransaction(rawTransaction);
+      const { hash } = res;
+      return hash;
+    } catch (error) {
+      console.log('send transaction error: ', error);
+      throw error;
     }
-    await this.closeRequest();
-    await this.setState({ connector, modalView: null });
-  };
+  }
 
-  closeRequest = async () => {
-    await this.setState({
-      payload: null,
-    });
-  };
-
-  closePress = () => {
+  closeModalPress = () => {
     this.setState({ modalView: null, payload: null });
   }
 
@@ -680,6 +662,29 @@ class WalletConnectPage extends Component {
       this.rejectSession();
     }
   }
+
+  onRequestClose = () => {
+    const { payload } = this.state;
+    if (payload) {
+      this.rejectRequest();
+    } else {
+      this.closeModalPress();
+    }
+  }
+
+  renderWalletConnectingView = () => (
+    <View>
+      <ActivityIndicator size="large" />
+      <Text style={styles.loadingFont}>Wallet is connecting...</Text>
+    </View>
+  )
+
+  renderTransactionSigningView = () => (
+    <View>
+      <ActivityIndicator size="large" />
+      <Text style={styles.loadingFont}>Transaction is signing...</Text>
+    </View>
+  )
 
   render() {
     const {
@@ -703,7 +708,7 @@ class WalletConnectPage extends Component {
             animationType="fade"
             transparent
             visible={modalView !== null}
-            onRequestClose={this.closePress}
+            onRequestClose={this.onRequestClose}
           >
             <View style={styles.backgroundView}>
               <View style={styles.modalView}>
@@ -724,14 +729,10 @@ WalletConnectPage.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  walletManager: PropTypes.shape({
-    wallets: PropTypes.array.isRequired,
-  }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  walletManager: state.Wallet.get('walletManager'),
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
