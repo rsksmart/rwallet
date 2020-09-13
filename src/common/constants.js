@@ -73,3 +73,8 @@ export const defaultErrorNotification = {
 };
 
 export const CustomToken = 'CustomToken';
+
+export const Chain = {
+  Bitcoin: 'Bitcoin',
+  Rootstock: 'Rootstock',
+};
