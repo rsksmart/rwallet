@@ -18,7 +18,8 @@ if (_.isUndefined(parseConfig)) {
 
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
 Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-ENV': parseConfig.rwalletEnv });
-Parse.serverURL = parseConfig.serverURL;
+Parse.serverURL = common.getServerUrl(parseConfig.serverURL, parseConfig.rwalletEnv);
+
 // enable cached-user functions
 // https://docs.parseplatform.org/js/guide/#current-user
 Parse.User.enableUnsafeCurrentUser();
