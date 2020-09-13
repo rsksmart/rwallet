@@ -152,11 +152,12 @@ function* loginRequest(action) {
   const { isRelogin } = action;
   try {
     const password = yield call(storage.getUserPassword);
-    // If the password does not exist, it means this is a new user, then sign up.
-    // Else login.
+
     const currentUser = yield call(ParseHelper.getUser);
     console.log('loginRequest, read from storage, user: ', currentUser);
 
+    // If the password does not exist, it means this is a new user, then sign up.
+    // Else login.
     if (_.isEmpty(password)) {
       if (currentUser) {
         // In order to register new user when user is delete on server.
@@ -176,9 +177,7 @@ function* loginRequest(action) {
       // refresh fcm token
       fcmHelper.refreshFcmToken();
     } else if (!currentUser || isRelogin) {
-      // Read Parse.User from storage, if not, sign in or sign up
-      // If you need to log in again, or the user exists, call ParseHelper.signIn
-      // Else use the user from storage
+      // Unless it is to re-login, we give priority to using the current user
       const appId = application.get('id');
       yield call(ParseHelper.signIn, appId, password);
     }
