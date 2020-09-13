@@ -43,6 +43,8 @@ import DAppList from '../pages/dapp/list';
 import DAppBrowser from '../pages/dapp/browser';
 import RnsCreateName from '../pages/wallet/rns/create';
 import RnsStatus from '../pages/wallet/rns/status';
+import AddReadOnlyWallet from '../pages/wallet/readonly/add';
+import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -229,6 +231,20 @@ const routeConfigMap = {
       path: 'AddCustomTokenConfirm',
       navigationOptions: () => ({
         headerTitle: 'AddCustomTokenConfirm',
+      }),
+    },
+    AddReadOnlyWallet: {
+      screen: AddReadOnlyWallet,
+      path: 'AddReadOnlyWallet',
+      navigationOptions: () => ({
+        headerTitle: 'AddReadOnlyWallet',
+      }),
+    },
+    AddReadOnlyWalletConfirmation: {
+      screen: AddReadOnlyWalletConfirmation,
+      path: 'AddReadOnlyWalletConfirmation',
+      navigationOptions: () => ({
+        headerTitle: 'AddReadOnlyWalletConfirmation',
       }),
     },
   },

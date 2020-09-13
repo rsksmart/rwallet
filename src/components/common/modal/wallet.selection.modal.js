@@ -278,7 +278,7 @@ class WalletSelection extends PureComponent {
     if (dapp) {
       const supportTokens = dapp.tokens || [];
       const { walletManager } = this.props;
-      const { wallets } = walletManager;
+      const wallets = walletManager.getNormalWallets();
       const supportWallets = [];
       let { networks } = dapp;
       if (_.isEmpty(networks)) {
@@ -286,10 +286,8 @@ class WalletSelection extends PureComponent {
       }
       _.forEach(networks, (network) => {
         _.forEach(wallets, (wallet) => {
-          const { coins } = wallet;
-
           // Get all rsk tokens
-          const rskTokens = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
+          const rskTokens = _.filter(wallet.coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
           // If dapp support token list is empty, needs to show all rsk tokens
           const tokens = _.isEmpty(supportTokens) ? rskTokens : _.filter(rskTokens, (coin) => supportTokens.includes(coin.symbol));
           if (!_.isEmpty(tokens)) {
@@ -321,6 +319,7 @@ class WalletSelection extends PureComponent {
         animationType="fade"
         transparent
         visible={visible}
+        onRequestClose={closeFunction}
       >
         <View style={styles.backgroundView}>
           <View style={styles.modalView}>
@@ -378,7 +377,7 @@ WalletSelection.propTypes = {
   }).isRequired,
   visible: PropTypes.bool,
   walletManager: PropTypes.shape({
-    wallets: PropTypes.array.isRequired,
+    getNormalWallets: PropTypes.func,
   }).isRequired,
   closeFunction: PropTypes.func,
   dapp: PropTypes.shape({

@@ -49,6 +49,14 @@ class UpdateModal extends Component {
     onUpdateModalClose();
   }
 
+  onRequestClose = () => {
+    const { updateVersionInfo } = this.props;
+    const { forceUpdate } = updateVersionInfo;
+    if (!forceUpdate) {
+      this.onCancelButtonPressed();
+    }
+  }
+
   renderButtons = () => {
     const { updateVersionInfo } = this.props;
     const { forceUpdate } = updateVersionInfo;
@@ -78,7 +86,10 @@ class UpdateModal extends Component {
     const { updateVersionInfo } = this.props;
     const { title, body } = updateVersionInfo;
     return (
-      <Modal transparent onRequestClose={() => {}}>
+      <Modal
+        transparent
+        onRequestClose={this.onRequestClose}
+      >
         <View style={notificationStyles.backgroundBoard}>
           <View style={notificationStyles.frontBoard}>
             <View style={space.paddingHorizontal_20}>

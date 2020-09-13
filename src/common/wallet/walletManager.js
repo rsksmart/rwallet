@@ -3,7 +3,8 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import common from '../common';
-import CONSTANTS from '../constants.json';
+import { KEYNAME_MAX_LENGTH, WalletType } from '../constants';
+import ReadOnlyWallet from './readonly.wallet';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -95,7 +96,7 @@ class WalletManager {
         this.currentKeyId = result.currentKeyId;
       }
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
+      const promises = _.map(result.wallets, (wallet) => (wallet.walletType === WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet)));
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 
@@ -165,7 +166,7 @@ class WalletManager {
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol);
+      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol && item.type === token.type);
 
       if (matchedToken) {
         // update balance
@@ -252,7 +253,7 @@ class WalletManager {
   async renameWallet(wallet, name) {
     if (name.length < 1) {
       throw new Error('modal.incorrectKeyName.tooShort');
-    } else if (name.length > CONSTANTS.KEYNAME_MAX_LENGTH) {
+    } else if (name.length > KEYNAME_MAX_LENGTH) {
       throw new Error('modal.incorrectKeyName.tooLong');
     }
     const regex = /^[a-zA-Z0-9 ]+$/g;
@@ -285,6 +286,28 @@ class WalletManager {
     }
     return null;
   }
+
+  createReadOnlyWallet = async (chain, type, address, coins) => {
+    console.log('walletManager.createReadOnlyWallet, coins', coins);
+
+    // 2. Create a Wallet instance and save into wallets
+    const wallet = ReadOnlyWallet.create({
+      id: this.currentKeyId, name: null, chain, type, address, coins,
+    });
+
+    console.log(`createReadOnlyWallet, address: ${address}`);
+    this.wallets.unshift(wallet);
+
+    // Increment current pointer
+    this.currentKeyId += 1;
+
+    // Save to storage
+    await this.serialize();
+
+    return wallet;
+  }
+
+  getNormalWallets = () => _.filter(this.wallets, { walletType: WalletType.Normal });
 }
 
 export default new WalletManager();

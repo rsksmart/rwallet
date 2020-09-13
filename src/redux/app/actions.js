@@ -71,6 +71,9 @@ const actions = {
   SET_PAGE: 'SET_PAGE',
   RESET_PAGE: 'RESET_PAGE',
 
+  SHOW_READ_ONLY_WALLET_INTRO: 'SHOW_READ_ONLY_WALLET_INTRO',
+  SET_READ_ONLY_WALLET_INTRO_SHOWED: 'SET_READ_ONLY_WALLET_INTRO_SHOWED',
+
   SHOW_UPDATE_MODAL: 'SHOW_UPDATE_MODAL',
   HIDE_UPDATE_MODAL: 'HIDE_UPDATE_MODAL',
   SET_UPDATE_MODAL: 'SET_UPDATE_MODAL',
@@ -234,6 +237,12 @@ const actions = {
   }),
   resetPage: () => ({
     type: actions.RESET_PAGE,
+  }),
+  showReadOnlyWalletIntro: () => ({
+    type: actions.SHOW_READ_ONLY_WALLET_INTRO,
+  }),
+  setReadOnlyWalletIntroShowed: () => ({
+    type: actions.SET_READ_ONLY_WALLET_INTRO_SHOWED,
   }),
   showUpdateModal: () => ({
     type: actions.SHOW_UPDATE_MODAL,

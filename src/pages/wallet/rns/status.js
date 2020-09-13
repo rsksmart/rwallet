@@ -16,7 +16,7 @@ import { strings } from '../../../common/i18n';
 import config from '../../../../config';
 import appActions from '../../../redux/app/actions';
 import storage from '../../../common/storage';
-import definitions from '../../../common/definitions';
+import { SUBDOMAIN_STATUS } from '../../../common/constants';
 import parseHelper from '../../../common/parse';
 import { createErrorNotification } from '../../../common/notification.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
@@ -162,7 +162,7 @@ class RnsStatus extends Component {
         subdomain: subdomain.subdomain,
         address: subdomain.address,
         type: subdomain.type,
-        status: definitions.SUBDOMAIN_STATUS.PENDING,
+        status: SUBDOMAIN_STATUS.PENDING,
       };
       rnsRows.push(rnsRow);
     });
@@ -204,7 +204,7 @@ class RnsStatus extends Component {
     try {
       const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchRegisteringRnsSubdomains(rnsRows), this);
       this.setState({ rnsRows: subdomains });
-      const pendingSubdomain = _.find(subdomains, { status: definitions.SUBDOMAIN_STATUS.PENDING });
+      const pendingSubdomain = _.find(subdomains, { status: SUBDOMAIN_STATUS.PENDING });
       if (!pendingSubdomain) {
         this.clearTimer();
       }
@@ -235,7 +235,7 @@ class RnsStatus extends Component {
     const { params } = navigation.state;
     const { rnsRows } = this.state;
     // If all subdomains are finished, remove registering domains from storage.
-    const rnsRow = _.find(rnsRows, { status: definitions.SUBDOMAIN_STATUS.PENDING });
+    const rnsRow = _.find(rnsRows, { status: SUBDOMAIN_STATUS.PENDING });
     if (!rnsRow) {
       storage.clearRnsRegisteringSubdomains();
     }
@@ -261,13 +261,13 @@ class RnsStatus extends Component {
         <Text style={styles.pendingNotice}>{strings('page.wallet.rnsStatus.pending')}</Text>
       </View>
     );
-    if (status === definitions.SUBDOMAIN_STATUS.SUCCESS) {
+    if (status === SUBDOMAIN_STATUS.SUCCESS) {
       statusView = (
         <View style={styles.noticeView}>
           <Text style={styles.successNotice}>{strings('page.wallet.rnsStatus.success')}</Text>
         </View>
       );
-    } else if (status === definitions.SUBDOMAIN_STATUS.FAILED) {
+    } else if (status === SUBDOMAIN_STATUS.FAILED) {
       statusView = (
         <View style={styles.noticeView}>
           <Text style={styles.failedNotice}>{strings('page.wallet.rnsStatus.failed')}</Text>
@@ -304,7 +304,7 @@ class RnsStatus extends Component {
     const { rnsRows, isRefreshing } = this.state;
 
     // If there are pending subdomains, bottom button is in pending status.
-    const rnsRow = _.find(rnsRows, { status: definitions.SUBDOMAIN_STATUS.PENDING });
+    const rnsRow = _.find(rnsRows, { status: SUBDOMAIN_STATUS.PENDING });
     const buttonText = rnsRow ? 'button.pending' : 'button.done';
     const bottomButton = (<Button text={buttonText} onPress={this.onDonePressed} disabled={!!rnsRow} />);
 

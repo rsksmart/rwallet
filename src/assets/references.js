@@ -17,12 +17,15 @@ images.cornerButton = require('./images/misc/cornerButton.png');
 images.addWallet = require('./images/misc/addWallet.png');
 images.header = require('./images/misc/header.png');
 images.send = require('./images/icon/send.png');
+images.send_gray = require('./images/icon/send.gray.png');
 images.receive = require('./images/icon/receive.png');
 images.swap = require('./images/icon/swap.png');
 images.scan = require('./images/icon/scan.png');
 images.scanAddress = require('./images/icon/address.png');
 images.passcodeDelete = require('./images/icon/passcode.delete.png');
 images.passcodeReset = require('./images/icon/passcode.reset.png');
+images.passcodeCancel = require('./images/icon/passcode.cancel.png');
 images.copyIcon = require('./images/icon/copy.png');
+images.completed = require('./images/icon/completed.png');
 
 export default { images };

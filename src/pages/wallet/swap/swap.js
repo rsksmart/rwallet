@@ -22,7 +22,7 @@ import {
 } from '../../../common/notification.controller';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
-import definitions from '../../../common/definitions';
+import { defaultErrorNotification } from '../../../common/constants';
 import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
@@ -290,8 +290,8 @@ class Swap extends Component {
       this.setState({ coinLoading: false });
       resetSwapRateError();
       const confirmation = createErrorConfirmation(
-        definitions.defaultErrorNotification.title,
-        definitions.defaultErrorNotification.message,
+        defaultErrorNotification.title,
+        defaultErrorNotification.message,
         'button.retry',
         () => this.requestSwapRate(),
         () => navigation.goBack(),
@@ -332,8 +332,8 @@ class Swap extends Component {
         this.setState({ limitMaxDepositCoin }, () => this.switchDepositIndex(index));
       } catch (error) {
         const notification = createErrorNotification(
-          definitions.defaultErrorNotification.title,
-          definitions.defaultErrorNotification.message,
+          defaultErrorNotification.title,
+          defaultErrorNotification.message,
           'button.retry',
         );
         addNotification(notification);

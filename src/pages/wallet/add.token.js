@@ -20,7 +20,7 @@ import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
-import definitions from '../../common/definitions';
+import { WalletType, BtcAddressType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -119,7 +119,6 @@ class AddToken extends Component {
   constructor(props) {
     super(props);
     this.wallet = props.navigation.state.params.wallet;
-    this.onAddCustomTokenPressed = this.onAddCustomTokenPressed.bind(this);
     const listData = this.createListData();
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.state = { listData, tokenCount: listData.length, selectedTokenCount };
@@ -143,9 +142,9 @@ class AddToken extends Component {
     if (listItem.selected && listItem.token.symbol === 'BTC' && !this.wallet.getBtcAddressType()) {
       // If the BTC address type has not been set before, when we choose BTC, we should ask the user for the BTC address type
       const confirmation = createBTCAddressTypeConfirmation(() => {
-        this.addBTCToken(listItem.token, definitions.BtcAddressType.legacy);
+        this.addBTCToken(listItem.token, BtcAddressType.legacy);
       }, () => {
-        this.addBTCToken(listItem.token, definitions.BtcAddressType.segwit);
+        this.addBTCToken(listItem.token, BtcAddressType.segwit);
       });
       addConfirmation(confirmation);
     } else if (listItem.selected) {
@@ -160,7 +159,7 @@ class AddToken extends Component {
     resetWalletsUpdated();
   }
 
-  onAddCustomTokenPressed() {
+  onAddCustomTokenPressed = () => {
     const { navigation, resetWalletsUpdated } = this.props;
     resetWalletsUpdated();
     navigation.navigate('AddCustomToken', navigation.state.params);
@@ -206,8 +205,14 @@ class AddToken extends Component {
 
     // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      listData.push(createItem(token, 'Mainnet'));
-      listData.push(createItem(token, 'Testnet'));
+      if (this.wallet.walletType === WalletType.Readonly) {
+        if (token !== 'BTC') {
+          listData.push(createItem(token, this.wallet.type));
+        }
+      } else {
+        listData.push(createItem(token, 'Mainnet'));
+        listData.push(createItem(token, 'Testnet'));
+      }
     });
 
     listData = common.sortTokens(listData);

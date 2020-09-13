@@ -2,9 +2,10 @@ import _ from 'lodash';
 import Parse from 'parse/react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
+import VersionNumber from 'react-native-version-number';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
-import definitions from './definitions';
+import { blockHeightKeys } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
 import cointype from './wallet/cointype';
@@ -17,7 +18,7 @@ if (_.isUndefined(parseConfig)) {
 }
 
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
-Parse.CoreManager.set('REQUEST_HEADERS', { 'Rwallet-API-Key': parseConfig.rwalletApiKey });
+Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-VERSION': VersionNumber.appVersion });
 Parse.serverURL = parseConfig.serverURL;
 // enable cached-user functions
 // https://docs.parseplatform.org/js/guide/#current-user
@@ -43,31 +44,43 @@ class ParseHelper {
     return user;
   }
 
-  static signInOrSignUp(appId) {
-    console.log('parse::signInOrSignUp, appId: ', appId);
-    // Set appId as username and password.
-    // No real password is needed because we dont have user authencation in this app. We only want to get access to Parse.User here to access related data
-    const username = appId;
-    const password = appId;
 
-    return Parse.User.logIn(username, password)
-      .catch((err) => {
-        console.log('signInOrSignUp, err: ', err, err.message);
-        if (err.message === 'Invalid username/password.') { // Call sign up if we can't log in using appId
-          console.log(`User not found with appId ${username}. Signing up ...`);
-          const user = new Parse.User();
+  static async signUp(username, password) {
+    console.log(`ParseHelper.signUp, username: ${username}`);
 
-          user.set('username', username);
-          user.set('password', password);
-          // console.log('DeviceInfo.getDeviceId()', DeviceInfo.getDeviceId());
-          // user.set('deviceId', DeviceInfo.getDeviceId());
+    // Sign up
+    const user = new Parse.User();
+    user.set('username', username);
+    user.set('password', password);
+    await user.signUp();
 
-          // TODO: other information needed to be set here.
-          return user.signUp();
-        }
+    // Set user ACL
+    // Protect user information from being read by others
+    user.setACL(new Parse.ACL(user));
+    await user.save();
 
-        return Promise.reject();
-      });
+    console.log(`ParseHelper.signUp success, username: ${username}`);
+
+    return user;
+  }
+
+  static async signIn(username, password) {
+    console.log(`ParseHelper.signIn, username: ${username}`);
+    return Parse.User.logIn(username, password);
+  }
+
+  static async logOut() {
+    console.log('ParseHelper.logOut');
+    // If user is deleted on server, Parse.User.logOut(); will raise a error: 209, Invalid session token
+    // Ignore the error.
+    try {
+      await Parse.User.logOut();
+    } catch (error) {
+      console.log('ParseHelper.logOut, error: ', error.message);
+      if (error.code !== Parse.Error.INVALID_SESSION_TOKEN) {
+        throw error;
+      }
+    }
   }
 
   /**
@@ -253,14 +266,15 @@ class ParseHelper {
    * @param {array} tokens Array of Coin class instance
    * @memberof ParseHelper
    */
-  static async fetchTransactions(symbol, address, skipCount, fetchCount) {
+  static async fetchTransactions(symbol, type, address, skipCount, fetchCount) {
     const queryFrom = new Parse.Query(ParseTransaction);
     queryFrom.equalTo('from', address);
     const queryTo = new Parse.Query(ParseTransaction);
     queryTo.equalTo('to', address);
-    const querySymbol = new Parse.Query(ParseTransaction);
-    querySymbol.equalTo('symbol', symbol);
-    const query = Parse.Query.and(Parse.Query.or(queryFrom, queryTo), querySymbol).descending('createdAt');
+    const query = Parse.Query.or(queryFrom, queryTo)
+      .equalTo('type', type)
+      .equalTo('symbol', symbol)
+      .descending('createdAt');
     const results = await query.skip(skipCount).limit(fetchCount).find();
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
@@ -375,14 +389,14 @@ class ParseHelper {
 
   static async subscribeBlockHeights() {
     const query = new Parse.Query('Global');
-    query.containedIn('key', definitions.blockHeightKeys);
+    query.containedIn('key', blockHeightKeys);
     const subscription = await query.subscribe();
     return subscription;
   }
 
   static async fetchBlockHeights() {
     const query = new Parse.Query('Global');
-    query.containedIn('key', definitions.blockHeightKeys);
+    query.containedIn('key', blockHeightKeys);
     const rows = await query.find();
     const blockHeights = rows.map(parseDataUtil.getBlockHeight);
     return blockHeights;
@@ -478,6 +492,7 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
           const result = await targetValue.apply(this, args);
           return result;
         } catch (error) {
+          console.log('ParseHelperProxy, error', error.code);
           console.log('ParseHelperProxy, error', error.message);
           // When the session expires, we need to relogin
           if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {

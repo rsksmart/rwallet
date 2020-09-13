@@ -73,10 +73,16 @@ class Scan extends Component {
     onQrcodeDetected = (data) => {
       const { navigation } = this.props;
       const { wallet } = navigation.state.params;
+      const { coins } = wallet;
 
       if (data.startsWith('wc:')) {
         navigation.replace('WalletConnectPage', { uri: data, wallet });
       } else {
+        // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
+        if (coins.length === 1) {
+          navigation.navigate('Scan', { coin: coins[0], onDetectedAction: 'navigateToTransfer' });
+          return;
+        }
         navigation.navigate('SelectWallet', {
           operation: 'scan',
           wallet,

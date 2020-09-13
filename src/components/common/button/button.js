@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     flexDirection: 'row',
     justifyContent: 'center',
-    padding: 20,
+    padding: 15,
   },
   btnDisabled: {
     opacity: 0.3,
@@ -24,15 +24,31 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Black',
     fontWeight: '900',
   },
+  cancelButton: {
+    backgroundColor: color.white,
+    borderWidth: 2,
+    padding: 13,
+    borderColor: color.component.button.backgroundColor,
+  },
+  cancelText: {
+    color: color.component.button.backgroundColor,
+  },
 });
 
 export default function Button({
-  text, onPress, disabled, style,
+  text, onPress, disabled, style, type,
 }) {
+  const buttonStyles = [styles.button];
+  if (disabled) {
+    buttonStyles.push(styles.btnDisabled);
+  }
+  if (type === 'cancel') {
+    buttonStyles.push(styles.cancelButton);
+  }
   return (
     <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
-      <View style={disabled ? [styles.button, styles.btnDisabled] : styles.button}>
-        <Loc style={[styles.buttonText]} text={text} />
+      <View style={buttonStyles}>
+        <Loc style={[styles.buttonText, type === 'cancel' ? styles.cancelText : null]} text={text} />
       </View>
     </TouchableOpacity>
   );
@@ -43,10 +59,12 @@ Button.propTypes = {
   onPress: PropTypes.func,
   disabled: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  type: PropTypes.string,
 };
 
 Button.defaultProps = {
   disabled: false,
   style: null,
+  type: null,
   onPress: () => null,
 };

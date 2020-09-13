@@ -25,7 +25,8 @@
         "myAssets": "私の資産",
         "allAssets": "すべての資産",
         "addAsset": "資産を追加",
-        "addWallet": "ウォレットを追加"
+        "addWallet": "ウォレットを追加",
+        "readOnly": "読み取り専用"
       },
       "history": {
         "noTransNote": "この資産の取引が見つかりません",
@@ -71,7 +72,9 @@
         "createWallet": "基本的ウォレットを作成",
         "createWalletNote": "初めてのユーザーにおすすめ",
         "importWallet": "既存のウォレットをインポート",
-        "importWalletNote": "復元フレーズを使用してウォレットを復元"
+        "importWalletNote": "復元フレーズを使用してウォレットを復元",
+        "addReadOnlyWallet": "読み取り専用ウォレットを追加",
+        "addReadOnlyWalletNote": "キーなしで資産を監視する"
       },
       "selectCurrency": {
         "title": "ウォレットアセットを選択",
@@ -191,6 +194,15 @@
         "pending": "登録確認待ちです。",
         "success": "登録が完了しました！ニックネームが作成されました。",
         "failed": "登録できませんでした！ニックネームを登録できませんでした。"
+      },
+      "addReadOnlyWallet": {
+        "title": "読み取り専用ウォレットを追加",
+        "address": "ウォレットアドレス",
+        "note": "監視するBTC、RBTCウォレットアドレス、またはRNS名を入力してください。",
+        "question": "このウォレットには以下のアセットが見つかりました。このアドレスを監視しますか？",
+        "rnsQuestion": "ウォレットアドレスとその下のアセットが見つかりました。このアドレスを監視しますか？",
+        "rnsInvalid": "RNS名は、Rootstockブロックチェーンのウォレットアドレスに関連付けられていません。もう一度お試しください。",
+        "duplicateAddress": "このアドレスはすでにアプリにインポートされています。別のアドレスでお試しください。"
       }
     },
     "dapp": {
@@ -242,9 +254,13 @@
         "useBiometrics": "生体認証を使用する"
       },
       "resetPasscodeSuccess" :{
-        "title": {
-          "create": "パスコードを設定しました",
-          "reset": "パスコードをリセットしました"
+        "create": {
+          "title": "パスコードを設定",
+          "body": "セット完了！"
+        } ,
+        "reset": {
+          "title": "パスコードをリセット",
+          "body": "リセットが完了しました！"
         }
       },
       "keySettings": {
@@ -319,6 +335,7 @@
     "pending": "保留中",
     "done": "完了です",
     "share": "シェア",
+    "check": "小切手",
     "update": "更新"
   },
   "txState": {
@@ -502,6 +519,14 @@
       "body": "ビットコインアドレスタイプを選択してください",
       "legacy": "遺産",
       "segwit": "セグウィット"
+    },
+    "readOnlyWallet": {
+      "title": "Read-only Wallet",
+      "body": "読み取り専用のウォレット機能を使用すると、秘密鍵をインポートせずにブロックチェーン上のアセットを監視できます。\n\n現在許可されている入力は、ビットコインアドレス（SegWitとレガシーの両方）、ルートストックアドレス、またはRNSニックネームです。"
+    },
+    "readOnlyLimit": {
+      "title": "操作は利用できません",
+      "body": "読み取り専用のウォレットでは、QRコードの送信、交換、スキャンの操作は使用できません。それらを有効にするには、このウォレットを12語のフレーズとともにインポートしてください。"
     }
   },
   "currency": {

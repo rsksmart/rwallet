@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import {
-  call, all, takeEvery, put, select, take,
+  call, all, takeEvery, put, select, take, delay,
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import _ from 'lodash';
@@ -15,7 +15,7 @@ import application from '../../common/application';
 import settings from '../../common/settings';
 import common from '../../common/common';
 import walletManager from '../../common/wallet/walletManager';
-import definitions from '../../common/definitions';
+import { defaultErrorNotification } from '../../common/constants';
 import storage from '../../common/storage';
 import fcmHelper, { FcmType } from '../../common/fcmHelper';
 import config from '../../../config';
@@ -24,6 +24,8 @@ import config from '../../../config';
 import ParseHelper from '../../common/parse';
 
 import { createErrorNotification } from '../../common/notification.controller';
+
+const RELOGIN_DELAY_TIME = 7000;
 
 function* updateUserRequest() {
   // Upload wallets or settings to server
@@ -67,6 +69,10 @@ function* initFromStorageRequest() {
       yield call(storage.setStorageVersion, config.storageVersion);
     }
 
+    const isReadOnlyWalletIntroShowed = yield call(storage.getReadOnlyWalletIntroShowed);
+    if (isReadOnlyWalletIntroShowed) {
+      yield put(actions.setReadOnlyWalletIntroShowed());
+    }
     // Restore update version info from storage
     const updateVersionInfo = yield call(storage.getUpdateVersionInfo);
     if (updateVersionInfo) {
@@ -144,24 +150,49 @@ function* initFromStorageRequest() {
 
 function* loginRequest(action) {
   const { isRelogin } = action;
-  const appId = application.get('id');
   try {
-    // Read Parse.User from storage, if not, sign in or sign up
-    const user = yield call(ParseHelper.getUser);
-    console.log('loginRequest, read from storage, user: ', user);
-    // If you need to log in again, or the user exists, call ParseHelper.signInOrSignUp
-    // Else use the user from storage
-    if (!user || isRelogin) {
-      yield call(ParseHelper.signInOrSignUp, appId);
+    const password = yield call(storage.getUserPassword);
+
+    const currentUser = yield call(ParseHelper.getUser);
+    console.log('loginRequest, read from storage, user: ', currentUser);
+
+    // If the password does not exist, it means this is a new user, then sign up.
+    // Else login.
+    if (_.isEmpty(password)) {
+      if (currentUser) {
+        // In order to register new user when user is delete on server.
+        // We need to log out, otherwise Parse.User.signUp() will always receive error: 209, Invalid session token
+        yield call(ParseHelper.logOut);
+      }
+
+      // Sign up
+      const username = yield call(application.createId);
+      const newPassword = common.randomString(11);
+      yield call(ParseHelper.signUp, username, newPassword);
+
+      // Save username and password to storage
+      yield call(application.saveId, username);
+      yield call(storage.setUserPassword, newPassword);
+
+      // refresh fcm token
+      fcmHelper.refreshFcmToken();
+    } else if (!currentUser || isRelogin) {
+      // Unless it is to re-login, we give priority to using the current user
+      const appId = application.get('id');
+      yield call(ParseHelper.signIn, appId, password);
     }
-    console.log(`User found with appId ${appId}. Sign in successful.`);
+
+    const newAppId = application.get('id');
+    console.log(`User found with appId ${newAppId}. Sign in successful.`);
+
     yield put(actions.resetLoginError());
     yield put(actions.setLogin(true));
     yield put(actions.updateUser());
   } catch (err) {
-    console.log(err.message);
+    console.log('loginRequest, error: ', err.message);
     yield put(actions.setLoginError());
     // If it's error in signIn, do it again.
+    yield delay(RELOGIN_DELAY_TIME);
     yield put(actions.login(isRelogin));
   }
 }
@@ -210,7 +241,7 @@ function* setSingleSettingsRequest(action) {
     });
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -227,7 +258,7 @@ function* changeLanguageRequest(action) {
     yield put(actions.setSingleSettings('language', language));
   } catch (err) {
     console.log(err);
-    const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+    const notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     yield put(actions.addNotification(notification));
   }
 }
@@ -251,7 +282,7 @@ function* renameRequest(action) {
         notification = createErrorNotification('modal.incorrectName.title', 'modal.incorrectName.invalid');
         break;
       default:
-        notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        notification = createErrorNotification(defaultErrorNotification.title, defaultErrorNotification.message);
     }
     yield put(actions.addNotification(notification));
   }
@@ -466,6 +497,11 @@ function* receiveNotificationRequest(action) {
   return null;
 }
 
+function* showReadOnlyWalletIntroRequest() {
+  yield call(storage.setReadOnlyWalletIntroShowed);
+  yield put(actions.setReadOnlyWalletIntroShowed());
+}
+
 function* showUpdateModalRequest() {
   yield put(actions.setUpdateModal(true));
 }
@@ -500,6 +536,8 @@ export default function* () {
     takeEvery(actions.FETCH_ADVERTISEMENT, fetchAdvertisements),
     takeEvery(actions.ADD_RECENT_DAPP, addRecentDapp),
     takeEvery(actions.RECEIVE_NOTIFICATION, receiveNotificationRequest),
+
+    takeEvery(actions.SHOW_READ_ONLY_WALLET_INTRO, showReadOnlyWalletIntroRequest),
 
     takeEvery(actions.SHOW_UPDATE_MODAL, showUpdateModalRequest),
     takeEvery(actions.HIDE_UPDATE_MODAL, hideUpdateModalRequest),

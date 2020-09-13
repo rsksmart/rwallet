@@ -32,14 +32,18 @@ class WalletAddIndex extends Component {
           this.createWalletFlow('WalletRecovery');
         },
       },
+      {
+        id: '3',
+        title: 'page.wallet.add.addReadOnlyWallet',
+        text: 'page.wallet.add.addReadOnlyWalletNote',
+        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+        onPress: () => {
+          this.createWalletFlow('AddReadOnlyWallet');
+        },
+      },
     ];
 
-    constructor(props) {
-      super(props);
-      this.createWalletFlow = this.createWalletFlow.bind(this);
-    }
-
-    async createWalletFlow(page) {
+    createWalletFlow = async (page) => {
       const { navigation } = this.props;
       navigation.navigate(page);
     }

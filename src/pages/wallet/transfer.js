@@ -22,9 +22,10 @@ import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
 import OperationHeader from '../../components/headers/header.operation';
 import BasePageGereral from '../base/base.page.general';
-import CONSTANTS from '../../common/constants.json';
+import {
+  MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS, defaultErrorNotification,
+} from '../../common/constants';
 import parseHelper from '../../common/parse';
-import definitions from '../../common/definitions';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import ERROR_CODE from '../../common/errors';
@@ -238,9 +239,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const {
-  MAX_FEE_TIMES, PLACEHODLER_AMOUNT, NUM_OF_FEE_LEVELS,
-} = CONSTANTS;
 
 class Transfer extends Component {
   static navigationOptions = () => ({
@@ -426,7 +424,7 @@ class Transfer extends Component {
       }
     }
 
-    if (!common.isWalletAddress(checksumAddress, symbol, type, networkId)) {
+    if (!common.isWalletAddress(checksumAddress, symbol, type)) {
       this.showInvalidAddressNotification();
       return;
     }
@@ -467,7 +465,7 @@ class Transfer extends Component {
   onToInputBlur = async () => {
     const { navigation, addConfirmation } = this.props;
     const { to } = this.state;
-    const { symbol, type, networkId } = this.coin;
+    const { symbol, type } = this.coin;
     this.setState({ enableConfirm: false });
     if (_.isEmpty(to)) return;
     let address = null;
@@ -486,8 +484,8 @@ class Transfer extends Component {
         }
       } catch (error) {
         const confirmation = createErrorConfirmation(
-          definitions.defaultErrorNotification.title,
-          definitions.defaultErrorNotification.message,
+          defaultErrorNotification.title,
+          defaultErrorNotification.message,
           'button.retry',
           () => this.onToInputBlur(),
           () => navigation.goBack(),
@@ -499,7 +497,7 @@ class Transfer extends Component {
     } else {
       address = to;
     }
-    this.isAddressValid = common.isWalletAddress(address, symbol, type, networkId);
+    this.isAddressValid = common.isWalletAddress(address, symbol, type);
     if (!this.isAddressValid) {
       this.showInvalidAddressNotification();
       return;
@@ -537,11 +535,6 @@ class Transfer extends Component {
       feeParams = { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
     }
     return feeParams;
-  }
-
-  querySubdomainAddress = async (subdomain, type) => {
-    const subdomains = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(subdomain, type), this);
-    return subdomains;
   }
 
   /**
@@ -621,8 +614,8 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log('loadTransactionFees, error: ', error);
       const confirmation = createErrorConfirmation(
-        definitions.defaultErrorNotification.title,
-        definitions.defaultErrorNotification.message,
+        defaultErrorNotification.title,
+        defaultErrorNotification.message,
         'button.retry',
         () => this.requestFees(isAllBalance),
         () => navigation.goBack(),

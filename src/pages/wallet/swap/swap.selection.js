@@ -142,7 +142,7 @@ class SwapSelection extends Component {
     const {
       navigation, walletManager,
     } = this.props;
-    const wallets = this.selectedWallet ? [this.selectedWallet] : walletManager.wallets;
+    const wallets = this.selectedWallet ? [this.selectedWallet] : walletManager.getNormalWallets();
     const { selectionType } = navigation.state.params || { selectionType: 'source' };
     // let rawList;
     // let filters = [];
@@ -359,6 +359,7 @@ SwapSelection.propTypes = {
   }).isRequired,
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
+    getNormalWallets: PropTypes.func.isRequired,
   }),
   swapSource: PropTypes.shape({
     walletName: PropTypes.string.isRequired,
