@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Parse from 'parse/react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
+import VersionNumber from 'react-native-version-number';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
 import { blockHeightKeys } from './constants';
@@ -17,7 +18,7 @@ if (_.isUndefined(parseConfig)) {
 }
 
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
-Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-ENV': parseConfig.rwalletEnv });
+Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-VERSION': VersionNumber.appVersion });
 Parse.serverURL = common.getServerUrl(parseConfig.serverURL, parseConfig.rwalletEnv);
 
 // enable cached-user functions
