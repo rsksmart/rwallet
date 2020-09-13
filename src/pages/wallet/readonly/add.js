@@ -144,7 +144,11 @@ class AddReadOnlyWallet extends Component {
 
       const isWalletAddress = common.isWalletAddress(newAddress, symbol, type);
       const { networkId } = common.getCoinType(symbol, type);
-      newAddress = Rsk3.utils.toChecksumAddress(newAddress, networkId);
+
+      if (symbol === 'RBTC') {
+        newAddress = Rsk3.utils.toChecksumAddress(newAddress, networkId);
+      }
+
       if (!isWalletAddress) {
         this.setState({ errorText: strings('page.wallet.transfer.unavailableAddress'), canSubmit: false });
         return;
