@@ -18,7 +18,7 @@ if (_.isUndefined(parseConfig)) {
 }
 
 Parse.initialize(parseConfig.appId, parseConfig.javascriptKey);
-Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-ENV': parseConfig.rwalletEnv, 'X-VERSION': VersionNumber.appVersion });
+Parse.CoreManager.set('REQUEST_HEADERS', { 'X-RWALLET-API-KEY': parseConfig.rwalletApiKey, 'X-RWALLET-VERSION': VersionNumber.appVersion });
 Parse.serverURL = parseConfig.serverURL;
 // enable cached-user functions
 // https://docs.parseplatform.org/js/guide/#current-user
