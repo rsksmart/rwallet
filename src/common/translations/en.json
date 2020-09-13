@@ -114,6 +114,9 @@
         },
         "unauthorization": "Please turn on camera permissions to use this feature."
       },
+      "walletconnect": {
+        "title": "Wallet Connect"
+      },
       "transferCompleted": {
         "title": "Send",
         "body": "Transfer Completed!",

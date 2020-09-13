@@ -601,6 +601,22 @@ const common = {
     const result = decoder.decodeData(input);
     return result;
   },
+
+  /**
+   * Ellipsis a string
+   * For Example, string = '123456789', showLength = 2
+   * returns '12...89'
+   * @param {*} string, a string
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisString(string, showLength) {
+    const { length } = string;
+    if (length <= showLength * 2) {
+      return string;
+    }
+
+    return `${string.slice(0, showLength)}...${string.slice(length - showLength, length)}`;
+  },
 };
 
 export default common;

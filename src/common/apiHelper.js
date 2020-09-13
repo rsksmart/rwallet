@@ -1,7 +1,6 @@
 import axios from 'axios';
-import qs from 'qs';
 
-import { PARSE_SERVER_URL, RWALLET_API_KEY } from 'react-native-dotenv';
+import { PARSE_SERVER_URL } from 'react-native-dotenv';
 
 const headers = {
   'X-Parse-Application-Id': 'rwallet',
@@ -11,9 +10,12 @@ const headers = {
 };
 
 const apiHelper = {
-  async getAbiByAddress(type, address) {
+  async getAbiByAddress(address) {
     try {
-      const result = await axios.post(`${PARSE_SERVER_URL}/functions/getAbiByAddress`, { type, address }, { headers });
+      const url = `${PARSE_SERVER_URL}/functions/getAbiByAddress`;
+      console.log('url: ', url);
+      const result = await axios.post(url, { address }, { headers });
+      console.log('result: ', result.data);
       return result.data.result;
     } catch (error) {
       console.log('getAbiByAddress error: ', error);

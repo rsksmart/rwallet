@@ -21,5 +21,12 @@
     "TOUCH_ID": "Touch ID",
     "FACE_ID": "Face ID",
     "Biometrics": "Biometrics"
+  },
+
+  "WALLET_CONNECT": {
+    "MODAL_TYPE": {
+      "CONFIRMATION": "Confirmation",
+      "NOTIFICATION": "Notification"
+    }
   }
 }

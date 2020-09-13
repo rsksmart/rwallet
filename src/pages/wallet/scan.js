@@ -9,8 +9,6 @@ import OperationHeader from '../../components/headers/header.operation';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import BasePageSimple from '../base/base.page.simple';
-import apiHelper from '../../common/apiHelper';
-import common from '../../common/common';
 
 const styles = StyleSheet.create({
   preview: {
@@ -77,7 +75,7 @@ class Scan extends Component {
       const { wallet } = navigation.state.params;
 
       if (data.startsWith('wc:')) {
-        navigation.navigate('WalletConnectionPage', { uri: data, wallet });
+        navigation.replace('WalletConnectPage', { uri: data, wallet });
       } else {
         navigation.navigate('SelectWallet', {
           operation: 'scan',
@@ -137,6 +135,7 @@ Scan.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
