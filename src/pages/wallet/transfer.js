@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -917,7 +916,6 @@ class Transfer extends Component {
       enableConfirm, levelFees,
     } = this.state;
     const { navigation, currency, prices } = this.props;
-    const { approveRequest } = navigation.state.params;
     const { coin } = this;
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
@@ -939,12 +937,6 @@ class Transfer extends Component {
         isLoading={loading}
         headerComponent={<OperationHeader title={title} onBackButtonPress={() => navigation.goBack()} />}
       >
-        <TouchableOpacity onPress={() => {
-          approveRequest();
-        }}
-        >
-          <Text>Approve</Text>
-        </TouchableOpacity>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.sendingRow}>

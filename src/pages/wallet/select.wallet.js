@@ -74,7 +74,6 @@ class SelectWallet extends Component {
 
   static createListData(wallet, navigation, addNotification) {
     const { operation, onDetectedAction, toAddress } = navigation.state.params;
-    console.log('toAddress: ', toAddress);
     const listData = [];
     // Create element for each Token (e.g. BTC, RBTC, RIF)
     _.each(wallet.coins, (coin) => {
@@ -157,8 +156,7 @@ SelectWallet.propTypes = {
   addNotification: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
