@@ -517,7 +517,7 @@ const common = {
   },
 
   isValidRnsSubdomain(text) {
-    const regex = /(([a-z0-9])+\.)+rsk$/g;
+    const regex = /^(([a-z0-9])+\.)+rsk$/g;
     return regex.test(text);
   },
 
@@ -620,6 +620,21 @@ const common = {
       objectId += chars[bytes.readUInt8(i) % chars.length];
     }
     return objectId;
+  },
+
+  /**
+   * getServerUrl, Return the url with the environment prefix. For example, the environment is development, url is development.rwallet.app.
+   * @param {*} baseUrl
+   * @param {*} environment
+   */
+  getServerUrl(baseUrl, environment) {
+    if (!_.isEmpty(environment) && environment !== 'Production') {
+      const regex = /^([\w.]*:\/\/)(.*)\S*/g;
+      const matches = regex.exec(baseUrl);
+      const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
+      return url;
+    }
+    return baseUrl;
   },
 };
 
