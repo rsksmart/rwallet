@@ -208,14 +208,6 @@ class WalletSelection extends PureComponent {
     navigation.navigate('DAppBrowser', { wallet: selectedWallet, dapp });
   }
 
-  ellipsisAddress = (address) => {
-    const { length } = address;
-    if (length > 14) {
-      return `${address.slice(0, 8)}....${address.slice(length - 6, length)}`;
-    }
-    return address;
-  }
-
   getTokenView = (tokens) => {
     const result = [];
     let row = [];
@@ -259,7 +251,7 @@ class WalletSelection extends PureComponent {
             <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
               <Text style={styles.network}>{network}</Text>
             </View>
-            <Text style={styles.address}>{this.ellipsisAddress(address)}</Text>
+            <Text style={styles.address}>{common.ellipsisString(address, 6)}</Text>
           </View>
           <View style={styles.circle}>
             <View style={selectedAddress === address ? styles.isSelected : {}} />

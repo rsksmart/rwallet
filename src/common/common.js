@@ -617,6 +617,11 @@ const common = {
       return string;
     }
 
+    // If string is rsk address, '0x' should be ignore
+    if (string.startsWith('0x') && length === 42) {
+      return `${string.slice(0, showLength + 2)}...${string.slice(length - showLength, length)}`;
+    }
+
     return `${string.slice(0, showLength)}...${string.slice(length - showLength, length)}`;
   },
 

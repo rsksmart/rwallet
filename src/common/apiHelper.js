@@ -13,9 +13,7 @@ const apiHelper = {
   async getAbiByAddress(address) {
     try {
       const url = `${PARSE_SERVER_URL}/functions/getAbiByAddress`;
-      console.log('url: ', url);
       const result = await axios.post(url, { address }, { headers });
-      console.log('result: ', result.data);
       return result.data.result;
     } catch (error) {
       console.log('getAbiByAddress error: ', error);
