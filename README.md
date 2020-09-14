@@ -35,14 +35,15 @@ The first three steps are needed for both Android and iOS devices.
     ```
     # Parse server configuration
     # Dogfood Server URL http://130.211.12.3/parse
+    # Production Server URL http://34.69.120.56/parse
     # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
     # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
     # RWALLET_ENV: Production|Dogfood
-    PARSE_SERVER_URL=http://34.69.120.56/parse
+    PARSE_SERVER_URL=http://130.211.12.3/parse
     RWALLET_API_KEY=6a740128-2ba2-4b82-9301-8cbe07208ee9
     RWALLET_ENV=Dogfood
     ```
-    If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
+    If .env file is changed, manually edit the file importing react-native-dotenv (`rwallet/config.js`) by either adding an empty line or whitespace will work.
 1.  In order to use firebase messaging on Android, put google-services.json in the android/app.
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
