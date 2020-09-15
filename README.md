@@ -34,15 +34,17 @@ The first three steps are needed for both Android and iOS devices.
 1. Create an environment variable file named `.env` in the root directory
     ```
     # Parse server configuration
-    # Dogfood Server URL http://130.211.12.3/parse
+    # Server URL https://wallet.app/v1
     # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
     # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
-    # RWALLET_ENV: Production|Dogfood
-    PARSE_SERVER_URL=http://34.69.120.56/parse
+    # RWALLET_ENV: Production, Dogfood or others. If RWALLET_ENV value is "Production", or not set, the final server URL value is the same as Server URL such as "https://wallet.app/v1"; otherwise, the RWALLET_ENV value will be prepended to Server URL in lower case as a sub-domain. For example, if RWALLET_ENV is "Dogfood" and Server URL is "https://wallet.app/v1", the final URL is https://dogfood.wallet.app/v1.
+
+    PARSE_SERVER_URL=https://rwallet.app/v1
     RWALLET_API_KEY=6a740128-2ba2-4b82-9301-8cbe07208ee9
     RWALLET_ENV=Dogfood
     ```
-    If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
+    * If .env file is changed, manually edit the file importing react-native-dotenv (`rwallet/config.js`) by either adding an empty line or whitespace will work.
+    * For security, we force the use of https to transfer data. If you use http during development, you need to set NSAllowsArbitraryLoads to true in the iOS environment and useCleartextTraffic to true in the Android environment.
 1.  In order to use firebase messaging on Android, put google-services.json in the android/app.
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
