@@ -18,7 +18,7 @@ import readOnlyStyles from '../../../assets/styles/readonly';
 import common from '../../../common/common';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import parseHelper from '../../../common/parse';
-import { defaultErrorNotification } from '../../../common/constants';
+import { defaultErrorNotification, Chain } from '../../../common/constants';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import { strings } from '../../../common/i18n';
 import appActions from '../../../redux/app/actions';
@@ -135,16 +135,20 @@ class AddReadOnlyWallet extends Component {
         }
       }
       if (newAddress.startsWith('0x')) {
-        chain = 'Rootstock';
+        chain = Chain.Rootstock;
         symbol = 'RBTC';
       } else {
-        chain = 'Bitcoin';
+        chain = Chain.Bitcoin;
         symbol = 'BTC';
       }
 
       const isWalletAddress = common.isWalletAddress(newAddress, symbol, type);
       const { networkId } = common.getCoinType(symbol, type);
-      newAddress = Rsk3.utils.toChecksumAddress(newAddress, networkId);
+
+      if (chain === Chain.Rootstock) {
+        newAddress = Rsk3.utils.toChecksumAddress(newAddress, networkId);
+      }
+
       if (!isWalletAddress) {
         this.setState({ errorText: strings('page.wallet.transfer.unavailableAddress'), canSubmit: false });
         return;
