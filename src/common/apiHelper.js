@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { PARSE_SERVER_URL } from 'react-native-dotenv';
+import ParseHelper from './parse';
 
 const headers = {
   'X-Parse-Application-Id': 'rwallet',
@@ -12,8 +12,9 @@ const headers = {
 const apiHelper = {
   async getAbiByAddress(address) {
     try {
-      const url = `${PARSE_SERVER_URL}/functions/getAbiByAddress`;
-      const result = await axios.post(url, { address }, { headers });
+      const parseServer = ParseHelper.serverUrl;
+      const url = `${parseServer}/functions/getAbiByAddress`;
+      const result = await axios.post(url, { address }, { headers, timeout: 5000 });
       return result.data.result;
     } catch (error) {
       console.log('getAbiByAddress error: ', error);

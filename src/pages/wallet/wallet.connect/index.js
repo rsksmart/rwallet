@@ -19,9 +19,9 @@ import TransactionModal from './modal/transaction';
 import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
+import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
 
 import { strings } from '../../../common/i18n';
-import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
 import CONSTANTS from '../../../common/constants.json';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
@@ -444,6 +444,30 @@ class WalletConnectPage extends Component {
     });
   }
 
+  popupTransactionModal = async () => {
+    const { payload: { params } } = this.state;
+    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+    const inputData = params[0].data;
+    const res = await apiHelper.getAbiByAddress(toAddress);
+    const txData = await this.generateTxData();
+    await this.setState({ txData });
+    if (res && res.abi) {
+      const { abi, symbol } = res;
+      const input = common.ethereumInputDecoder(abi, inputData);
+      console.log('input: ', input);
+      await this.setState({ inputDecode: input, symbol });
+      if (input && input.method === 'approve') {
+        this.popupAllowanceModal();
+      } else {
+        const contractMethod = (input && input.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(contractMethod);
+      }
+    } else {
+      console.log('abi is not exsit');
+      this.popupNormalTransactionModal();
+    }
+  }
+
   popupAllowanceModal = async () => {
     const { peerMeta, symbol, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
@@ -478,7 +502,7 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupTransactionModal = async (contractMethod = 'Smart Contract Call') => {
+  popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
     const { peerMeta, txData, selectedWallet: { address } } = this.state;
     const value = Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(txData.value)}`, 'ether');
 
@@ -517,24 +541,7 @@ class WalletConnectPage extends Component {
       }
 
       case 'eth_sendTransaction': {
-        const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
-        const inputData = params[0].data;
-        apiHelper.getAbiByAddress(toAddress).then(async (res) => {
-          const { abi, symbol } = res;
-          const input = common.ethereumInputDecoder(abi, inputData);
-          const txData = await this.generateTxData();
-          await this.setState({ inputDecode: input, symbol, txData });
-          if (input && input.method === 'approve') {
-            this.popupAllowanceModal();
-          } else {
-            const contractMethod = (input && input.method) || 'Smart Contract Call';
-            this.popupTransactionModal(contractMethod);
-          }
-        }).catch((err) => {
-          console.log('get abi error: ', err);
-          this.popupTransactionModal();
-        });
-
+        this.popupTransactionModal();
         break;
       }
 
@@ -602,13 +609,7 @@ class WalletConnectPage extends Component {
   }
 
   handleError = async () => {
-    const { connector, payload: { id } } = this.state;
-    if (connector) {
-      connector.rejectRequest({
-        id,
-        error: { message: 'Failed or Rejected Request' },
-      });
-    }
+    const { connector } = this.state;
 
     await this.setState({ connector, modalView: null });
     setTimeout(() => {
@@ -618,15 +619,22 @@ class WalletConnectPage extends Component {
 
   generateTxData = async () => {
     const { selectedWallet: { address }, payload: { params } } = this.state;
-    const nonce = await this.provider.getTransactionCount(address, 'pending');
 
-    // Get Mainnet current gas price
-    const gasPrice = await this.provider.getGasPrice();
+    let { nonce, gasPrice } = params[0];
+    if (!nonce) {
+      // Get Mainnet nonce if params[0].nonce is null
+      nonce = await this.provider.getTransactionCount(address, 'pending');
+    }
+    if (!gasPrice) {
+      // Get Mainnet gasPrice if params[0].gasPrice is null
+      gasPrice = await this.provider.getGasPrice();
+    }
+
     const txData = {
       nonce,
       data: params[0].data,
       gasLimit: params[0].gas || '0x927c0', // Set default gasLimit to 600000(hex: 0x927c0),
-      gasPrice: params[0].gasPrice || gasPrice,
+      gasPrice,
       to: Rsk3.utils.toChecksumAddress(params[0].to),
       value: params[0].value || '0x0',
     };
