@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import PropTypes, { string } from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { strings } from '../../../../common/i18n';
 import color from '../../../../assets/styles/color';
@@ -94,5 +94,5 @@ ErrorModal.propTypes = {
 };
 
 ErrorModal.defaultProps = {
-  description: string('page.wallet.walletconnect.errorDesc'),
+  description: strings('page.wallet.walletconnect.errorDesc'),
 };
