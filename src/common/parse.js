@@ -39,6 +39,10 @@ const ParseSubdomain = Parse.Object.extend('Subdomain');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
+  static getServerUrl() {
+    return Parse.serverURL;
+  }
+
   // Get user from storage
   static async getUser() {
     const user = await Parse.User.currentAsync();
@@ -488,20 +492,23 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
   get(target, propKey, receiver) {
     const targetValue = Reflect.get(target, propKey, receiver);
     if (typeof targetValue === 'function') {
-      const func = async (...args) => {
-        try {
-          const result = await targetValue.apply(this, args);
+      const func = (...args) => {
+        const result = targetValue.apply(this, args);
+        // If result is not a promise, return directly.
+        if (!(result instanceof Promise)) {
           return result;
-        } catch (error) {
-          console.log('ParseHelperProxy, error', error.code);
-          console.log('ParseHelperProxy, error', error.message);
-          // When the session expires, we need to relogin
-          if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
-            console.log('INVALID_SESSION_TOKEN');
-            common.getStore().dispatch(actions.relogin());
-          }
-          throw error;
         }
+        // If result is a promise, return a wrapper promise which will catch and handle INVALID_SESSION_TOKEN error.
+        const promise = new Promise((resolve, reject) => {
+          result.then((data) => resolve(data)).catch((error) => {
+            console.log(`ParseHelperProxy, propKey: ${propKey}, error.code: ${error.code}, error.message: `, error.message);
+            if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
+              common.getStore().dispatch(actions.relogin());
+            }
+            reject(error);
+          });
+        });
+        return promise;
       };
       return func;
     }
