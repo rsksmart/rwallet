@@ -1,32 +1,31 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { blockHeightKeyInfos } from './constants';
+import { blockHeightKeyInfos, TxStatus } from './constants';
 
 const parseDataUtil = {
   /**
    * get transaction from parse transaction object
    * @param {*} txOjbect, parse transaction object
    */
-  getTransaction(txOjbect) {
-    const createdAt = txOjbect.get('createdAt');
-    const confirmedAt = txOjbect.get('confirmedAt');
-    const receivedAt = txOjbect.get('receivedAt');
+  getTransaction(txObject) {
+    const status = txObject.get('status');
+    let dateTime = status === TxStatus.SUCCESS ? txObject.get('confirmedAt') : txObject.get('createdAt');
+    // Handling the case where datetime is undefined
+    dateTime = dateTime ? moment(dateTime) : undefined;
     const transaction = {
-      createdAt: createdAt ? moment(createdAt) : null,
-      confirmedAt: confirmedAt ? moment(confirmedAt) : null,
-      receivedAt,
-      chain: txOjbect.get('chain'),
-      type: txOjbect.get('type'),
-      from: txOjbect.get('from'),
-      hash: txOjbect.get('hash'),
-      value: txOjbect.get('value'),
-      blockHeight: txOjbect.get('blockHeight'),
-      symbol: txOjbect.get('symbol'),
-      to: txOjbect.get('to'),
-      confirmations: txOjbect.get('confirmations'),
-      memo: txOjbect.get('memo'),
-      status: txOjbect.get('status'),
-      objectId: txOjbect.id,
+      chain: txObject.get('chain'),
+      type: txObject.get('type'),
+      from: txObject.get('from'),
+      hash: txObject.get('hash'),
+      value: txObject.get('value'),
+      blockHeight: txObject.get('blockHeight'),
+      symbol: txObject.get('symbol'),
+      to: txObject.get('to'),
+      confirmations: txObject.get('confirmations'),
+      memo: txObject.get('memo'),
+      status,
+      dateTime,
+      objectId: txObject.id,
     };
     return transaction;
   },

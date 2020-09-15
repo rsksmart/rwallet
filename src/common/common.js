@@ -517,7 +517,7 @@ const common = {
   },
 
   isValidRnsSubdomain(text) {
-    const regex = /(([a-z0-9])+\.)+rsk$/g;
+    const regex = /^(([a-z0-9])+\.)+rsk$/g;
     return regex.test(text);
   },
 
@@ -597,6 +597,44 @@ const common = {
   getCoinType(symbol, type) {
     const coinId = this.getCoinId(symbol, type);
     return cointype[coinId];
+  },
+
+  // Returns a new random alphanumeric string of the given size.
+  //
+  // Note: to simplify implementation, the result has slight modulo bias,
+  // because chars length of 62 doesn't divide the number of all bytes
+  // (256) evenly. Such bias is acceptable for most cases when the output
+  // length is long enough and doesn't need to be uniform.
+  randomString(size, charRange) {
+    if (size === 0) {
+      throw new Error('Zero-length randomString is useless.');
+    }
+
+    const chars = charRange || ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      + 'abcdefghijklmnopqrstuvwxyz'
+      + '0123456789');
+
+    let objectId = '';
+    const bytes = randomBytes(size);
+    for (let i = 0; i < bytes.length; i += 1) {
+      objectId += chars[bytes.readUInt8(i) % chars.length];
+    }
+    return objectId;
+  },
+
+  /**
+   * getServerUrl, Return the url with the environment prefix. For example, the environment is development, url is development.rwallet.app.
+   * @param {*} baseUrl
+   * @param {*} environment
+   */
+  getServerUrl(baseUrl, environment) {
+    if (!_.isEmpty(environment) && environment !== 'Production') {
+      const regex = /^([\w.]*:\/\/)(.*)\S*/g;
+      const matches = regex.exec(baseUrl);
+      const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
+      return url;
+    }
+    return baseUrl;
   },
 };
 

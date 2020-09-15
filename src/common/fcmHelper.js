@@ -78,6 +78,12 @@ class FcmHelper {
     this.onNotification = listener;
     this.setMessagingListener();
   }
+
+  refreshFcmToken = async () => {
+    await firebase.messaging().deleteToken();
+    const token = await this.getFcmToken();
+    return token;
+  }
 }
 
 export default new FcmHelper();
