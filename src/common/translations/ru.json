@@ -135,7 +135,7 @@
         "reject": "Отклонить",
         "allow": "Разрешить",
         "connected": "Connected",
-        "connectdWallet": "%{dappName} подключен к вашему кошельку",
+        "connectedWallet": "%{dappName} подключен к вашему кошельку",
         "waitingForOperations": "Ожидание операций",
         "waitingForOperationsDesc": "Выполните любые операции из dapp %{dappName}. RWallet предложит запросить подтверждение подписи, если потребуется.",
         "disconnect": "Отключить",

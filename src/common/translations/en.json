@@ -135,7 +135,7 @@
         "reject": "Reject",
         "allow": "Allow",
         "connected": "Connected",
-        "connectdWallet": "%{dappName} is connected to your wallet",
+        "connectedWallet": "%{dappName} is connected to your wallet",
         "waitingForOperations": "Waiting for operations",
         "waitingForOperationsDesc": "Please perform any operations from the %{dappName} dapp. RWallet will prompt to ask for signature approval, if requested.",
         "disconnect": "Disconnect",

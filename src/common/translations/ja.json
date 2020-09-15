@@ -135,7 +135,7 @@
         "reject": "拒否する",
         "allow": "許可する",
         "connected": "接続されています",
-        "connectdWallet": "%{dappName}がウォレットに接続されています",
+        "connectedWallet": "%{dappName}がウォレットに接続されています",
         "waitingForOperations": "操作を待っています",
         "waitingForOperationsDesc": "%{dappName}から操作してください。 RWalletは、要求された場合、署名の承認を求めるプロンプトを表示します。",
         "disconnect": "切断する",

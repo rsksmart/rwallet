@@ -138,7 +138,7 @@
         "reject": "拒绝",
         "allow": "允许",
         "connected": "已连接",
-        "connectdWallet": "%{dappName}已连接到您的钱包",
+        "connectedWallet": "%{dappName}已连接到您的钱包",
         "waitingForOperations": "等待操作",
         "waitingForOperationsDesc": "请从%{dappName} dapp执行任何操作。如果需要，RWallet将提示要求签名批准。",
         "disconnect": "断开连接",

@@ -135,7 +135,7 @@
         "reject": "거부",
         "allow": "허용",
         "connected": "연결됨",
-        "connectdWallet": "%{dappName} 이 지갑에 연결되었습니다",
+        "connectedWallet": "%{dappName} 이 지갑에 연결되었습니다",
         "waitingForOperations": "작업 대기 중",
         "waitingForOperationsDesc": "%{dappName} dapp 에서 작업을 수행하십시오. RWallet은 요청시 서명 승인을 요청하는 메시지를 표시합니다.",
         "disconnect": "연결 해제",

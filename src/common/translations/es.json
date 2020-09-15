@@ -138,7 +138,7 @@
         "reject": "Rechazar",
         "allow": "Permitir",
         "connected": "Conectado",
-        "connectdWallet": "%{dappName} está conectado a su billetera",
+        "connectedWallet": "%{dappName} está conectado a su billetera",
         "waitingForOperations": "Esperando operaciones",
         "waitingForOperationsDesc": "Realice cualquier operación desde la dapp %{dappName}. RWallet solicitará la aprobación de la firma, si se solicita.",
         "disconnect": "Desconectar",
