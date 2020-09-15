@@ -72,3 +72,4 @@ out.log
 android/app/keystores/*.jks
 
 yarn.lock
+/android/app/google-services.json
