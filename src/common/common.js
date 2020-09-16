@@ -7,6 +7,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import Rsk3 from '@rsksmart/rsk3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
+import InputDataDecoder from 'rn-ethereum-input-data-decoder';
 import moment from 'moment';
 // import moment locales
 import 'moment/locale/zh-cn';
@@ -521,20 +522,6 @@ const common = {
     return regex.test(text);
   },
 
-  /**
-   * Get short address, omit middle part of rsk token address.
-   * For example, If address is 0xBB18Df33A915A2CFf0cAF0eDd59BD3e7606d0a83,
-   * returns 0xBB18Df33...606d0a83.
-   * @param {*} address, rsk token address
-   * @param {*} length, remains length of head and tail
-   */
-  getShortAddress(address, length = 8) {
-    const prefix = address.substr(0, length + 2);
-    const suffix = address.substr(address.length - length, address.length - 1);
-    const result = `${prefix}...${suffix}`;
-    return result;
-  },
-
   getFullDomain(subdomain) {
     return `${subdomain}.${config.rnsDomain}`;
   },
@@ -584,6 +571,58 @@ const common = {
     } catch (error) {
       return url;
     }
+  },
+
+  /**
+   * Decode ethereum transaction input data
+   * return contract function name, types and other info
+   * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
+   * returns { method: 'registerOffChainDonation', type: ['address', 'unit256', 'uint256', 'string', 'bytes32'], ... }
+   * @param {*} abi, contract address abi
+   * @param {*} input, transaction's input
+   */
+  ethereumInputDecoder(abi, input) {
+    const decoder = new InputDataDecoder(abi);
+    const result = decoder.decodeData(input);
+    return result;
+  },
+
+  /**
+   * Ellipsis a rsk address
+   * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
+   * @param {*} address, a rsk address
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisAddress(address, showLength = 8) {
+    if (!address) {
+      return '';
+    }
+    const { length } = address;
+    if (length <= (showLength * 2 + 2)) {
+      return address;
+    }
+    if (address.startsWith('0x')) {
+      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
+    }
+
+    return this.ellipsisString(address, showLength);
+  },
+
+  /**
+   * Ellipsis a string
+   * For Example, string = '12aushd9123niasuhdu123', showLength = 6, return '12aush...hdu123'
+   * @param {*} string, a string value
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisString(string, showLength) {
+    if (!string) {
+      return '';
+    }
+    const { length } = string;
+    if (length <= (showLength * 2)) {
+      return string;
+    }
+    return `${string.slice(0, showLength)}...${string.slice(length - showLength, length)}`;
   },
 
   getCoinId(symbol, type) {

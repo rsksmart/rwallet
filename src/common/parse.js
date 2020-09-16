@@ -49,7 +49,6 @@ class ParseHelper {
     return user;
   }
 
-
   static async signUp(username, password) {
     console.log(`ParseHelper.signUp, username: ${username}`);
 
@@ -502,6 +501,7 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
         const promise = new Promise((resolve, reject) => {
           result.then((data) => resolve(data)).catch((error) => {
             console.log(`ParseHelperProxy, propKey: ${propKey}, error.code: ${error.code}, error.message: `, error.message);
+            // When the session expires, we need to relogin
             if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
               common.getStore().dispatch(actions.relogin());
             }

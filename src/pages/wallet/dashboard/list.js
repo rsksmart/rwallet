@@ -197,21 +197,12 @@ class WalletList extends Component {
 
   onScanQrcodePressed = (wallet) => {
     const { navigation, addNotification } = this.props;
-    const { coins } = wallet;
     if (wallet.walletType === WalletType.Readonly) {
       addNotification(createReadOnlyLimitNotification());
       return;
     }
-    // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
-    if (coins.length === 1) {
-      navigation.navigate('Scan', { coin: coins[0], onDetectedAction: 'navigateToTransfer' });
-      return;
-    }
-    navigation.navigate('SelectWallet', {
-      operation: 'scan',
-      wallet,
-      onDetectedAction: 'navigateToTransfer',
-    });
+
+    navigation.navigate('Scan', { wallet });
   }
 
   render() {

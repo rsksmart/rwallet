@@ -1,0 +1,32 @@
+{
+  "FEE_LEVEL_ADJUSTMENT": 0.25,
+  "MAX_FEE_TIMES": 2,
+  "PLACEHODLER_AMOUNT": 0.001,
+  "NUM_OF_FEE_LEVELS": 3,
+  "NAME_MAX_LENGTH": 32,
+  "KEYNAME_MAX_LENGTH": 32,
+
+  "NETWORK": {
+    "MAINNET": {
+      "RSK_END_POINT": "https://public-node.rsk.co",
+      "NETWORK_VERSION": 30
+    },
+    "TESTNET": {
+      "RSK_END_POINT": "https://public-node.testnet.rsk.co",
+      "NETWORK_VERSION": 31
+    }
+  },
+
+  "BIOMETRY_TYPES": {
+    "TOUCH_ID": "Touch ID",
+    "FACE_ID": "Face ID",
+    "Biometrics": "Biometrics"
+  },
+
+  "WALLET_CONNECT": {
+    "MODAL_TYPE": {
+      "CONFIRMATION": "Confirmation",
+      "NOTIFICATION": "Notification"
+    }
+  }
+}
