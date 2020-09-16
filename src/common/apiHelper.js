@@ -12,7 +12,7 @@ const headers = {
 const apiHelper = {
   async getAbiByAddress(address) {
     try {
-      const parseServer = ParseHelper.serverUrl;
+      const parseServer = ParseHelper.getServerUrl();
       const url = `${parseServer}/functions/getAbiByAddress`;
       const result = await axios.post(url, { address }, { headers, timeout: 5000 });
       return result.data.result;

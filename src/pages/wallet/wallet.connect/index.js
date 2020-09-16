@@ -324,7 +324,7 @@ class WalletConnectPage extends Component {
         this.popupOperationModal();
       });
 
-      connector.on('connect', (error, payload) => {
+      connector.on('connect', (error) => {
         console.log('EVENT', 'connect');
 
         if (error) {
@@ -332,7 +332,7 @@ class WalletConnectPage extends Component {
         }
       });
 
-      connector.on('disconnect', (error, payload) => {
+      connector.on('disconnect', (error) => {
         console.log('EVENT', 'disconnect');
 
         if (error) {
