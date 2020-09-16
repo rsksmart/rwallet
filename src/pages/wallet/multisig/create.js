@@ -50,7 +50,7 @@ class CreateMultisigAddress extends Component {
       } = this.state;
       // const { navigation } = this.props;
       const type = isMainnet ? 'Mainnet' : 'Testnet';
-      const { walletManager } = this.props;
+      const { walletManager, addMultisigBTC } = this.props;
       const wallet = walletManager.wallets[0];
       const { derivations } = wallet;
       const derivation = _.find(derivations, { symbol: 'BTC', type });
@@ -65,7 +65,8 @@ class CreateMultisigAddress extends Component {
       console.log('onCreateButtonPressed, params: ', params);
       const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress(params));
       console.log('result: ', result);
-      // navigation.navigate('JoinMultisigAddress');
+      const invitationCode = result.get('invitationCode');
+      addMultisigBTC(walletManager, wallet, invitationCode);
     }
 
     onWalletNameChanged = (text) => {
@@ -169,6 +170,7 @@ CreateMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
+  addMultisigBTC: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -177,7 +179,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
+  addMultisigBTC: (walletManager, wallet, invitationCode) => dispatch(walletActions.addMultisigBTC(walletManager, wallet, invitationCode)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });

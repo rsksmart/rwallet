@@ -50,6 +50,8 @@ class WalletList extends Component {
         const symbolName = common.getSymbolName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.symbol) : '';
         const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
+        console.log('coin: ', coin);
+        console.log('coin.defaultName: ', coin.defaultName);
         const item = {
           key: `${index}`,
           title: symbolName,
@@ -57,7 +59,13 @@ class WalletList extends Component {
           worth: worthText,
           amount: amountText,
           icon: coin.icon,
-          onPress: () => navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType }),
+          onPress: () => {
+            if (coin.isMultisig) {
+              navigation.navigate('MultisigAddressInvitation');
+              return;
+            }
+            navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType });
+          },
         };
         wal.coins.push(item);
       });
@@ -229,7 +237,7 @@ class WalletList extends Component {
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
         // onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
         onAddAssetPressed: () => navigation.navigate('CreateMultisigAddress'),
-        // onAddAssetPressed: () => navigation.navigate('JoinMultisigAddress'),
+        onJoinAssetPressed: () => navigation.navigate('JoinMultisigAddress'),
         currencySymbol,
         hasSwappableCoin,
       };

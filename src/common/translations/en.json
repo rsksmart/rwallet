@@ -215,6 +215,9 @@
         "title": "Join Multisig Address",
         "userName": "Your Name",
         "invitationCode": "Wallet Invitation"
+      },
+      "multisigInvitation": {
+        "title": "Bitcoin Multisig"
       }
     },
     "dapp": {

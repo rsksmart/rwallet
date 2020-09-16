@@ -443,11 +443,12 @@ function* createReadOnlyWalletRequest(action) {
 
 function* addMultisigBTC(action) {
   const {
-    wallet, invitationCode,
+    walletManager, wallet, invitationCode,
   } = action.payload;
   try {
     yield call(wallet.addMultisigBTC, invitationCode);
     yield put({ type: actions.WALLETS_UPDATED });
+    yield call(walletManager.serialize);
   } catch (error) {
     console.log(error);
   }

@@ -495,6 +495,7 @@ class ParseHelper {
     const params = {
       invitationCode, publicKey, name,
     };
+    console.log('joinMultisigAddress, params: ', params);
     const result = await Parse.Cloud.run('joinMultisigAddress', params);
     return result;
   }

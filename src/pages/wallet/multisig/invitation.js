@@ -1,40 +1,34 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import appActions from '../../../redux/app/actions';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
-import Button from '../../../components/common/button/button';
 
 class MultisigAddressInvitation extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.state = { isLoading: false, canSubmit: true };
-    }
-
     onCreateButtonPressed = () => {
       console.log('onCreateButtonPressed');
     }
 
     render() {
-      const { isLoading, canSubmit } = this.state;
       const { navigation } = this.props;
-      const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
       return (
         <BasePageGereral
           isSafeView
-          hasBottomBtn
-          hasLoader
-          isLoading={isLoading}
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.joinMultisigAddress.title" />}
-          customBottomButton={customButton}
+          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.multisigInvitation.title" />}
         >
-          <View />
+          <View>
+            <Text>Wallet Invitation</Text>
+            <Text>Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.</Text>
+            <Text>Waiting for authorized copayers to join</Text>
+            <Text>Me</Text>
+            <Text>Waiting</Text>
+          </View>
         </BasePageGereral>
       );
     }
