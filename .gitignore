@@ -31,6 +31,9 @@ local.properties
 *.iml
 android/.project
 android/.settings/
+android/keystores/
+android/app/release/
+android/app/google-services.json
 
 # node.js
 #

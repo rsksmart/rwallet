@@ -74,6 +74,7 @@ const baseColor = {
   concrete: '#F3F3F3',
   wildSand: '#F5F5F5',
   snowDrift: '#F3F7F4',
+  approxGray: '#909090',
 
   // blue
   lynch: '#77869E',
@@ -267,6 +268,5 @@ const color = {
   ...styleScript(),
   ...baseColor,
 };
-
 
 export default color;

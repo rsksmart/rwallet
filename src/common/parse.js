@@ -39,12 +39,13 @@ const ParseSubdomain = Parse.Object.extend('Subdomain');
  * so that we don't need to reference ParseUser, ParseGlobal in other files
  */
 class ParseHelper {
+  static serverUrl = Parse.serverURL;
+
   // Get user from storage
   static async getUser() {
     const user = await Parse.User.currentAsync();
     return user;
   }
-
 
   static async signUp(username, password) {
     console.log(`ParseHelper.signUp, username: ${username}`);
