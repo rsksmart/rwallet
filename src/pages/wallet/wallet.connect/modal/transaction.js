@@ -64,12 +64,12 @@ export default function TransactionModal({
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-            <Text style={styles.lineValue}>{common.ellipsis(from, 7)}</Text>
+            <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
           </View>
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
-            <Text style={styles.lineValue}>{common.ellipsis(to, 7)}</Text>
+            <Text style={styles.lineValue}>{common.ellipsisAddress(to, 7)}</Text>
           </View>
 
           <View style={styles.line}>
@@ -79,7 +79,7 @@ export default function TransactionModal({
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.data')}</Text>
-            <Text style={styles.lineValue}>{common.ellipsis(data, 15)}</Text>
+            <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
           </View>
         </>
         )}

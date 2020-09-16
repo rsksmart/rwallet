@@ -588,38 +588,24 @@ const common = {
   },
 
   /**
-   * Ellipsis a string
-   * @param {*} value, need ellipsis value
-   * @param {*} showLength, the length of shown characters at the start and the end
-   */
-  ellipsis(value, showLength = 8) {
-    if (!value) {
-      return '';
-    }
-    if (typeof (value) !== 'string') {
-      return value;
-    }
-
-    // If string is rsk address, '0x' should be ignore
-    if (value.startsWith('0x') && value.length === 42) {
-      return this.ellipsisAddress(value, showLength);
-    }
-
-    return this.ellipsisString(value, showLength);
-  },
-
-  /**
    * Ellipsis a rsk address
    * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
    * @param {*} address, a rsk address
    * @param {*} showLength, the length of shown characters at the start and the end
    */
-  ellipsisAddress(address, showLength) {
+  ellipsisAddress(address, showLength = 8) {
+    if (!address) {
+      return '';
+    }
     const { length } = address;
     if (length <= (showLength * 2 + 2)) {
       return address;
     }
-    return `${address.slice(0, showLength + 2)}...${address.slice(length - showLength, length)}`;
+    if (address.startsWith('0x')) {
+      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
+    }
+
+    return this.ellipsisString(address, showLength);
   },
 
   /**
@@ -629,6 +615,9 @@ const common = {
    * @param {*} showLength, the length of shown characters at the start and the end
    */
   ellipsisString(string, showLength) {
+    if (!string) {
+      return '';
+    }
     const { length } = string;
     if (length <= (showLength * 2)) {
       return string;
