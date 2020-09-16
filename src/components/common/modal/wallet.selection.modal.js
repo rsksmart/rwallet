@@ -251,7 +251,7 @@ class WalletSelection extends PureComponent {
             <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
               <Text style={styles.network}>{network}</Text>
             </View>
-            <Text style={styles.address}>{common.ellipsisString(address, 6)}</Text>
+            <Text style={styles.address}>{common.ellipsis(address, 6)}</Text>
           </View>
           <View style={styles.circle}>
             <View style={selectedAddress === address ? styles.isSelected : {}} />

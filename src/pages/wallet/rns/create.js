@@ -383,7 +383,7 @@ class RnsAddress extends Component {
   renderRnsRow = (item, index) => {
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
-    const addressText = common.getShortAddress(address);
+    const addressText = common.ellipsis(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
     const { errorMessage, rnsNameState, type } = rnsRows[index];
     let message = null;

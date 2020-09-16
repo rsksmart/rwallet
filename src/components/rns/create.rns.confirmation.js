@@ -102,7 +102,7 @@ class CreateRnsConfirmation extends Component {
     return (
       <View style={[styles.subdomainRow, space.marginBottom_15]}>
         <Text style={[styles.subdomain]}>{subdomain}</Text>
-        <Text style={styles.address}>{common.getShortAddress(item.address)}</Text>
+        <Text style={styles.address}>{common.ellipsis(item.address)}</Text>
       </View>
     );
   }

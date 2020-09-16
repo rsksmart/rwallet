@@ -522,20 +522,6 @@ const common = {
     return regex.test(text);
   },
 
-  /**
-   * Get short address, omit middle part of rsk token address.
-   * For example, If address is 0xBB18Df33A915A2CFf0cAF0eDd59BD3e7606d0a83,
-   * returns 0xBB18Df33...606d0a83.
-   * @param {*} address, rsk token address
-   * @param {*} length, remains length of head and tail
-   */
-  getShortAddress(address, length = 8) {
-    const prefix = address.substr(0, length + 2);
-    const suffix = address.substr(address.length - length, address.length - 1);
-    const result = `${prefix}...${suffix}`;
-    return result;
-  },
-
   getFullDomain(subdomain) {
     return `${subdomain}.${config.rnsDomain}`;
   },
@@ -603,25 +589,50 @@ const common = {
 
   /**
    * Ellipsis a string
-   * For Example, string = '123456789', showLength = 2
-   * returns '12...89'
-   * @param {*} string, a string
+   * @param {*} value, need ellipsis value
    * @param {*} showLength, the length of shown characters at the start and the end
    */
-  ellipsisString(string, showLength) {
-    if (!string) {
+  ellipsis(value, showLength = 8) {
+    if (!value) {
       return '';
     }
-    const { length } = string;
-    if (length <= showLength * 2) {
-      return string;
+    if (typeof (value) !== 'string') {
+      return value;
     }
 
     // If string is rsk address, '0x' should be ignore
-    if (string.startsWith('0x') && length === 42) {
-      return `${string.slice(0, showLength + 2)}...${string.slice(length - showLength, length)}`;
+    if (value.startsWith('0x') && value.length === 42) {
+      return this.ellipsisAddress(value, showLength);
     }
 
+    return this.ellipsisString(value, showLength);
+  },
+
+  /**
+   * Ellipsis a rsk address
+   * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
+   * @param {*} address, a rsk address
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisAddress(address, showLength) {
+    const { length } = address;
+    if (length <= (showLength * 2 + 2)) {
+      return address;
+    }
+    return `${address.slice(0, showLength + 2)}...${address.slice(length - showLength, length)}`;
+  },
+
+  /**
+   * Ellipsis a string
+   * For Example, string = '12aushd9123niasuhdu123', showLength = 6, return '12aush...hdu123'
+   * @param {*} string, a string value
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisString(string, showLength) {
+    const { length } = string;
+    if (length <= (showLength * 2)) {
+      return string;
+    }
     return `${string.slice(0, showLength)}...${string.slice(length - showLength, length)}`;
   },
 
