@@ -181,29 +181,27 @@ class WalletConnectPage extends Component {
         modalView: this.renderWalletConnectingView(),
       });
 
-      const selectedWallet = await this.getWallet();
+      const selectedWallet = this.getWallet();
       if (selectedWallet) {
         await this.setState({ selectedWallet });
         await this.initWalletConnect();
         this.initNetwork();
       } else {
+        await this.setState({ modalView: null });
         // If current wallet has no mainnet rsk asset, need to go back
-        Alert.alert(
-          strings('page.wallet.walletconnect.selectAvailableWallet'),
-          '',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                this.setState({ modalView: null });
-                setTimeout(() => {
-                  navigation.goBack();
-                }, 500);
+        setTimeout(() => {
+          Alert.alert(
+            strings('page.wallet.walletconnect.selectAvailableWallet'),
+            '',
+            [
+              {
+                text: 'OK',
+                onPress: () => navigation.goBack(),
               },
-            },
-          ],
-          { cancelable: false },
-        );
+            ],
+            { cancelable: false },
+          );
+        }, 500);
       }
     }, 500);
   }
@@ -231,14 +229,9 @@ class WalletConnectPage extends Component {
   // Get current wallet's address and private key
   getWallet = () => {
     const { navigation: { state: { params: { wallet } } } } = this.props;
-    const ethWallets = [];
     const { coins } = wallet;
     const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
     if (!_.isEmpty(ethChainCoins)) {
-      ethWallets.push({
-        address: ethChainCoins[0].address,
-        privateKey: ethChainCoins[0].privateKey,
-      });
       return {
         address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
         privateKey: ethChainCoins[0].privateKey,

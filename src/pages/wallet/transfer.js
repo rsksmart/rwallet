@@ -316,7 +316,11 @@ class Transfer extends Component {
   }
 
   componentDidMount() {
+    const { to } = this.state;
     this.initContext();
+    if (to) {
+      this.onToInputBlur();
+    }
   }
 
   componentWillReceiveProps(nextProps) {

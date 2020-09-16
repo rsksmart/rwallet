@@ -73,7 +73,7 @@ class SelectWallet extends Component {
   }
 
   static createListData(wallet, navigation, addNotification) {
-    const { operation, onDetectedAction, toAddress } = navigation.state.params;
+    const { operation, toAddress } = navigation.state.params;
     const listData = [];
     // Create element for each Token (e.g. BTC, RBTC, RIF)
     _.each(wallet.coins, (coin) => {
@@ -98,20 +98,14 @@ class SelectWallet extends Component {
               navigation.goBack();
               return;
             }
-
-            if (onDetectedAction === 'backToTransfer') {
-              navigation.state.params.onQrcodeDetected(toAddress);
-              navigation.goBack();
-            } else {
-              const resetAction = StackActions.reset({
-                index: 1,
-                actions: [
-                  NavigationActions.navigate({ routeName: 'Dashboard' }),
-                  NavigationActions.navigate({ routeName: 'Transfer', params: { coin, toAddress } }),
-                ],
-              });
-              navigation.dispatch(resetAction);
-            }
+            const resetAction = StackActions.reset({
+              index: 1,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Dashboard' }),
+                NavigationActions.navigate({ routeName: 'Transfer', params: { coin, toAddress } }),
+              ],
+            });
+            navigation.dispatch(resetAction);
           }
         },
       };
