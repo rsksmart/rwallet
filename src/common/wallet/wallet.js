@@ -2,6 +2,7 @@ import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
+import MultisigBTC from './multisig.btc';
 import storage from '../storage';
 import coinType from './cointype';
 import common from '../common';
@@ -270,6 +271,18 @@ export default class Wallet extends BasicWallet {
     this.coins.push(coin);
     this.coins = common.sortTokens(this.coins);
     return coin;
+  }
+
+  /**
+   * Create multisig BTC and add it to coins list
+   */
+  addMultisigBTC = (invitationCode) => {
+    console.log('addMultisigBTC, invitationCode: ', invitationCode);
+    const multisigBTC = new MultisigBTC(invitationCode, 'Testnet');
+    this.coins.push(multisigBTC);
+    this.coins = common.sortTokens(this.coins);
+    console.log('this.coins: ', this.coins);
+    return multisigBTC;
   }
 
   deleteToken = (token) => {

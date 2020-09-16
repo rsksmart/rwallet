@@ -484,6 +484,7 @@ class ParseHelper {
     const params = {
       signatureNumber, copayerNumber, publicKey, type, name,
     };
+    console.log('createMultisigAddress, params: ', JSON.stringify(params));
     const result = await Parse.Cloud.run('createMultisigAddress', params);
     return result;
   }
@@ -509,8 +510,7 @@ const ParseHelperProxy = new Proxy(ParseHelper, {
           const result = await targetValue.apply(this, args);
           return result;
         } catch (error) {
-          console.log('ParseHelperProxy, error', error.code);
-          console.log('ParseHelperProxy, error', error.message);
+          console.log(`ParseHelperProxy, propKey: ${propKey}, error.code: ${error.code}, error.message: `, error.message);
           // When the session expires, we need to relogin
           if (error.code === Parse.Error.INVALID_SESSION_TOKEN) {
             console.log('INVALID_SESSION_TOKEN');

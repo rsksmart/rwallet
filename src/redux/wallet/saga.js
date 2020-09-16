@@ -441,6 +441,17 @@ function* createReadOnlyWalletRequest(action) {
   }
 }
 
+function* addMultisigBTC(action) {
+  const {
+    wallet, invitationCode,
+  } = action.payload;
+  try {
+    yield call(wallet.addMultisigBTC, invitationCode);
+    yield put({ type: actions.WALLETS_UPDATED });
+  } catch (error) {
+    console.log(error);
+  }
+}
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -463,5 +474,7 @@ export default function* () {
 
     takeEvery(actions.GET_BALANCE, getBalanceRequest),
     takeEvery(actions.CREATE_READ_ONLY_WALLET, createReadOnlyWalletRequest),
+
+    takeEvery(actions.ADD_MULTISIG_BTC, addMultisigBTC),
   ]);
 }

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
+import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
 import Button from '../../../components/common/button/button';
@@ -38,6 +39,10 @@ class CreateMultisigAddress extends Component {
       };
     }
 
+    componentWillUnmount() {
+      CancelablePromiseUtil.cancel(this);
+    }
+
     onCreateButtonPressed = async () => {
       console.log('onCreateButtonPressed');
       const {
@@ -52,9 +57,13 @@ class CreateMultisigAddress extends Component {
       const { publicKey } = derivation;
       const signatureNumber = parseInt(signatures, 10);
       const copayerNumber = parseInt(copayers, 10);
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress({
+
+      console.log('onCreateButtonPressed, derivation: ', derivation);
+      const params = {
         signatureNumber, copayerNumber, publicKey, type, name: userName,
-      }));
+      };
+      console.log('onCreateButtonPressed, params: ', params);
+      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress(params));
       console.log('result: ', result);
       // navigation.navigate('JoinMultisigAddress');
     }
@@ -168,6 +177,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
