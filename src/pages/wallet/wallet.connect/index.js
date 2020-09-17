@@ -175,34 +175,32 @@ class WalletConnectPage extends Component {
       this.backAction,
     );
 
+    const selectedWallet = this.getWallet();
+    // If current wallet has no mainnet rsk asset, need to go back
+    if (!selectedWallet) {
+      Alert.alert(
+        strings('page.wallet.walletconnect.selectAvailableWallet'),
+        '',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+          },
+        ],
+        { cancelable: false },
+      );
+      return;
+    }
+
     // setTimeout 500 in order to ui change smoothly
     setTimeout(async () => {
       await this.setState({
         modalView: this.renderWalletConnectingView(),
       });
 
-      const selectedWallet = this.getWallet();
-      if (selectedWallet) {
-        await this.setState({ selectedWallet });
-        await this.initWalletConnect();
-        this.initNetwork();
-      } else {
-        await this.setState({ modalView: null });
-        // If current wallet has no mainnet rsk asset, need to go back
-        setTimeout(() => {
-          Alert.alert(
-            strings('page.wallet.walletconnect.selectAvailableWallet'),
-            '',
-            [
-              {
-                text: 'OK',
-                onPress: () => navigation.goBack(),
-              },
-            ],
-            { cancelable: false },
-          );
-        }, 500);
-      }
+      await this.setState({ selectedWallet });
+      await this.initWalletConnect();
+      this.initNetwork();
     }, 500);
   }
 
