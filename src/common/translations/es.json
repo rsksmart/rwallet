@@ -122,6 +122,7 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "emptyWalletError": "Cartera vacía",
         "selectAvailableWallet": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
         "isConnecting": "Wallet se está conectando ...",
         "isSigning": "La transacción se está firmando ...",
