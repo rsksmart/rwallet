@@ -378,7 +378,6 @@ SwapSelection.propTypes = {
   addNotification: PropTypes.func.isRequired,
 };
 
-
 SwapSelection.defaultProps = {
   walletManager: undefined,
   swapSource: undefined,
