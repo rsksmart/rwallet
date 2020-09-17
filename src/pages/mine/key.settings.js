@@ -13,6 +13,7 @@ import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
 import screenHelper from '../../common/screenHelper';
 import color from '../../assets/styles/color';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -240,10 +241,15 @@ class KeySettings extends Component {
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Assets" />
             {KeySettings.renderWalletList(walletListData)}
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
-            <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
-          </View>
+          {
+            // If it is read-only wallet, hide back up button
+            this.key.walletType === WalletType.Normal && (
+              <View style={styles.sectionContainer}>
+                <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
+                <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
+              </View>
+            )
+          }
           <View style={[styles.sectionContainer, styles.advancedBlock]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
