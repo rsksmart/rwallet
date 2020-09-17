@@ -122,6 +122,7 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "emptyWalletError": "Carteira vazia",
         "selectAvailableWallet": "Por favor selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",

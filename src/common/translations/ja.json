@@ -119,6 +119,7 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "emptyWalletError": "空のウォレット",
         "selectAvailableWallet": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
         "isConnecting": "ウォレットを接続しています...",
         "isSigning": "トランザクションは署名しています...",

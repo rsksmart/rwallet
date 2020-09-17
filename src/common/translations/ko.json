@@ -119,6 +119,7 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "emptyWalletError": "빈 지갑",
         "selectAvailableWallet": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
         "isConnecting": "지갑 연결 중 ...",
         "isSigning": "트랜잭션 서명 중 ...",

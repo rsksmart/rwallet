@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
+import { StackActions, NavigationActions } from 'react-navigation';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
 import color from '../../assets/styles/color';
@@ -72,15 +73,29 @@ class Scan extends Component {
 
     onQrcodeDetected = (data) => {
       const { navigation } = this.props;
-      const { wallet } = navigation.state.params;
-      const { coins } = wallet;
+      const { onDetectedAction, onQrcodeDetected, wallet } = navigation.state.params;
+
+      // If from transfer page
+      if (onDetectedAction === 'backToTransfer') {
+        onQrcodeDetected(data);
+        navigation.goBack();
+        return;
+      }
 
       if (data.startsWith('wc:')) {
-        navigation.replace('WalletConnectPage', { uri: data, wallet });
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Dashboard' }),
+            NavigationActions.navigate({ routeName: 'WalletConnectPage', params: { uri: data, wallet } }),
+          ],
+        });
+        navigation.dispatch(resetAction);
       } else {
+        const { coins } = wallet;
         // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
         if (coins.length === 1) {
-          navigation.navigate('Scan', { coin: coins[0], onDetectedAction: 'navigateToTransfer' });
+          navigation.navigate('Transfer', { coin: coins[0], onDetectedAction: 'navigateToTransfer', toAddress: data });
           return;
         }
         navigation.navigate('SelectWallet', {

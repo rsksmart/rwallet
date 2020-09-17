@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ActivityIndicator, ScrollView, Modal, Dimensions, Alert, BackHandler,
+  View, Text, StyleSheet, ActivityIndicator, ScrollView, Modal, Dimensions, BackHandler,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import WalletConnect from '@walletconnect/client';
@@ -20,6 +20,7 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
+import { createErrorNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
 import CONSTANTS from '../../../common/constants.json';
@@ -169,11 +170,24 @@ class WalletConnectPage extends Component {
   }
 
   async componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
     );
+
+    const selectedWallet = this.getWallet();
+    // If current wallet has no mainnet rsk asset, need to go back
+    if (!selectedWallet) {
+      const notification = createErrorNotification(
+        'page.wallet.walletconnect.emptyWalletError',
+        'page.wallet.walletconnect.selectAvailableWallet',
+        'page.wallet.walletconnect.gotIt',
+        () => navigation.goBack(),
+      );
+      addNotification(notification);
+      return;
+    }
 
     // setTimeout 500 in order to ui change smoothly
     setTimeout(async () => {
@@ -181,30 +195,9 @@ class WalletConnectPage extends Component {
         modalView: this.renderWalletConnectingView(),
       });
 
-      const selectedWallet = await this.getWallet();
-      if (selectedWallet) {
-        await this.setState({ selectedWallet });
-        await this.initWalletConnect();
-        this.initNetwork();
-      } else {
-        // If current wallet has no mainnet rsk asset, need to go back
-        Alert.alert(
-          strings('page.wallet.walletconnect.selectAvailableWallet'),
-          '',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                this.setState({ modalView: null });
-                setTimeout(() => {
-                  navigation.goBack();
-                }, 500);
-              },
-            },
-          ],
-          { cancelable: false },
-        );
-      }
+      await this.setState({ selectedWallet });
+      await this.initWalletConnect();
+      this.initNetwork();
     }, 500);
   }
 
@@ -231,14 +224,9 @@ class WalletConnectPage extends Component {
   // Get current wallet's address and private key
   getWallet = () => {
     const { navigation: { state: { params: { wallet } } } } = this.props;
-    const ethWallets = [];
     const { coins } = wallet;
     const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
     if (!_.isEmpty(ethChainCoins)) {
-      ethWallets.push({
-        address: ethChainCoins[0].address,
-        privateKey: ethChainCoins[0].privateKey,
-      });
       return {
         address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
         privateKey: ethChainCoins[0].privateKey,
@@ -740,6 +728,7 @@ WalletConnectPage.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => ({
@@ -749,6 +738,7 @@ const mapDispatchToProps = (dispatch) => ({
   callAuthVerify: (callback, fallback) => dispatch(
     appActions.callAuthVerify(callback, fallback),
   ),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletConnectPage);

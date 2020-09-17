@@ -122,7 +122,8 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
-        "selectAvailableWallet": "请选择拥有RSK资产的钱包",
+        "emptyWalletError": "空钱包",
+        "selectAvailableWallet": "请选择拥有RSK主网资产的钱包",
         "isConnecting": "钱包正在连接...",
         "isSigning": "交易正在签名...",
         "signApproved": "消息签名已批准",
