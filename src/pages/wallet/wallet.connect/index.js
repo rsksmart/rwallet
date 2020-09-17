@@ -24,7 +24,6 @@ import { createErrorNotification } from '../../../common/notification.controller
 
 import { strings } from '../../../common/i18n';
 import CONSTANTS from '../../../common/constants.json';
-import { WalletType } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -225,15 +224,13 @@ class WalletConnectPage extends Component {
   // Get current wallet's address and private key
   getWallet = () => {
     const { navigation: { state: { params: { wallet } } } } = this.props;
-    const { coins, walletType } = wallet;
-    if (walletType === WalletType.Normal) {
-      const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
-      if (!_.isEmpty(ethChainCoins)) {
-        return {
-          address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
-          privateKey: ethChainCoins[0].privateKey,
-        };
-      }
+    const { coins } = wallet;
+    const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
+    if (!_.isEmpty(ethChainCoins)) {
+      return {
+        address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
+        privateKey: ethChainCoins[0].privateKey,
+      };
     }
     return null;
   }
