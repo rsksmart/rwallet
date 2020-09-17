@@ -699,18 +699,18 @@ class Swap extends Component {
     let interpolates = null;
     if (!common.isAmount(sourceText)) {
       errorText = 'page.wallet.swap.errorAmountInvalid';
-      interpolates = { symbol: swapSource && swapSource.coin && swapSource.coin.symbol };
-    } else if (!common.isAmount(destText)) {
+      interpolates = { symbol: swapSource.coin.symbol };
+    } else if (swapDest && !common.isAmount(destText)) {
       errorText = 'page.wallet.swap.errorAmountInvalid';
-      interpolates = { symbol: swapDest && swapDest.coin && swapDest.coin.symbol };
+      interpolates = { symbol: swapDest.coin.symbol };
     } else if (!isBalanceEnough) {
       errorText = 'page.wallet.swap.errorBalanceEnough';
     } else if (sourceAmount < limitMinDepositCoin) {
       errorText = 'page.wallet.swap.errorAmountInRange.tooSmall';
-      interpolates = { min: limitMinDepositCoin, symbol: swapSource && swapSource.coin && swapSource.coin.symbol };
+      interpolates = { min: limitMinDepositCoin, symbol: swapSource.coin.symbol };
     } else if (sourceAmount > limitMaxDepositCoin) {
       errorText = 'page.wallet.swap.errorAmountInRange.tooBig';
-      interpolates = { max: limitMaxDepositCoin, symbol: swapSource && swapSource.coin && swapSource.coin.symbol };
+      interpolates = { max: limitMaxDepositCoin, symbol: swapSource.coin.symbol };
     }
 
     if (errorText) {
