@@ -9,11 +9,11 @@ class MultisigBtc {
     this.privateKey = undefined;
     this.publicKey = undefined;
     this.address = undefined;
-    this.invitationCode = undefined;
     this.name = 'Multisig BTC';
     this.icon = references.images.BTC;
     this.isMultisig = true;
     this.invitationCode = invitationCode;
+    this.chain = 'Bitcoin';
   }
 
   get defaultName() {
@@ -44,6 +44,27 @@ class MultisigBtc {
     instance.balance = balance;
     return instance;
   }
+
+  setupWithDerivation = (derivation) => {
+    const { addressType } = derivation;
+    const {
+      privateKey, publicKey,
+    } = derivation.addresses[addressType];
+    this.addressType = addressType;
+    this.privateKey = privateKey;
+    this.publicKey = publicKey;
+  }
+
+  isEqual(json) {
+    const {
+      address, chain, type, symbol,
+    } = this;
+    return address === json.address
+    && chain === json.chain
+    && type === json.type
+    && symbol === json.symbol;
+  }
+
 
   updateCoinObjectIds(addresses) {
     const that = this;

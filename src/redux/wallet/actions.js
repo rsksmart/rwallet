@@ -61,6 +61,7 @@ const actions = {
   CREATE_READ_ONLY_WALLET: 'CREATE_READ_ONLY_WALLET',
 
   ADD_MULTISIG_BTC: 'ADD_MULTISIG_BTC',
+  SET_MULTISIG_BTC_ADDRESS: 'SET_MULTISIG_BTC_ADDRESS',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -149,10 +150,16 @@ const actions = {
   resetAddTokenResult: () => ({
     type: actions.RESET_ADD_TOKEN_RESULT,
   }),
-  addMultisigBTC: (walletManager, wallet, invitationCode) => ({
+  addMultisigBTC: (walletManager, wallet, invitationCode, type) => ({
     type: actions.ADD_MULTISIG_BTC,
     payload: {
-      walletManager, wallet, invitationCode,
+      walletManager, wallet, invitationCode, type,
+    },
+  }),
+  setMultisigBTCAddress: (invitationCode, address) => ({
+    type: actions.SET_MULTISIG_BTC_ADDRESS,
+    payload: {
+      invitationCode, address,
     },
   }),
   getSwapRate: (sourceCoinId, destCoinId) => ({

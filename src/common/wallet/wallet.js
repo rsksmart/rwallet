@@ -276,13 +276,39 @@ export default class Wallet extends BasicWallet {
   /**
    * Create multisig BTC and add it to coins list
    */
-  addMultisigBTC = (invitationCode) => {
-    console.log('addMultisigBTC, invitationCode: ', invitationCode);
-    const multisigBTC = new MultisigBTC(invitationCode, 'Testnet');
+  addMultisigBTC = ({
+    invitationCode, address, type, objectId, balance,
+  }) => {
+    console.log(`addMultisigBTC, invitationCode: ${invitationCode}, address: ${address}, type: ${type}`);
+    const multisigBTC = new MultisigBTC(invitationCode, type);
+
+    const derivation = _.find(this.derivations, { symbol: 'BTC', type });
+
+    // reuse address, private key of derivation
+    multisigBTC.setupWithDerivation(derivation);
+
+    if (address) {
+      multisigBTC.address = address;
+    }
+
+    // restore other data
+    if (objectId) {
+      multisigBTC.objectId = objectId;
+    }
+
+    if (balance) {
+      multisigBTC.balance = new BigNumber(balance);
+    }
+
     this.coins.push(multisigBTC);
     this.coins = common.sortTokens(this.coins);
     console.log('this.coins: ', this.coins);
     return multisigBTC;
+  }
+
+  setMultisigBTCAddress = (invitationCode, address) => {
+    const coin = _.find(this.coins, { isMultisig: true, invitationCode });
+    coin.address = address;
   }
 
   deleteToken = (token) => {

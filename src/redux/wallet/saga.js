@@ -443,16 +443,38 @@ function* createReadOnlyWalletRequest(action) {
 
 function* addMultisigBTC(action) {
   const {
-    walletManager, wallet, invitationCode,
+    walletManager, wallet, invitationCode, type,
   } = action.payload;
   try {
-    yield call(wallet.addMultisigBTC, invitationCode);
+    yield call(wallet.addMultisigBTC, { invitationCode, type });
     yield put({ type: actions.WALLETS_UPDATED });
     yield call(walletManager.serialize);
   } catch (error) {
     console.log(error);
   }
 }
+
+function* setMultisigBTCAddressRequest(action) {
+  const {
+    invitationCode, address,
+  } = action.payload;
+  try {
+    const state = yield select();
+    const walletManager = state.Wallet.get('walletManager');
+    _.each(walletManager.wallets, (wallet) => {
+      wallet.setMultisigBTCAddress(invitationCode, address);
+    });
+    yield call(walletManager.serialize);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: appActions.UPDATE_USER });
+    const tokens = walletManager.getTokens();
+    yield put({ type: actions.INIT_LIVE_QUERY_TOKENS, tokens });
+    yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -477,5 +499,6 @@ export default function* () {
     takeEvery(actions.CREATE_READ_ONLY_WALLET, createReadOnlyWalletRequest),
 
     takeEvery(actions.ADD_MULTISIG_BTC, addMultisigBTC),
+    takeEvery(actions.SET_MULTISIG_BTC_ADDRESS, setMultisigBTCAddressRequest),
   ]);
 }

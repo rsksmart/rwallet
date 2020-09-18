@@ -35,7 +35,7 @@ class CreateMultisigAddress extends Component {
         userName: 'cxy',
         signatures: '2',
         copayers: '2',
-        isMainnet: true,
+        isMainnet: false,
       };
     }
 
@@ -44,21 +44,17 @@ class CreateMultisigAddress extends Component {
     }
 
     onCreateButtonPressed = async () => {
-      console.log('onCreateButtonPressed');
       const {
         userName, signatures, copayers, isMainnet,
       } = this.state;
-      // const { navigation } = this.props;
       const type = isMainnet ? 'Mainnet' : 'Testnet';
-      const { walletManager, addMultisigBTC } = this.props;
+      const { walletManager, addMultisigBTC, navigation } = this.props;
       const wallet = walletManager.wallets[0];
       const { derivations } = wallet;
       const derivation = _.find(derivations, { symbol: 'BTC', type });
       const { publicKey } = derivation;
       const signatureNumber = parseInt(signatures, 10);
       const copayerNumber = parseInt(copayers, 10);
-
-      console.log('onCreateButtonPressed, derivation: ', derivation);
       const params = {
         signatureNumber, copayerNumber, publicKey, type, name: userName,
       };
@@ -66,7 +62,8 @@ class CreateMultisigAddress extends Component {
       const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress(params));
       console.log('result: ', result);
       const invitationCode = result.get('invitationCode');
-      addMultisigBTC(walletManager, wallet, invitationCode);
+      addMultisigBTC(walletManager, wallet, invitationCode, type);
+      navigation.navigate('MultisigAddressInvitation', { invitationCode });
     }
 
     onWalletNameChanged = (text) => {
@@ -179,7 +176,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addMultisigBTC: (walletManager, wallet, invitationCode) => dispatch(walletActions.addMultisigBTC(walletManager, wallet, invitationCode)),
+  addMultisigBTC: (walletManager, wallet, invitationCode, type) => dispatch(walletActions.addMultisigBTC(walletManager, wallet, invitationCode, type)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });

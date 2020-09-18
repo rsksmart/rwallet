@@ -212,8 +212,8 @@ export default class Coin {
     const newAddresses = {};
     const keys = Object.keys(this.addresses);
     _.each(keys, (key) => {
-      const { path, address } = this.addresses[key];
-      newAddresses[key] = { path, address };
+      const { path, address, publicKey } = this.addresses[key];
+      newAddresses[key] = { path, address, publicKey };
     });
     return newAddresses;
   };

@@ -33,6 +33,7 @@ const ParseTransaction = Parse.Object.extend('Transaction');
 const ParseDapp = Parse.Object.extend('Dapp');
 const ParseAd = Parse.Object.extend('Advertisement');
 const ParseSubdomain = Parse.Object.extend('Subdomain');
+const ParseMultiSigInvitation = Parse.Object.extend('MultiSigInvitation');
 
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
@@ -498,6 +499,17 @@ class ParseHelper {
     console.log('joinMultisigAddress, params: ', params);
     const result = await Parse.Cloud.run('joinMultisigAddress', params);
     return result;
+  }
+
+  /**
+   * Fetch invitation object by code
+   * @param {*} invitationCode
+   */
+  static async fetchMultisigInvitation(invitationCode) {
+    console.log('fetchMultisigInvitation, invitationCode: ', invitationCode);
+    const query = new Parse.Query(ParseMultiSigInvitation);
+    query.equalTo('invitationCode', invitationCode);
+    return query.first();
   }
 }
 

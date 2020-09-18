@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
+import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
 import Button from '../../../components/common/button/button';
@@ -38,8 +39,7 @@ class JoinMultisigAddress extends Component {
     onJoinButtonPressed = async () => {
       console.log('onJoinButtonPressed');
       const { userName, invitationCode } = this.state;
-      // const { navigation } = this.props;
-      const { walletManager } = this.props;
+      const { walletManager, addMultisigBTC, navigation } = this.props;
       const wallet = walletManager.wallets[0];
       const { derivations } = wallet;
       const derivation = _.find(derivations, { symbol: 'BTC', type: 'Mainnet' });
@@ -48,6 +48,9 @@ class JoinMultisigAddress extends Component {
         invitationCode, publicKey, name: userName,
       }));
       console.log('result: ', result);
+      const type = result.get('type');
+      addMultisigBTC(walletManager, wallet, invitationCode, type);
+      navigation.navigate('MultisigAddressInvitation', { invitationCode });
     }
 
     onInvitationCodeChanged = (text) => {
@@ -113,6 +116,7 @@ JoinMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
+  addMultisigBTC: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -121,6 +125,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  addMultisigBTC: (walletManager, wallet, invitationCode, type) => dispatch(walletActions.addMultisigBTC(walletManager, wallet, invitationCode, type)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });

@@ -60,8 +60,8 @@ class WalletList extends Component {
           amount: amountText,
           icon: coin.icon,
           onPress: () => {
-            if (coin.isMultisig) {
-              navigation.navigate('MultisigAddressInvitation');
+            if (coin.isMultisig && !coin.address) {
+              navigation.navigate('MultisigAddressInvitation', { invitationCode: coin.invitationCode });
               return;
             }
             navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType });
