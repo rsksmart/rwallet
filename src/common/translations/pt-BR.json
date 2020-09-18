@@ -113,7 +113,7 @@
       "verifyFingerprint": {
         "title": "Verificar impressão digital"
       },
-      "scan": 
+      "scan": {
         "title": "Ler código QR",
         "cameraPermission": {
           "title": "Permissão para usar a câmera",
