@@ -47,6 +47,8 @@ import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
 import CreateMultisigAddress from '../pages/wallet/multisig/create';
 import JoinMultisigAddress from '../pages/wallet/multisig/join';
 import MultisigAddressInvitation from '../pages/wallet/multisig/invitation';
+import MultisigProposals from '../pages/wallet/multisig/proposals';
+import MultisigProposalDetail from '../pages/wallet/multisig/proposalDetail';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -261,6 +263,20 @@ const routeConfigMap = {
       path: 'MultisigAddressInvitation',
       navigationOptions: () => ({
         headerTitle: 'MultisigAddressInvitation',
+      }),
+    },
+    MultisigProposals: {
+      screen: MultisigProposals,
+      path: 'MultisigProposals',
+      navigationOptions: () => ({
+        headerTitle: 'MultisigProposals',
+      }),
+    },
+    MultisigProposalDetail: {
+      screen: MultisigProposalDetail,
+      path: 'MultisigProposalDetail',
+      navigationOptions: () => ({
+        headerTitle: 'MultisigProposalDetail',
       }),
     },
   },

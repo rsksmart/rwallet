@@ -26,6 +26,8 @@ export const getRawTransactionParam = ({
 };
 
 export const signTransaction = async (transaction, privateKey) => {
+  console.log('signTransaction, rawTransaction: ', transaction);
+  console.log('signTransaction, privateKey: ', privateKey);
   const rawTransaction = _.cloneDeep(transaction);
   const { tx: { addresses } } = rawTransaction;
   const fromAddress = addresses[0];

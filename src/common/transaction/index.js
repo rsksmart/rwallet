@@ -25,7 +25,7 @@ const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResu
 class Transaction {
   constructor(coin, receiver, value, extraParams) {
     const {
-      symbol, type, privateKey, address,
+      symbol, type, privateKey, address, isMultisig,
     } = coin;
     const {
       data, memo, gasFee, coinswitch,
@@ -43,13 +43,14 @@ class Transaction {
     this.signedTransaction = null;
     this.txHash = null;
     this.coinswitch = coinswitch;
+    this.isMultisig = isMultisig;
   }
 
   async processRawTransaction() {
     console.log('Transaction.processRawTransaction start');
     let result = null;
     const {
-      symbol, netType, sender, receiver, value, data, memo, gasFee,
+      symbol, netType, sender, receiver, value, data, memo, gasFee, isMultisig,
     } = this;
     try {
       // If the last transaction is time out, createRawTransaction should use the fallback parameter
@@ -57,14 +58,23 @@ class Transaction {
       const param = createRawTransactionParam({
         symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
       });
+
       console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
-      result = await Parse.Cloud.run('createRawTransaction', param);
+      if (isMultisig) {
+        console.log('createRawMultisigTransaction!!!!, param: ', param);
+        result = await Parse.Cloud.run('createRawMultisigTransaction', param);
+        console.log('createRawMultisigTransaction, result: ', result);
+        this.rawTransaction = result.get('rawTransaction');
+        this.proposalId = result.id;
+      } else {
+        result = await Parse.Cloud.run('createRawTransaction', param);
+        this.rawTransaction = result;
+      }
     } catch (e) {
       console.log('Transaction.processRawTransaction err: ', e.message);
       throw e;
     }
     console.log(`Transaction.processRawTransaction finished, result: ${JSON.stringify(result)}`);
-    this.rawTransaction = result;
   }
 
   async signTransaction() {
@@ -92,7 +102,13 @@ class Transaction {
       try {
         const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
         console.log(`processSignedTransaction, param: ${JSON.stringify(param)}`);
-        result = await Parse.Cloud.run('sendSignedTransaction', param);
+        if (this.isMultisig) {
+          param.proposalId = this.proposalId;
+          console.log(`processSignedTransaction, params: ${JSON.stringify(param)}`);
+          result = await Parse.Cloud.run('sendSignedMultisigTransaction', param);
+        } else {
+          result = await Parse.Cloud.run('sendSignedTransaction', param);
+        }
         // If the transaction uses the fallback parameter and is sent successfully, you need to delete this address in the list
         await storage.removeUseTransactionFallbackAddress(this.sender);
       } catch (e) {

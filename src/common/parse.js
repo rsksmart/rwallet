@@ -34,6 +34,7 @@ const ParseDapp = Parse.Object.extend('Dapp');
 const ParseAd = Parse.Object.extend('Advertisement');
 const ParseSubdomain = Parse.Object.extend('Subdomain');
 const ParseMultiSigInvitation = Parse.Object.extend('MultiSigInvitation');
+const ParseMultiSigProposal = Parse.Object.extend('MultiSigProposal');
 
 /**
  * ParseHelper is a helper class with static methods which wrap up Parse lib logic,
@@ -353,15 +354,21 @@ class ParseHelper {
   }
 
   static getTransactionFees(symbol, type, sender, receiver, value, memo) {
-    return Parse.Cloud.run('getTransactionFees', {
+    const params = {
       symbol, type, sender, receiver, value, memo,
-    });
+    };
+    console.log('getTransactionFees, params: ', params);
+    return Parse.Cloud.run('getTransactionFees', params);
   }
 
-  static getBtcTransactionFees(symbol, type, size) {
-    return Parse.Cloud.run('getTransactionFees', {
+  static async getBtcTransactionFees(symbol, type, size) {
+    const params = {
       symbol, type, size,
-    });
+    };
+    console.log('getTransactionFees, params: ', params);
+    const result = await Parse.Cloud.run('getTransactionFees', params);
+    console.log('getTransactionFees, result: ', result);
+    return result;
   }
 
   static getUserTokenBalance(type, chain, contractAddress, address) {
@@ -510,6 +517,23 @@ class ParseHelper {
     const query = new Parse.Query(ParseMultiSigInvitation);
     query.equalTo('invitationCode', invitationCode);
     return query.first();
+  }
+
+  static async fetchProposals(address) {
+    console.log('fetchProposals, address: ', address);
+    const query = new Parse.Query(ParseMultiSigProposal);
+    query.equalTo('multiSigAddress', address);
+    const result = await query.find();
+    console.log('fetchProposals, result: ', result);
+    return result;
+  }
+
+  static async rejectMultisigTransaction(proposalId) {
+    const params = { proposalId };
+    console.log('rejectMultisigTransaction, params: ', params);
+    const result = await Parse.Cloud.run('rejectMultisigTransaction', params);
+    console.log('rejectMultisigTransaction, result: ', result);
+    return result;
   }
 }
 

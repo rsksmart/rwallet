@@ -39,16 +39,21 @@ class JoinMultisigAddress extends Component {
     onJoinButtonPressed = async () => {
       console.log('onJoinButtonPressed');
       const { userName, invitationCode } = this.state;
+
+      // Fetch invitation, and get type
+      const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(invitationCode));
+      const type = invitation.get('type');
+
       const { walletManager, addMultisigBTC, navigation } = this.props;
       const wallet = walletManager.wallets[0];
       const { derivations } = wallet;
-      const derivation = _.find(derivations, { symbol: 'BTC', type: 'Mainnet' });
+      const derivation = _.find(derivations, { symbol: 'BTC', type });
       const { publicKey } = derivation;
       const result = await CancelablePromiseUtil.makeCancelable(parseHelper.joinMultisigAddress({
         invitationCode, publicKey, name: userName,
       }));
       console.log('result: ', result);
-      const type = result.get('type');
+
       addMultisigBTC(walletManager, wallet, invitationCode, type);
       navigation.navigate('MultisigAddressInvitation', { invitationCode });
     }

@@ -584,6 +584,11 @@ class History extends Component {
     );
   }
 
+  gotoProposals = () => {
+    const { navigation } = this.props;
+    navigation.navigate('MultisigProposals', { token: this.coin });
+  }
+
   render() {
     const {
       balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing,
@@ -613,6 +618,11 @@ class History extends Component {
                   </Text>
                 </View>
               )
+            }
+            {
+              <TouchableOpacity onPress={this.gotoProposals}>
+                <Text>Proposals</Text>
+              </TouchableOpacity>
             }
             <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
