@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -12,8 +11,6 @@ import Header from '../../../components/headers/header';
 import Button from '../../../components/common/button/button';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
-import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
-import parseHelper from '../../../common/parse';
 
 const styles = StyleSheet.create({
   body: {
@@ -39,23 +36,12 @@ class JoinMultisigAddress extends Component {
     onJoinButtonPressed = async () => {
       console.log('onJoinButtonPressed');
       const { userName, invitationCode } = this.state;
-
-      // Fetch invitation, and get type
-      const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(invitationCode));
-      const type = invitation.get('type');
-
-      const { walletManager, addMultisigBTC, navigation } = this.props;
-      const wallet = walletManager.wallets[0];
-      const { derivations } = wallet;
-      const derivation = _.find(derivations, { symbol: 'BTC', type });
-      const { publicKey } = derivation;
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.joinMultisigAddress({
-        invitationCode, publicKey, name: userName,
-      }));
-      console.log('result: ', result);
-
-      addMultisigBTC(walletManager, wallet, invitationCode, type);
-      navigation.navigate('MultisigAddressInvitation', { invitationCode });
+      const { navigation } = this.props;
+      const multisigParams = { userName, invitationCode };
+      const navigateParams = {
+        shouldCreatePhrase: true, shouldVerifyPhrase: true, isJoiningMultisig: true, multisigParams,
+      };
+      navigation.navigate('RecoveryPhrase', navigateParams);
     }
 
     onInvitationCodeChanged = (text) => {
@@ -121,7 +107,6 @@ JoinMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
-  addMultisigBTC: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

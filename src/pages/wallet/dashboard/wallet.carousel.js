@@ -92,7 +92,7 @@ class WalletCarousel extends Component {
     const renderItem = (itemData) => {
       const {
         walletData, onSendPressed, onReceivePressed, onSwapPressed, onScanQrcodePressed,
-        onAddAssetPressed, onJoinAssetPressed, currencySymbol, hasSwappableCoin, index,
+        onAddAssetPressed, currencySymbol, hasSwappableCoin, index,
       } = itemData.item;
       if (index < 0) {
         return (
@@ -111,7 +111,6 @@ class WalletCarousel extends Component {
           onReceivePressed={onReceivePressed}
           onSwapPressed={onSwapPressed}
           onAddAssetPressed={onAddAssetPressed}
-          onJoinAssetPressed={onJoinAssetPressed}
           currencySymbol={currencySymbol}
           hasSwappableCoin={hasSwappableCoin}
           onScanQrcodePressed={onScanQrcodePressed}

@@ -14,11 +14,7 @@ export default class BasicWallet {
   createCoins = (coins) => {
     console.log('createCoins, coins: ', coins);
     _.each(coins, (coin) => {
-      if (coin.isMultisig) {
-        this.addMultisigBTC(coin);
-      } else {
-        this.addToken(coin);
-      }
+      this.addToken(coin);
     });
   }
 

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import Coin from './btccoin';
 import RBTCCoin from './rbtccoin';
-import MultisigBTC from './multisig.btc';
 import storage from '../storage';
 import coinType from './cointype';
 import common from '../common';
@@ -11,20 +10,21 @@ import BasicWallet from './basic.wallet';
 
 const bip39 = require('bip39');
 
-const derivationTypes = [
-  { symbol: 'BTC', type: 'Mainnet' },
-  { symbol: 'BTC', type: 'Testnet' },
-  { symbol: 'RBTC', type: 'Mainnet' },
-  { symbol: 'RBTC', type: 'Testnet' },
-];
-
 export default class Wallet extends BasicWallet {
-  constructor({ id, name, mnemonic }) {
-    super(id, name, WalletType.Normal);
+  constructor({
+    id, name, mnemonic, walletType,
+  } = { walletType: WalletType.Normal }) {
+    super(id, name, walletType);
     this.mnemonic = mnemonic;
     this.assetValue = new BigNumber(0);
     this.seed = bip39.mnemonicToSeedSync(mnemonic);
     this.derivations = undefined;
+    this.walletDerivationTypes = [
+      { symbol: 'BTC', type: 'Mainnet' },
+      { symbol: 'BTC', type: 'Testnet' },
+      { symbol: 'RBTC', type: 'Mainnet' },
+      { symbol: 'RBTC', type: 'Testnet' },
+    ];
   }
 
   /**
@@ -35,7 +35,7 @@ export default class Wallet extends BasicWallet {
    */
   generateDerivations(derivationPaths) {
     this.derivations = [];
-    _.each(derivationTypes, (derivationType) => {
+    _.each(this.walletDerivationTypes, (derivationType) => {
       const { symbol, type } = derivationType;
       const path = type === 'Mainnet' && derivationPaths && derivationPaths[symbol] ? derivationPaths[symbol] : null;
       const coin = symbol === 'BTC' ? new Coin(symbol, type, path) : new RBTCCoin(symbol, type, path);
@@ -271,44 +271,6 @@ export default class Wallet extends BasicWallet {
     this.coins.push(coin);
     this.coins = common.sortTokens(this.coins);
     return coin;
-  }
-
-  /**
-   * Create multisig BTC and add it to coins list
-   */
-  addMultisigBTC = ({
-    invitationCode, address, type, objectId, balance,
-  }) => {
-    console.log(`addMultisigBTC, invitationCode: ${invitationCode}, address: ${address}, type: ${type}`);
-    const multisigBTC = new MultisigBTC(invitationCode, type);
-
-    const derivation = _.find(this.derivations, { symbol: 'BTC', type });
-
-    // reuse address, private key of derivation
-    multisigBTC.setupWithDerivation(derivation);
-
-    if (address) {
-      multisigBTC.address = address;
-    }
-
-    // restore other data
-    if (objectId) {
-      multisigBTC.objectId = objectId;
-    }
-
-    if (balance) {
-      multisigBTC.balance = new BigNumber(balance);
-    }
-
-    this.coins.push(multisigBTC);
-    this.coins = common.sortTokens(this.coins);
-    console.log('this.coins: ', this.coins);
-    return multisigBTC;
-  }
-
-  setMultisigBTCAddress = (invitationCode, address) => {
-    const coin = _.find(this.coins, { isMultisig: true, invitationCode });
-    coin.address = address;
   }
 
   deleteToken = (token) => {

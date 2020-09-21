@@ -49,6 +49,7 @@ import JoinMultisigAddress from '../pages/wallet/multisig/join';
 import MultisigAddressInvitation from '../pages/wallet/multisig/invitation';
 import MultisigProposals from '../pages/wallet/multisig/proposals';
 import MultisigProposalDetail from '../pages/wallet/multisig/proposalDetail';
+import SharedWalletIndex from '../pages/wallet/dashboard/shared.wallet.index';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -277,6 +278,13 @@ const routeConfigMap = {
       path: 'MultisigProposalDetail',
       navigationOptions: () => ({
         headerTitle: 'MultisigProposalDetail',
+      }),
+    },
+    SharedWalletIndex: {
+      screen: SharedWalletIndex,
+      path: 'SharedWalletIndex',
+      navigationOptions: () => ({
+        headerTitle: 'SharedWalletIndex',
       }),
     },
   },

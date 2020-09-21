@@ -18,8 +18,8 @@ class MultisigAddressInvitation extends Component {
 
     constructor(props) {
       super(props);
-      const { invitationCode } = props.navigation.state.params;
-      this.invitationCode = invitationCode;
+      const { coin } = props.navigation.state.params;
+      this.coin = coin;
       this.state = {
         copayers: [],
         copayerNumber: undefined,
@@ -30,7 +30,7 @@ class MultisigAddressInvitation extends Component {
 
     async componentWillMount() {
       const { setMultisigBTCAddress } = this.props;
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.invitationCode));
+      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode));
       const copayerMembers = result.get('copayerMembers');
       const copayerNumber = result.get('copayerNumber');
       const signatureNumber = result.get('signatureNumber');
@@ -38,7 +38,7 @@ class MultisigAddressInvitation extends Component {
 
       // 如果已经产生了地址，则赋值给本地相应的token
       if (!_.isEmpty(generatedAddress)) {
-        setMultisigBTCAddress(this.invitationCode, generatedAddress);
+        setMultisigBTCAddress(this.coin, generatedAddress);
       }
 
       const copayers = _.map(copayerMembers, (member) => member.name);
@@ -65,7 +65,7 @@ class MultisigAddressInvitation extends Component {
             <Text>{`${signatureNumber}/${copayerNumber}`}</Text>
             <Text>Wallet Invitation</Text>
             <Text>Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.</Text>
-            <Text>{this.invitationCode}</Text>
+            <Text>{this.coin.invitationCode}</Text>
             { generatedAddress ? (<Text>Waiting for authorized copayers to join</Text>) : (
               <FlatList
                 data={copayers}
@@ -99,7 +99,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setMultisigBTCAddress: (invitationCode, address) => dispatch(walletActions.setMultisigBTCAddress(invitationCode, address)),
+  setMultisigBTCAddress: (token, address) => dispatch(walletActions.setMultisigBTCAddress(token, address)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });

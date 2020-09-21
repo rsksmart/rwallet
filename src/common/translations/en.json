@@ -74,7 +74,16 @@
         "importWallet": "Import Existing Wallet",
         "importWalletNote": "Restore your wallet using the recovery phrase",
         "addReadOnlyWallet": "Add Read-only Wallet",
-        "addReadOnlyWalletNote": "Monitor assets without keys"
+        "addReadOnlyWalletNote": "Monitor assets without keys",
+        "sharedWallet": "Shared Wallet",
+        "sharedWalletNote": "Multisig Bitcoin Wallet"
+      },
+      "sharedWallet": {
+        "title": "Shared Wallet",
+        "createSharedWallet": "Create Shared Wallet",
+        "createSharedWalletNote": "Create a Multisig Bitcoin Wallet and invite others to join",
+        "joinSharedWallet": "Join Shared Wallet",
+        "joinSharedWalletNote": "Requires invitation to join"
       },
       "selectCurrency": {
         "title": "Select Wallet Assets",
@@ -209,7 +218,8 @@
         "walletName": "Wallet Name",
         "userName": "Your Name",
         "signatures": "Require number of signatures",
-        "copayers": "Total number of copayers"
+        "copayers": "Total number of copayers",
+        "segwit": "Segwit"
       },
       "joinMultisigAddress": {
         "title": "Join Multisig Address",

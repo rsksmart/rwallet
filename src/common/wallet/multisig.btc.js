@@ -32,16 +32,18 @@ class MultisigBtc {
     balance: this.balance ? this.balance.toString() : undefined,
     invitationCode: this.invitationCode,
     isMultisig: this.isMultisig,
+    addressType: this.addressType,
   })
 
   static fromJSON(json) {
     const {
-      type, address, objectId, invitationCode, balance,
+      type, address, objectId, invitationCode, balance, addressType,
     } = json;
     const instance = new MultisigBtc(invitationCode, type);
     instance.address = address;
     instance.objectId = objectId;
     instance.balance = balance;
+    instance.addressType = addressType;
     return instance;
   }
 

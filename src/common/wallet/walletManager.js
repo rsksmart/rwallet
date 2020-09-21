@@ -5,6 +5,7 @@ import storage from '../storage';
 import common from '../common';
 import { KEYNAME_MAX_LENGTH, WalletType } from '../constants';
 import ReadOnlyWallet from './readonly.wallet';
+import SharedWallet from './shared.wallet';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -96,7 +97,22 @@ class WalletManager {
         this.currentKeyId = result.currentKeyId;
       }
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = _.map(result.wallets, (wallet) => (wallet.walletType === WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet)));
+      const promises = _.map(result.wallets, (wallet) => {
+        let instance = null;
+        switch (wallet.walletType) {
+          case WalletType.Readonly: {
+            instance = ReadOnlyWallet.fromJSON(wallet);
+            break;
+          }
+          case WalletType.Shared: {
+            instance = SharedWallet.fromJSON(wallet);
+            break;
+          }
+          default:
+            instance = Wallet.fromJSON(wallet);
+        }
+        return instance;
+      });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 

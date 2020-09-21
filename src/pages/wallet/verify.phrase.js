@@ -147,7 +147,7 @@ class VerifyPhrase extends Component {
     this.renderConfirmation = this.renderConfirmation.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     const { navigation, isWalletsUpdated } = nextProps;
     const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
@@ -208,17 +208,18 @@ class VerifyPhrase extends Component {
     this.reset();
   }
 
-  onTagsPressed(index) {
-    const { selectedWordIndexs } = this.state;
-    selectedWordIndexs.push(index);
-    this.setState({
-      selectedWordIndexs,
-    });
+  onTagsPressed(/* index */) {
+    this.onPhraseValid();
+    // const { selectedWordIndexs } = this.state;
+    // selectedWordIndexs.push(index);
+    // this.setState({
+    //   selectedWordIndexs,
+    // });
 
-    if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
-      this.setState({ isShowConfirmation: true });
-    }
-    this.calculateOffsetAndMove();
+    // if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
+    //   this.setState({ isShowConfirmation: true });
+    // }
+    // this.calculateOffsetAndMove();
   }
 
   calculateOffsetAndMove() {
@@ -258,10 +259,21 @@ class VerifyPhrase extends Component {
   createWallet(phrase, coins) {
     // createKey cost time, it will block ui.
     // So we let run at next tick, loading ui can present first.
-    const { createKey, walletManager } = this.props;
+    const {
+      navigation, walletManager, createKey, createSharedWallet, joinSharedWallet,
+    } = this.props;
+    const { isCreatingMultisig, isJoiningMultisig, multisigParams } = navigation.state.params;
     this.setState({ isLoading: true }, () => {
       setTimeout(() => {
-        createKey(null, phrase, coins, walletManager);
+        if (isCreatingMultisig) {
+          const coin = coins[0];
+          createSharedWallet(phrase, coin, multisigParams);
+        } else if (isJoiningMultisig) {
+          const { invitationCode, username } = multisigParams;
+          joinSharedWallet(phrase, invitationCode, username);
+        } else {
+          createKey(null, phrase, coins, walletManager);
+        }
       }, 0);
     });
   }
@@ -381,6 +393,8 @@ VerifyPhrase.propTypes = {
   isWalletsUpdated: PropTypes.bool.isRequired,
   showPasscode: PropTypes.func.isRequired,
   passcode: PropTypes.string,
+  createSharedWallet: PropTypes.func.isRequired,
+  joinSharedWallet: PropTypes.func.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
@@ -400,6 +414,8 @@ const mapDispatchToProps = (dispatch) => ({
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
+  createSharedWallet: (phrase, coin, multisigParams) => dispatch(walletActions.createSharedWallet(phrase, coin, multisigParams)),
+  joinSharedWallet: (phrase, invitationCode, username) => dispatch(walletActions.joinSharedWallet(phrase, invitationCode, username)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

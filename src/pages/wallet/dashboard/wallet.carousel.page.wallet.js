@@ -201,7 +201,7 @@ const WalletItem = (item) => (
 
 const WalletPage = (props) => {
   const {
-    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, onJoinAssetPressed, onScanQrcodePressed,
+    walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, onScanQrcodePressed,
     currencySymbol, hasSwappableCoin,
   } = props;
   const {
@@ -216,12 +216,6 @@ const WalletPage = (props) => {
     <View>
       <View style={styles.addAssetView}>
         <TouchableOpacity style={[styles.addAsset, { opacity: !addAssetDisabled ? 1 : 0.5 }]} disabled={addAssetDisabled} onPress={onAddAssetPressed}>
-          <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
-          <Loc text="page.wallet.list.addAsset" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.addAssetView}>
-        <TouchableOpacity style={[styles.addAsset, { opacity: !addAssetDisabled ? 1 : 0.5 }]} disabled={addAssetDisabled} onPress={onJoinAssetPressed}>
           <Ionicons name="ios-add-circle-outline" size={35} style={styles.addCircle} />
           <Loc text="page.wallet.list.addAsset" />
         </TouchableOpacity>
@@ -304,7 +298,6 @@ WalletPage.propTypes = {
   onScanQrcodePressed: PropTypes.func.isRequired,
   currencySymbol: PropTypes.string.isRequired,
   hasSwappableCoin: PropTypes.bool.isRequired,
-  onJoinAssetPressed: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

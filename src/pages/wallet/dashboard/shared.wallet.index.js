@@ -8,42 +8,26 @@ import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
 import color from '../../../assets/styles/color';
 
-class WalletAddIndex extends Component {
+class SharedWalletIndex extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
     listData = [
       {
-        title: 'page.wallet.add.createWallet',
-        text: 'page.wallet.add.createWalletNote',
+        title: 'page.wallet.sharedWallet.createSharedWallet',
+        text: 'page.wallet.sharedWallet.createSharedWalletNote',
         icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
         onPress: () => {
-          this.createWalletFlow('WalletSelectCurrency');
+          this.createWalletFlow('CreateMultisigAddress');
         },
       },
       {
-        title: 'page.wallet.add.importWallet',
-        text: 'page.wallet.add.importWalletNote',
+        title: 'page.wallet.sharedWallet.joinSharedWallet',
+        text: 'page.wallet.sharedWallet.joinSharedWalletNote',
         icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
         onPress: () => {
-          this.createWalletFlow('WalletRecovery');
-        },
-      },
-      {
-        title: 'page.wallet.add.sharedWallet',
-        text: 'page.wallet.add.sharedWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('SharedWalletIndex');
-        },
-      },
-      {
-        title: 'page.wallet.add.addReadOnlyWallet',
-        text: 'page.wallet.add.addReadOnlyWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('AddReadOnlyWallet');
+          this.createWalletFlow('JoinMultisigAddress');
         },
       },
     ];
@@ -68,7 +52,7 @@ class WalletAddIndex extends Component {
     }
 }
 
-WalletAddIndex.propTypes = {
+SharedWalletIndex.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -78,10 +62,10 @@ WalletAddIndex.propTypes = {
   isShowBackButton: PropTypes.bool,
 };
 
-WalletAddIndex.defaultProps = {
+SharedWalletIndex.defaultProps = {
   isShowBackButton: true,
 };
 
 const mapStateToProps = () => ({});
 
-export default connect(mapStateToProps)(WalletAddIndex);
+export default connect(mapStateToProps)(SharedWalletIndex);

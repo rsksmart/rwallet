@@ -63,6 +63,9 @@ const actions = {
   ADD_MULTISIG_BTC: 'ADD_MULTISIG_BTC',
   SET_MULTISIG_BTC_ADDRESS: 'SET_MULTISIG_BTC_ADDRESS',
 
+  CREATE_SHARED_WALLET: 'CREATE_SHARED_WALLET',
+  JOIN_SHARED_WALLET: 'JOIN_SHARED_WALLET',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -150,17 +153,15 @@ const actions = {
   resetAddTokenResult: () => ({
     type: actions.RESET_ADD_TOKEN_RESULT,
   }),
-  addMultisigBTC: (walletManager, wallet, invitationCode, type) => ({
+  addMultisigBTC: (wallet, invitationCode, type) => ({
     type: actions.ADD_MULTISIG_BTC,
     payload: {
-      walletManager, wallet, invitationCode, type,
+      wallet, invitationCode, type,
     },
   }),
-  setMultisigBTCAddress: (invitationCode, address) => ({
+  setMultisigBTCAddress: (token, address) => ({
     type: actions.SET_MULTISIG_BTC_ADDRESS,
-    payload: {
-      invitationCode, address,
-    },
+    payload: { token, address },
   }),
   getSwapRate: (sourceCoinId, destCoinId) => ({
     type: actions.GET_SWAP_RATE,
@@ -196,6 +197,18 @@ const actions = {
     type: actions.CREATE_READ_ONLY_WALLET,
     payload: {
       chain, type, address, coins,
+    },
+  }),
+  createSharedWallet: (phrase, coin, multisigParams) => ({
+    type: actions.CREATE_SHARED_WALLET,
+    payload: {
+      phrase, coin, multisigParams,
+    },
+  }),
+  joinSharedWallet: (phrase, invitationCode, username) => ({
+    type: actions.JOIN_SHARED_WALLET,
+    payload: {
+      phrase, invitationCode, username,
     },
   }),
 };

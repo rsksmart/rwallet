@@ -61,7 +61,7 @@ class WalletList extends Component {
           icon: coin.icon,
           onPress: () => {
             if (coin.isMultisig && !coin.address) {
-              navigation.navigate('MultisigAddressInvitation', { invitationCode: coin.invitationCode });
+              navigation.navigate('MultisigAddressInvitation', { coin });
               return;
             }
             navigation.navigate('WalletHistory', { coin, walletType: wallet.walletType });
@@ -235,9 +235,7 @@ class WalletList extends Component {
         onReceivePressed: () => this.onReceivePressed(walletData.wallet),
         onScanQrcodePressed: () => this.onScanQrcodePressed(walletData.wallet),
         onSwapPressed: () => this.onSwapPressed(walletData.wallet),
-        // onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
-        onAddAssetPressed: () => navigation.navigate('CreateMultisigAddress'),
-        onJoinAssetPressed: () => navigation.navigate('JoinMultisigAddress'),
+        onAddAssetPressed: () => navigation.navigate('AddToken', { wallet: walletData.wallet }),
         currencySymbol,
         hasSwappableCoin,
       };

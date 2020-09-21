@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+// import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -13,7 +13,7 @@ import Button from '../../../components/common/button/button';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
-import parseHelper from '../../../common/parse';
+import { BtcAddressType } from '../../../common/constants';
 
 const styles = StyleSheet.create({
   body: {
@@ -36,6 +36,7 @@ class CreateMultisigAddress extends Component {
         signatures: '2',
         copayers: '2',
         isMainnet: false,
+        isSegwit: false,
       };
     }
 
@@ -45,25 +46,20 @@ class CreateMultisigAddress extends Component {
 
     onCreateButtonPressed = async () => {
       const {
-        userName, signatures, copayers, isMainnet,
+        userName, signatures, copayers, isMainnet, isSegwit,
       } = this.state;
       const type = isMainnet ? 'Mainnet' : 'Testnet';
-      const { walletManager, addMultisigBTC, navigation } = this.props;
-      const wallet = walletManager.wallets[0];
-      const { derivations } = wallet;
-      const derivation = _.find(derivations, { symbol: 'BTC', type });
-      const { publicKey } = derivation;
       const signatureNumber = parseInt(signatures, 10);
       const copayerNumber = parseInt(copayers, 10);
-      const params = {
-        signatureNumber, copayerNumber, publicKey, type, name: userName,
+      const { navigation } = this.props;
+      const multisigParams = {
+        userName, type, signatureNumber, copayerNumber,
       };
-      console.log('onCreateButtonPressed, params: ', params);
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.createMultisigAddress(params));
-      console.log('result: ', result);
-      const invitationCode = result.get('invitationCode');
-      addMultisigBTC(walletManager, wallet, invitationCode, type);
-      navigation.navigate('MultisigAddressInvitation', { invitationCode });
+      const coins = [{ symbol: 'BTC', type, addressType: isSegwit ? BtcAddressType.segwit : BtcAddressType.legacy }];
+      const navigateParams = {
+        coins, shouldCreatePhrase: true, shouldVerifyPhrase: true, isCreatingMultisig: true, multisigParams,
+      };
+      navigation.navigate('RecoveryPhrase', navigateParams);
     }
 
     onWalletNameChanged = (text) => {
@@ -74,10 +70,6 @@ class CreateMultisigAddress extends Component {
       this.setState({ userName: text });
     }
 
-    onSwitchValueChanged = (value) => {
-      this.setState({ isMainnet: value });
-    }
-
     onSignaturesChanged = (text) => {
       this.setState({ signatures: text });
     }
@@ -86,9 +78,17 @@ class CreateMultisigAddress extends Component {
       this.setState({ copayers: text });
     }
 
+    onSwitchValueChanged = (value) => {
+      this.setState({ isMainnet: value });
+    }
+
+    onAddressTypeChanged = (value) => {
+      this.setState({ isSegwit: value });
+    }
+
     render() {
       const {
-        isLoading, canSubmit, walletName, userName, isMainnet, signatures, copayers,
+        isLoading, canSubmit, walletName, userName, isMainnet, isSegwit, signatures, copayers,
       } = this.state;
       const { navigation } = this.props;
       const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
@@ -150,6 +150,11 @@ class CreateMultisigAddress extends Component {
               <Loc text="page.wallet.addCustomToken.mainnet" />
               <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
             </View>
+
+            <View>
+              <Loc text="page.wallet.createMultisigAddress.segwit" />
+              <Switch value={isSegwit} onValueChange={this.onAddressTypeChanged} />
+            </View>
           </View>
         </BasePageGereral>
       );
@@ -167,7 +172,7 @@ CreateMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
-  addMultisigBTC: PropTypes.func.isRequired,
+  // addMultisigBTC: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -95,7 +95,7 @@ export default function WalletTypeList({ data, style }) {
           onPress={item.onPress}
         />
       )}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 }

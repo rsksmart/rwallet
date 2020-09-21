@@ -8,8 +8,10 @@ import appActions from '../app/actions';
 import ParseHelper from '../../common/parse';
 import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
+import SharedWallet from '../../common/wallet/shared.wallet';
 
 import { createErrorNotification } from '../../common/notification.controller';
+import { BtcAddressType } from '../../common/constants';
 
 function* createKeyRequest(action) {
   const {
@@ -443,10 +445,12 @@ function* createReadOnlyWalletRequest(action) {
 
 function* addMultisigBTC(action) {
   const {
-    walletManager, wallet, invitationCode, type,
+    wallet, invitationCode, type,
   } = action.payload;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
   try {
-    yield call(wallet.addMultisigBTC, { invitationCode, type });
+    yield call(wallet.addToken, { invitationCode, type });
     yield put({ type: actions.WALLETS_UPDATED });
     yield call(walletManager.serialize);
   } catch (error) {
@@ -455,15 +459,11 @@ function* addMultisigBTC(action) {
 }
 
 function* setMultisigBTCAddressRequest(action) {
-  const {
-    invitationCode, address,
-  } = action.payload;
+  const { token, address } = action.payload;
   try {
     const state = yield select();
     const walletManager = state.Wallet.get('walletManager');
-    _.each(walletManager.wallets, (wallet) => {
-      wallet.setMultisigBTCAddress(invitationCode, address);
-    });
+    token.address = address;
     yield call(walletManager.serialize);
     yield put({ type: actions.WALLETS_UPDATED });
     yield put({ type: appActions.UPDATE_USER });
@@ -472,6 +472,82 @@ function* setMultisigBTCAddressRequest(action) {
     yield put({ type: actions.INIT_LIVE_QUERY_TRANSACTIONS, tokens });
   } catch (error) {
     console.log(error);
+  }
+}
+
+function* createSharedWalletRequest(action) {
+  const {
+    phrase, coin, multisigParams,
+  } = action.payload;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
+  try {
+    const { type, addressType } = coin;
+    const wallet = new SharedWallet({ id: walletManager.currentKeyId, mnemonic: phrase, type });
+    wallet.createTokensFromSeed([], []);
+
+    const derivation = wallet.derivations[0];
+    derivation.addressType = addressType;
+    const { publicKey } = derivation;
+
+    const { signatureNumber, copayerNumber, userName } = multisigParams;
+    const params = {
+      signatureNumber, copayerNumber, publicKey, type, name: userName,
+    };
+
+    const result = yield call(ParseHelper.createMultisigAddress, params);
+    console.log('result: ', result);
+    const invitationCode = result.get('invitationCode');
+
+    walletManager.currentKeyId += 1;
+    walletManager.wallets.unshift(wallet);
+
+    // Add token
+    yield call(wallet.addToken, { invitationCode, type });
+
+    // Save to storage
+    SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield call(walletManager.serialize);
+  } catch (error) {
+    console.warn('createSharedWalletRequest, error: ', error);
+  }
+}
+
+function* joinSharedWalletRequest(action) {
+  const { phrase, invitationCode, name } = action.payload;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
+  try {
+    // Fetch invitation, and get type
+    const invitation = yield call(ParseHelper.fetchMultisigInvitation, invitationCode);
+    const type = invitation.get('type');
+    const addressType = BtcAddressType.legacy;
+    // const addressType = invitation.get('addressType');
+
+    const wallet = new SharedWallet({ id: walletManager.currentKeyId, mnemonic: phrase, type });
+    wallet.createTokensFromSeed([], []);
+
+    const derivation = wallet.derivations[0];
+    derivation.addressType = addressType;
+    const { publicKey } = derivation;
+    const result = yield call(ParseHelper.joinMultisigAddress, {
+      invitationCode, publicKey, name,
+    });
+    console.log('result: ', result);
+
+    walletManager.currentKeyId += 1;
+    walletManager.wallets.unshift(wallet);
+
+    // Add token
+    yield call(wallet.addToken, { invitationCode, type });
+
+    // Save to storage
+    SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
+    yield put({ type: actions.WALLETS_UPDATED });
+    yield call(walletManager.serialize);
+  } catch (error) {
+    console.warn('createSharedWalletRequest, error: ', error);
   }
 }
 
@@ -500,5 +576,7 @@ export default function* () {
 
     takeEvery(actions.ADD_MULTISIG_BTC, addMultisigBTC),
     takeEvery(actions.SET_MULTISIG_BTC_ADDRESS, setMultisigBTCAddressRequest),
+    takeEvery(actions.CREATE_SHARED_WALLET, createSharedWalletRequest),
+    takeEvery(actions.JOIN_SHARED_WALLET, joinSharedWalletRequest),
   ]);
 }
