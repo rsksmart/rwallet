@@ -214,7 +214,7 @@ class DAppBrowser extends Component {
 
             // Override the sendAsync function so we can listen the web site's call and do our things
             const sendAsync = async (payload, callback) => {
-              let err, res = {}, result = ''
+              let err, res = '', result = ''
               const {method, params, jsonrpc, id} = payload
               console.log('payload: ', payload)
               try {
@@ -227,14 +227,17 @@ class DAppBrowser extends Component {
                 }
 
                 res = {id, jsonrpc, method, result}
-                console.log('res123: ', res)
               } catch(err) {
                 err = err
                 console.log('sendAsync err: ', err)
               }
               
               console.log('res: ', res)
-              callback(err, res)
+              if (callback) {
+                callback(err, res)
+              } else {
+                return res || err
+              }
             }
 
             // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
@@ -244,6 +247,9 @@ class DAppBrowser extends Component {
               }
               if (!window.ethereum.sendAsync) {
                 window.ethereum.sendAsync = sendAsync
+              }
+              if (!window.ethereum.request) {
+                window.ethereum.request = sendAsync
               }
             }, 1000)
           }
