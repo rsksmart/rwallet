@@ -51,11 +51,15 @@ class JoinMultisigAddress extends Component {
 
     constructor(props) {
       super(props);
+      let invitationCode = null;
+      if (props.navigation.state.params) {
+        invitationCode = props.navigation.state.params.invitationCode;
+      }
       this.state = {
         isLoading: false,
         canSubmit: true,
         userName: null,
-        invitationCode: null,
+        invitationCode,
       };
     }
 
@@ -84,12 +88,16 @@ class JoinMultisigAddress extends Component {
       navigation.navigate('Scan', {
         coin: this.coin,
         onDetectedAction: 'backToTransfer',
-        onQrcodeDetected: (address) => {
-          console.log('onQrcodeDetected, address: ', address);
-          // Fill in the address and call onToInputBlur to check the content
-          // this.setState({ to: address }, () => {
-          //   this.onToInputBlur();
-          // });
+        onQrcodeDetected: (data) => {
+          console.log('onQrcodeDetected, code: ', data);
+          const prefix = 'ms:';
+          const isInvitationCode = data.startsWith(prefix);
+          if (!isInvitationCode) {
+            // TODO: error notification
+            return;
+          }
+          const invitationCode = data.substring(prefix.length, data.length);
+          this.setState({ invitationCode });
         },
       });
     }

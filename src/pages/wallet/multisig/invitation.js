@@ -119,7 +119,7 @@ class MultisigAddressInvitation extends Component {
       const {
         copayers, generatedAddress,
       } = this.state;
-      const qrText = `sw:${this.coin.invitationCode}`;
+      const qrText = `ms:${this.coin.invitationCode}`;
 
       return (
         <BasePageGereral

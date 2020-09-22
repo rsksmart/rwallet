@@ -91,6 +91,9 @@ class Scan extends Component {
           ],
         });
         navigation.dispatch(resetAction);
+      } else if (data.startsWith('ms:')) {
+        const invitationCode = data.substring('ms:'.length, data.length);
+        navigation.navigate('JoinMultisigAddress', { invitationCode });
       } else {
         const { coins } = wallet;
         // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
