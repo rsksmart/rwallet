@@ -272,11 +272,6 @@ export default class Wallet extends BasicWallet {
     return coin;
   }
 
-  deleteToken = (token) => {
-    const { symbol, type } = token;
-    _.remove(this.coins, { symbol, type });
-  }
-
   getSymbols = () => {
     const symbols = [];
     _.each(this.coins, (coin) => {

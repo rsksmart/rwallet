@@ -48,4 +48,9 @@ export default class BasicWallet {
 
     return isDirty;
   }
+
+  deleteToken = (token) => {
+    const { symbol, type } = token;
+    _.remove(this.coins, { symbol, type });
+  }
 }
