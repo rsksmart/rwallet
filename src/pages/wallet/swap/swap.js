@@ -700,7 +700,7 @@ class Swap extends Component {
     if (!common.isAmount(sourceText)) {
       errorText = 'page.wallet.swap.errorAmountInvalid';
       interpolates = { symbol: swapSource.coin.symbol };
-    } else if (!common.isAmount(destText)) {
+    } else if (swapDest && !common.isAmount(destText)) {
       errorText = 'page.wallet.swap.errorAmountInvalid';
       interpolates = { symbol: swapDest.coin.symbol };
     } else if (!isBalanceEnough) {

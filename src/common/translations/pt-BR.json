@@ -14,10 +14,10 @@
       "terms": {
         "term1": "Entendo que meus fundos estão mantidos com segurança neste dispositivo e não por uma empresa.",
         "term2": "Entendo que, se este aplicativo for movido para outro dispositivo ou excluído, meus fundos só poderão ser recuperados com a frase de recuperação.",
-        "term3": "Eu li, compreendi e concordo com os Termos de Uso.",
-        "viewTerms": "Ver Termos de Uso",
-        "button": "Confirmar e Aceitar",
-        "termsOfUse": "Termos de Uso"
+        "term3": "Eu li, compreendi e concordo com os termos de uso.",
+        "viewTerms": "Ver termos de uso",
+        "button": "Confirmar e aceitar",
+        "termsOfUse": "Termos de uso"
       }
     },
     "wallet": {
@@ -120,6 +120,57 @@
         },
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
+      "walletconnect": {
+        "title": "Wallet Connect",
+        "emptyWalletError": "Carteira vazia",
+        "selectAvailableWallet": "Por favor selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
+        "isConnecting": "Conectando carteira...",
+        "isSigning": "Assinando transação..",
+        "signApproved": "Assinatura de mensagem aprovada",
+        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no dapp",
+        "allowanceApproved": "Autorizado",
+        "transactionApproved": "Transação aprovada",
+        "request": "Pedido",
+        "connectWallet": "%{dappName} deseja se conectar à sua carteira",
+        "content": "Conteúdo",
+        "agreeTo": "Ao clicar em permitir, você concorda em",
+        "agreeOne": "- Permitir fornecer o endereço atual da carteira",
+        "agreeTwo": "- Permitir que seja solicitado a assinatura da carteira atual",
+        "reject": "Rejeitar",
+        "allow": "Permitir",
+        "connected": "Conectado",
+        "connectedWallet": "%{dappName} está conectado à sua carteira",
+        "waitingForOperations": "Aguardando por operações",
+        "waitingForOperationsDesc": "Execute todas as operações do dapp %{dappName}. Caso seja necessário, a RWallet irá solicitar a aprovação da assinatura.",
+        "disconnect": "Desconectar",
+        "approveAllowance": "Autorizar",
+        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "asset": "Ativo",
+        "permission": "Permissão",
+        "allowance": "Autorizar",
+        "minerFee": "Taxa de transação",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "gotIt": "ENTENDI",
+        "leaveToDisconnect": "Sair para desconectar?",
+        "leaveToDisconnectDesc": "Sair da página Wallet Connect irá fazer com que a RWallet se desconecte do Dapp atualmente conectado.",
+        "leaveToDisconnectConfirm": "Você tem certeza que deseja desconectar?",
+        "error": "Erro",
+        "errorDesc": "Erro!Aconteceu um erro, por favor tente novamente mais tarde (pode haver muitas razões, como problemas de rede, rejeição do usuário, código de senha incorreto, taxa insuficiente, etc.)",
+        "tryAgain": "Tente novamente",
+        "tryLater": "Tente mais tarde",
+        "approveMessage": "Aprovar assinatura de mensagem",
+        "approveMessageDesc": "Ao clicar em confirmar, você concorda em assinar a mensagem gerada por %{dappUrl}",
+        "message": "Mensagem",
+        "successDesc": "Sucesso!Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
+        "approveTransaction": "Aprovar transação",
+        "approveTransactionDesc": "Ao clicar em confirmar, você concorda em assinar a transação gerada por %{dappUrl}",
+        "amount": "Quantidade",
+        "type": "Tipo",
+        "from": "De",
+        "to": "Para",
+        "data": "Dados"
+      },
       "transferCompleted": {
         "title": "Enviar",
         "body": "Transferência concluída!",
@@ -173,7 +224,7 @@
         "balance": "Saldo"
       },
       "addToken": {
-        "title": "Adicionar Ativo",
+        "title": "Adicionar ativo",
         "enabledAssets": "Ativos habilitados",
         "note": "Desative para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar ativo personalizado",
@@ -224,7 +275,7 @@
         "seeAll": "Ver todos",
         "confirm": "Confirmar",
         "understood": "Entendi",
-        "createOrImport": "Criar ou Importar",
+        "createOrImport": "Criar ou importar",
         "cancel": "Cancelar"
       }
     },
@@ -548,7 +599,7 @@
     },
     "readOnlyLimit": {
       "title": "Operação não disponível",
-      "body": "As funções Enviar, Trocar e Ler código QR não estão disponíveis para carteiras somente leitura. Para habilitá-las, importe esta carteira usando a sua frase de recuperação de 12 palavras."
+      "body": "As funções enviar, trocar e ler código QR não estão disponíveis para carteiras somente leitura. Para habilitá-las, importe esta carteira usando a sua frase de recuperação de 12 palavras."
     }
   },
   "currency": {

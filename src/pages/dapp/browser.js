@@ -227,6 +227,7 @@ class DAppBrowser extends Component {
                 }
 
                 res = {id, jsonrpc, method, result}
+                console.log('res123: ', res)
               } catch(err) {
                 err = err
                 console.log('sendAsync err: ', err)

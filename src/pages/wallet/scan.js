@@ -2,18 +2,14 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { RNCamera } from 'react-native-camera';
+import { StackActions, NavigationActions } from 'react-navigation';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
-import Rsk3 from '@rsksmart/rsk3';
-import { StackActions, NavigationActions } from 'react-navigation';
 import color from '../../assets/styles/color';
 import OperationHeader from '../../components/headers/header.operation';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import BasePageSimple from '../base/base.page.simple';
-import common from '../../common/common';
-import { createErrorNotification } from '../../common/notification.controller';
-import appActions from '../../redux/app/actions';
 
 const styles = StyleSheet.create({
   preview: {
@@ -60,22 +56,6 @@ class Scan extends Component {
       header: null,
     });
 
-    static validateAddress(address, symbol, type, networkId) {
-      let toAddress = address;
-      if (symbol !== 'BTC') {
-        try {
-          toAddress = Rsk3.utils.toChecksumAddress(address, networkId);
-        } catch (error) {
-          return false;
-        }
-      }
-      const isAddress = common.isWalletAddress(toAddress, symbol, type);
-      if (!isAddress) {
-        return false;
-      }
-      return true;
-    }
-
     constructor(props) {
       super(props);
       this.isScanFinished = false;
@@ -92,34 +72,38 @@ class Scan extends Component {
     }
 
     onQrcodeDetected = (data) => {
-      const { navigation, addNotification } = this.props;
-      const {
-        coin, onDetectedAction,
-      } = navigation.state.params;
+      const { navigation } = this.props;
+      const { onDetectedAction, onQrcodeDetected, wallet } = navigation.state.params;
 
-      this.isAddressValid = Scan.validateAddress(data, coin.symbol, coin.type, coin.networkId);
-      if (!this.isAddressValid) {
-        const notification = createErrorNotification(
-          'modal.invalidAddress.title',
-          'modal.invalidAddress.body',
-        );
-        addNotification(notification);
+      // If from transfer page
+      if (onDetectedAction === 'backToTransfer') {
+        onQrcodeDetected(data);
         navigation.goBack();
         return;
       }
 
-      if (onDetectedAction === 'backToTransfer') {
-        navigation.state.params.onQrcodeDetected(data);
-        navigation.goBack();
-      } else {
+      if (data.startsWith('wc:')) {
         const resetAction = StackActions.reset({
           index: 1,
           actions: [
             NavigationActions.navigate({ routeName: 'Dashboard' }),
-            NavigationActions.navigate({ routeName: 'Transfer', params: { coin, toAddress: data } }),
+            NavigationActions.navigate({ routeName: 'WalletConnectPage', params: { uri: data, wallet } }),
           ],
         });
         navigation.dispatch(resetAction);
+      } else {
+        const { coins } = wallet;
+        // # Issue 445 - Why show select asset window when there's only one asset on the wallet?
+        if (coins.length === 1) {
+          navigation.navigate('Transfer', { coin: coins[0], onDetectedAction: 'navigateToTransfer', toAddress: data });
+          return;
+        }
+        navigation.navigate('SelectWallet', {
+          operation: 'scan',
+          wallet,
+          onDetectedAction: 'navigateToTransfer',
+          toAddress: data,
+        });
       }
     }
 
@@ -172,18 +156,13 @@ Scan.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Scan);
+export default connect(mapStateToProps)(Scan);

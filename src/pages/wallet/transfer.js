@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -282,7 +281,7 @@ class Transfer extends Component {
     this.isAmountValid = false;
     this.isAddressValid = !!toAddress;
 
-    this.toAddress = null;
+    this.toAddress = toAddress;
 
     this.confirm = this.confirm.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
@@ -317,7 +316,11 @@ class Transfer extends Component {
   }
 
   componentDidMount() {
+    const { to } = this.state;
     this.initContext();
+    if (to) {
+      this.onToInputBlur();
+    }
   }
 
   componentWillReceiveProps(nextProps) {

@@ -252,7 +252,7 @@ class RnsStatus extends Component {
   renderRnsRow = (item, index) => {
     const { address, subdomain } = item;
     const { rnsRows } = this.state;
-    const addressText = common.getShortAddress(address);
+    const addressText = common.ellipsisAddress(address);
     const { status, type } = rnsRows[index];
 
     let statusView = (

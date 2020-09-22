@@ -6,7 +6,9 @@ if (isEmpty(PARSE_SERVER_URL)) {
 }
 
 const config = {
+
   parse: {
+
     appId: 'rwallet',
     javascriptKey: '',
     serverURL: PARSE_SERVER_URL,
