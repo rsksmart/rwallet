@@ -102,30 +102,30 @@ class DAppBrowser extends Component {
       }
 
         (function() {
-          let resolver = {}
-          let rejecter = {}
+          let resolver = {};
+          let rejecter = {};
 
           ${Platform.OS === 'ios' ? 'window' : 'document'}.addEventListener("message", function(data) {
             try {
-              const passData = data.data ? JSON.parse(data.data) : data.data
-              const { id, result } = passData
+              const passData = data.data ? JSON.parse(data.data) : data.data;
+              const { id, result } = passData;
               if (result && result.error && rejecter[id]) {
-                rejecter[id](new Error(result.message))
+                rejecter[id](new Error(result.message));
               } else if (resolver[id]) {
-                resolver[id](result)
+                resolver[id](result);
               }
             } catch(err) {
-              console.log('listener message err: ', err)
+              console.log('listener message err: ', err);
             }
           })
 
           communicateWithRN = (payload) => {
             return new Promise((resolve, reject) => {
-              console.log('JSON.stringify(payload): ', JSON.stringify(payload))
-              window.ReactNativeWebView.postMessage(JSON.stringify(payload))
-              const { id } = payload
-              resolver[id] = resolve
-              rejecter[id] = reject
+              console.log('JSON.stringify(payload): ', JSON.stringify(payload));
+              window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+              const { id } = payload;
+              resolver[id] = resolve;
+              rejecter[id] = reject;
             })
           }
 
@@ -133,16 +133,16 @@ class DAppBrowser extends Component {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
             const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
-            const web3Provider = new Web3.providers.HttpProvider(rskEndpoint)
+            const web3Provider = new Web3.providers.HttpProvider(rskEndpoint);
             const web3 = new Web3(web3Provider);
             window.ethereum = web3Provider;
-            window.ethereum.selectedAddress = '${address}'
-            window.ethereum.networkVersion = '${this.networkVersion}'
-            window.web3 = web3
+            window.ethereum.selectedAddress = '${address}';
+            window.ethereum.networkVersion = '${this.networkVersion}';
+            window.web3 = web3;
 
             // Adapt web3 old version (new web3 version move toDecimal and toBigNumber to utils class).
-            window.web3.toDecimal = window.web3.utils.toDecimal
-            window.web3.toBigNumber = window.web3.utils.toBN
+            window.web3.toDecimal = window.web3.utils.toDecimal;
+            window.web3.toBigNumber = window.web3.utils.toBN;
             
             const config = {
               isEnabled: true,
@@ -164,12 +164,12 @@ class DAppBrowser extends Component {
               }
             }
 
-            window.web3.setProvider(window.ethereum)
+            window.web3.setProvider(window.ethereum);
 
             // Override enable function can return the current address to web site
             window.ethereum.enable = () => {
               return new Promise((resolve, reject) => {
-                resolve(['${address}'])
+                resolve(['${address}']);
               })
             }
 
@@ -187,8 +187,8 @@ class DAppBrowser extends Component {
             window.web3.eth.contract = (abi) => {
               const contract = new web3.eth.Contract(abi);
               contract.at = (address) => {
-                contract.options.address = address
-                return contract
+                contract.options.address = address;
+                return contract;
               }
 
               const { _jsonInterface } = contract;
@@ -209,52 +209,52 @@ class DAppBrowser extends Component {
                 }
               });
 
-              return contract
+              return contract;
             }
 
             // Override the sendAsync function so we can listen the web site's call and do our things
             const sendAsync = async (payload, callback) => {
-              let err, res = '', result = ''
-              const {method, params, jsonrpc, id} = payload
-              console.log('payload: ', payload)
+              let err, res = '', result = '';
+              const {method, params, jsonrpc, id} = payload;
+              console.log('payload: ', payload);
               try {
                 if (method === 'net_version') {
-                  result = '${this.networkVersion}'
+                  result = '${this.networkVersion}';
                 } else if (method === 'eth_requestAccounts' || method === 'eth_accounts' || payload === 'eth_accounts') {
-                  result = ['${address}']
+                  result = ['${address}'];
                 } else {
-                  result = await communicateWithRN(payload)
+                  result = await communicateWithRN(payload);
                 }
 
-                res = {id, jsonrpc, method, result}
+                res = {id, jsonrpc, method, result};
               } catch(err) {
-                err = err
-                console.log('sendAsync err: ', err)
+                err = err;
+                console.log('sendAsync err: ', err);
               }
               
-              console.log('res: ', res)
+              console.log('res: ', res);
               if (callback) {
-                callback(err, res)
+                callback(err, res);
               } else {
-                return res || err
+                return res || err;
               }
             }
 
             // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
             setTimeout(() => {
               if (!window.ethereum.send) {
-                window.ethereum.send = sendAsync
+                window.ethereum.send = sendAsync;
               }
               if (!window.ethereum.sendAsync) {
-                window.ethereum.sendAsync = sendAsync
+                window.ethereum.sendAsync = sendAsync;
               }
               if (!window.ethereum.request) {
-                window.ethereum.request = sendAsync
+                window.ethereum.request = sendAsync;
               }
             }, 1000)
           }
 
-          initWeb3()
+          initWeb3();
         }) ();
       true
     `;
