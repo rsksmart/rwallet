@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput,
+  View, StyleSheet, TextInput, TouchableOpacity, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -11,10 +11,36 @@ import Header from '../../../components/headers/header';
 import Button from '../../../components/common/button/button';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
+import references from '../../../assets/references';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   body: {
     marginHorizontal: 25,
+  },
+  textInputView: {
+    borderColor: color.component.input.borderColor,
+    backgroundColor: color.component.input.backgroundColor,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textInputIcon: {
+    paddingVertical: 5,
+    paddingLeft: 5,
+    paddingRight: 15,
+  },
+  textInput: {
+    color: color.black,
+    fontSize: 12,
+    fontWeight: '500',
+    paddingVertical: 0,
+    marginLeft: 5,
+    marginVertical: 10,
+    flex: 1,
+    borderWidth: 0,
   },
 });
 
@@ -52,6 +78,22 @@ class JoinMultisigAddress extends Component {
       this.setState({ userName: text });
     }
 
+    onQrcodeScanPress = () => {
+      console.log('onQrcodeScanPress');
+      const { navigation } = this.props;
+      navigation.navigate('Scan', {
+        coin: this.coin,
+        onDetectedAction: 'backToTransfer',
+        onQrcodeDetected: (address) => {
+          console.log('onQrcodeDetected, address: ', address);
+          // Fill in the address and call onToInputBlur to check the content
+          // this.setState({ to: address }, () => {
+          //   this.onToInputBlur();
+          // });
+        },
+      });
+    }
+
     render() {
       const {
         isLoading, canSubmit, userName, invitationCode,
@@ -81,14 +123,19 @@ class JoinMultisigAddress extends Component {
             </View>
             <View>
               <Loc text="page.wallet.joinMultisigAddress.invitationCode" />
-              <TextInput
-                style={[presetStyle.textInput]}
-                value={invitationCode}
-                onChangeText={this.onInvitationCodeChanged}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
+              <View style={styles.textInputView}>
+                <TextInput
+                  style={[styles.textInput]}
+                  value={invitationCode}
+                  onChangeText={this.onInvitationCodeChanged}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <TouchableOpacity style={styles.textInputIcon} onPress={this.onQrcodeScanPress}>
+                  <Image source={references.images.scanAddress} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </BasePageGereral>

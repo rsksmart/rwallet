@@ -227,7 +227,9 @@
         "invitationCode": "Wallet Invitation"
       },
       "multisigInvitation": {
-        "title": "Bitcoin Multisig"
+        "title": "Shared Wallet Invitation",
+        "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
+        "waitingNote": "Waiting for authorized signer to join"
       }
     },
     "dapp": {

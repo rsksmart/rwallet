@@ -1,15 +1,69 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import {
+  View, Text, FlatList, StyleSheet, Image,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import QRCode from 'react-native-qrcode-svg';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
 import parseHelper from '../../../common/parse';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
+import { DEVICE } from '../../../common/info';
+import { strings } from '../../../common/i18n';
+import color from '../../../assets/styles/color';
 
+const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
+
+const checked = require('../../../assets/images/icon/checked.png');
+const waiting = require('../../../assets/images/icon/sending.png');
+
+const styles = StyleSheet.create({
+  body: {
+    marginTop: 25,
+  },
+  title: {
+    color: color.mineShaft,
+    fontFamily: 'Avenir-Book',
+    fontSize: 14,
+    marginHorizontal: 25,
+  },
+  qrCodeView: {
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  waitingNote: {
+    color: color.codGray,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+    marginTop: 30,
+    marginHorizontal: 25,
+    letterSpacing: 0.5,
+  },
+  list: {
+    marginHorizontal: 25,
+    marginTop: 15,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  name: {
+    color: color.tundora,
+    fontFamily: 'Avenir-Book',
+    fontSize: 15,
+    marginHorizontal: 25,
+    marginLeft: 10,
+    letterSpacing: 0.38,
+  },
+  waitingIcon: {
+    width: 20,
+    height: 20,
+  },
+});
 
 class MultisigAddressInvitation extends Component {
     static navigationOptions = () => ({
@@ -22,8 +76,6 @@ class MultisigAddressInvitation extends Component {
       this.coin = coin;
       this.state = {
         copayers: [],
-        copayerNumber: undefined,
-        signatureNumber: undefined,
         generatedAddress: undefined,
       };
     }
@@ -32,46 +84,64 @@ class MultisigAddressInvitation extends Component {
       const { setMultisigBTCAddress } = this.props;
       const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode));
       const copayerMembers = result.get('copayerMembers');
-      const copayerNumber = result.get('copayerNumber');
-      const signatureNumber = result.get('signatureNumber');
       const generatedAddress = result.get('generatedAddress');
+      const copayerNumber = result.get('copayerNumber');
 
-      // 如果已经产生了地址，则赋值给本地相应的token
+      // If the address has been generated, assign it to the corresponding local token
       if (!_.isEmpty(generatedAddress)) {
         setMultisigBTCAddress(this.coin, generatedAddress);
       }
 
-      const copayers = _.map(copayerMembers, (member) => member.name);
+      const user = await parseHelper.getUser();
+      const username = user.get('username');
+      const me = _.find(copayerMembers, { userId: username });
+      me.isMe = true;
+
+      if (copayerMembers.length !== copayerNumber) {
+        copayerMembers.push({ isWaiting: true, name: 'Waiting' });
+      }
+
       this.setState({
-        copayers,
-        copayerNumber,
-        signatureNumber,
+        copayers: copayerMembers,
         generatedAddress,
       });
     }
 
+    renderListItem = (item) => (
+      <View style={styles.listItem}>
+        <Image style={styles.waitingIcon} source={item.isWaiting ? waiting : checked} />
+        <Text style={styles.name}>{item.isMe ? 'Me' : item.name }</Text>
+      </View>
+    )
 
     render() {
       const { navigation } = this.props;
       const {
-        copayers, copayerNumber, signatureNumber, generatedAddress,
+        copayers, generatedAddress,
       } = this.state;
+      const qrText = `sw:${this.coin.invitationCode}`;
+
       return (
         <BasePageGereral
           isSafeView
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.multisigInvitation.title" />}
         >
-          <View>
-            <Text>{`${signatureNumber}/${copayerNumber}`}</Text>
-            <Text>Wallet Invitation</Text>
-            <Text>Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.</Text>
-            <Text>{this.coin.invitationCode}</Text>
-            { generatedAddress ? (<Text>Waiting for authorized copayers to join</Text>) : (
-              <FlatList
-                data={copayers}
-                renderItem={({ item }) => (<Text>{item}</Text>)}
-                keyExtractor={(item, index) => index.toString()}
-              />
+          <View style={styles.body}>
+            <Text style={styles.title}>{strings('page.wallet.multisigInvitation.note')}</Text>
+            <View style={styles.qrCodeView}>
+              <QRCode value={qrText} size={QRCODE_SIZE} />
+            </View>
+            { generatedAddress ? (<Text>{`Generated Address: ${generatedAddress}`}</Text>) : (
+              <View>
+                <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>
+                <FlatList
+                  style={styles.list}
+                  data={copayers}
+                  renderItem={({ item }) => this.renderListItem(item)}
+                  keyExtractor={(item, index) => index.toString()}
+                  ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+                />
+              </View>
             )}
           </View>
         </BasePageGereral>
