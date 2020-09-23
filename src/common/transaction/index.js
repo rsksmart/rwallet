@@ -58,7 +58,8 @@ class Transaction {
         symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
       });
       console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
-      result = await Parse.Cloud.run('createRawTransaction', param);
+      // result = await Parse.Cloud.run('createRawTransaction', param);
+      result = await rbtc.createRawTransaction(param);
     } catch (e) {
       console.log('Transaction.processRawTransaction err: ', e.message);
       throw e;
