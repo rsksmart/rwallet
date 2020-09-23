@@ -420,13 +420,15 @@ class History extends Component {
   componentDidMount() {
     const { currency, prices } = this.props;
     const {
-      balance, balanceValue, transactions, address, symbol, type,
+      balance, balanceValue, transactions, address, symbol, type, isMultisig,
     } = this.coin;
     const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
     const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
-    this.fetchPendingProposal();
+    if (isMultisig) {
+      this.fetchPendingProposal();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -519,9 +521,35 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  calculateDateTime = (dateTime) => {
+    let dateTimeText = '';
+    if (dateTime) {
+      const daysElapsed = moment().diff(dateTime, 'days');
+      dateTimeText = daysElapsed < 1 ? dateTime.fromNow() : dateTime.format('LL');
+    }
+    return dateTimeText;
+  }
+
   fetchPendingProposal = async () => {
-    const { address } = this.coin;
-    const proposal = await ParseHelper.fetchPendingProposal(address);
+    const { address, symbol, type } = this.coin;
+    const proposalObject = await ParseHelper.fetchPendingProposal(address);
+    this.proposalObject = proposalObject;
+
+    const creator = 'Zheu';
+
+    const dateTime = this.calculateDateTime(moment(proposalObject.get('createdAt')));
+
+    const rawTransaction = proposalObject.get('rawTransaction');
+    const amountValue = rawTransaction.tx.outputs[0].value;
+    const amount = common.convertUnitToCoinAmount(symbol, amountValue);
+    const amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
+
+    const proposal = {
+      creator,
+      dateTime,
+      amount: amountText,
+    };
+
     console.log('proposal: ', proposal);
     this.setState({ proposal });
   }
@@ -608,8 +636,8 @@ class History extends Component {
 
   onProposalPressed = () => {
     const { navigation } = this.props;
-    const { proposal } = this.state;
-    navigation.navigate('MultisigProposalDetail', { token: this.coin, proposal });
+    const { proposalObject } = this;
+    navigation.navigate('MultisigProposalDetail', { token: this.coin, proposal: proposalObject });
   }
 
   render() {
@@ -674,21 +702,20 @@ class History extends Component {
           </View>
         </View>
         {proposal && (
-          <TouchableOpacity style={[styles.sectionContainer, { marginTop: 30 }]} onPress={this.onProposalPressed}>
+          <View style={[styles.sectionContainer, { marginTop: 30 }]}>
             <Loc style={[styles.recent]} text="page.wallet.history.pendingProposals" />
-            <View style={styles.proposalView}>
+            <TouchableOpacity style={styles.proposalView} onPress={this.onProposalPressed}>
               <View style={styles.proposalLeft}>
-                <Text style={styles.proposalText}>Sending</Text>
-                <Text style={styles.proposalText}>Created by Zheu</Text>
+                <Loc style={[styles.proposalText]} text="txState.Sending" />
+                <Text style={styles.proposalText}>{`Created by ${proposal.creator}`}</Text>
               </View>
               <View style={styles.proposalRight}>
-                <Text style={styles.amount}>0.0001 BTC</Text>
-                <Text style={styles.datetime}>29 minutes ago</Text>
+                <Text style={styles.amount}>{proposal.amount}</Text>
+                <Text style={styles.datetime}>{proposal.dateTime}</Text>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         )}
-
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
