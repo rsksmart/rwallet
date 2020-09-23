@@ -26,6 +26,7 @@ import storage from '../../common/storage';
 import color from '../../assets/styles/color';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
+import ParseHelper from '../../common/parse';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -236,6 +237,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 10 + screenHelper.topHeight,
   },
+  proposalView: {
+    flexDirection: 'row',
+  },
+  proposalRight: {
+    flex: 1,
+  },
+  proposalText: {
+    color: color.black,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 13,
+    letterSpacing: 0.33,
+  },
 });
 
 const stateIcons = {
@@ -359,6 +372,7 @@ class History extends Component {
       pendingBalanceText: null,
       pendingBalanceValueText: null,
       fetchTxTimestamp: undefined, // Record the timestamp of the request
+      proposal: null,
     };
 
     this.onSendButtonClick = this.onSendButtonClick.bind(this);
@@ -412,6 +426,7 @@ class History extends Component {
     const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
+    this.fetchPendingProposal();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -504,6 +519,13 @@ class History extends Component {
     navigation.navigate('Transaction', item);
   }
 
+  fetchPendingProposal = async () => {
+    const { address } = this.coin;
+    const proposal = await ParseHelper.fetchPendingProposal(address);
+    console.log('proposal: ', proposal);
+    this.setState({ proposal });
+  }
+
   loadMoreData = () => {
     const { isLoadMore, isRefreshing, listData } = this.state;
     // In these cases, the operation of loading more should not be executed.
@@ -584,14 +606,15 @@ class History extends Component {
     );
   }
 
-  gotoProposals = () => {
+  onProposalPressed = () => {
     const { navigation } = this.props;
-    navigation.navigate('MultisigProposals', { token: this.coin });
+    const { proposal } = this.state;
+    navigation.navigate('MultisigProposalDetail', { token: this.coin, proposal });
   }
 
   render() {
     const {
-      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing,
+      balanceText, balanceValueText, pendingBalanceText, pendingBalanceValueText, listData, isRefreshing, proposal,
     } = this.state;
     const { navigation } = this.props;
 
@@ -618,11 +641,6 @@ class History extends Component {
                   </Text>
                 </View>
               )
-            }
-            {
-              <TouchableOpacity onPress={this.gotoProposals}>
-                <Text>Proposals</Text>
-              </TouchableOpacity>
             }
             <View style={[styles.myAssetsButtonsView, chain === 'Rootstock' ? styles.centerAssetsButtonsView : null]}>
               <TouchableOpacity
@@ -655,6 +673,22 @@ class History extends Component {
             </View>
           </View>
         </View>
+        {proposal && (
+          <TouchableOpacity style={[styles.sectionContainer, { marginTop: 30 }]} onPress={this.onProposalPressed}>
+            <Loc style={[styles.recent]} text="page.wallet.history.pendingProposals" />
+            <View style={styles.proposalView}>
+              <View style={styles.proposalLeft}>
+                <Text style={styles.proposalText}>Sending</Text>
+                <Text style={styles.proposalText}>Created by Zheu</Text>
+              </View>
+              <View style={styles.proposalRight}>
+                <Text style={styles.amount}>0.0001 BTC</Text>
+                <Text style={styles.datetime}>29 minutes ago</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+
         <View style={[styles.sectionContainer, { marginTop: 30 }]}>
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>

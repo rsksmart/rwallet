@@ -538,6 +538,23 @@ class ParseHelper {
     console.log('rejectMultisigTransaction, result: ', result);
     return result;
   }
+
+  static async deleteMultisigTransaction(proposalId) {
+    const params = { proposalId };
+    console.log('deleteMultisigTransaction, params: ', params);
+    const result = await Parse.Cloud.run('deleteMultisigTransaction', params);
+    console.log('deleteMultisigTransaction, result: ', result);
+    return result;
+  }
+
+  static async fetchPendingProposal(address) {
+    console.log('fetchPendingProposal, address: ', address);
+    const query = new Parse.Query(ParseMultiSigProposal);
+    query.equalTo('multiSigAddress', address);
+    const result = await query.descending('createdAt').first();
+    console.log('fetchPendingProposal, result: ', result);
+    return result;
+  }
 }
 
 // Create parse helper proxy to add global error handling

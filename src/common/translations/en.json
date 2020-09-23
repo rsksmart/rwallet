@@ -31,7 +31,8 @@
       "history": {
         "noTransNote": "There is no transaction found for this asset",
         "recent": "Recent",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "pendingProposals": "Pending Proposals"
       },
       "transaction": {
         "Sent Funds": "Sent Funds",
@@ -281,6 +282,9 @@
         "title": "Shared Wallet Invitation",
         "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
         "waitingNote": "Waiting for authorized signer to join"
+      },
+      "proposal": {
+        "title": "Payment Proposal"
       }
     },
     "dapp": {
@@ -415,7 +419,8 @@
     "done": "Done",
     "share": "SHARE",
     "check": "CHECK",
-    "update": "Update"
+    "update": "Update",
+    "accept": "ACCEPT"
   },
   "txState": {
     "Sent": "Sent",
