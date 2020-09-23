@@ -74,7 +74,7 @@ class AddReadOnlyWalletConfirmation extends Component {
       _.each(coins, async (coin, index) => {
         const balance = await CancelablePromiseUtil.makeCancelable(parseHelper.getBalance({
           type, symbol: coin.symbol, address, needFetch: false,
-        }));
+        }), this);
         const newCoins = [...coins];
         newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance);
         this.setState({ coins: newCoins });

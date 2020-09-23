@@ -205,10 +205,10 @@ const actions = {
       phrase, coin, multisigParams,
     },
   }),
-  joinSharedWallet: (phrase, invitationCode, username) => ({
+  joinSharedWallet: (phrase, invitationCode, userName) => ({
     type: actions.JOIN_SHARED_WALLET,
     payload: {
-      phrase, invitationCode, username,
+      phrase, invitationCode, userName,
     },
   }),
 };

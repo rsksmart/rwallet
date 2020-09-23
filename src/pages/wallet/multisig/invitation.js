@@ -6,6 +6,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
+import { StackActions } from 'react-navigation';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -81,15 +82,25 @@ class MultisigAddressInvitation extends Component {
     }
 
     async componentWillMount() {
-      const { setMultisigBTCAddress } = this.props;
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode));
+      this.refreshMultisigInvitation();
+    }
+
+    componentWillUnmount() {
+      CancelablePromiseUtil.cancel(this);
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+    }
+
+    fetchMultisigInvitation = async () => {
+      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
       const copayerMembers = result.get('copayerMembers');
       const generatedAddress = result.get('generatedAddress');
       const copayerNumber = result.get('copayerNumber');
 
       // If the address has been generated, assign it to the corresponding local token
       if (!_.isEmpty(generatedAddress)) {
-        setMultisigBTCAddress(this.coin, generatedAddress);
+        this.onAddressGenerated(generatedAddress);
       }
 
       const user = await parseHelper.getUser();
@@ -105,6 +116,19 @@ class MultisigAddressInvitation extends Component {
         copayers: copayerMembers,
         generatedAddress,
       });
+    }
+
+    refreshMultisigInvitation = () => {
+      this.fetchMultisigInvitation();
+      this.interval = setInterval(this.fetchMultisigInvitation, 5000);
+    }
+
+    onAddressGenerated = (address) => {
+      const { setMultisigBTCAddress, navigation } = this.props;
+      setMultisigBTCAddress(this.coin, address);
+      const stackActions = StackActions.popToTop();
+      navigation.dispatch(stackActions);
+      navigation.navigate('Home');
     }
 
     renderListItem = (item) => (

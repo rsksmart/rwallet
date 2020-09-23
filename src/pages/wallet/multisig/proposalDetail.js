@@ -121,6 +121,10 @@ class MultisigProposalDetail extends Component {
       this.processProposal();
     }
 
+    componentWillUnmount() {
+      CancelablePromiseUtil.cancel(this);
+    }
+
     processProposal = async () => {
       const { proposal } = this;
       const creator = proposal.get('creator');
@@ -178,7 +182,7 @@ class MultisigProposalDetail extends Component {
 
     reject = async () => {
       try {
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.id));
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.id), this);
         console.log('reject, result: ', result);
       } catch (error) {
         console.log('reject, error: ', error);
@@ -187,7 +191,7 @@ class MultisigProposalDetail extends Component {
 
     delete = async () => {
       try {
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultisigTransaction(this.proposal.id));
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultisigTransaction(this.proposal.id), this);
         console.log('reject, result: ', result);
       } catch (error) {
         console.log('reject, error: ', error);

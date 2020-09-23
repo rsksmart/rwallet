@@ -515,7 +515,7 @@ function* createSharedWalletRequest(action) {
 }
 
 function* joinSharedWalletRequest(action) {
-  const { phrase, invitationCode, name } = action.payload;
+  const { phrase, invitationCode, userName } = action.payload;
   const state = yield select();
   const walletManager = state.Wallet.get('walletManager');
   try {
@@ -532,7 +532,7 @@ function* joinSharedWalletRequest(action) {
     derivation.addressType = addressType;
     const { publicKey } = derivation;
     const result = yield call(ParseHelper.joinMultisigAddress, {
-      invitationCode, publicKey, name,
+      invitationCode, publicKey, name: userName,
     });
     console.log('result: ', result);
 

@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Tags from '../../components/common/misc/tags';
 import WordField, { wordFieldWidth } from '../../components/common/misc/wordField';
 import Loc from '../../components/common/misc/loc';
@@ -139,6 +140,10 @@ class VerifyPhrase extends Component {
       isAnimating: true,
     };
 
+    const { multisigParams } = navigation.state.params;
+    const { invitationCode } = multisigParams;
+    this.invitationCode = invitationCode;
+
     this.renderSelectedWords = this.renderSelectedWords.bind(this);
     this.onTagsPressed = this.onTagsPressed.bind(this);
     this.reset = this.reset.bind(this);
@@ -149,10 +154,15 @@ class VerifyPhrase extends Component {
 
   async componentWillReceiveProps(nextProps) {
     const { navigation, isWalletsUpdated } = nextProps;
+    const { isCreatingMultisig, isJoiningMultisig } = navigation.state.params;
     const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
     if (isWalletsUpdated && isLoading) {
       this.setState({ isLoading: false });
+      if (isCreatingMultisig || isJoiningMultisig) {
+        this.onMultisigWalletCreated();
+        return;
+      }
       navigation.navigate('VerifyPhraseSuccess');
     }
   }
@@ -222,6 +232,21 @@ class VerifyPhrase extends Component {
     // this.calculateOffsetAndMove();
   }
 
+  onMultisigWalletCreated = () => {
+    const { navigation, walletManager } = this.props;
+    const wallet = walletManager.wallets[0];
+    const coin = wallet.coins[0];
+    navigation.navigate('Home');
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Dashboard' }),
+        NavigationActions.navigate({ routeName: 'MultisigAddressInvitation', params: { coin } }),
+      ],
+    });
+    navigation.dispatch(resetAction);
+  }
+
   calculateOffsetAndMove() {
     this.setState({ isAnimating: false });
     const { selectedWordIndexs, wordsOffset } = this.state;
@@ -269,8 +294,8 @@ class VerifyPhrase extends Component {
           const coin = coins[0];
           createSharedWallet(phrase, coin, multisigParams);
         } else if (isJoiningMultisig) {
-          const { invitationCode, username } = multisigParams;
-          joinSharedWallet(phrase, invitationCode, username);
+          const { invitationCode, userName } = multisigParams;
+          joinSharedWallet(phrase, invitationCode, userName);
         } else {
           createKey(null, phrase, coins, walletManager);
         }
@@ -386,7 +411,9 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  walletManager: PropTypes.shape({}),
+  walletManager: PropTypes.shape({
+    wallets: PropTypes.array,
+  }),
   addNotification: PropTypes.func.isRequired,
   createKey: PropTypes.func.isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
@@ -415,7 +442,7 @@ const mapDispatchToProps = (dispatch) => ({
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
   createSharedWallet: (phrase, coin, multisigParams) => dispatch(walletActions.createSharedWallet(phrase, coin, multisigParams)),
-  joinSharedWallet: (phrase, invitationCode, username) => dispatch(walletActions.joinSharedWallet(phrase, invitationCode, username)),
+  joinSharedWallet: (phrase, invitationCode, userName) => dispatch(walletActions.joinSharedWallet(phrase, invitationCode, userName)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

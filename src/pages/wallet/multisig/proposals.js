@@ -25,8 +25,12 @@ class MultisigProposals extends Component {
     }
 
     async componentWillMount() {
-      const proposals = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposals(this.token.address));
+      const proposals = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposals(this.token.address), this);
       this.setState({ proposals });
+    }
+
+    componentWillUnmount() {
+      CancelablePromiseUtil.cancel(this);
     }
 
     gotoProposalDetail = (proposal) => {
