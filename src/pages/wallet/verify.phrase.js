@@ -294,8 +294,7 @@ class VerifyPhrase extends Component {
           const coin = coins[0];
           createSharedWallet(phrase, coin, multisigParams);
         } else if (isJoiningMultisig) {
-          const { invitationCode, userName } = multisigParams;
-          joinSharedWallet(phrase, invitationCode, userName);
+          joinSharedWallet(phrase, multisigParams);
         } else {
           createKey(null, phrase, coins, walletManager);
         }
@@ -442,7 +441,7 @@ const mapDispatchToProps = (dispatch) => ({
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
   createSharedWallet: (phrase, coin, multisigParams) => dispatch(walletActions.createSharedWallet(phrase, coin, multisigParams)),
-  joinSharedWallet: (phrase, invitationCode, userName) => dispatch(walletActions.joinSharedWallet(phrase, invitationCode, userName)),
+  joinSharedWallet: (phrase, multisigParams) => dispatch(walletActions.joinSharedWallet(phrase, multisigParams)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

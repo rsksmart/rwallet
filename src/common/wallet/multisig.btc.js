@@ -14,6 +14,8 @@ class MultisigBtc {
     this.isMultisig = true;
     this.invitationCode = invitationCode;
     this.chain = 'Bitcoin';
+    this.signatureNumber = null;
+    this.copayerNumber = null;
   }
 
   get defaultName() {
@@ -33,17 +35,21 @@ class MultisigBtc {
     invitationCode: this.invitationCode,
     isMultisig: this.isMultisig,
     addressType: this.addressType,
+    signatureNumber: this.signatureNumber,
+    copayerNumber: this.copayerNumber,
   })
 
   static fromJSON(json) {
     const {
-      type, address, objectId, invitationCode, balance, addressType,
+      type, address, objectId, invitationCode, balance, addressType, signatureNumber, copayerNumber,
     } = json;
     const instance = new MultisigBtc(invitationCode, type);
     instance.address = address;
     instance.objectId = objectId;
     instance.balance = balance;
     instance.addressType = addressType;
+    instance.signatureNumber = signatureNumber;
+    instance.copayerNumber = copayerNumber;
     return instance;
   }
 

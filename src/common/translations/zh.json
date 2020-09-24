@@ -26,7 +26,8 @@
         "allAssets": "所有资产",
         "addAsset": "添加资产",
         "addWallet": "添加钱包",
-        "readOnly": "只读"
+        "readOnly": "只读",
+        "multisig": "多重签名"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",
@@ -74,7 +75,16 @@
         "importWallet": "导入已有钱包",
         "importWalletNote": "使用助记词还原您的钱包",
         "addReadOnlyWallet": "添加只读钱包",
-        "addReadOnlyWalletNote": "无需密钥即可监视资产"
+        "addReadOnlyWalletNote": "无需密钥即可监视资产",
+        "sharedWallet": "共用钱包",
+        "sharedWalletNote": "多重签名比特币钱包"
+      },
+      "sharedWallet": {
+        "title": "共用钱包",
+        "createSharedWallet": "创建共享钱包",
+        "createSharedWalletNote": "创建一个多重签名比特币钱包并邀请其他人加入",
+        "joinSharedWallet": "加入共享钱包",
+        "joinSharedWalletNote": "需要邀请才能加入"
       },
       "selectCurrency": {
         "title": "选择钱包资产",
@@ -262,7 +272,10 @@
         "title": "创建多重签名地址"
       },
       "joinMultisigAddress": {
-        "title": "加入多重签名地址"
+        "title": "加入多重签名钱包",
+        "userName": "你的名字",
+        "invitationCode": "钱包邀请码",
+        "note": "您需要扫描共享钱包邀请的二维码才能加入，请您的朋友通过电子邮件或通讯工具发送共享钱包邀请码。"
       }
     },
     "dapp": {

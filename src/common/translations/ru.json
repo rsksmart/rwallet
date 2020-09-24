@@ -26,7 +26,8 @@
         "allAssets": "Все активы",
         "addAsset": "Добавить актив",
         "addWallet": "Добавить кошелек",
-        "readOnly": "Только чтение"
+        "readOnly": "Только чтение",
+        "multisig": "Multisig"
       },
       "history": {
         "noTransNote": "Транзакции для этого актива не найдены",
@@ -74,7 +75,16 @@
         "importWallet": "Импортировать существующий кошелек",
         "importWalletNote": "Восстановите свой кошелек, используя фразу для восстановления",
         "addReadOnlyWallet": "Добавить кошелек только для чтения",
-        "addReadOnlyWalletNote": "Мониторинг активов без ключей"
+        "addReadOnlyWalletNote": "Мониторинг активов без ключей",
+        "sharedWallet": "Carteira Compartilhada",
+        "sharedWalletNote": "Carteira Multisig Bitcoin"
+      },
+      "sharedWallet": {
+        "title": "Общий кошелек",
+        "createSharedWallet": "Создать общий кошелек",
+        "createSharedWalletNote": "Создайте биткойн-кошелек Multisig и пригласите других присоединиться",
+        "joinSharedWallet": "Присоединиться к общему кошельку",
+        "joinSharedWalletNote": "Требуется приглашение присоединиться"
       },
       "selectCurrency": {
         "title": "Выберите активы кошелька",
@@ -259,7 +269,10 @@
         "title": "Создать адрес с несколькими подписями"
       },
       "joinMultisigAddress": {
-        "title": "Join Multisig Address"
+        "title": "Присоединяйтесь к кошельку Multisig",
+        "userName": "Ваше имя",
+        "invitationCode": "Кошелек Приглашение",
+        "note": "Вам необходимо отсканировать QR-код приглашения общего кошелька, чтобы присоединиться к нему. Попросите друга отправить приглашение через электронную почту или приложения для обмена сообщениями."
       }
     },
     "dapp": {

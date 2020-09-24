@@ -26,7 +26,8 @@
         "allAssets": "Todos los activos",
         "addAsset": "Agregar activo",
         "addWallet": "Agregar billetera",
-        "readOnly": "Solo lectura"
+        "readOnly": "Solo lectura",
+        "multisig": "Multifirma"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -74,7 +75,16 @@
         "importWallet": "Importar billetera existente",
         "importWalletNote": "Restaura tu billetera usando la frase de recuperación",
         "addReadOnlyWallet": "Agregar billetera de solo lectura",
-        "addReadOnlyWalletNote": "Monitorear activos sin claves"
+        "addReadOnlyWalletNote": "Monitorear activos sin claves",
+        "sharedWallet": "Billetera compartida",
+        "sharedWalletNote": "Billetera Bitcoin Multifirma"
+      },
+      "sharedWallet": {
+        "title": "Billetera compartida",
+        "createSharedWallet": "Crear billetera compartida",
+        "createSharedWalletNote": "Cree una billetera Bitcoin Multifirma e invite a otros a unirse",
+        "joinSharedWallet": "Unirse a la billetera compartida",
+        "joinSharedWalletNote": "Requiere invitación para unirse"
       },
       "selectCurrency": {
         "title": "Seleccionar activos de Wallet",
@@ -259,10 +269,26 @@
         "duplicateAddress": "Esta dirección ya está importada en la aplicación. Intente con una dirección diferente."
       },
       "createMultisigAddress": {
-        "title": "Crear dirección de firma múltiple"
+        "title": "Crear dirección de firma múltiple",
+        "walletName": "Wallet Name",
+        "userName": "Your Name",
+        "signatures": "Require number of signatures",
+        "copayers": "Total number of copayers",
+        "segwit": "Segwit"
       },
       "joinMultisigAddress": {
-        "title": "Join Multisig Address"
+        "title": "Únete a Multisig Wallet",
+        "userName": "Tu nombre",
+        "invitationCode": "Invitación de billetera",
+        "note": "Necesita escanear un código QR de una invitación de Monedero Compartido para unirse a uno. Pídale a su amigo que comparta la invitación a través de aplicaciones de mensajería o correo electrónico."
+      },
+      "multisigInvitation": {
+        "title": "Shared Wallet Invitation",
+        "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
+        "waitingNote": "Waiting for authorized signer to join"
+      },
+      "proposal": {
+        "title": "Payment Proposal"
       }
     },
     "dapp": {

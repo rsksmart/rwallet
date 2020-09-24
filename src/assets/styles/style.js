@@ -53,7 +53,7 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 16,
-    height: 40,
+    height: 46,
     paddingHorizontal: 10,
   },
   lastBlockMarginBottom: {

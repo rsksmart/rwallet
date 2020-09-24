@@ -46,14 +46,14 @@ class CreateMultisigAddress extends Component {
 
     onCreateButtonPressed = async () => {
       const {
-        userName, signatures, copayers, isMainnet, isSegwit,
+        walletName, userName, signatures, copayers, isMainnet, isSegwit,
       } = this.state;
       const type = isMainnet ? 'Mainnet' : 'Testnet';
       const signatureNumber = parseInt(signatures, 10);
       const copayerNumber = parseInt(copayers, 10);
       const { navigation } = this.props;
       const multisigParams = {
-        userName, type, signatureNumber, copayerNumber,
+        walletName, userName, type, signatureNumber, copayerNumber,
       };
       const coins = [{ symbol: 'BTC', type, addressType: isSegwit ? BtcAddressType.segwit : BtcAddressType.legacy }];
       const navigateParams = {

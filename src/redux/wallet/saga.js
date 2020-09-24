@@ -483,16 +483,21 @@ function* createSharedWalletRequest(action) {
   const walletManager = state.Wallet.get('walletManager');
   try {
     const { type, addressType } = coin;
-    const wallet = new SharedWallet({ id: walletManager.currentKeyId, mnemonic: phrase, type });
+    const {
+      signatureNumber, copayerNumber, userName, walletName,
+    } = multisigParams;
+
+    const wallet = new SharedWallet({
+      id: walletManager.currentKeyId, name: walletName, mnemonic: phrase, type,
+    });
     wallet.createTokensFromSeed([], []);
 
     const derivation = wallet.derivations[0];
     derivation.addressType = addressType;
     const { publicKey } = derivation;
 
-    const { signatureNumber, copayerNumber, userName } = multisigParams;
     const params = {
-      signatureNumber, copayerNumber, publicKey, type, name: userName,
+      signatureNumber, copayerNumber, publicKey, type, name: userName, walletName,
     };
 
     const result = yield call(ParseHelper.createMultisigAddress, params);
@@ -503,7 +508,9 @@ function* createSharedWalletRequest(action) {
     walletManager.wallets.unshift(wallet);
 
     // Add token
-    yield call(wallet.addToken, { invitationCode, type });
+    yield call(wallet.addToken, {
+      invitationCode, type, signatureNumber, copayerNumber,
+    });
 
     // Save to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
@@ -515,21 +522,21 @@ function* createSharedWalletRequest(action) {
 }
 
 function* joinSharedWalletRequest(action) {
-  const { phrase, invitationCode, userName } = action.payload;
+  const { phrase, multisigParams } = action.payload;
   const state = yield select();
   const walletManager = state.Wallet.get('walletManager');
   try {
-    // Fetch invitation, and get type
-    const invitation = yield call(ParseHelper.fetchMultisigInvitation, invitationCode);
-    const type = invitation.get('type');
-    const addressType = BtcAddressType.legacy;
-    // const addressType = invitation.get('addressType');
+    const {
+      invitationCode, userName, walletName, type, signatureNumber, copayerNumber,
+    } = multisigParams;
 
-    const wallet = new SharedWallet({ id: walletManager.currentKeyId, mnemonic: phrase, type });
+    const wallet = new SharedWallet({
+      id: walletManager.currentKeyId, walletName, mnemonic: phrase, type,
+    });
     wallet.createTokensFromSeed([], []);
 
     const derivation = wallet.derivations[0];
-    derivation.addressType = addressType;
+    derivation.addressType = BtcAddressType.legacy;
     const { publicKey } = derivation;
     const result = yield call(ParseHelper.joinMultisigAddress, {
       invitationCode, publicKey, name: userName,
@@ -540,14 +547,16 @@ function* joinSharedWalletRequest(action) {
     walletManager.wallets.unshift(wallet);
 
     // Add token
-    yield call(wallet.addToken, { invitationCode, type });
+    yield call(wallet.addToken, {
+      invitationCode, type, signatureNumber, copayerNumber,
+    });
 
     // Save to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
     yield put({ type: actions.WALLETS_UPDATED });
     yield call(walletManager.serialize);
   } catch (error) {
-    console.warn('createSharedWalletRequest, error: ', error);
+    console.warn('joinSharedWalletRequest, error: ', error);
   }
 }
 

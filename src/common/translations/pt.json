@@ -26,7 +26,8 @@
         "allAssets": "Todos os ativos",
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
-        "readOnly": "Somente leitura"
+        "readOnly": "Somente leitura",
+        "multisig": "Multisig"
       },
       "history": {
         "noTransNote": "Não existe transação encontrada para este ativo",
@@ -74,7 +75,16 @@
         "importWallet": "Importar carteira existente",
         "importWalletNote": "Restaurar sua carteira usando a frase de recuperação",
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
-        "addReadOnlyWalletNote": "Monitore ativos sem chaves"
+        "addReadOnlyWalletNote": "Monitore ativos sem chaves",
+        "sharedWallet": "Carteira Compartilhada",
+        "sharedWalletNote": "Carteira Multisig Bitcoin"
+      },
+      "sharedWallet": {
+        "title": "Carteira Compartilhada",
+        "createSharedWallet": "Criar carteira compartilhada",
+        "createSharedWalletNote": "Crie uma carteira Multisig Bitcoin e convide outras pessoas para aderir",
+        "joinSharedWallet": "Junte-se à carteira compartilhada",
+        "joinSharedWalletNote": "Requer convite para participar"
       },
       "selectCurrency": {
         "title": "Selecione Ativos da Carteira",
@@ -262,7 +272,10 @@
         "title": "Criar Endereço Multisig"
       },
       "joinMultisigAddress": {
-        "title": "Join Multisig Address"
+        "title": "Junte-se à Multisig Wallet",
+        "userName": "Seu nome",
+        "invitationCode": "Convite Carteira",
+        "note": "Você precisa ler um código QR de um convite da Carteira Compartilhada para ingressar em um. Peça ao seu amigo para compartilhar o convite por e-mail ou aplicativos de mensagens."
       }
     },
     "dapp": {

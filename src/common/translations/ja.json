@@ -26,7 +26,8 @@
         "allAssets": "すべての資産",
         "addAsset": "資産を追加",
         "addWallet": "ウォレットを追加",
-        "readOnly": "読み取り専用"
+        "readOnly": "読み取り専用",
+        "multisig": "マルチシグ"
       },
       "history": {
         "noTransNote": "この資産の取引が見つかりません",
@@ -74,7 +75,16 @@
         "importWallet": "既存のウォレットをインポート",
         "importWalletNote": "復元フレーズを使用してウォレットを復元",
         "addReadOnlyWallet": "読み取り専用ウォレットを追加",
-        "addReadOnlyWalletNote": "キーなしで資産を監視する"
+        "addReadOnlyWalletNote": "キーなしで資産を監視する",
+        "sharedWallet": "共有ウォレット",
+        "sharedWalletNote": "マルチシグビットコインウォレット"
+      },
+      "sharedWallet": {
+        "title": "共有ウォレット",
+        "createSharedWallet": "共有ウォレットを作成",
+        "createSharedWalletNote": "マルチシグビットコインウォレットを作成し、他の人を参加に招待する",
+        "joinSharedWallet": "共有ウォレットに参加",
+        "joinSharedWalletNote": "参加するには招待が必要"
       },
       "selectCurrency": {
         "title": "ウォレットアセットを選択",
@@ -259,7 +269,10 @@
         "title": "マルチシグアドレスの作成"
       },
       "joinMultisigAddress": {
-        "title": "Join Multisig Address"
+        "title": "マルチ署名ウォレットに参加する",
+        "userName": "あなたの名前",
+        "invitationCode": "ウォレットへの招待",
+        "note": "共有ウォレットに参加するには、共有ウォレットへの招待のQRコードをスキャンする必要があります。友達にメールまたはメッセージアプリで招待状を共有してもらいます。"
       }
     },
     "dapp": {

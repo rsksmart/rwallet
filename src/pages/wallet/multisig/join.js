@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -13,10 +14,15 @@ import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
 import references from '../../../assets/references';
 import color from '../../../assets/styles/color';
+import space from '../../../assets/styles/space';
+import { NAME_MAX_LENGTH } from '../../../common/constants';
+import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
+import ParseHelper from '../../../common/parse';
 
 const styles = StyleSheet.create({
   body: {
     marginHorizontal: 25,
+    marginTop: 20,
   },
   textInputView: {
     borderColor: color.component.input.borderColor,
@@ -33,14 +39,30 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   textInput: {
-    color: color.black,
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 16,
     paddingVertical: 0,
-    marginLeft: 5,
-    marginVertical: 10,
+    marginLeft: 10,
+    marginVertical: 12,
     flex: 1,
     borderWidth: 0,
+  },
+  fieldName: {
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 20,
+  },
+  note: {
+    fontFamily: 'Avenir-Book',
+    fontSize: 14,
+    marginTop: 15,
+  },
+  fieldTitle: {
+    fontFamily: 'Avenir-Roman',
+    fontSize: 16,
+  },
+  fieldView: {
+    paddingBottom: 17,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: color.grayD8,
   },
 });
 
@@ -57,7 +79,7 @@ class JoinMultisigAddress extends Component {
       }
       this.state = {
         isLoading: false,
-        canSubmit: true,
+        canSubmit: false,
         userName: null,
         invitationCode,
       };
@@ -66,25 +88,56 @@ class JoinMultisigAddress extends Component {
     onJoinButtonPressed = async () => {
       console.log('onJoinButtonPressed');
       const { userName, invitationCode } = this.state;
-      const { navigation } = this.props;
-      const multisigParams = { userName, invitationCode };
+      const { navigation, addNotification } = this.props;
+      this.setState({ isLoading: true });
+      let invitation = null;
+      try {
+        invitation = await ParseHelper.fetchMultisigInvitation(invitationCode);
+        if (!invitation) {
+          const notification = createErrorNotification('modal.invalidWalletInvitation.title', 'modal.invalidWalletInvitation.body');
+          addNotification(notification);
+          return;
+        }
+      } catch (error) {
+        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+        addNotification(notification);
+        return;
+      } finally {
+        this.setState({ isLoading: false });
+      }
+
+      const type = invitation.get('type');
+      const walletName = invitation.get('walletName');
+      const signatureNumber = invitation.get('signatureNumber');
+      const copayerNumber = invitation.get('copayerNumber');
+      const multisigParams = {
+        userName, invitationCode, type, walletName, signatureNumber, copayerNumber,
+      };
       const navigateParams = {
         shouldCreatePhrase: true, shouldVerifyPhrase: true, isJoiningMultisig: true, multisigParams,
       };
       navigation.navigate('RecoveryPhrase', navigateParams);
     }
 
+    checkIfCanSubmit = () => {
+      const { userName, invitationCode } = this.state;
+      const canSubmit = !_.isEmpty(userName) && !_.isEmpty(invitationCode);
+      this.setState({ canSubmit });
+    }
+
     onInvitationCodeChanged = (text) => {
-      this.setState({ invitationCode: text });
+      const invitationCode = text.trim();
+      this.setState({ invitationCode }, this.checkIfCanSubmit);
     }
 
     onUserNameChanged = (text) => {
-      this.setState({ userName: text });
+      const userName = text.trim();
+      this.setState({ userName }, this.checkIfCanSubmit);
     }
 
     onQrcodeScanPress = () => {
       console.log('onQrcodeScanPress');
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       navigation.navigate('Scan', {
         coin: this.coin,
         onDetectedAction: 'backToTransfer',
@@ -93,7 +146,8 @@ class JoinMultisigAddress extends Component {
           const prefix = 'ms:';
           const isInvitationCode = data.startsWith(prefix);
           if (!isInvitationCode) {
-            // TODO: error notification
+            const notification = createErrorNotification('modal.invalidWalletInvitation.title', 'modal.invalidWalletInvitation.body');
+            addNotification(notification);
             return;
           }
           const invitationCode = data.substring(prefix.length, data.length);
@@ -118,20 +172,21 @@ class JoinMultisigAddress extends Component {
           customBottomButton={customButton}
         >
           <View style={styles.body}>
-            <View>
-              <Loc text="page.wallet.joinMultisigAddress.userName" />
+            <View style={[styles.fieldView]}>
+              <Loc style={styles.fieldName} text="page.wallet.joinMultisigAddress.userName" />
               <TextInput
-                style={[presetStyle.textInput]}
+                style={[presetStyle.textInput, space.marginTop_7]}
                 value={userName}
                 onChangeText={this.onUserNameChanged}
                 autoCapitalize="none"
                 autoCorrect={false}
                 blurOnSubmit={false}
+                maxLength={NAME_MAX_LENGTH}
               />
             </View>
-            <View>
-              <Loc text="page.wallet.joinMultisigAddress.invitationCode" />
-              <View style={styles.textInputView}>
+            <View style={[styles.fieldView, space.marginTop_23]}>
+              <Loc style={styles.fieldTitle} text="page.wallet.joinMultisigAddress.invitationCode" />
+              <View style={[styles.textInputView, space.marginTop_9]}>
                 <TextInput
                   style={[styles.textInput]}
                   value={invitationCode}
@@ -144,6 +199,7 @@ class JoinMultisigAddress extends Component {
                   <Image source={references.images.scanAddress} />
                 </TouchableOpacity>
               </View>
+              <Loc style={styles.note} text="page.wallet.joinMultisigAddress.note" />
             </View>
           </View>
         </BasePageGereral>
@@ -162,6 +218,7 @@ JoinMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

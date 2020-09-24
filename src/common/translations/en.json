@@ -26,7 +26,8 @@
         "allAssets": "All Assets",
         "addAsset": "Add Asset",
         "addWallet": "Add Wallet",
-        "readOnly": "Read-only"
+        "readOnly": "Read-only",
+        "multisig": "Multisig"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -274,9 +275,10 @@
         "segwit": "Segwit"
       },
       "joinMultisigAddress": {
-        "title": "Join Multisig Address",
+        "title": "Join Multisig Wallet",
         "userName": "Your Name",
-        "invitationCode": "Wallet Invitation"
+        "invitationCode": "Wallet Invitation",
+        "note": "You need to scan a QR code of a Shared Wallet invitation to join one. Ask your friend to share the invitation through Email or messaging apps."
       },
       "multisigInvitation": {
         "title": "Shared Wallet Invitation",
@@ -611,6 +613,10 @@
     "readOnlyLimit": {
       "title": "Operation not available",
       "body": "Send, Swap and Scan QR Code operations are not available for a Read-only wallet. To enable those, please Import this wallet with its 12-word phrases."
+    },
+    "invalidWalletInvitation": {
+      "title": "Invalid Invitation Code",
+      "body": "This invitation code is invalid."
     }
   },
   "currency": {

@@ -188,12 +188,20 @@ const WalletItem = (item) => (
     <Image style={coinListItemStyles.icon} source={item.icon} />
     <View style={coinListItemStyles.rowRightView}>
       <View style={coinListItemStyles.rowTitleView}>
-        <Text style={coinListItemStyles.title}>{item.title}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={coinListItemStyles.title}>{item.title}</Text>
+          { item.isMultisig && <Text style={[coinListItemStyles.text, { marginLeft: 5 }]}>{`(${item.signatureNumber}/${item.copayerNumber})`}</Text> }
+        </View>
         <Text style={coinListItemStyles.text}>{item.text}</Text>
       </View>
       <View style={coinListItemStyles.rowAmountView}>
-        <Text style={coinListItemStyles.worth}>{item.amount}</Text>
-        <Text style={coinListItemStyles.amount}>{item.worth}</Text>
+        { item.address && (
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={coinListItemStyles.worth}>{item.amount}</Text>
+            <Text style={coinListItemStyles.amount}>{item.worth}</Text>
+          </View>
+        )}
+        { !item.address && <Text style={coinListItemStyles.amount}>Incomplete</Text> }
       </View>
     </View>
   </TouchableOpacity>
@@ -209,6 +217,7 @@ const WalletPage = (props) => {
   } = walletData;
 
   const isReadOnlyWallet = walletType === WalletType.Readonly;
+  const { isMultisig } = coins[0];
 
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
   const addAssetDisabled = walletType === WalletType.Readonly && chain === 'Bitcoin';
@@ -229,6 +238,7 @@ const WalletPage = (props) => {
           <View style={styles.walletTitleView}>
             <Text style={styles.headerTitle}>{name}</Text>
             { isReadOnlyWallet && <View style={styles.readonly}><Loc text="page.wallet.list.readOnly" /></View> }
+            { isMultisig && <View style={styles.readonly}><Loc text="page.wallet.list.multisig" /></View> }
           </View>
         </View>
         <TouchableOpacity

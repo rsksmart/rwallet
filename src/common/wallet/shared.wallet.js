@@ -19,7 +19,7 @@ export default class SharedWallet extends Wallet {
    * Create multisig BTC and add it to coins list
    */
   addToken = ({
-    invitationCode, address, type, objectId, balance,
+    invitationCode, address, type, objectId, balance, signatureNumber, copayerNumber,
   }) => {
     console.log(`addMultisigBTC, invitationCode: ${invitationCode}, address: ${address}, type: ${type}`);
     const multisigBTC = new MultisigBTC(invitationCode, type);
@@ -29,17 +29,11 @@ export default class SharedWallet extends Wallet {
     multisigBTC.setupWithDerivation(derivation);
 
     // Restore other data
-    if (address) {
-      multisigBTC.address = address;
-    }
-
-    if (objectId) {
-      multisigBTC.objectId = objectId;
-    }
-
-    if (balance) {
-      multisigBTC.balance = new BigNumber(balance);
-    }
+    multisigBTC.address = address || multisigBTC.address;
+    multisigBTC.objectId = objectId || multisigBTC.objectId;
+    multisigBTC.balance = balance ? new BigNumber(balance) : multisigBTC.balance;
+    multisigBTC.signatureNumber = signatureNumber || multisigBTC.signatureNumber;
+    multisigBTC.copayerNumber = copayerNumber || multisigBTC.copayerNumber;
 
     this.coins.push(multisigBTC);
     return multisigBTC;

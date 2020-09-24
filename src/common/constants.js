@@ -79,3 +79,12 @@ export const Chain = {
   Bitcoin: 'Bitcoin',
   Rootstock: 'Rootstock',
 };
+
+export const PROPOSAL_STATUS = {
+  CREATED: 0,
+  PENDING: 1,
+  SENT: 2,
+  FAILED: 3,
+  REJECTED: 4,
+  DELETED: 5,
+};

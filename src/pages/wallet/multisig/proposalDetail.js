@@ -191,7 +191,7 @@ class MultisigProposalDetail extends Component {
 
     delete = async () => {
       try {
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultisigTransaction(this.proposal.id), this);
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.id), this);
         console.log('reject, result: ', result);
       } catch (error) {
         console.log('reject, error: ', error);

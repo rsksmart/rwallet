@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import VersionNumber from 'react-native-version-number';
 import config from '../../config';
 import parseDataUtil from './parseDataUtil';
-import { blockHeightKeys } from './constants';
+import { blockHeightKeys, PROPOSAL_STATUS } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
 import cointype from './wallet/cointype';
@@ -490,10 +490,10 @@ class ParseHelper {
   }
 
   static async createMultisigAddress({
-    signatureNumber, copayerNumber, publicKey, type, name,
+    signatureNumber, copayerNumber, publicKey, type, name, walletName,
   }) {
     const params = {
-      signatureNumber, copayerNumber, publicKey, type, name,
+      signatureNumber, copayerNumber, publicKey, type, name, walletName,
     };
     console.log('createMultisigAddress, params: ', JSON.stringify(params));
     const result = await Parse.Cloud.run('createMultisigAddress', params);
@@ -539,11 +539,11 @@ class ParseHelper {
     return result;
   }
 
-  static async deleteMultisigTransaction(proposalId) {
+  static async deleteMultiSigProposal(proposalId) {
     const params = { proposalId };
-    console.log('deleteMultisigTransaction, params: ', params);
-    const result = await Parse.Cloud.run('deleteMultisigTransaction', params);
-    console.log('deleteMultisigTransaction, result: ', result);
+    console.log('deleteMultiSigProposal, params: ', params);
+    const result = await Parse.Cloud.run('deleteMultiSigProposal', params);
+    console.log('deleteMultiSigProposal, result: ', result);
     return result;
   }
 
@@ -551,6 +551,7 @@ class ParseHelper {
     console.log('fetchPendingProposal, address: ', address);
     const query = new Parse.Query(ParseMultiSigProposal);
     query.equalTo('multiSigAddress', address);
+    query.equalTo('status', PROPOSAL_STATUS.PENDING);
     const result = await query.descending('createdAt').first();
     console.log('fetchPendingProposal, result: ', result);
     return result;
