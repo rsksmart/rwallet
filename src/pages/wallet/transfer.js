@@ -603,8 +603,15 @@ class Transfer extends Component {
         const size = common.estimateBtcSize(estimateParams);
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
-      } else {
+      } else if (symbol === 'RRTC') {
         transactionFees = await rbtc.getTransactionFees(type, address, toAddress, fee, memo);
+      } else {
+        // transactionFees = await parseHelper.getTransactionFees(symbol, type, address, toAddress, fee, memo);
+        const contractAddress = await rbtc.getContractAddress(symbol, type);
+        console.log('contractAddress: ', contractAddress);
+        const data = await rbtc.encodeContractTransfer(contractAddress, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), fee);
+        console.log('data: ', data);
+        transactionFees = await rbtc.getTransactionFees(type, address, contractAddress, fee, data);
       }
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);

@@ -2,6 +2,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { NETWORK, ASSETS_CONTRACT } from '../constants';
+import contractAbi from '../contractAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -17,13 +18,30 @@ export const getTransactionFees = async (type, address, toAddress, fee, memo) =>
   const { minimumGasPrice } = latestBlock;
   const miniGasPrice = new BigNumber(minimumGasPrice, 16);
   return {
-    gas,
+    gas: 40000,
     gasPrice: {
       low: miniGasPrice.toString(),
       medium: miniGasPrice.multipliedBy(2).toString(),
       high: miniGasPrice.multipliedBy(4).toString(),
     },
   };
+};
+
+export const getContractAddress = async (symbol, type) => {
+  let contractAddress = '';
+  if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
+    contractAddress = ASSETS_CONTRACT[symbol][type];
+  }
+  return Rsk3.utils.toChecksumAddress(contractAddress);
+};
+
+export const encodeContractTransfer = async (contractAddress, type, from, to, value) => {
+  const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
+  const rsk3 = new Rsk3(rskEndpoint);
+  const contract = rsk3.Contract(contractAbi, contractAddress);
+  const data = await contract.methods.transfer(to, value).encodeABI();
+  // const gas = await contract.methods.transfer(to, value).estimateGas();
+  return data;
 };
 
 export const createRawTransaction = async ({
@@ -47,20 +65,9 @@ export const createRawTransaction = async ({
     rawTransaction.data = memo;
   } else {
     const assetContract = ASSETS_CONTRACT[symbol][type];
-    const contract = new Rsk3.Contract({
-      name: 'transfer',
-      type: 'function',
-      inputs: [{
-        name: '_to',
-        type: 'address',
-      },
-      {
-        name: '_value',
-        type: 'uint256',
-      }],
-    }, assetContract);
+    const contract = rsk3.Contract(contractAbi, assetContract);
     rawTransaction.to = assetContract;
-    rawTransaction.data = memo;
+    rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
   }
   return rawTransaction;
