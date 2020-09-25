@@ -272,7 +272,8 @@
         "userName": "Your Name",
         "signatures": "Require number of signatures",
         "copayers": "Total number of copayers",
-        "segwit": "Segwit"
+        "legacy": "Legacy",
+        "advancedOptions": "Advanced Options"
       },
       "joinMultisigAddress": {
         "title": "Join Multisig Wallet",
@@ -286,7 +287,11 @@
         "waitingNote": "Waiting for authorized signer to join"
       },
       "proposal": {
-        "title": "Payment Proposal"
+        "title": "Payment Proposal",
+        "created": "Proposal created",
+        "delete": "Delete Payment Proposal",
+        "reject": "Reject Payment Proposal",
+        "minerFee": "Miner Fee"
       }
     },
     "dapp": {

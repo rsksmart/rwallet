@@ -781,7 +781,7 @@ class Transfer extends Component {
       await transaction.processSignedTransaction();
       this.setState({ loading: false });
       if (isMultisig) {
-        navigation.navigate('VerifyPhraseSuccess');
+        navigation.navigate('CreateProposalSuccess');
       } else {
         const completedParams = {
           symbol: coin.symbol,

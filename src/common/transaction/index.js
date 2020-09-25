@@ -123,7 +123,7 @@ class Transaction {
       throw new Error('Transaction.processSignedTransaction err: this.signedTransaction is null');
     }
     console.log(`Transaction.processSignedTransaction finished, result: ${JSON.stringify(result)}`);
-    this.txHash = getTxHash(this.symbol, result);
+    this.txHash = this.isMultisig ? result.get('hash') : getTxHash(this.symbol, result);
     return result;
   }
 }

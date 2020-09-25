@@ -169,13 +169,21 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
+      const { navigation } = this.props;
       const { rawTransaction, id } = this.proposal;
+      const { symbol, type } = this.token;
       try {
         const transaction = new Transaction(this.token, null, null, {});
         transaction.rawTransaction = rawTransaction;
         transaction.proposalId = id;
         await transaction.signTransaction();
         await transaction.processSignedTransaction();
+        if (transaction.txHash) {
+          const completedParams = { symbol, type, hash: transaction.txHash };
+          navigation.navigate('TransferCompleted', completedParams);
+        } else {
+          navigation.navigate('CreateProposalSuccess');
+        }
       } catch (error) {
         console.log('accept, error: ', error);
       }
@@ -191,11 +199,12 @@ class MultisigProposalDetail extends Component {
     }
 
     delete = async () => {
+      console.log('delete');
       try {
         const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.id), this);
-        console.log('reject, result: ', result);
+        console.log('delete, result: ', result);
       } catch (error) {
-        console.log('reject, error: ', error);
+        console.log('delete, error: ', error);
       }
     }
 
@@ -243,11 +252,11 @@ class MultisigProposalDetail extends Component {
             </View>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle]}>Miner fee</Text>
+            <Text style={[styles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
             <Text>{feesText}</Text>
           </View>
           {
-            !isCreator && (<TouchableOpacity onPress={this.reject}><Text>Reject Payment Proposal</Text></TouchableOpacity>)
+            !isCreator && (<TouchableOpacity onPress={this.reject}><Text>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>)
           }
           <View style={styles.sectionContainer}>
             <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
@@ -267,15 +276,11 @@ class MultisigProposalDetail extends Component {
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
-          {
-            isCreator && (
-              <View style={styles.sectionContainer}>
-                <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
-                  <Text style={styles.delete}>Delete Payment Proposal</Text>
-                </TouchableOpacity>
-              </View>
-            )
-          }
+          <View style={styles.sectionContainer}>
+            <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
+              <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
+            </TouchableOpacity>
+          </View>
         </BasePageGereral>
       );
     }

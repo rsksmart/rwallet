@@ -502,6 +502,7 @@ function* receiveNotificationRequest(action) {
   }
   const { title, body, data } = notification;
   console.log(`receiveNotificationRequest, title: ${title}, body: ${body} `);
+  console.log('receiveNotificationRequest, data: ', data);
   if (data) {
     const { event, eventParams } = data;
     const params = eventParams ? JSON.parse(eventParams) : null;

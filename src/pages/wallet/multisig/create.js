@@ -14,10 +14,29 @@ import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { BtcAddressType } from '../../../common/constants';
+import color from '../../../assets/styles/color';
+import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({
   body: {
     marginHorizontal: 25,
+    marginTop: 20,
+  },
+  walletName: {
+    color: color.black,
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 20,
+  },
+  fieldView: {
+    paddingBottom: 17,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: color.grayD8,
+  },
+  advancedOptions: {
+    color: color.black,
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 14,
+    marginTop: 20,
   },
 });
 
@@ -36,7 +55,7 @@ class CreateMultisigAddress extends Component {
         signatures: '2',
         copayers: '2',
         isMainnet: false,
-        isSegwit: false,
+        isLegacy: true,
       };
     }
 
@@ -46,7 +65,7 @@ class CreateMultisigAddress extends Component {
 
     onCreateButtonPressed = async () => {
       const {
-        walletName, userName, signatures, copayers, isMainnet, isSegwit,
+        walletName, userName, signatures, copayers, isMainnet, isLegacy,
       } = this.state;
       const type = isMainnet ? 'Mainnet' : 'Testnet';
       const signatureNumber = parseInt(signatures, 10);
@@ -55,7 +74,7 @@ class CreateMultisigAddress extends Component {
       const multisigParams = {
         walletName, userName, type, signatureNumber, copayerNumber,
       };
-      const coins = [{ symbol: 'BTC', type, addressType: isSegwit ? BtcAddressType.segwit : BtcAddressType.legacy }];
+      const coins = [{ symbol: 'BTC', type, addressType: isLegacy ? BtcAddressType.legacy : BtcAddressType.segwit }];
       const navigateParams = {
         coins, shouldCreatePhrase: true, shouldVerifyPhrase: true, isCreatingMultisig: true, multisigParams,
       };
@@ -83,12 +102,12 @@ class CreateMultisigAddress extends Component {
     }
 
     onAddressTypeChanged = (value) => {
-      this.setState({ isSegwit: value });
+      this.setState({ isLegacy: value });
     }
 
     render() {
       const {
-        isLoading, canSubmit, walletName, userName, isMainnet, isSegwit, signatures, copayers,
+        isLoading, canSubmit, walletName, userName, isMainnet, isLegacy, signatures, copayers,
       } = this.state;
       const { navigation } = this.props;
       const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
@@ -102,10 +121,10 @@ class CreateMultisigAddress extends Component {
           customBottomButton={customButton}
         >
           <View style={styles.body}>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.walletName" />
+            <View style={styles.fieldView}>
+              <Loc style={styles.walletName} text="page.wallet.createMultisigAddress.walletName" />
               <TextInput
-                style={[presetStyle.textInput]}
+                style={[presetStyle.textInput, space.marginTop_7]}
                 value={walletName}
                 onChangeText={this.onWalletNameChanged}
                 autoCapitalize="none"
@@ -113,10 +132,10 @@ class CreateMultisigAddress extends Component {
                 blurOnSubmit={false}
               />
             </View>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.userName" />
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.userName" />
               <TextInput
-                style={[presetStyle.textInput]}
+                style={[presetStyle.textInput, space.marginTop_10]}
                 value={userName}
                 onChangeText={this.onUserNameChanged}
                 autoCapitalize="none"
@@ -124,10 +143,10 @@ class CreateMultisigAddress extends Component {
                 blurOnSubmit={false}
               />
             </View>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.signatures" />
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.signatures" />
               <TextInput
-                style={[presetStyle.textInput]}
+                style={[presetStyle.textInput, space.marginTop_10]}
                 value={signatures}
                 onChangeText={this.onSignaturesChanged}
                 autoCapitalize="none"
@@ -135,10 +154,10 @@ class CreateMultisigAddress extends Component {
                 blurOnSubmit={false}
               />
             </View>
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.copayers" />
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.copayers" />
               <TextInput
-                style={[presetStyle.textInput]}
+                style={[presetStyle.textInput, space.marginTop_10]}
                 value={copayers}
                 onChangeText={this.onCopayersChanged}
                 autoCapitalize="none"
@@ -146,14 +165,14 @@ class CreateMultisigAddress extends Component {
                 blurOnSubmit={false}
               />
             </View>
-            <View>
-              <Loc text="page.wallet.addCustomToken.mainnet" />
-              <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
+            <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
+            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
+              <Loc style={[styles.fieldTitle, { flex: 1 }]} text="page.wallet.addCustomToken.mainnet" />
+              <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
             </View>
-
-            <View>
-              <Loc text="page.wallet.createMultisigAddress.segwit" />
-              <Switch value={isSegwit} onValueChange={this.onAddressTypeChanged} />
+            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
+              <Loc style={[styles.fieldTitle, { flex: 1 }]} text="page.wallet.createMultisigAddress.legacy" />
+              <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} />
             </View>
           </View>
         </BasePageGereral>
