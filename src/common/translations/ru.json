@@ -27,7 +27,7 @@
         "addAsset": "Добавить актив",
         "addWallet": "Добавить кошелек",
         "readOnly": "Только чтение",
-        "multisig": "Multisig"
+        "multisig": "Общий"
       },
       "history": {
         "noTransNote": "Транзакции для этого актива не найдены",

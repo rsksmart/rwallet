@@ -10,7 +10,7 @@ export default class SharedWallet extends Wallet {
     id, name, mnemonic, type,
   }) {
     super({
-      id, name, mnemonic, walletType: WalletType.Shared,
+      id, name, mnemonic, walletType: WalletType.Multisig,
     });
     this.walletDerivationTypes = [{ symbol: 'BTC', type }];
   }

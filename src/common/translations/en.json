@@ -27,7 +27,7 @@
         "addAsset": "Add Asset",
         "addWallet": "Add Wallet",
         "readOnly": "Read-only",
-        "multisig": "Multisig"
+        "multisig": "Shared"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",

@@ -106,7 +106,7 @@ class RootComponent extends Component {
 
   onUserLogin = (props) => {
     const {
-      updateUser, initLiveQueryPrice, initLiveQueryTokens, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager,
+      updateUser, initLiveQueryPrice, initLiveQueryTokens, initLiveQueryTransactions, initLiveQueryBlockHeights, walletManager, initLiveQueryPendingProposals,
     } = props;
     const tokens = walletManager.getTokens();
     updateUser();
@@ -114,6 +114,7 @@ class RootComponent extends Component {
     initLiveQueryTokens(tokens);
     initLiveQueryTransactions(tokens);
     initLiveQueryBlockHeights();
+    initLiveQueryPendingProposals();
   }
 
   onRequestClose = () => {

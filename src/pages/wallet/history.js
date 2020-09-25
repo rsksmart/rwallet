@@ -26,7 +26,6 @@ import storage from '../../common/storage';
 import color from '../../assets/styles/color';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
-import ParseHelper from '../../common/parse';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -435,12 +434,12 @@ class History extends Component {
     const {
       updateTimestamp, currency, prices, txTimestamp,
     } = nextProps;
+    const {
+      balance, balanceValue, transactions, address, symbol, type, isMultisig,
+    } = this.coin;
     const { updateTimestamp: lastUpdateTimestamp, prices: lastPrices, currency: lastCurrency } = this.props;
     const { fetchTxTimestamp } = this.state;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency || txTimestamp === fetchTxTimestamp) && this.coin) {
-      const {
-        balance, balanceValue, transactions, address, symbol, type,
-      } = this.coin;
       const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
       const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
 
@@ -455,6 +454,10 @@ class History extends Component {
           this.largelist.endRefresh();
           this.largelist.endLoading();
         }
+      }
+
+      if (isMultisig) {
+        this.fetchPendingProposal();
       }
 
       this.setState({
@@ -531,27 +534,24 @@ class History extends Component {
   }
 
   fetchPendingProposal = async () => {
-    const { address, symbol, type } = this.coin;
-    const proposalObject = await ParseHelper.fetchPendingProposal(address);
-    this.proposalObject = proposalObject;
+    const { proposal, symbol, type } = this.coin;
+    this.proposal = proposal;
 
     const creator = 'Zheu';
-
-    const dateTime = this.calculateDateTime(moment(proposalObject.get('createdAt')));
-
-    const rawTransaction = proposalObject.get('rawTransaction');
+    const dateTime = this.calculateDateTime(moment(proposal.createdAt));
+    const { rawTransaction } = proposal;
     const amountValue = rawTransaction.tx.outputs[0].value;
     const amount = common.convertUnitToCoinAmount(symbol, amountValue);
     const amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
 
-    const proposal = {
+    const newProposal = {
       creator,
       dateTime,
       amount: amountText,
     };
 
-    console.log('proposal: ', proposal);
-    this.setState({ proposal });
+    console.log('proposal: ', newProposal);
+    this.setState({ proposal: newProposal });
   }
 
   loadMoreData = () => {
@@ -636,8 +636,8 @@ class History extends Component {
 
   onProposalPressed = () => {
     const { navigation } = this.props;
-    const { proposalObject } = this;
-    navigation.navigate('MultisigProposalDetail', { token: this.coin, proposal: proposalObject });
+    const { proposal } = this;
+    navigation.navigate('MultisigProposalDetail', { token: this.coin, proposal });
   }
 
   render() {

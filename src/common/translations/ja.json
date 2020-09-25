@@ -27,7 +27,7 @@
         "addAsset": "資産を追加",
         "addWallet": "ウォレットを追加",
         "readOnly": "読み取り専用",
-        "multisig": "マルチシグ"
+        "multisig": "共有"
       },
       "history": {
         "noTransNote": "この資産の取引が見つかりません",

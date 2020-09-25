@@ -52,6 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
   initLiveQueryTokens: (tokens) => dispatch(walletActions.initLiveQueryTokens(tokens)),
   initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
   initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
+  initLiveQueryPendingProposals: () => dispatch(walletActions.initLiveQueryPendingProposals()),
 
   resetTokensUpdated: () => dispatch(walletActions.resetTokensUpdated()),
   updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),

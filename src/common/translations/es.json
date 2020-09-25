@@ -27,7 +27,7 @@
         "addAsset": "Agregar activo",
         "addWallet": "Agregar billetera",
         "readOnly": "Solo lectura",
-        "multisig": "Multifirma"
+        "multisig": "Compartido"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",

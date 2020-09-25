@@ -27,7 +27,7 @@
         "addAsset": "자산 추가하기",
         "addWallet": "월렛 추가하기",
         "readOnly": "읽기 전용",
-        "multisig": "다중 서명"
+        "multisig": "공유"
       },
       "history": {
         "noTransNote": "이 자산에 대한 거래를 찾을 수 없습니다",

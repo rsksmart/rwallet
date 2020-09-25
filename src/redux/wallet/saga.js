@@ -11,7 +11,7 @@ import parseDataUtil from '../../common/parseDataUtil';
 import SharedWallet from '../../common/wallet/shared.wallet';
 
 import { createErrorNotification } from '../../common/notification.controller';
-import { BtcAddressType } from '../../common/constants';
+import { BtcAddressType, PROPOSAL_STATUS } from '../../common/constants';
 
 function* createKeyRequest(action) {
   const {
@@ -460,6 +460,7 @@ function* addMultisigBTC(action) {
 
 function* setMultisigBTCAddressRequest(action) {
   const { token, address } = action.payload;
+  console.log('setMultisigBTCAddressRequest, address: ', address);
   try {
     const state = yield select();
     const walletManager = state.Wallet.get('walletManager');
@@ -560,6 +561,108 @@ function* joinSharedWalletRequest(action) {
   }
 }
 
+function* updateProposal(action) {
+  const { proposal } = action;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
+  const multisigWallets = walletManager.getMultisigWallets();
+  for (let i = 0; i < multisigWallets.length; i += 1) {
+    const wallet = multisigWallets[i];
+    const coin = wallet.coin[0];
+    if (proposal.multiSigAddress === coin.address) {
+      coin.proposal = proposal.status === PROPOSAL_STATUS.PENDING ? proposal : null;
+    }
+  }
+  yield put({ type: actions.WALLETS_UPDATED });
+}
+
+function createPendingProposalChannel(subscription, tokens) {
+  return eventChannel((emitter) => {
+    const subscribeHandler = () => {
+      console.log('createPendingProposalChannel.subscribeHandler.');
+      return emitter(actions.fetchPendingProposals(tokens));
+    };
+    const unsubscribeHandler = () => {
+      ParseHelper.unsubscribe(subscription);
+      console.log('createPendingProposalChannel.unsubscribeHandler.');
+    };
+    const updateHandler = (item) => {
+      console.log('createPendingProposalChannel.updateHandler', item);
+      const proposal = parseDataUtil.getProposal(item);
+      return emitter(actions.updateProposal(proposal));
+    };
+    const deleteHandler = (item) => {
+      console.log('createPendingProposalChannel.deleteHandler', item);
+      const proposal = parseDataUtil.getProposal(item);
+      return emitter(actions.updateProposal(proposal));
+    };
+    const errorHandler = (error) => {
+      console.log('createPendingProposalChannel.errorHandler', error);
+    };
+    subscription.on('open', subscribeHandler);
+    subscription.on('update', updateHandler);
+    subscription.on('error', errorHandler);
+    subscription.on('create', updateHandler);
+    subscription.on('delete', deleteHandler);
+
+    // unsubscribe function, this gets called when we close the channel
+    return unsubscribeHandler;
+  });
+}
+
+function* fetchPendingProposals(action) {
+  const { tokens } = action.payload;
+  const addresses = _.map(tokens, (token) => token.address);
+  try {
+    const proposals = yield call(ParseHelper.fetchPendingProposals, addresses);
+    _.each(tokens, (token) => {
+      const newToken = token;
+      newToken.proposal = null;
+    });
+    _.each(proposals, (proposal) => {
+      const { multiSigAddress } = proposal;
+      const token = _.find(tokens, { address: multiSigAddress });
+      token.proposal = proposal;
+    });
+    yield put({ type: actions.WALLETS_UPDATED });
+  } catch (error) {
+    console.log('fetchPendingProposal, error:', error);
+  }
+}
+
+function* initLiveQueryPendingProposals() {
+  let subscription;
+  let subscriptionChannel;
+  try {
+    const state = yield select();
+    const walletManager = state.Wallet.get('walletManager');
+    const multisigWallets = walletManager.getMultisigWallets();
+    const tokens = _.map(multisigWallets, (wallet) => wallet.coins[0]);
+    const addresses = _.map(tokens, (token) => token.address);
+    subscription = yield call(ParseHelper.subscribePendingProposals, addresses);
+    subscriptionChannel = yield call(createPendingProposalChannel, subscription, tokens);
+    // If there is already a channel here, cancel the previous channel and save the new channel.
+    const pendingProposalChannel = state.Wallet.get('pendingProposalChannel');
+    if (pendingProposalChannel) {
+      pendingProposalChannel.close();
+    }
+    yield put(actions.setPendingProposalsChannel(subscriptionChannel));
+    while (true) {
+      const payload = yield take(subscriptionChannel);
+      yield put(payload);
+    }
+  } catch (err) {
+    console.log('Subscription error:', err);
+  } finally {
+    if (yield cancelled()) {
+      subscriptionChannel.close();
+      subscription.close();
+    } else {
+      console.log('Subscription disconnected: PendingProposals');
+    }
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -587,5 +690,9 @@ export default function* () {
     takeEvery(actions.SET_MULTISIG_BTC_ADDRESS, setMultisigBTCAddressRequest),
     takeEvery(actions.CREATE_SHARED_WALLET, createSharedWalletRequest),
     takeEvery(actions.JOIN_SHARED_WALLET, joinSharedWalletRequest),
+
+    takeEvery(actions.INIT_LIVE_QUERY_PENDING_PROPOSALS, initLiveQueryPendingProposals),
+    takeEvery(actions.FETCH_PENDING_PROPOSALS, fetchPendingProposals),
+    takeEvery(actions.UPDATE_PROPOSAL, updateProposal),
   ]);
 }

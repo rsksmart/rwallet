@@ -260,7 +260,6 @@ class ParseHelper {
    */
   static async subscribeTokens(tokens) {
     const query = ParseHelper.getTokensQuery(tokens);
-    console.log('query: ', query);
     const subscription = await query.subscribe();
     return subscription;
   }
@@ -550,11 +549,33 @@ class ParseHelper {
   static async fetchPendingProposal(address) {
     console.log('fetchPendingProposal, address: ', address);
     const query = new Parse.Query(ParseMultiSigProposal);
-    query.equalTo('multiSigAddress', address);
-    query.equalTo('status', PROPOSAL_STATUS.PENDING);
+    query.equalTo('multiSigAddress', address).equalTo('status', PROPOSAL_STATUS.PENDING);
     const result = await query.descending('createdAt').first();
     console.log('fetchPendingProposal, result: ', result);
     return result;
+  }
+
+  static getPendingProposalsQuery(addresses) {
+    console.log('getPendingProposalsQuery, addresses: ', addresses);
+    const query = new Parse.Query(ParseMultiSigProposal);
+    query.containedIn('multiSigAddress', addresses).equalTo('status', PROPOSAL_STATUS.PENDING);
+    return query;
+  }
+
+  static async fetchPendingProposals(addresses) {
+    console.log('fetchPendingProposals, addresses: ', addresses);
+    const query = ParseHelper.getPendingProposalsQuery(addresses);
+    const proposalObjects = await query.find();
+    const proposals = _.map(proposalObjects, (item) => parseDataUtil.getProposal(item));
+    console.log('fetchPendingProposals, proposals: ', proposals);
+    return proposals;
+  }
+
+  static async subscribePendingProposals(addresses) {
+    console.log('subscribePendingProposals, addresses: ', addresses);
+    const query = ParseHelper.getPendingProposalsQuery(addresses);
+    const subscription = await query.subscribe();
+    return subscription;
   }
 }
 

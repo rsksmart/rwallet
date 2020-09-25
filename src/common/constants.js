@@ -36,7 +36,7 @@ export const BtcAddressType = {
 export const WalletType = {
   Normal: 'Normal',
   Readonly: 'Readonly',
-  Shared: 'Shared',
+  Multisig: 'Multisig',
 };
 
 export const TxStatus = {

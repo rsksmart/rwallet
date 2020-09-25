@@ -18,6 +18,7 @@ const initState = new Map({
   tokensChannel: undefined,
   transactionsChannel: undefined,
   blockHeightsChannel: undefined,
+  pendingProposalChannel: undefined,
   txTimestamp: undefined,
 
   subdomains: [],
@@ -144,6 +145,9 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.SET_BLOCK_HEIGHTS_CHANNEL: {
       return state.set('blockHeightsChannel', action.value);
+    }
+    case actions.SET_PENDING_PROPOSAL_CHANNEL: {
+      return state.set('pendingProposalChannel', action.value);
     }
     case actions.SET_SUBDOMAINS: {
       return state.set('subdomains', action.subdomains);

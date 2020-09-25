@@ -217,7 +217,7 @@ const WalletPage = (props) => {
   } = walletData;
 
   const isReadOnlyWallet = walletType === WalletType.Readonly;
-  const { isMultisig } = coins[0];
+  const isMultisig = walletType === WalletType.Multisig;
 
   const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
   const addAssetDisabled = walletType === WalletType.Readonly && chain === 'Bitcoin';

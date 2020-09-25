@@ -107,6 +107,21 @@ const parseDataUtil = {
     });
     return records;
   },
+
+  getProposal(proposalObject) {
+    const transaction = {
+      status: proposalObject.get('status'),
+      createdAt: proposalObject.get('createdAt'),
+      multiSigAddress: proposalObject.get('multiSigAddress'),
+      type: proposalObject.get('type'),
+      rawTransaction: proposalObject.get('rawTransaction'),
+      acceptedMembers: proposalObject.get('acceptedMembers'),
+      rejectedMembers: proposalObject.get('rejectedMembers'),
+      creator: proposalObject.get('creator'),
+      id: proposalObject.id,
+    };
+    return transaction;
+  },
 };
 
 export default parseDataUtil;

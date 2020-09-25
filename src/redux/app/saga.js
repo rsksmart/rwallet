@@ -371,6 +371,34 @@ function* processNotificationRequest(action) {
       yield put(newAction);
       break;
     }
+    case 'joinedWallet': {
+      const { invitationCode } = params;
+      const coin = walletManager.findTokenByInvitationCode(invitationCode);
+      if (coin) {
+        common.currentNavigation.navigate('Home');
+        const newAction = actions.setFcmNavParams({
+          routeName: 'MultisigAddressInvitation',
+          routeParams: { coin },
+        });
+        yield put(newAction);
+      }
+      break;
+    }
+    case 'walletCreated': {
+      console.log('walletCreated, params: ', params);
+      const { invitationCode } = params;
+      const coin = walletManager.findTokenByInvitationCode(invitationCode);
+      console.log('walletCreated, coin: ', coin);
+      if (coin) {
+        common.currentNavigation.navigate('Home');
+        const newAction = actions.setFcmNavParams({
+          routeName: 'WalletHistory',
+          routeParams: { coin },
+        });
+        yield put(newAction);
+      }
+      break;
+    }
     default:
   }
   return null;
@@ -482,6 +510,16 @@ function* receiveNotificationRequest(action) {
       case 'createRnsFail': {
         // Change subdomains status by notification params
         yield put(walletActions.setSubdomains(params));
+        break;
+      }
+      case 'joinedWallet':
+        break;
+      case 'walletCreated': {
+        const { generatedAddress, invitationCode } = params;
+        const token = walletManager.findTokenByInvitationCode(invitationCode);
+        if (token) {
+          yield put(walletActions.setMultisigBTCAddress(token, generatedAddress));
+        }
         break;
       }
       default:

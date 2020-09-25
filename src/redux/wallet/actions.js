@@ -55,6 +55,11 @@ const actions = {
   INIT_LIVE_QUERY_BLOCK_HEIGHTS: 'INIT_LIVE_QUERY_BLOCK_HEIGHTS',
   SET_BLOCK_HEIGHTS_CHANNEL: 'SET_BLOCK_HEIGHT_CHANNEL',
 
+  INIT_LIVE_QUERY_PENDING_PROPOSALS: 'INIT_LIVE_QUERY_PENDING_PROPOSALS',
+  SET_PENDING_PROPOSAL_CHANNEL: 'SET_PENDING_PROPOSAL_CHANNEL',
+  FETCH_PENDING_PROPOSALS: 'FETCH_PENDING_PROPOSALS',
+  UPDATE_PROPOSAL: 'UPDATE_PROPOSAL',
+
   SET_SUBDOMAINS: 'SET_SUBDOMAINS',
   GET_BALANCE: 'GET_BALANCE',
 
@@ -181,6 +186,9 @@ const actions = {
   initLiveQueryBlockHeights: () => ({
     type: actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS,
   }),
+  initLiveQueryPendingProposals: () => ({
+    type: actions.INIT_LIVE_QUERY_PENDING_PROPOSALS,
+  }),
   setSubdomains: (subdomains) => ({
     type: actions.SET_SUBDOMAINS,
     subdomains,
@@ -210,6 +218,18 @@ const actions = {
     payload: {
       phrase, multisigParams,
     },
+  }),
+  fetchPendingProposals: (tokens) => ({
+    type: actions.FETCH_PENDING_PROPOSALS,
+    payload: { tokens },
+  }),
+  setPendingProposalsChannel: (channel) => ({
+    type: actions.SET_PENDING_PROPOSAL_CHANNEL,
+    value: channel,
+  }),
+  updateProposal: (proposal) => ({
+    type: actions.UPDATE_PROPOSAL,
+    proposal,
   }),
 };
 

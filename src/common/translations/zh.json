@@ -27,7 +27,7 @@
         "addAsset": "添加资产",
         "addWallet": "添加钱包",
         "readOnly": "只读",
-        "multisig": "多重签名"
+        "multisig": "共享"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",

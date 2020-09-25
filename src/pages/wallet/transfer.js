@@ -766,7 +766,9 @@ class Transfer extends Component {
   async confirm(toAddress) {
     const { navigation, addNotification, getBalance } = this.props;
     const { coin } = this;
-    const { symbol, type, address } = coin;
+    const {
+      symbol, type, address, isMultisig,
+    } = coin;
     const { memo } = this.state;
     const { amount } = this.state;
     try {
@@ -778,12 +780,16 @@ class Transfer extends Component {
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
       this.setState({ loading: false });
-      const completedParams = {
-        symbol: coin.symbol,
-        type: coin.type,
-        hash: transaction.txHash,
-      };
-      navigation.navigate('TransferCompleted', completedParams);
+      if (isMultisig) {
+        navigation.navigate('VerifyPhraseSuccess');
+      } else {
+        const completedParams = {
+          symbol: coin.symbol,
+          type: coin.type,
+          hash: transaction.txHash,
+        };
+        navigation.navigate('TransferCompleted', completedParams);
+      }
       transaction = null;
     } catch (error) {
       this.setState({ loading: false });

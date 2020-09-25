@@ -28,7 +28,7 @@
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
         "readOnly": "Somente leitura",
-        "multisig": "Multisig"
+        "multisig": "Compartilhado"
       },
       "history": {
         "noTransNote": "Não foram encontradas transações realizadas com este ativo.",

@@ -127,8 +127,9 @@ class MultisigProposalDetail extends Component {
 
     processProposal = async () => {
       const { proposal } = this;
-      const creator = proposal.get('creator');
-      const type = proposal.get('type');
+      const {
+        creator, type, createdAt, rawTransaction,
+      } = proposal;
       const user = await parseHelper.getUser();
       const username = user.get('username');
       const symbol = 'BTC';
@@ -137,8 +138,7 @@ class MultisigProposalDetail extends Component {
       if (creator === username) {
         isCreator = true;
       }
-      const dateTimeText = moment(proposal.get('createdAt')).format('LLL');
-      const rawTransaction = proposal.get('rawTransaction');
+      const dateTimeText = moment(createdAt).format('LLL');
       const from = rawTransaction.tx.addresses[0];
       const to = rawTransaction.tx.addresses[1];
       const feesValue = rawTransaction.tx.fees;
@@ -169,10 +169,11 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
+      const { rawTransaction, id } = this.proposal;
       try {
         const transaction = new Transaction(this.token, null, null, {});
-        transaction.rawTransaction = this.proposal.get('rawTransaction');
-        transaction.proposalId = this.proposal.id;
+        transaction.rawTransaction = rawTransaction;
+        transaction.proposalId = id;
         await transaction.signTransaction();
         await transaction.processSignedTransaction();
       } catch (error) {

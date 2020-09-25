@@ -104,7 +104,7 @@ class WalletManager {
             instance = ReadOnlyWallet.fromJSON(wallet);
             break;
           }
-          case WalletType.Shared: {
+          case WalletType.Multisig: {
             instance = SharedWallet.fromJSON(wallet);
             break;
           }
@@ -324,6 +324,20 @@ class WalletManager {
   }
 
   getNormalWallets = () => _.filter(this.wallets, { walletType: WalletType.Normal });
+
+  getMultisigWallets = () => _.filter(this.wallets, { walletType: WalletType.Multisig });
+
+  findTokenByInvitationCode = (invitationCode) => {
+    let foundCoin = null;
+    for (let i = 0; i < this.wallets.length; i += 1) {
+      const coin = this.wallets[i].coins[0];
+      if (coin.invitationCode === invitationCode) {
+        foundCoin = coin;
+        break;
+      }
+    }
+    return foundCoin;
+  }
 }
 
 export default new WalletManager();
