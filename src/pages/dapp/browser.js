@@ -315,7 +315,6 @@ class DAppBrowser extends Component {
   handlePersonalSign = async (id, message) => {
     const { callAuthVerify } = this.props;
     const { wallet: { coins } } = this.state;
-    console.log('handlePersonalSign message: ', message);
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
@@ -453,7 +452,6 @@ class DAppBrowser extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      console.log('input: ', input);
       if (input && input.method === 'approve') {
         this.popupAllowanceModal(id, txData, symbol);
       } else {
