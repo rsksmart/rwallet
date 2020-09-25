@@ -28,11 +28,11 @@ export const getTransactionFees = async (type, address, toAddress, fee, memo = '
 };
 
 export const getContractAddress = async (symbol, type) => {
-  let contractAddress = '';
   if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
-    contractAddress = ASSETS_CONTRACT[symbol][type];
+    const contractAddress = ASSETS_CONTRACT[symbol][type];
+    return Rsk3.utils.toChecksumAddress(contractAddress);
   }
-  return Rsk3.utils.toChecksumAddress(contractAddress);
+  return '';
 };
 
 export const encodeContractTransfer = async (contractAddress, type, from, to, value) => {
@@ -44,7 +44,7 @@ export const encodeContractTransfer = async (contractAddress, type, from, to, va
 };
 
 export const createRawTransaction = async ({
-  symbol, type, sender, receiver, value, memo, gasPrice, gas,
+  symbol, type, sender, receiver, value, memo, gasPrice, gas, contractAddress,
 }) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const rsk3 = new Rsk3(rskEndpoint);
@@ -59,13 +59,12 @@ export const createRawTransaction = async ({
     gasPrice,
     value,
   };
-  if (symbol === 'RBTC') {
+  if (symbol === 'RBTC' || !contractAddress) {
     rawTransaction.to = to;
     rawTransaction.data = memo;
   } else {
-    const assetContract = ASSETS_CONTRACT[symbol][type];
-    const contract = rsk3.Contract(contractAbi, assetContract);
-    rawTransaction.to = assetContract;
+    const contract = rsk3.Contract(contractAbi, Rsk3.utils.toChecksumAddress(contractAddress));
+    rawTransaction.to = contractAddress;
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
   }
