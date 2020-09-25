@@ -44,8 +44,8 @@ export default function TransactionModal({
   const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
   return (
     <BaseModal
-      title={strings('page.wallet.walletconnect.approveMessage')}
-      description={strings('page.wallet.walletconnect.approveMessageDesc', { dappUrl })}
+      title={strings('page.wallet.walletconnect.approveTransaction')}
+      description={strings('page.wallet.walletconnect.approveTransactionDesc', { dappUrl })}
       content={(
         <>
           <View style={styles.line}>

@@ -542,7 +542,7 @@
     },
     "dappWarning": {
       "title": "Redirecionando para o Dapp de terceiros \"%{dappName}\"",
-      "body": "%{description}\n\nNota: Você será redirecionado para um Dapp de terceiros \"%{dappName}\". Por favor, analise cuidadosamente o Termo de Acordo do Usuário e a Política de Privacidade do Dapp. \"%{dappName}\" é responsável por todas as ações e uso no Dapp.\n\n"
+      "body": "%{description}Nota: Você será redirecionado para um Dapp de terceiros \"%{dappName}\". Por favor, analise cuidadosamente o Termo de Acordo do Usuário e a Política de Privacidade do Dapp. \"%{dappName}\" é responsável por todas as ações e uso no Dapp.\n\n"
     },
     "walletSelection": {
       "title": "Por favor escolha uma carteira"
