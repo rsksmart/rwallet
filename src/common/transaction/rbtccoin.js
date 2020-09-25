@@ -6,7 +6,7 @@ import contractAbi from '../contractAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
-export const getTransactionFees = async (type, address, toAddress, fee, memo) => {
+export const getTransactionFees = async (type, address, toAddress, fee, memo = '') => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const rsk3 = new Rsk3(rskEndpoint);
   const from = Rsk3.utils.toChecksumAddress(address);
@@ -40,12 +40,11 @@ export const encodeContractTransfer = async (contractAddress, type, from, to, va
   const rsk3 = new Rsk3(rskEndpoint);
   const contract = rsk3.Contract(contractAbi, contractAddress);
   const data = await contract.methods.transfer(to, value).encodeABI();
-  // const gas = await contract.methods.transfer(to, value).estimateGas();
   return data;
 };
 
 export const createRawTransaction = async ({
-  symbol, type, sender, receiver, value, data, memo, gasPrice, gas, fallback,
+  symbol, type, sender, receiver, value, memo, gasPrice, gas,
 }) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const rsk3 = new Rsk3(rskEndpoint);

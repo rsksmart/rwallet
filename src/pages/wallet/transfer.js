@@ -567,7 +567,7 @@ class Transfer extends Component {
     const { amount, memo } = this.state;
     const { coin, txFeesCache, toAddress } = this;
     const {
-      symbol, type, transactions, privateKey, address,
+      symbol, type, transactions, privateKey, address, contractAddress,
     } = coin;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
     const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
@@ -606,10 +606,8 @@ class Transfer extends Component {
       } else if (symbol === 'RRTC') {
         transactionFees = await rbtc.getTransactionFees(type, address, toAddress, fee, memo);
       } else {
-        // transactionFees = await parseHelper.getTransactionFees(symbol, type, address, toAddress, fee, memo);
-        const contractAddress = await rbtc.getContractAddress(symbol, type);
-        console.log('contractAddress: ', contractAddress);
-        const data = await rbtc.encodeContractTransfer(contractAddress, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), fee);
+        const contractAddr = contractAddress || await rbtc.getContractAddress(symbol, type);
+        const data = await rbtc.encodeContractTransfer(contractAddr, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), fee);
         console.log('data: ', data);
         transactionFees = await rbtc.getTransactionFees(type, address, contractAddress, fee, data);
       }
