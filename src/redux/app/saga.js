@@ -212,13 +212,12 @@ function* createRawTransaction(action) {
   const { payload } = action;
   console.log('saga::createRawTransaction is triggered, payload: ', payload); // This is undefined
   try {
-    console.log('createRawTransaction payload: ', payload);
     const response = yield call(ParseHelper.createRawTransaction, payload);
     console.log('saga::createRawTransaction got response, response: ', response);
-    // yield put({
-    //   type: actions.CREATE_RAW_TRANSATION_RESULT,
-    //   value: response,
-    // });
+    yield put({
+      type: actions.CREATE_RAW_TRANSATION_RESULT,
+      value: response,
+    });
   } catch (err) {
     console.log(err);
     // TODO: need to add notification here if failed
