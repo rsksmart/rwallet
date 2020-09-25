@@ -2,7 +2,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { NETWORK, ASSETS_CONTRACT } from '../constants';
-import contractAbi from '../contractAbi.json';
+import assetAbi from '../assetAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -38,7 +38,7 @@ export const getContractAddress = async (symbol, type) => {
 export const encodeContractTransfer = async (contractAddress, type, from, to, value) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const rsk3 = new Rsk3(rskEndpoint);
-  const contract = rsk3.Contract(contractAbi, contractAddress);
+  const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress));
   const data = await contract.methods.transfer(to, value).encodeABI();
   return data;
 };
@@ -63,7 +63,7 @@ export const createRawTransaction = async ({
     rawTransaction.to = to;
     rawTransaction.data = memo;
   } else {
-    const contract = rsk3.Contract(contractAbi, Rsk3.utils.toChecksumAddress(contractAddress));
+    const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress));
     rawTransaction.to = contractAddress;
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';

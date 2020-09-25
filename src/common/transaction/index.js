@@ -34,6 +34,8 @@ class Transaction {
     } = extraParams;
     this.symbol = symbol;
     this.netType = type;
+
+    // If coin is custom token added by user, coin.contractAddress is not null and the value is saved in rwallet locally
     this.contractAddress = contractAddress || (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) || '';
     this.sender = address;
     this.receiver = receiver;
