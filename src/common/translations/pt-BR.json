@@ -160,7 +160,7 @@
         "tryAgain": "Tente novamente",
         "tryLater": "Tente mais tarde",
         "approveMessage": "Aprovar assinatura de mensagem",
-        "approveMessageDesc": "Ao clicar em confirmar, você concorda em assinar a mensagem iniciada por %{dappUrl}",
+        "approveMessageDesc": "Ao clicar em confirmar, você concorda em assinar a mensagem gerada por %{dappUrl}",
         "message": "Mensagem",
         "successDesc": "Sucesso!Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
         "approveTransaction": "Aprovar transação",
