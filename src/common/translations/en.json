@@ -526,7 +526,8 @@
     },
     "dappWarning": {
       "title": "Redirecting to third-party Dapp \"%{dappName}\"",
-      "body": "%{description}Note: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n"
+      "body": "%{description}\n\nNote: You will be redirected to a thrid-party Dapp \"%{dappName}\". Please go through the User Agreement and Privacy Policy of the third-party Dapp carefully. \"%{dappName}\" will reserve full responsibility for all actions and usage on the Dapp.\n\n",
+      "defaultDescription": "You are subject to third-party Dapp's User Agreement and Privacy Policy when entering the third-party Dapp, which is directly and separately liable to you by \"%{dappName}\"."
     },
     "walletSelection": {
       "title": "Please Select a Wallet"

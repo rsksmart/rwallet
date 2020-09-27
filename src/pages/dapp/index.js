@@ -149,10 +149,11 @@ class DAppIndex extends Component {
 
     if (_.isEmpty(exsitDapps)) {
       const dappName = (dapp.name && (dapp.name[language] || dapp.name.en)) || dapp.name;
-      const description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
+      let description = (dapp.description && (dapp.description[language] || dapp.description.en)) || dapp.description;
+      description = description || strings('modal.dappWarning.defaultDescription', { dappName });
       const dappWarningConfirmation = createDappWarningConfirmation(
         strings('modal.dappWarning.title', { dappName }),
-        strings('modal.dappWarning.body', { description: description ? `${description}\n\n` : '', dappName }),
+        strings('modal.dappWarning.body', { description, dappName }),
         () => {
           this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
           storage.setIsShowRnsFeature();
