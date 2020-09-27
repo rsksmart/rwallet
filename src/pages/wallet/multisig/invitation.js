@@ -93,10 +93,8 @@ class MultisigAddressInvitation extends Component {
     }
 
     fetchMultisigInvitation = async () => {
-      const result = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
-      const copayerMembers = result.get('copayerMembers');
-      const generatedAddress = result.get('generatedAddress');
-      const copayerNumber = result.get('copayerNumber');
+      const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
+      const { copayerMembers, generatedAddress, copayerNumber } = invitation;
 
       // If the address has been generated, assign it to the corresponding local token
       if (!_.isEmpty(generatedAddress)) {

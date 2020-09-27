@@ -399,6 +399,24 @@ function* processNotificationRequest(action) {
       }
       break;
     }
+    case 'createdProposal':
+    case 'acceptedProposal':
+    case 'rejectedProposal':
+    case 'deletedProposal':
+    case 'proposalSent':
+    case 'proposalFailed': {
+      const { type, multiSigAddress } = params;
+      const token = walletManager.findToken('BTC', type, multiSigAddress);
+      if (token) {
+        common.currentNavigation.navigate('Home');
+        const newAction = actions.setFcmNavParams({
+          routeName: 'MultisigProposalDetail',
+          routeParams: { token, proposal: params },
+        });
+        yield put(newAction);
+      }
+      break;
+    }
     default:
   }
   return null;
@@ -521,6 +539,15 @@ function* receiveNotificationRequest(action) {
         if (token) {
           yield put(walletActions.setMultisigBTCAddress(token, generatedAddress));
         }
+        break;
+      }
+      case 'createdProposal':
+      case 'acceptedProposal':
+      case 'rejectedProposal':
+      case 'deletedProposal':
+      case 'proposalSent':
+      case 'proposalFailed': {
+        yield put(walletActions.updateProposal(params));
         break;
       }
       default:

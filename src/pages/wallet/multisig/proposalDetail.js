@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
   Text, TouchableOpacity, View, StyleSheet, Image, Clipboard,
@@ -20,6 +21,7 @@ import { createInfoNotification } from '../../../common/notification.controller'
 import { createInfoConfirmation } from '../../../common/confirmation.controller';
 import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
+import { PROPOSAL_STATUS } from '../../../common/constants';
 
 const styles = StyleSheet.create({
   body: {
@@ -97,6 +99,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 10,
   },
+  deletedNotice: {
+    backgroundColor: '#fef8f2',
+    color: '#f6bc5a',
+    marginHorizontal: 25,
+    paddingVertical: 9,
+    textAlign: 'center',
+  },
 });
 
 class MultisigProposalDetail extends Component {
@@ -110,37 +119,56 @@ class MultisigProposalDetail extends Component {
       this.token = token;
       this.proposal = proposal;
       this.state = {
-        isCreator: false,
         dateTimeText: null,
         to: null,
         from: null,
         amountText: null,
         feesText: null,
         isLoading: false,
+        status: null,
+        isOperatedUser: false,
       };
     }
 
     componentDidMount() {
       this.processProposal();
+      this.refreshProposal();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { updateTimestamp: lastUpdateTimeStamp } = this.props;
+      const { proposal, token } = this;
+      const { updateTimestamp } = nextProps;
+      if (lastUpdateTimeStamp !== updateTimestamp) {
+        if (token.proposal && token.proposal.objectId === proposal.objectId && token.proposal.updatedAt > proposal.updatedAt) {
+          this.proposal = token.proposal;
+          this.processProposal();
+        }
+      }
     }
 
     componentWillUnmount() {
       CancelablePromiseUtil.cancel(this);
     }
 
+    refreshProposal = async () => {
+      console.log('refreshProposal, this.proposal: ', this.proposal);
+      const { objectId } = this.proposal;
+      const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposal(objectId), this);
+      this.proposal = proposal;
+      this.processProposal();
+      this.updateProposal(proposal);
+    }
+
     processProposal = async () => {
       const { proposal } = this;
       const {
-        creator, type, createdAt, rawTransaction,
+        type, createdAt, rawTransaction, status,
       } = proposal;
       const user = await parseHelper.getUser();
       const username = user.get('username');
       const symbol = 'BTC';
 
-      let isCreator = false;
-      if (creator === username) {
-        isCreator = true;
-      }
       const dateTimeText = moment(createdAt).format('LLL');
       const from = rawTransaction.tx.addresses[0];
       const to = rawTransaction.tx.addresses[1];
@@ -153,8 +181,13 @@ class MultisigProposalDetail extends Component {
       const fees = common.convertUnitToCoinAmount(symbol, feesValue);
       const feesText = `${common.getBalanceString(fees, symbol)} ${common.getSymbolName(symbol, type)}`;
 
+      const { acceptedMembers, rejectedMembers } = proposal;
+      const isAcceptedUser = !!_.find(acceptedMembers, { userId: username });
+      const isRejectedUser = !!_.find(rejectedMembers, { userId: username });
+      const isOperatedUser = isAcceptedUser || isRejectedUser;
+
       this.setState({
-        isCreator, dateTimeText, to, from, amountText, feesText,
+        dateTimeText, to, from, amountText, feesText, status, isOperatedUser,
       });
     }
 
@@ -172,17 +205,17 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
-      const { navigation, updateProposal } = this.props;
-      const { rawTransaction, id } = this.proposal;
+      const { navigation } = this.props;
+      const { rawTransaction, objectId } = this.proposal;
       const { symbol, type } = this.token;
       try {
         this.setState({ isLoading: true });
         const transaction = new Transaction(this.token, null, null, {});
         transaction.rawTransaction = rawTransaction;
-        transaction.proposalId = id;
+        transaction.proposalId = objectId;
         await transaction.signTransaction();
         const proposal = await transaction.processSignedTransaction();
-        updateProposal(proposal);
+        this.updateProposal(proposal);
         if (transaction.txHash) {
           const completedParams = { symbol, type, hash: transaction.txHash };
           navigation.navigate('TransferCompleted', completedParams);
@@ -202,15 +235,16 @@ class MultisigProposalDetail extends Component {
     }
 
     reject = async () => {
-      const { navigation, addConfirmation, updateProposal } = this.props;
+      const { navigation, addConfirmation } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.rejectProposal.title'),
         strings('modal.rejectProposal.body'),
         async () => {
           try {
+            console.log('this.proposal: ', this.proposal);
             this.setState({ isLoading: true });
-            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.id), this);
-            updateProposal(proposal);
+            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.objectId), this);
+            this.updateProposal(proposal);
             console.log('reject, result: ', proposal);
             navigation.goBack();
           } catch (error) {
@@ -225,15 +259,16 @@ class MultisigProposalDetail extends Component {
     }
 
     delete = () => {
-      const { navigation, addConfirmation, updateProposal } = this.props;
+      const { navigation, addConfirmation } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.deleteProposal.title'),
         strings('modal.deleteProposal.body'),
         async () => {
           try {
+            console.log('this.proposal: ', this.proposal);
             this.setState({ isLoading: true });
-            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.id), this);
-            updateProposal(proposal);
+            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.objectId), this);
+            this.updateProposal(proposal);
             console.log('delete, result: ', proposal);
             navigation.goBack();
           } catch (error) {
@@ -245,6 +280,15 @@ class MultisigProposalDetail extends Component {
         () => null,
       );
       addConfirmation(confirmation);
+    }
+
+    updateProposal = (proposal) => {
+      const { token } = this;
+      console.log('updateProposal, proposal: ', proposal);
+      if (token.proposal && token.proposal.objectId === proposal.objectId) {
+        const { updateProposal } = this.props;
+        updateProposal(proposal);
+      }
     }
 
     onToPress = () => {
@@ -272,12 +316,30 @@ class MultisigProposalDetail extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        isCreator, dateTimeText, to, from, amountText, feesText, isLoading,
+        dateTimeText, to, from, amountText, feesText, isLoading, status, isOperatedUser,
       } = this.state;
 
-      const customButton = isCreator ? null : (
+      const customButton = isOperatedUser || status !== PROPOSAL_STATUS.PENDING ? null : (
         <Button text="button.accept" onPress={this.onAcceptPressed} />
       );
+
+      let statusView = null;
+      switch (status) {
+        case PROPOSAL_STATUS.DELETED: {
+          statusView = (<Text style={styles.deletedNotice}>The payment was removed.</Text>);
+          break;
+        }
+        case PROPOSAL_STATUS.FAILED: {
+          statusView = (<Text style={styles.deletedNotice}>The payment was failed.</Text>);
+          break;
+        }
+        case PROPOSAL_STATUS.REJECTED: {
+          statusView = (<Text style={styles.deletedNotice}>Payment Rejected.</Text>);
+          break;
+        }
+        default:
+          statusView = isOperatedUser ? null : (<TouchableOpacity style={[styles.deleteView]} onPress={this.reject}><Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>);
+      }
 
       return (
         <BasePageGereral
@@ -297,9 +359,7 @@ class MultisigProposalDetail extends Component {
               <Text style={[styles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
               <Text>{feesText}</Text>
             </View>
-            {
-              !isCreator && (<TouchableOpacity style={[styles.deleteView]} onPress={this.reject}><Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>)
-            }
+            { statusView }
             <View style={styles.sectionContainer}>
               <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
               <Text>{dateTimeText}</Text>
@@ -318,11 +378,13 @@ class MultisigProposalDetail extends Component {
                 <Image style={styles.copyIcon} source={references.images.copyIcon} />
               </TouchableOpacity>
             </View>
-            <View style={styles.sectionContainer}>
-              <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
-                <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
-              </TouchableOpacity>
-            </View>
+            { status === PROPOSAL_STATUS.PENDING && (
+              <View style={styles.sectionContainer}>
+                <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
+                  <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </BasePageGereral>
       );
@@ -344,11 +406,13 @@ MultisigProposalDetail.propTypes = {
   addConfirmation: PropTypes.func.isRequired,
   updateProposal: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  updateTimestamp: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   walletManager: state.Wallet.get('walletManager'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

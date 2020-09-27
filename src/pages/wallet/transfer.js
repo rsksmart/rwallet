@@ -764,7 +764,9 @@ class Transfer extends Component {
   }
 
   async confirm(toAddress) {
-    const { navigation, addNotification, getBalance } = this.props;
+    const {
+      navigation, addNotification, getBalance, updateProposal,
+    } = this.props;
     const { coin } = this;
     const {
       symbol, type, address, isMultisig,
@@ -778,9 +780,10 @@ class Transfer extends Component {
       let transaction = new Transaction(coin, toAddress, amount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
-      await transaction.processSignedTransaction();
+      const result = await transaction.processSignedTransaction();
       this.setState({ loading: false });
       if (isMultisig) {
+        updateProposal(result);
         navigation.navigate('CreateProposalSuccess');
       } else {
         const completedParams = {
@@ -1061,6 +1064,7 @@ Transfer.propTypes = {
   currency: PropTypes.string.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
+  updateProposal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -1088,6 +1092,7 @@ const mapDispatchToProps = (dispatch) => ({
     appActions.showPasscode(category, callback, fallback),
   ),
   getBalance: (params) => dispatch(walletActions.getBalance(params)),
+  updateProposal: (proposal) => dispatch(walletActions.updateProposal(proposal)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transfer);

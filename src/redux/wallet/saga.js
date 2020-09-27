@@ -571,7 +571,11 @@ function* updateProposal(proposal) {
     const coin = wallet.coins[0];
     console.log('updateProposal!!!!!!!!!!updateProposal1!!!!!!!, coin: ', coin);
     if (proposal && proposal.multiSigAddress === coin.address) {
-      coin.proposal = proposal.status === PROPOSAL_STATUS.PENDING ? proposal : null;
+      if (proposal.status !== PROPOSAL_STATUS.PENDING) {
+        coin.proposal = null;
+      } else if (!coin.proposal || proposal.updatedAt > coin.proposal.updatedAt) {
+        coin.proposal = proposal;
+      }
       break;
     }
   }
@@ -621,7 +625,7 @@ function* fetchProposal(action) {
   const { token } = action.payload;
   const { address } = token;
   try {
-    const proposal = yield call(ParseHelper.fetchProposal, address);
+    const proposal = yield call(ParseHelper.fetchProposalByAddress, address);
     if (proposal) {
       yield call(updateProposal, proposal);
     }

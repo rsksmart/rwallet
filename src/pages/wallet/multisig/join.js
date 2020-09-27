@@ -105,11 +105,9 @@ class JoinMultisigAddress extends Component {
       } finally {
         this.setState({ isLoading: false });
       }
-
-      const type = invitation.get('type');
-      const walletName = invitation.get('walletName');
-      const signatureNumber = invitation.get('signatureNumber');
-      const copayerNumber = invitation.get('copayerNumber');
+      const {
+        type, walletName, signatureNumber, copayerNumber,
+      } = invitation;
       const multisigParams = {
         userName, invitationCode, type, walletName, signatureNumber, copayerNumber,
       };

@@ -549,11 +549,21 @@ class ParseHelper {
     return proposal;
   }
 
-  static async fetchProposal(address) {
-    console.log('fetchPendingProposal, address: ', address);
+  static async fetchProposalByAddress(address) {
+    console.log('fetchProposalByAddress, address: ', address);
     const query = new Parse.Query(ParseMultiSigProposal);
     query.equalTo('multiSigAddress', address);
     const result = await query.descending('createdAt').first();
+    const proposal = parseDataUtil.getProposal(result);
+    console.log('fetchProposalByAddress, proposal: ', result);
+    return proposal;
+  }
+
+  static async fetchProposal(proposalId) {
+    console.log('fetchPendingProposal, proposalId: ', proposalId);
+    const query = new Parse.Query(ParseMultiSigProposal);
+    query.equalTo('objectId', proposalId);
+    const result = await query.first();
     const proposal = parseDataUtil.getProposal(result);
     console.log('fetchPendingProposal, proposal: ', result);
     return proposal;

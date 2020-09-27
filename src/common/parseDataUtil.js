@@ -115,6 +115,7 @@ const parseDataUtil = {
     const transaction = {
       status: proposalObject.get('status'),
       createdAt: proposalObject.get('createdAt'),
+      updatedAt: proposalObject.get('updatedAt'),
       multiSigAddress: proposalObject.get('multiSigAddress'),
       type: proposalObject.get('type'),
       rawTransaction: proposalObject.get('rawTransaction'),
@@ -122,9 +123,25 @@ const parseDataUtil = {
       rejectedMembers: proposalObject.get('rejectedMembers'),
       creator: proposalObject.get('creator'),
       hash: proposalObject.get('hash'),
-      id: proposalObject.id,
+      objectId: proposalObject.id,
     };
     return transaction;
+  },
+
+  getInvitation(invitationObject) {
+    if (!invitationObject) {
+      return null;
+    }
+    const invitation = {
+      type: invitationObject.get('type'),
+      walletName: invitationObject.get('walletName'),
+      signatureNumber: invitationObject.get('signatureNumber'),
+      copayerNumber: invitationObject.get('copayerNumber'),
+      copayerMembers: invitationObject.get('copayerMembers'),
+      generatedAddress: invitationObject.get('generatedAddress'),
+      objectId: invitationObject.id,
+    };
+    return invitation;
   },
 };
 

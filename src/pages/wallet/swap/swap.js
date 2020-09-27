@@ -426,11 +426,11 @@ class Swap extends Component {
 
   exchange = async () => {
     const {
-      navigation, swapSource, swapDest, addNotification, getBalance,
+      navigation, swapSource, swapDest, addNotification, getBalance, updateProposal,
     } = this.props;
     const { sourceAmount, limitMaxDepositCoin } = this.state;
     const {
-      address: sourceAddress, id: sourceId, symbol: sourceSymbol, type: sourceType,
+      address: sourceAddress, id: sourceId, symbol: sourceSymbol, type: sourceType, isMultisig,
     } = swapSource.coin;
     try {
       this.setState({ isLoading: true });
@@ -459,6 +459,20 @@ class Swap extends Component {
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       await transaction.processSignedTransaction();
+      const result = await transaction.processSignedTransaction();
+      this.setState({ isLoading: false });
+      if (isMultisig) {
+        updateProposal(result);
+        navigation.navigate('CreateProposalSuccess');
+      } else {
+        const completedParams = {
+          symbol: swapSource.coin.symbol,
+          type: swapSource.coin.type,
+          hash: transaction.txHash,
+        };
+        navigation.navigate('TransferCompleted', completedParams);
+      }
+
       this.setState({ isLoading: false });
       const completedParams = {
         symbol: swapSource.coin.symbol,
@@ -925,6 +939,7 @@ Swap.propTypes = {
   passcode: PropTypes.string,
   language: PropTypes.string.isRequired,
   getBalance: PropTypes.func.isRequired,
+  updateProposal: PropTypes.func.isRequired,
 };
 
 Swap.defaultProps = {
@@ -964,6 +979,7 @@ const mapDispatchToProps = (dispatch) => ({
   getSwapRate: (sourceCoinId, destCoinId) => dispatch(walletActions.getSwapRate(sourceCoinId, destCoinId)),
   resetSwapRateError: () => dispatch(walletActions.resetSwapRateResultError()),
   getBalance: (params) => dispatch(walletActions.getBalance(params)),
+  updateProposal: (proposal) => dispatch(walletActions.updateProposal(proposal)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Swap);
