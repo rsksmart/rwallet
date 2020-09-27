@@ -561,19 +561,26 @@ function* joinSharedWalletRequest(action) {
   }
 }
 
-function* updateProposal(action) {
-  const { proposal } = action;
+function* updateProposal(proposal) {
+  console.log('updateProposal!!!!!!!!!!updateProposal1!!!!!!!');
   const state = yield select();
   const walletManager = state.Wallet.get('walletManager');
   const multisigWallets = walletManager.getMultisigWallets();
   for (let i = 0; i < multisigWallets.length; i += 1) {
     const wallet = multisigWallets[i];
-    const coin = wallet.coin[0];
-    if (proposal.multiSigAddress === coin.address) {
+    const coin = wallet.coins[0];
+    console.log('updateProposal!!!!!!!!!!updateProposal1!!!!!!!, coin: ', coin);
+    if (proposal && proposal.multiSigAddress === coin.address) {
       coin.proposal = proposal.status === PROPOSAL_STATUS.PENDING ? proposal : null;
+      break;
     }
   }
   yield put({ type: actions.WALLETS_UPDATED });
+}
+
+function* updateProposalRequest(action) {
+  const { proposal } = action;
+  yield call(updateProposal, proposal);
 }
 
 function createPendingProposalChannel(subscription, tokens) {
@@ -608,6 +615,19 @@ function createPendingProposalChannel(subscription, tokens) {
     // unsubscribe function, this gets called when we close the channel
     return unsubscribeHandler;
   });
+}
+
+function* fetchProposal(action) {
+  const { token } = action.payload;
+  const { address } = token;
+  try {
+    const proposal = yield call(ParseHelper.fetchProposal, address);
+    if (proposal) {
+      yield call(updateProposal, proposal);
+    }
+  } catch (error) {
+    console.log('fetchPendingProposal, error:', error);
+  }
 }
 
 function* fetchPendingProposals(action) {
@@ -693,6 +713,7 @@ export default function* () {
 
     takeEvery(actions.INIT_LIVE_QUERY_PENDING_PROPOSALS, initLiveQueryPendingProposals),
     takeEvery(actions.FETCH_PENDING_PROPOSALS, fetchPendingProposals),
-    takeEvery(actions.UPDATE_PROPOSAL, updateProposal),
+    takeEvery(actions.FETCH_PROPOSAL, fetchProposal),
+    takeEvery(actions.UPDATE_PROPOSAL, updateProposalRequest),
   ]);
 }

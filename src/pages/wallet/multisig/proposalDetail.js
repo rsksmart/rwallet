@@ -17,12 +17,14 @@ import { strings } from '../../../common/i18n';
 import Button from '../../../components/common/button/button';
 import references from '../../../assets/references';
 import { createInfoNotification } from '../../../common/notification.controller';
+import { createInfoConfirmation } from '../../../common/confirmation.controller';
 import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
 
 const styles = StyleSheet.create({
   body: {
     flex: 1,
+    marginTop: 20,
   },
   sectionContainer: {
     paddingHorizontal: 25,
@@ -114,6 +116,7 @@ class MultisigProposalDetail extends Component {
         from: null,
         amountText: null,
         feesText: null,
+        isLoading: false,
       };
     }
 
@@ -169,15 +172,17 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
-      const { navigation } = this.props;
+      const { navigation, updateProposal } = this.props;
       const { rawTransaction, id } = this.proposal;
       const { symbol, type } = this.token;
       try {
+        this.setState({ isLoading: true });
         const transaction = new Transaction(this.token, null, null, {});
         transaction.rawTransaction = rawTransaction;
         transaction.proposalId = id;
         await transaction.signTransaction();
-        await transaction.processSignedTransaction();
+        const proposal = await transaction.processSignedTransaction();
+        updateProposal(proposal);
         if (transaction.txHash) {
           const completedParams = { symbol, type, hash: transaction.txHash };
           navigation.navigate('TransferCompleted', completedParams);
@@ -186,26 +191,60 @@ class MultisigProposalDetail extends Component {
         }
       } catch (error) {
         console.log('accept, error: ', error);
+      } finally {
+        this.setState({ isLoading: false });
       }
+    }
+
+    onAcceptPressed = () => {
+      const { callAuthVerify } = this.props;
+      callAuthVerify(this.accept, () => null);
     }
 
     reject = async () => {
-      try {
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.id), this);
-        console.log('reject, result: ', result);
-      } catch (error) {
-        console.log('reject, error: ', error);
-      }
+      const { navigation, addConfirmation, updateProposal } = this.props;
+      const confirmation = createInfoConfirmation(
+        strings('modal.rejectProposal.title'),
+        strings('modal.rejectProposal.body'),
+        async () => {
+          try {
+            this.setState({ isLoading: true });
+            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.id), this);
+            updateProposal(proposal);
+            console.log('reject, result: ', proposal);
+            navigation.goBack();
+          } catch (error) {
+            console.log('reject, error: ', error);
+          } finally {
+            this.setState({ isLoading: false });
+          }
+        },
+        () => null,
+      );
+      addConfirmation(confirmation);
     }
 
-    delete = async () => {
-      console.log('delete');
-      try {
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.id), this);
-        console.log('delete, result: ', result);
-      } catch (error) {
-        console.log('delete, error: ', error);
-      }
+    delete = () => {
+      const { navigation, addConfirmation, updateProposal } = this.props;
+      const confirmation = createInfoConfirmation(
+        strings('modal.deleteProposal.title'),
+        strings('modal.deleteProposal.body'),
+        async () => {
+          try {
+            this.setState({ isLoading: true });
+            const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.id), this);
+            updateProposal(proposal);
+            console.log('delete, result: ', proposal);
+            navigation.goBack();
+          } catch (error) {
+            console.log('delete, error: ', error);
+          } finally {
+            this.setState({ isLoading: false });
+          }
+        },
+        () => null,
+      );
+      addConfirmation(confirmation);
     }
 
     onToPress = () => {
@@ -233,53 +272,57 @@ class MultisigProposalDetail extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        isCreator, dateTimeText, to, from, amountText, feesText,
+        isCreator, dateTimeText, to, from, amountText, feesText, isLoading,
       } = this.state;
 
       const customButton = isCreator ? null : (
-        <Button text="button.accept" onPress={this.accept} />
+        <Button text="button.accept" onPress={this.onAcceptPressed} />
       );
 
       return (
         <BasePageGereral
           isSafeView
+          hasLoader
+          isLoading={isLoading}
           headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.proposal.title" />}
           customBottomButton={customButton}
         >
-          <View style={styles.sectionContainer}>
-            <View style={styles.amountView}>
-              <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amountText}</ResponsiveText>
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <View style={styles.amountView}>
+                <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amountText}</ResponsiveText>
+              </View>
             </View>
-          </View>
-          <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
-            <Text>{feesText}</Text>
-          </View>
-          {
-            !isCreator && (<TouchableOpacity onPress={this.reject}><Text>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>)
-          }
-          <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
-            <Text>{dateTimeText}</Text>
-          </View>
-          <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.to')}</Text>
-            <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
-              <Text style={[styles.copyText]}>{to}</Text>
-              <Image style={styles.copyIcon} source={references.images.copyIcon} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.from')}</Text>
-            <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
-              <Text style={[styles.copyText]}>{from}</Text>
-              <Image style={styles.copyIcon} source={references.images.copyIcon} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.sectionContainer}>
-            <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
-              <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
-            </TouchableOpacity>
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
+              <Text>{feesText}</Text>
+            </View>
+            {
+              !isCreator && (<TouchableOpacity style={[styles.deleteView]} onPress={this.reject}><Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>)
+            }
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
+              <Text>{dateTimeText}</Text>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.to')}</Text>
+              <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
+                <Text style={[styles.copyText]}>{to}</Text>
+                <Image style={styles.copyIcon} source={references.images.copyIcon} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.from')}</Text>
+              <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
+                <Text style={[styles.copyText]}>{from}</Text>
+                <Image style={styles.copyIcon} source={references.images.copyIcon} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.sectionContainer}>
+              <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
+                <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </BasePageGereral>
       );
@@ -298,6 +341,9 @@ MultisigProposalDetail.propTypes = {
     findToken: PropTypes.func,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
+  updateProposal: PropTypes.func.isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -306,9 +352,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setMultisigBTCAddress: (invitationCode, address) => dispatch(walletActions.setMultisigBTCAddress(invitationCode, address)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
+  setMultisigBTCAddress: (invitationCode, address) => dispatch(walletActions.setMultisigBTCAddress(invitationCode, address)),
+  updateProposal: (proposal) => dispatch(walletActions.updateProposal(proposal)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MultisigProposalDetail);

@@ -44,7 +44,7 @@ class SharedWalletIndex extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" />}
+          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.sharedWallet.title" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>

@@ -426,7 +426,8 @@ class History extends Component {
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
     if (isMultisig) {
-      this.fetchPendingProposal();
+      this.fetchProposal();
+      this.processPendingProposal();
     }
   }
 
@@ -457,7 +458,7 @@ class History extends Component {
       }
 
       if (isMultisig) {
-        this.fetchPendingProposal();
+        this.processPendingProposal();
       }
 
       this.setState({
@@ -533,11 +534,15 @@ class History extends Component {
     return dateTimeText;
   }
 
-  fetchPendingProposal = async () => {
+  processPendingProposal = async () => {
     const { proposal, symbol, type } = this.coin;
     this.proposal = proposal;
+    if (!proposal) {
+      this.setState({ proposal: null });
+      return;
+    }
 
-    const creator = 'Zheu';
+    const creator = proposal.acceptedMembers[0].name;
     const dateTime = this.calculateDateTime(moment(proposal.createdAt));
     const { rawTransaction } = proposal;
     const amountValue = rawTransaction.tx.outputs[0].value;
@@ -552,6 +557,11 @@ class History extends Component {
 
     console.log('proposal: ', newProposal);
     this.setState({ proposal: newProposal });
+  }
+
+  fetchProposal = async () => {
+    const { fetchProposal } = this.props;
+    fetchProposal(this.coin);
   }
 
   loadMoreData = () => {
@@ -742,6 +752,7 @@ History.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
   txTimestamp: PropTypes.number,
   addNotification: PropTypes.func.isRequired,
+  fetchProposal: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -761,6 +772,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  fetchProposal: (token) => dispatch(walletActions.fetchProposal(token)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

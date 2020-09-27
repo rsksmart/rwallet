@@ -534,25 +534,29 @@ class ParseHelper {
     const params = { proposalId };
     console.log('rejectMultisigTransaction, params: ', params);
     const result = await Parse.Cloud.run('rejectMultisigTransaction', params);
-    console.log('rejectMultisigTransaction, result: ', result);
-    return result;
+    const proposal = parseDataUtil.getProposal(result);
+    console.log('rejectMultisigTransaction, proposal: ', proposal);
+    return proposal;
   }
 
   static async deleteMultiSigProposal(proposalId) {
     const params = { proposalId };
     console.log('deleteMultiSigProposal, params: ', params);
     const result = await Parse.Cloud.run('deleteMultiSigProposal', params);
-    console.log('deleteMultiSigProposal, result: ', result);
-    return result;
+    const proposal = parseDataUtil.getProposal(result);
+    proposal.status = PROPOSAL_STATUS.DELETED;
+    console.log('deleteMultiSigProposal, proposal: ', proposal);
+    return proposal;
   }
 
-  static async fetchPendingProposal(address) {
+  static async fetchProposal(address) {
     console.log('fetchPendingProposal, address: ', address);
     const query = new Parse.Query(ParseMultiSigProposal);
-    query.equalTo('multiSigAddress', address).equalTo('status', PROPOSAL_STATUS.PENDING);
+    query.equalTo('multiSigAddress', address);
     const result = await query.descending('createdAt').first();
-    console.log('fetchPendingProposal, result: ', result);
-    return result;
+    const proposal = parseDataUtil.getProposal(result);
+    console.log('fetchPendingProposal, proposal: ', result);
+    return proposal;
   }
 
   static getPendingProposalsQuery(addresses) {
@@ -576,6 +580,14 @@ class ParseHelper {
     const query = ParseHelper.getPendingProposalsQuery(addresses);
     const subscription = await query.subscribe();
     return subscription;
+  }
+
+  static async sendSignedMultisigTransaction(params) {
+    console.log(`processSignedTransaction, params: ${JSON.stringify(params)}`);
+    const result = await Parse.Cloud.run('sendSignedMultisigTransaction', params);
+    const proposal = parseDataUtil.getProposal(result);
+    console.log(`processSignedTransaction, proposal: ${JSON.stringify(proposal)}`);
+    return proposal;
   }
 }
 

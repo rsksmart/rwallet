@@ -1,5 +1,6 @@
 import Parse from 'parse/lib/react-native/Parse';
 import common from '../common';
+import ParseHelper from '../parse';
 import ERROR_CODE from '../errors';
 import storage from '../storage';
 
@@ -104,8 +105,7 @@ class Transaction {
         console.log(`processSignedTransaction, param: ${JSON.stringify(param)}`);
         if (this.isMultisig) {
           param.proposalId = this.proposalId;
-          console.log(`processSignedTransaction, params: ${JSON.stringify(param)}`);
-          result = await Parse.Cloud.run('sendSignedMultisigTransaction', param);
+          result = await ParseHelper.sendSignedMultisigTransaction(param);
         } else {
           result = await Parse.Cloud.run('sendSignedTransaction', param);
         }
@@ -123,7 +123,7 @@ class Transaction {
       throw new Error('Transaction.processSignedTransaction err: this.signedTransaction is null');
     }
     console.log(`Transaction.processSignedTransaction finished, result: ${JSON.stringify(result)}`);
-    this.txHash = this.isMultisig ? result.get('hash') : getTxHash(this.symbol, result);
+    this.txHash = this.isMultisig ? result.hash : getTxHash(this.symbol, result);
     return result;
   }
 }

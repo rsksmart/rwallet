@@ -622,6 +622,14 @@
     "invalidWalletInvitation": {
       "title": "Invalid Invitation Code",
       "body": "This invitation code is invalid."
+    },
+    "deleteProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to remove this transaction?"
+    },
+    "rejectProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to reject this transaction?"
     }
   },
   "currency": {

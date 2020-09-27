@@ -109,6 +109,9 @@ const parseDataUtil = {
   },
 
   getProposal(proposalObject) {
+    if (!proposalObject) {
+      return null;
+    }
     const transaction = {
       status: proposalObject.get('status'),
       createdAt: proposalObject.get('createdAt'),
@@ -118,6 +121,7 @@ const parseDataUtil = {
       acceptedMembers: proposalObject.get('acceptedMembers'),
       rejectedMembers: proposalObject.get('rejectedMembers'),
       creator: proposalObject.get('creator'),
+      hash: proposalObject.get('hash'),
       id: proposalObject.id,
     };
     return transaction;

@@ -58,6 +58,7 @@ const actions = {
   INIT_LIVE_QUERY_PENDING_PROPOSALS: 'INIT_LIVE_QUERY_PENDING_PROPOSALS',
   SET_PENDING_PROPOSAL_CHANNEL: 'SET_PENDING_PROPOSAL_CHANNEL',
   FETCH_PENDING_PROPOSALS: 'FETCH_PENDING_PROPOSALS',
+  FETCH_PROPOSAL: 'FETCH_PROPOSAL',
   UPDATE_PROPOSAL: 'UPDATE_PROPOSAL',
 
   SET_SUBDOMAINS: 'SET_SUBDOMAINS',
@@ -230,6 +231,10 @@ const actions = {
   updateProposal: (proposal) => ({
     type: actions.UPDATE_PROPOSAL,
     proposal,
+  }),
+  fetchProposal: (token) => ({
+    type: actions.FETCH_PROPOSAL,
+    payload: { token },
   }),
 };
 
