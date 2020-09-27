@@ -59,14 +59,16 @@ export const createRawTransaction = async ({
     gasPrice,
     value,
   };
-  if (symbol === 'RBTC' || !contractAddress) {
+  if (symbol === 'RBTC') {
     rawTransaction.to = to;
     rawTransaction.data = memo;
-  } else {
+  } else if (contractAddress) {
     const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress));
     rawTransaction.to = contractAddress;
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
+  } else {
+    throw new Error(`Contract address for ${symbol} is undefined.`);
   }
   return rawTransaction;
 };
