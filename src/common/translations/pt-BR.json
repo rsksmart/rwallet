@@ -542,8 +542,8 @@
     },
     "dappWarning": {
       "title": "Redirecionando para o Dapp de terceiros \"%{dappName}\"",
-      "body": "%{description}\n\nNota: Você será redirecionado para um Dapp de terceiros \"%{dappName}\". Por favor, analise cuidadosamente o termo de acordo do usuário e a política de privacidade do Dapp. \"%{dappName}\" é responsável por todas as ações e usos no Dapp.\n\n",
-      "defaultDescription": "Você está sujeito ao Acordo de Utilizador e Política de Privacidade de Dapp de terceiros quando entra no Dapp de terceiros, que é diretamente e separadamente responsável para você por \"%{dappName}\"."
+        "body": "%{description}\n\nNota: Você será redirecionado para um Dapp de terceiros \"%{dappName}\". Por favor, analise cuidadosamente o termo de uso e a política de privacidade do serviço oferecido. \"%{dappName}\" é responsável por todas as ações e usos no Dapp.\n\n",
+      "defaultDescription": "Ao utilizar Dapps de terceiros, você está sujeito ao termo de uso e a política de privacidade desses Dapps, neste caso disponibilizados por \"%{dappName}\"."
     },
     "walletSelection": {
       "title": "Por favor escolha uma carteira"
