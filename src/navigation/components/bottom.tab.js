@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
@@ -46,54 +46,99 @@ const styles = StyleSheet.create({
   tabButtonText: {
     color: color.white,
   },
+  badgeView: {
+    minWidth: 17,
+    height: 17,
+    position: 'absolute',
+    top: 10,
+    right: 22,
+    backgroundColor: color.app.theme,
+    borderRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    color: color.white,
+    fontSize: 12,
+    paddingHorizontal: 4,
+  },
 });
 
-const TabBar = (props) => {
-  const {
-    renderIcon,
-    getLabelText,
-    activeTintColor,
-    inactiveTintColor,
-    onTabPress,
-    onTabLongPress,
-    getAccessibilityLabel,
-    navigation,
-  } = props;
+class TabBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      proposalNumberText: null,
+    };
+  }
 
-  const { routes, index: activeRouteIndex } = navigation.state;
+  componentWillReceiveProps(nextProps) {
+    const { updateTimestamp: lastUpdateTimeStamp } = this.props;
+    const { updateTimestamp, walletManager } = nextProps;
+    if (updateTimestamp !== lastUpdateTimeStamp) {
+      const proposals = walletManager.getProposals();
+      const proposalNumber = proposals.length;
+      if (proposalNumber > 0) {
+        const proposalNumberText = proposalNumber > 99 ? '99+' : proposalNumber;
+        this.setState({ proposalNumberText });
+      } else {
+        this.setState({ proposalNumberText: null });
+      }
+    }
+  }
 
-  return (
-    <View style={styles.container}>
-      <View style={StyleSheet.absoluteFillObject}>
-        <SpotLight style={styles.spotLight} pose={`route${activeRouteIndex}`} />
+  render() {
+    const {
+      renderIcon,
+      getLabelText,
+      activeTintColor,
+      inactiveTintColor,
+      onTabPress,
+      onTabLongPress,
+      getAccessibilityLabel,
+      navigation,
+    } = this.props;
+
+    const { routes, index: activeRouteIndex } = navigation.state;
+    const { proposalNumberText } = this.state;
+
+    return (
+      <View style={styles.container}>
+        <View style={StyleSheet.absoluteFillObject}>
+          <SpotLight style={styles.spotLight} pose={`route${activeRouteIndex}`} />
+        </View>
+        {routes.map((route, routeIndex) => {
+          const isRouteActive = routeIndex === activeRouteIndex;
+          const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
+          const opacity = isRouteActive ? 1 : 0.6;
+          return (
+            <TouchableOpacity
+              key={getLabelText({ route }).replace(' ', '_')}
+              style={styles.tabButton}
+              onPress={() => {
+                onTabPress({ route });
+              }}
+              onLongPress={() => {
+                onTabLongPress({ route });
+              }}
+              accessibilityLabel={getAccessibilityLabel({ route })}
+            >
+              <Scaler style={styles.scaler} pose={isRouteActive ? 'active' : 'inactive'}>
+                {renderIcon({ route, focused: isRouteActive, tintColor })}
+              </Scaler>
+              { routeIndex === 0 && proposalNumberText && (
+                <View style={styles.badgeView}>
+                  <Text style={styles.badge}>{proposalNumberText}</Text>
+                </View>
+              )}
+              <Text style={[styles.tabButtonText, { opacity }]}>{strings(getLabelText({ route }))}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
-      {routes.map((route, routeIndex) => {
-        const isRouteActive = routeIndex === activeRouteIndex;
-        const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
-        const opacity = isRouteActive ? 1 : 0.6;
-        return (
-          <TouchableOpacity
-            key={getLabelText({ route }).replace(' ', '_')}
-            style={styles.tabButton}
-            onPress={() => {
-              onTabPress({ route });
-            }}
-            onLongPress={() => {
-              onTabLongPress({ route });
-            }}
-            accessibilityLabel={getAccessibilityLabel({ route })}
-          >
-            <Scaler style={styles.scaler} pose={isRouteActive ? 'active' : 'inactive'}>
-              {renderIcon({ route, focused: isRouteActive, tintColor })}
-            </Scaler>
-
-            <Text style={[styles.tabButtonText, { opacity }]}>{strings(getLabelText({ route }))}</Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-};
+    );
+  }
+}
 
 TabBar.propTypes = {
   renderIcon: PropTypes.func.isRequired,
@@ -109,10 +154,16 @@ TabBar.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  walletManager: PropTypes.shape({
+    getProposals: PropTypes.func.isRequired,
+  }).isRequired,
+  updateTimestamp: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   language: state.Wallet.get('language'),
+  walletManager: state.Wallet.get('walletManager'),
+  updateTimestamp: state.Wallet.get('updateTimestamp'),
 });
 
 export default connect(mapStateToProps)(TabBar);

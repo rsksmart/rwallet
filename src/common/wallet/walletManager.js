@@ -338,6 +338,18 @@ class WalletManager {
     }
     return foundCoin;
   }
+
+  getProposals = () => {
+    const wallets = this.getMultisigWallets();
+    const walletProposals = _.reduce(wallets, (proposals, wallet) => {
+      const coin = wallet.coins[0];
+      if (coin.proposal) {
+        proposals.push(coin.proposal);
+      }
+      return proposals;
+    }, []);
+    return walletProposals;
+  }
 }
 
 export default new WalletManager();

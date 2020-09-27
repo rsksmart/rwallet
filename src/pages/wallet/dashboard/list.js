@@ -63,6 +63,7 @@ class WalletList extends Component {
           isMultisig: coin.isMultisig,
           signatureNumber: coin.signatureNumber,
           copayerNumber: coin.copayerNumber,
+          hasProposal: !!coin.proposal,
           onPress: () => {
             if (coin.isMultisig && !coin.address) {
               navigation.navigate('MultisigAddressInvitation', { coin });

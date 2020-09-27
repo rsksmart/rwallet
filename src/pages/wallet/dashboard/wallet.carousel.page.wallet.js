@@ -181,11 +181,31 @@ const styles = StyleSheet.create({
     backgroundColor: color.whiteA90,
     fontFamily: 'Avenir-Medium',
   },
+  badgeView: {
+    minWidth: 17,
+    height: 17,
+    backgroundColor: color.app.theme,
+    position: 'absolute',
+    right: 10,
+    bottom: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 3,
+  },
+  badge: {
+    color: color.white,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 12,
+  },
 });
 
 const WalletItem = (item) => (
   <TouchableOpacity style={coinListItemStyles.row} onPress={item.onPress}>
-    <Image style={coinListItemStyles.icon} source={item.icon} />
+    <View>
+      <Image style={coinListItemStyles.icon} source={item.icon} />
+      {item.hasProposal && (<View style={styles.badgeView}><Text style={styles.badge}>1</Text></View>)}
+    </View>
     <View style={coinListItemStyles.rowRightView}>
       <View style={coinListItemStyles.rowTitleView}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
