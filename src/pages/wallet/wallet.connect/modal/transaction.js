@@ -74,7 +74,7 @@ export default function TransactionModal({
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
-            <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
+            <Text style={styles.lineValue}>{`${Number(fee).toFixed(6)} RBTC`}</Text>
           </View>
 
           <View style={styles.line}>
