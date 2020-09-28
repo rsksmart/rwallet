@@ -50,7 +50,7 @@ const config = {
     RBTC: 6,
     RIF: 3,
     DOC: 3,
-    CustomToken: 3,
+    CustomToken: 6,
   },
   assetValueDecimalPlaces: 2,
   transactionUrls: {
@@ -100,7 +100,5 @@ const config = {
   storageVersion: 3,
   defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
-
-
 
 export default config;
