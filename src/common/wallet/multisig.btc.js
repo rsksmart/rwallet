@@ -1,19 +1,20 @@
 import _ from 'lodash';
-import references from '../../assets/references';
+import coinType from './cointype';
 
 class MultisigBtc {
   constructor(invitationCode, type) {
     this.symbol = 'BTC';
     this.type = type;
     this.id = type === 'Mainnet' ? this.symbol : this.symbol + this.type;
+    this.metadata = coinType[this.id];
+    this.chain = this.metadata.chain;
+    this.name = this.metadata.defaultName;
+    this.icon = this.metadata.icon;
     this.privateKey = undefined;
     this.publicKey = undefined;
     this.address = undefined;
-    this.name = 'Multisig BTC';
-    this.icon = references.images.BTC;
     this.isMultisig = true;
     this.invitationCode = invitationCode;
-    this.chain = 'Bitcoin';
     this.signatureNumber = null;
     this.copayerNumber = null;
   }

@@ -85,4 +85,12 @@ export default class SharedWallet extends Wallet {
     wallet.restoreTokensWithDerivations(coins, derivations);
     return wallet;
   }
+
+  static create(walletName, phrase, type) {
+    const wallet = new SharedWallet({
+      id: 0, name: walletName, mnemonic: phrase, type,
+    });
+    wallet.createTokensFromSeed([], []);
+    return wallet;
+  }
 }

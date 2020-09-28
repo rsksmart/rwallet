@@ -96,6 +96,7 @@ export default function WalletTypeList({ data, style }) {
         />
       )}
       keyExtractor={(item, index) => index.toString()}
+      alwaysBounceVertical={false}
     />
   );
 }

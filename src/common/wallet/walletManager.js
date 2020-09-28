@@ -350,6 +350,11 @@ class WalletManager {
     }, []);
     return walletProposals;
   }
+
+  addWallet = (wallet) => {
+    this.currentKeyId += 1;
+    this.wallets.unshift(wallet);
+  }
 }
 
 export default new WalletManager();

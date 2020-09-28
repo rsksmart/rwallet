@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   headerBoardView: {
     alignItems: 'center',
     marginTop: -76,
+    marginBottom: 20,
   },
   myAssets: {
     marginTop: 17,
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 70,
+    height: 60,
   },
   rowRight: {
     flexDirection: 'row',
@@ -191,14 +192,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0,
     alignSelf: 'flex-end',
-    marginTop: 4,
   },
   recent: {
     color: color.black,
     fontSize: 13,
     letterSpacing: 0.25,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   sendingView: {
     flexDirection: 'row',
@@ -238,15 +238,37 @@ const styles = StyleSheet.create({
   },
   proposalView: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    marginTop: 5,
   },
   proposalRight: {
     flex: 1,
+    alignItems: 'flex-start',
+    height: 40,
   },
   proposalText: {
     color: color.black,
     fontFamily: 'Avenir-Roman',
     fontSize: 13,
     letterSpacing: 0.33,
+  },
+  proposalDateTime: {
+    color: color.gray93,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 12,
+    letterSpacing: 0,
+    alignSelf: 'flex-end',
+    marginTop: -5,
+  },
+  proposalAmount: {
+    color: color.black,
+    fontFamily: 'Avenir-Heavy',
+    fontSize: 16,
+    letterSpacing: 1,
+    alignSelf: 'flex-end',
+    marginTop: -3,
   },
 });
 
@@ -712,21 +734,21 @@ class History extends Component {
           </View>
         </View>
         {proposal && (
-          <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+          <View style={[styles.sectionContainer, { marginBottom: 15 }]}>
             <Loc style={[styles.recent]} text="page.wallet.history.pendingProposals" />
-            <TouchableOpacity style={styles.proposalView} onPress={this.onProposalPressed}>
+            <TouchableOpacity style={[styles.proposalView]} onPress={this.onProposalPressed}>
               <View style={styles.proposalLeft}>
                 <Loc style={[styles.proposalText]} text="txState.Sending" />
                 <Text style={styles.proposalText}>{`Created by ${proposal.creator}`}</Text>
               </View>
-              <View style={styles.proposalRight}>
-                <Text style={styles.amount}>{proposal.amount}</Text>
-                <Text style={styles.datetime}>{proposal.dateTime}</Text>
+              <View style={[styles.proposalRight]}>
+                <Text style={styles.proposalAmount}>{proposal.amount}</Text>
+                <Text style={styles.proposalDateTime}>{proposal.dateTime}</Text>
               </View>
             </TouchableOpacity>
           </View>
         )}
-        <View style={[styles.sectionContainer, { marginTop: 30 }]}>
+        <View style={[styles.sectionContainer]}>
           <Loc style={[styles.recent]} text="page.wallet.history.recent" />
         </View>
         <View style={[styles.sectionContainer, flex.flex1]}>

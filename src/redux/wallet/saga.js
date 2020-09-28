@@ -501,9 +501,8 @@ function* createSharedWalletRequest(action) {
       signatureNumber, copayerNumber, publicKey, type, name: userName, walletName,
     };
 
-    const result = yield call(ParseHelper.createMultisigAddress, params);
-    console.log('result: ', result);
-    const invitationCode = result.get('invitationCode');
+    const invitation = yield call(ParseHelper.createMultisigAddress, params);
+    const { invitationCode } = invitation;
 
     walletManager.currentKeyId += 1;
     walletManager.wallets.unshift(wallet);
@@ -519,6 +518,7 @@ function* createSharedWalletRequest(action) {
     yield call(walletManager.serialize);
   } catch (error) {
     console.warn('createSharedWalletRequest, error: ', error);
+    yield put(actions.setSharedWalletCreationError(error));
   }
 }
 
@@ -539,10 +539,10 @@ function* joinSharedWalletRequest(action) {
     const derivation = wallet.derivations[0];
     derivation.addressType = BtcAddressType.legacy;
     const { publicKey } = derivation;
-    const result = yield call(ParseHelper.joinMultisigAddress, {
+    const invitation = yield call(ParseHelper.joinMultisigAddress, {
       invitationCode, publicKey, name: userName,
     });
-    console.log('result: ', result);
+    console.log('joinSharedWalletRequest, invitation: ', invitation);
 
     walletManager.currentKeyId += 1;
     walletManager.wallets.unshift(wallet);
@@ -554,7 +554,9 @@ function* joinSharedWalletRequest(action) {
 
     // Save to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
+    console.log('joinSharedWalletRequest, WALLETS_UPDATED');
     yield put({ type: actions.WALLETS_UPDATED });
+    console.log('joinSharedWalletRequest, WALLETS_UPDATED, 111111111');
     yield call(walletManager.serialize);
   } catch (error) {
     console.warn('joinSharedWalletRequest, error: ', error);

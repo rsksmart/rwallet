@@ -12,7 +12,9 @@ import WordField, { wordFieldWidth } from '../../components/common/misc/wordFiel
 import Loc from '../../components/common/misc/loc';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import { createErrorNotification, createInfoNotification } from '../../common/notification.controller';
+import {
+  createErrorNotification, createInfoNotification, getErrorNotification, getDefaultErrorNotification,
+} from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
@@ -152,11 +154,19 @@ class VerifyPhrase extends Component {
     this.renderConfirmation = this.renderConfirmation.bind(this);
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const { navigation, isWalletsUpdated } = nextProps;
-    const { isCreatingMultisig, isJoiningMultisig } = navigation.state.params;
+  componentDidMount() {
+    const { resetWalletsUpdated } = this.props;
+    resetWalletsUpdated();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { navigation, isWalletsUpdated, sharedWalletCreationError } = nextProps;
+    const {
+      isCreatingMultisig, isJoiningMultisig, resetSharedWalletCreationError, addNotification, sharedWalletCreationError: lastSharedWalletCreationError,
+    } = navigation.state.params;
     const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
+    console.log('componentWillReceiveProps, isWalletsUpdated: ', isWalletsUpdated);
     if (isWalletsUpdated && isLoading) {
       this.setState({ isLoading: false });
       if (isCreatingMultisig || isJoiningMultisig) {
@@ -165,14 +175,22 @@ class VerifyPhrase extends Component {
       }
       navigation.navigate('VerifyPhraseSuccess');
     }
+
+    if (!lastSharedWalletCreationError && sharedWalletCreationError) {
+      resetSharedWalletCreationError();
+      this.setState({ isLoading: false });
+      const notification = getErrorNotification(sharedWalletCreationError.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+      addNotification(notification);
+    }
   }
 
   // call resetWalletsUpdated when componentWillUnmount is safe.
   componentWillUnmount() {
-    const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+    const { isWalletsUpdated, resetWalletsUpdated, resetSharedWalletCreationError } = this.props;
     if (isWalletsUpdated) {
       resetWalletsUpdated();
     }
+    resetSharedWalletCreationError();
   }
 
   onCancelPressed = (cancelIndex) => {
@@ -218,18 +236,17 @@ class VerifyPhrase extends Component {
     this.reset();
   }
 
-  onTagsPressed(/* index */) {
-    this.onPhraseValid();
-    // const { selectedWordIndexs } = this.state;
-    // selectedWordIndexs.push(index);
-    // this.setState({
-    //   selectedWordIndexs,
-    // });
+  onTagsPressed(index) {
+    const { selectedWordIndexs } = this.state;
+    selectedWordIndexs.push(index);
+    this.setState({
+      selectedWordIndexs,
+    });
 
-    // if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
-    //   this.setState({ isShowConfirmation: true });
-    // }
-    // this.calculateOffsetAndMove();
+    if (selectedWordIndexs.length === MNEMONIC_PHRASE_LENGTH) {
+      this.setState({ isShowConfirmation: true });
+    }
+    this.calculateOffsetAndMove();
   }
 
   onMultisigWalletCreated = () => {
@@ -421,17 +438,21 @@ VerifyPhrase.propTypes = {
   passcode: PropTypes.string,
   createSharedWallet: PropTypes.func.isRequired,
   joinSharedWallet: PropTypes.func.isRequired,
+  sharedWalletCreationError: PropTypes.shape({}),
+  resetSharedWalletCreationError: PropTypes.func.isRequired,
 };
 
 VerifyPhrase.defaultProps = {
   walletManager: undefined,
   passcode: undefined,
+  sharedWalletCreationError: undefined,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   passcode: state.App.get('passcode'),
+  sharedWalletCreationError: state.Wallet.get('sharedWalletCreationError'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -442,6 +463,7 @@ const mapDispatchToProps = (dispatch) => ({
   showPasscode: (category, callback) => dispatch(appActions.showPasscode(category, callback)),
   createSharedWallet: (phrase, coin, multisigParams) => dispatch(walletActions.createSharedWallet(phrase, coin, multisigParams)),
   joinSharedWallet: (phrase, multisigParams) => dispatch(walletActions.joinSharedWallet(phrase, multisigParams)),
+  resetSharedWalletCreationError: () => dispatch(walletActions.setSharedWalletCreationError(null)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyPhrase);

@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   fieldName: {
     fontFamily: 'Avenir-Heavy',
     fontSize: 20,
+    color: color.black,
   },
   note: {
     fontFamily: 'Avenir-Book',

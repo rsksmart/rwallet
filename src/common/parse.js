@@ -496,7 +496,8 @@ class ParseHelper {
     };
     console.log('createMultisigAddress, params: ', JSON.stringify(params));
     const result = await Parse.Cloud.run('createMultisigAddress', params);
-    return result;
+    const invitation = parseDataUtil.getInvitation(result);
+    return invitation;
   }
 
   static async joinMultisigAddress({
@@ -507,7 +508,8 @@ class ParseHelper {
     };
     console.log('joinMultisigAddress, params: ', params);
     const result = await Parse.Cloud.run('joinMultisigAddress', params);
-    return result;
+    const invitation = parseDataUtil.getInvitation(result);
+    return invitation;
   }
 
   /**

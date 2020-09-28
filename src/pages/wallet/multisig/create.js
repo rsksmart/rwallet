@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
-  View, StyleSheet, TextInput, Switch,
+  View, StyleSheet, TextInput, Switch, TouchableOpacity, BackHandler, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Picker from 'react-native-picker';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 // import _ from 'lodash';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
@@ -16,6 +19,7 @@ import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { BtcAddressType } from '../../../common/constants';
 import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
+
 
 const styles = StyleSheet.create({
   body: {
@@ -38,6 +42,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 20,
   },
+  pickerButton: {
+    height: 46,
+    paddingLeft: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: color.component.input.borderColor,
+    backgroundColor: color.component.input.backgroundColor,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  rowAddress: {
+    fontSize: 16,
+    fontFamily: 'Avenir-Book',
+    marginRight: 7,
+    color: color.black,
+    flex: 1,
+  },
+  rowChevron: {
+    fontSize: 30,
+    color: color.lightGray,
+    right: 5,
+  },
 });
 
 class CreateMultisigAddress extends Component {
@@ -49,18 +75,29 @@ class CreateMultisigAddress extends Component {
       super(props);
       this.state = {
         isLoading: false,
-        canSubmit: true,
-        walletName: 'Multisig Wallet',
-        userName: 'cxy',
-        signatures: '2',
-        copayers: '2',
+        canSubmit: false,
+        walletName: null,
+        userName: null,
+        signatures: 2,
+        copayers: 2,
         isMainnet: false,
         isLegacy: true,
       };
     }
 
+    componentDidMount() {
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        Picker.isPickerShow((status) => {
+          if (status) {
+            Picker.hide();
+          }
+        });
+      });
+    }
+
     componentWillUnmount() {
       CancelablePromiseUtil.cancel(this);
+      this.backHandler.remove();
     }
 
     onCreateButtonPressed = async () => {
@@ -82,19 +119,27 @@ class CreateMultisigAddress extends Component {
     }
 
     onWalletNameChanged = (text) => {
-      this.setState({ walletName: text });
+      this.setState({ walletName: text }, () => {
+        this.checkIfCanSubmit();
+      });
     }
 
     onUserNameChanged = (text) => {
-      this.setState({ userName: text });
+      this.setState({ userName: text }, () => {
+        this.checkIfCanSubmit();
+      });
     }
 
     onSignaturesChanged = (text) => {
-      this.setState({ signatures: text });
+      this.setState({ signatures: text }, () => {
+        this.checkIfCanSubmit();
+      });
     }
 
     onCopayersChanged = (text) => {
-      this.setState({ copayers: text });
+      this.setState({ copayers: text }, () => {
+        this.checkIfCanSubmit();
+      });
     }
 
     onSwitchValueChanged = (value) => {
@@ -105,9 +150,67 @@ class CreateMultisigAddress extends Component {
       this.setState({ isLegacy: value });
     }
 
+    onSignaturesPressed = () => {
+      const { copayers, signatures } = this.state;
+      const data = [];
+
+      let maxNumber = 7;
+      if (copayers && copayers < maxNumber) {
+        maxNumber = copayers;
+      }
+
+      for (let i = 2; i <= maxNumber; i += 1) {
+        data.push(i);
+      }
+
+      Picker.init({
+        pickerData: data,
+        selectedValue: [signatures],
+        onPickerConfirm: (value) => {
+          this.setState({ signatures: parseInt(value, 10) }, () => {
+            this.checkIfCanSubmit();
+          });
+        },
+        pickerTitleText: '',
+      });
+      Picker.show();
+    }
+
+    onCopayersPressed = () => {
+      const { copayers } = this.state;
+      const data = [];
+      for (let i = 2; i <= 7; i += 1) {
+        data.push(i);
+      }
+
+      Picker.init({
+        pickerData: data,
+        selectedValue: [copayers],
+        onPickerConfirm: (value) => {
+          const { signatures } = this.state;
+          let newSignatures = signatures;
+          const newCopayers = parseInt(value, 10);
+          if (signatures && newSignatures > newCopayers) {
+            newSignatures = newCopayers;
+          }
+          this.setState({ copayers: newCopayers, signatures: newSignatures }, () => {
+            this.checkIfCanSubmit();
+          });
+        },
+        pickerTitleText: '',
+      });
+      Picker.show();
+    }
+
+    checkIfCanSubmit = () => {
+      const { walletName, userName } = this.state;
+      const canSubmit = !_.isEmpty(walletName) && !_.isEmpty(userName);
+      this.setState({ canSubmit });
+    }
+
     render() {
       const {
-        isLoading, canSubmit, walletName, userName, isMainnet, isLegacy, signatures, copayers,
+        isLoading, canSubmit, walletName, userName, isMainnet, isLegacy, copayers, signatures,
       } = this.state;
       const { navigation } = this.props;
       const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
@@ -144,26 +247,18 @@ class CreateMultisigAddress extends Component {
               />
             </View>
             <View style={[styles.fieldView, space.marginTop_22]}>
-              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.signatures" />
-              <TextInput
-                style={[presetStyle.textInput, space.marginTop_10]}
-                value={signatures}
-                onChangeText={this.onSignaturesChanged}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
+              <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.signatures" />
+              <TouchableOpacity style={styles.pickerButton} onPress={this.onSignaturesPressed}>
+                <Text style={[styles.rowAddress, space.marginLeft_8]}>{signatures}</Text>
+                <EvilIcons style={styles.rowChevron} name="chevron-down" />
+              </TouchableOpacity>
             </View>
             <View style={[styles.fieldView, space.marginTop_22]}>
-              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.copayers" />
-              <TextInput
-                style={[presetStyle.textInput, space.marginTop_10]}
-                value={copayers}
-                onChangeText={this.onCopayersChanged}
-                autoCapitalize="none"
-                autoCorrect={false}
-                blurOnSubmit={false}
-              />
+              <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.copayers" />
+              <TouchableOpacity style={styles.pickerButton} onPress={this.onCopayersPressed}>
+                <Text style={[styles.rowAddress, space.marginLeft_8]}>{copayers}</Text>
+                <EvilIcons style={styles.rowChevron} name="chevron-down" />
+              </TouchableOpacity>
             </View>
             <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
             <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>

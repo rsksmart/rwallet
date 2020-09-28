@@ -20,6 +20,7 @@ const initState = new Map({
   blockHeightsChannel: undefined,
   pendingProposalChannel: undefined,
   txTimestamp: undefined,
+  sharedWalletCreationError: undefined,
 
   subdomains: [],
 });
@@ -151,6 +152,9 @@ export default function walletReducer(state = initState, action) {
     }
     case actions.SET_SUBDOMAINS: {
       return state.set('subdomains', action.subdomains);
+    }
+    case actions.SET_SHARED_WALLET_CREATION_ERROR: {
+      return state.set('sharedWalletCreationError', action.error);
     }
     default:
       return state;

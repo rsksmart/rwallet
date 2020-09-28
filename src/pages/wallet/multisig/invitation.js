@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, Image,
+  View, Text, FlatList, StyleSheet, Image, Platform, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
+import Share from 'react-native-share';
+import { captureRef } from 'react-native-view-shot';
 import { StackActions } from 'react-navigation';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
@@ -16,6 +18,7 @@ import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { DEVICE } from '../../../common/info';
 import { strings } from '../../../common/i18n';
 import color from '../../../assets/styles/color';
+import flex from '../../../assets/styles/layout.flex';
 
 const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
 
@@ -40,13 +43,14 @@ const styles = StyleSheet.create({
     color: color.codGray,
     fontFamily: 'Avenir-Roman',
     fontSize: 16,
-    marginTop: 30,
+    marginTop: 15,
     marginHorizontal: 25,
     letterSpacing: 0.5,
   },
   list: {
     marginHorizontal: 25,
     marginTop: 15,
+    marginBottom: 30,
   },
   listItem: {
     flexDirection: 'row',
@@ -63,6 +67,16 @@ const styles = StyleSheet.create({
   waitingIcon: {
     width: 20,
     height: 20,
+  },
+  shareLinkView: {
+    marginTop: 15,
+    marginHorizontal: 25,
+  },
+  shareLink: {
+    color: color.app.theme,
+    fontFamily: 'Avenir-Roman',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
@@ -90,6 +104,68 @@ class MultisigAddressInvitation extends Component {
       if (this.interval) {
         clearInterval(this.interval);
       }
+    }
+
+    onSharePressed = async () => {
+      const uri = await captureRef(this.page, {
+        format: 'jpg',
+        quality: 0.8,
+        result: 'tmpfile',
+      });
+
+      const url = uri;
+      const title = '';
+      const message = this.coin.invitationCode;
+      const icon = '';
+      const options = Platform.select({
+        ios: {
+          activityItemSources: [
+            { // For sharing url with custom title.
+              placeholderItem: { type: 'url', content: url },
+              item: {
+                default: { type: 'url', content: url },
+              },
+              subject: {
+                default: title,
+              },
+              linkMetadata: { originalUrl: url, url, title },
+            },
+            { // For sharing text.
+              placeholderItem: { type: 'text', content: message },
+              item: {
+                default: { type: 'text', content: message },
+                message: null, // Specify no text to share via Messages app.
+              },
+              linkMetadata: { // For showing app icon on share preview.
+                title: message,
+              },
+            },
+            { // For using custom icon instead of default text icon at share preview when sharing with message.
+              placeholderItem: {
+                type: 'url',
+                content: icon,
+              },
+              item: {
+                default: {
+                  type: 'text',
+                  content: `${message}`,
+                },
+              },
+              linkMetadata: {
+                title: message,
+                icon,
+              },
+            },
+          ],
+        },
+        default: {
+          title,
+          subject: title,
+          message: `${message}`,
+        },
+      });
+
+      Share.open(options);
     }
 
     fetchMultisigInvitation = async () => {
@@ -144,29 +220,35 @@ class MultisigAddressInvitation extends Component {
       const qrText = `ms:${this.coin.invitationCode}`;
 
       return (
-        <BasePageGereral
-          isSafeView
-          headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.multisigInvitation.title" />}
-        >
-          <View style={styles.body}>
-            <Text style={styles.title}>{strings('page.wallet.multisigInvitation.note')}</Text>
-            <View style={styles.qrCodeView}>
-              <QRCode value={qrText} size={QRCODE_SIZE} />
-            </View>
-            { generatedAddress ? (<Text>{`Generated Address: ${generatedAddress}`}</Text>) : (
-              <View>
-                <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>
-                <FlatList
-                  style={styles.list}
-                  data={copayers}
-                  renderItem={({ item }) => this.renderListItem(item)}
-                  keyExtractor={(item, index) => index.toString()}
-                  ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-                />
+        <View style={flex.flex1} collapsable={false} ref={(ref) => { this.page = ref; }}>
+          <BasePageGereral
+            isSafeView
+            headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.multisigInvitation.title" />}
+          >
+            <View style={styles.body}>
+              <Text style={styles.title}>{strings('page.wallet.multisigInvitation.note')}</Text>
+              <View style={styles.qrCodeView}>
+                <QRCode value={qrText} size={QRCODE_SIZE} />
               </View>
-            )}
-          </View>
-        </BasePageGereral>
+              <TouchableOpacity style={styles.shareLinkView} onPress={this.onSharePressed}>
+                <Text style={styles.shareLink}>Share this invitation with your signer &gt;</Text>
+              </TouchableOpacity>
+              { generatedAddress ? (<Text>{`Generated Address: ${generatedAddress}`}</Text>) : (
+                <View>
+                  <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>
+                  <FlatList
+                    style={styles.list}
+                    data={copayers}
+                    renderItem={({ item }) => this.renderListItem(item)}
+                    keyExtractor={(item, index) => index.toString()}
+                    ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+                    alwaysBounceVertical={false}
+                  />
+                </View>
+              )}
+            </View>
+          </BasePageGereral>
+        </View>
       );
     }
 }

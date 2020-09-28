@@ -71,6 +71,7 @@ const actions = {
 
   CREATE_SHARED_WALLET: 'CREATE_SHARED_WALLET',
   JOIN_SHARED_WALLET: 'JOIN_SHARED_WALLET',
+  SET_SHARED_WALLET_CREATION_ERROR: 'SET_SHARED_WALLET_CREATION_ERROR',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -219,6 +220,10 @@ const actions = {
     payload: {
       phrase, multisigParams,
     },
+  }),
+  setSharedWalletCreationError: (error) => ({
+    type: actions.SET_SHARED_WALLET_CREATION_ERROR,
+    error,
   }),
   fetchPendingProposals: (tokens) => ({
     type: actions.FETCH_PENDING_PROPOSALS,

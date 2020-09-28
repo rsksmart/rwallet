@@ -139,6 +139,7 @@ const parseDataUtil = {
       copayerNumber: invitationObject.get('copayerNumber'),
       copayerMembers: invitationObject.get('copayerMembers'),
       generatedAddress: invitationObject.get('generatedAddress'),
+      invitationCode: invitationObject.get('invitationCode'),
       objectId: invitationObject.id,
     };
     return invitation;
