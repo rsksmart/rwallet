@@ -6,13 +6,13 @@ import assetAbi from '../assetAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
-export const getTransactionFees = async (type, address, toAddress, fee, memo = '') => {
+export const getTransactionFees = async (type, address, toAddress, value, memo = '') => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const rsk3 = new Rsk3(rskEndpoint);
   const from = Rsk3.utils.toChecksumAddress(address);
   const to = Rsk3.utils.toChecksumAddress(toAddress);
   const gas = await rsk3.estimateGas({
-    from, to, value: fee, data: memo,
+    from, to, value, data: memo,
   });
   const latestBlock = await rsk3.getBlock('latest');
   const { minimumGasPrice } = latestBlock;

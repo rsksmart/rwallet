@@ -570,7 +570,7 @@ class Transfer extends Component {
       symbol, type, transactions, privateKey, address, contractAddress,
     } = coin;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 
@@ -604,11 +604,11 @@ class Transfer extends Component {
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       } else if (symbol === 'RRTC') {
-        transactionFees = await rbtc.getTransactionFees(type, address, toAddress, fee, memo);
+        transactionFees = await rbtc.getTransactionFees(type, address, toAddress, value, memo);
       } else {
         const contractAddr = contractAddress || await rbtc.getContractAddress(symbol, type);
-        const data = await rbtc.encodeContractTransfer(contractAddr, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), fee);
-        console.log('data: ', data);
+        const data = await rbtc.encodeContractTransfer(contractAddr, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), value);
+        // Token transfer' value is 0, and the real transfer token amount is incode in data
         transactionFees = await rbtc.getTransactionFees(type, address, contractAddr, 0, data);
       }
       this.setState({ loading: false });
