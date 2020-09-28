@@ -93,6 +93,7 @@ class JoinMultisigAddress extends Component {
       let invitation = null;
       try {
         invitation = await ParseHelper.fetchMultisigInvitation(invitationCode);
+        console.log('onJoinButtonPressed, invitation: ', invitation);
         if (!invitation) {
           const notification = createErrorNotification('modal.invalidWalletInvitation.title', 'modal.invalidWalletInvitation.body');
           addNotification(notification);

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  Text, TouchableOpacity, View, StyleSheet, Image, Clipboard,
+  Text, TouchableOpacity, View, StyleSheet, Image, Clipboard, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -22,11 +22,12 @@ import { createInfoConfirmation } from '../../../common/confirmation.controller'
 import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
 import { PROPOSAL_STATUS } from '../../../common/constants';
+import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 10,
   },
   sectionContainer: {
     paddingHorizontal: 25,
@@ -58,14 +59,14 @@ const styles = StyleSheet.create({
   },
   amount: {
     flex: 1,
-    marginRight: 75,
   },
   amountText: {
     color: color.black,
     fontWeight: '400',
   },
-  amountView: {
-    flexDirection: 'row',
+  amountView: {},
+  assetValue: {
+    fontSize: 17,
   },
   symbol: {
     alignSelf: 'flex-start',
@@ -106,6 +107,33 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     textAlign: 'center',
   },
+  numberView: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: color.app.theme,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  operationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  number: {
+    color: color.app.theme,
+  },
+  operationColumn: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  operationText: {
+    fontFamily: 'Avenir-Heavy',
+  },
+  dateTimeColumn: {},
+  reject: {
+    color: color.warningText,
+  },
 });
 
 class MultisigProposalDetail extends Component {
@@ -127,6 +155,8 @@ class MultisigProposalDetail extends Component {
         isLoading: false,
         status: null,
         isOperatedUser: false,
+        operationSequence: [],
+        assetValue: null,
       };
     }
 
@@ -160,8 +190,15 @@ class MultisigProposalDetail extends Component {
       this.updateProposal(proposal);
     }
 
+    generateOperationSequence = (acceptedMembers, rejectedMembers) => {
+      const allOperations = [...acceptedMembers, ...rejectedMembers];
+      allOperations.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
+      return allOperations;
+    }
+
     processProposal = async () => {
       const { proposal } = this;
+      const { prices, currency } = this.props;
       const {
         type, createdAt, rawTransaction, status,
       } = proposal;
@@ -182,12 +219,18 @@ class MultisigProposalDetail extends Component {
       const feesText = `${common.getBalanceString(fees, symbol)} ${common.getSymbolName(symbol, type)}`;
 
       const { acceptedMembers, rejectedMembers } = proposal;
-      const isAcceptedUser = !!_.find(acceptedMembers, { userId: username });
-      const isRejectedUser = !!_.find(rejectedMembers, { userId: username });
-      const isOperatedUser = isAcceptedUser || isRejectedUser;
+      const acceptedOperations = _.map(acceptedMembers, (member) => ({ ...member, operation: 'Accept' }));
+      const rejectedOperations = _.map(rejectedMembers, (member) => ({ ...member, operation: 'Reject' }));
+      const operationSequence = this.generateOperationSequence(acceptedOperations, rejectedOperations);
+      operationSequence.push({
+        operation: 'Proposal Created', name: operationSequence[0].name, timestamp: operationSequence[0].timestamp,
+      });
+      const isOperatedUser = !!_.find(operationSequence, { userId: username });
+
+      const assetValue = common.getCoinValue(amount, symbol, type, currency, prices);
 
       this.setState({
-        dateTimeText, to, from, amountText, feesText, status, isOperatedUser,
+        dateTimeText, to, from, amountText, assetValue, feesText, status, isOperatedUser, operationSequence,
       });
     }
 
@@ -314,9 +357,9 @@ class MultisigProposalDetail extends Component {
     }
 
     render() {
-      const { navigation } = this.props;
+      const { navigation, currency } = this.props;
       const {
-        dateTimeText, to, from, amountText, feesText, isLoading, status, isOperatedUser,
+        dateTimeText, to, from, amountText, assetValue, feesText, isLoading, status, isOperatedUser, operationSequence,
       } = this.state;
 
       const customButton = isOperatedUser || status !== PROPOSAL_STATUS.PENDING ? null : (
@@ -341,6 +384,9 @@ class MultisigProposalDetail extends Component {
           statusView = isOperatedUser ? null : (<TouchableOpacity style={[styles.deleteView]} onPress={this.reject}><Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>);
       }
 
+      const assetValueText = common.getAssetValueString(assetValue);
+      const currencySymbol = common.getCurrencySymbol(currency);
+
       return (
         <BasePageGereral
           isSafeView
@@ -353,6 +399,7 @@ class MultisigProposalDetail extends Component {
             <View style={styles.sectionContainer}>
               <View style={styles.amountView}>
                 <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amountText}</ResponsiveText>
+                <Text style={styles.assetValue}>{`${currencySymbol}${assetValueText}`}</Text>
               </View>
             </View>
             <View style={styles.sectionContainer}>
@@ -377,6 +424,27 @@ class MultisigProposalDetail extends Component {
                 <Text style={[styles.copyText]}>{from}</Text>
                 <Image style={styles.copyIcon} source={references.images.copyIcon} />
               </TouchableOpacity>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle]}>Timeline</Text>
+              <FlatList
+                style={space.marginTop_5}
+                data={operationSequence}
+                renderItem={({ item, index }) => (
+                  <View style={styles.operationRow}>
+                    <View style={styles.numberView}>
+                      <Text style={styles.number}>{ operationSequence.length - index }</Text>
+                    </View>
+                    <View style={styles.operationColumn}>
+                      <Text style={[styles.operationText, item.operation === 'Reject' ? styles.reject : null]}>{ item.operation }</Text>
+                      <Text>{ item.name }</Text>
+                    </View>
+                    <Text style={styles.dateTimeColumn}>{ this.calcDateTime(moment(item.timestamp)) }</Text>
+                  </View>
+                )}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                keyExtractor={(item, index) => index.toString()}
+              />
             </View>
             { status === PROPOSAL_STATUS.PENDING && (
               <View style={styles.sectionContainer}>
@@ -407,12 +475,16 @@ MultisigProposalDetail.propTypes = {
   updateProposal: PropTypes.func.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   updateTimestamp: PropTypes.number.isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  currency: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   language: state.App.get('language'),
   walletManager: state.Wallet.get('walletManager'),
   updateTimestamp: state.Wallet.get('updateTimestamp'),
+  prices: state.Price.get('prices'),
+  currency: state.App.get('currency'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

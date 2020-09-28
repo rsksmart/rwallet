@@ -517,8 +517,10 @@ class ParseHelper {
   static async fetchMultisigInvitation(invitationCode) {
     console.log('fetchMultisigInvitation, invitationCode: ', invitationCode);
     const query = new Parse.Query(ParseMultiSigInvitation);
-    query.equalTo('invitationCode', invitationCode);
-    return query.first();
+    const result = await query.equalTo('invitationCode', invitationCode).first();
+    const invitation = parseDataUtil.getInvitation(result);
+    console.log('fetchMultisigInvitation, invitation: ', invitation);
+    return invitation;
   }
 
   static async fetchProposals(address) {
