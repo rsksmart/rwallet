@@ -529,8 +529,7 @@
     },
     "dappWarning": {
       "title": "Redireccionamiento a Dapp de terceros \"%{dappName}\"",
-      "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n",
-      "defaultDescription": "Usted está sujeto al Acuerdo de usuario y la Política de privacidad de Dapp de terceros al ingresar al Dapp de terceros, que es responsable directa y por separado ante usted por \"%{dappName}\"."
+      "body": "%{description}Nota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
     },
     "walletSelection": {
       "title": "Por favor seleccione una billetera"
