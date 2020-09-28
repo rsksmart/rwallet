@@ -18,7 +18,7 @@ export const getTransactionFees = async (type, address, toAddress, fee, memo = '
   const { minimumGasPrice } = latestBlock;
   const miniGasPrice = new BigNumber(minimumGasPrice, 16);
   return {
-    gas: 40000,
+    gas,
     gasPrice: {
       low: miniGasPrice.toString(),
       medium: miniGasPrice.multipliedBy(2).toString(),

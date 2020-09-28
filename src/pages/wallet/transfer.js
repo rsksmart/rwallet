@@ -609,7 +609,7 @@ class Transfer extends Component {
         const contractAddr = contractAddress || await rbtc.getContractAddress(symbol, type);
         const data = await rbtc.encodeContractTransfer(contractAddr, type, Rsk3.utils.toChecksumAddress(address), Rsk3.utils.toChecksumAddress(toAddress), fee);
         console.log('data: ', data);
-        transactionFees = await rbtc.getTransactionFees(type, address, contractAddress, fee, data);
+        transactionFees = await rbtc.getTransactionFees(type, address, contractAddr, 0, data);
       }
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
