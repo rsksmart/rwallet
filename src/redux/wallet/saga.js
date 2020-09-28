@@ -229,7 +229,7 @@ function* updateTransactionRequest(action) {
   _.each(foundTokens, (token) => {
     addTokenTransactions(token, [transaction]);
   });
-  return put({ type: actions.WALLETS_UPDATED });
+  return put({ type: actions.UPDATE_WALLETS_DETAIL });
 }
 
 /**
@@ -650,7 +650,7 @@ function* fetchPendingProposals(action) {
       const token = _.find(tokens, { address: multiSigAddress });
       token.proposal = proposal;
     });
-    yield put({ type: actions.WALLETS_UPDATED });
+    yield put({ type: actions.UPDATE_WALLETS_DETAIL });
   } catch (error) {
     console.log('fetchPendingProposal, error:', error);
   }
