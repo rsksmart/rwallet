@@ -639,7 +639,7 @@ class Swap extends Component {
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
     } else {
-      transactionFees = await rbtc.getTransactionFees(type, address, toAddress, amountHex);
+      transactionFees = await rbtc.getTransactionFees(type, swapSource.coin, address, toAddress, amountHex);
       // DOC swap need 2 times gas
       transactionFees.gas = symbol === 'DOC' ? transactionFees.gas * 2 : transactionFees.gas;
       console.log(`parseHelper.getTransactionFees, amount: ${txAmount}, transactionFees: ${JSON.stringify(transactionFees)}`);
