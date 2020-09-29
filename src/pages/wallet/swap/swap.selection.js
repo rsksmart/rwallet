@@ -261,6 +261,12 @@ class SwapSelection extends Component {
         if (!config.coinswitch.initPairs[coin.id]) {
           return;
         }
+
+        // If multisig wallet is not completed, skip it.
+        if (!coin.address) {
+          return;
+        }
+
         if (selectionType === 'dest' && (coin.id === swapSource.coin.id || !config.coinswitch.initPairs[swapSource.coin.id].includes(coin.id))) {
           return;
         }

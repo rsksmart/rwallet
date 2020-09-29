@@ -27,7 +27,8 @@
         "addAsset": "Add Asset",
         "addWallet": "Add Wallet",
         "readOnly": "Read-only",
-        "multisig": "Shared"
+        "multisig": "Shared",
+        "incomplete": "Incomplete"
       },
       "history": {
         "noTransNote": "There is no transaction found for this asset",
@@ -268,7 +269,7 @@
         "duplicateAddress": "This address is already imported in the app. Please try with a different address."
       },
       "createMultisigAddress": {
-        "title": "Create Multisig Address",
+        "title": "Create Shared Wallet",
         "walletName": "Wallet Name",
         "userName": "Your Name",
         "signatures": "Require number of signatures",
@@ -285,14 +286,18 @@
       "multisigInvitation": {
         "title": "Shared Wallet Invitation",
         "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
-        "waitingNote": "Waiting for authorized signer to join"
+        "waitingNote": "Waiting for authorized signer to join",
+        "share": "Share this invitation with your signer >"
       },
       "proposal": {
         "title": "Payment Proposal",
         "created": "Proposal created",
         "delete": "Delete Payment Proposal",
         "reject": "Reject Payment Proposal",
-        "minerFee": "Miner Fee"
+        "minerFee": "Miner Fee",
+        "paymentRemoved": "The payment was removed.",
+        "paymentFailed": "The payment was failed.",
+        "paymentRejected": "Payment Rejected."
       }
     },
     "dapp": {
@@ -643,6 +648,14 @@
     "createMultisigAddress" : {
       "title": "Invalid payment proposal",
       "body": "Sorry, this proposal is no longer valid."
+    },
+    "networkQuestion": {
+      "title": "Network",
+      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+    },
+    "addressTypeQuestion" : {
+      "title": "Address type",
+      "body": "Segwit address is not available now."
     }
   },
   "currency": {

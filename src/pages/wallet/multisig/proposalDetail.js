@@ -372,15 +372,15 @@ class MultisigProposalDetail extends Component {
       let statusView = null;
       switch (status) {
         case PROPOSAL_STATUS.DELETED: {
-          statusView = (<Text style={styles.deletedNotice}>The payment was removed.</Text>);
+          statusView = (<Text style={styles.deletedNotice}>{strings('page.wallet.proposal.paymentRemoved')}</Text>);
           break;
         }
         case PROPOSAL_STATUS.FAILED: {
-          statusView = (<Text style={styles.deletedNotice}>The payment was failed.</Text>);
+          statusView = (<Text style={styles.deletedNotice}>{strings('page.wallet.proposal.paymentFailed')}</Text>);
           break;
         }
         case PROPOSAL_STATUS.REJECTED: {
-          statusView = (<Text style={styles.deletedNotice}>Payment Rejected.</Text>);
+          statusView = (<Text style={styles.deletedNotice}>{strings('page.wallet.proposal.paymentRejected')}</Text>);
           break;
         }
         default:

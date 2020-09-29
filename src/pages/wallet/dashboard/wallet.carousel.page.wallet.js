@@ -221,7 +221,7 @@ const WalletItem = (item) => (
             <Text style={coinListItemStyles.amount}>{item.worth}</Text>
           </View>
         )}
-        { !item.address && <Text style={coinListItemStyles.amount}>Incomplete</Text> }
+        { !item.address && <Loc style={coinListItemStyles.amount} text="page.wallet.list.incomplete" /> }
       </View>
     </View>
   </TouchableOpacity>
@@ -277,12 +277,12 @@ const WalletPage = (props) => {
           <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{assetValueText}</ResponsiveText>
           <View style={styles.myAssetsButtonsView}>
             <View style={styles.myAssetsButtonsContainer}>
-              <TouchableOpacity style={[styles.ButtonView, { opacity: isReadOnlyWallet ? 0.5 : 1 }]} onPress={onSendPressed}>
+              <TouchableOpacity style={[styles.ButtonView, { opacity: isReadOnlyWallet ? 0.5 : 1 }]} onPress={onSendPressed} disabled={!coins[0].address}>
                 <Image source={isReadOnlyWallet ? references.images.send_gray : references.images.send} />
                 <Loc style={[styles.sendText, isReadOnlyWallet ? styles.disableText : null]} text="button.Send" />
               </TouchableOpacity>
               <View style={styles.splitLine} />
-              <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed}>
+              <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed} disabled={!coins[0].address}>
                 <Image source={references.images.receive} />
                 <Loc style={[styles.receiveText]} text="button.Receive" />
               </TouchableOpacity>

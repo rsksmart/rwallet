@@ -27,7 +27,8 @@
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
         "readOnly": "Somente leitura",
-        "multisig": "Compartilhado"
+        "multisig": "Compartilhado",
+        "incomplete": "Incompleto"
       },
       "history": {
         "noTransNote": "Não existe transação encontrada para este ativo",
@@ -70,6 +71,7 @@
       },
       "add": {
         "title": "Adicionar carteira",
+        "subTitle": "Escolha uma das opções abaixo",
         "createWallet": "Criar carteira básica",
         "createWalletNote": "Recomendado para usuários iniciantes",
         "importWallet": "Importar carteira existente",
@@ -269,13 +271,35 @@
         "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
       },
       "createMultisigAddress": {
-        "title": "Criar Endereço Multisig"
+        "title": "Criar carteira compartilhada",
+        "walletName": "Nome da carteira",
+        "userName": "Seu nome",
+        "signatures": "Requer número de assinaturas",
+        "copayers": "Número total de copayers",
+        "legacy": "Legado",
+        "advancedOptions": "opções avançadas"
       },
       "joinMultisigAddress": {
         "title": "Junte-se à Multisig Wallet",
         "userName": "Seu nome",
         "invitationCode": "Convite Carteira",
         "note": "Você precisa ler um código QR de um convite da Carteira Compartilhada para ingressar em um. Peça ao seu amigo para compartilhar o convite por e-mail ou aplicativos de mensagens."
+      },
+      "multisigInvitation": {
+        "title": "Convite da carteira compartilhada",
+        "note": "Compartilhe este endereço com os dispositivos que estão ingressando nesta conta. cada copayer tem sua própria frase de recuperação. Para recuperar fundos armazenados em uma carteira compartilhada, você precisará da frase de recuperação de cada copayer.",
+        "waitingNote": "Esperando o signatário autorizado entrar",
+        "share": "Compartilhe este convite com seu signatário >"
+      },
+      "proposal": {
+        "title": "Proposta de Pagamento",
+        "created": "Proposta criada",
+        "delete": "Excluir Proposta de Pagamento",
+        "reject": "Rejeitar Proposta de Pagamento",
+        "minerFee": "Taxa do mineiro",
+        "paymentRemoved": "O pagamento foi removido.",
+        "paymentFailed": "O pagamento falhou.",
+        "paymentRejected": "Pagamento rejeitado."
       }
     },
     "dapp": {
@@ -598,6 +622,38 @@
     "readOnlyLimit": {
       "title": "Operação não disponível",
       "body": "As operações de Enviar, Trocar e Ler QR Code não estão disponíveis para uma carteira somente leitura. Para habilitá-los, importe esta carteira com suas frases de 12 palavras."
+    },
+    "invalidWalletInvitation": {
+      "title": "Invalid Invitation Code",
+      "body": "This invitation code is invalid."
+    },
+    "deleteProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to remove this transaction?"
+    },
+    "rejectProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to reject this transaction?"
+    },
+    "userNotLogin": {
+      "title": "Not logged in",
+      "body": "You are not logged in."
+    },
+    "userOperated" : {
+      "title": "Operated",
+      "body": "Sorry, you have already done so."
+    },
+    "createMultisigAddress" : {
+      "title": "Invalid payment proposal",
+      "body": "Sorry, this proposal is no longer valid."
+    },
+    "networkQuestion": {
+      "title": "Network",
+      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+    },
+    "addressTypeQuestion" : {
+      "title": "Address type",
+      "body": "Segwit address is not available now."
     }
   },
   "currency": {

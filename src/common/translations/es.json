@@ -27,7 +27,8 @@
         "addAsset": "Agregar activo",
         "addWallet": "Agregar billetera",
         "readOnly": "Solo lectura",
-        "multisig": "Compartido"
+        "multisig": "Compartido",
+        "incomplete": "Incompleto"
       },
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
@@ -70,6 +71,7 @@
       },
       "add": {
         "title": "Agregar Wallet",
+        "subTitle": "Elija una de las opciones siguientes",
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
         "importWallet": "Importar billetera existente",
@@ -269,12 +271,13 @@
         "duplicateAddress": "Esta dirección ya está importada en la aplicación. Intente con una dirección diferente."
       },
       "createMultisigAddress": {
-        "title": "Crear dirección de firma múltiple",
-        "walletName": "Wallet Name",
-        "userName": "Your Name",
-        "signatures": "Require number of signatures",
-        "copayers": "Total number of copayers",
-        "segwit": "Segwit"
+        "title": "Crear billetera compartida",
+        "walletName": "Nombre de cartera",
+        "userName": "Tu nombre",
+        "signatures": "Requerir número de firmas",
+        "copayers": "Número total de copagos",
+        "legacy": "Legado",
+        "advancedOptions": "Opciones avanzadas"
       },
       "joinMultisigAddress": {
         "title": "Únete a Multisig Wallet",
@@ -283,12 +286,20 @@
         "note": "Necesita escanear un código QR de una invitación de Monedero Compartido para unirse a uno. Pídale a su amigo que comparta la invitación a través de aplicaciones de mensajería o correo electrónico."
       },
       "multisigInvitation": {
-        "title": "Shared Wallet Invitation",
-        "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
-        "waitingNote": "Waiting for authorized signer to join"
+        "title": "Invitación de billetera compartida",
+        "note": "Comparta esta dirección con los dispositivos que se unen a esta cuenta. cada copago tiene su propia frase de recuperación. Para recuperar los fondos almacenados en Share Wallet, necesitará la frase de recuperación de cada copago.",
+        "waitingNote": "Esperando a que el firmante autorizado se una",
+        "share": "Comparte esta invitación con tu firmante >"
       },
       "proposal": {
-        "title": "Payment Proposal"
+        "title": "Propuesta de pago",
+        "created": "Propuesta creada",
+        "delete": "Eliminar propuesta de pago",
+        "reject": "Rechazar propuesta de pago",
+        "minerFee": "Tarifa de minero",
+        "paymentRemoved": "El pago fue eliminado.",
+        "paymentFailed": "El pago falló.",
+        "paymentRejected": "Pago rechazado."
       }
     },
     "dapp": {
@@ -613,6 +624,38 @@
     "readOnlyLimit": {
       "title": "Operación no disponible",
       "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
+    },
+    "invalidWalletInvitation": {
+      "title": "Invalid Invitation Code",
+      "body": "This invitation code is invalid."
+    },
+    "deleteProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to remove this transaction?"
+    },
+    "rejectProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to reject this transaction?"
+    },
+    "userNotLogin": {
+      "title": "Not logged in",
+      "body": "You are not logged in."
+    },
+    "userOperated" : {
+      "title": "Operated",
+      "body": "Sorry, you have already done so."
+    },
+    "createMultisigAddress" : {
+      "title": "Invalid payment proposal",
+      "body": "Sorry, this proposal is no longer valid."
+    },
+    "networkQuestion": {
+      "title": "Network",
+      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+    },
+    "addressTypeQuestion" : {
+      "title": "Address type",
+      "body": "Segwit address is not available now."
     }
   },
   "currency": {

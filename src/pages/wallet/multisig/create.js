@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { CommonPicker } from '@yz1311/react-native-wheel-picker';
-// import _ from 'lodash';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -19,6 +19,8 @@ import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { BtcAddressType } from '../../../common/constants';
 import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
+import readOnlyStyles from '../../../assets/styles/readonly';
+import { createInfoNotification } from '../../../common/notification.controller';
 
 const MAX_COPAYERS = 7;
 const MAX_SIGNATURES = 2;
@@ -127,24 +129,30 @@ class CreateMultisigAddress extends Component {
       });
     }
 
-    onSignaturesChanged = (text) => {
-      this.setState({ signatures: text }, () => {
-        this.checkIfCanSubmit();
-      });
-    }
-
-    onCopayersChanged = (text) => {
-      this.setState({ copayers: text }, () => {
-        this.checkIfCanSubmit();
-      });
-    }
-
     onSwitchValueChanged = (value) => {
       this.setState({ isMainnet: value });
     }
 
     onAddressTypeChanged = (value) => {
       this.setState({ isLegacy: value });
+    }
+
+    onNetworkQuestionPressed = () => {
+      const { addNotification } = this.props;
+      const notification = createInfoNotification(
+        'modal.networkQuestion.title',
+        'modal.networkQuestion.body',
+      );
+      addNotification(notification);
+    }
+
+    onAddressTypeQuestionPressed = () => {
+      const { addNotification } = this.props;
+      const notification = createInfoNotification(
+        'modal.addressTypeQuestion.title',
+        'modal.addressTypeQuestion.body',
+      );
+      addNotification(notification);
     }
 
     onSignaturesPressed = () => {
@@ -257,12 +265,22 @@ class CreateMultisigAddress extends Component {
               </View>
               <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
               <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <Loc style={[styles.fieldTitle, { flex: 1 }]} text="page.wallet.addCustomToken.mainnet" />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <Loc style={[styles.fieldTitle]} text="page.wallet.addCustomToken.mainnet" />
+                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onNetworkQuestionPressed}>
+                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
+                  </TouchableOpacity>
+                </View>
                 <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
               </View>
               <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <Loc style={[styles.fieldTitle, { flex: 1 }]} text="page.wallet.createMultisigAddress.legacy" />
-                <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <Loc style={[styles.fieldTitle]} text="page.wallet.createMultisigAddress.legacy" />
+                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onAddressTypeQuestionPressed}>
+                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
+                  </TouchableOpacity>
+                </View>
+                <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} disabled />
               </View>
             </View>
           </BasePageGereral>
@@ -293,7 +311,7 @@ CreateMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
-  // addMultisigBTC: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

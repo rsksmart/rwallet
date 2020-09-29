@@ -27,7 +27,8 @@
         "addAsset": "添加资产",
         "addWallet": "添加钱包",
         "readOnly": "只读",
-        "multisig": "共享"
+        "multisig": "共享",
+        "incomplete": "未完成"
       },
       "history": {
         "noTransNote": "找不到此资产的交易记录",
@@ -70,6 +71,7 @@
       },
       "add": {
         "title": "创建钱包",
+        "subTitle": "请选择以下选项",
         "createWallet": "创建基本钱包",
         "createWalletNote": "推荐新手使用",
         "importWallet": "导入已有钱包",
@@ -269,13 +271,35 @@
         "duplicateAddress": "此地址已导入到应用程序中，请尝试使用其他地址。"
       },
       "createMultisigAddress": {
-        "title": "创建多重签名地址"
+        "title": "创建共享钱包",
+        "walletName": "钱包名字",
+        "userName": "您的名字",
+        "signatures": "需要签名数",
+        "copayers": "付款人总数",
+        "legacy": "普通",
+        "advancedOptions": "高级选项"
       },
       "joinMultisigAddress": {
         "title": "加入多重签名钱包",
         "userName": "你的名字",
         "invitationCode": "钱包邀请码",
         "note": "您需要扫描共享钱包邀请的二维码才能加入，请您的朋友通过电子邮件或通讯工具发送共享钱包邀请码。"
+      },
+      "multisigInvitation": {
+        "title": "共享钱包邀请",
+        "note": "与加入该帐户的设备共享此地址。每个共同付款人都有自己的恢复助记词。要取回存储在股票钱包中的资金，您需要输入每个共同付款人的恢复助记词。",
+        "waitingNote": "等待授权签署人加入",
+        "share": "与您的签名者共享此邀请 >"
+      },
+      "proposal": {
+        "title": "付款提案",
+        "created": "提案已创建",
+        "delete": "删除付款提案",
+        "reject": "拒绝付款提案",
+        "minerFee": "矿工费",
+        "paymentRemoved": "付款已删除。",
+        "paymentFailed": "付款失败。",
+        "paymentRejected": "付款被拒。"
       }
     },
     "dapp": {
@@ -600,6 +624,38 @@
     "readOnlyLimit": {
       "title": "操作不可用",
       "body": "发送，交换和扫描二维码操作不适用于只读钱包。要启用这些功能，请导入包含12个单词的短语的钱包。"
+    },
+    "invalidWalletInvitation": {
+      "title": "无效的邀请代码",
+      "body": "此邀请代码无效。"
+    },
+    "deleteProposal":{
+      "title": "警告！",
+      "body": "您确定要删除此交易吗？"
+    },
+    "rejectProposal":{
+      "title": "警告！",
+      "body": "您确定要拒绝此交易吗？"
+    },
+    "userNotLogin":{
+      "title": "未登录",
+      "body": "您尚未登录。"
+    },
+    "userOperated":{
+      "title": "运作中",
+      "body": "对不起，您已经这样做了。"
+    },
+    "createMultisigAddress":{
+      "title": "无效的付款提案",
+      "body": "很抱歉，该提案不再有效。"
+    },
+    "networkQuestion":{
+      "title": "网络",
+      "body": "测试网是用于测试的备用比特币区块链。"
+    },
+    "addressTypeQuestion":{
+      "title": "地址类型",
+      "body": "隔离见证地址现在不可用。"
     }
   },
   "currency": {

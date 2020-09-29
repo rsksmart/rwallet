@@ -123,10 +123,7 @@ class MultisigAddressInvitation extends Component {
       super(props);
       const { coin } = props.navigation.state.params;
       this.coin = coin;
-      this.state = {
-        copayers: [],
-        generatedAddress: undefined,
-      };
+      this.state = { copayers: [] };
     }
 
     async componentWillMount() {
@@ -203,27 +200,28 @@ class MultisigAddressInvitation extends Component {
     }
 
     fetchMultisigInvitation = async () => {
-      const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
-      const { copayerMembers, generatedAddress, copayerNumber } = invitation;
+      try {
+        const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
+        const { copayerMembers, generatedAddress, copayerNumber } = invitation;
 
-      // If the address has been generated, assign it to the corresponding local token
-      if (!_.isEmpty(generatedAddress)) {
-        this.onAddressGenerated(generatedAddress);
+        // If the address has been generated, assign it to the corresponding local token
+        if (!_.isEmpty(generatedAddress)) {
+          this.onAddressGenerated(generatedAddress);
+        }
+
+        const user = await parseHelper.getUser();
+        const username = user.get('username');
+        const me = _.find(copayerMembers, { username });
+        me.isMe = true;
+
+        if (copayerMembers.length !== copayerNumber) {
+          copayerMembers.push({ isWaiting: true, name: 'Waiting' });
+        }
+
+        this.setState({ copayers: copayerMembers });
+      } catch (error) {
+        console.warn('fetchMultisigInvitation, error: ', error);
       }
-
-      const user = await parseHelper.getUser();
-      const username = user.get('username');
-      const me = _.find(copayerMembers, { username });
-      me.isMe = true;
-
-      if (copayerMembers.length !== copayerNumber) {
-        copayerMembers.push({ isWaiting: true, name: 'Waiting' });
-      }
-
-      this.setState({
-        copayers: copayerMembers,
-        generatedAddress,
-      });
     }
 
     refreshMultisigInvitation = () => {
@@ -248,9 +246,7 @@ class MultisigAddressInvitation extends Component {
 
     render() {
       const { navigation } = this.props;
-      const {
-        copayers, generatedAddress,
-      } = this.state;
+      const { copayers } = this.state;
       const qrText = `ms:${this.coin.invitationCode}`;
 
       return (
@@ -267,22 +263,20 @@ class MultisigAddressInvitation extends Component {
                   <Image style={styles.invitationLogo} source={invitationLogo} />
                 </View>
                 <TouchableOpacity style={styles.shareLinkView} onPress={this.onSharePressed}>
-                  <Text style={styles.shareLink}>Share this invitation with your signer &gt;</Text>
+                  <Text style={styles.shareLink}>{strings('page.wallet.multisigInvitation.share')}</Text>
                 </TouchableOpacity>
               </View>
-              { generatedAddress ? (<Text>{`Generated Address: ${generatedAddress}`}</Text>) : (
-                <View>
-                  <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>
-                  <FlatList
-                    style={styles.list}
-                    data={copayers}
-                    renderItem={({ item }) => this.renderListItem(item)}
-                    keyExtractor={(item, index) => index.toString()}
-                    ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-                    alwaysBounceVertical={false}
-                  />
-                </View>
-              )}
+              <View>
+                <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>
+                <FlatList
+                  style={styles.list}
+                  data={copayers}
+                  renderItem={({ item }) => this.renderListItem(item)}
+                  keyExtractor={(item, index) => index.toString()}
+                  ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+                  alwaysBounceVertical={false}
+                />
+              </View>
             </View>
           </BasePageGereral>
         </View>

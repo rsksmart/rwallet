@@ -27,7 +27,8 @@
         "addAsset": "Добавить актив",
         "addWallet": "Добавить кошелек",
         "readOnly": "Только чтение",
-        "multisig": "Общий"
+        "multisig": "Общий",
+        "incomplete": "Неполный"
       },
       "history": {
         "noTransNote": "Транзакции для этого актива не найдены",
@@ -70,6 +71,7 @@
       },
       "add": {
         "title": "Добавить кошелек",
+        "subTitle": "Выберите один из вариантов ниже",
         "createWallet": "Создать базовый кошелек",
         "createWalletNote": "Рекомендуется для начинающих пользователей",
         "importWallet": "Импортировать существующий кошелек",
@@ -266,13 +268,35 @@
         "duplicateAddress": "Этот адрес уже импортирован в приложение. Пожалуйста, попробуйте другой адрес."
       },
       "createMultisigAddress": {
-        "title": "Создать адрес с несколькими подписями"
+        "title": "Создать общий кошелек",
+        "walletName": "Имя кошелька",
+        "userName": "Ваше имя",
+        "signatures": "Требовать количество подписей",
+        "copayers": "Общее количество доплатников",
+        "legacy": "Наследие",
+        "advancedOptions": "Расширенные настройки"
       },
       "joinMultisigAddress": {
         "title": "Присоединяйтесь к кошельку Multisig",
         "userName": "Ваше имя",
         "invitationCode": "Кошелек Приглашение",
         "note": "Вам необходимо отсканировать QR-код приглашения общего кошелька, чтобы присоединиться к нему. Попросите друга отправить приглашение через электронную почту или приложения для обмена сообщениями."
+      },
+      "multisigInvitation": {
+        "title": "Приглашение в общий кошелек",
+        "note": "Поделитесь этим адресом с устройствами, присоединяющимися к этой учетной записи. у каждого сооплательщика есть собственная фраза для восстановления. Для возврата средств, хранящихся в Share Wallet, вам потребуется фраза для восстановления от каждого доплательщика.",
+        "waitingNote": "Ожидание присоединения авторизованной подписывающей стороны",
+        "share": "Поделитесь этим приглашением со своей подписывающей стороной >"
+      },
+      "proposal": {
+        "title": "Предложение по оплате",
+        "created": "Предложение создано",
+        "delete": "Удалить предложение оплаты",
+        "reject": "Отклонить предложение о платеже",
+        "minerFee": "Комиссия майнера",
+        "paymentRemoved": "Оплата снята.",
+        "paymentFailed": "Платеж не прошел.",
+        "paymentRejected": "Платеж отклонен."
       }
     },
     "dapp": {
@@ -597,6 +621,38 @@
     "readOnlyLimit": {
       "title": "Операция недоступна",
       "body": "Операции отправки, обмена и сканирования QR-кода недоступны для кошелька только для чтения. Чтобы включить их, импортируйте этот кошелек с фразами из 12 слов."
+    },
+    "invalidWalletInvitation": {
+      "title": "Invalid Invitation Code",
+      "body": "This invitation code is invalid."
+    },
+    "deleteProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to remove this transaction?"
+    },
+    "rejectProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to reject this transaction?"
+    },
+    "userNotLogin": {
+      "title": "Not logged in",
+      "body": "You are not logged in."
+    },
+    "userOperated" : {
+      "title": "Operated",
+      "body": "Sorry, you have already done so."
+    },
+    "createMultisigAddress" : {
+      "title": "Invalid payment proposal",
+      "body": "Sorry, this proposal is no longer valid."
+    },
+    "networkQuestion": {
+      "title": "Network",
+      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+    },
+    "addressTypeQuestion" : {
+      "title": "Address type",
+      "body": "Segwit address is not available now."
     }
   },
   "currency": {

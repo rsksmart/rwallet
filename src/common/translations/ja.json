@@ -27,7 +27,8 @@
         "addAsset": "資産を追加",
         "addWallet": "ウォレットを追加",
         "readOnly": "読み取り専用",
-        "multisig": "共有"
+        "multisig": "共有",
+        "incomplete": "不完全な"
       },
       "history": {
         "noTransNote": "この資産の取引が見つかりません",
@@ -70,6 +71,7 @@
       },
       "add": {
         "title": "ウォレットを追加",
+        "subTitle": "以下のオプションのいずれかを選択してください",
         "createWallet": "基本的ウォレットを作成",
         "createWalletNote": "初めてのユーザーにおすすめ",
         "importWallet": "既存のウォレットをインポート",
@@ -266,13 +268,35 @@
         "duplicateAddress": "このアドレスはすでにアプリにインポートされています。別のアドレスでお試しください。"
       },
       "createMultisigAddress": {
-        "title": "マルチシグアドレスの作成"
+        "title": "共有ウォレットを作成する",
+        "walletName": "ウォレット名",
+        "userName": "あなたの名前",
+        "signatures": "署名の数が必要",
+        "copayers": "自己負担者の総数",
+        "legacy": "レガシー",
+        "advancedOptions": "高度なオプション"
       },
       "joinMultisigAddress": {
         "title": "マルチ署名ウォレットに参加する",
         "userName": "あなたの名前",
         "invitationCode": "ウォレットへの招待",
         "note": "共有ウォレットに参加するには、共有ウォレットへの招待のQRコードをスキャンする必要があります。友達にメールまたはメッセージアプリで招待状を共有してもらいます。"
+      },
+      "multisigInvitation": {
+        "title": "共有ウォレットへの招待",
+        "note": "このアドレスを、このアカウントに参加しているデバイスと共有します。各自己負担者には、独自の回復フレーズがあります。シェアウォレットに保存されている資金を回収するには、各自己負担者から回収フレーズを入力する必要があります。",
+        "waitingNote": "承認された署名者が参加するのを待っています",
+        "share": "この招待状を署名者と共有する >"
+      },
+      "proposal": {
+        "title": "支払い提案",
+        "created": "提案が作成されました",
+        "delete": "支払い提案を削除する",
+        "reject": "払い提案を拒否する",
+        "minerFee": "マイナー料金",
+        "paymentRemoved": "支払いは削除されました。",
+        "paymentFailed": "支払いに失敗しました。",
+        "paymentRejected": "支払いが拒否されました。"
       }
     },
     "dapp": {
@@ -597,6 +621,38 @@
     "readOnlyLimit": {
       "title": "操作は利用できません",
       "body": "読み取り専用のウォレットでは、QRコードの送信、交換、スキャンの操作は使用できません。それらを有効にするには、このウォレットを12語のフレーズとともにインポートしてください。"
+    },
+    "invalidWalletInvitation": {
+      "title": "Invalid Invitation Code",
+      "body": "This invitation code is invalid."
+    },
+    "deleteProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to remove this transaction?"
+    },
+    "rejectProposal": {
+      "title": "Warning!",
+      "body": "Are your sure you want to reject this transaction?"
+    },
+    "userNotLogin": {
+      "title": "Not logged in",
+      "body": "You are not logged in."
+    },
+    "userOperated" : {
+      "title": "Operated",
+      "body": "Sorry, you have already done so."
+    },
+    "createMultisigAddress" : {
+      "title": "Invalid payment proposal",
+      "body": "Sorry, this proposal is no longer valid."
+    },
+    "networkQuestion": {
+      "title": "Network",
+      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+    },
+    "addressTypeQuestion" : {
+      "title": "Address type",
+      "body": "Segwit address is not available now."
     }
   },
   "currency": {
