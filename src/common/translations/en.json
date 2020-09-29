@@ -578,6 +578,10 @@
     "readOnlyLimit": {
       "title": "Operation not available",
       "body": "Send, Swap and Scan QR Code operations are not available for a Read-only wallet. To enable those, please Import this wallet with its 12-word phrases."
+    },
+    "httpIsNotAllowed": {
+      "title": "Http web site is not allowed te be open",
+      "body": "Please open https protocol website"
     }
   },
   "currency": {

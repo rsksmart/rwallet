@@ -266,8 +266,10 @@ class DAppBrowser extends Component {
   }
 
   onNavigationStateChange = (navState) => {
-    const { canGoBack } = navState;
-    this.setState({ canGoBack });
+    if (navState) {
+      const { canGoBack } = navState;
+      this.setState({ canGoBack });
+    }
   }
 
   handleEthEstimateGas = async (payload) => {
@@ -454,11 +456,12 @@ class DAppBrowser extends Component {
     } = this.state;
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
+    const domain = common.getDomain(url);
 
     return (
       <View style={{ flex: 1 }}>
         <BrowserHeader
-          title={(title && (title[language] || title.en)) || url}
+          title={(title && (title[language] || title.en)) || domain}
           onBackButtonPress={() => {
             const { canGoBack } = this.state;
             if (canGoBack) {
