@@ -143,7 +143,7 @@ class WalletReceive extends Component {
               item: {
                 default: {
                   type: 'text',
-                  content: `${message} ${url}`,
+                  content: `${message}`,
                 },
               },
               linkMetadata: {
@@ -156,7 +156,7 @@ class WalletReceive extends Component {
         default: {
           title,
           subject: title,
-          message: `${message} ${url}`,
+          message: `${message}`,
         },
       });
 

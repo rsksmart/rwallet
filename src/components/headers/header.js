@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, TouchableOpacity, ImageBackground,
+  StyleSheet, TouchableOpacity, ImageBackground, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -24,9 +24,18 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 52,
     left: 24,
     right: 24,
+  },
+  headerText: {
+    position: 'absolute',
+    bottom: 37,
+    left: 24,
+    right: 24,
+    fontFamily: 'Avenir-Book',
+    fontSize: 16,
+    color: color.white,
   },
   headerTitleText: {
     color: color.white,
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
 });
 
 function Header({
-  title, isShowBackButton, onBackButtonPress, rightBtn,
+  title, isShowBackButton, onBackButtonPress, rightBtn, subTitle,
 }) {
   let backButton = null;
   if (isShowBackButton) {
@@ -60,6 +69,11 @@ function Header({
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
       <ResponsiveText layoutStyle={[styles.headerTitle]} fontStyle={styles.headerTitleText} maxFontSize={32}>{strings(title)}</ResponsiveText>
+      { subTitle && (
+      <Text style={[styles.headerText]}>
+        {strings(subTitle)}
+      </Text>
+      )}
       { backButton }
       { rightBtn && rightBtn() }
     </ImageBackground>
@@ -68,6 +82,7 @@ function Header({
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
+  subTitle: PropTypes.string,
   isShowBackButton: PropTypes.bool,
   onBackButtonPress: PropTypes.func,
   rightBtn: PropTypes.func,
@@ -77,6 +92,7 @@ Header.defaultProps = {
   isShowBackButton: true,
   onBackButtonPress: null,
   rightBtn: null,
+  subTitle: null,
 };
 
 const mapStateToProps = (state) => ({

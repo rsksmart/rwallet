@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { Image } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
 import color from '../../../assets/styles/color';
+
+const sharedWalletIcon = require('../../../assets/images/icon/shared.wallet.png');
 
 class SharedWalletIndex extends Component {
     static navigationOptions = () => ({
@@ -25,7 +27,7 @@ class SharedWalletIndex extends Component {
       {
         title: 'page.wallet.sharedWallet.joinSharedWallet',
         text: 'page.wallet.sharedWallet.joinSharedWalletNote',
-        icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
+        icon: (<Image source={sharedWalletIcon} />),
         onPress: () => {
           this.createWalletFlow('JoinMultisigAddress');
         },
@@ -44,7 +46,7 @@ class SharedWalletIndex extends Component {
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.sharedWallet.title" />}
+          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.sharedWallet.title" subTitle="page.wallet.add.subTitle" />}
         >
           <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15 }]} data={this.listData} />
         </BasePageGereral>

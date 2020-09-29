@@ -23,6 +23,10 @@ const ERROR_CODE = {
   INCORRECT_NETWORK_NAME: 723,
   ERC20_CONTRACT_NOT_FOUND: 724,
   TIME_OUT: 725,
+
+  ERR_USER_NOT_LOGIN: 706, // request not from a login user
+  ERR_USER_OPERATED: 708, // User already exist
+  ERR_INVALID_PROPOSAL: 709, // invalid proposal, proposal is not in pending status.
 };
 
 export default ERROR_CODE;

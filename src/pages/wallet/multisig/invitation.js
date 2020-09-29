@@ -20,10 +20,11 @@ import { strings } from '../../../common/i18n';
 import color from '../../../assets/styles/color';
 import flex from '../../../assets/styles/layout.flex';
 
-const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
+const QRCODE_SIZE = DEVICE.screenWidth * 0.6;
 
 const checked = require('../../../assets/images/icon/checked.png');
 const waiting = require('../../../assets/images/icon/sending.png');
+const invitationLogo = require('../../../assets/images/icon/invitation.logo.png');
 
 const styles = StyleSheet.create({
   body: {
@@ -36,8 +37,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   qrCodeView: {
+    width: QRCODE_SIZE + 10,
+    height: QRCODE_SIZE + 10,
     marginTop: 30,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: color.alto,
+    borderBottomWidth: 0,
+    shadowColor: color.black,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
+    backgroundColor: color.white,
+    justifyContent: 'center',
   },
   waitingNote: {
     color: color.codGray,
@@ -77,6 +90,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Roman',
     fontSize: 14,
     textAlign: 'center',
+  },
+  invitationView: {
+    marginHorizontal: 25,
+    marginTop: 17,
+    paddingBottom: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: color.alto,
+    borderBottomWidth: 0,
+    shadowColor: color.black,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
+    backgroundColor: color.white,
+    alignItems: 'center',
+  },
+  invitationLogo: {
+    position: 'absolute',
+    width: QRCODE_SIZE * 0.3,
+    height: QRCODE_SIZE * 0.3,
   },
 });
 
@@ -179,7 +213,7 @@ class MultisigAddressInvitation extends Component {
 
       const user = await parseHelper.getUser();
       const username = user.get('username');
-      const me = _.find(copayerMembers, { userId: username });
+      const me = _.find(copayerMembers, { username });
       me.isMe = true;
 
       if (copayerMembers.length !== copayerNumber) {
@@ -227,12 +261,15 @@ class MultisigAddressInvitation extends Component {
           >
             <View style={styles.body}>
               <Text style={styles.title}>{strings('page.wallet.multisigInvitation.note')}</Text>
-              <View style={styles.qrCodeView}>
-                <QRCode value={qrText} size={QRCODE_SIZE} />
+              <View style={styles.invitationView}>
+                <View style={styles.qrCodeView}>
+                  <QRCode value={qrText} size={QRCODE_SIZE} />
+                  <Image style={styles.invitationLogo} source={invitationLogo} />
+                </View>
+                <TouchableOpacity style={styles.shareLinkView} onPress={this.onSharePressed}>
+                  <Text style={styles.shareLink}>Share this invitation with your signer &gt;</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.shareLinkView} onPress={this.onSharePressed}>
-                <Text style={styles.shareLink}>Share this invitation with your signer &gt;</Text>
-              </TouchableOpacity>
               { generatedAddress ? (<Text>{`Generated Address: ${generatedAddress}`}</Text>) : (
                 <View>
                   <Text style={styles.waitingNote}>{strings('page.wallet.multisigInvitation.waitingNote')}</Text>

@@ -177,10 +177,10 @@ class VerifyPhrase extends Component {
     }
 
     if (!lastSharedWalletCreationError && sharedWalletCreationError) {
-      resetSharedWalletCreationError();
       this.setState({ isLoading: false });
       const notification = getErrorNotification(sharedWalletCreationError.code, 'button.retry') || getDefaultErrorNotification('button.retry');
       addNotification(notification);
+      resetSharedWalletCreationError();
     }
   }
 

@@ -17,7 +17,7 @@ import color from '../../../assets/styles/color';
 import { strings } from '../../../common/i18n';
 import Button from '../../../components/common/button/button';
 import references from '../../../assets/references';
-import { createInfoNotification } from '../../../common/notification.controller';
+import { createInfoNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
 import { createInfoConfirmation } from '../../../common/confirmation.controller';
 import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
@@ -184,10 +184,14 @@ class MultisigProposalDetail extends Component {
     refreshProposal = async () => {
       console.log('refreshProposal, this.proposal: ', this.proposal);
       const { objectId } = this.proposal;
-      const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposal(objectId), this);
-      this.proposal = proposal;
-      this.processProposal();
-      this.updateProposal(proposal);
+      try {
+        const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposal(objectId), this);
+        this.proposal = proposal;
+        this.processProposal();
+        this.updateProposal(proposal);
+      } catch (error) {
+        console.warn('refreshProposal, error: ', error);
+      }
     }
 
     generateOperationSequence = (acceptedMembers, rejectedMembers) => {
@@ -225,7 +229,7 @@ class MultisigProposalDetail extends Component {
       operationSequence.push({
         operation: 'Proposal Created', name: operationSequence[0].name, timestamp: operationSequence[0].timestamp,
       });
-      const isOperatedUser = !!_.find(operationSequence, { userId: username });
+      const isOperatedUser = !!_.find(operationSequence, { username });
 
       const assetValue = common.getCoinValue(amount, symbol, type, currency, prices);
 
@@ -278,20 +282,20 @@ class MultisigProposalDetail extends Component {
     }
 
     reject = async () => {
-      const { navigation, addConfirmation } = this.props;
+      const { navigation, addConfirmation, addNotification } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.rejectProposal.title'),
         strings('modal.rejectProposal.body'),
         async () => {
           try {
-            console.log('this.proposal: ', this.proposal);
             this.setState({ isLoading: true });
             const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.rejectMultisigTransaction(this.proposal.objectId), this);
             this.updateProposal(proposal);
-            console.log('reject, result: ', proposal);
             navigation.goBack();
           } catch (error) {
             console.log('reject, error: ', error);
+            const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+            addNotification(notification);
           } finally {
             this.setState({ isLoading: false });
           }
@@ -302,20 +306,20 @@ class MultisigProposalDetail extends Component {
     }
 
     delete = () => {
-      const { navigation, addConfirmation } = this.props;
+      const { navigation, addConfirmation, addNotification } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.deleteProposal.title'),
         strings('modal.deleteProposal.body'),
         async () => {
           try {
-            console.log('this.proposal: ', this.proposal);
             this.setState({ isLoading: true });
             const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.deleteMultiSigProposal(this.proposal.objectId), this);
             this.updateProposal(proposal);
-            console.log('delete, result: ', proposal);
             navigation.goBack();
           } catch (error) {
-            console.log('delete, error: ', error);
+            console.warn('delete, error: ', error);
+            const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+            addNotification(notification);
           } finally {
             this.setState({ isLoading: false });
           }
@@ -327,7 +331,6 @@ class MultisigProposalDetail extends Component {
 
     updateProposal = (proposal) => {
       const { token } = this;
-      console.log('updateProposal, proposal: ', proposal);
       if (token.proposal && token.proposal.objectId === proposal.objectId) {
         const { updateProposal } = this.props;
         updateProposal(proposal);

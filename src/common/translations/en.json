@@ -71,6 +71,7 @@
       },
       "add": {
         "title": "Add Wallet",
+        "subTitle": "Choose one of the options below",
         "createWallet": "Create Basic Wallet",
         "createWalletNote": "Recommended for first-time users",
         "importWallet": "Import Existing Wallet",
@@ -630,6 +631,18 @@
     "rejectProposal": {
       "title": "Warning!",
       "body": "Are your sure you want to reject this transaction?"
+    },
+    "userNotLogin": {
+      "title": "Not logged in",
+      "body": "You are not logged in."
+    },
+    "userOperated" : {
+      "title": "Operated",
+      "body": "Sorry, you have already done so."
+    },
+    "createMultisigAddress" : {
+      "title": "Invalid payment proposal",
+      "body": "Sorry, this proposal is no longer valid."
     }
   },
   "currency": {

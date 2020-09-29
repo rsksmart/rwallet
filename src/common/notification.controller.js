@@ -36,6 +36,18 @@ export const errorNotifications = {
     title: 'modal.rnsExceeded.title',
     body: 'modal.rnsExceeded.body',
   },
+  [ERROR_CODE.ERR_USER_NOT_LOGIN]: {
+    title: 'modal.userNotLogin.title',
+    body: 'modal.userNotLogin.body',
+  },
+  [ERROR_CODE.ERR_USER_OPERATED]: {
+    title: 'modal.userOperated.title',
+    body: 'modal.userOperated.body',
+  },
+  [ERROR_CODE.ERR_INVALID_PROPOSAL]: {
+    title: 'modal.invalidProposal.title',
+    body: 'modal.invalidProposal.body',
+  },
 };
 
 

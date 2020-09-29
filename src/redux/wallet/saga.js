@@ -560,6 +560,7 @@ function* joinSharedWalletRequest(action) {
     yield call(walletManager.serialize);
   } catch (error) {
     console.warn('joinSharedWalletRequest, error: ', error);
+    yield put(actions.setSharedWalletCreationError(error));
   }
 }
 
