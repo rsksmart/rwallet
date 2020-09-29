@@ -6,10 +6,10 @@ import Rsk3 from '@rsksmart/rsk3';
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
-import CONSTANTS from '../../../../common/constants.json';
+import { WALLET_CONNECT } from '../../../../common/constants';
 import common from '../../../../common/common';
 
-const { WALLET_CONNECT: { MODAL_TYPE } } = CONSTANTS;
+const { MODAL_TYPE } = WALLET_CONNECT;
 
 const styles = StyleSheet.create({
   line: {

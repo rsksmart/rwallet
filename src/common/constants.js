@@ -105,3 +105,10 @@ export const ASSETS_CONTRACT = {
     Mainnet: '0xaf8C226013BDC4b3AAcE1f8060db645B3f5e53fC',
   },
 };
+
+export const WALLET_CONNECT = {
+  MODAL_TYPE: {
+    CONFIRMATION: 'Confirmation',
+    NOTIFICATION: 'Notification',
+  },
+};
