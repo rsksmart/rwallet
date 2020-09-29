@@ -6,27 +6,6 @@ import assetAbi from '../assetAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
-export const getTransactionFees = async (type, address, toAddress, value, memo = '') => {
-  const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const rsk3 = new Rsk3(rskEndpoint);
-  const from = Rsk3.utils.toChecksumAddress(address);
-  const to = Rsk3.utils.toChecksumAddress(toAddress);
-  const gas = await rsk3.estimateGas({
-    from, to, value, data: memo,
-  });
-  const latestBlock = await rsk3.getBlock('latest');
-  const { minimumGasPrice } = latestBlock;
-  const miniGasPrice = new BigNumber(minimumGasPrice, 16);
-  return {
-    gas,
-    gasPrice: {
-      low: miniGasPrice.toString(),
-      medium: miniGasPrice.multipliedBy(2).toString(),
-      high: miniGasPrice.multipliedBy(4).toString(),
-    },
-  };
-};
-
 export const getContractAddress = async (symbol, type) => {
   if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
     const contractAddress = ASSETS_CONTRACT[symbol][type];
@@ -41,6 +20,39 @@ export const encodeContractTransfer = async (contractAddress, type, from, to, va
   const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress));
   const data = await contract.methods.transfer(to, value).encodeABI();
   return data;
+};
+
+export const getTransactionFees = async (type, coin, address, toAddress, value, memo) => {
+  const { symbol, contractAddress } = coin;
+  const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
+  const rsk3 = new Rsk3(rskEndpoint);
+  const latestBlock = await rsk3.getBlock('latest');
+  const { minimumGasPrice } = latestBlock;
+  const miniGasPrice = new BigNumber(minimumGasPrice, 16);
+  const from = Rsk3.utils.toChecksumAddress(address);
+  const to = Rsk3.utils.toChecksumAddress(toAddress);
+
+  // Set default gas to 40000
+  let gas = 40000;
+  if (symbol === 'RBTC') {
+    gas = await rsk3.estimateGas({
+      from, to, value, data: memo,
+    });
+  } else {
+    const contractAddr = contractAddress || await getContractAddress(symbol, type);
+    const data = await encodeContractTransfer(contractAddr, type, from, to, value);
+    gas = await rsk3.estimateGas({
+      from, to: contractAddr, value: 0, data,
+    });
+  }
+  return {
+    gas,
+    gasPrice: {
+      low: miniGasPrice.toString(),
+      medium: miniGasPrice.multipliedBy(2).toString(),
+      high: miniGasPrice.multipliedBy(4).toString(),
+    },
+  };
 };
 
 export const createRawTransaction = async ({
