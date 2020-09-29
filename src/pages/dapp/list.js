@@ -82,7 +82,7 @@ class DAppList extends Component {
 
       const dappWarningConfirmation = createDappWarningConfirmation(
         strings('modal.dappWarning.title', { dappName }),
-        strings('modal.dappWarning.body', { description, dappName }),
+        strings('modal.dappWarning.body', { description: description ? `${description}\n\n` : '', dappName }),
         () => {
           this.setState({ walletSelectionVisible: true, clickedDapp: dapp });
           storage.setIsShowRnsFeature();

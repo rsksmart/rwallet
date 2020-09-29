@@ -3,6 +3,8 @@ import {
   Platform, View,
   ActivityIndicator,
   StyleSheet,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
@@ -15,13 +17,36 @@ import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import { NETWORK } from '../../common/constants';
 import common from '../../common/common';
+import MessageModal from '../wallet/wallet.connect/modal/message';
+import TransactionModal from '../wallet/wallet.connect/modal/transaction';
+import AllowanceModal from '../wallet/wallet.connect/modal/allowance';
+import color from '../../assets/styles/color';
+import apiHelper from '../../common/apiHelper';
 
 const { MAINNET, TESTNET } = NETWORK;
+
+// Get modal view width
+const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
 
 const styles = StyleSheet.create({
   loading: {
     marginTop: 20,
     alignSelf: 'center',
+  },
+  backgroundView: {
+    flex: 1,
+    backgroundColor: color.ebonyA60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalView: {
+    backgroundColor: color.white,
+    borderRadius: 12,
+    width: MODAL_WIDTH,
+    paddingTop: 39,
+    paddingBottom: 24,
+    paddingLeft: 28,
+    paddingRight: 28,
   },
 });
 
@@ -41,7 +66,7 @@ class DAppBrowser extends Component {
       walletSelectionVisible: false,
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
-      ethersJsContent: '',
+      modalView: null,
     };
 
     this.webview = createRef();
@@ -49,7 +74,7 @@ class DAppBrowser extends Component {
   }
 
   componentDidMount() {
-    const { web3JsContent, ethersJsContent } = this.state;
+    const { web3JsContent } = this.state;
     if (web3JsContent === '') {
       if (Platform.OS === 'ios') {
         RNFS.readFile(`${RNFS.MainBundlePath}/web3.1.2.7.js`, 'utf8')
@@ -60,19 +85,6 @@ class DAppBrowser extends Component {
         RNFS.readFileAssets('web3.1.2.7.js', 'utf8')
           .then((content) => {
             this.setState({ web3JsContent: content });
-          });
-      }
-    }
-    if (ethersJsContent === '') {
-      if (Platform.OS === 'ios') {
-        RNFS.readFile(`${RNFS.MainBundlePath}/ethers.js`, 'utf8')
-          .then((content) => {
-            this.setState({ ethersJsContent: content });
-          });
-      } else {
-        RNFS.readFileAssets('ethers.js', 'utf8')
-          .then((content) => {
-            this.setState({ ethersJsContent: content });
           });
       }
     }
@@ -88,10 +100,9 @@ class DAppBrowser extends Component {
   }
 
   getJsCode = (address) => {
-    const { web3JsContent, ethersJsContent } = this.state;
+    const { web3JsContent } = this.state;
     return `
       ${web3JsContent}
-      ${ethersJsContent}
 
       // Disable the web site notification
       class Notification {
@@ -132,7 +143,6 @@ class DAppBrowser extends Component {
           function initWeb3() {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
-            const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
             const web3Provider = new Web3.providers.HttpProvider(rskEndpoint);
             const web3 = new Web3(web3Provider);
             window.ethereum = web3Provider;
@@ -302,40 +312,28 @@ class DAppBrowser extends Component {
     this.webview.current.postMessage(JSON.stringify(result));
   }
 
-  handlePersonalSign = async (payload) => {
+  handlePersonalSign = async (id, message) => {
     const { callAuthVerify } = this.props;
     const { wallet: { coins } } = this.state;
-    const { id, params } = payload;
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
         const signWallet = new ethers.Wallet(privateKey, this.provider);
-        const message = this.rsk3.utils.hexToAscii(params[0]);
         const signature = await signWallet.signMessage(message);
         const result = { id, result: signature };
         this.webview.current.postMessage(JSON.stringify(result));
       } catch (err) {
         console.log('personal_sign err: ', err);
-        this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+        this.handleReject(id, err.message);
       }
-    }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+    }, () => { this.handleReject(id, 'Verify error'); });
   }
 
-  handleEthSendTransaction = async (payload) => {
+  handleEthSendTransaction = async (id, txData) => {
     const { callAuthVerify } = this.props;
-    const { wallet: { coins, address } } = this.state;
-    const { id, params } = payload;
+    const { wallet: { coins } } = this.state;
     callAuthVerify(async () => {
       try {
-        const nonce = await this.provider.getTransactionCount(address, 'pending');
-        const txData = {
-          nonce,
-          data: params[0].data,
-          gasLimit: params[0].gas || 600000,
-          gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
-          to: params[0].to,
-          value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
-        };
         const { privateKey } = coins[0];
         const signWallet = new ethers.Wallet(privateKey, this.provider);
         const signedTransaction = await signWallet.sign(txData);
@@ -344,9 +342,9 @@ class DAppBrowser extends Component {
         this.webview.current.postMessage(JSON.stringify(result));
       } catch (err) {
         console.log('eth_sendTransaction err: ', err);
-        this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: err.message }));
+        this.handleReject(id, err.message);
       }
-    }, () => { this.webview.current.postMessage(JSON.stringify({ id, error: 1, message: 'Verify error' })); });
+    }, () => { this.handleReject(id, 'Verify error'); });
   }
 
   handleEthGetTransactionReceipt = async (payload) => {
@@ -369,10 +367,108 @@ class DAppBrowser extends Component {
     this.webview.current.postMessage(JSON.stringify(result));
   }
 
+  handleReject = async (id, message = 'User reject') => {
+    this.setState({ modalView: null });
+    this.webview.current.postMessage(JSON.stringify({ id, error: 1, message }));
+  }
+
+  popupMessageModal = async (payload) => {
+    const dappUrl = this.getDappUrl();
+    const { id, params } = payload;
+    const message = this.rsk3.utils.hexToAscii(params[0]);
+    this.setState({
+      modalView: (
+        <MessageModal
+          dappUrl={dappUrl}
+          confirmPress={async () => {
+            this.setState({ modalView: null });
+            await this.handlePersonalSign(id, message);
+          }}
+          cancelPress={() => this.handleReject(id)}
+          message={message}
+        />
+      ),
+    });
+  }
+
+  popupAllowanceModal = async (id, txData, symbol) => {
+    const dappUrl = this.getDappUrl();
+    const { gasLimit, gasPrice } = txData;
+    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
+    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
+    const feeWei = gasLimitNumber * gasPriceNumber;
+    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+    this.setState({
+      modalView: (
+        <AllowanceModal
+          dappUrl={dappUrl}
+          confirmPress={async () => {
+            this.setState({ modalView: null });
+            await this.handleEthSendTransaction(id, txData);
+          }}
+          cancelPress={() => this.handleReject(id)}
+          asset={symbol}
+          fee={fee}
+        />
+      ),
+    });
+  }
+
+  popupNormalTransactionModal = async (id, txData, contractMethod = 'Smart Contract Call') => {
+    const { wallet: { address } } = this.state;
+    const dappUrl = this.getDappUrl();
+
+    this.setState({
+      modalView: (
+        <TransactionModal
+          dappUrl={dappUrl}
+          confirmPress={async () => {
+            this.setState({ modalView: null });
+            await this.handleEthSendTransaction(id, txData);
+          }}
+          cancelPress={() => this.handleReject(id)}
+          txData={{ ...txData, from: address, gasLimit: String(txData.gasLimit) }}
+          txType={contractMethod}
+        />
+      ),
+    });
+  }
+
+  popupTransactionModal = async (payload) => {
+    const { wallet: { address } } = this.state;
+    const { id, params } = payload;
+    const nonce = await this.provider.getTransactionCount(address, 'pending');
+    const txData = {
+      nonce,
+      data: params[0].data,
+      gasLimit: params[0].gas || 600000,
+      gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+      to: params[0].to,
+      value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+    };
+    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+    const inputData = params[0].data;
+    const res = await apiHelper.getAbiByAddress(toAddress);
+    if (res && res.abi) {
+      const { abi, symbol } = res;
+      const input = common.ethereumInputDecoder(abi, inputData);
+      if (input && input.method === 'approve') {
+        this.popupAllowanceModal(id, txData, symbol);
+      } else {
+        const contractMethod = (input && input.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(id, txData, contractMethod);
+      }
+    } else {
+      console.log('abi is not exsit');
+      this.popupNormalTransactionModal(id, txData);
+    }
+  }
+
   onMessage = async (event) => {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, id } = payload;
+    console.log('payload: ', payload);
 
     try {
       switch (method) {
@@ -395,12 +491,12 @@ class DAppBrowser extends Component {
         }
 
         case 'personal_sign': {
-          await this.handlePersonalSign(payload);
+          await this.popupMessageModal(payload);
           break;
         }
 
         case 'eth_sendTransaction': {
-          await this.handleEthSendTransaction(payload);
+          await this.popupTransactionModal(payload);
           break;
         }
 
@@ -418,8 +514,7 @@ class DAppBrowser extends Component {
           break;
       }
     } catch (err) {
-      const error = { id, error: 1, message: err.message };
-      this.webview.current.postMessage(JSON.stringify(error));
+      this.handleReject(id, err.message);
     }
   }
 
@@ -428,10 +523,10 @@ class DAppBrowser extends Component {
     navigation.replace('DAppBrowser', { wallet: toWallet, dapp: navigation.state.params.dapp });
   }
 
-  getWebView = (address, url) => {
-    const { web3JsContent, ethersJsContent } = this.state;
-    const dappUrl = common.completionUrl(url);
-    if (address && web3JsContent && ethersJsContent) {
+  getWebView = (address) => {
+    const { web3JsContent } = this.state;
+    const dappUrl = this.getDappUrl();
+    if (address && web3JsContent) {
       return (
         <ProgressWebView
           source={{ uri: dappUrl }}
@@ -447,10 +542,18 @@ class DAppBrowser extends Component {
     return <ActivityIndicator style={styles.loading} size="large" />;
   }
 
+  getDappUrl = () => {
+    const { navigation } = this.props;
+    const dapp = navigation.state.params.dapp || { url: '', title: '' };
+    const { url } = dapp;
+    const dappUrl = common.completionUrl(url);
+    return dappUrl;
+  }
+
   render() {
     const { navigation, language } = this.props;
     const {
-      walletSelectionVisible, wallet: { address },
+      walletSelectionVisible, wallet: { address }, modalView,
     } = this.state;
     const dapp = navigation.state.params.dapp || { url: '', title: '' };
     const { url, title } = dapp;
@@ -470,7 +573,7 @@ class DAppBrowser extends Component {
           onCloseButtonPress={() => navigation.goBack()}
           onSwitchButtonPress={() => this.setState({ walletSelectionVisible: true })}
         />
-        {this.getWebView(address, url)}
+        {this.getWebView(address)}
         <WalletSelection
           navigation={navigation}
           visible={walletSelectionVisible}
@@ -478,6 +581,18 @@ class DAppBrowser extends Component {
           confirmButtonPress={this.switchWallet}
           dapp={dapp}
         />
+        <Modal
+          animationType="fade"
+          transparent
+          visible={modalView !== null}
+          onRequestClose={this.onRequestClose}
+        >
+          <View style={styles.backgroundView}>
+            <View style={styles.modalView}>
+              {modalView}
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }

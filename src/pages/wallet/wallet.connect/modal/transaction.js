@@ -44,8 +44,8 @@ export default function TransactionModal({
   const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
   return (
     <BaseModal
-      title={strings('page.wallet.walletconnect.approveMessage')}
-      description={strings('page.wallet.walletconnect.approveMessageDesc', { dappUrl })}
+      title={strings('page.wallet.walletconnect.approveTransaction')}
+      description={strings('page.wallet.walletconnect.approveTransactionDesc', { dappUrl })}
       content={(
         <>
           <View style={styles.line}>
@@ -74,7 +74,7 @@ export default function TransactionModal({
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
-            <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
+            <Text style={styles.lineValue}>{`${Number(fee).toFixed(6)} RBTC`}</Text>
           </View>
 
           <View style={styles.line}>
