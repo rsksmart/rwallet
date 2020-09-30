@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, StyleSheet, TextInput, Switch, TouchableOpacity, Text,
+  View, StyleSheet, TextInput, TouchableOpacity, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { CommonPicker } from '@yz1311/react-native-wheel-picker';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -19,8 +18,8 @@ import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { BtcAddressType } from '../../../common/constants';
 import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
-import readOnlyStyles from '../../../assets/styles/readonly';
 import { createInfoNotification } from '../../../common/notification.controller';
+import AdvancedSwitch from '../../../components/common/switch/advanced.switch';
 
 const MAX_COPAYERS = 7;
 const MAX_SIGNATURES = 2;
@@ -264,24 +263,24 @@ class CreateMultisigAddress extends Component {
                 </TouchableOpacity>
               </View>
               <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
-              <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Loc style={[styles.fieldTitle]} text="page.wallet.addCustomToken.mainnet" />
-                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onNetworkQuestionPressed}>
-                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                  </TouchableOpacity>
-                </View>
-                <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
-              </View>
-              <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Loc style={[styles.fieldTitle]} text="page.wallet.createMultisigAddress.legacy" />
-                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onAddressTypeQuestionPressed}>
-                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                  </TouchableOpacity>
-                </View>
-                <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} disabled />
-              </View>
+              <AdvancedSwitch
+                style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}
+                titleStyle={styles.fieldTitle}
+                title="page.wallet.addCustomToken.mainnet"
+                questionPressed={this.onNetworkQuestionPressed}
+                onSwitchValueChanged={this.onSwitchValueChanged}
+                value={isMainnet}
+              />
+
+              <AdvancedSwitch
+                style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}
+                titleStyle={styles.fieldTitle}
+                title="page.wallet.createMultisigAddress.legacy"
+                questionPressed={this.onAddressTypeQuestionPressed}
+                onSwitchValueChanged={this.onAddressTypeChanged}
+                value={isLegacy}
+                disabled
+              />
             </View>
           </BasePageGereral>
           { picker && (
