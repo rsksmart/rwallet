@@ -596,8 +596,8 @@
       "body": "As funções enviar, trocar e ler código QR não estão disponíveis para carteiras somente leitura. Para habilitá-las, importe esta carteira usando a sua frase de recuperação de 12 palavras."
     },
     "httpIsNotAllowed": {
-      "title": "URL não permitido abrir",
-      "body": "Para proteger os usuários de sites web inseguros, o navegador RWallet permite apenas URLs com cifração HTTPS.Por favor, verifique que o URL introduzido começa com https://"
+      "title": "URL não permitida",
+      "body": "Para proteger os usuários de sites web inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
     }
   },
   "currency": {
