@@ -29,6 +29,7 @@ import parseHelper from '../../common/parse';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import ERROR_CODE from '../../common/errors';
+import * as rbtc from '../../common/transaction/rbtccoin';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -569,7 +570,7 @@ class Transfer extends Component {
       symbol, type, transactions, privateKey, address,
     } = coin;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const fee = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 
@@ -603,7 +604,7 @@ class Transfer extends Component {
         console.log('common.estimateBtcSize, size: ', size);
         transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       } else {
-        transactionFees = await parseHelper.getTransactionFees(symbol, type, address, toAddress, fee, memo);
+        transactionFees = await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
       }
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
-import CONSTANTS from '../../../../common/constants.json';
+import { WALLET_CONNECT } from '../../../../common/constants';
 
-const { WALLET_CONNECT: { MODAL_TYPE } } = CONSTANTS;
+const { MODAL_TYPE } = WALLET_CONNECT;
 
 const styles = StyleSheet.create({
   image: {
