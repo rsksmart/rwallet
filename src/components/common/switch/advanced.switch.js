@@ -13,8 +13,11 @@ export default function AdvancedSwitch({
   style, titleStyle, value, questionPressed, onSwitchValueChanged, title, disabled,
 }) {
   return (
-    <View style={style}>
-      <View style={{ flex: 1, flexDirection: 'row' }}>
+    <View style={style || { flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{
+        flex: 1, flexDirection: 'row', alignItems: 'center',
+      }}
+      >
         <Loc style={titleStyle} text={title} />
         <TouchableOpacity style={{ marginLeft: 5 }} onPress={questionPressed}>
           <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
@@ -26,8 +29,8 @@ export default function AdvancedSwitch({
 }
 
 AdvancedSwitch.propTypes = {
-  style: PropTypes.shape({}),
-  titleStyle: PropTypes.shape({}),
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  titleStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   value: PropTypes.bool,
   title: PropTypes.string,
   questionPressed: PropTypes.func,

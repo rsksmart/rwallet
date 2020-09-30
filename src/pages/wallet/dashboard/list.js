@@ -50,8 +50,6 @@ class WalletList extends Component {
         const symbolName = common.getSymbolName(coin.symbol, coin.type);
         const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.symbol) : '';
         const worthText = coin.balanceValue ? `${currencySymbol}${common.getAssetValueString(coin.balanceValue)}` : currencySymbol;
-        console.log('coin: ', coin);
-        console.log('coin.defaultName: ', coin.defaultName);
         const item = {
           key: `${index}`,
           title: symbolName,

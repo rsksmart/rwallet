@@ -132,7 +132,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "空のウォレット",
-        "selectAvailableWallet": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
+        "selectMainnetAsset": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
+        "selectTestnetAsset": "少なくとも1つのtestnetrskアセットを持つウォレットを選択してください",
         "isConnecting": "ウォレットを接続しています...",
         "isSigning": "トランザクションは署名しています...",
         "signApproved": "承認されたメッセージ署名",

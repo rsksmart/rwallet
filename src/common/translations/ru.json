@@ -132,7 +132,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Пустой кошелек",
-        "selectAvailableWallet": "Выберите кошелек, в котором есть хотя бы один актив rsk основной сети",
+        "selectMainnetAsset": "Выберите кошелек, в котором есть хотя бы один актив rsk основной сети",
+        "selectTestnetAsset": "Выберите кошелек, в котором есть хотя бы один актив rsk testnet",
         "isConnecting": "Кошелек подключается ...",
         "isSigning": "Транзакция подписывается ...",
         "signApproved": "Подписание сообщения одобрено",

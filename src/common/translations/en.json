@@ -133,7 +133,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Empty wallet",
-        "selectAvailableWallet": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectMainnetAsset": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectTestnetAsset": "Please select a wallet that has at least one testnet rsk asset",
         "isConnecting": "Wallet is connecting...",
         "isSigning": "Transaction is signing...",
         "signApproved": "Message Signing Approved",

@@ -3,10 +3,16 @@ import {
   View, Text, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import AdvancedSwitch from '../../../components/common/switch/advanced.switch';
+import Loc from '../../../components/common/misc/loc';
 
 import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
+import appActions from '../../../redux/app/actions';
+import { createInfoNotification } from '../../../common/notification.controller';
 
 const styles = StyleSheet.create({
   body: {
@@ -100,7 +106,7 @@ class WalletConnecting extends Component {
 
   render() {
     const {
-      approve, reject, address, dappName, dappUrl,
+      approve, reject, address, dappName, dappUrl, onSwitchValueChanged, isMainnet,
     } = this.props;
 
     return (
@@ -129,6 +135,31 @@ class WalletConnecting extends Component {
           <Text style={styles.content}>{strings('page.wallet.walletconnect.agreeTwo')}</Text>
         </View>
 
+        <View style={styles.block}>
+          <Loc style={styles.title} text="page.wallet.createMultisigAddress.advancedOptions" />
+          <AdvancedSwitch
+            value={isMainnet}
+            title="page.wallet.addCustomToken.mainnet"
+            titleStyle={[{
+              fontFamily: 'Avenir',
+              color: color.mineShaft,
+              fontSize: 15,
+              alignSelf: 'center',
+            }]}
+            onSwitchValueChanged={async () => {
+              onSwitchValueChanged();
+            }}
+            questionPressed={() => {
+              const { addNotification } = this.props;
+              const notification = createInfoNotification(
+                'modal.networkQuestion.title',
+                'modal.networkQuestion.body',
+              );
+              addNotification(notification);
+            }}
+          />
+        </View>
+
         <View style={styles.btnsView}>
           <TouchableOpacity style={[styles.btn, styles.rejectBtn]} onPress={reject}>
             <Text style={styles.rejectText}>{strings('page.wallet.walletconnect.reject')}</Text>
@@ -149,6 +180,21 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  isMainnet: PropTypes.bool,
+  onSwitchValueChanged: PropTypes.func,
+  addNotification: PropTypes.func.isRequired,
 };
 
-export default WalletConnecting;
+WalletConnecting.defaultProps = {
+  isMainnet: true,
+  onSwitchValueChanged: () => {},
+};
+
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletConnecting);
