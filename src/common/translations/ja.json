@@ -578,7 +578,7 @@
     },
     "dappWarning": {
       "title": "サードパーティのDapp「%{dappName}」にリダイレクトしています",
-      "body": "%{description}\n\n注意：サードパーティのDapp「%{dappName}」にリダイレクトされます。当該サードパーティのDappユーザー契約およびプライバシーポリシーをよくお読みください。また、お客様がサードパーティのDappで行うすべての取引やサービスその他の使用については、「%{dappName}」に全責任が帰属します。\n\n"
+      "body": "%{description}注意：サードパーティのDapp「%{dappName}」にリダイレクトされます。当該サードパーティのDappユーザー契約およびプライバシーポリシーをよくお読みください。また、お客様がサードパーティのDappで行うすべての取引やサービスその他の使用については、「%{dappName}」に全責任が帰属します。\n\n"
     },
     "walletSelection": {
       "title": "ウォレットを選択してください"
@@ -666,6 +666,10 @@
     "existUnfinishedProposal": {
       "title": "未完成の提案が存在する",
       "body": "未完成の提案があります。"
+    },
+    "httpIsNotAllowed": {
+      "title": "URLを開くことはできません",
+      "body": "安全でないWebサイトからユーザーを保護するために、RWalletブラウザーはHTTPS暗号化のURLのみを許可します。 入力するURLがhttps://で始まることを確認してください"
     }
   },
   "currency": {

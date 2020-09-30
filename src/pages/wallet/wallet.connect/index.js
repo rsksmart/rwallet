@@ -23,14 +23,14 @@ import WaleltConnectHeader from '../../../components/headers/header.walletconnec
 import { createErrorNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import CONSTANTS from '../../../common/constants.json';
+import { NETWORK } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 
-const { NETWORK: { MAINNET } } = CONSTANTS;
+const { MAINNET } = NETWORK;
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;

@@ -581,7 +581,7 @@
     },
     "dappWarning": {
       "title": "Redireccionamiento a Dapp de terceros \"%{dappName}\"",
-      "body": "%{description}\n\nNota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
+      "body": "%{description}Nota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
     },
     "walletSelection": {
       "title": "Por favor seleccione una billetera"
@@ -669,6 +669,10 @@
     "existUnfinishedProposal": {
       "title": "Propuesta inconclusa existente",
       "body": "Tienes una propuesta sin terminar."
+    },
+    "httpIsNotAllowed": {
+      "title": "URL not allowed to open",
+      "body": "In order to protect users from unsafe websites, RWallet browser allows only URLs with HTTPS encryption. Please make sure the URL entered start with https://"
     }
   },
   "currency": {

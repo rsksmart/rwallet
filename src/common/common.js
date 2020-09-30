@@ -566,7 +566,7 @@ const common = {
   completionUrl(url) {
     try {
       let newUrl = url.toLowerCase();
-      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `http://${newUrl}`;
+      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `https://${newUrl}`;
       return newUrl;
     } catch (error) {
       return url;

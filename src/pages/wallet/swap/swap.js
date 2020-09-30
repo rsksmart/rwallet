@@ -28,6 +28,7 @@ import { createErrorConfirmation } from '../../../common/confirmation.controller
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { strings } from '../../../common/i18n';
 import ERROR_CODE from '../../../common/errors';
+import * as rbtc from '../../../common/transaction/rbtccoin';
 
 const styles = StyleSheet.create({
   body: {
@@ -641,7 +642,7 @@ class Swap extends Component {
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
     } else {
-      transactionFees = await parseHelper.getTransactionFees(symbol, type, address, address, amountHex);
+      transactionFees = await rbtc.getTransactionFees(type, swapSource.coin, address, toAddress, amountHex);
       // DOC swap need 2 times gas
       transactionFees.gas = symbol === 'DOC' ? transactionFees.gas * 2 : transactionFees.gas;
       console.log(`parseHelper.getTransactionFees, amount: ${txAmount}, transactionFees: ${JSON.stringify(transactionFees)}`);

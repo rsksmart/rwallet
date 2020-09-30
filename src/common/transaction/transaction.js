@@ -6,6 +6,8 @@ import storage from '../storage';
 import * as btc from './btccoin';
 import * as rbtc from './rbtccoin';
 
+import { ASSETS_CONTRACT } from '../constants';
+
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
   const signedTransaction = await symbol === 'BTC' ? btc.signTransaction(rawTransaction, privateKey) : rbtc.signTransaction(rawTransaction, privateKey);
@@ -25,13 +27,16 @@ const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResu
 class Transaction {
   constructor(coin, receiver, value, extraParams) {
     const {
-      symbol, type, privateKey, address,
+      symbol, type, privateKey, address, contractAddress,
     } = coin;
     const {
       data, memo, gasFee, coinswitch,
     } = extraParams;
     this.symbol = symbol;
     this.netType = type;
+
+    // If coin is custom token added by user, coin.contractAddress is not null and the value is saved in rwallet locally
+    this.contractAddress = contractAddress || (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) || '';
     this.sender = address;
     this.receiver = receiver;
     this.value = convertTransferValue(symbol, value);
@@ -46,7 +51,13 @@ class Transaction {
   }
 
   createRawTransaction = async (param) => {
-    const result = await Parse.Cloud.run('createRawTransaction', param);
+    const { symbol, contractAddress } = this;
+    let result = null;
+    if (symbol === 'BTC') {
+      result = await Parse.Cloud.run('createRawTransaction', param);
+    } else {
+      result = await rbtc.createRawTransaction({ ...param, contractAddress });
+    }
     this.rawTransaction = result;
   }
 
@@ -54,13 +65,13 @@ class Transaction {
     console.log('Transaction.processRawTransaction start');
     let result = null;
     const {
-      symbol, netType, sender, receiver, value, data, memo, gasFee,
+      symbol, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
     } = this;
     try {
       // If the last transaction is time out, createRawTransaction should use the fallback parameter
       const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
       const param = createRawTransactionParam({
-        symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
+        symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback, contractAddress,
       });
       console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawTransaction', param);

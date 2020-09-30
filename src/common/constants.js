@@ -88,3 +88,37 @@ export const PROPOSAL_STATUS = {
   REJECTED: 4, // The proposal is reject by copayers
   DELETED: 5, // The proposal is deleted by copyers
 };
+
+export const ASSETS_CONTRACT = {
+  RIF: {
+    Testnet: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    Mainnet: '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5',
+  },
+  DOC: {
+    Testnet: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
+    Mainnet: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
+  },
+  RIEP: {
+    Testnet: '0x23a1aa7b11e68bebe560a36bec04d1f79357f28d',
+    Mainnet: '0xf4d27c56595ed59b66cc7f03cff5193e4bd74a61',
+  },
+  RDOC: {
+    Testnet: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
+    Mainnet: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
+  },
+  BITP: {
+    Testnet: '0x30c7aDdAb4B6e17bFA71a78c8116C157dF4f6a4B',
+    Mainnet: '0x440CD83C160De5C96Ddb20246815eA44C7aBBCa8',
+  },
+  'T!': {
+    Testnet: '0x42ced11891E641F15AcAe3f540378052C37f5B00',
+    Mainnet: '0xaf8C226013BDC4b3AAcE1f8060db645B3f5e53fC',
+  },
+};
+
+export const WALLET_CONNECT = {
+  MODAL_TYPE: {
+    CONFIRMATION: 'Confirmation',
+    NOTIFICATION: 'Notification',
+  },
+};

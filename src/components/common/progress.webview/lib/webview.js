@@ -2,9 +2,12 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import LoadingBar from './loading-bar';
 
 import presetColor from '../../../../assets/styles/color';
+import { createErrorNotification } from '../../../../common/notification.controller';
+import appActions from '../../../../redux/app/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +28,23 @@ class ProgressBarWebView extends React.PureComponent {
 
   componentWillUnmount() {
     clearTimeout(this.timer);
+  }
+
+  onNavigationStateChange = (navState) => {
+    const {
+      myForwardedRef, onNavigationStateChange, addNotification,
+    } = this.props;
+    const { url } = navState;
+    if (!url.startsWith('https://')) {
+      myForwardedRef.current.stopLoading();
+      const notification = createErrorNotification(
+        'modal.httpIsNotAllowed.title',
+        'modal.httpIsNotAllowed.body',
+      );
+      addNotification(notification);
+      return;
+    }
+    onNavigationStateChange(navState);
   }
 
   onLoadProgress = (syntheticEvent) => {
@@ -63,9 +83,9 @@ class ProgressBarWebView extends React.PureComponent {
 
   render() {
     const {
-      height, forwardedRef, errorColor, disappearDuration,
+      height, myForwardedRef, errorColor, disappearDuration,
       source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded,
-      onNavigationStateChange, onMessage, incognito,
+      onMessage, incognito,
     } = this.props;
     const { percent, color, visible } = this.state;
     return (
@@ -75,13 +95,13 @@ class ProgressBarWebView extends React.PureComponent {
           source={source}
           javaScriptEnabled={javaScriptEnabled}
           injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
-          onNavigationStateChange={onNavigationStateChange}
+          onNavigationStateChange={this.onNavigationStateChange}
           onMessage={onMessage}
           height={height}
           color={color}
           errorColor={errorColor}
           disappearDuration={disappearDuration}
-          ref={forwardedRef}
+          ref={myForwardedRef}
           onLoadStart={this.onLoadStart}
           onLoadEnd={this.onLoadEnd}
           onLoadProgress={this.onLoadProgress}
@@ -102,13 +122,18 @@ ProgressBarWebView.propTypes = {
   onError: PropTypes.func,
   onLoadStart: PropTypes.func,
   onLoadEnd: PropTypes.func,
-  forwardedRef: PropTypes.shape({}),
+  myForwardedRef: PropTypes.shape({
+    current: PropTypes.shape({
+      stopLoading: PropTypes.func,
+    }),
+  }),
   source: PropTypes.shape({}),
   javaScriptEnabled: PropTypes.bool,
   injectedJavaScriptBeforeContentLoaded: PropTypes.string,
   onNavigationStateChange: PropTypes.func,
   onMessage: PropTypes.func,
   incognito: PropTypes.bool,
+  addNotification: PropTypes.func.isRequired,
 };
 
 ProgressBarWebView.defaultProps = {
@@ -120,7 +145,7 @@ ProgressBarWebView.defaultProps = {
   onError: undefined,
   onLoadStart: undefined,
   onLoadEnd: undefined,
-  forwardedRef: undefined,
+  myForwardedRef: undefined,
   source: undefined,
   javaScriptEnabled: false,
   injectedJavaScriptBeforeContentLoaded: undefined,
@@ -129,6 +154,15 @@ ProgressBarWebView.defaultProps = {
   incognito: false,
 };
 
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+});
+
+const ProgressBarWebViewWithState = connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(ProgressBarWebView);
+
 export default React.forwardRef((properties, ref) => {
   const {
     source, javaScriptEnabled, injectedJavaScriptBeforeContentLoaded, onNavigationStateChange, onMessage,
@@ -136,13 +170,13 @@ export default React.forwardRef((properties, ref) => {
     onLoadProgress, onError, onLoadStart, onLoadEnd,
   } = properties;
   return (
-    <ProgressBarWebView
+    <ProgressBarWebViewWithState
       source={source}
       javaScriptEnabled={javaScriptEnabled}
       injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
       onNavigationStateChange={onNavigationStateChange}
       onMessage={onMessage}
-      forwardedRef={ref}
+      myForwardedRef={ref}
       height={height}
       color={color}
       errorColor={errorColor}

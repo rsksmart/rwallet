@@ -584,7 +584,7 @@
     },
     "dappWarning": {
       "title": "제삼자 Dapp \"%{dappName}\"으로 리다이렉트하는 중...",
-      "body": "%{description}\n\n참고: 제삼자 Dapp \"%{dappName}\"으로 리다이렉트됩니다. 제삼자 Dapp의 사용자 동의서와 개인 정보 보호 정책을 자세히 읽어 주십시오. Dapp 내 모든 행위와 이용에 대한 완전한 책임은 \"%{dappName}\"이/가 지게 됩니다.\n\n"
+      "body": "%{description}참고: 제삼자 Dapp \"%{dappName}\"으로 리다이렉트됩니다. 제삼자 Dapp의 사용자 동의서와 개인 정보 보호 정책을 자세히 읽어 주십시오. Dapp 내 모든 행위와 이용에 대한 완전한 책임은 \"%{dappName}\"이/가 지게 됩니다.\n\n"
     },
     "walletSelection": {
       "title": "월렛을 선택하십시오"
@@ -666,6 +666,10 @@
     "existUnfinishedProposal": {
       "title": "미완성 제안이 있습니다.",
       "body": "미완성 된 제안이 있습니다."
+    },
+    "httpIsNotAllowed": {
+      "title": "URL을 열 수 없습니다",
+      "body": "안전하지 않은 웹 사이트로부터 사용자를 보호하기 위해 RWallet 브라우저는 HTTPS 암호화를 사용하는 URL 만 허용합니다. 입력 한 URL이 https://로 시작하는지 확인하십시오."
     }
   },
   "currency": {
