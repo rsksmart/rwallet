@@ -196,7 +196,7 @@ class WalletConnectPage extends Component {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
         'page.wallet.walletconnect.emptyWalletError',
-        'page.wallet.walletconnect.selectAvailableWallet',
+        'page.wallet.walletconnect.selectMainnetAsset',
         'page.wallet.walletconnect.gotIt',
         () => navigation.goBack(),
       );
