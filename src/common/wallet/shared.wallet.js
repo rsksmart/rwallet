@@ -1,18 +1,19 @@
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import MultisigBTC from './multisig.btc';
-import { WalletType } from '../constants';
+import { WalletType, BtcAddressType } from '../constants';
 import Wallet from './wallet';
 import Coin from './btccoin';
 
 export default class SharedWallet extends Wallet {
   constructor({
-    id, name, mnemonic, type,
+    id, name, mnemonic, type, addressType,
   }) {
     super({
-      id, name, mnemonic, walletType: WalletType.Multisig,
+      id, name, mnemonic, walletType: WalletType.Shared,
     });
     this.walletDerivationTypes = [{ symbol: 'BTC', type }];
+    this.addressType = addressType || BtcAddressType.legacy;
   }
 
   /**
@@ -86,11 +87,25 @@ export default class SharedWallet extends Wallet {
     return wallet;
   }
 
-  static create(walletName, phrase, type) {
+  static create({
+    id, name, mnemonic, type, addressType,
+  }) {
     const wallet = new SharedWallet({
-      id: 0, name: walletName, mnemonic: phrase, type,
+      id, name, mnemonic, type, addressType,
     });
-    wallet.createTokensFromSeed([], []);
+    wallet.generateDerivations([]);
     return wallet;
+  }
+
+  getPublicKey = () => {
+    const derivation = this.derivations[0];
+    const { publicKey } = derivation;
+    return publicKey;
+  }
+
+  generateDerivations() {
+    super.generateDerivations([]);
+    const derivation = this.derivations[0];
+    derivation.addressType = this.addressType;
   }
 }

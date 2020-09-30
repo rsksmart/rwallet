@@ -33,7 +33,8 @@
       "history": {
         "noTransNote": "No se ha encontrado ninguna transacción para este activo",
         "recent": "Reciente",
-        "loading": "cargando..."
+        "loading": "cargando...",
+        "proposalCreatedBy": "Creado por% {name}"
       },
       "transaction": {
         "Sent Funds": "Fondos enviados",
@@ -287,9 +288,11 @@
       },
       "multisigInvitation": {
         "title": "Invitación de billetera compartida",
-        "note": "Comparta esta dirección con los dispositivos que se unen a esta cuenta. cada copago tiene su propia frase de recuperación. Para recuperar los fondos almacenados en Share Wallet, necesitará la frase de recuperación de cada copago.",
+        "note": "Comparta esta dirección con los dispositivos que se unen a esta cuenta. Cada copago tiene su propia frase de recuperación. Para recuperar los fondos almacenados en Share Wallet, necesitará la frase de recuperación de cada copago.",
         "waitingNote": "Esperando a que el firmante autorizado se una",
-        "share": "Comparte esta invitación con tu firmante >"
+        "share": "Comparte esta invitación con tu firmante >",
+        "me": "Yo",
+        "waiting": "Esperando"
       },
       "proposal": {
         "title": "Propuesta de pago",
@@ -407,6 +410,7 @@
     "Next": "Próximo",
     "gotIt": "ENTENDIDO",
     "create": "CREAR",
+    "join": "UNIRSE",
     "CONFIRM": "CONFIRMAR",
     "retry": "Procesar de nuevo",
     "IMPORT": "IMPORTAR",
@@ -433,7 +437,12 @@
     "done": "Hecho",
     "share": "COMPARTIR",
     "check": "CHEQUE",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "accept": "ACEPTAR"
+  },
+  "picker": {
+    "confirm": "confirmar",
+    "cancel": "cancelar"
   },
   "txState": {
     "Sent": "Enviado",
@@ -626,36 +635,40 @@
       "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
     },
     "invalidWalletInvitation": {
-      "title": "Invalid Invitation Code",
-      "body": "This invitation code is invalid."
+      "title": "Código de invitación no válido",
+      "body": "Este código de invitación no es válido."
     },
     "deleteProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to remove this transaction?"
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea eliminar esta transacción?"
     },
     "rejectProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to reject this transaction?"
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea rechazar esta transacción?"
     },
     "userNotLogin": {
-      "title": "Not logged in",
-      "body": "You are not logged in."
+      "title": "Sin iniciar sesión",
+      "body": "Usted no se ha identificado."
     },
     "userOperated" : {
-      "title": "Operated",
-      "body": "Sorry, you have already done so."
+      "title": "Operado",
+      "body": "Lo siento, ya lo ha hecho."
     },
     "createMultisigAddress" : {
-      "title": "Invalid payment proposal",
-      "body": "Sorry, this proposal is no longer valid."
+      "title": "Propuesta de pago no válida",
+      "body": "Lo sentimos, esta propuesta ya no es válida."
     },
     "networkQuestion": {
-      "title": "Network",
-      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+      "title": "Red",
+      "body": "La red de prueba es una cadena de bloques de Bitcoin alternativa que se utilizará para realizar pruebas."
     },
     "addressTypeQuestion" : {
-      "title": "Address type",
-      "body": "Segwit address is not available now."
+      "title": "Tipo de dirección",
+      "body": "La dirección de Segwit no está disponible ahora."
+    },
+    "existUnfinishedProposal": {
+      "title": "Propuesta inconclusa existente",
+      "body": "Tienes una propuesta sin terminar."
     }
   },
   "currency": {

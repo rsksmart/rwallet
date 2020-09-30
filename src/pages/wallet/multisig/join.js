@@ -15,7 +15,7 @@ import presetStyle from '../../../assets/styles/style';
 import references from '../../../assets/references';
 import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
-import { NAME_MAX_LENGTH } from '../../../common/constants';
+import { NAME_MAX_LENGTH, BtcAddressType } from '../../../common/constants';
 import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
 import ParseHelper from '../../../common/parse';
 
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 0,
     marginLeft: 10,
-    marginVertical: 12,
+    marginVertical: 7,
     flex: 1,
     borderWidth: 0,
   },
@@ -111,7 +111,7 @@ class JoinMultisigAddress extends Component {
         type, walletName, signatureNumber, copayerNumber,
       } = invitation;
       const multisigParams = {
-        userName, invitationCode, type, walletName, signatureNumber, copayerNumber,
+        userName, invitationCode, type, walletName, signatureNumber, copayerNumber, addressType: BtcAddressType.legacy,
       };
       const navigateParams = {
         shouldCreatePhrase: true, shouldVerifyPhrase: true, isJoiningMultisig: true, multisigParams,

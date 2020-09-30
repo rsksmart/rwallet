@@ -34,7 +34,8 @@
         "noTransNote": "There is no transaction found for this asset",
         "recent": "Recent",
         "loading": "Loading...",
-        "pendingProposals": "Pending Proposals"
+        "pendingProposals": "Pending Proposals",
+        "proposalCreatedBy": "Created by %{name}"
       },
       "transaction": {
         "Sent Funds": "Sent Funds",
@@ -285,9 +286,11 @@
       },
       "multisigInvitation": {
         "title": "Shared Wallet Invitation",
-        "note": "Share this address with the devices joining this account. each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
+        "note": "Share this address with the devices joining this account. Each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
         "waitingNote": "Waiting for authorized signer to join",
-        "share": "Share this invitation with your signer >"
+        "share": "Share this invitation with your signer >",
+        "me": "Me",
+        "waiting": "waiting"
       },
       "proposal": {
         "title": "Payment Proposal",
@@ -434,6 +437,10 @@
     "check": "CHECK",
     "update": "Update",
     "accept": "ACCEPT"
+  },
+  "picker": {
+    "confirm": "confirm",
+    "cancel": "cancel"
   },
   "txState": {
     "Sent": "Sent",
@@ -653,9 +660,13 @@
       "title": "Network",
       "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
     },
-    "addressTypeQuestion" : {
+    "addressTypeQuestion": {
       "title": "Address type",
       "body": "Segwit address is not available now."
+    },
+    "existUnfinishedProposal": {
+      "title": "Exist unfinished proposal",
+      "body": "You have a unfinished proposal."
     }
   },
   "currency": {

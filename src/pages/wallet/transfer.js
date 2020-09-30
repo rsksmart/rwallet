@@ -16,7 +16,7 @@ import { createErrorNotification, getErrorNotification, getDefaultTxFailedErrorN
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import Transaction from '../../common/transaction';
+import { createTransaction } from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -28,7 +28,7 @@ import {
 import parseHelper from '../../common/parse';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
-import ERROR_CODE from '../../common/errors';
+import ERROR_CODE, { createError } from '../../common/errors';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -775,13 +775,16 @@ class Transfer extends Component {
     const { amount } = this.state;
     try {
       this.setState({ loading: true });
+      // If proposal exist, throw ERR_EXIST_UNFINISHED_PROPOSAL error
+      if (coin.proposal) {
+        throw createError(ERROR_CODE.ERR_EXIST_UNFINISHED_PROPOSAL);
+      }
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
-      let transaction = new Transaction(coin, toAddress, amount, extraParams);
+      const transaction = createTransaction(coin, toAddress, amount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
       const result = await transaction.processSignedTransaction();
-      this.setState({ loading: false });
       if (isMultisig) {
         updateProposal(result);
         navigation.navigate('CreateProposalSuccess');
@@ -793,9 +796,7 @@ class Transfer extends Component {
         };
         navigation.navigate('TransferCompleted', completedParams);
       }
-      transaction = null;
     } catch (error) {
-      this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
       const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
@@ -806,6 +807,8 @@ class Transfer extends Component {
         });
       }
       // this.resetConfirm();
+    } finally {
+      this.setState({ loading: false });
     }
   }
 

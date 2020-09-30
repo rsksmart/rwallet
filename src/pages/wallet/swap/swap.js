@@ -15,7 +15,7 @@ import color from '../../../assets/styles/color';
 import presetStyles from '../../../assets/styles/style';
 import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
-import Transaction from '../../../common/transaction';
+import { createTransaction } from '../../../common/transaction';
 import appActions from '../../../redux/app/actions';
 import {
   createErrorNotification, createInfoNotification, getErrorNotification, getDefaultTxFailedErrorNotification,
@@ -454,11 +454,9 @@ class Swap extends Component {
       const extraParams = {
         data: '', memo: '', gasFee, coinswitch: { order },
       };
-      let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
-      console.log('transaction: ', transaction);
+      const transaction = createTransaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       await transaction.processRawTransaction();
       await transaction.signTransaction();
-      await transaction.processSignedTransaction();
       const result = await transaction.processSignedTransaction();
       this.setState({ isLoading: false });
       if (isMultisig) {
@@ -472,15 +470,6 @@ class Swap extends Component {
         };
         navigation.navigate('TransferCompleted', completedParams);
       }
-
-      this.setState({ isLoading: false });
-      const completedParams = {
-        symbol: swapSource.coin.symbol,
-        type: swapSource.coin.type,
-        hash: transaction.txHash,
-      };
-      navigation.navigate('SwapCompleted', completedParams);
-      transaction = null;
     } catch (error) {
       this.setState({ isLoading: false });
       console.log(`confirm, error: ${error.message}`);

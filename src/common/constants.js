@@ -36,7 +36,7 @@ export const BtcAddressType = {
 export const WalletType = {
   Normal: 'Normal',
   Readonly: 'Readonly',
-  Multisig: 'Multisig',
+  Shared: 'Shared',
 };
 
 export const TxStatus = {
@@ -81,10 +81,10 @@ export const Chain = {
 };
 
 export const PROPOSAL_STATUS = {
-  CREATED: 0,
-  PENDING: 1,
-  SENT: 2,
-  FAILED: 3,
-  REJECTED: 4,
-  DELETED: 5,
+  CREATED: 0, // The proposal is created, but not signed.
+  PENDING: 1, // The proposal is signed by creator, waiting other copayers to sign
+  SENT: 2, // The proposal is sent
+  FAILED: 3, // The proposal is failed, something wrong in server
+  REJECTED: 4, // The proposal is reject by copayers
+  DELETED: 5, // The proposal is deleted by copyers
 };

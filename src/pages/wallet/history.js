@@ -739,7 +739,7 @@ class History extends Component {
             <TouchableOpacity style={[styles.proposalView]} onPress={this.onProposalPressed}>
               <View style={styles.proposalLeft}>
                 <Loc style={[styles.proposalText]} text="txState.Sending" />
-                <Text style={styles.proposalText}>{`Created by ${proposal.creator}`}</Text>
+                <Loc style={styles.proposalText} text="page.wallet.history.proposalCreatedBy" interpolates={{ name: proposal.creator }} />
               </View>
               <View style={[styles.proposalRight]}>
                 <Text style={styles.proposalAmount}>{proposal.amount}</Text>

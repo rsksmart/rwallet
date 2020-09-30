@@ -25,8 +25,15 @@ const ERROR_CODE = {
   TIME_OUT: 725,
 
   ERR_USER_NOT_LOGIN: 706, // request not from a login user
-  ERR_USER_OPERATED: 708, // User already exist
-  ERR_INVALID_PROPOSAL: 709, // invalid proposal, proposal is not in pending status.
+  ERR_EXIST_UNFINISHED_PROPOSAL: 707, // Not creator of multiSigProposal
+  ERR_USER_ALREADY_OPERATED: 708, // User has already joined, accepted or rejected
+  ERR_INVALID_PROPOSAL: 709, // The proposal not in pending or created state
+};
+
+export const createError = (code, message) => {
+  const error = new Error(message);
+  error.code = code;
+  return error;
 };
 
 export default ERROR_CODE;

@@ -1,6 +1,6 @@
 rootProject.name = 'rwallet'
-include ':@yz1311_react-native-wheel-picker'
-project(':@yz1311_react-native-wheel-picker').projectDir = new File(rootProject.projectDir, '../node_modules/@yz1311/react-native-wheel-picker/android')
+include ':react-native-picker'
+project(':react-native-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-picker/android')
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':@imstar15_react-native-firebase'

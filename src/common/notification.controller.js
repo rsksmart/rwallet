@@ -40,13 +40,17 @@ export const errorNotifications = {
     title: 'modal.userNotLogin.title',
     body: 'modal.userNotLogin.body',
   },
-  [ERROR_CODE.ERR_USER_OPERATED]: {
+  [ERROR_CODE.ERR_USER_ALREADY_OPERATED]: {
     title: 'modal.userOperated.title',
     body: 'modal.userOperated.body',
   },
   [ERROR_CODE.ERR_INVALID_PROPOSAL]: {
     title: 'modal.invalidProposal.title',
     body: 'modal.invalidProposal.body',
+  },
+  [ERROR_CODE.ERR_EXIST_UNFINISHED_PROPOSAL]: {
+    title: 'modal.existUnfinishedProposal.title',
+    body: 'modal.existUnfinishedProposal.body',
   },
 };
 

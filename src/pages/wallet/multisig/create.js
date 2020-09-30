@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, StyleSheet, TextInput, Switch, TouchableOpacity, Text,
+  View, StyleSheet, TextInput, Switch, TouchableOpacity, Text, BackHandler,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import { CommonPicker } from '@yz1311/react-native-wheel-picker';
+import Picker from 'react-native-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
@@ -21,6 +21,7 @@ import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
 import readOnlyStyles from '../../../assets/styles/readonly';
 import { createInfoNotification } from '../../../common/notification.controller';
+import { strings } from '../../../common/i18n';
 
 const MAX_COPAYERS = 7;
 const MAX_SIGNATURES = 2;
@@ -68,11 +69,6 @@ const styles = StyleSheet.create({
     color: color.lightGray,
     right: 5,
   },
-  picker: {
-    position: 'absolute',
-    width: '100%',
-    bottom: 0,
-  },
 });
 
 class CreateMultisigAddress extends Component {
@@ -91,12 +87,23 @@ class CreateMultisigAddress extends Component {
         copayers: 3,
         isMainnet: false,
         isLegacy: true,
-        picker: null,
       };
+    }
+
+    componentDidMount() {
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        Picker.isPickerShow((status) => {
+          if (status) {
+            Picker.hide();
+          }
+        });
+      });
     }
 
     componentWillUnmount() {
       CancelablePromiseUtil.cancel(this);
+      this.backHandler.remove();
+      Picker.hide();
     }
 
     onCreateButtonPressed = async () => {
@@ -156,48 +163,55 @@ class CreateMultisigAddress extends Component {
     }
 
     onSignaturesPressed = () => {
-      const { signatures, copayers } = this.state;
+      const { copayers, signatures } = this.state;
       const data = [];
 
       const maxNumber = copayers || MAX_COPAYERS;
-      for (let i = MAX_SIGNATURES; i <= maxNumber; i += 1) {
-        data.push(i.toString());
+      for (let i = 2; i <= maxNumber; i += 1) {
+        data.push(i);
       }
 
-      const picker = {
-        data,
-        selectedValue: signatures ? signatures.toString() : null,
-        onConfirm: (value) => {
-          const newSignatures = parseInt(value, 10);
-          this.setState({ picker: null, signatures: newSignatures });
+      Picker.init({
+        pickerData: data,
+        selectedValue: [signatures],
+        onPickerConfirm: (value) => {
+          this.setState({ signatures: parseInt(value, 10) }, () => {
+            this.checkIfCanSubmit();
+          });
         },
-      };
-
-      this.setState({ picker });
+        pickerTitleText: '',
+        pickerConfirmBtnText: strings('picker.confirm'),
+        pickerCancelBtnText: strings('picker.cancel'),
+      });
+      Picker.show();
     }
 
     onCopayersPressed = () => {
       const { copayers } = this.state;
       const data = [];
-
       for (let i = MAX_SIGNATURES; i <= MAX_COPAYERS; i += 1) {
-        data.push(i.toString());
+        data.push(i);
       }
 
-      const picker = {
-        data,
-        selectedValue: copayers ? copayers.toString() : null,
-        onConfirm: (value) => {
+      Picker.init({
+        pickerData: data,
+        selectedValue: [copayers],
+        onPickerConfirm: (value) => {
           const { signatures } = this.state;
+          let newSignatures = signatures;
           const newCopayers = parseInt(value, 10);
-          this.setState({ picker: null, copayers: newCopayers });
-          if (signatures > newCopayers) {
-            this.setState({ signatures: newCopayers });
+          if (signatures && newSignatures > newCopayers) {
+            newSignatures = newCopayers;
           }
+          this.setState({ copayers: newCopayers, signatures: newSignatures }, () => {
+            this.checkIfCanSubmit();
+          });
         },
-      };
-
-      this.setState({ picker });
+        pickerTitleText: '',
+        pickerConfirmBtnText: strings('picker.confirm'),
+        pickerCancelBtnText: strings('picker.cancel'),
+      });
+      Picker.show();
     }
 
     checkIfCanSubmit = () => {
@@ -206,96 +220,84 @@ class CreateMultisigAddress extends Component {
       this.setState({ canSubmit });
     }
 
-    onPickerCancel = () => {
-      this.setState({ picker: null });
+    onBackButtonPressed = () => {
+      const { navigation } = this.props;
+      Picker.hide();
+      navigation.goBack();
     }
 
     render() {
       const {
-        isLoading, canSubmit, walletName, userName, isMainnet, isLegacy, copayers, signatures, picker,
+        isLoading, canSubmit, walletName, userName, isMainnet, isLegacy, copayers, signatures,
       } = this.state;
-      const { navigation } = this.props;
       const customButton = (<Button text="button.create" onPress={this.onCreateButtonPressed} disabled={!canSubmit} />);
       return (
-        <View style={{ flex: 1 }}>
-          <BasePageGereral
-            isSafeView
-            hasBottomBtn
-            hasLoader
-            isLoading={isLoading}
-            headerComponent={<Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.createMultisigAddress.title" />}
-            customBottomButton={customButton}
-          >
-            <View style={styles.body}>
-              <View style={styles.fieldView}>
-                <Loc style={styles.walletName} text="page.wallet.createMultisigAddress.walletName" />
-                <TextInput
-                  style={[presetStyle.textInput, space.marginTop_7]}
-                  value={walletName}
-                  onChangeText={this.onWalletNameChanged}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  blurOnSubmit={false}
-                />
-              </View>
-              <View style={[styles.fieldView, space.marginTop_22]}>
-                <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.userName" />
-                <TextInput
-                  style={[presetStyle.textInput, space.marginTop_10]}
-                  value={userName}
-                  onChangeText={this.onUserNameChanged}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  blurOnSubmit={false}
-                />
-              </View>
-              <View style={[styles.fieldView, space.marginTop_22]}>
-                <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.signatures" />
-                <TouchableOpacity style={styles.pickerButton} onPress={this.onSignaturesPressed}>
-                  <Text style={[styles.rowAddress, space.marginLeft_8]}>{signatures}</Text>
-                  <EvilIcons style={styles.rowChevron} name="chevron-down" />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.fieldView, space.marginTop_22]}>
-                <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.copayers" />
-                <TouchableOpacity style={styles.pickerButton} onPress={this.onCopayersPressed}>
-                  <Text style={[styles.rowAddress, space.marginLeft_8]}>{copayers}</Text>
-                  <EvilIcons style={styles.rowChevron} name="chevron-down" />
-                </TouchableOpacity>
-              </View>
-              <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
-              <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Loc style={[styles.fieldTitle]} text="page.wallet.addCustomToken.mainnet" />
-                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onNetworkQuestionPressed}>
-                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                  </TouchableOpacity>
-                </View>
-                <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
-              </View>
-              <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Loc style={[styles.fieldTitle]} text="page.wallet.createMultisigAddress.legacy" />
-                  <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onAddressTypeQuestionPressed}>
-                    <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                  </TouchableOpacity>
-                </View>
-                <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} disabled />
-              </View>
+        <BasePageGereral
+          isSafeView
+          hasBottomBtn
+          hasLoader
+          isLoading={isLoading}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPressed} title="page.wallet.createMultisigAddress.title" />}
+          customBottomButton={customButton}
+        >
+          <View style={styles.body}>
+            <View style={styles.fieldView}>
+              <Loc style={styles.walletName} text="page.wallet.createMultisigAddress.walletName" />
+              <TextInput
+                style={[presetStyle.textInput, space.marginTop_7]}
+                value={walletName}
+                onChangeText={this.onWalletNameChanged}
+                autoCapitalize="none"
+                autoCorrect={false}
+                blurOnSubmit={false}
+              />
             </View>
-          </BasePageGereral>
-          { picker && (
-            <CommonPicker
-              style={styles.picker}
-              pickerData={[picker.data]}
-              selectedValue={[picker.selectedValue]}
-              pickerCancelBtnText="Cancel"
-              pickerConfirmBtnText="Confirm"
-              onPickerCancel={this.onPickerCancel}
-              onPickerConfirm={picker.onConfirm}
-            />
-          )}
-        </View>
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={styles.fieldTitle} text="page.wallet.createMultisigAddress.userName" />
+              <TextInput
+                style={[presetStyle.textInput, space.marginTop_10]}
+                value={userName}
+                onChangeText={this.onUserNameChanged}
+                autoCapitalize="none"
+                autoCorrect={false}
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.signatures" />
+              <TouchableOpacity style={styles.pickerButton} onPress={this.onSignaturesPressed}>
+                <Text style={[styles.rowAddress, space.marginLeft_8]}>{signatures}</Text>
+                <EvilIcons style={styles.rowChevron} name="chevron-down" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.fieldView, space.marginTop_22]}>
+              <Loc style={[styles.fieldTitle, space.marginBottom_10]} text="page.wallet.createMultisigAddress.copayers" />
+              <TouchableOpacity style={styles.pickerButton} onPress={this.onCopayersPressed}>
+                <Text style={[styles.rowAddress, space.marginLeft_8]}>{copayers}</Text>
+                <EvilIcons style={styles.rowChevron} name="chevron-down" />
+              </TouchableOpacity>
+            </View>
+            <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
+            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Loc style={[styles.fieldTitle]} text="page.wallet.addCustomToken.mainnet" />
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onNetworkQuestionPressed}>
+                  <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
+                </TouchableOpacity>
+              </View>
+              <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
+            </View>
+            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Loc style={[styles.fieldTitle]} text="page.wallet.createMultisigAddress.legacy" />
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onAddressTypeQuestionPressed}>
+                  <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
+                </TouchableOpacity>
+              </View>
+              <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} disabled />
+            </View>
+          </View>
+        </BasePageGereral>
       );
     }
 }

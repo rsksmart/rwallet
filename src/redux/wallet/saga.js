@@ -11,7 +11,7 @@ import parseDataUtil from '../../common/parseDataUtil';
 import SharedWallet from '../../common/wallet/shared.wallet';
 
 import { createErrorNotification } from '../../common/notification.controller';
-import { BtcAddressType, PROPOSAL_STATUS } from '../../common/constants';
+import { PROPOSAL_STATUS } from '../../common/constants';
 
 function* createKeyRequest(action) {
   const {
@@ -488,34 +488,33 @@ function* createSharedWalletRequest(action) {
       signatureNumber, copayerNumber, userName, walletName,
     } = multisigParams;
 
-    const wallet = new SharedWallet({
-      id: walletManager.currentKeyId, name: walletName, mnemonic: phrase, type,
+    const wallet = SharedWallet.create({
+      id: walletManager.currentKeyId,
+      name: walletName,
+      mnemonic: phrase,
+      type,
+      addressType,
     });
-    wallet.createTokensFromSeed([], []);
-
-    const derivation = wallet.derivations[0];
-    derivation.addressType = addressType;
-    const { publicKey } = derivation;
 
     const params = {
-      signatureNumber, copayerNumber, publicKey, type, name: userName, walletName,
+      signatureNumber, copayerNumber, publicKey: wallet.getPublicKey(), type, name: userName, walletName,
     };
 
     const invitation = yield call(ParseHelper.createMultisigAddress, params);
     const { invitationCode } = invitation;
-
-    walletManager.currentKeyId += 1;
-    walletManager.wallets.unshift(wallet);
 
     // Add token
     yield call(wallet.addToken, {
       invitationCode, type, signatureNumber, copayerNumber,
     });
 
+    yield call(walletManager.addWallet, wallet);
+
     // Save to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
+
+    // Notice UI to update
     yield put({ type: actions.WALLETS_UPDATED });
-    yield call(walletManager.serialize);
   } catch (error) {
     console.warn('createSharedWalletRequest, error: ', error);
     yield put(actions.setSharedWalletCreationError(error));
@@ -528,36 +527,36 @@ function* joinSharedWalletRequest(action) {
   const walletManager = state.Wallet.get('walletManager');
   try {
     const {
-      invitationCode, userName, walletName, type, signatureNumber, copayerNumber,
+      invitationCode, userName, walletName, type, signatureNumber, copayerNumber, addressType,
     } = multisigParams;
 
-    const wallet = new SharedWallet({
-      id: walletManager.currentKeyId, walletName, mnemonic: phrase, type,
+    // Create shared wallet
+    const wallet = SharedWallet.create({
+      id: walletManager.currentKeyId,
+      name: walletName,
+      mnemonic: phrase,
+      type,
+      addressType,
     });
-    wallet.createTokensFromSeed([], []);
 
-    const derivation = wallet.derivations[0];
-    derivation.addressType = BtcAddressType.legacy;
-    const { publicKey } = derivation;
-    const invitation = yield call(ParseHelper.joinMultisigAddress, {
-      invitationCode, publicKey, name: userName,
-    });
-    console.log('joinSharedWalletRequest, invitation: ', invitation);
-
-    walletManager.currentKeyId += 1;
-    walletManager.wallets.unshift(wallet);
-
-    // Add token
-    yield call(wallet.addToken, {
+    // Add token to wallet
+    const token = {
       invitationCode, type, signatureNumber, copayerNumber,
-    });
+    };
+    yield call(wallet.addToken, token);
 
-    // Save to storage
+    // Send join params to server
+    const joinParams = { invitationCode, publicKey: wallet.getPublicKey(), name: userName };
+    yield call(ParseHelper.joinMultisigAddress, joinParams);
+
+    // Add wallet to wallet manager
+    yield call(walletManager.addWallet, wallet);
+
+    // Save phrase to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
-    console.log('joinSharedWalletRequest, WALLETS_UPDATED');
+
+    // Notice UI to update
     yield put({ type: actions.WALLETS_UPDATED });
-    console.log('joinSharedWalletRequest, WALLETS_UPDATED, 111111111');
-    yield call(walletManager.serialize);
   } catch (error) {
     console.warn('joinSharedWalletRequest, error: ', error);
     yield put(actions.setSharedWalletCreationError(error));
