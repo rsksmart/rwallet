@@ -30,8 +30,6 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
