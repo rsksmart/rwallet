@@ -97,6 +97,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: color.white,
   },
+  switchTitleStyle: {
+    fontFamily: 'Avenir',
+    color: color.mineShaft,
+    fontSize: 15,
+    alignSelf: 'center',
+  },
 });
 
 class WalletConnecting extends Component {
@@ -140,12 +146,7 @@ class WalletConnecting extends Component {
           <AdvancedSwitch
             value={isMainnet}
             title="page.wallet.addCustomToken.mainnet"
-            titleStyle={[{
-              fontFamily: 'Avenir',
-              color: color.mineShaft,
-              fontSize: 15,
-              alignSelf: 'center',
-            }]}
+            titleStyle={styles.switchTitleStyle}
             onSwitchValueChanged={async () => {
               onSwitchValueChanged();
             }}
