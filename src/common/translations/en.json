@@ -580,8 +580,8 @@
       "body": "Send, Swap and Scan QR Code operations are not available for a Read-only wallet. To enable those, please Import this wallet with its 12-word phrases."
     },
     "httpIsNotAllowed": {
-      "title": "Http web site is not allowed te be open",
-      "body": "Please open https protocol website"
+      "title": "URL no permitida para abrir",
+      "body": "Para proteger a los usuarios de sitios web inseguros, el navegador RWallet solo permite URL con cifrado HTTPS. Asegúrese de que la URL ingresada comience con https: //"
     }
   },
   "currency": {

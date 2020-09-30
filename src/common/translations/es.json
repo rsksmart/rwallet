@@ -581,6 +581,10 @@
     "readOnlyLimit": {
       "title": "Operación no disponible",
       "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
+    },
+    "httpIsNotAllowed": {
+      "title": "URL not allowed to open",
+      "body": "In order to protect users from unsafe websites, RWallet browser allows only URLs with HTTPS encryption. Please make sure the URL entered start with https://"
     }
   },
   "currency": {

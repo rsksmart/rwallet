@@ -581,6 +581,10 @@
     "readOnlyLimit": {
       "title": "操作不可用",
       "body": "发送，交换和扫描二维码操作不适用于只读钱包。要启用这些功能，请导入包含12个单词的短语的钱包。"
+    },
+    "httpIsNotAllowed": {
+      "title": "不允许打开的URL",
+      "body": "为了保护用户免受不安全网站的侵害，RWallet浏览器仅允许使用HTTPS加密的URL。请确保输入的URL以https://开头。"
     }
   },
   "currency": {
