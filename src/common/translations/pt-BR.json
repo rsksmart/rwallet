@@ -302,7 +302,7 @@
         "paymentFailed": "O pagamento falhou.",
         "paymentRejected": "Pagamento rejeitado.",
         "me": "Eu",
-        "waiting": "Esperando"
+        "waiting": "Aguardando"
       }
     },
     "dapp": {
@@ -423,7 +423,7 @@
     "Next": "Próximo",
     "gotIt": "ENTENDI",
     "create": "CRIAR",
-    "join": "JUNTE-SE",
+    "join": "JUNTAR-SE",
     "CONFIRM": "CONFIRMAR",
     "retry": "Tentar novamente",
     "IMPORT": "IMPORTAR",
@@ -673,15 +673,15 @@
     },
     "networkQuestion": {
       "title": "Rede",
-      "body": "A rede de testes ou testnet é um blockchain alternativo do Bitcoin, que é usado exclusivamente para realização de testes."
+      "body": "A rede de testes ou testnet é uma blockchain alternativa do Bitcoin, que é usada exclusivamente para realização de testes."
     },
     "addressTypeQuestion" : {
       "title": "Tipo de endereço",
       "body": "Endereço Segwit não está disponível agora."
     },
     "existUnfinishedProposal": {
-      "title": "Existe proposta inacabada",
-      "body": "Você tem uma proposta inacabada."
+      "title": "Existe proposta pendente",
+      "body": "Você tem uma proposta pendente."
     }
   },
   "currency": {
