@@ -3,6 +3,7 @@ images.BTC = require('./images/icon/BTC.png');
 images.RBTC = require('./images/icon/RBTC.png');
 images.RIF = require('./images/icon/RIF.png');
 images.DOC = require('./images/icon/DOC.png');
+images.BPRO = require('./images/icon/BPRO.png');
 images.RIFP = require('./images/icon/RIFP.png');
 images.RDOC = require('./images/icon/RDOC.png');
 images.BTC_GREY = require('./images/icon/BTC.grey.png');

@@ -52,6 +52,14 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RDOC',
   },
+  BPRO: {
+    networkId: 137,
+    icon: references.images.BPRO,
+    defaultName: 'BitPRO',
+    chain: 'Rootstock',
+    type: 'Mainnet',
+    symbol: 'BPRO',
+  },
   BTCTestnet: {
     networkId: 1,
     network: networks.testnet,

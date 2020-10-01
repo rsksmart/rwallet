@@ -22,7 +22,7 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BPRO'],
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
