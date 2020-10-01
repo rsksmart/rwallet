@@ -109,6 +109,14 @@ const coinType = {
     type: 'Testnet',
     symbol: 'RDOC',
   },
+  BPROTestnet: {
+    networkId: 37310,
+    icon: references.images.BPRO_GREY,
+    defaultName: 'BitPRO',
+    chain: 'Rootstock',
+    type: 'Testnet',
+    symbol: 'BPRO',
+  },
   CustomToken: {
     networkId: 137,
     icon: references.images.customToken,
