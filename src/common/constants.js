@@ -96,7 +96,7 @@ export const ASSETS_CONTRACT = {
     Testnet: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
     Mainnet: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
   },
-  BPRO: {
+  BITP: {
     Testnet: '0x4dA7997A819bb46B6758b9102234c289Dd2ad3bf',
     Mainnet: '0x440cd83c160de5c96ddb20246815ea44c7abbca8',
   },

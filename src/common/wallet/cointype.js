@@ -52,13 +52,13 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RDOC',
   },
-  BPRO: {
+  BITP: {
     networkId: 137,
-    icon: references.images.BPRO,
+    icon: references.images.BITP,
     defaultName: 'BitPRO',
     chain: 'Rootstock',
     type: 'Mainnet',
-    symbol: 'BPRO',
+    symbol: 'BITP',
   },
   BTCTestnet: {
     networkId: 1,
@@ -109,13 +109,13 @@ const coinType = {
     type: 'Testnet',
     symbol: 'RDOC',
   },
-  BPROTestnet: {
+  BITPTestnet: {
     networkId: 37310,
-    icon: references.images.BPRO_GREY,
+    icon: references.images.BITP_GREY,
     defaultName: 'BitPRO',
     chain: 'Rootstock',
     type: 'Testnet',
-    symbol: 'BPRO',
+    symbol: 'BITP',
   },
   CustomToken: {
     networkId: 137,
