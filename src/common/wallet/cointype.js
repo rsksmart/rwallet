@@ -5,6 +5,7 @@ import references from '../../assets/references';
 const coinType = {
   BTC: {
     networkId: 0,
+    pathNetworkId: 0,
     network: networks.bitcoin,
     icon: references.images.BTC,
     defaultName: 'Bitcoin',
@@ -13,7 +14,8 @@ const coinType = {
     symbol: 'BTC',
   },
   RBTC: {
-    networkId: 137,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.RBTC,
     defaultName: 'Smart Bitcoin',
     chain: 'Rootstock',
@@ -21,7 +23,8 @@ const coinType = {
     symbol: 'RBTC',
   },
   RIF: {
-    networkId: 137,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.RIF,
     defaultName: 'RSK Infra Framework',
     chain: 'Rootstock',
@@ -29,7 +32,8 @@ const coinType = {
     symbol: 'RIF',
   },
   DOC: {
-    networkId: 137,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.DOC,
     defaultName: 'Dollar on Chain',
     chain: 'Rootstock',
@@ -37,7 +41,8 @@ const coinType = {
     symbol: 'DOC',
   },
   RIFP: {
-    networkId: 137,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.RIFP,
     defaultName: 'RIFPro',
     chain: 'Rootstock',
@@ -45,7 +50,8 @@ const coinType = {
     symbol: 'RIFP',
   },
   RDOC: {
-    networkId: 137,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.RDOC,
     defaultName: 'RIF Dollar on Chain',
     chain: 'Rootstock',
@@ -54,6 +60,7 @@ const coinType = {
   },
   BTCTestnet: {
     networkId: 1,
+    pathNetworkId: 1,
     network: networks.testnet,
     icon: references.images.BTC_GREY,
     defaultName: 'Bitcoin',
@@ -62,7 +69,8 @@ const coinType = {
     symbol: 'BTC',
   },
   RBTCTestnet: {
-    networkId: 37310,
+    networkId: 31,
+    pathNetworkId: 37310,
     icon: references.images.RBTC_GREY,
     defaultName: 'Smart Bitcoin',
     chain: 'Rootstock',
@@ -70,7 +78,8 @@ const coinType = {
     symbol: 'RBTC',
   },
   RIFTestnet: {
-    networkId: 37310,
+    networkId: 31,
+    pathNetworkId: 37310,
     icon: references.images.RIF_GREY,
     defaultName: 'RSK Infra Framework',
     chain: 'Rootstock',
@@ -78,7 +87,8 @@ const coinType = {
     symbol: 'RIF',
   },
   DOCTestnet: {
-    networkId: 37310,
+    networkId: 31,
+    pathNetworkId: 37310,
     icon: references.images.DOC_GREY,
     defaultName: 'Dollar on Chain',
     chain: 'Rootstock',
@@ -86,7 +96,8 @@ const coinType = {
     symbol: 'DOC',
   },
   RIFPTestnet: {
-    networkId: 137,
+    networkId: 31,
+    pathNetworkId: 137,
     icon: references.images.RIFP_GREY,
     defaultName: 'RIFPro',
     chain: 'Rootstock',
@@ -94,7 +105,8 @@ const coinType = {
     symbol: 'RIFP',
   },
   RDOCTestnet: {
-    networkId: 137,
+    networkId: 31,
+    pathNetworkId: 137,
     icon: references.images.RDOC_GREY,
     defaultName: 'RIF Dollar on Chain',
     chain: 'Rootstock',
@@ -102,13 +114,15 @@ const coinType = {
     symbol: 'RDOC',
   },
   CustomToken: {
-    networkId: 137,
+    networkId: 31,
+    pathNetworkId: 137,
     icon: references.images.customToken,
     chain: 'Rootstock',
     type: 'Mainnet',
   },
   CustomTokenTestnet: {
-    networkId: 37310,
+    networkId: 31,
+    pathNetworkId: 37310,
     icon: references.images.customToken_grey,
     chain: 'Rootstock',
     type: 'Testnet',
