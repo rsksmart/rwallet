@@ -97,7 +97,7 @@ const coinType = {
   },
   RIFPTestnet: {
     networkId: 31,
-    pathNetworkId: 137,
+    pathNetworkId: 37310,
     icon: references.images.RIFP_GREY,
     defaultName: 'RIFPro',
     chain: 'Rootstock',
@@ -106,7 +106,7 @@ const coinType = {
   },
   RDOCTestnet: {
     networkId: 31,
-    pathNetworkId: 137,
+    pathNetworkId: 37310,
     icon: references.images.RDOC_GREY,
     defaultName: 'RIF Dollar on Chain',
     chain: 'Rootstock',
@@ -115,7 +115,7 @@ const coinType = {
   },
   CustomToken: {
     networkId: 31,
-    pathNetworkId: 137,
+    pathNetworkId: 37310,
     icon: references.images.customToken,
     chain: 'Rootstock',
     type: 'Mainnet',
