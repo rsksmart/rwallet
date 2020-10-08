@@ -58,6 +58,13 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RDOC',
   },
+  CustomToken: {
+    networkId: 30,
+    pathNetworkId: 137,
+    icon: references.images.customToken,
+    chain: 'Rootstock',
+    type: 'Mainnet',
+  },
   BTCTestnet: {
     networkId: 1,
     pathNetworkId: 1,
@@ -112,13 +119,6 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RDOC',
-  },
-  CustomToken: {
-    networkId: 30,
-    pathNetworkId: 137,
-    icon: references.images.customToken,
-    chain: 'Rootstock',
-    type: 'Mainnet',
   },
   CustomTokenTestnet: {
     networkId: 31,
