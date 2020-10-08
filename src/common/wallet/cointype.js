@@ -114,8 +114,8 @@ const coinType = {
     symbol: 'RDOC',
   },
   CustomToken: {
-    networkId: 31,
-    pathNetworkId: 37310,
+    networkId: 30,
+    pathNetworkId: 137,
     icon: references.images.customToken,
     chain: 'Rootstock',
     type: 'Mainnet',
