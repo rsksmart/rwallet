@@ -135,8 +135,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Carteira vazia",
-        "selectMainnetAsset": "Por favor selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
-        "selectTestnetAsset": "Por favor, escolha uma carteira que tenha pelo menos um ativo Testnet rsk",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo Testnet rsk",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
