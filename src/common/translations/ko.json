@@ -33,7 +33,8 @@
       "history": {
         "noTransNote": "이 자산에 대한 거래를 찾을 수 없습니다",
         "recent": "최근",
-        "loading": "불러오는 중..."
+        "loading": "불러오는 중...",
+        "proposalCreatedBy": "제작자 ％{name}"
       },
       "transaction": {
         "Sent Funds": "보낸 자금",
@@ -293,7 +294,9 @@
         "title": "공유 지갑 초대",
         "note": "이 계정에 가입 한 장치와이 주소를 공유하십시오. 각 자기 부담자는 자신의 회복 문구를 가지고 있습니다. 공유 지갑에 저장된 자금을 복구하려면 각 코 페이에서 복구 문구가 필요합니다.",
         "waitingNote": "승인 된 서명자가 참여하기를 기다리는 중",
-        "share": "서명자와이 초대장 공유 >"
+        "share": "서명자와이 초대장 공유 >",
+        "me": "나를",
+        "waiting": "기다리는"
       },
       "proposal": {
         "title": "지불 제안",
@@ -411,6 +414,7 @@
     "Next": "다음",
     "gotIt": "알겠습니다",
     "create": "생성하기",
+    "join": "붙다",
     "CONFIRM": "확인",
     "retry": "재시도",
     "IMPORT": "불러오기",
@@ -437,7 +441,12 @@
     "done": "완료",
     "share": "공유",
     "check": "검사",
-    "update": "최신 정보"
+    "update": "최신 정보",
+    "accept": "동의하기"
+  },
+  "picker": {
+    "confirm": "확인",
+    "cancel": "취소"
   },
   "txState": {
     "Sent": "전송 완료",
@@ -624,36 +633,40 @@
       "body": "읽기 전용 지갑에서는 QR 코드 전송, 스왑 및 스캔 작업을 사용할 수 없습니다. 이를 활성화하려면 12 단어 구문으로이 지갑을 가져 오십시오."
     },
     "invalidWalletInvitation": {
-      "title": "Invalid Invitation Code",
-      "body": "This invitation code is invalid."
+      "title": "잘못된 초대 코드",
+      "body": "이 초대 코드는 유효하지 않습니다."
     },
     "deleteProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to remove this transaction?"
+      "title": "경고!",
+      "body": "이 거래를 삭제 하시겠습니까?"
     },
     "rejectProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to reject this transaction?"
+      "title": "경고!",
+      "body": "이 거래를 거부 하시겠습니까?"
     },
     "userNotLogin": {
-      "title": "Not logged in",
-      "body": "You are not logged in."
+      "title": "로그인하지 않았습니다",
+      "body": "로그인되지 않았습니다."
     },
     "userOperated" : {
-      "title": "Operated",
-      "body": "Sorry, you have already done so."
+      "title": "움직이는",
+      "body": "죄송합니다. 이미 완료하셨습니다."
     },
     "createMultisigAddress" : {
-      "title": "Invalid payment proposal",
-      "body": "Sorry, this proposal is no longer valid."
+      "title": "잘못된 지불 제안",
+      "body": "죄송합니다.이 제안은 더 이상 유효하지 않습니다."
     },
     "networkQuestion": {
-      "title": "Network",
-      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+      "title": "회로망",
+      "body": "테스트 넷은 테스트에 사용되는 대체 비트 코인 블록 체인입니다."
     },
     "addressTypeQuestion" : {
-      "title": "Address type",
-      "body": "Segwit address is not available now."
+      "title": "주소 유형",
+      "body": "현재 Segwit 주소를 사용할 수 없습니다."
+    },
+    "existUnfinishedProposal": {
+      "title": "미완성 제안이 있습니다.",
+      "body": "미완성 된 제안이 있습니다."
     }
   },
   "currency": {

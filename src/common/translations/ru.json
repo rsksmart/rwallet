@@ -33,7 +33,8 @@
       "history": {
         "noTransNote": "Транзакции для этого актива не найдены",
         "recent": "Последний",
-        "loading": "Загрузка..."
+        "loading": "Загрузка...",
+        "proposalCreatedBy": "Создано %{name}"
       },
       "transaction": {
         "Sent Funds": "Отправленные средства",
@@ -285,9 +286,11 @@
       },
       "multisigInvitation": {
         "title": "Приглашение в общий кошелек",
-        "note": "Поделитесь этим адресом с устройствами, присоединяющимися к этой учетной записи. у каждого сооплательщика есть собственная фраза для восстановления. Для возврата средств, хранящихся в Share Wallet, вам потребуется фраза для восстановления от каждого доплательщика.",
+        "note": "Поделитесь этим адресом с устройствами, присоединяющимися к этой учетной записи. У каждого сооплательщика есть собственная фраза для восстановления. Для возврата средств, хранящихся в Share Wallet, вам потребуется фраза для восстановления от каждого доплательщика.",
         "waitingNote": "Ожидание присоединения авторизованной подписывающей стороны",
-        "share": "Поделитесь этим приглашением со своей подписывающей стороной >"
+        "share": "Поделитесь этим приглашением со своей подписывающей стороной >",
+        "me": "мне",
+        "waiting": "Ожидание"
       },
       "proposal": {
         "title": "Предложение по оплате",
@@ -405,6 +408,7 @@
     "Next": "Далее",
     "gotIt": "ПОНЯТНО",
     "create": "СОЗДАТЬ",
+    "join": "ПРИСОЕДИНИТЬСЯ",
     "CONFIRM": "ПОДТВЕРДИТЬ",
     "retry": "Попробовать еще раз",
     "IMPORT": "ИМПОРТИРОВАТЬ",
@@ -431,7 +435,12 @@
     "done": "Готово",
     "share": "ПОДЕЛИТЬСЯ",
     "check": "ЧЕК",
-    "update": "Обновить"
+    "update": "Обновить",
+    "accept": "ПРИНЯТЬ"
+  },
+  "picker": {
+    "confirm": "подтвердить",
+    "cancel": "Отмена"
   },
   "txState": {
     "Sent": "Отправлено",
@@ -624,36 +633,40 @@
       "body": "Операции отправки, обмена и сканирования QR-кода недоступны для кошелька только для чтения. Чтобы включить их, импортируйте этот кошелек с фразами из 12 слов."
     },
     "invalidWalletInvitation": {
-      "title": "Invalid Invitation Code",
-      "body": "This invitation code is invalid."
+      "title": "Недействительный код приглашения",
+      "body": "Этот код приглашения недействителен."
     },
     "deleteProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to remove this transaction?"
+      "title": "Предупреждение!",
+      "body": "Вы уверены, что хотите удалить эту транзакцию?"
     },
     "rejectProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to reject this transaction?"
+      "title": "Предупреждение!",
+      "body": "Вы уверены, что хотите отклонить эту транзакцию?"
     },
     "userNotLogin": {
-      "title": "Not logged in",
-      "body": "You are not logged in."
+      "title": "Не вошел",
+      "body": "Вы не авторизованы."
     },
     "userOperated" : {
-      "title": "Operated",
-      "body": "Sorry, you have already done so."
+      "title": "Эксплуатируется",
+      "body": "Извините, вы уже это сделали."
     },
     "createMultisigAddress" : {
-      "title": "Invalid payment proposal",
-      "body": "Sorry, this proposal is no longer valid."
+      "title": "Недействительное предложение по оплате",
+      "body": "Извините, это предложение больше не действует."
     },
     "networkQuestion": {
-      "title": "Network",
-      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+      "title": "Сеть",
+      "body": "Тестовая сеть - это альтернативная цепочка блоков биткойнов, которая будет использоваться для тестирования."
     },
     "addressTypeQuestion" : {
-      "title": "Address type",
-      "body": "Segwit address is not available now."
+      "title": "Тип адреса",
+      "body": "Адрес Segwit сейчас недоступен."
+    },
+    "existUnfinishedProposal": {
+      "title": "Есть незаконченное предложение",
+      "body": "У вас есть незаконченное предложение."
     }
   },
   "currency": {

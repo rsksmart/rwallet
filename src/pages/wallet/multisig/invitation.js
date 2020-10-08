@@ -215,7 +215,7 @@ class MultisigAddressInvitation extends Component {
         me.isMe = true;
 
         if (copayerMembers.length !== copayerNumber) {
-          copayerMembers.push({ isWaiting: true, name: 'Waiting' });
+          copayerMembers.push({ isWaiting: true, name: strings('page.wallet.multisigInvitation.waiting') });
         }
 
         this.setState({ copayers: copayerMembers });
@@ -240,7 +240,7 @@ class MultisigAddressInvitation extends Component {
     renderListItem = (item) => (
       <View style={styles.listItem}>
         <Image style={styles.waitingIcon} source={item.isWaiting ? waiting : checked} />
-        <Text style={styles.name}>{item.isMe ? 'Me' : item.name }</Text>
+        <Text style={styles.name}>{item.isMe ? strings('page.wallet.multisigInvitation.me') : item.name }</Text>
       </View>
     )
 

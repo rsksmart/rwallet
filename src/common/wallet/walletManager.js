@@ -104,7 +104,7 @@ class WalletManager {
             instance = ReadOnlyWallet.fromJSON(wallet);
             break;
           }
-          case WalletType.Multisig: {
+          case WalletType.Shared: {
             instance = SharedWallet.fromJSON(wallet);
             break;
           }
@@ -325,7 +325,7 @@ class WalletManager {
 
   getNormalWallets = () => _.filter(this.wallets, { walletType: WalletType.Normal });
 
-  getMultisigWallets = () => _.filter(this.wallets, { walletType: WalletType.Multisig });
+  getMultisigWallets = () => _.filter(this.wallets, { walletType: WalletType.Shared });
 
   findTokenByInvitationCode = (invitationCode) => {
     let foundCoin = null;
@@ -341,19 +341,19 @@ class WalletManager {
 
   getProposals = () => {
     const wallets = this.getMultisigWallets();
-    const walletProposals = _.reduce(wallets, (proposals, wallet) => {
+    return _.reduce(wallets, (proposals, wallet) => {
       const coin = wallet.coins[0];
       if (coin.proposal) {
         proposals.push(coin.proposal);
       }
       return proposals;
     }, []);
-    return walletProposals;
   }
 
-  addWallet = (wallet) => {
-    this.currentKeyId += 1;
+  addWallet = async (wallet) => {
     this.wallets.unshift(wallet);
+    this.currentKeyId += 1;
+    await this.serialize();
   }
 }
 

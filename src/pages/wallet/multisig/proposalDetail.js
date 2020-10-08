@@ -10,7 +10,7 @@ import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
-import Transaction from '../../../common/transaction';
+import { createTransaction } from '../../../common/transaction';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import parseHelper from '../../../common/parse';
 import color from '../../../assets/styles/color';
@@ -195,8 +195,8 @@ class MultisigProposalDetail extends Component {
     }
 
     generateOperationSequence = (acceptedMembers, rejectedMembers) => {
-      const allOperations = [...acceptedMembers, ...rejectedMembers];
-      allOperations.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
+      let allOperations = [...acceptedMembers, ...rejectedMembers];
+      allOperations = allOperations.sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1));
       return allOperations;
     }
 
@@ -226,8 +226,9 @@ class MultisigProposalDetail extends Component {
       const acceptedOperations = _.map(acceptedMembers, (member) => ({ ...member, operation: 'Accept' }));
       const rejectedOperations = _.map(rejectedMembers, (member) => ({ ...member, operation: 'Reject' }));
       const operationSequence = this.generateOperationSequence(acceptedOperations, rejectedOperations);
+      const lastOperation = operationSequence[operationSequence.length - 1];
       operationSequence.push({
-        operation: 'Proposal Created', name: operationSequence[0].name, timestamp: operationSequence[0].timestamp,
+        operation: 'Proposal Created', name: lastOperation.name, timestamp: lastOperation.timestamp,
       });
       const isOperatedUser = !!_.find(operationSequence, { username });
 
@@ -257,7 +258,7 @@ class MultisigProposalDetail extends Component {
       const { symbol, type } = this.token;
       try {
         this.setState({ isLoading: true });
-        const transaction = new Transaction(this.token, null, null, {});
+        const transaction = createTransaction(this.token, null, null, {});
         transaction.rawTransaction = rawTransaction;
         transaction.proposalId = objectId;
         await transaction.signTransaction();

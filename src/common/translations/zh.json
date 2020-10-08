@@ -33,7 +33,8 @@
       "history": {
         "noTransNote": "找不到此资产的交易记录",
         "recent": "最近的",
-        "loading": "加载中..."
+        "loading": "加载中...",
+        "proposalCreatedBy": "由%{name}创建"
       },
       "transaction": {
         "Sent Funds": "已发送资金",
@@ -290,7 +291,9 @@
         "title": "共享钱包邀请",
         "note": "与加入该帐户的设备共享此地址。每个共同付款人都有自己的恢复助记词。要取回存储在股票钱包中的资金，您需要输入每个共同付款人的恢复助记词。",
         "waitingNote": "等待授权签署人加入",
-        "share": "与您的签名者共享此邀请 >"
+        "share": "与您的签名者共享此邀请 >",
+        "me": "我",
+        "waiting": "等待中"
       },
       "proposal": {
         "title": "付款提案",
@@ -407,6 +410,7 @@
     "Next": "下一步",
     "gotIt": "好的",
     "create": "创建",
+    "join": "加入",
     "CONFIRM": "确认",
     "retry": "重试",
     "IMPORT": "导入",
@@ -434,7 +438,12 @@
     "done": "已完成",
     "share": "分享",
     "check": "检查",
-    "update": "更新"
+    "update": "更新",
+    "accept": "接受"
+  },
+  "picker": {
+    "confirm": "确定",
+    "cancel": "取消"
   },
   "txState": {
     "Sent": "已发送",
@@ -657,6 +666,10 @@
     "addressTypeQuestion":{
       "title": "地址类型",
       "body": "隔离见证地址现在不可用。"
+    },
+    "existUnfinishedProposal": {
+      "title": "存在未完成的提案",
+      "body": "您有一个提案尚未完成。"
     }
   },
   "currency": {

@@ -6,7 +6,7 @@ import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
-import com.zyu.ReactNativeWheelPickerPackage;
+import com.beefe.picker.PickerViewPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import io.invertase.firebase.RNFirebasePackage;
 import com.rnfs.RNFSPackage;
@@ -54,7 +54,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactNativeWheelPickerPackage(),
+            new PickerViewPackage(),
             new RNDeviceInfo(),
             new RNFirebasePackage(),
             new RNFSPackage(),

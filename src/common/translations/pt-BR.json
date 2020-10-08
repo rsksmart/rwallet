@@ -28,13 +28,14 @@
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
         "readOnly": "Somente leitura",
-        "multisig": "Compartilhado",
-        "incomplete": "Incompleto"
+        "multisig": "Compartilhada",
+        "incomplete": "Incompleta"
       },
       "history": {
         "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
         "recent": "Recente",
-        "loading": "Carregando..."
+        "loading": "Carregando...",
+        "proposalCreatedBy": "Criado por %{name}"
       },
       "transaction": {
         "Sent Funds": "Fundos enviados",
@@ -79,14 +80,14 @@
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação",
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
         "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto",
-        "sharedWallet": "Carteira Compartilhada",
+        "sharedWallet": "Carteira compartilhada",
         "sharedWalletNote": "Carteira Multisig Bitcoin"
       },
       "sharedWallet": {
-        "title": "Carteira Compartilhada",
+        "title": "Carteira compartilhada",
         "createSharedWallet": "Criar carteira compartilhada",
-        "createSharedWalletNote": "Crie uma carteira Multisig Bitcoin e convide outras pessoas para aderir",
-        "joinSharedWallet": "Junte-se à carteira compartilhada",
+        "createSharedWalletNote": "Crie uma carteira Bitcoin compartilhada e convide outras pessoas para se juntar a você",
+        "joinSharedWallet": "Junte-se a carteira compartilhada",
         "joinSharedWalletNote": "Requer convite para participar"
       },
       "selectCurrency": {
@@ -275,32 +276,34 @@
         "title": "Criar carteira compartilhada",
         "walletName": "Nome da carteira",
         "userName": "Seu nome",
-        "signatures": "Requer número de assinaturas",
-        "copayers": "Número total de copayers",
-        "legacy": "Legado",
-        "advancedOptions": "opções avançadas"
+        "signatures": "Assinaturas necessárias para aprovar transações",
+        "copayers": "Total de participantes que podem assinar",
+        "legacy": "Legacy",
+        "advancedOptions": "Opções avançadas"
       },
       "joinMultisigAddress": {
-        "title": "Junte-se à Multisig Wallet",
+        "title": "Junte-se a carteira compartilhada",
         "userName": "Seu nome",
-        "invitationCode": "Convite Carteira",
-        "note": "Você precisa ler um código QR de um convite da Carteira Compartilhada para ingressar em um. Peça ao seu amigo para compartilhar o convite por e-mail ou aplicativos de mensagens."
+        "invitationCode": "Código do convite",
+        "note": "Para se juntar a uma carteira compartilhada é necessário ler um código QR de um convite. Peça ao seu amigo para compartilhar o convite por e-mail ou aplicativos de mensagens."
       },
       "multisigInvitation": {
         "title": "Convite da carteira compartilhada",
-        "note": "Compartilhe este endereço com os dispositivos que estão ingressando nesta conta. cada copayer tem sua própria frase de recuperação. Para recuperar fundos armazenados em uma carteira compartilhada, você precisará da frase de recuperação de cada copayer.",
-        "waitingNote": "Esperando o signatário autorizado entrar",
-        "share": "Compartilhe este convite com seu signatário >"
+        "note": "Compartilhe este endereço com os dispositivos que estão ingressando nesta conta. Cada copayer tem sua própria frase de recuperação. Para recuperar fundos armazenados em uma carteira compartilhada, você precisará da frase de recuperação de cada copayer.",
+        "waitingNote": "Aguardando o participante autorizado se juntar",
+        "share": "Compartilhe este convite com o participante da carteira >"
       },
       "proposal": {
-        "title": "Proposta de Pagamento",
+        "title": "Proposta de pagamento",
         "created": "Proposta criada",
-        "delete": "Excluir Proposta de Pagamento",
-        "reject": "Rejeitar Proposta de Pagamento",
-        "minerFee": "Taxa do mineiro",
+        "delete": "Excluir proposta de pagamento",
+        "reject": "Rejeitar proposta de pagamento",
+        "minerFee": "Taxa de transação",
         "paymentRemoved": "O pagamento foi removido.",
         "paymentFailed": "O pagamento falhou.",
-        "paymentRejected": "Pagamento rejeitado."
+        "paymentRejected": "Pagamento rejeitado.",
+        "me": "Eu",
+        "waiting": "Aguardando"
       }
     },
     "dapp": {
@@ -421,6 +424,7 @@
     "Next": "Próximo",
     "gotIt": "ENTENDI",
     "create": "CRIAR",
+    "join": "JUNTAR-SE",
     "CONFIRM": "CONFIRMAR",
     "retry": "Tentar novamente",
     "IMPORT": "IMPORTAR",
@@ -447,7 +451,12 @@
     "done": "Pronto",
     "share": "COMPARTILHAR",
     "check": "VERIFICAR",
-    "update": "Atualizar"
+    "update": "Atualizar",
+    "accept": "ACEITAR"
+  },
+  "picker": {
+    "confirm": "confirmar",
+    "cancel": "cancelar"
   },
   "txState": {
     "Sent": "Enviado",
@@ -640,36 +649,40 @@
       "body": "As funções enviar, trocar e ler código QR não estão disponíveis para carteiras somente leitura. Para habilitá-las, importe esta carteira usando a sua frase de recuperação de 12 palavras."
     },
     "invalidWalletInvitation": {
-      "title": "Invalid Invitation Code",
-      "body": "This invitation code is invalid."
+      "title": "Código de convite inválido",
+      "body": "Este código de convite é inválido."
     },
     "deleteProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to remove this transaction?"
+      "title": "Atenção!",
+      "body": "Você tem certeza de que deseja remover esta transação?"
     },
     "rejectProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to reject this transaction?"
+      "title": "Atenção!",
+      "body": "Você tem certeza de que deseja rejeitar esta transação?"
     },
     "userNotLogin": {
-      "title": "Not logged in",
-      "body": "You are not logged in."
+      "title": "Não logado",
+      "body": "Você não está logado."
     },
     "userOperated" : {
-      "title": "Operated",
-      "body": "Sorry, you have already done so."
+      "title": "Operado",
+      "body": "Desculpe, você já fez isso."
     },
     "createMultisigAddress" : {
-      "title": "Invalid payment proposal",
-      "body": "Sorry, this proposal is no longer valid."
+      "title": "Proposta de pagamento inválida",
+      "body": "Desculpe, esta proposta não é mais válida."
     },
     "networkQuestion": {
-      "title": "Network",
-      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+      "title": "Rede",
+      "body": "A rede de testes ou testnet é uma blockchain alternativa do Bitcoin, que é usada exclusivamente para realização de testes."
     },
     "addressTypeQuestion" : {
-      "title": "Address type",
-      "body": "Segwit address is not available now."
+      "title": "Tipo de endereço",
+      "body": "Endereço Segwit não está disponível agora."
+    },
+    "existUnfinishedProposal": {
+      "title": "Existe proposta pendente",
+      "body": "Você tem uma proposta pendente."
     }
   },
   "currency": {

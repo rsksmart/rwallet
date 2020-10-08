@@ -33,7 +33,8 @@
       "history": {
         "noTransNote": "この資産の取引が見つかりません",
         "recent": "最近",
-        "loading": "読み込み中…"
+        "loading": "読み込み中…",
+        "proposalCreatedBy": "％{name}によって作成されました"
       },
       "transaction": {
         "Sent Funds": "送金済みの資金",
@@ -287,7 +288,9 @@
         "title": "共有ウォレットへの招待",
         "note": "このアドレスを、このアカウントに参加しているデバイスと共有します。各自己負担者には、独自の回復フレーズがあります。シェアウォレットに保存されている資金を回収するには、各自己負担者から回収フレーズを入力する必要があります。",
         "waitingNote": "承認された署名者が参加するのを待っています",
-        "share": "この招待状を署名者と共有する >"
+        "share": "この招待状を署名者と共有する >",
+        "me": "私",
+        "waiting": "待っています"
       },
       "proposal": {
         "title": "支払い提案",
@@ -405,6 +408,7 @@
     "Next": "次",
     "gotIt": "了解です",
     "create": "作成",
+    "join": "参加する",
     "CONFIRM": "確定",
     "retry": "再試行",
     "IMPORT": "インポート",
@@ -431,7 +435,12 @@
     "done": "完了です",
     "share": "シェア",
     "check": "小切手",
-    "update": "更新"
+    "update": "更新",
+    "accept": "受け入れる"
+  },
+  "picker": {
+    "confirm": "確定",
+    "cancel": "取り消す"
   },
   "txState": {
     "Sent": "送金されました",
@@ -624,36 +633,40 @@
       "body": "読み取り専用のウォレットでは、QRコードの送信、交換、スキャンの操作は使用できません。それらを有効にするには、このウォレットを12語のフレーズとともにインポートしてください。"
     },
     "invalidWalletInvitation": {
-      "title": "Invalid Invitation Code",
-      "body": "This invitation code is invalid."
+      "title": "無効な招待コード",
+      "body": "この招待コードは無効です。"
     },
     "deleteProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to remove this transaction?"
+      "title": "警告！",
+      "body": "このトランザクションを削除してもよろしいですか？"
     },
     "rejectProposal": {
-      "title": "Warning!",
-      "body": "Are your sure you want to reject this transaction?"
+      "title": "警告！",
+      "body": "この取引を拒否してもよろしいですか？"
     },
     "userNotLogin": {
-      "title": "Not logged in",
-      "body": "You are not logged in."
+      "title": "ログインしていない",
+      "body": "ログインしていません。"
     },
     "userOperated" : {
-      "title": "Operated",
-      "body": "Sorry, you have already done so."
+      "title": "運営",
+      "body": "申し訳ありませんが、あなたはすでにそうしています。"
     },
     "createMultisigAddress" : {
-      "title": "Invalid payment proposal",
-      "body": "Sorry, this proposal is no longer valid."
+      "title": "無効な支払い提案",
+      "body": "申し訳ありませんが、この提案は無効になりました。"
     },
     "networkQuestion": {
-      "title": "Network",
-      "body": "The testnet is an alternative Bitcoin block chain, to be used for testing."
+      "title": "通信網",
+      "body": "テストネットは、テストに使用される代替のビットコインブロックチェーンです。"
     },
     "addressTypeQuestion" : {
-      "title": "Address type",
-      "body": "Segwit address is not available now."
+      "title": "アドレスタイプ",
+      "body": "Segwitアドレスは現在利用できません。"
+    },
+    "existUnfinishedProposal": {
+      "title": "未完成の提案が存在する",
+      "body": "未完成の提案があります。"
     }
   },
   "currency": {
