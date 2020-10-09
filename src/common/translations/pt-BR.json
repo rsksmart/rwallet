@@ -124,7 +124,7 @@
         "title": "Wallet Connect",
         "emptyWalletError": "Carteira vazia",
         "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
-        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo Testnet rsk",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da rsk",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
@@ -174,7 +174,7 @@
         "data": "Dados",
         "networkQuestion": {
           "title": "Rede",
-          "body": "A testenet é uma cadeia alternativa de blocos RSK, a ser usada para testar."
+          "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
         }
       },
       "transferCompleted": {
@@ -219,8 +219,8 @@
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
         "address": "Endereço do contrato do ativo",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "mainnet": "Rede principal",
+        "testnet": "Rede de testes"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
