@@ -120,7 +120,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "빈 지갑",
-        "selectAvailableWallet": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
+        "selectMainnetAsset": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
+        "selectTestnetAsset": "적어도 하나의 testnet rsk 자산이있는 지갑을 선택하십시오",
         "isConnecting": "지갑 연결 중 ...",
         "isSigning": "트랜잭션 서명 중 ...",
         "signApproved": "메시지 서명 승인 됨",
@@ -133,6 +134,7 @@
         "agreeTo": "허용을 클릭하면 동의합니다.",
         "agreeOne": "- 현재 지갑 주소 가져 오기 허용",
         "agreeTwo": "- 현재 지갑에서 서명 요청 허용",
+        "advancedOptions": "고급 옵션",
         "reject": "거부",
         "allow": "허용",
         "connected": "연결됨",

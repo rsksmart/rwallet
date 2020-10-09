@@ -30,7 +30,9 @@ import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import appActions from '../../../redux/app/actions';
 
-const { MAINNET } = NETWORK;
+const { MAINNET, TESTNET } = NETWORK;
+const WALLET_CONNECTING = 'WalletConnecting';
+const WALLET_CONNECTED = 'WalletConnected';
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
@@ -164,8 +166,9 @@ class WalletConnectPage extends Component {
       inputDecode: null,
       symbol: null,
       selectedWallet: {},
-      contentView: null,
+      contentType: null,
       modalView: null,
+      isMainnet: true,
     };
   }
 
@@ -177,28 +180,27 @@ class WalletConnectPage extends Component {
     );
 
     const selectedWallet = this.getWallet();
-    // If current wallet has no mainnet rsk asset, need to go back
-    if (!selectedWallet) {
+    if (!_.isEmpty(selectedWallet)) {
+      this.initNetwork();
+      // setTimeout 500 in order to ui change smoothly
+      setTimeout(async () => {
+        await this.setState({
+          modalView: this.renderWalletConnectingView(),
+          selectedWallet,
+        });
+
+        await this.initWalletConnect();
+      }, 500);
+    } else {
+      // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
         'page.wallet.walletconnect.emptyWalletError',
-        'page.wallet.walletconnect.selectAvailableWallet',
+        'page.wallet.walletconnect.selectMainnetAsset',
         'page.wallet.walletconnect.gotIt',
         () => navigation.goBack(),
       );
       addNotification(notification);
-      return;
     }
-
-    // setTimeout 500 in order to ui change smoothly
-    setTimeout(async () => {
-      await this.setState({
-        modalView: this.renderWalletConnectingView(),
-      });
-
-      await this.setState({ selectedWallet });
-      await this.initWalletConnect();
-      this.initNetwork();
-    }, 500);
   }
 
   componentWillUnmount() {
@@ -223,16 +225,39 @@ class WalletConnectPage extends Component {
 
   // Get current wallet's address and private key
   getWallet = () => {
+    const { isMainnet } = this.state;
     const { navigation: { state: { params: { wallet } } } } = this.props;
     const { coins } = wallet;
-    const ethChainCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === 'Mainnet');
-    if (!_.isEmpty(ethChainCoins)) {
-      return {
-        address: Rsk3.utils.toChecksumAddress(ethChainCoins[0].address),
-        privateKey: ethChainCoins[0].privateKey,
-      };
+    const net = isMainnet ? 'Mainnet' : 'Testnet';
+    const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === net);
+    console.log('rskCoins: ', rskCoins);
+    if (_.isEmpty(rskCoins)) {
+      return null;
     }
-    return null;
+    return {
+      address: Rsk3.utils.toChecksumAddress(rskCoins[0].address),
+      privateKey: rskCoins[0].privateKey,
+    };
+  }
+
+  updateWallet = () => {
+    const { isMainnet } = this.state;
+    const { addNotification } = this.props;
+    const selectedWallet = this.getWallet();
+    if (!_.isEmpty(selectedWallet)) {
+      this.setState({ selectedWallet });
+    } else {
+      const notification = createErrorNotification(
+        'page.wallet.walletconnect.emptyWalletError',
+        isMainnet ? 'page.wallet.walletconnect.selectMainnetAsset' : 'page.wallet.walletconnect.selectTestnetAsset',
+        'page.wallet.walletconnect.gotIt',
+        async () => {
+          await this.setState({ isMainnet: !isMainnet });
+          await this.initNetwork();
+        },
+      );
+      addNotification(notification);
+    }
   }
 
   initWalletConnect = async () => {
@@ -248,25 +273,26 @@ class WalletConnectPage extends Component {
 
       console.log('connector: ', connector);
 
-      this.setState({ connector });
-
-      this.subscribeToEvents();
+      this.setState({ connector }, () => {
+        this.subscribeToEvents();
+      });
     } catch (error) {
       console.log('init wallet error: ', error);
       throw error;
     }
   }
 
-  initNetwork = async () => {
-    this.rskEndpoint = MAINNET.RSK_END_POINT;
-    this.provider = new ethers.providers.JsonRpcProvider(this.rskEndpoint);
-    const chainId = MAINNET.NETWORK_VERSION;
-    this.setState({ chainId });
+  initNetwork = () => {
+    const { isMainnet } = this.state;
+    const rskEndpoint = isMainnet ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
+    const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
+    const chainId = isMainnet ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    this.setState({ chainId, provider });
   }
 
   subscribeToEvents = () => {
     console.log('ACTION', 'subscribeToEvents');
-    const { connector, selectedWallet } = this.state;
+    const { connector } = this.state;
     const { navigation } = this.props;
 
     if (connector) {
@@ -283,7 +309,7 @@ class WalletConnectPage extends Component {
         this.setState({
           peerMeta,
           modalView: null,
-          contentView: <WalletConnecting approve={this.approveSession} reject={this.rejectSession} address={selectedWallet.address} dappName={peerMeta.name} dappUrl={peerMeta.url} />,
+          contentType: WALLET_CONNECTING,
           connector,
         });
       });
@@ -337,7 +363,7 @@ class WalletConnectPage extends Component {
   approveSession = () => {
     console.log('ACTION', 'approveSession');
     const {
-      connector, chainId, selectedWallet, peerMeta,
+      connector, chainId, selectedWallet,
     } = this.state;
     console.log('connector: ', connector);
     const { address } = selectedWallet;
@@ -346,13 +372,7 @@ class WalletConnectPage extends Component {
     }
     this.setState({
       connector,
-      contentView: (
-        <WalletConnected
-          disconnect={this.popupDisconnectModal}
-          dappName={peerMeta.name}
-          dappUrl={peerMeta.url}
-          address={address}
-        />),
+      contentType: WALLET_CONNECTED,
     });
   };
 
@@ -541,12 +561,12 @@ class WalletConnectPage extends Component {
   handleCallRequest = async () => {
     try {
       const {
-        selectedWallet: { privateKey }, payload, connector, inputDecode,
+        selectedWallet: { privateKey }, payload, connector, inputDecode, provider,
       } = this.state;
       const { id, method, params } = payload;
 
       let result = null;
-      const signWallet = new ethers.Wallet(privateKey, this.provider);
+      const signWallet = new ethers.Wallet(privateKey, provider);
       switch (method) {
         case 'personal_sign': {
           const message = Rsk3.utils.hexToAscii(params[0]);
@@ -606,16 +626,16 @@ class WalletConnectPage extends Component {
   }
 
   generateTxData = async () => {
-    const { selectedWallet: { address }, payload: { params } } = this.state;
+    const { selectedWallet: { address }, payload: { params }, provider } = this.state;
 
     let { nonce, gasPrice } = params[0];
     if (!nonce) {
       // Get Mainnet nonce if params[0].nonce is null
-      nonce = await this.provider.getTransactionCount(address, 'pending');
+      nonce = await provider.getTransactionCount(address, 'pending');
     }
     if (!gasPrice) {
       // Get Mainnet gasPrice if params[0].gasPrice is null
-      gasPrice = await this.provider.getGasPrice();
+      gasPrice = await provider.getGasPrice();
     }
 
     const txData = {
@@ -637,9 +657,9 @@ class WalletConnectPage extends Component {
 
   sendTransaction = async (signWallet) => {
     try {
-      const { txData } = this.state;
+      const { txData, provider } = this.state;
       const rawTransaction = await signWallet.sign(txData);
-      const res = await this.provider.sendTransaction(rawTransaction);
+      const res = await provider.sendTransaction(rawTransaction);
       const { hash } = res;
       return hash;
     } catch (error) {
@@ -684,10 +704,44 @@ class WalletConnectPage extends Component {
     </View>
   )
 
-  render() {
+  renderContentView = () => {
     const {
-      modalView, contentView,
+      contentType, peerMeta, selectedWallet, isMainnet,
     } = this.state;
+    const { address } = selectedWallet;
+    const { name, url } = peerMeta;
+    if (contentType === WALLET_CONNECTING) {
+      return (
+        <WalletConnecting
+          approve={this.approveSession}
+          reject={this.rejectSession}
+          address={address}
+          dappName={name}
+          dappUrl={url}
+          isMainnet={isMainnet}
+          onSwitchValueChanged={async () => {
+            await this.setState({ isMainnet: !isMainnet });
+            this.initNetwork();
+            this.updateWallet();
+          }}
+        />
+      );
+    }
+    if (contentType === WALLET_CONNECTED) {
+      return (
+        <WalletConnected
+          disconnect={this.popupDisconnectModal}
+          dappName={name}
+          dappUrl={url}
+          address={address}
+        />
+      );
+    }
+    return null;
+  }
+
+  render() {
+    const { modalView } = this.state;
 
     return (
       <BasePageSimple
@@ -700,7 +754,7 @@ class WalletConnectPage extends Component {
         )}
       >
         <ScrollView style={styles.body} contentContainerStyle={{ flexGrow: 1 }}>
-          {contentView}
+          {this.renderContentView()}
 
           <Modal
             animationType="fade"

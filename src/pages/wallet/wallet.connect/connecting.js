@@ -4,9 +4,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import SwitchRow from '../../../components/common/switch/switch.row';
+import Loc from '../../../components/common/misc/loc';
+
 import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
+import { createInfoNotification } from '../../../common/notification.controller';
 
 const styles = StyleSheet.create({
   body: {
@@ -91,6 +95,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: color.white,
   },
+  switchTitleStyle: {
+    fontFamily: 'Avenir',
+    color: color.mineShaft,
+    fontSize: 15,
+    alignSelf: 'center',
+  },
 });
 
 class WalletConnecting extends Component {
@@ -100,7 +110,7 @@ class WalletConnecting extends Component {
 
   render() {
     const {
-      approve, reject, address, dappName, dappUrl,
+      approve, reject, address, dappName, dappUrl, onSwitchValueChanged, isMainnet,
     } = this.props;
 
     return (
@@ -129,6 +139,20 @@ class WalletConnecting extends Component {
           <Text style={styles.content}>{strings('page.wallet.walletconnect.agreeTwo')}</Text>
         </View>
 
+        <View style={styles.block}>
+          <Loc style={styles.title} text="page.wallet.walletconnect.advancedOptions" />
+          <SwitchRow
+            value={isMainnet}
+            text={strings('page.wallet.addCustomToken.mainnet')}
+            titleStyle={styles.switchTitleStyle}
+            onValueChange={onSwitchValueChanged}
+            questionNotification={createInfoNotification(
+              'modal.networkQuestion.title',
+              'modal.networkQuestion.body',
+            )}
+          />
+        </View>
+
         <View style={styles.btnsView}>
           <TouchableOpacity style={[styles.btn, styles.rejectBtn]} onPress={reject}>
             <Text style={styles.rejectText}>{strings('page.wallet.walletconnect.reject')}</Text>
@@ -149,6 +173,13 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  isMainnet: PropTypes.bool,
+  onSwitchValueChanged: PropTypes.func,
+};
+
+WalletConnecting.defaultProps = {
+  isMainnet: true,
+  onSwitchValueChanged: () => {},
 };
 
 export default WalletConnecting;

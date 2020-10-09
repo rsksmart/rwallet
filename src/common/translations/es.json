@@ -123,7 +123,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Cartera vacía",
-        "selectAvailableWallet": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectTestnetAsset": "Seleccione una billetera que tenga al menos un activo testnet rsk",
         "isConnecting": "Wallet se está conectando ...",
         "isSigning": "La transacción se está firmando ...",
         "signApproved": "Firma de mensajes aprobada",
@@ -136,6 +137,7 @@
         "agreeTo": "Al hacer clic en Permitir, estás de acuerdo",
         "agreeOne": "- Permitir obtener la dirección de billetera actual",
         "agreeTwo": "- Permitir solicitud de firma de la billetera actual",
+        "advancedOptions": "Opciones avanzadas",
         "reject": "Rechazar",
         "allow": "Permitir",
         "connected": "Conectado",
