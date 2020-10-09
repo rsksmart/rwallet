@@ -61,10 +61,6 @@ class Scan extends Component {
       this.isScanFinished = false;
     }
 
-    componentDidMount() {
-      this.onQrcodeDetected('wc:be350022-1d15-4520-bd7a-404aea9b3a3f@1?bridge=http%3A%2F%2Flocalhost%3A5001&key=52d560e0d966a75235c9fbda1b3afb8f58db9aa09af58286e016896b2991230c');
-    }
-
     onBarCodeRead = (scanResult) => {
       const { data } = scanResult;
       if (this.isScanFinished) {
