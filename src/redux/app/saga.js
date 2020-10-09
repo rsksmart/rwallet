@@ -22,6 +22,7 @@ import config from '../../../config';
 
 /* Component Dependencies */
 import ParseHelper from '../../common/parse';
+import parseDataUtil from '../../common/parseDataUtil';
 
 import { createErrorNotification } from '../../common/notification.controller';
 
@@ -349,15 +350,14 @@ function* processNotificationRequest(action) {
     case 'sentTransaction':
     case 'receivingTransaction':
     case 'receivedTransaction': {
-      const { symbol, type, address } = params;
-      const coin = walletManager.findToken(symbol, type, address);
-      if (!coin) {
-        return null;
-      }
+      const transaction = params;
+      const isSender = event === 'sentTransaction';
+      const newTransaction = parseDataUtil.processTransaction(transaction, isSender);
+
       common.currentNavigation.navigate('Home');
       const newAction = actions.setFcmNavParams({
-        routeName: 'WalletHistory',
-        routeParams: { coin },
+        routeName: 'Transaction',
+        routeParams: newTransaction,
       });
       yield put(newAction);
       break;

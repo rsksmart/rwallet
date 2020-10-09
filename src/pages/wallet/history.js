@@ -16,7 +16,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageSimple from '../base/base.page.simple';
-import { WalletType, TxStatus } from '../../common/constants';
+import { WalletType } from '../../common/constants';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
@@ -303,17 +303,8 @@ class History extends Component {
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      const isSender = address === transaction.from;
-      let state = 'Failed';
-      switch (transaction.status) {
-        case TxStatus.PENDING:
-          state = isSender ? 'Sending' : 'Receiving';
-          break;
-        case TxStatus.SUCCESS:
-          state = isSender ? 'Sent' : 'Received';
-          break;
-        default:
-      }
+      const { statusText } = transaction;
+
       const datetime = transaction.dateTime;
       let datetimeText = '';
       if (datetime) {
@@ -330,12 +321,12 @@ class History extends Component {
         amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
       }
       transactions.push({
-        state,
+        state: statusText,
         datetimeText,
         amountText,
         rawTransaction: transaction,
       });
-      if (state === 'Receiving' && !_.isNull(amount)) {
+      if (statusText === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
       }
     });
@@ -501,7 +492,7 @@ class History extends Component {
     const { listData } = this.state;
     const { navigation } = this.props;
     const item = listData[index];
-    navigation.navigate('Transaction', item);
+    navigation.navigate('Transaction', item.rawTransaction);
   }
 
   loadMoreData = () => {
