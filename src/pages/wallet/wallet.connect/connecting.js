@@ -95,12 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: color.white,
   },
-  switchTitleStyle: {
-    fontFamily: 'Avenir',
-    color: color.mineShaft,
-    fontSize: 15,
-    alignSelf: 'center',
-  },
 });
 
 class WalletConnecting extends Component {
