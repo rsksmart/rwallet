@@ -283,6 +283,7 @@ class Transfer extends Component {
     this.isAddressValid = !!toAddress;
 
     this.toAddress = toAddress;
+    this.txSize = null;
 
     this.confirm = this.confirm.bind(this);
     this.onGroupSelect = this.onGroupSelect.bind(this);
@@ -550,11 +551,30 @@ class Transfer extends Component {
    */
   requestFees = async (isAllBalance) => {
     const { amount, to } = this.state;
-    const { isAmountValid, isAddressValid } = this;
+    const {
+      isAmountValid, isAddressValid, coin, toAddress,
+    } = this;
+    const {
+      symbol, type, transactions, privateKey, address,
+    } = coin;
     const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
     if (!isValid) {
       return;
     }
+
+    if (symbol === 'BTC') {
+      const estimateParams = {
+        netType: type,
+        amount,
+        transactions,
+        fromAddress: address,
+        destAddress: toAddress,
+        privateKey,
+        isSendAllBalance: isAllBalance,
+      };
+      this.txSize = common.estimateBtcSize(estimateParams);
+    }
+
     const transactionFees = await this.loadTransactionFees(isAllBalance);
     if (!transactionFees) {
       return;
@@ -565,9 +585,11 @@ class Transfer extends Component {
   async loadTransactionFees(isAllBalance) {
     const { navigation, addConfirmation } = this.props;
     const { amount, memo } = this.state;
-    const { coin, txFeesCache, toAddress } = this;
     const {
-      symbol, type, transactions, privateKey, address,
+      coin, txFeesCache, toAddress, txSize,
+    } = this;
+    const {
+      symbol, type, address,
     } = coin;
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
     const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
@@ -589,23 +611,9 @@ class Transfer extends Component {
 
     try {
       this.setState({ loading: true });
-      let transactionFees = null;
-      if (symbol === 'BTC') {
-        const estimateParams = {
-          netType: type,
-          amount,
-          transactions,
-          fromAddress: address,
-          destAddress: toAddress,
-          privateKey,
-          isSendAllBalance: isAllBalance,
-        };
-        const size = common.estimateBtcSize(estimateParams);
-        console.log('common.estimateBtcSize, size: ', size);
-        transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
-      } else {
-        transactionFees = await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
-      }
+      const transactionFees = symbol === 'BTC'
+        ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
+        : await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
       this.setState({ loading: false });
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
@@ -654,7 +662,7 @@ class Transfer extends Component {
     const {
       feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount, customFee,
     } = this.state;
-    const { isRequestSendAll, coin } = this;
+    const { isRequestSendAll, coin, txSize } = this;
     const { symbol, type } = coin;
 
     // Calculates levelFees
@@ -668,7 +676,9 @@ class Transfer extends Component {
         const value = common.getCoinValue(fee, feeSymbol, type, currency, prices);
         levelFees.push({ fee, value });
       }
-      this.minCustomFee = levelFees[0].fee;
+      // # Issue 516 - Minimum sat/byte on fee slider should be 1
+      // BTC min custom fee is 1sat/byte. 1sat/byte * bytes = bytes;
+      this.minCustomFee = common.satoshiToBtc(txSize);
       this.maxCustomFee = levelFees[NUM_OF_FEE_LEVELS - 1].fee.times(MAX_FEE_TIMES);
     } else {
       // Calculates Rootstock tokens(RBTC, RIF, DOC...) levelFees
