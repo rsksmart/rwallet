@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import {
-  View, StyleSheet, TextInput, Switch, TouchableOpacity, Text, BackHandler,
+  View, StyleSheet, TextInput, TouchableOpacity, Text, BackHandler,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Picker from 'react-native-picker';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
 import BasePageGereral from '../../base/base.page.general';
@@ -19,9 +18,9 @@ import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { BtcAddressType } from '../../../common/constants';
 import color from '../../../assets/styles/color';
 import space from '../../../assets/styles/space';
-import readOnlyStyles from '../../../assets/styles/readonly';
 import { createInfoNotification } from '../../../common/notification.controller';
 import { strings } from '../../../common/i18n';
+import SwitchRow from '../../../components/common/switch/switch.row';
 
 const MAX_COPAYERS = 7;
 const MAX_SIGNATURES = 2;
@@ -144,24 +143,6 @@ class CreateMultisigAddress extends Component {
       this.setState({ isLegacy: value });
     }
 
-    onNetworkQuestionPressed = () => {
-      const { addNotification } = this.props;
-      const notification = createInfoNotification(
-        'modal.networkQuestion.title',
-        'modal.networkQuestion.body',
-      );
-      addNotification(notification);
-    }
-
-    onAddressTypeQuestionPressed = () => {
-      const { addNotification } = this.props;
-      const notification = createInfoNotification(
-        'modal.addressTypeQuestion.title',
-        'modal.addressTypeQuestion.body',
-      );
-      addNotification(notification);
-    }
-
     onSignaturesPressed = () => {
       const { copayers, signatures } = this.state;
       const data = [];
@@ -278,23 +259,28 @@ class CreateMultisigAddress extends Component {
               </TouchableOpacity>
             </View>
             <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
-            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Loc style={[styles.fieldTitle]} text="page.wallet.addCustomToken.mainnet" />
-                <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onNetworkQuestionPressed}>
-                  <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                </TouchableOpacity>
-              </View>
-              <Switch style={{ alignSelf: 'flex-end' }} value={isMainnet} onValueChange={this.onSwitchValueChanged} />
+            <View style={[styles.fieldView, space.marginTop_23]}>
+              <SwitchRow
+                text={strings('page.wallet.addCustomToken.mainnet')}
+                value={isMainnet}
+                onValueChange={this.onSwitchValueChanged}
+                questionNotification={createInfoNotification(
+                  'modal.networkQuestion.title',
+                  'modal.networkQuestion.body',
+                )}
+              />
             </View>
-            <View style={[styles.fieldView, space.marginTop_23, { flexDirection: 'row', alignItems: 'center' }]}>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Loc style={[styles.fieldTitle]} text="page.wallet.createMultisigAddress.legacy" />
-                <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onAddressTypeQuestionPressed}>
-                  <AntDesign style={readOnlyStyles.questionIcon} name="questioncircleo" />
-                </TouchableOpacity>
-              </View>
-              <Switch value={isLegacy} onValueChange={this.onAddressTypeChanged} disabled />
+            <View style={[styles.fieldView, space.marginTop_23]}>
+              <SwitchRow
+                text={strings('page.wallet.createMultisigAddress.legacy')}
+                value={isLegacy}
+                onValueChange={this.onAddressTypeChanged}
+                questionNotification={createInfoNotification(
+                  'modal.addressTypeQuestion.title',
+                  'modal.addressTypeQuestion.body',
+                )}
+                disabled
+              />
             </View>
           </View>
         </BasePageGereral>
@@ -313,7 +299,6 @@ CreateMultisigAddress.propTypes = {
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
-  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -324,7 +309,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addMultisigBTC: (walletManager, wallet, invitationCode, type) => dispatch(walletActions.addMultisigBTC(walletManager, wallet, invitationCode, type)),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
-  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateMultisigAddress);
