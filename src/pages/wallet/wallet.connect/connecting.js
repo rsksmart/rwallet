@@ -172,7 +172,7 @@ WalletConnecting.propTypes = {
 
 WalletConnecting.defaultProps = {
   isTestnet: false,
-  onSwitchValueChanged: () => {},
+  onSwitchValueChanged: () => null,
 };
 
 export default WalletConnecting;
