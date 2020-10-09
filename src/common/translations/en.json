@@ -168,7 +168,11 @@
         "type": "Type",
         "from": "From",
         "to": "To",
-        "data": "Data"
+        "data": "Data",
+        "networkQuestion": {
+          "title": "Network",
+          "body": "The testnet is an alternative RSK block chain, to be used for testing."
+        }
       },
       "transferCompleted": {
         "title": "Send",
@@ -212,7 +216,8 @@
       "addCustomToken": {
         "title": "Add Custom Assets",
         "address": "Asset Contract Address",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Assets",

@@ -110,7 +110,7 @@ class WalletConnecting extends Component {
 
   render() {
     const {
-      approve, reject, address, dappName, dappUrl, onSwitchValueChanged, isMainnet,
+      approve, reject, address, dappName, dappUrl, onSwitchValueChanged, isTestnet,
     } = this.props;
 
     return (
@@ -142,13 +142,13 @@ class WalletConnecting extends Component {
         <View style={styles.block}>
           <Loc style={styles.title} text="page.wallet.walletconnect.advancedOptions" />
           <SwitchRow
-            value={isMainnet}
-            text={strings('page.wallet.addCustomToken.mainnet')}
+            value={isTestnet}
+            text={strings('page.wallet.addCustomToken.testnet')}
             titleStyle={styles.switchTitleStyle}
             onValueChange={onSwitchValueChanged}
             questionNotification={createInfoNotification(
-              'modal.networkQuestion.title',
-              'modal.networkQuestion.body',
+              'page.wallet.walletconnect.networkQuestion.title',
+              'page.wallet.walletconnect.networkQuestion.body',
             )}
           />
         </View>
@@ -173,12 +173,12 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
-  isMainnet: PropTypes.bool,
+  isTestnet: PropTypes.bool,
   onSwitchValueChanged: PropTypes.func,
 };
 
 WalletConnecting.defaultProps = {
-  isMainnet: true,
+  isTestnet: false,
   onSwitchValueChanged: () => {},
 };
 

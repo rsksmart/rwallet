@@ -171,7 +171,11 @@
         "type": "Tipo",
         "from": "De",
         "to": "Para",
-        "data": "Dados"
+        "data": "Dados",
+        "networkQuestion": {
+          "title": "Rede",
+          "body": "A testenet é uma cadeia alternativa de blocos RSK, a ser usada para testar."
+        }
       },
       "transferCompleted": {
         "title": "Enviar",
@@ -215,7 +219,8 @@
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
         "address": "Endereço do contrato do ativo",
-        "mainnet": "Rede principal"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",

@@ -168,7 +168,7 @@ class WalletConnectPage extends Component {
       selectedWallet: {},
       contentType: null,
       modalView: null,
-      isMainnet: true,
+      isTestnet: false,
     };
   }
 
@@ -225,10 +225,10 @@ class WalletConnectPage extends Component {
 
   // Get current wallet's address and private key
   getWallet = () => {
-    const { isMainnet } = this.state;
+    const { isTestnet } = this.state;
     const { navigation: { state: { params: { wallet } } } } = this.props;
     const { coins } = wallet;
-    const net = isMainnet ? 'Mainnet' : 'Testnet';
+    const net = isTestnet ? 'Testnet' : 'Mainnet';
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === net);
     console.log('rskCoins: ', rskCoins);
     if (_.isEmpty(rskCoins)) {
@@ -241,7 +241,7 @@ class WalletConnectPage extends Component {
   }
 
   updateWallet = () => {
-    const { isMainnet } = this.state;
+    const { isTestnet } = this.state;
     const { addNotification } = this.props;
     const selectedWallet = this.getWallet();
     if (!_.isEmpty(selectedWallet)) {
@@ -249,10 +249,10 @@ class WalletConnectPage extends Component {
     } else {
       const notification = createErrorNotification(
         'page.wallet.walletconnect.emptyWalletError',
-        isMainnet ? 'page.wallet.walletconnect.selectMainnetAsset' : 'page.wallet.walletconnect.selectTestnetAsset',
+        isTestnet ? 'page.wallet.walletconnect.selectTestnetAsset' : 'page.wallet.walletconnect.selectMainnetAsset',
         'page.wallet.walletconnect.gotIt',
         async () => {
-          await this.setState({ isMainnet: !isMainnet });
+          await this.setState({ isTestnet: !isTestnet });
           await this.initNetwork();
         },
       );
@@ -283,10 +283,10 @@ class WalletConnectPage extends Component {
   }
 
   initNetwork = () => {
-    const { isMainnet } = this.state;
-    const rskEndpoint = isMainnet ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
+    const { isTestnet } = this.state;
+    const rskEndpoint = isTestnet ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
     const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
-    const chainId = isMainnet ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    const chainId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
     this.setState({ chainId, provider });
   }
 
@@ -368,6 +368,7 @@ class WalletConnectPage extends Component {
     console.log('connector: ', connector);
     const { address } = selectedWallet;
     if (connector) {
+      console.log('address: ', [address]);
       connector.approveSession({ chainId, accounts: [address] });
     }
     this.setState({
@@ -706,7 +707,7 @@ class WalletConnectPage extends Component {
 
   renderContentView = () => {
     const {
-      contentType, peerMeta, selectedWallet, isMainnet,
+      contentType, peerMeta, selectedWallet, isTestnet,
     } = this.state;
     const { address } = selectedWallet;
     const { name, url } = peerMeta;
@@ -718,9 +719,9 @@ class WalletConnectPage extends Component {
           address={address}
           dappName={name}
           dappUrl={url}
-          isMainnet={isMainnet}
+          isTestnet={isTestnet}
           onSwitchValueChanged={async () => {
-            await this.setState({ isMainnet: !isMainnet });
+            await this.setState({ isTestnet: !isTestnet });
             this.initNetwork();
             this.updateWallet();
           }}

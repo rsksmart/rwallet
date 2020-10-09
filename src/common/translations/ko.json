@@ -168,7 +168,11 @@
         "type": "유형",
         "from": "From",
         "to": "To",
-        "data": "데이터"
+        "data": "데이터",
+        "networkQuestion": {
+          "title": "네트워크",
+          "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."
+        }
       },
       "transferCompleted": {
         "title": "전송",
@@ -212,7 +216,8 @@
       "addCustomToken": {
         "title": "사용자 정의 자산 추가",
         "address": "자산 컨트랙트 주소",
-        "mainnet": "메인넷"
+        "mainnet": "메인넷",
+        "testnet": "테스트 넷"
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",

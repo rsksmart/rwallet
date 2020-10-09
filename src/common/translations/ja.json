@@ -168,7 +168,11 @@
         "type": "タイプ",
         "from": "から",
         "to": "に",
-        "data": "データ"
+        "data": "データ",
+        "networkQuestion": {
+          "title": "通信網",
+          "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"
+        }
       },
       "transferCompleted": {
         "title": "送金",
@@ -212,7 +216,8 @@
       "addCustomToken": {
         "title": "カスタム資産を追加",
         "address": "資産契約アドレス",
-        "mainnet": "Mainnet"
+        "mainnet": "メインネット",
+        "testnet": "テストネット"
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",

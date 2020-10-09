@@ -171,7 +171,11 @@
         "type": "类型",
         "from": "从",
         "to": "到",
-        "data": "数据"
+        "data": "数据",
+        "networkQuestion": {
+          "title": "网络",
+          "body": "测试网是用于测试的备用RSK区块链。"
+        }
       },
       "transferCompleted": {
         "title": "发送",
@@ -215,7 +219,8 @@
       "addCustomToken": {
         "title": "添加自定义资产",
         "address": "资产合约地址",
-        "mainnet": "正式网络"
+        "mainnet": "正式网络",
+        "testnet": "测试网络"
       },
       "addCustomTokenConfirm": {
         "title": "添加自定义资产",

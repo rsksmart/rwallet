@@ -168,7 +168,11 @@
         "type": "Тип",
         "from": "From",
         "to": "To",
-        "data": "Данные"
+        "data": "Данные",
+        "networkQuestion": {
+          "title": "Сеть",
+          "body": "Тестовая сеть - это альтернативная цепочка блоков RSK, которая будет использоваться для тестирования."
+        }
       },
       "transferCompleted": {
         "title": "Отправить",
@@ -212,7 +216,8 @@
       "addCustomToken": {
         "title": "Добавить пользовательские активы",
         "address": "Адрес договора для актива",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Тестовая сеть"
       },
       "addCustomTokenConfirm": {
         "title": "Добавить пользовательские активы",
