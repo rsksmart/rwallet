@@ -368,7 +368,6 @@ class WalletConnectPage extends Component {
     console.log('connector: ', connector);
     const { address } = selectedWallet;
     if (connector) {
-      console.log('address: ', [address]);
       connector.approveSession({ chainId, accounts: [address] });
     }
     this.setState({
