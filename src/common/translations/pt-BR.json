@@ -152,9 +152,9 @@
         "reject": "Rejeitar",
         "allow": "Permitir",
         "connected": "Conectado",
-        "connectedWallet": "%{dappName} está conectado à sua carteira",
+        "connectedWallet": "%{dappName} se conectou à sua carteira",
         "waitingForOperations": "Aguardando por operações",
-        "waitingForOperationsDesc": "Execute todas as operações do dapp %{dappName}. Caso seja necessário, a RWallet irá solicitar a aprovação da assinatura.",
+        "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar a aprovação da assinatura.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
         "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
@@ -535,7 +535,7 @@
       "body": "O apelido foi copiado para a área de transferência."
     },
     "txIdCopied": {
-      "title": "Copied",
+      "title": "Copiado",
       "body": "O ID da transação foi copiado para a área de transferência."
     },
     "passcode": {
@@ -684,8 +684,8 @@
       "body": "Você tem uma proposta pendente."
     },
     "httpIsNotAllowed": {
-      "title": "URL não permitido abrir",
-      "body": "Para proteger os usuários de sites web inseguros, o navegador RWallet permite apenas URLs com cifração HTTPS.Por favor, verifique que o URL introduzido começa com https://"
+      "title": "URL não permitida",
+      "body": "Para proteger os usuários de sites web inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
     }
   },
   "currency": {
