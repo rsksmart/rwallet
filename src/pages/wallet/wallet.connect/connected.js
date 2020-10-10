@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir',
     color: color.mineShaft,
     fontSize: 15,
+    lineHeight: 22,
     marginTop: 8,
   },
   address: {
