@@ -28,13 +28,15 @@ const parseDataUtil = {
   },
 
   /**
-   * processTransaction, process transaction with transaction, isSender
+   * getTransactionViewData, get transaction view data with transaction, isSender
    * @param {object} transaction
    * @param {boolean} isSender
    */
-  processTransaction(transaction, isSender) {
+  getTransactionViewData(transaction, isSender) {
     const newTransaction = transaction;
-    const dateTime = newTransaction.status === TxStatus.SUCCESS ? transaction.confirmedAt : transaction.createdAt;
+    // If TxStatus is pending, use createdAt as dateTime.
+    // Otherwise, use confirmedAt.
+    const dateTime = newTransaction.status === TxStatus.PENDING ? transaction.createdAt : transaction.confirmedAt;
     // Handling the case where datetime is undefined
     newTransaction.dateTime = dateTime ? moment(dateTime) : undefined;
 

@@ -283,7 +283,7 @@ class ParseHelper {
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
       const isSender = address === transaction.from;
-      return parseDataUtil.processTransaction(transaction, isSender);
+      return parseDataUtil.getTransactionViewData(transaction, isSender);
     });
     return transactions;
   }

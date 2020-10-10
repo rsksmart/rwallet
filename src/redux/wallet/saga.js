@@ -226,7 +226,7 @@ function* updateTransactionRequest(action) {
    && (item.address === transaction.from || item.address === transaction.to));
   _.each(foundTokens, (token) => {
     const isSender = token.address === transaction.from;
-    const newTransaction = parseDataUtil.processTransaction(transaction, isSender);
+    const newTransaction = parseDataUtil.getTransactionViewData(transaction, isSender);
     addTokenTransactions(token, [newTransaction]);
   });
   return put({ type: actions.WALLETS_UPDATED });

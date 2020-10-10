@@ -352,7 +352,7 @@ function* processNotificationRequest(action) {
     case 'receivedTransaction': {
       const transaction = params;
       const isSender = event === 'sentTransaction';
-      const newTransaction = parseDataUtil.processTransaction(transaction, isSender);
+      const newTransaction = parseDataUtil.getTransactionViewData(transaction, isSender);
 
       common.currentNavigation.navigate('Home');
       const newAction = actions.setFcmNavParams({
