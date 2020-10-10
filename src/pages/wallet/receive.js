@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Clipboard, Platform, Image, TouchableOpacity,
+  View, Text, StyleSheet, Clipboard, Image, TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
-import { captureRef } from 'react-native-view-shot';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
 import common from '../../common/common';
@@ -16,7 +15,6 @@ import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color';
 import { DEVICE } from '../../common/info';
-import flex from '../../assets/styles/layout.flex';
 import references from '../../assets/references';
 
 const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
@@ -101,66 +99,13 @@ class WalletReceive extends Component {
     onSharePressed = async () => {
       const { navigation } = this.props;
       const { coin } = navigation.state.params;
-
-      const uri = await captureRef(this.page, {
-        format: 'jpg',
-        quality: 0.8,
-        result: 'tmpfile',
-      });
-
-      const url = uri;
-      const title = '';
       const message = coin && coin.address;
-      const icon = '';
-      const options = Platform.select({
-        ios: {
-          activityItemSources: [
-            { // For sharing url with custom title.
-              placeholderItem: { type: 'url', content: url },
-              item: {
-                default: { type: 'url', content: url },
-              },
-              subject: {
-                default: title,
-              },
-              linkMetadata: { originalUrl: url, url, title },
-            },
-            { // For sharing text.
-              placeholderItem: { type: 'text', content: message },
-              item: {
-                default: { type: 'text', content: message },
-                message: null, // Specify no text to share via Messages app.
-              },
-              linkMetadata: { // For showing app icon on share preview.
-                title: message,
-              },
-            },
-            { // For using custom icon instead of default text icon at share preview when sharing with message.
-              placeholderItem: {
-                type: 'url',
-                content: icon,
-              },
-              item: {
-                default: {
-                  type: 'text',
-                  content: `${message} ${url}`,
-                },
-              },
-              linkMetadata: {
-                title: message,
-                icon,
-              },
-            },
-          ],
-        },
-        default: {
-          title,
-          subject: title,
-          message: `${message} ${url}`,
-        },
-      });
 
-      Share.open(options);
+      const shareOptions = {
+        message,
+        failOnCancel: false,
+      };
+      Share.open(shareOptions);
     }
 
     render() {
@@ -176,35 +121,33 @@ class WalletReceive extends Component {
       const title = `${strings('button.Receive')} ${symbolName}`;
       return (
         // react-native-view-shot a view ref with the property collapsable = false.
-        <View style={flex.flex1} collapsable={false} ref={(ref) => { this.page = ref; }}>
-          <BasePageGereral
-            collapsable={false}
-            isSafeView={false}
-            hasBottomBtn
-            bottomBtnText="button.share"
-            bottomBtnOnPress={this.onSharePressed}
-            hasLoader={false}
-            headerComponent={<Header onBackButtonPress={() => { navigation.goBack(); }} title={title} />}
-          >
-            <View style={styles.body}>
-              <View style={[styles.qrView]}>
-                <QRCode value={qrText} size={QRCODE_SIZE} />
-              </View>
-              <View style={[styles.addressContainer]}>
-                {subdomain && (
-                  <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
-                    <Text style={[styles.addressText, styles.subdomainText]}>{subdomain}</Text>
-                    <Image style={styles.copyIcon} source={references.images.copyIcon} />
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
-                  <Text style={styles.addressText}>{address}</Text>
-                  <Image style={styles.copyIcon} source={references.images.copyIcon} />
-                </TouchableOpacity>
-              </View>
+        <BasePageGereral
+          collapsable={false}
+          isSafeView={false}
+          hasBottomBtn
+          bottomBtnText="button.share"
+          bottomBtnOnPress={this.onSharePressed}
+          hasLoader={false}
+          headerComponent={<Header onBackButtonPress={() => { navigation.goBack(); }} title={title} />}
+        >
+          <View style={styles.body}>
+            <View style={[styles.qrView]}>
+              <QRCode value={qrText} size={QRCODE_SIZE} />
             </View>
-          </BasePageGereral>
-        </View>
+            <View style={[styles.addressContainer]}>
+              {subdomain && (
+              <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
+                <Text style={[styles.addressText, styles.subdomainText]}>{subdomain}</Text>
+                <Image style={styles.copyIcon} source={references.images.copyIcon} />
+              </TouchableOpacity>
+              )}
+              <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
+                <Text style={styles.addressText}>{address}</Text>
+                <Image style={styles.copyIcon} source={references.images.copyIcon} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BasePageGereral>
       );
     }
 }
