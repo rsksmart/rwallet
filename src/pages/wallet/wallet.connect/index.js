@@ -182,7 +182,7 @@ class WalletConnectPage extends Component {
     const selectedWallet = this.getWallet();
     if (!_.isEmpty(selectedWallet)) {
       this.initNetwork();
-      // setTimeout 500 in order to ui change smoothly
+      // setTimeout 500ms in order to ui change smoothly
       setTimeout(async () => {
         await this.setState({
           modalView: this.renderWalletConnectingView(),
@@ -230,7 +230,6 @@ class WalletConnectPage extends Component {
     const { coins } = wallet;
     const net = isTestnet ? 'Testnet' : 'Mainnet';
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === net);
-    console.log('rskCoins: ', rskCoins);
     if (_.isEmpty(rskCoins)) {
       return null;
     }
@@ -271,8 +270,6 @@ class WalletConnectPage extends Component {
         await connector.createSession();
       }
 
-      console.log('connector: ', connector);
-
       this.setState({ connector }, () => {
         this.subscribeToEvents();
       });
@@ -304,8 +301,6 @@ class WalletConnectPage extends Component {
         }
 
         const { peerMeta } = payload.params[0];
-        console.log('payload: ', payload);
-        console.log('peerMeta: ', peerMeta);
         this.setState({
           peerMeta,
           modalView: null,
@@ -323,11 +318,8 @@ class WalletConnectPage extends Component {
       });
 
       connector.on('call_request', async (error, payload) => {
-        const { method, params } = payload;
         // tslint:disable-next-line
         console.log('EVENT', 'call_request', 'payload', payload);
-        console.log('EVENT', 'call_request', 'method', method);
-        console.log('EVENT', 'call_request', 'params', params);
 
         if (error) {
           throw error;
@@ -365,7 +357,6 @@ class WalletConnectPage extends Component {
     const {
       connector, chainId, selectedWallet,
     } = this.state;
-    console.log('connector: ', connector);
     const { address } = selectedWallet;
     if (connector) {
       connector.approveSession({ chainId, accounts: [address] });
@@ -396,7 +387,6 @@ class WalletConnectPage extends Component {
   };
 
   approveRequest = async () => {
-    console.log('approveRequest');
     const { callAuthVerify } = this.props;
 
     await this.setState({ modalView: null });
@@ -404,11 +394,9 @@ class WalletConnectPage extends Component {
     setTimeout(async () => {
       callAuthVerify(async () => {
         try {
-          console.log('handleCallRequest');
           await this.handleCallRequest();
           await this.closeRequest();
         } catch (err) {
-          console.log('approve request: ', err);
           this.handleError();
         }
       }, () => {
@@ -462,7 +450,6 @@ class WalletConnectPage extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      console.log('input: ', input);
       await this.setState({ inputDecode: input, symbol });
       if (input && input.method === 'approve') {
         this.popupAllowanceModal();
