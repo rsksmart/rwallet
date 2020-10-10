@@ -511,9 +511,13 @@
       "title": "请设置一个密码",
       "body": "如果此设备被恶意软件窃取或破坏，密码可以保护您的资金。"
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "警告!",
-      "body": "您确定要删除此钱包中的所有资产吗？"
+      "body": "您确定想要删除这个钱包吗？"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "警告!",
+      "body": "您确定想要删除这个只读钱包吗？"
     },
     "swap": {
       "title": "没有可交换币",

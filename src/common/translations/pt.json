@@ -509,9 +509,13 @@
       "title": "Defina uma senha",
       "body": "A senha pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "Atenção!",
-      "body": "Tem certeza de que deseja excluir todos os ativos usando esta carteira?"
+      "body": "Tem certeza de que deseja excluir esta carteira?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir esta carteira somente leitura?"
     },
     "swap": {
       "title": "Nenhuma moeda trocável",
