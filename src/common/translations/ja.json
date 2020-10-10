@@ -582,6 +582,10 @@
     "httpIsNotAllowed": {
       "title": "URLを開くことはできません",
       "body": "安全でないWebサイトからユーザーを保護するために、RWalletブラウザーはHTTPS暗号化のURLのみを許可します。 入力するURLがhttps://で始まることを確認してください"
+    },
+    "feeCalculationError": {
+      "title": "料金計算エラー",
+      "body": "コストの計算中にエラーが発生しました。もう一度やり直してください。"
     }
   },
   "currency": {

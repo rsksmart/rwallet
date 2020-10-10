@@ -20,7 +20,7 @@ import AddressSelectionModal from '../../../components/common/modal/address.sele
 import { strings } from '../../../common/i18n';
 import parse from '../../../common/parse';
 import config from '../../../../config';
-import ERROR_CODE from '../../../common/errors';
+import { ERROR_CODE } from '../../../common/error';
 import {
   getErrorNotification, getDefaultErrorNotification,
 } from '../../../common/notification.controller';

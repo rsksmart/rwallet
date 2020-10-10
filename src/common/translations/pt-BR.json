@@ -598,6 +598,10 @@
     "httpIsNotAllowed": {
       "title": "URL não permitida",
       "body": "Para proteger os usuários de sites web inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
+    },
+    "feeCalculationError": {
+      "title": "Erro de cálculo de taxa",
+      "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
     }
   },
   "currency": {

@@ -582,6 +582,10 @@
     "httpIsNotAllowed": {
       "title": "URL을 열 수 없습니다",
       "body": "안전하지 않은 웹 사이트로부터 사용자를 보호하기 위해 RWallet 브라우저는 HTTPS 암호화를 사용하는 URL 만 허용합니다. 입력 한 URL이 https://로 시작하는지 확인하십시오."
+    },
+    "feeCalculationError": {
+      "title": "수수료 계산 오류",
+      "body": "비용을 계산하는 중에 오류가 발생했습니다. 다시 시도하십시오."
     }
   },
   "currency": {

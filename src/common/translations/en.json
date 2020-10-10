@@ -582,6 +582,10 @@
     "httpIsNotAllowed": {
       "title": "URL no permitida para abrir",
       "body": "Para proteger a los usuarios de sitios web inseguros, el navegador RWallet solo permite URL con cifrado HTTPS. Asegúrese de que la URL ingresada comience con https: //"
+    },
+    "feeCalculationError": {
+      "title": "Fee calculation error",
+      "body": "An error occurred while calculating the cost. Please try again."
     }
   },
   "currency": {
