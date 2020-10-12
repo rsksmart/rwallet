@@ -448,7 +448,7 @@ class DAppBrowser extends Component {
       to: params[0].to,
       value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
     };
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, this.networkVersion);
     const inputData = params[0].data;
     const res = await apiHelper.getAbiByAddress(toAddress);
     if (res && res.abi) {

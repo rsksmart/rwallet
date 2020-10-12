@@ -229,13 +229,14 @@ class WalletConnectPage extends Component {
     const { navigation: { state: { params: { wallet } } } } = this.props;
     const { coins } = wallet;
     const net = isTestnet ? 'Testnet' : 'Mainnet';
+    const networkId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === net);
     // If current wallet has no rsk mainnet or testnet coins, return a null value and rwallet will show error notification.
     if (_.isEmpty(rskCoins)) {
       return null;
     }
     return {
-      address: Rsk3.utils.toChecksumAddress(rskCoins[0].address),
+      address: Rsk3.utils.toChecksumAddress(rskCoins[0].address, networkId),
       privateKey: rskCoins[0].privateKey,
     };
   }
@@ -442,8 +443,8 @@ class WalletConnectPage extends Component {
   }
 
   popupTransactionModal = async () => {
-    const { payload: { params } } = this.state;
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+    const { payload: { params }, chainId } = this.state;
+    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, chainId);
     const inputData = params[0].data;
     const res = await apiHelper.getAbiByAddress(toAddress);
     const txData = await this.generateTxData();
@@ -614,7 +615,9 @@ class WalletConnectPage extends Component {
   }
 
   generateTxData = async () => {
-    const { selectedWallet: { address }, payload: { params }, provider } = this.state;
+    const {
+      selectedWallet: { address }, payload: { params }, provider, chainId,
+    } = this.state;
 
     let { nonce, gasPrice } = params[0];
     if (!nonce) {
@@ -631,7 +634,7 @@ class WalletConnectPage extends Component {
       data: params[0].data,
       gasLimit: params[0].gas || '0x927c0', // Set default gasLimit to 600000(hex: 0x927c0),
       gasPrice,
-      to: Rsk3.utils.toChecksumAddress(params[0].to),
+      to: Rsk3.utils.toChecksumAddress(params[0].to, chainId),
       value: params[0].value || '0x0',
     };
 
