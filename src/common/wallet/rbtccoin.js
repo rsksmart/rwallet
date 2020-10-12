@@ -174,7 +174,8 @@ export default class RBTCCoin {
       symbol, type, path, address, objectId,
     } = json;
     const instance = new RBTCCoin(symbol, type, path);
-    instance.address = address;
+    // Convert old address to checksum address
+    instance.address = Rsk3.utils.checkAddressChecksum(address, instance.networkId) ? address : Rsk3.utils.toChecksumAddress(address, instance.networkId);
     instance.objectId = objectId;
     return instance;
   }
