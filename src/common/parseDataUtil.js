@@ -8,10 +8,6 @@ const parseDataUtil = {
    * @param {*} txOjbect, parse transaction object
    */
   getTransaction(txObject) {
-    const status = txObject.get('status');
-    let dateTime = status === TxStatus.SUCCESS ? txObject.get('confirmedAt') : txObject.get('createdAt');
-    // Handling the case where datetime is undefined
-    dateTime = dateTime ? moment(dateTime) : undefined;
     const transaction = {
       chain: txObject.get('chain'),
       type: txObject.get('type'),
@@ -23,11 +19,40 @@ const parseDataUtil = {
       to: txObject.get('to'),
       confirmations: txObject.get('confirmations'),
       memo: txObject.get('memo'),
-      status,
-      dateTime,
+      confirmedAt: txObject.get('confirmedAt'),
+      createdAt: txObject.get('createdAt'),
+      status: txObject.get('status'),
       objectId: txObject.id,
     };
     return transaction;
+  },
+
+  /**
+   * getTransactionViewData, get transaction view data with transaction, isSender
+   * @param {object} transaction
+   * @param {boolean} isSender
+   */
+  getTransactionViewData(transaction, isSender) {
+    const newTransaction = transaction;
+    // If TxStatus is pending, use createdAt as dateTime.
+    // Otherwise, use confirmedAt.
+    const dateTime = newTransaction.status === TxStatus.PENDING ? transaction.createdAt : transaction.confirmedAt;
+    // Handling the case where datetime is undefined
+    newTransaction.dateTime = dateTime ? moment(dateTime) : undefined;
+
+    let statusText = 'Failed';
+    switch (transaction.status) {
+      case TxStatus.PENDING:
+        statusText = isSender ? 'Sending' : 'Receiving';
+        break;
+      case TxStatus.SUCCESS:
+        statusText = isSender ? 'Sent' : 'Received';
+        break;
+      default:
+    }
+    newTransaction.statusText = statusText;
+    newTransaction.isSender = isSender;
+    return newTransaction;
   },
 
   /**
