@@ -20,6 +20,8 @@ import presetStyles from '../../assets/styles/style';
 import WebViewModal from '../../components/common/webview.modal';
 import config from '../../../config';
 import color from '../../assets/styles/color';
+import space from '../../assets/styles/space';
+import { WalletType } from '../../common/constants';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     borderBottomWidth: 1,
     borderBottomColor: color.grayED,
-    paddingVertical: 20,
+    height: 60,
     flex: 1,
   },
   communityIcon: {
@@ -73,13 +75,13 @@ const styles = StyleSheet.create({
   keyIcon: {
     color: color.tundora, transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
   },
-  keyWallets: {
+  tagView: {
     backgroundColor: color.concrete,
     borderRadius: 5,
-    padding: 5,
+    paddingHorizontal: 5,
     color: color.black,
-    position: 'absolute',
-    right: 0,
+    justifyContent: 'center',
+    height: 25,
   },
   linkView: {
     marginBottom: 10,
@@ -97,6 +99,9 @@ const styles = StyleSheet.create({
   },
   grayIcon: {
     color: color.word,
+  },
+  tokenName: {
+    flex: 1,
   },
 });
 
@@ -158,10 +163,15 @@ class MineIndex extends Component {
           >
             <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
             <View style={styles.right}>
-              <Text>{item.name}</Text>
-              <Text style={styles.keyWallets}>
+              <Text style={styles.tokenName}>{item.name}</Text>
+              { item.wallet.walletType === WalletType.Readonly && (
+                <View style={styles.tagView}>
+                  <Loc text="page.wallet.list.readOnly" />
+                </View>
+              )}
+              <View style={[styles.tagView, space.marginLeft_5]}>
                 <Loc text="page.mine.index.assets" interpolates={{ count: item.walletCount }} />
-              </Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}

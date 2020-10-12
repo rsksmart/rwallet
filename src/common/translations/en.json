@@ -508,9 +508,13 @@
       "title": "Please set a passcode",
       "body": "Passcode can protect your funds if this device is stolen or compromised by malicious software."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "Warning!",
-      "body": "Are you sure you want to delete all assets using this wallet?"
+      "body": "Are you sure you want to delete this wallet?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "Warning!",
+      "body": "Are you sure you want to delete this Read-only wallet?"
     },
     "swap": {
       "title": "No swappable coin",
