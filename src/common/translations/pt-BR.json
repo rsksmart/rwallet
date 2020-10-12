@@ -39,7 +39,7 @@
         "Received Funds": "Fundos recebidos",
         "Sending Funds": "Enviando fundos",
         "Receiving Funds": "Recebendo fundos",
-        "Failed Funds": "Fundos falidos",
+        "Failed Funds": "Falha no envio",
         "date": "Data",
         "confirmations": "Confirmações",
         "memo": "Anotação",
@@ -75,7 +75,7 @@
         "importWallet": "Importar carteira existente",
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação",
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
-        "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto"
+        "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
@@ -601,7 +601,7 @@
     },
     "httpIsNotAllowed": {
       "title": "URL não permitida",
-      "body": "Para proteger os usuários de sites web inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
+      "body": "Para proteger os usuários de sites inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
     }
   },
   "currency": {
