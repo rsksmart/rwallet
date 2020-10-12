@@ -19,14 +19,14 @@ const styles = StyleSheet.create({
   title: {
     color: color.black,
     fontSize: 17,
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Heavy',
     fontWeight: 'bold',
     alignSelf: 'center',
   },
   description: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Book',
     marginTop: 28,
   },
   tryAgainBtnView: {

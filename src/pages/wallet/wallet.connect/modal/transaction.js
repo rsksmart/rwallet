@@ -20,12 +20,12 @@ const styles = StyleSheet.create({
   lineTitle: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Book',
   },
   lineValue: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Book',
     width: '60%',
     textAlign: 'right',
   },

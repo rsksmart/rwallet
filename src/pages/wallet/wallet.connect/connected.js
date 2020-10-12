@@ -25,22 +25,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Heavy',
   },
   dappUrl: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Book',
     marginTop: 6,
   },
   title: {
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Heavy',
     fontSize: 16,
   },
   content: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Book',
     color: color.mineShaft,
     fontSize: 15,
     marginTop: 8,
@@ -76,20 +76,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   rejectText: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Avenir-Heavy',
     fontSize: 16,
     fontWeight: 'bold',
     color: color.vividBlue,
-  },
-  allowBtn: {
-    marginTop: 18,
-    backgroundColor: color.vividBlue,
-  },
-  allowText: {
-    fontFamily: 'Avenir',
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: color.white,
   },
 });
 
