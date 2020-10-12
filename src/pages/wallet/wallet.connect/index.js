@@ -20,7 +20,7 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
 import { NETWORK } from '../../../common/constants';
@@ -267,7 +267,7 @@ class WalletConnectPage extends Component {
   subscribeToEvents = () => {
     console.log('ACTION', 'subscribeToEvents');
     const { connector, selectedWallet } = this.state;
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
 
     if (connector) {
       connector.on('session_request', async (error, payload) => {
@@ -327,7 +327,14 @@ class WalletConnectPage extends Component {
           throw error;
         }
 
-        navigation.goBack();
+        const { peerMeta } = this.state;
+        const notification = createInfoNotification(
+          'page.wallet.walletconnect.disconnectAlertTitle',
+          strings('page.wallet.walletconnect.disconnectAlertContent', { dappName: (peerMeta && peerMeta.name) || '' }),
+          'page.wallet.walletconnect.okGotIt',
+          () => navigation.goBack(),
+        );
+        addNotification(notification);
       });
 
       this.setState({ connector });
@@ -417,15 +424,11 @@ class WalletConnectPage extends Component {
   };
 
   popupDisconnectModal = async () => {
-    const { navigation } = this.props;
     this.setState({
       modalView: <DisconnectModal
         confirmPress={() => {
           this.closeModalPress();
           this.killSession();
-          setTimeout(() => {
-            navigation.goBack();
-          }, 500);
         }}
         cancelPress={this.closeModalPress}
       />,
