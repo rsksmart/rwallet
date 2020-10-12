@@ -156,7 +156,7 @@
         "leaveToDisconnectDesc": "Sair da página Wallet Connect irá fazer com que a RWallet se desconecte do Dapp atualmente conectado.",
         "leaveToDisconnectConfirm": "Você tem certeza que deseja desconectar?",
         "disconnectAlertTitle": "A conexão de carteira está desconectada",
-        "disconnectAlertContent": "A conexão Wallet Connect com o Dapp %{dappName} está fechada.Isso pode ser devido ao fraco acesso à rede, interrupção do servidor Wallet Connect, ou rejeição unilateral Dapp.Ao clicar no botão embaixo você será navegado para o painel de carteira.",
+        "disconnectAlertContent": "A conexão Wallet Connect com o Dapp \"%{dappName}\" está fechada.Isso pode ser devido ao fraco acesso à rede, interrupção do servidor Wallet Connect, ou rejeição unilateral Dapp.Ao clicar no botão embaixo você será navegado para o painel de carteira.",
         "okGotIt": "Ok, entendi",
         "error": "Erro",
         "errorDesc": "Erro!Aconteceu um erro, por favor tente novamente mais tarde (pode haver muitas razões, como problemas de rede, rejeição do usuário, código de senha incorreto, taxa insuficiente, etc.)",

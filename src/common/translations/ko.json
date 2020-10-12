@@ -153,7 +153,7 @@
         "leaveToDisconnectDesc": "Wallet Connect 페이지를 나가면 현재 연결된 Dapp에서 RWallet 연결이 끊어집니다.",
         "leaveToDisconnectConfirm": "연결 해제 하시겠습니까?",
         "disconnectAlertTitle": "월렛 연결이 끊어졌습니다",
-        "disconnectAlertContent": "Dapp %{dappName}에 대한 Wallet Connect 연결이 닫혔습니다. 이는 약한 네트워크 액세스, Wallet Connect 서버 중단 또는 Dapp 일방적 거부로 인한 것일 수 있습니다. 아래 버튼을 클릭하면 지갑 대시 보드로 이동합니다.",
+        "disconnectAlertContent": "Dapp \"%{dappName}\" 에 대한 Wallet Connect 연결이 닫혔습니다. 이는 약한 네트워크 액세스, Wallet Connect 서버 중단 또는 Dapp 일방적 거부로 인한 것일 수 있습니다. 아래 버튼을 클릭하면 지갑 대시 보드로 이동합니다.",
         "okGotIt": "알겠습니다",
         "error": "오류",
         "errorDesc": "오류! 오류가 발생했습니다. 나중에 다시 시도해주세요 (네트워크 문제, 사용자 거부, 잘못된 암호, 불충분 한 처리 수수료 등 여러 가지 이유가있을 수 있음).",

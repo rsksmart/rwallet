@@ -153,7 +153,7 @@
         "leaveToDisconnectDesc": "Wallet Connectページを終了すると、RWalletが現在接続されているDappから切断されます。",
         "leaveToDisconnectConfirm": "切断しますか？",
         "disconnectAlertTitle": "Wallet Connectが切断されました",
-        "disconnectAlertContent": "Dapp%{dappName}へのWallet Connect接続が閉じられました。これは、ネットワークアクセスの弱さ、Wallet Connectサーバーの中断、またはDappの一方的な拒否が原因である可能性があります。下のボタンをクリックすると、ウォレットダッシュボードに移動します。",
+        "disconnectAlertContent": "Dapp\"%{dappName}\"へのWallet Connect接続が閉じられました。これは、ネットワークアクセスの弱さ、Wallet Connectサーバーの中断、またはDappの一方的な拒否が原因である可能性があります。下のボタンをクリックすると、ウォレットダッシュボードに移動します。",
         "okGotIt": "わかりました、わかりました",
         "error": "エラー",
         "errorDesc": "エラー！ エラーが発生しました。しばらくしてからもう一度お試しください（ネットワークの問題、ユーザーの拒否、パスコードの誤り、手数料の不足など、多くの理由が考えられます）",
