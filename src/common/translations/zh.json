@@ -589,6 +589,10 @@
     "httpIsNotAllowed": {
       "title": "不允许打开的URL",
       "body": "为了保护用户免受不安全网站的侵害，RWallet浏览器仅允许使用HTTPS加密的URL。请确保输入的URL以https://开头。"
+    },
+    "feeCalculationError": {
+      "title": "费用计算错误",
+      "body": "计算费用时发生了错误，请重试。"
     }
   },
   "currency": {
