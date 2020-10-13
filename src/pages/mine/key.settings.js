@@ -198,10 +198,12 @@ class KeySettings extends Component {
     }
 
     onDeletePress() {
+      const { walletType } = this.key;
       const { addConfirmation } = this.props;
+      const isReadOnlyWallet = walletType === WalletType.Readonly;
       const infoConfirmation = createInfoConfirmation(
-        'modal.deleteKey.title',
-        'modal.deleteKey.body',
+        isReadOnlyWallet ? 'modal.deleteReadOnlyWallet.title' : 'modal.deleteWallet.title',
+        isReadOnlyWallet ? 'modal.deleteReadOnlyWallet.body' : 'modal.deleteWallet.body',
         () => this.onDeleteConfirm(),
       );
       addConfirmation(infoConfirmation);

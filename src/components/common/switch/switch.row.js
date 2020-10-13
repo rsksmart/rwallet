@@ -20,8 +20,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  label: {
+    fontSize: 16,
+    fontFamily: 'Avenir-Book',
+  },
 });
 
+/**
+ * SwitchRow, a row component with text and switch.
+ * props:
+ * text, a label for switch
+ * value, the switch state value
+ * onValueChange, the callback on switch value is changed
+ * questionNotification, the question notification pop when question icon is pressed
+ */
 class SwitchRow extends Component {
   onPressed = () => {
     const { questionNotification, addNotification } = this.props;
@@ -38,7 +50,7 @@ class SwitchRow extends Component {
     return (
       <View style={styles.row}>
         <View style={styles.leftColumn}>
-          <Text>{text}</Text>
+          <Text style={styles.label}>{text}</Text>
           {questionNotification && (
             <TouchableOpacity style={{ marginLeft: 5 }} onPress={this.onPressed}>
               <AntDesign style={styles.questionIcon} name="questioncircleo" />
@@ -68,7 +80,7 @@ SwitchRow.propTypes = {
 SwitchRow.defaultProps = {
   text: undefined,
   value: false,
-  onValueChange: () => {},
+  onValueChange: () => null,
   disabled: false,
   questionNotification: undefined,
 };

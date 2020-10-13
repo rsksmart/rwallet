@@ -227,7 +227,9 @@ function* updateTransactionRequest(action) {
    && item.type === transaction.type
    && (item.address === transaction.from || item.address === transaction.to));
   _.each(foundTokens, (token) => {
-    addTokenTransactions(token, [transaction]);
+    const isSender = token.address === transaction.from;
+    const newTransaction = parseDataUtil.getTransactionViewData(transaction, isSender);
+    addTokenTransactions(token, [newTransaction]);
   });
   return put({ type: actions.UPDATE_WALLETS_DETAIL });
 }

@@ -283,7 +283,8 @@ class ParseHelper {
     const results = await query.skip(skipCount).limit(fetchCount).find();
     const transactions = _.map(results, (item) => {
       const transaction = parseDataUtil.getTransaction(item);
-      return transaction;
+      const isSender = address === transaction.from;
+      return parseDataUtil.getTransactionViewData(transaction, isSender);
     });
     return transactions;
   }

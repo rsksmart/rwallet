@@ -1,6 +1,6 @@
 import Parse from 'parse/lib/react-native/Parse';
 import common from '../common';
-import ERROR_CODE from '../errors';
+import { ERROR_CODE } from '../error';
 import storage from '../storage';
 
 import * as btc from './btccoin';

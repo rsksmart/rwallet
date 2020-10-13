@@ -561,9 +561,13 @@
       "title": "Defina uma senha",
       "body": "A senha pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "Atenção!",
-      "body": "Tem certeza de que deseja excluir todos os ativos usando esta carteira?"
+      "body": "Tem certeza de que deseja excluir esta carteira?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir esta carteira somente leitura?"
     },
     "swap": {
       "title": "Nenhuma moeda trocável",
@@ -671,6 +675,10 @@
     "httpIsNotAllowed": {
       "title": "URL não tem permissão para abrir",
       "body": "Para proteger os usuários de sites não seguros, o navegador RWallet permite apenas URLs com criptografia HTTPS. Certifique-se de que o URL digitado comece com https: //"
+    },
+    "feeCalculationError": {
+      "title": "Erro de cálculo de taxa",
+      "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
     }
   },
   "currency": {

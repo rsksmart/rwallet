@@ -27,7 +27,7 @@ import parseHelper from '../../../common/parse';
 import { createErrorConfirmation } from '../../../common/confirmation.controller';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
 import { strings } from '../../../common/i18n';
-import ERROR_CODE from '../../../common/errors';
+import { ERROR_CODE } from '../../../common/error';
 import * as rbtc from '../../../common/transaction/rbtccoin';
 
 const styles = StyleSheet.create({

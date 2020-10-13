@@ -8,6 +8,11 @@ const ERROR_CODE = {
   ERR_INPUT_PARAM: 703, // input params not valid
   ERR_ADDRESS_INVALID: 705, // address is a invalid Rsk3 address
 
+  ERR_USER_NOT_LOGIN: 706, // request not from a login user
+  ERR_EXIST_UNFINISHED_PROPOSAL: 707, // Not creator of multiSigProposal
+  ERR_USER_ALREADY_OPERATED: 708, // User has already joined, accepted or rejected
+  ERR_INVALID_PROPOSAL: 709, // The proposal not in pending or created state
+
   ERR_API_KEY_NOT_EXIST: 710, // apiKey not exist
   ERR_API_KEY_INVALID: 711, // apiKey invalid
   ERR_ROLE_NOT_EXIST: 712, // access role not exist
@@ -24,16 +29,7 @@ const ERROR_CODE = {
   ERC20_CONTRACT_NOT_FOUND: 724,
   TIME_OUT: 725,
 
-  ERR_USER_NOT_LOGIN: 706, // request not from a login user
-  ERR_EXIST_UNFINISHED_PROPOSAL: 707, // Not creator of multiSigProposal
-  ERR_USER_ALREADY_OPERATED: 708, // User has already joined, accepted or rejected
-  ERR_INVALID_PROPOSAL: 709, // The proposal not in pending or created state
-};
-
-export const createError = (code, message) => {
-  const error = new Error(message);
-  error.code = code;
-  return error;
+  ERR_FEE_CALCULATION: 5001,
 };
 
 export default ERROR_CODE;
