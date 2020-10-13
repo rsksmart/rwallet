@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, Clipboard, Platform, Image, TouchableOpacity,
+  View, Text, StyleSheet, Clipboard, Image, TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -16,10 +16,10 @@ import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color';
 import { DEVICE } from '../../common/info';
-import flex from '../../assets/styles/layout.flex';
 import references from '../../assets/references';
 
 const QRCODE_SIZE = DEVICE.screenHeight * 0.22;
+const DELAY_CAPTURE = 200;
 
 const styles = StyleSheet.create({
   body: {
@@ -61,6 +61,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginBottom: 2,
   },
+  captureView: {
+    flex: 1,
+    backgroundColor: color.white,
+  },
 });
 
 class WalletReceive extends Component {
@@ -98,69 +102,27 @@ class WalletReceive extends Component {
       addNotification(notification);
     }
 
-    onSharePressed = async () => {
-      const { navigation } = this.props;
-      const { coin } = navigation.state.params;
+    onSharePressed = () => {
+      // In order for the button to rebound first and then take a screenshot, delay the screenshot action。
+      // It will not affect the normal execution logic
+      setTimeout(async () => {
+        const { navigation } = this.props;
+        const { coin } = navigation.state.params;
+        const message = coin && coin.address;
 
-      const uri = await captureRef(this.page, {
-        format: 'jpg',
-        quality: 0.8,
-        result: 'tmpfile',
-      });
+        const imageBase64Data = await captureRef(this.page, {
+          format: 'jpg',
+          quality: 0.8,
+          result: 'data-uri',
+        });
 
-      const url = uri;
-      const title = '';
-      const message = coin && coin.address;
-      const icon = '';
-      const options = Platform.select({
-        ios: {
-          activityItemSources: [
-            { // For sharing url with custom title.
-              placeholderItem: { type: 'url', content: url },
-              item: {
-                default: { type: 'url', content: url },
-              },
-              subject: {
-                default: title,
-              },
-              linkMetadata: { originalUrl: url, url, title },
-            },
-            { // For sharing text.
-              placeholderItem: { type: 'text', content: message },
-              item: {
-                default: { type: 'text', content: message },
-                message: null, // Specify no text to share via Messages app.
-              },
-              linkMetadata: { // For showing app icon on share preview.
-                title: message,
-              },
-            },
-            { // For using custom icon instead of default text icon at share preview when sharing with message.
-              placeholderItem: {
-                type: 'url',
-                content: icon,
-              },
-              item: {
-                default: {
-                  type: 'text',
-                  content: `${message} ${url}`,
-                },
-              },
-              linkMetadata: {
-                title: message,
-                icon,
-              },
-            },
-          ],
-        },
-        default: {
-          title,
-          subject: title,
-          message: `${message} ${url}`,
-        },
-      });
-
-      Share.open(options);
+        const shareOptions = {
+          message,
+          url: imageBase64Data,
+          failOnCancel: false,
+        };
+        Share.open(shareOptions);
+      }, DELAY_CAPTURE);
     }
 
     render() {
@@ -176,7 +138,7 @@ class WalletReceive extends Component {
       const title = `${strings('button.Receive')} ${symbolName}`;
       return (
         // react-native-view-shot a view ref with the property collapsable = false.
-        <View style={flex.flex1} collapsable={false} ref={(ref) => { this.page = ref; }}>
+        <View style={styles.captureView} collapsable={false} ref={(ref) => { this.page = ref; }}>
           <BasePageGereral
             collapsable={false}
             isSafeView={false}
@@ -192,10 +154,10 @@ class WalletReceive extends Component {
               </View>
               <View style={[styles.addressContainer]}>
                 {subdomain && (
-                  <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
-                    <Text style={[styles.addressText, styles.subdomainText]}>{subdomain}</Text>
-                    <Image style={styles.copyIcon} source={references.images.copyIcon} />
-                  </TouchableOpacity>
+                <TouchableOpacity style={[styles.address]} onPress={this.onCopySubdomainPressed}>
+                  <Text style={[styles.addressText, styles.subdomainText]}>{subdomain}</Text>
+                  <Image style={styles.copyIcon} source={references.images.copyIcon} />
+                </TouchableOpacity>
                 )}
                 <TouchableOpacity style={[styles.address, styles.addressView]} onPress={this.onCopyAddressPressed}>
                   <Text style={styles.addressText}>{address}</Text>
