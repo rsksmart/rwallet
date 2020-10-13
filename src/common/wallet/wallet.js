@@ -179,7 +179,9 @@ export default class Wallet extends BasicWallet {
     // use secure storage to restore private key
     if (derivations) {
       const promises = _.map(derivations, async (derivation, index) => {
-        const { symbol, type, path } = derivation;
+        const {
+          symbol, type, path, address,
+        } = derivation;
         let coin = null;
 
         //  If addresses is empty, it is an upgrade from the old version
@@ -193,6 +195,9 @@ export default class Wallet extends BasicWallet {
         } else {
           // restore derivation
           coin = symbol === 'BTC' ? Coin.fromJSON(derivation) : RBTCCoin.fromJSON(derivation);
+          // RBTCCoin.fromJSON will convert old address to checksum address.
+          // If old address is not a checksum address, save new address to storage
+          isNeedSave = symbol === 'RBTC' && coin.address === address;
           await coin.restorePrivateKey(id);
         }
         derivations[index] = coin;

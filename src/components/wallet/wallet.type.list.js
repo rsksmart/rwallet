@@ -31,12 +31,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   title: {
-    color: this.codGray,
+    color: color.codGray,
+    fontFamily: 'Avenir-Medium',
     fontSize: 16,
     flex: 1,
   },
   text: {
     color: color.tundora,
+    fontFamily: 'Avenir-Book',
     fontSize: 15,
     flex: 1,
     marginTop: 9,
