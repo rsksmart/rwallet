@@ -89,7 +89,6 @@
 		F6C97E6D26A040A4B1528430 /* libRNScreens.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38FF2A9515D47FCB3EB54E1 /* libRNScreens.a */; };
 		F6FDF0F767AF4A63B18B8CCF /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA1CFA1F7DCF4BF2B6663221 /* libRNBlur.a */; };
 		F7CF80E724A7ED1D005CF2D5 /* web3.1.2.7.js in Resources */ = {isa = PBXBuildFile; fileRef = F7CF80E624A7ED1D005CF2D5 /* web3.1.2.7.js */; };
-		F7CF80E924A8C651005CF2D5 /* ethers.js in Resources */ = {isa = PBXBuildFile; fileRef = F7CF80E824A8C650005CF2D5 /* ethers.js */; };
 		F8B745FF247BB9D4005AB80B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8B74601247BB9D4005AB80B /* InfoPlist.strings */; };
 		F8B97ABA238F9EC3000F3BFD /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B97AB9238F9E8D000F3BFD /* libRNCamera.a */; };
 		F8D5F45D238B92E2006CFB8D /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8D5F44D238B92E2006CFB8D /* Fontisto.ttf */; };
@@ -742,7 +741,6 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F3AA2513C79C4BF28F9CFA74 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		F7CF80E624A7ED1D005CF2D5 /* web3.1.2.7.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = web3.1.2.7.js; sourceTree = "<group>"; };
-		F7CF80E824A8C650005CF2D5 /* ethers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ethers.js; sourceTree = "<group>"; };
 		F8B74603247BBA89005AB80B /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F8B74604247BBADB005AB80B /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F8B74605247BBAF1005AB80B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -969,7 +967,6 @@
 		13B07FAE1A68108700A75B9A /* rwallet */ = {
 			isa = PBXGroup;
 			children = (
-				F7CF80E824A8C650005CF2D5 /* ethers.js */,
 				F7CF80E624A7ED1D005CF2D5 /* web3.1.2.7.js */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -2236,7 +2233,6 @@
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				F8D5F461238B92E2006CFB8D /* FontAwesome5_Brands.ttf in Resources */,
 				F8F13CDC244157D60034D167 /* GoogleService-Info.plist in Resources */,
-				F7CF80E924A8C651005CF2D5 /* ethers.js in Resources */,
 				F8D5F45D238B92E2006CFB8D /* Fontisto.ttf in Resources */,
 				F8D5F46A238B92E2006CFB8D /* EvilIcons.ttf in Resources */,
 				DAB2A624F82E41F1BF966C96 /* antfill.ttf in Resources */,
