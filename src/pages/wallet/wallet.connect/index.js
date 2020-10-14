@@ -585,9 +585,6 @@ class WalletConnectPage extends Component {
           // Show loading when transaction is signing or sending
           await this.setState({ modalView: this.renderTransactionSigningView() });
           result = await this.sendTransaction(signWallet);
-
-          // Close loading when transaction is signed and finished to the blockchain
-          await this.setState({ modalView: null });
           await connector.approveRequest({ id, result });
 
           setTimeout(() => {
@@ -625,11 +622,11 @@ class WalletConnectPage extends Component {
 
     let { nonce, gasPrice } = params[0];
     if (!nonce) {
-      // Get Mainnet nonce if params[0].nonce is null
-      nonce = await provider.getTransactionCount(address, 'pending');
+      // Get nonce if params[0].nonce is null
+      nonce = await provider.getTransactionCount(address.toLowerCase(), 'pending');
     }
     if (!gasPrice) {
-      // Get Mainnet gasPrice if params[0].gasPrice is null
+      // Get gasPrice if params[0].gasPrice is null
       gasPrice = await provider.getGasPrice();
     }
 
