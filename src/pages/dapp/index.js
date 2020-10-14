@@ -22,6 +22,7 @@ import AdsCarousel from '../../components/common/carousel/ads.carousel';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import Image from '../../components/common/image/image';
 import config from '../../../config';
 import common from '../../common/common';
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     color: color.vividBlue,
     fontWeight: 'bold',
     fontSize: 20,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   searchInput: {
     flex: 1,
@@ -79,18 +80,18 @@ const styles = StyleSheet.create({
   },
   dappName: {
     color: color.gray06,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 12,
   },
   dappDesc: {
     color: color.gray53,
     fontSize: 11,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   dappUrl: {
     color: color.grayAB,
     fontSize: 11,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   ads: {
     marginTop: 20,

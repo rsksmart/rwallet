@@ -1,5 +1,6 @@
 import { PARSE_SERVER_URL, RWALLET_API_KEY, RWALLET_ENV } from 'react-native-dotenv';
 import { isEmpty } from 'lodash';
+import fontFamily from './src/assets/styles/font.family';
 
 if (isEmpty(PARSE_SERVER_URL)) {
   throw new Error('PARSE_SERVER_URL needs to be defined in .env under the root.');
@@ -71,7 +72,7 @@ const config = {
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
-  defaultFontFamily: 'Roboto', // defaultFontFamily, for android
+  defaultFontFamily: fontFamily.Roboto, // defaultFontFamily, for android
   coinswitch: {
     // Put the initPair here because
     // 1. constrain the user to select the pair, which is only supported by coinswitch.

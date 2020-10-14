@@ -14,9 +14,9 @@ import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../../assets/styles/style';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
-// import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import { createErrorNotification } from '../../../common/notification.controller';
 
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   walletName: {
     color: color.black,
     fontSize: 14,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     letterSpacing: 0.27,
     marginTop: 10,
     marginBottom: 7,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   coinName: {
     color: color.black,
     fontSize: 16,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     letterSpacing: 0.4,
     flex: 1,
   },
@@ -69,14 +69,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balance: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 12,
     color: color.lynch,
     letterSpacing: 1,
   },
   headerTitle: {
     color: color.whiteA90,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     letterSpacing: 0.39,
   },

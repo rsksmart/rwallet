@@ -154,6 +154,9 @@
         "leaveToDisconnect": "Leave to disconnect?",
         "leaveToDisconnectDesc": "Leaving Wallet Connect page will disconnect RWallet from the current connected Dapp.",
         "leaveToDisconnectConfirm": "Are you sure to disconnect?",
+        "disconnectAlertTitle": "Wallet Connect is disconnected",
+        "disconnectAlertContent": "The Wallet Connect connection to the Dapp \"%{dappName}\" is closed. This may be because of weak network access, or the Dapp rejected the wallet directly for some reason.\n\nBy clicking the button below you will be returned to the wallet dashboard.",
+        "okGotIt": "Okay, got it",
         "error": "Error",
         "errorDesc": "Error! An error occurred, please try again later (there may be many reasons, such as network problems, user rejection, incorrect passcode, insufficient handling fee, etc.)",
         "tryAgain": "Try again",
@@ -515,9 +518,13 @@
       "title": "Please set a passcode",
       "body": "Passcode can protect your funds if this device is stolen or compromised by malicious software."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "Warning!",
-      "body": "Are you sure you want to delete all assets using this wallet?"
+      "body": "Are you sure you want to delete this wallet?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "Warning!",
+      "body": "Are you sure you want to delete this Read-only wallet?"
     },
     "swap": {
       "title": "No swappable coin",
@@ -589,6 +596,10 @@
     "httpIsNotAllowed": {
       "title": "URL no permitida para abrir",
       "body": "Para proteger a los usuarios de sitios web inseguros, el navegador RWallet solo permite URL con cifrado HTTPS. Asegúrese de que la URL ingresada comience con https: //"
+    },
+    "feeCalculationError": {
+      "title": "Fee calculation error",
+      "body": "An error occurred while calculating the cost. Please try again."
     }
   },
   "currency": {

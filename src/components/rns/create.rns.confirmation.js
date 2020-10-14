@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import space from '../../assets/styles/space';
 import Loc from '../common/misc/loc';
 import common from '../../common/common';
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     color: color.black,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -40,12 +41,12 @@ const styles = StyleSheet.create({
   subdomain: {
     fontSize: 16,
     color: color.black,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
   },
   address: {
     fontSize: 16,
     color: color.black,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 10,
   },
   subdomainRow: {
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.concrete,
     fontSize: 16,
   },
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     color: color.grayB1,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
   },
 });
 

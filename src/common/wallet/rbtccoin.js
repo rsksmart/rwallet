@@ -49,7 +49,7 @@ export default class RBTCCoin {
   constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
-    // metadata:{network, networkId, icon, defaultName}
+    // metadata:{network, networkId, icon, defaultName, coinType}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.chain = this.metadata.chain;
@@ -59,15 +59,15 @@ export default class RBTCCoin {
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.coinType = this.metadata.coinType;
+    this.path = `m/44'/${this.coinType}'/${this.account}'/0/0`;
     this.name = this.metadata.defaultName;
-    this.networkId = this.metadata.networkId;
   }
 
   derive(seed) {
     try {
       const master = RBTCCoin.generateMasterFromSeed(seed);
-      const accountNode = RBTCCoin.generateAccountNode(master, this.networkId, this.account);
+      const accountNode = RBTCCoin.generateAccountNode(master, this.coinType, this.account);
       const changeNode = RBTCCoin.generateChangeNode(accountNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(changeNode, 0);
       this.address = RBTCCoin.getAddress(addressNode, this.networkId);
@@ -107,9 +107,9 @@ export default class RBTCCoin {
     });
   }
 
-  static generateAccountNode(master, networkId, account) {
+  static generateAccountNode(master, tokenCoinType, account) {
     let node = deserializePrivate(master);
-    const path = `m/44'/${networkId}'/${account}'`;
+    const path = `m/44'/${tokenCoinType}'/${account}'`;
     node = node.derive(path);
     return new PathKeyPair(path, serializePublic(node));
   }
@@ -174,7 +174,8 @@ export default class RBTCCoin {
       symbol, type, path, address, objectId,
     } = json;
     const instance = new RBTCCoin(symbol, type, path);
-    instance.address = address;
+    // Convert old address to checksum address
+    instance.address = Rsk3.utils.checkAddressChecksum(address, instance.networkId) ? address : Rsk3.utils.toChecksumAddress(address, instance.networkId);
     instance.objectId = objectId;
     return instance;
   }

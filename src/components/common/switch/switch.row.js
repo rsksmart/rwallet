@@ -7,6 +7,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import PropTypes from 'prop-types';
 import Switch from './switch';
 import appActions from '../../../redux/app/actions';
+import fontFamily from '../../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   row: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
 });
 

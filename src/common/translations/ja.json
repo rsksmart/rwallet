@@ -154,6 +154,9 @@
         "leaveToDisconnect": "接続を解除しますか？",
         "leaveToDisconnectDesc": "Wallet Connectページを終了すると、RWalletが現在接続されているDappから切断されます。",
         "leaveToDisconnectConfirm": "切断しますか？",
+        "disconnectAlertTitle": "Wallet Connectが切断されました",
+        "disconnectAlertContent": "Dapp \"%{dappName}\"へのWalletConnect接続が閉じられます。 これは、ネットワークアクセスが弱いか、Dappが何らかの理由でウォレットを直接拒否したことが原因である可能性があります。\n\n下のボタンをクリックすると、ウォレットダッシュボードに戻ります。",
+        "okGotIt": "わかりました、わかりました",
         "error": "エラー",
         "errorDesc": "エラー！ エラーが発生しました。しばらくしてからもう一度お試しください（ネットワークの問題、ユーザーの拒否、パスコードの誤り、手数料の不足など、多くの理由が考えられます）",
         "tryAgain": "再試行",
@@ -515,9 +518,13 @@
       "title": "パスコードを設定してください",
       "body": "デバイスが悪意のあるソフトウェアによって盗まれたり侵害された場合に、パスコードによって資金を保護することができます。"
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "警告！",
-      "body": "このウォレットを使用しているすべての資産を削除してもよろしいですか？"
+      "body": "このウォレットを削除してもよろしいですか？"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "警告！",
+      "body": "この読み取り専用ウォレットを削除してもよろしいですか？"
     },
     "swap": {
       "title": "スワップ可能なコインはありません",
@@ -589,6 +596,10 @@
     "httpIsNotAllowed": {
       "title": "URLを開くことはできません",
       "body": "安全でないWebサイトからユーザーを保護するために、RWalletブラウザーはHTTPS暗号化のURLのみを許可します。 入力するURLがhttps://で始まることを確認してください"
+    },
+    "feeCalculationError": {
+      "title": "料金計算エラー",
+      "body": "コストの計算中にエラーが発生しました。もう一度やり直してください。"
     }
   },
   "currency": {

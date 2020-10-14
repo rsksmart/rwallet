@@ -10,6 +10,7 @@ import Header from '../../../components/headers/header';
 import BasePageGereral from '../../base/base.page.general';
 import Loc from '../../../components/common/misc/loc';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
 import { strings } from '../../../common/i18n';
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   rnsRow: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   address: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     color: color.black,
     fontSize: 16,
     flex: 1,
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subdomain: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     color: color.black,
     fontSize: 16,
   },

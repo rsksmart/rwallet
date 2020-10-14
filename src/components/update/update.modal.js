@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import space from '../../assets/styles/space';
 import notificationStyles from '../../assets/styles/notification.styles';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import Loc from '../common/misc/loc';
 
 const styles = StyleSheet.create({
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 12,
     marginBottom: 11,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   buttonLeftLine: {
     borderLeftWidth: StyleSheet.hairlineWidth,

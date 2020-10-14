@@ -14,6 +14,7 @@ import { strings } from '../../common/i18n';
 import { createDappWarningConfirmation } from '../../common/confirmation.controller';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import config from '../../../config';
 import common from '../../common/common';
 
@@ -38,18 +39,18 @@ const styles = StyleSheet.create({
   },
   dappName: {
     color: color.gray06,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 18,
   },
   dappDesc: {
     color: color.gray53,
     fontSize: 11,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   dappUrl: {
     color: color.grayAB,
     fontSize: 12,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
 });
 

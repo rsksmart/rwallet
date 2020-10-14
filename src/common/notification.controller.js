@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { defaultErrorNotification } from './constants';
-import ERROR_CODE from './errors';
+import { ERROR_CODE } from './error';
 import { strings } from './i18n';
 
 export const errorNotifications = {
@@ -35,6 +35,10 @@ export const errorNotifications = {
   [ERROR_CODE.ERR_EXCEED_RNS_QUOTA]: {
     title: 'modal.rnsExceeded.title',
     body: 'modal.rnsExceeded.body',
+  },
+  [ERROR_CODE.ERR_FEE_CALCULATION]: {
+    title: 'modal.feeCalculationError.title',
+    body: 'modal.feeCalculationError.body',
   },
 };
 

@@ -23,11 +23,12 @@ export default class Coin {
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.coinType = this.metadata.coinType;
+    this.path = `m/44'/${this.coinType}'/${this.account}'/0/0`;
   }
 
   deriveSegwit= (root, network) => {
-    const path = `m/84'/${this.networkId}'/${this.account}'/0/0`;
+    const path = `m/84'/${this.coinType}'/${this.account}'/0/0`;
     const keyPair = root.derivePath(path);
     const { address } = payments.p2wpkh({ pubkey: keyPair.publicKey, network });
     return {
@@ -38,7 +39,7 @@ export default class Coin {
   }
 
   deriveLegacy = (root, network) => {
-    const path = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    const path = `m/44'/${this.coinType}'/${this.account}'/0/0`;
     const keyPair = root.derivePath(path);
     const { address } = payments.p2pkh({ pubkey: keyPair.publicKey, network });
     return {

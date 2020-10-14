@@ -101,16 +101,15 @@ class Transaction extends Component {
   });
 
   static processViewData(transaction, latestBlockHeights) {
-    const { rawTransaction } = transaction;
     const {
-      chain, symbol, type, value, blockHeight, hash, memo, from, to,
-    } = rawTransaction;
+      chain, symbol, type, value, blockHeight, hash, memo, from, to, dateTime, statusText,
+    } = transaction;
     let amountText = null;
-    if (!_.isNil(rawTransaction.value)) {
+    if (!_.isNil(value)) {
       const amount = common.convertUnitToCoinAmount(symbol, value);
       amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
     }
-    const dateTimeText = rawTransaction.dateTime ? rawTransaction.dateTime.format('LLL') : '';
+    const dateTimeText = dateTime ? dateTime.format('LLL') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
     if (transaction.state === 'Sent' || transaction.state === 'Received') {
       let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, chain, type);
@@ -120,14 +119,14 @@ class Transaction extends Component {
       confirmations = confirmations >= 6 ? '6+' : confirmations;
     }
     return {
-      transactionState: transaction.state,
+      transactionState: statusText,
       transactionId: hash,
       amount: amountText,
-      stateIcon: stateIcons[transaction.state],
+      stateIcon: stateIcons[statusText],
       dateTime: dateTimeText,
       confirmations,
       memo: memo || strings('page.wallet.transaction.noMemo'),
-      title: `${transaction.state} Funds`,
+      title: `${statusText} Funds`,
       isRefreshing: false,
       from,
       to,
@@ -159,8 +158,8 @@ class Transaction extends Component {
   onLinkPress() {
     const { navigation } = this.props;
     const transaction = navigation.state.params;
-    const { rawTransaction } = transaction;
-    const url = common.getTransactionUrl(rawTransaction.symbol, rawTransaction.type, rawTransaction.hash);
+    const { symbol, type, hash } = transaction;
+    const url = common.getTransactionUrl(symbol, type, hash);
     Linking.openURL(url);
   }
 

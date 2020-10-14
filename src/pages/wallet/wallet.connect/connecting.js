@@ -11,6 +11,7 @@ import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import { createInfoNotification } from '../../../common/notification.controller';
+import fontFamily from '../../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   body: {
@@ -29,22 +30,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   dappUrl: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 6,
   },
   title: {
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   content: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     color: color.mineShaft,
     fontSize: 15,
     marginTop: 8,
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   rejectText: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     fontWeight: 'bold',
     color: color.vividBlue,
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.vividBlue,
   },
   allowText: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     fontWeight: 'bold',
     color: color.white,

@@ -5,16 +5,17 @@ import {
 import PropTypes from 'prop-types';
 import Loc from '../misc/loc';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import space from '../../../assets/styles/space';
 
 const styles = StyleSheet.create({
   title: {
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     color: color.app.theme,
     fontSize: 20,
   },
   text: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     color: color.black,
     fontSize: 17,
   },
@@ -50,10 +51,10 @@ const styles = StyleSheet.create({
   confirmText: {
     color: color.white,
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   cancelText: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     color: color.nobel,
     fontSize: 16,
   },

@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 import Loc from '../common/misc/loc';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   card: {
@@ -26,11 +27,11 @@ const styles = StyleSheet.create({
   cardTitleText: {
     color: color.component.word,
     fontSize: 18,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
   },
   cardButtonText: {
     color: color.vividBlue,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 14,
   },
   row: {
