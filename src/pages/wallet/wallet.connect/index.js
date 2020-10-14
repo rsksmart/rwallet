@@ -20,7 +20,7 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
 import { NETWORK } from '../../../common/constants';
@@ -28,6 +28,7 @@ import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 
 const { MAINNET } = NETWORK;
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   loadingFont: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 6,
     alignSelf: 'center',
   },
@@ -59,22 +60,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   dappUrl: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 6,
   },
   title: {
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   content: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     color: color.mineShaft,
     fontSize: 15,
     marginTop: 8,
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   rejectText: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     fontWeight: 'bold',
     color: color.vividBlue,
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.vividBlue,
   },
   allowText: {
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     fontWeight: 'bold',
     color: color.white,
@@ -267,7 +268,7 @@ class WalletConnectPage extends Component {
   subscribeToEvents = () => {
     console.log('ACTION', 'subscribeToEvents');
     const { connector, selectedWallet } = this.state;
-    const { navigation } = this.props;
+    const { navigation, addNotification } = this.props;
 
     if (connector) {
       connector.on('session_request', async (error, payload) => {
@@ -327,7 +328,14 @@ class WalletConnectPage extends Component {
           throw error;
         }
 
-        navigation.goBack();
+        const { peerMeta } = this.state;
+        const notification = createInfoNotification(
+          'page.wallet.walletconnect.disconnectAlertTitle',
+          strings('page.wallet.walletconnect.disconnectAlertContent', { dappName: (peerMeta && peerMeta.name) || '' }),
+          'page.wallet.walletconnect.okGotIt',
+          () => navigation.goBack(),
+        );
+        addNotification(notification);
       });
 
       this.setState({ connector });
@@ -417,15 +425,11 @@ class WalletConnectPage extends Component {
   };
 
   popupDisconnectModal = async () => {
-    const { navigation } = this.props;
     this.setState({
       modalView: <DisconnectModal
         confirmPress={() => {
           this.closeModalPress();
           this.killSession();
-          setTimeout(() => {
-            navigation.goBack();
-          }, 500);
         }}
         cancelPress={this.closeModalPress}
       />,

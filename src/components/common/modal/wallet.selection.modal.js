@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import common from '../../../common/common';
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     marginBottom: 36,
     alignSelf: 'center',
     fontSize: 17,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
   },
   line: {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noWalletText: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 16,
     color: color.black,
   },
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   },
   confirmBtnFont: {
     color: color.concrete,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   cancelBtnView: {
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   cancelBtnFont: {
     color: color.grayB1,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
   },
   separator: {
@@ -136,18 +137,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   network: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 10,
     color: color.white,
   },
   address: {
     color: color.blackA80,
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginLeft: 11,
   },
   tokenText: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     color: color.component.word,
     fontSize: 13,
   },

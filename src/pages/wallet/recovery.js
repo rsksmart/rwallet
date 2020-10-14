@@ -14,6 +14,7 @@ import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 14,
     color: color.black,
     marginBottom: 10,
@@ -108,11 +109,11 @@ const styles = StyleSheet.create({
     minWidth: 27,
   },
   switchLabel: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   selectionModalTitle: {
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
     marginVertical: 10,
   },
@@ -123,16 +124,16 @@ const styles = StyleSheet.create({
   },
   phraseTitle: {
     marginBottom: 14,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
   },
   fieldLabel: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     marginBottom: 5,
   },
   fieldText: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
   },
 });

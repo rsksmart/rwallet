@@ -39,7 +39,7 @@
         "Received Funds": "Fundos recebidos",
         "Sending Funds": "Enviando fundos",
         "Receiving Funds": "Recebendo fundos",
-        "Failed Funds": "Fundos falidos",
+        "Failed Funds": "Falha no envio",
         "date": "Data",
         "confirmations": "Confirmações",
         "memo": "Anotação",
@@ -75,7 +75,7 @@
         "importWallet": "Importar carteira existente",
         "importWalletNote": "Restaure sua carteira usando a frase de recuperação",
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
-        "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto"
+        "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
@@ -155,6 +155,9 @@
         "leaveToDisconnect": "Sair para desconectar?",
         "leaveToDisconnectDesc": "Sair da página Wallet Connect irá fazer com que a RWallet se desconecte do Dapp atualmente conectado.",
         "leaveToDisconnectConfirm": "Você tem certeza que deseja desconectar?",
+        "disconnectAlertTitle": "Wallet Connect desconectada",
+        "disconnectAlertContent": "A conexão Wallet Connect com o Dapp \"%{dappName}\" está fechada.Isto pode ser por causa de fraco acesso à rede, ou o Dapp rejeitou a carteira diretamente por alguma razão.\n\nAo clicar no botão embaixo você será retornado ao painel de carteira.",
+        "okGotIt": "Ok, entendi",
         "error": "Erro",
         "errorDesc": "Erro!Aconteceu um erro, por favor tente novamente mais tarde (pode haver muitas razões, como problemas de rede, rejeição do usuário, código de senha incorreto, taxa insuficiente, etc.)",
         "tryAgain": "Tente novamente",
@@ -524,9 +527,13 @@
       "title": "Configure um PIN",
       "body": "O PIN pode proteger seus fundos se este dispositivo for roubado ou comprometido por software malicioso."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "Atenção!",
-      "body": "Tem certeza de que deseja excluir todos os ativos dessa carteira?"
+      "body": "Tem certeza de que deseja excluir esta carteira?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "Atenção!",
+      "body": "Tem certeza de que deseja excluir esta carteira somente leitura?"
     },
     "swap": {
       "title": "Nenhuma moeda para troca",
@@ -597,7 +604,11 @@
     },
     "httpIsNotAllowed": {
       "title": "URL não permitida",
-      "body": "Para proteger os usuários de sites web inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
+      "body": "Para proteger os usuários de sites inseguros, o navegador da RWallet permite apenas URLs HTTPS. Por favor, verifique se a URL inserida começa com https://"
+    },
+    "feeCalculationError": {
+      "title": "Erro de cálculo de taxa",
+      "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
     }
   },
   "currency": {

@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
-
 
 const styles = StyleSheet.create({
   headerView: {
@@ -137,11 +137,11 @@ const styles = StyleSheet.create({
   radioItemTitle: {
     color: color.black,
     fontSize: 16,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     marginBottom: 1,
   },
   radioItemTitleSelected: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   radioItemText: {
     marginTop: 2,

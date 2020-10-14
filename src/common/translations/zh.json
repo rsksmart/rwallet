@@ -155,6 +155,9 @@
         "leaveToDisconnect": "要断开连接吗？",
         "leaveToDisconnectDesc": "离开Wallet Connect页面会将RWallet与当前连接的Dapp断开连接。",
         "leaveToDisconnectConfirm": "您确定要断开连接吗？",
+        "disconnectAlertTitle": "Wallet Connect已经断开连接",
+        "disconnectAlertContent": "与Dapp\"%{dappName}\"的电子钱包连接已关闭。这可能是由于网络访问不畅，或者Dapp由于某种原因直接拒绝了钱包。\n\n通过单击下面的按钮，您将返回到钱包首页。",
+        "okGotIt": "好，知道了",
         "error": "错误",
         "errorDesc": "错误！发生错误，请稍后重试（可能有很多原因，例如网络问题，用户拒绝，密码错误，手续费不足等）",
         "tryAgain": "再试一次",
@@ -511,9 +514,13 @@
       "title": "请设置一个密码",
       "body": "如果此设备被恶意软件窃取或破坏，密码可以保护您的资金。"
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "警告!",
-      "body": "您确定要删除此钱包中的所有资产吗？"
+      "body": "您确定想要删除这个钱包吗？"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "警告!",
+      "body": "您确定想要删除这个只读钱包吗？"
     },
     "swap": {
       "title": "没有可交换币",
@@ -585,6 +592,10 @@
     "httpIsNotAllowed": {
       "title": "不允许打开的URL",
       "body": "为了保护用户免受不安全网站的侵害，RWallet浏览器仅允许使用HTTPS加密的URL。请确保输入的URL以https://开头。"
+    },
+    "feeCalculationError": {
+      "title": "费用计算错误",
+      "body": "计算费用时发生了错误，请重试。"
     }
   },
   "currency": {

@@ -9,6 +9,7 @@ import SwapHeader, { headerVisibleHeight } from '../../components/headers/header
 import common from '../../common/common';
 import BasePageSimple from '../base/base.page.simple';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import CompletedIcon from '../../components/common/image/completed.icon';
 import Button from '../../components/common/button/button';
 import operationSuccessStyles from '../../assets/styles/operation.success.style';
@@ -39,18 +40,18 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 17,
   },
   text: {
     color: color.tundora,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     marginTop: 15,
   },
   link: {
     color: color.app.theme,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     marginTop: 15,
   },

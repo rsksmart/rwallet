@@ -16,7 +16,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import common from '../../common/common';
 import HistoryHeader from '../../components/headers/header.history';
 import BasePageSimple from '../base/base.page.simple';
-import { WalletType, TxStatus } from '../../common/constants';
+import { WalletType } from '../../common/constants';
 import screenHelper from '../../common/screenHelper';
 import flex from '../../assets/styles/layout.flex';
 import walletActions from '../../redux/wallet/actions';
@@ -24,6 +24,7 @@ import appActions from '../../redux/app/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
 
@@ -81,11 +82,11 @@ const styles = StyleSheet.create({
   },
   myAssetsText: {
     color: color.black,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
   },
   assetsValue: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 15,
     letterSpacing: 0.94,
     marginTop: 4,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   },
   sending: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 15,
     letterSpacing: 0.94,
     marginLeft: 5,
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   },
   sendText: {
     color: color.shipCove,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -129,14 +130,14 @@ const styles = StyleSheet.create({
   },
   receiveText: {
     color: color.mantis,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   NameText: {
     color: color.nevada,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -174,20 +175,20 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     letterSpacing: 0.33,
   },
   amount: {
     color: color.black,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     letterSpacing: 1,
     alignSelf: 'flex-end',
   },
   datetime: {
     color: color.gray93,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 12,
     letterSpacing: 0,
     alignSelf: 'flex-end',
@@ -303,17 +304,8 @@ class History extends Component {
     _.each(rawTransactions, (transaction) => {
       let amountText = ' ';
       let amount = null;
-      const isSender = address === transaction.from;
-      let state = 'Failed';
-      switch (transaction.status) {
-        case TxStatus.PENDING:
-          state = isSender ? 'Sending' : 'Receiving';
-          break;
-        case TxStatus.SUCCESS:
-          state = isSender ? 'Sent' : 'Received';
-          break;
-        default:
-      }
+      const { statusText } = transaction;
+
       const datetime = transaction.dateTime;
       let datetimeText = '';
       if (datetime) {
@@ -330,12 +322,12 @@ class History extends Component {
         amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
       }
       transactions.push({
-        state,
+        state: statusText,
         datetimeText,
         amountText,
         rawTransaction: transaction,
       });
-      if (state === 'Receiving' && !_.isNull(amount)) {
+      if (statusText === 'Receiving' && !_.isNull(amount)) {
         pendingBalance = pendingBalance.plus(amount);
       }
     });
@@ -501,7 +493,7 @@ class History extends Component {
     const { listData } = this.state;
     const { navigation } = this.props;
     const item = listData[index];
-    navigation.navigate('Transaction', item);
+    navigation.navigate('Transaction', item.rawTransaction);
   }
 
   loadMoreData = () => {

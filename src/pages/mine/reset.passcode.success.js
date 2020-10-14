@@ -11,6 +11,7 @@ import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
 import operationSuccessStyles from '../../assets/styles/operation.success.style';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import CompletedIcon from '../../components/common/image/completed.icon';
 
 const screenWidth = Dimensions.get('window').width;
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: screenWidth > 400 ? 24 : 22,
     color: color.black,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     textAlign: 'center',
   },
 });

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import { strings } from '../../../../common/i18n';
 import color from '../../../../assets/styles/color';
+import fontFamily from '../../../../assets/styles/font.family';
 import { WALLET_CONNECT } from '../../../../common/constants';
 
 const { MODAL_TYPE } = WALLET_CONNECT;
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   title: {
     color: color.black,
     fontSize: 17,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirHeavy,
     fontWeight: 'bold',
     alignSelf: 'center',
   },
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     color: color.black,
     fontSize: 15,
     lineHeight: 22,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 28,
   },
   confirmBtnView: {
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   },
   confirmBtnFont: {
     color: color.concrete,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   cancelBtnView: {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   },
   cancelBtnFont: {
     color: color.grayB1,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
   },
 });
