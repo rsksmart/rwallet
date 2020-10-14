@@ -14,6 +14,7 @@ import BasePageGereral from '../../base/base.page.general';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import space from '../../../assets/styles/space';
 import Button from '../../../components/common/button/button';
 import AddressSelectionModal from '../../../components/common/modal/address.selection.modal';
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   },
   subdomainInput: {
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     flex: 1,
     marginRight: 10,
   },
@@ -115,12 +116,12 @@ const styles = StyleSheet.create({
   },
   rnsRowBalance: {
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginRight: 7,
   },
   rnsRowAddress: {
     fontSize: 16,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginRight: 7,
     color: color.gray97,
     flex: 1,

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   body: {
@@ -25,22 +26,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   dappUrl: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 6,
   },
   title: {
     color: color.black,
     fontWeight: 'bold',
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   content: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     color: color.mineShaft,
     fontSize: 15,
     marginTop: 8,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   rejectText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     fontWeight: 'bold',
     color: color.vividBlue,

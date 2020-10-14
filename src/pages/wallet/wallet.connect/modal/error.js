@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import { strings } from '../../../../common/i18n';
 import color from '../../../../assets/styles/color';
+import fontFamily from '../../../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   row: {
@@ -19,14 +20,14 @@ const styles = StyleSheet.create({
   title: {
     color: color.black,
     fontSize: 17,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontWeight: 'bold',
     alignSelf: 'center',
   },
   description: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     marginTop: 28,
   },
   tryAgainBtnView: {
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   },
   tryAgainBtnFont: {
     color: color.concrete,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
   },
   tryLaterBtnView: {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
   },
   tryLaterBtnFont: {
     color: color.grayB1,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
   },
 });

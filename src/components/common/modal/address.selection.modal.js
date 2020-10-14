@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import Loc from '../misc/loc';
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
     marginVertical: 14,
   },

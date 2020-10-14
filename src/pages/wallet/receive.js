@@ -15,6 +15,7 @@ import Header from '../../components/headers/header';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import { DEVICE } from '../../common/info';
 import flex from '../../assets/styles/layout.flex';
 import references from '../../assets/references';
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     marginLeft: 18,
   },
   subdomainText: {
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 17,
   },
   addressView: {
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   },
   addressText: {
     color: color.app.theme,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 16,
     textAlign: 'center',
     flex: 1,

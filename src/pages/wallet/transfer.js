@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
 import Rsk3 from '@rsksmart/rsk3';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import RadioGroup from './transfer.radio.group';
 import Loc from '../../components/common/misc/loc';
 import Switch from '../../components/common/switch/switch';
@@ -39,7 +40,7 @@ const MEMO_LINE_HEIGHT = 15;
 const styles = StyleSheet.create({
   headerTitle: {
     color: color.whiteA90,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     marginLeft: -2,
     marginBottom: 2,
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balance: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     color: color.midGrey,
     marginTop: 12,
     marginBottom: 5,

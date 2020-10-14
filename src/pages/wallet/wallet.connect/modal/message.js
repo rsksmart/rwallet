@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
+import fontFamily from '../../../../assets/styles/font.family';
 import { WALLET_CONNECT } from '../../../../common/constants';
 
 const { MODAL_TYPE } = WALLET_CONNECT;
@@ -18,12 +19,12 @@ const styles = StyleSheet.create({
   lineTitle: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   lineValue: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     width: '60%',
     textAlign: 'right',
   },
