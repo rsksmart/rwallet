@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import operationSuccessStyles from '../../assets/styles/operation.success.style';
 import Button from '../../components/common/button/button';
 import BasePageSimple from '../base/base.page.simple';
@@ -13,13 +14,13 @@ import CompletedIcon from '../../components/common/image/completed.icon';
 const styles = StyleSheet.create({
   title: {
     fontSize: 17,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
   },
   text: {
     color: color.tundora,
     fontSize: 15,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     width: '80%',
     marginTop: 10,
     textAlign: 'center',

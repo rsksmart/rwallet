@@ -14,6 +14,7 @@ import common from '../../../common/common';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import { WalletType } from '../../../common/constants';
 
 const styles = StyleSheet.create({
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: color.whiteA90,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   },
   myAssetsText: {
     color: color.black,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 35,
   },
   myAssetsButtonsView: {
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   },
   sendText: {
     color: color.shipCove,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -103,14 +104,14 @@ const styles = StyleSheet.create({
   },
   receiveText: {
     color: color.mantis,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   swapText: {
     color: color.nevada,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   },
   addWalletText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 12,
     marginTop: 10,
     marginBottom: 15,
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     backgroundColor: color.whiteA90,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
   },
 });
 

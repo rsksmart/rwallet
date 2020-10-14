@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import screenHelper from '../../common/screenHelper';
 import color from './color';
+import fontFamily from './font.family';
 
 const headerHeight = 100 + screenHelper.topHeight;
 
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: color.whiteA90,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 15,
     letterSpacing: 0.39,
     marginLeft: 9,

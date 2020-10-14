@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import flex from '../../assets/styles/layout.flex';
 import presetStyles from '../../assets/styles/style';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import screenHelper from '../../common/screenHelper';
 
 const rsk = require('../../assets/images/mine/page.footing.logo.png');
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   },
   powerby: {
     color: color.midGrey,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 17,
     fontWeight: '500',
     marginTop: 5,

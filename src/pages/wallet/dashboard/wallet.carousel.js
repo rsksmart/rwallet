@@ -10,6 +10,7 @@ import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   },
   addWalletText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 12,
     marginTop: 10,
   },

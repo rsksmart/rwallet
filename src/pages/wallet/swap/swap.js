@@ -12,6 +12,7 @@ import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
 import space from '../../../assets/styles/space';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import presetStyles from '../../../assets/styles/style';
 import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   boardTokenName: {
     fontSize: 25,
     color: color.component.swipableButtonList.title.color,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     letterSpacing: 0.4,
   },
   boardText: {
@@ -148,18 +149,18 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: color.black,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 27,
   },
   boardAmount: {
     color: color.black,
     fontSize: 27,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     letterSpacing: 0.4,
     flex: 1,
   },
   boardValue: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   switchView: {
     height: 40,
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   switchText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 14,
   },
   switchTextActived: {

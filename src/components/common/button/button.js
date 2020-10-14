@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
 
 const styles = StyleSheet.create({
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: color.component.button.color,
     fontSize: 16,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontWeight: '900',
   },
   cancelButton: {

@@ -9,9 +9,9 @@ import _ from 'lodash';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
-// import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 17,
     alignSelf: 'center',
   },
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   rowTitle: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     flex: 1,
   },
@@ -54,12 +54,12 @@ const styles = StyleSheet.create({
   },
   symbol: {
     color: color.greenVogue,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 20,
     letterSpacing: 0.5,
   },
   rowText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     letterSpacing: 1,
   },

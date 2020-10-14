@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native';
 import color from './color';
+import fontFamily from './font.family';
 
 const styles = StyleSheet.create({
   title: {
     color: color.black,
     fontSize: 15,
     letterSpacing: 0.25,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     marginRight: 7,
   },
   titleRow: {
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
   },
   addressText: {
     color: color.vividBlue,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 14,
   },
   chainType: {
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: color.cinnabar,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 14,
   },
   addressInput: {
