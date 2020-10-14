@@ -485,6 +485,18 @@ class ParseHelper {
     console.log('getBalance, result: ', result);
     return result;
   }
+
+  static async updateTokenBalance(tokens) {
+    const params = {
+      tokenList: tokens,
+    };
+    const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
+    const addresses = _.map(addressObjects, (addressObject) => {
+      const token = parseDataUtil.getToken(addressObject);
+      return token;
+    });
+    return addresses;
+  }
 }
 
 // Create parse helper proxy to add global error handling

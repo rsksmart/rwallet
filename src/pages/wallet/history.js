@@ -441,11 +441,14 @@ class History extends Component {
 
   onRefresh = () => {
     const { isRefreshing, isLoadMore } = this.state;
+    const { updateTokenBalance } = this.props;
     if (isRefreshing || isLoadMore) {
       return;
     }
     this.setState({ isRefreshing: true });
     this.fetchTokenTransactions(0);
+
+    updateTokenBalance([this.coin]);
   }
 
   onSendButtonClick() {
@@ -663,6 +666,7 @@ History.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
   txTimestamp: PropTypes.number,
   addNotification: PropTypes.func.isRequired,
+  updateTokenBalance: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -680,8 +684,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
+  updateTokenBalance: (tokens) => dispatch(walletActions.updateTokenBalance(tokens)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
