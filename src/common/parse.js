@@ -491,11 +491,7 @@ class ParseHelper {
       tokenList: tokens,
     };
     const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
-    const addresses = _.map(addressObjects, (addressObject) => {
-      const token = parseDataUtil.getToken(addressObject);
-      return token;
-    });
-    return addresses;
+    return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
   }
 }
 
