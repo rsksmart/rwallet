@@ -211,10 +211,10 @@ class WalletPage extends Component {
   }
 
   onRefresh = () => {
-    console.log('onRefresh!!!!!!!!!!!!');
     const { walletData } = this.props;
     const { wallet: { coins } } = walletData;
     const { updateTokenBalance } = this.props;
+    // # Issue 525 - Force refresh wallet balance when user scroll down to trigger balance loading effect
     updateTokenBalance(coins);
     this.setState({ isRefreshing: true });
     setTimeout(() => {

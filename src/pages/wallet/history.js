@@ -448,6 +448,7 @@ class History extends Component {
     this.setState({ isRefreshing: true });
     this.fetchTokenTransactions(0);
 
+    // # Issue 525 - Force refresh wallet balance when user scroll down to trigger balance loading effect
     updateTokenBalance([this.coin]);
   }
 
