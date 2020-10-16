@@ -607,7 +607,9 @@ class Transfer extends Component {
       });
 
       const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
-      const invalidAddressModalBody = ethereumChecksumAddress === toAddress ? strings('modal.invalidRskAddress.body.ethereum', { explorerName }) : strings('modal.invalidRskAddress.body.normal', { explorerName });
+      const invalidAddressModalBody = ethereumChecksumAddress === toAddress
+        ? strings('modal.invalidRskAddress.body.ethereum', { explorerName })
+        : strings('modal.invalidRskAddress.body.normal', { explorerName });
       const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
 
       this.setState({
@@ -621,7 +623,7 @@ class Transfer extends Component {
       return null;
     }
 
-    const isHasBalance = this.validateAddressBalance();
+    const isHasBalance = await this.validateAddressBalance();
     if (isHasBalance) {
       return null;
     }
