@@ -593,6 +593,26 @@
     "feeCalculationError": {
       "title": "Fee calculation error",
       "body": "An error occurred while calculating the cost. Please try again."
+    },
+    "invalidRskAddress": {
+      "title": "Invalid Rsk Address",
+      "body": {
+        "normal": "The entered recipient address is an invalid rsk address. Please make sure the recipient address is valid Rsk address, and verify it on %{explorerName} before sending.",
+        "ethereum": "The entered recipient address seems to be an Ethereum address. This is a known bug for copied value from Metamask. Please make sure the recipient address is valid Rsk address, and verify it on %{explorerName} before sending."
+      },
+      "question": "Why are you seeing this message?",
+      "confirm": "Ok, send away",
+      "cancel": "Go back and re-enter",
+      "asset": "Asset",
+      "address": "Address",
+      "balance": "Balance"
+    },
+    "emptyRecordAddress": {
+      "title": "Empty record recipient address",
+      "body": {
+        "normal": "The entered recipient address has no record in %{explorerName}, and has %{balance} %{otherSymbolName} on RSK %{otherType} network. Are you sure about sending %{amount} %{symbolName} to the address on RSK %{type}?",
+        "both": "The entered recipient address has no record in %{explorerName}. Are you sure about sending %{amount} %{symbolName} to the address on RSK %{type}?"
+      }
     }
   },
   "currency": {
