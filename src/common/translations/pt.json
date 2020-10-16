@@ -594,6 +594,26 @@
     "feeCalculationError": {
       "title": "Erro de cálculo de taxa",
       "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
+    },
+    "invalidRskAddress": {
+      "title": "Endereço RSK inválido",
+      "body": {
+        "normal": "O endereço do destinatário inserido é um endereço RSK inválido. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o no %{explorerName} antes de enviar.",
+        "ethereum": "O endereço do destinatário inserido parece ser um endereço Ethereum. Este é um bug conhecido para valores copiados do Metamask. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o no %{explorerName} antes de enviar."
+      },
+      "question": "Por que você está vendo esta mensagem?",
+      "confirm": "Ok, envie assim mesmo",
+      "cancel": "Volte e entre novamente",
+      "asset": "De ativos",
+      "address": "Endereço",
+      "balance": "Saldo"
+    },
+    "emptyRecordAddress": {
+      "title": "Endereço de destinatário de registro vazio",
+      "body": {
+        "normal": "O endereço do destinatário inserido não tem registro em %{explorerName} e tem %{balance} %{otherSymbolName} na rede RSK ooo. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço em RSK %{type}?",
+        "both": "O endereço do destinatário inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço em RSK %{type}?"
+      }
     }
   },
   "currency": {

@@ -593,6 +593,26 @@
     "feeCalculationError": {
       "title": "料金計算エラー",
       "body": "コストの計算中にエラーが発生しました。もう一度やり直してください。"
+    },
+    "invalidRskAddress": {
+      "title": "無効なRSKアドレス",
+      "body": {
+        "normal": "入力された受信者アドレスは無効なRSKアドレスです。受信者のアドレスが有効なRSKアドレスであることを確認し、送信する前に%{explorerName}で確認してください。",
+        "ethereum": "入力された受信者アドレスはイーサリアムアドレスのようです。これは、メタマスクからコピーされた値の既知のバグです。受信者のアドレスが有効なRSKアドレスであることを確認し、送信する前に%{explorerName}で確認してください。"
+      },
+      "question": "なぜこのメッセージが表示されるのですか？",
+      "confirm": "とにかく送信します",
+      "cancel": "戻って再入場",
+      "asset": "資産",
+      "address": "住所",
+      "balance": "残高"
+    },
+    "emptyRecordAddress": {
+      "title": "空のレコード受信者アドレス",
+      "body": {
+        "normal": "入力された受信者アドレスは、%{explorerName}にレコードがなく、RSK%{otherType}ネットワーク上に%{balance}%{otherSymbolName}があります。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？",
+        "both": "入力された受信者アドレスは、%{explorerName}にレコードがありません。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？"
+      }
     }
   },
   "currency": {

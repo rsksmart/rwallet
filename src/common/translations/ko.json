@@ -593,6 +593,26 @@
     "feeCalculationError": {
       "title": "수수료 계산 오류",
       "body": "비용을 계산하는 중에 오류가 발생했습니다. 다시 시도하십시오."
+    },
+    "invalidRskAddress": {
+      "title": "잘못된 RSK 주소",
+      "body": {
+        "normal": "입력 한 수신자 주소는 잘못된 RSK 주소입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오.",
+        "ethereum": "입력 한 수신자 주소가 이더 리움 주소 인 것 같습니다. 이것은 Metamask에서 복사 된 값에 대한 알려진 버그입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오."
+      },
+      "question": "이 메시지가 표시되는 이유는 무엇입니까?",
+      "confirm": "알겠습니다.",
+      "cancel": "돌아가서 다시 입력",
+      "asset": "유산",
+      "address": "주소",
+      "balance": "밸런스"
+    },
+    "emptyRecordAddress": {
+      "title": "레코드 수신자 주소가 비어 있습니다.",
+      "body": {
+        "normal": "입력 한 수신자 주소는 %{explorerName}에 레코드가 없으며 RSK %{otherType} 네트워크에 %{balance} %{otherSymbolName}이 있습니다. %{amount} %{symbolName}을 RSK %{type}의 주소로 보내시겠습니까?",
+        "both": "The entered recipient address has no record in %{explorerName}. Are you sure about sending %{amount} %{symbolName} to the address on RSK %{type}?"
+      }
     }
   },
   "currency": {

@@ -596,6 +596,26 @@
     "feeCalculationError": {
       "title": "费用计算错误",
       "body": "计算费用时发生了错误，请重试。"
+    },
+    "invalidRskAddress": {
+      "title": "无效的RSK地址",
+      "body": {
+        "normal": "输入的接收者地址是无效的RSK地址。请确保接收者地址是有效的RSK地址，并在发送前在％{explorerName}上进行验证。",
+        "ethereum": "输入的接收者地址似乎是一个以太坊地址。这是从Metamask复制值的已知错误。请确保接收者地址是有效的RSK地址，并在发送前在％{explorerName}上进行验证。"
+      },
+      "question": "为什么会看到此消息？",
+      "confirm": "好的，仍然发送",
+      "cancel": "返回并重新输入",
+      "asset": "资产",
+      "address": "地址",
+      "balance": "余额"
+    },
+    "emptyRecordAddress": {
+      "title": "空记录的接收者地址",
+      "body": {
+        "normal": "输入的接收者地址在％{explorerName}中没有记录，并且在RSK％{otherType}网络上具有％{balance}％{otherSymbolName}。您确定要将％{amount}％{symbolName}发送到RSK％{type}上的地址吗？",
+        "both": "输入的接收者地址在％{explorerName}中没有记录。您确定要将％{amount}％{symbolName}发送到RSK％{type}上的地址吗？"
+      }
     }
   },
   "currency": {

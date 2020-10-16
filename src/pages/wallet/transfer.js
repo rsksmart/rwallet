@@ -501,8 +501,6 @@ class Transfer extends Component {
         }
 
         address = checksumAddress;
-      } else {
-        address = toAddress;
       }
 
       if (!common.isWalletAddress(address, symbol, type)) {
