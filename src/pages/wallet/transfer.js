@@ -421,86 +421,12 @@ class Transfer extends Component {
   }
 
   onConfirmPressed = async () => {
-    const { symbol, type, networkId } = this.coin;
+    const { symbol, type } = this.coin;
     const { toAddress } = this;
-    const { amount } = this.state;
-    const { addNotification } = this.props;
-    const explorerName = common.getExplorerName(type);
     try {
-    // This app use checksum address with chainId, but some third-party app use web3 address,
-    // so we need to convert input address to checksum address with chainId before validation and transfer
-    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
-    // let checksumAddress = toAddress;
-      let address = toAddress;
-      if (symbol !== 'BTC') {
-        const checksumAddress = common.toChecksumAddress(toAddress, networkId);
-        if (checksumAddress !== toAddress) {
-          const ethereumChecksumAddress = common.toChecksumAddress(toAddress);
-
-          this.setState({ loading: true });
-
-          const balance = await parseHelper.getBalance({
-            type, symbol, address: toAddress, needFetch: false,
-          });
-
-          const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
-          const invalidAddressModalBody = ethereumChecksumAddress === toAddress ? strings('modal.invalidRskAddress.body.ethereum', { explorerName }) : strings('modal.invalidRskAddress.body.normal', { explorerName });
-          const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
-
-          this.setState({
-            loading: false,
-            invalidAddressBalance,
-            invalidAddressModalTitle,
-            invalidAddressModalBody,
-            invalidAddressModalVisible: true,
-          });
-
-          return;
-        }
-
-        this.setState({ loading: true });
-
-        const mainnetBalance = await parseHelper.getBalance({
-          type: 'Mainnet', symbol, address: toAddress, needFetch: false,
-        });
-
-        const testnetBalance = await parseHelper.getBalance({
-          type: 'Testnet', symbol, address: toAddress, needFetch: false,
-        });
-
-        const addressBalance = type === 'Mainnet' ? mainnetBalance : testnetBalance;
-        const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', addressBalance), 'RBTC');
-
-        if ((type === 'Mainnet' && mainnetBalance === '0x0') || (type === 'Testnet' && testnetBalance === '0x0')) {
-          const invalidAddressModalTitle = strings('modal.emptyRecordAddress.title');
-          const symbolName = common.getSymbolName(symbol, type);
-          let invalidAddressModalBody = null;
-          if (mainnetBalance === '0x0' && testnetBalance === '0x0') {
-            invalidAddressModalBody = strings('modal.emptyRecordAddress.body.both', {
-              explorerName, symbol, type, symbolName, amount,
-            });
-          } else {
-            const otherType = type === 'Mainnet' ? 'Testnet' : 'Mainnet';
-            const otherSymbolName = common.getSymbolName(symbol, otherType);
-            const otherTypeBalance = otherType === 'Mainnet' ? mainnetBalance : testnetBalance;
-            const balanceAmount = common.convertUnitToCoinAmount('RBTC', otherTypeBalance);
-            const balanceText = common.getBalanceString(balanceAmount, 'RBTC');
-            invalidAddressModalBody = strings('modal.emptyRecordAddress.body.normal', {
-              explorerName, symbol, type, symbolName, amount, otherType, otherSymbolName, balance: balanceText,
-            });
-          }
-
-          this.setState({
-            loading: false,
-            invalidAddressBalance,
-            invalidAddressModalTitle,
-            invalidAddressModalBody,
-            invalidAddressModalVisible: true,
-          });
-          return;
-        }
-
-        address = checksumAddress;
+      const address = symbol !== 'BTC' ? toAddress : this.getRskAddress();
+      if (!address) {
+        return;
       }
 
       if (!common.isWalletAddress(address, symbol, type)) {
@@ -509,8 +435,7 @@ class Transfer extends Component {
 
       this.confirmTransactionWithAddress();
     } catch (error) {
-      const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
-      addNotification(notification);
+      this.addErrorNotification(error);
     } finally {
       this.setState({ loading: false });
     }
@@ -615,6 +540,88 @@ class Transfer extends Component {
     return feeParams;
   }
 
+  getRskAddress = async () => {
+    const { symbol, type, networkId } = this.coin;
+    const { toAddress } = this;
+    const { amount } = this.state;
+    const explorerName = common.getExplorerName(type);
+    const checksumAddress = common.toChecksumAddress(toAddress, networkId);
+    if (checksumAddress !== toAddress) {
+      const ethereumChecksumAddress = common.toChecksumAddress(toAddress);
+
+      this.setState({ loading: true });
+
+      const balance = await parseHelper.getBalance({
+        type, symbol, address: toAddress, needFetch: false,
+      });
+
+      const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
+      const invalidAddressModalBody = ethereumChecksumAddress === toAddress ? strings('modal.invalidRskAddress.body.ethereum', { explorerName }) : strings('modal.invalidRskAddress.body.normal', { explorerName });
+      const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
+
+      this.setState({
+        loading: false,
+        invalidAddressBalance,
+        invalidAddressModalTitle,
+        invalidAddressModalBody,
+        invalidAddressModalVisible: true,
+      });
+
+      return null;
+    }
+
+    this.setState({ loading: true });
+
+    const mainnetBalance = await parseHelper.getBalance({
+      type: 'Mainnet', symbol, address: toAddress, needFetch: false,
+    });
+
+    const testnetBalance = await parseHelper.getBalance({
+      type: 'Testnet', symbol, address: toAddress, needFetch: false,
+    });
+
+    const addressBalance = type === 'Mainnet' ? mainnetBalance : testnetBalance;
+    const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', addressBalance), 'RBTC');
+
+    if ((type === 'Mainnet' && mainnetBalance === '0x0') || (type === 'Testnet' && testnetBalance === '0x0')) {
+      const invalidAddressModalTitle = strings('modal.emptyRecordAddress.title');
+      const symbolName = common.getSymbolName(symbol, type);
+      let invalidAddressModalBody = null;
+      if (mainnetBalance === '0x0' && testnetBalance === '0x0') {
+        invalidAddressModalBody = strings('modal.emptyRecordAddress.body.both', {
+          explorerName, symbol, type, symbolName, amount,
+        });
+      } else {
+        const otherType = type === 'Mainnet' ? 'Testnet' : 'Mainnet';
+        const otherSymbolName = common.getSymbolName(symbol, otherType);
+        const otherTypeBalance = otherType === 'Mainnet' ? mainnetBalance : testnetBalance;
+        const balanceAmount = common.convertUnitToCoinAmount('RBTC', otherTypeBalance);
+        const balanceText = common.getBalanceString(balanceAmount, 'RBTC');
+        invalidAddressModalBody = strings('modal.emptyRecordAddress.body.normal', {
+          explorerName, symbol, type, symbolName, amount, otherType, otherSymbolName, balance: balanceText,
+        });
+      }
+
+      this.setState({
+        loading: false,
+        invalidAddressBalance,
+        invalidAddressModalTitle,
+        invalidAddressModalBody,
+        invalidAddressModalVisible: true,
+      });
+
+      return null;
+    }
+
+    return checksumAddress;
+  }
+
+  addErrorNotification = (error) => {
+    const { addNotification } = this.props;
+    const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
+    addNotification(notification);
+  }
+
   /**
    * requestFees
    * This function checks user input and requests fees.
@@ -623,7 +630,6 @@ class Transfer extends Component {
    * @param {*} isAllBalance, Indicates whether the user needs to send the entire balance.
    */
   requestFees = async (isAllBalance) => {
-    const { addNotification } = this.props;
     const { amount, to } = this.state;
     const {
       isAmountValid, isAddressValid, coin, toAddress,
@@ -656,13 +662,11 @@ class Transfer extends Component {
       }
       this.processFees(transactionFees);
     } catch (error) {
-      const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
-      addNotification(notification);
+      this.addErrorNotification(error);
     }
   }
 
   confirmTransactionWithAddress = () => {
-    const { addNotification } = this.props;
     const { toAddress } = this;
     const { symbol, networkId } = this.coin;
     const { amount } = this.state;
@@ -675,8 +679,7 @@ class Transfer extends Component {
       const { callAuthVerify } = this.props;
       callAuthVerify(() => this.confirm(address), () => null);
     } catch (error) {
-      const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
-      addNotification(notification);
+      this.addErrorNotification(error);
     }
   }
 

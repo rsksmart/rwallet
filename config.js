@@ -109,12 +109,4 @@ const config = {
   defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
 };
 
-
-
-
-
-
-
-
-
 export default config;
