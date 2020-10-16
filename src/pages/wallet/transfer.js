@@ -540,35 +540,11 @@ class Transfer extends Component {
     return feeParams;
   }
 
-  getRskAddress = async () => {
-    const { symbol, type, networkId } = this.coin;
+  validateAddressBalance = async () => {
+    const { symbol, type } = this.coin;
     const { toAddress } = this;
     const { amount } = this.state;
     const explorerName = common.getExplorerName(type);
-    const checksumAddress = common.toChecksumAddress(toAddress, networkId);
-    if (checksumAddress !== toAddress) {
-      const ethereumChecksumAddress = common.toChecksumAddress(toAddress);
-
-      this.setState({ loading: true });
-
-      const balance = await parseHelper.getBalance({
-        type, symbol, address: toAddress, needFetch: false,
-      });
-
-      const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
-      const invalidAddressModalBody = ethereumChecksumAddress === toAddress ? strings('modal.invalidRskAddress.body.ethereum', { explorerName }) : strings('modal.invalidRskAddress.body.normal', { explorerName });
-      const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
-
-      this.setState({
-        loading: false,
-        invalidAddressBalance,
-        invalidAddressModalTitle,
-        invalidAddressModalBody,
-        invalidAddressModalVisible: true,
-      });
-
-      return null;
-    }
 
     this.setState({ loading: true });
 
@@ -610,6 +586,43 @@ class Transfer extends Component {
         invalidAddressModalVisible: true,
       });
 
+      return false;
+    }
+
+    return true;
+  }
+
+  getRskAddress = async () => {
+    const { symbol, type, networkId } = this.coin;
+    const { toAddress } = this;
+    const explorerName = common.getExplorerName(type);
+    const checksumAddress = common.toChecksumAddress(toAddress, networkId);
+    if (checksumAddress !== toAddress) {
+      const ethereumChecksumAddress = common.toChecksumAddress(toAddress);
+
+      this.setState({ loading: true });
+
+      const balance = await parseHelper.getBalance({
+        type, symbol, address: toAddress, needFetch: false,
+      });
+
+      const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
+      const invalidAddressModalBody = ethereumChecksumAddress === toAddress ? strings('modal.invalidRskAddress.body.ethereum', { explorerName }) : strings('modal.invalidRskAddress.body.normal', { explorerName });
+      const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
+
+      this.setState({
+        loading: false,
+        invalidAddressBalance,
+        invalidAddressModalTitle,
+        invalidAddressModalBody,
+        invalidAddressModalVisible: true,
+      });
+
+      return null;
+    }
+
+    const isHasBalance = this.validateAddressBalance();
+    if (isHasBalance) {
       return null;
     }
 
