@@ -505,7 +505,6 @@ class WalletConnectPage extends Component {
 
   popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
     const { peerMeta, txData, selectedWallet: { address } } = this.state;
-    const value = Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(txData.value)}`, 'ether');
 
     this.setState({
       modalView: (
@@ -513,7 +512,7 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          txData={{ ...txData, value, from: address }}
+          txData={{ ...txData, from: address }}
           txType={contractMethod}
         />
       ),
