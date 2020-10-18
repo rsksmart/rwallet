@@ -229,9 +229,9 @@ class WalletConnectPage extends Component {
     const { isTestnet } = this.state;
     const { navigation: { state: { params: { wallet } } } } = this.props;
     const { coins } = wallet;
-    const net = isTestnet ? 'Testnet' : 'Mainnet';
+    const network = isTestnet ? 'Testnet' : 'Mainnet';
     const networkId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
-    const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === net);
+    const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
     // If current wallet has no rsk mainnet or testnet coins, return a null value and rwallet will show error notification.
     if (_.isEmpty(rskCoins)) {
       return null;
