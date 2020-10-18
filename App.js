@@ -1,7 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
-import 'ethers/dist/shims';
 import RootSwitchNavigator from './src/navigation/container';
 import store from './src/redux/store';
 import common from './src/common/common';
