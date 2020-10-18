@@ -348,6 +348,10 @@ class DAppBrowser extends Component {
           .on('transactionHash', (hash) => {
             const result = { id, result: hash };
             this.webview.current.postMessage(JSON.stringify(result));
+          })
+          .on('error', (error) => {
+            console.log('sendSignedTransaction error: ', error);
+            throw new Error(error);
           });
       } catch (err) {
         console.log('eth_sendTransaction err: ', err);
