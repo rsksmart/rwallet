@@ -103,22 +103,6 @@ class DAppBrowser extends Component {
     return `
       ${web3JsContent}
 
-      // Disable the web site notification
-      class Notification {
-        constructor(title, options) {
-          this.title = title;
-          this.options = options;
-        }
-
-        // Override close function
-        close() {
-        }
-
-        // Override bind function
-        bind(notification) {
-        }
-      }
-
         (function() {
           let resolver = {};
           let rejecter = {};
@@ -145,6 +129,30 @@ class DAppBrowser extends Component {
               resolver[id] = resolve;
               rejecter[id] = reject;
             })
+          }
+
+          function initNotification() {
+            setInterval(() => {
+              if (!window.Notification) {
+                // Disable the web site notification
+                const Notification = class {
+                  constructor(title, options) {
+                    this.title = title;
+                    this.options = options;
+                  }
+      
+                  // Override close function
+                  close() {
+                  }
+      
+                  // Override bind function
+                  bind(notification) {
+                  }
+                }
+      
+                window.Notification = Notification;
+              }
+            }, 1000)
           }
 
           function initWeb3() {
@@ -272,6 +280,7 @@ class DAppBrowser extends Component {
             }, 1000)
           }
 
+          initNotification();
           initWeb3();
         }) ();
       true
