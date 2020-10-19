@@ -109,6 +109,14 @@ class DAppBrowser extends Component {
           this.title = title;
           this.options = options;
         }
+
+        // Override close function
+        close() {
+        }
+
+        // Override bind function
+        bind(notification) {
+        }
       }
 
         (function() {
