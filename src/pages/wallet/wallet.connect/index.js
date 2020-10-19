@@ -32,6 +32,10 @@ import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 
 const { MAINNET, TESTNET } = NETWORK;
+
+// WALLET_CONNECTING and WALLET_CONNECTED is the status of contentType, to control the page display
+// If contentType === WALLET_CONNECTING will show Wallet Connecting Page
+// If contentType === WALLET_CONNECTED will show Wallet Connected Page
 const WALLET_CONNECTING = 'WalletConnecting';
 const WALLET_CONNECTED = 'WalletConnected';
 
