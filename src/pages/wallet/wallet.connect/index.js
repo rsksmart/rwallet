@@ -31,6 +31,10 @@ import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 
 const { MAINNET, TESTNET } = NETWORK;
+
+// WALLET_CONNECTING and WALLET_CONNECTED is the status of contentType, to control the page display
+// If contentType === WALLET_CONNECTING will show Wallet Connecting Page
+// If contentType === WALLET_CONNECTED will show Wallet Connected Page
 const WALLET_CONNECTING = 'WalletConnecting';
 const WALLET_CONNECTED = 'WalletConnected';
 
@@ -696,6 +700,13 @@ class WalletConnectPage extends Component {
     }
   }
 
+  onSwitchValueChanged = async () => {
+    const { isTestnet } = this.state;
+    await this.setState({ isTestnet: !isTestnet });
+    this.initNetwork();
+    this.updateWallet();
+  }
+
   renderWalletConnectingView = () => (
     <View>
       <ActivityIndicator size="large" />
@@ -725,11 +736,7 @@ class WalletConnectPage extends Component {
           dappName={name}
           dappUrl={url}
           isTestnet={isTestnet}
-          onSwitchValueChanged={async () => {
-            await this.setState({ isTestnet: !isTestnet });
-            this.initNetwork();
-            this.updateWallet();
-          }}
+          onSwitchValueChanged={this.onSwitchValueChanged}
         />
       );
     }
