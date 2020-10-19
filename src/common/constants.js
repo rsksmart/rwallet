@@ -112,3 +112,9 @@ export const WALLET_CONNECT = {
     NOTIFICATION: 'Notification',
   },
 };
+
+export const TRANSACTION = {
+  DEFAULT_GAS_LIMIT: '0x927c0',
+  DEFAULT_GAS_PRICE: '1200000000',
+  DEFAULT_VALUE: '0x0',
+};

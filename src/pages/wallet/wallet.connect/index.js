@@ -22,7 +22,7 @@ import WaleltConnectHeader from '../../../components/headers/header.walletconnec
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK } from '../../../common/constants';
+import { NETWORK, TRANSACTION } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -635,10 +635,10 @@ class WalletConnectPage extends Component {
     const txData = {
       nonce,
       data: params[0].data,
-      gasLimit: params[0].gas || '0x927c0', // Set default gasLimit to 600000(hex: 0x927c0),
+      gasLimit: params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT,
       gasPrice,
       to: params[0].to,
-      value: params[0].value || '0x0',
+      value: params[0].value || TRANSACTION.DEFAULT_VALUE,
     };
 
     return txData;

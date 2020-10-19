@@ -14,7 +14,7 @@ import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { NETWORK } from '../../common/constants';
+import { NETWORK, TRANSACTION } from '../../common/constants';
 import common from '../../common/common';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
@@ -460,9 +460,9 @@ class DAppBrowser extends Component {
       nonce,
       data: params[0].data,
       gasLimit: params[0].gas || 600000,
-      gasPrice: params[0].gasPrice || Rsk3.utils.BN(('1200000000')),
+      gasPrice: params[0].gasPrice || Rsk3.utils.BN((TRANSACTION.DEFAULT_GAS_PRICE)),
       to: params[0].to,
-      value: (params[0].value && Rsk3.utils.BN(params[0].value)) || '0x0',
+      value: (params[0].value && Rsk3.utils.BN(params[0].value)) || TRANSACTION.DEFAULT_VALUE,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
     const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, networkId);
