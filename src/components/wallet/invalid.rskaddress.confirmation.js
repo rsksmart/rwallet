@@ -9,6 +9,8 @@ import space from '../../assets/styles/space';
 import Loc from '../common/misc/loc';
 import config from '../../../config';
 import common from '../../common/common';
+import Checkbox from '../common/misc/checkbox';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   container: {
@@ -76,6 +78,9 @@ const styles = StyleSheet.create({
     borderColor: color.vividBlue,
     borderWidth: 1,
   },
+  disabledButton: {
+    borderColor: color.gray91,
+  },
   recommendButtonText: {
     color: color.concrete,
   },
@@ -84,9 +89,15 @@ const styles = StyleSheet.create({
     color: color.vividBlue,
     fontSize: 16,
   },
+  disabledButtonText: {
+    fontFamily: fontFamily.AvenirHeavy,
+    color: color.gray91,
+    fontSize: 16,
+  },
   row: {
     flexDirection: 'row',
     marginTop: 10,
+    alignItems: 'center',
   },
   keyColumn: {
     width: 80,
@@ -102,12 +113,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonsView: {
-    marginTop: 30,
+    marginTop: 23,
     alignItems: 'center',
   },
 });
 
 class InvalidRskAddressConfirmation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isRiskConfirmed: false,
+    };
+  }
+
   onCancelPressed = () => {
     const { onCancel } = this.props;
     onCancel();
@@ -129,11 +147,16 @@ class InvalidRskAddressConfirmation extends Component {
     Linking.openURL(url);
   }
 
+  onRiskValueChanged = (value) => {
+    this.setState({ isRiskConfirmed: value });
+  }
+
   render() {
     const { data, title, body } = this.props;
     const {
       balance, symbol, type, address,
     } = data;
+    const { isRiskConfirmed } = this.state;
 
     const explorerName = common.getExplorerName(type);
 
@@ -151,21 +174,24 @@ class InvalidRskAddressConfirmation extends Component {
             </TouchableOpacity>
             <View style={[space.marginTop_10]}>
               <View style={styles.row}>
-                <Loc style={styles.keyColumn} text="asset" />
+                <Loc style={styles.keyColumn} text="modal.invalidRskAddress.asset" />
                 <Text style={styles.valueColumn}>{`${symbol} (${type})`}</Text>
               </View>
               <View style={styles.row}>
-                <Loc style={styles.keyColumn} text="address" />
+                <Loc style={styles.keyColumn} text="modal.invalidRskAddress.address" />
                 <Text style={[styles.valueColumn, styles.address]}>{address}</Text>
               </View>
               <View style={styles.row}>
-                <Loc style={styles.keyColumn} text="balance" />
+                <Loc style={styles.keyColumn} text="modal.invalidRskAddress.balance" />
                 <Text style={styles.valueColumn}>{`${balance} ${symbol}`}</Text>
+              </View>
+              <View style={[styles.row, space.marginTop_16]}>
+                <Checkbox text={strings('modal.invalidRskAddress.risk')} isChecked={isRiskConfirmed} onValueChanged={this.onRiskValueChanged} />
               </View>
             </View>
             <View style={[styles.buttonsView]}>
-              <TouchableOpacity style={styles.normalButton} onPress={this.onConfirmPressed}>
-                <Loc style={styles.normalButtonText} text="modal.invalidRskAddress.confirm" />
+              <TouchableOpacity style={[styles.normalButton, isRiskConfirmed ? null : styles.disabledButton]} disabled={!isRiskConfirmed} onPress={this.onConfirmPressed}>
+                <Loc style={[styles.normalButtonText, isRiskConfirmed ? null : styles.disabledButtonText]} text="modal.invalidRskAddress.confirm" />
               </TouchableOpacity>
               <TouchableOpacity style={[styles.recommendButton, space.marginTop_10]} onPress={this.onCancelPressed}>
                 <Loc style={[styles.normalButtonText, styles.recommendButtonText]} text="modal.invalidRskAddress.cancel" />

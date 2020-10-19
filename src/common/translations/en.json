@@ -598,14 +598,15 @@
       "title": "Invalid RSK Address",
       "body": {
         "normal": "The entered recipient address is an invalid RSK address. Please make sure the recipient address is valid RSK address, and verify it on %{explorerName} before sending.",
-        "ethereum": "The entered recipient address seems to be an Ethereum address. This is a known bug for copied value from Metamask. Please make sure the recipient address is valid RSK address, and verify it on %{explorerName} before sending."
+        "ethereum": "The entered recipient address seems to be an Ethereum address. This is a known issue when copying addresses from MetaMask. Please make sure the recipient address is valid RSK address, and verify it on %{explorerName} before sending."
       },
       "question": "Why are you seeing this message?",
-      "confirm": "Ok, send anyway",
+      "confirm": "Send anyway",
       "cancel": "Go back and re-enter",
       "asset": "Asset",
       "address": "Address",
-      "balance": "Balance"
+      "balance": "Balance",
+      "risk": "Okay, I understand the risk."
     },
     "emptyRecordAddress": {
       "title": "Empty record recipient address",

@@ -424,7 +424,7 @@ class Transfer extends Component {
     const { symbol, type } = this.coin;
     const { toAddress } = this;
     try {
-      const address = symbol !== 'BTC' ? toAddress : this.getRskAddress();
+      const address = symbol === 'BTC' ? toAddress : await this.getRskAddress();
       if (!address) {
         return;
       }

@@ -601,14 +601,15 @@
       "title": "Dirección de RSK no válida",
       "body": {
         "normal": "La dirección del destinatario ingresada es una dirección RSK no válida. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar.",
-        "ethereum": "La dirección del destinatario ingresada parece ser una dirección de Ethereum. Este es un error conocido para el valor copiado de Metamask. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar."
+        "ethereum": "La dirección del destinatario ingresada parece ser una dirección de Ethereum. Este es un problema conocido al copiar direcciones de MetaMask. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar."
       },
       "question": "¿Por qué ves este mensaje?",
-      "confirm": "Ok, enviar de todos modos",
+      "confirm": "Enviar de todos modos",
       "cancel": "Regresa y vuelve a entrar",
       "asset": "Activo",
       "address": "Habla a",
-      "balance": "Equilibrar"
+      "balance": "Equilibrar",
+      "risk": "Bien, entiendo el riesgo."
     },
     "emptyRecordAddress": {
       "title": "Dirección del destinatario del registro vacío",

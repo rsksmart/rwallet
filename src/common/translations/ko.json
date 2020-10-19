@@ -598,14 +598,15 @@
       "title": "잘못된 RSK 주소",
       "body": {
         "normal": "입력 한 수신자 주소는 잘못된 RSK 주소입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오.",
-        "ethereum": "입력 한 수신자 주소가 이더 리움 주소 인 것 같습니다. 이것은 Metamask에서 복사 된 값에 대한 알려진 버그입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오."
+        "ethereum": "입력 한 수신자 주소가 이더 리움 주소 인 것 같습니다. 이것은 MetaMask에서 주소를 복사 할 때 알려진 문제입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오."
       },
       "question": "이 메시지가 표시되는 이유는 무엇입니까?",
-      "confirm": "알겠습니다.",
+      "confirm": "어쨌든 보내",
       "cancel": "돌아가서 다시 입력",
       "asset": "유산",
       "address": "주소",
-      "balance": "밸런스"
+      "balance": "밸런스",
+      "risk": "좋아요, 위험을 이해합니다."
     },
     "emptyRecordAddress": {
       "title": "레코드 수신자 주소가 비어 있습니다.",
