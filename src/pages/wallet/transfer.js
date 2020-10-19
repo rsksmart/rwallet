@@ -624,7 +624,7 @@ class Transfer extends Component {
     }
 
     const isHasBalance = await this.validateAddressBalance();
-    if (isHasBalance) {
+    if (!isHasBalance) {
       return null;
     }
 
