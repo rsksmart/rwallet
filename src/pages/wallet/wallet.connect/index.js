@@ -685,6 +685,13 @@ class WalletConnectPage extends Component {
     }
   }
 
+  onSwitchValueChanged = async () => {
+    const { isTestnet } = this.state;
+    await this.setState({ isTestnet: !isTestnet });
+    this.initNetwork();
+    this.updateWallet();
+  }
+
   renderWalletConnectingView = () => (
     <View>
       <ActivityIndicator size="large" />
@@ -714,11 +721,7 @@ class WalletConnectPage extends Component {
           dappName={name}
           dappUrl={url}
           isTestnet={isTestnet}
-          onSwitchValueChanged={async () => {
-            await this.setState({ isTestnet: !isTestnet });
-            this.initNetwork();
-            this.updateWallet();
-          }}
+          onSwitchValueChanged={this.onSwitchValueChanged}
         />
       );
     }
