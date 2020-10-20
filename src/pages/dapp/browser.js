@@ -8,14 +8,13 @@ import {
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
-import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
 import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { NETWORK } from '../../common/constants';
+import { NETWORK, TRANSACTION } from '../../common/constants';
 import common from '../../common/common';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
@@ -90,27 +89,19 @@ class DAppBrowser extends Component {
     }
   }
 
-  generateWallet = (wallet) => ({ ...wallet, address: ethers.utils.getAddress(wallet.address.toLowerCase()) })
+  // Rif faucet dapp need using lower case address, otherwise will catch invalid address error.
+  generateWallet = (wallet) => ({ ...wallet, address: wallet.address.toLowerCase() })
 
   setNetwork = (network) => {
     this.rskEndpoint = network === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
     this.networkVersion = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
     this.rsk3 = new Rsk3(this.rskEndpoint);
-    this.provider = new ethers.providers.JsonRpcProvider(this.rskEndpoint);
   }
 
   getJsCode = (address) => {
     const { web3JsContent } = this.state;
     return `
       ${web3JsContent}
-
-      // Disable the web site notification
-      class Notification {
-        constructor(title, options) {
-          this.title = title;
-          this.options = options;
-        }
-      }
 
         (function() {
           let resolver = {};
@@ -140,6 +131,30 @@ class DAppBrowser extends Component {
             })
           }
 
+          function initNotification() {
+            setInterval(() => {
+              if (!window.Notification) {
+                // Disable the web site notification
+                const Notification = class {
+                  constructor(title, options) {
+                    this.title = title;
+                    this.options = options;
+                  }
+      
+                  // Override close function
+                  close() {
+                  }
+      
+                  // Override bind function
+                  bind(notification) {
+                  }
+                }
+      
+                window.Notification = Notification;
+              }
+            }, 1000)
+          }
+
           function initWeb3() {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
@@ -147,6 +162,7 @@ class DAppBrowser extends Component {
             const web3 = new Web3(web3Provider);
             window.ethereum = web3Provider;
             window.ethereum.selectedAddress = '${address}';
+            window.address = '${address}';
             window.ethereum.networkVersion = '${this.networkVersion}';
             window.web3 = web3;
 
@@ -251,7 +267,7 @@ class DAppBrowser extends Component {
             }
 
             // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
-            setTimeout(() => {
+            setInterval(() => {
               if (!window.ethereum.send) {
                 window.ethereum.send = sendAsync;
               }
@@ -264,6 +280,7 @@ class DAppBrowser extends Component {
             }, 1000)
           }
 
+          initNotification();
           initWeb3();
         }) ();
       true
@@ -284,22 +301,22 @@ class DAppBrowser extends Component {
 
   handleEthEstimateGas = async (payload) => {
     const { params, id } = payload;
-    const res = await this.provider.estimateGas(params[0]);
-    const estimateGas = res.toNumber();
+    const res = await this.rsk3.estimateGas(params[0]);
+    const estimateGas = Number(res);
     const result = { id, result: estimateGas };
     this.webview.current.postMessage(JSON.stringify(result));
   }
 
   handleEthGasPrice = async (payload) => {
     const { id } = payload;
-    const res = await this.provider.getGasPrice();
+    const res = await this.rsk3.getGasPrice();
     const result = { id, result: res };
     this.webview.current.postMessage(JSON.stringify(result));
   }
 
   handleEthCall = async (payload) => {
     const { id, params } = payload;
-    const res = await this.provider.call(params[0], params[1]);
+    const res = await this.rsk3.call(params[0], params[1]);
     const result = { id, result: res };
     this.webview.current.postMessage(JSON.stringify(result));
   }
@@ -320,9 +337,11 @@ class DAppBrowser extends Component {
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
-        const signWallet = new ethers.Wallet(privateKey, this.provider);
-        const signature = await signWallet.signMessage(message);
-        const result = { id, result: signature };
+        const accountInfo = await this.rsk3.accounts.privateKeyToAccount(privateKey);
+        const signature = await accountInfo.sign(
+          message, privateKey,
+        );
+        const result = { id, result: signature.signature };
         this.webview.current.postMessage(JSON.stringify(result));
       } catch (err) {
         console.log('personal_sign err: ', err);
@@ -337,11 +356,20 @@ class DAppBrowser extends Component {
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
-        const signWallet = new ethers.Wallet(privateKey, this.provider);
-        const signedTransaction = await signWallet.sign(txData);
-        const res = await this.provider.sendTransaction(signedTransaction);
-        const result = { id, result: res.hash };
-        this.webview.current.postMessage(JSON.stringify(result));
+        const accountInfo = await this.rsk3.accounts.privateKeyToAccount(privateKey);
+        const signedTransaction = await accountInfo.signTransaction(
+          txData, privateKey,
+        );
+        const { rawTransaction } = signedTransaction;
+        this.rsk3.sendSignedTransaction(rawTransaction)
+          .on('transactionHash', (hash) => {
+            const result = { id, result: hash };
+            this.webview.current.postMessage(JSON.stringify(result));
+          })
+          .on('error', (error) => {
+            console.log('sendSignedTransaction error: ', error);
+            throw new Error(error);
+          });
       } catch (err) {
         console.log('eth_sendTransaction err: ', err);
         this.handleReject(id, err.message);
@@ -364,7 +392,7 @@ class DAppBrowser extends Component {
 
   handleEthGetTransactionByHash = async (payload) => {
     const { id, params } = payload;
-    const res = await this.provider.getTransaction(params[0]);
+    const res = await this.rsk3.getTransaction(params[0]);
     const result = { id, result: res };
     this.webview.current.postMessage(JSON.stringify(result));
   }
@@ -417,8 +445,11 @@ class DAppBrowser extends Component {
   }
 
   popupNormalTransactionModal = async (id, txData, contractMethod = 'Smart Contract Call') => {
-    const { wallet: { address } } = this.state;
+    const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
+    const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    const from = Rsk3.utils.toChecksumAddress(address, networkId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
 
     this.setState({
       modalView: (
@@ -429,7 +460,9 @@ class DAppBrowser extends Component {
             await this.handleEthSendTransaction(id, txData);
           }}
           cancelPress={() => this.handleReject(id)}
-          txData={{ ...txData, from: address, gasLimit: String(txData.gasLimit) }}
+          txData={{
+            ...txData, from, to, gasLimit: String(txData.gasLimit),
+          }}
           txType={contractMethod}
         />
       ),
@@ -437,18 +470,19 @@ class DAppBrowser extends Component {
   }
 
   popupTransactionModal = async (payload) => {
-    const { wallet: { address } } = this.state;
+    const { wallet: { address, network } } = this.state;
     const { id, params } = payload;
-    const nonce = await this.provider.getTransactionCount(address, 'pending');
+    const nonce = await this.rsk3.getTransactionCount(address, 'pending');
     const txData = {
       nonce,
       data: params[0].data,
       gasLimit: params[0].gas || 600000,
-      gasPrice: params[0].gasPrice || ethers.utils.bigNumberify(('1200000000')),
+      gasPrice: params[0].gasPrice || Rsk3.utils.BN((TRANSACTION.DEFAULT_GAS_PRICE)),
       to: params[0].to,
-      value: (params[0].value && ethers.utils.bigNumberify(params[0].value)) || '0x0',
+      value: (params[0].value && Rsk3.utils.BN(params[0].value)) || TRANSACTION.DEFAULT_VALUE,
     };
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to);
+    const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, networkId);
     const inputData = params[0].data;
     const res = await apiHelper.getAbiByAddress(toAddress);
     if (res && res.abi) {
@@ -470,7 +504,6 @@ class DAppBrowser extends Component {
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, id } = payload;
-    console.log('payload: ', payload);
 
     try {
       switch (method) {

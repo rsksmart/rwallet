@@ -123,7 +123,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Cartera vacía",
-        "selectAvailableWallet": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectTestnetAsset": "Seleccione una billetera que tenga al menos un activo testnet rsk",
         "isConnecting": "Wallet se está conectando ...",
         "isSigning": "La transacción se está firmando ...",
         "signApproved": "Firma de mensajes aprobada",
@@ -136,6 +137,7 @@
         "agreeTo": "Al hacer clic en Permitir, estás de acuerdo",
         "agreeOne": "- Permitir obtener la dirección de billetera actual",
         "agreeTwo": "- Permitir solicitud de firma de la billetera actual",
+        "advancedOptions": "Opciones avanzadas",
         "reject": "Rechazar",
         "allow": "Permitir",
         "connected": "Conectado",
@@ -172,7 +174,11 @@
         "type": "Tipo",
         "from": "Desde",
         "to": "A",
-        "data": "Datos"
+        "data": "Datos",
+        "networkQuestion": {
+          "title": "Red",
+          "body": "La testnet es una cadena de bloques RSK alternativa, que se utilizará para realizar pruebas."
+        }
       },
       "transferCompleted": {
         "title": "Enviar",
@@ -216,7 +222,8 @@
       "addCustomToken": {
         "title": "Agregar activos personalizados",
         "address": "Dirección del contrato de activo",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",

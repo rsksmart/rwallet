@@ -120,7 +120,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "空のウォレット",
-        "selectAvailableWallet": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
+        "selectMainnetAsset": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
+        "selectTestnetAsset": "少なくとも1つのtestnetrskアセットを持つウォレットを選択してください",
         "isConnecting": "ウォレットを接続しています...",
         "isSigning": "トランザクションは署名しています...",
         "signApproved": "承認されたメッセージ署名",
@@ -133,6 +134,7 @@
         "agreeTo": "許可をクリックすると、あなたは同意します、",
         "agreeOne": "- 現在のウォレットアドレスの取得を許可",
         "agreeTwo": "- 現在のウォレットからの署名リクエストを許可する",
+        "advancedOptions": "詳細オプション",
         "reject": "拒否する",
         "allow": "許可する",
         "connected": "接続されています",
@@ -169,7 +171,11 @@
         "type": "タイプ",
         "from": "から",
         "to": "に",
-        "data": "データ"
+        "data": "データ",
+        "networkQuestion": {
+          "title": "通信網",
+          "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"
+        }
       },
       "transferCompleted": {
         "title": "送金",
@@ -213,7 +219,8 @@
       "addCustomToken": {
         "title": "カスタム資産を追加",
         "address": "資産契約アドレス",
-        "mainnet": "Mainnet"
+        "mainnet": "メインネット",
+        "testnet": "テストネット"
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",
