@@ -196,6 +196,18 @@ class WalletConnectPage extends Component {
 
         await this.initWalletConnect();
       }, 500);
+
+      this.timeout = setTimeout(async () => {
+        console.log('show timeout alert');
+        await this.setState({ modalView: null });
+        const notification = createErrorNotification(
+          'page.wallet.walletconnect.timeoutTitle',
+          'page.wallet.walletconnect.timeoutBody',
+          'page.wallet.walletconnect.timeoutButton',
+          () => navigation.goBack(),
+        );
+        addNotification(notification);
+      }, 10000);
     } else {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
@@ -314,6 +326,8 @@ class WalletConnectPage extends Component {
           contentType: WALLET_CONNECTING,
           connector,
         });
+
+        clearTimeout(this.timeout);
       });
 
       connector.on('session_update', (error) => {
