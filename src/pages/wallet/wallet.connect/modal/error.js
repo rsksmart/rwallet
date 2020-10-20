@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   description: {
     color: color.black,
     fontSize: 15,
+    lineHeight: 22,
     fontFamily: fontFamily.AvenirBook,
     marginTop: 28,
   },
