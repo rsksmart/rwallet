@@ -197,6 +197,7 @@ class WalletConnectPage extends Component {
         await this.initWalletConnect();
       }, 500);
 
+      // Show timeout alert if cannot connect within 10s
       this.timeout = setTimeout(async () => {
         console.log('show timeout alert');
         await this.setState({ modalView: null });
