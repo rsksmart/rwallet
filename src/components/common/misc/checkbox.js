@@ -13,13 +13,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    color: color.app.theme,
+    color: color.black,
     fontFamily: fontFamily.AvenirBook,
     marginLeft: 5,
     fontSize: 14,
   },
   box: {
-    color: color.app.theme,
+    color: color.black,
   },
 });
 
