@@ -15,12 +15,15 @@ import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
-import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
+import { getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import common from '../../common/common';
 import coinType from '../../common/wallet/cointype';
 import { WalletType } from '../../common/constants';
+import { InvalidAddressError } from '../../common/error';
+import ConvertAddressConfirmation from '../../components/wallet/convert.address.confirmation';
+import { strings } from '../../common/i18n';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -73,10 +76,12 @@ class AddCustomToken extends Component {
         address: '',
         isMainnet: true,
         isCanConfirm: false,
+        isShowConvertAddressModal: false,
       };
       this.wallet = props.navigation.state.params.wallet;
       this.type = this.wallet.walletType === WalletType.Readonly ? this.wallet.type : 'Mainnet';
       this.chain = 'Rootstock';
+      this.contractAddress = null;
     }
 
     componentWillUnmount() {
@@ -95,48 +100,53 @@ class AddCustomToken extends Component {
     }
 
     onPressed = async () => {
-      const { navigation } = this.props;
       const { address } = this.state;
-      const { type, chain } = this;
+      const { type } = this;
 
-      const tokenInfo = await this.requestTokenInfo();
-      if (tokenInfo === null) {
-        return;
+      try {
+        const isWalletAddress = common.isWalletAddress(address, 'RBTC', type);
+        if (!isWalletAddress) {
+          throw new InvalidAddressError();
+        }
+
+        // If address is not a checksum address, pop up convert address modal to covert it to checksum address.
+        // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
+        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(address, coinType.RBTC.networkId);
+        if (!isChecksumAddress) {
+          this.setState({ isShowConvertAddressModal: true });
+          return;
+        }
+
+        this.contractAddress = address;
+        this.addToken();
+      } catch (error) {
+        const { addNotification } = this.props;
+        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        addNotification(notification);
       }
-      const { name, symbol, decimals } = tokenInfo;
-      navigation.navigate('AddCustomTokenConfirm', {
-        address, symbol, decimals, name, type, chain, ...navigation.state.params,
-      });
     }
 
-    requestTokenInfo = async () => {
-      const { addNotification } = this.props;
+    onConvertAddressConfirmed = () => {
       const { address } = this.state;
-      const { type, chain } = this;
-      try {
-        const contractAddress = Rsk3.utils.toChecksumAddress(address, coinType.RBTC.networkId);
-        const isWalletAddress = common.isWalletAddress(contractAddress, 'RBTC', type);
-        if (!isWalletAddress) {
-          throw new Error();
-        }
-      } catch (error) {
-        const notification = createErrorNotification(
-          'modal.invalidAddress.title',
-          'modal.invalidAddress.body',
-        );
-        addNotification(notification);
-        return null;
-      }
+      this.setState({ isShowConvertAddressModal: false });
+      this.contractAddress = common.toChecksumAddress(address, coinType.RBTC.networkId);
+      this.addToken();
+    }
+
+    addToken = async () => {
+      const { addNotification, navigation } = this.props;
+      const { type, chain, contractAddress } = this;
       try {
         this.setState({ isLoading: true });
-        const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, address), this);
-        console.log('tokenInfo: ', tokenInfo);
-        return tokenInfo;
+        const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, contractAddress), this);
+        const { name, symbol, decimals } = tokenInfo;
+        navigation.navigate('AddCustomTokenConfirm', {
+          address: contractAddress, symbol, decimals, name, type, chain, ...navigation.state.params,
+        });
       } catch (error) {
         console.log('getTokenBasicInfo, error: ', error);
         const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
         addNotification(notification);
-        return null;
       } finally {
         this.setState({ isLoading: false });
       }
@@ -145,7 +155,7 @@ class AddCustomToken extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        isLoading, address, isMainnet, isCanConfirm,
+        isLoading, address, isMainnet, isCanConfirm, isShowConvertAddressModal,
       } = this.state;
       const bottomButton = (<Button style={{ opacity: isCanConfirm ? 1 : 0.5 }} text="button.Next" onPress={this.onPressed} disabled={!isCanConfirm} />);
       return (
@@ -180,6 +190,15 @@ class AddCustomToken extends Component {
               </View>
             ) }
           </View>
+          { isShowConvertAddressModal
+            && (
+            <ConvertAddressConfirmation
+              title={strings('modal.convertContractAddress.title')}
+              body={strings('modal.convertContractAddress.body')}
+              onConfirm={this.onConvertAddressConfirmed}
+              onCancel={() => this.setState({ isShowConvertAddressModal: false })}
+            />
+            )}
         </BasePageGereral>
       );
     }
@@ -196,6 +215,7 @@ AddCustomToken.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
   isWalletNameUpdated: state.Wallet.get('isWalletNameUpdated'),
