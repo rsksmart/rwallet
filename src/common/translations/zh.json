@@ -393,7 +393,8 @@
     "done": "已完成",
     "share": "分享",
     "check": "检查",
-    "update": "更新"
+    "update": "更新",
+    "okay": "好的"
   },
   "txState": {
     "Sent": "已发送",

@@ -396,7 +396,8 @@
     "done": "완료",
     "share": "공유",
     "check": "검사",
-    "update": "최신 정보"
+    "update": "최신 정보",
+    "okay": "괜찮아"
   },
   "txState": {
     "Sent": "전송 완료",

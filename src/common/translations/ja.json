@@ -390,7 +390,8 @@
     "done": "完了です",
     "share": "シェア",
     "check": "小切手",
-    "update": "更新"
+    "update": "更新",
+    "okay": "はい"
   },
   "txState": {
     "Sent": "送金されました",

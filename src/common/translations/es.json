@@ -393,7 +393,8 @@
     "done": "Hecho",
     "share": "COMPARTIR",
     "check": "CHEQUE",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "okay": "Bueno"
   },
   "txState": {
     "Sent": "Enviado",

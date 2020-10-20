@@ -406,7 +406,8 @@
     "done": "Pronto",
     "share": "COMPARTILHAR",
     "check": "VERIFICAR",
-    "update": "Atualizar"
+    "update": "Atualizar",
+    "okay": "OK"
   },
   "txState": {
     "Sent": "Enviado",
