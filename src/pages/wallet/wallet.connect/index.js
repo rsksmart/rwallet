@@ -328,6 +328,7 @@ class WalletConnectPage extends Component {
           connector,
         });
 
+        // Clear timeout if wallet connect establish session connect
         clearTimeout(this.timeout);
       });
 
