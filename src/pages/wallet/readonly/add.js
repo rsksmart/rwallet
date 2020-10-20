@@ -181,7 +181,7 @@ class AddReadOnlyWallet extends Component {
 
     onConvertAddressConfirmed = () => {
       this.setState({ isShowConvertAddressModal: false });
-      const checksumAddress = common.toChecksumAddress(this.address);
+      const checksumAddress = common.toChecksumAddress(this.address, coinType.RBTC.networkId);
       this.address = checksumAddress;
       this.addAddress();
     }
