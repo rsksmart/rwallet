@@ -78,15 +78,15 @@ class InvalidRskAddressConfirmation extends Component {
 
     return (
       <Modal transparent onRequestClose={this.onCancelPressed}>
-        <View style={styles.container}>
-          <View style={styles.panel}>
-            <Text style={[styles.title, space.marginTop_35]}>{title}</Text>
-            <Text style={[styles.message, space.marginTop_22]}>{body}</Text>
+        <View style={modalStyles.container}>
+          <View style={modalStyles.panel}>
+            <Text style={[modalStyles.title, space.marginTop_23]}>{title}</Text>
+            <Text style={[modalStyles.message, space.marginTop_15]}>{body}</Text>
             <TouchableOpacity style={space.marginTop_15} onPress={this.onExplorerPressed}>
-              <Text style={[styles.link]}>{explorerName}</Text>
+              <Text style={[modalStyles.link]}>{explorerName}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={space.marginTop_5} onPress={this.onQuestionPressed}>
-              <Loc style={[styles.link]} text="modal.invalidRskAddress.question" />
+              <Loc style={[modalStyles.link]} text="modal.invalidRskAddress.question" />
             </TouchableOpacity>
             <View style={[space.marginTop_10]}>
               <View style={styles.row}>
@@ -110,7 +110,7 @@ class InvalidRskAddressConfirmation extends Component {
                 <Loc style={[modalStyles.normalButtonText, isRiskConfirmed ? null : modalStyles.disabledButtonText]} text="modal.invalidRskAddress.confirm" />
               </TouchableOpacity>
               <TouchableOpacity style={[modalStyles.recommendButton, space.marginTop_10]} onPress={this.onCancelPressed}>
-                <Loc style={[modalStyles.normalButtonText, styles.recommendButtonText]} text="modal.invalidRskAddress.cancel" />
+                <Loc style={[modalStyles.normalButtonText, modalStyles.recommendButtonText]} text="modal.invalidRskAddress.cancel" />
               </TouchableOpacity>
             </View>
           </View>

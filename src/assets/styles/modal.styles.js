@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     borderRadius: 5,
     marginHorizontal: 25,
-    maxHeight: '82%',
+    maxHeight: '99%',
     paddingHorizontal: 25,
     paddingBottom: 20,
   },
