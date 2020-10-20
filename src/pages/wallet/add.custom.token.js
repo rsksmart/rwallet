@@ -19,7 +19,6 @@ import { getErrorNotification, getDefaultErrorNotification } from '../../common/
 import Button from '../../components/common/button/button';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import common from '../../common/common';
-import coinType from '../../common/wallet/cointype';
 import { WalletType } from '../../common/constants';
 import { InvalidAddressError } from '../../common/error';
 import ConvertAddressConfirmation from '../../components/wallet/convert.address.confirmation';
@@ -111,7 +110,8 @@ class AddCustomToken extends Component {
 
         // If address is not a checksum address, pop up convert address modal to covert it to checksum address.
         // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
-        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(address, coinType.RBTC.networkId);
+        const { networkId } = common.getCoinType('RBTC', type);
+        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(address, networkId);
         if (!isChecksumAddress) {
           this.setState({ isShowConvertAddressModal: true });
           return;
@@ -128,8 +128,10 @@ class AddCustomToken extends Component {
 
     onConvertAddressConfirmed = () => {
       const { address } = this.state;
+      const { type } = this;
       this.setState({ isShowConvertAddressModal: false });
-      this.contractAddress = common.toChecksumAddress(address, coinType.RBTC.networkId);
+      const { networkId } = common.getCoinType('RBTC', type);
+      this.contractAddress = common.toChecksumAddress(address, networkId);
       this.addToken();
     }
 

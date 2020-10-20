@@ -24,7 +24,6 @@ import { strings } from '../../../common/i18n';
 import appActions from '../../../redux/app/actions';
 import { createInfoNotification } from '../../../common/notification.controller';
 import ConvertAddressConfirmation from '../../../components/wallet/convert.address.confirmation';
-import coinType from '../../../common/wallet/cointype';
 
 class AddReadOnlyWallet extends Component {
     static navigationOptions = () => ({
@@ -169,7 +168,8 @@ class AddReadOnlyWallet extends Component {
       // If address is not a checksum address, pop up convert address modal to covert it to checksum address.
       // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
       if (chain === Chain.Rootstock) {
-        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(newAddress, coinType.RBTC.networkId);
+        const { networkId } = common.getCoinType(symbol, type);
+        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(newAddress, networkId);
         if (!isChecksumAddress) {
           this.setState({ isShowConvertAddressModal: true });
           return;
@@ -181,7 +181,9 @@ class AddReadOnlyWallet extends Component {
 
     onConvertAddressConfirmed = () => {
       this.setState({ isShowConvertAddressModal: false });
-      const checksumAddress = common.toChecksumAddress(this.address, coinType.RBTC.networkId);
+      const { symbol, type } = this;
+      const { networkId } = common.getCoinType(symbol, type);
+      const checksumAddress = common.toChecksumAddress(this.address, networkId);
       this.address = checksumAddress;
       this.addAddress();
     }
