@@ -38,7 +38,7 @@ export default function TransactionModal({
   const {
     value, from, to, data, gasLimit, gasPrice,
   } = txData;
-  const amount = Rsk3.utils.hexToNumber(value);
+  const amount = value ? Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(value)}`, 'ether') : '0';
   const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
   const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
   const feeWei = gasLimitNumber * gasPriceNumber;

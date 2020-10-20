@@ -120,7 +120,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Empty wallet",
-        "selectAvailableWallet": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectMainnetAsset": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectTestnetAsset": "Please select a wallet that has at least one testnet rsk asset",
         "isConnecting": "Wallet is connecting...",
         "isSigning": "Transaction is signing...",
         "signApproved": "Message Signing Approved",
@@ -133,6 +134,7 @@
         "agreeTo": "Clicking on Allow, you agree to,",
         "agreeOne": "- Allow getting current wallet address",
         "agreeTwo": "- Allow signature request from the current wallet",
+        "advancedOptions": "Advanced Options",
         "reject": "Reject",
         "allow": "Allow",
         "connected": "Connected",
@@ -169,7 +171,11 @@
         "type": "Type",
         "from": "From",
         "to": "To",
-        "data": "Data"
+        "data": "Data",
+        "networkQuestion": {
+          "title": "Network",
+          "body": "The testnet is an alternative RSK block chain, to be used for testing."
+        }
       },
       "transferCompleted": {
         "title": "Send",
@@ -213,7 +219,8 @@
       "addCustomToken": {
         "title": "Add Custom Assets",
         "address": "Asset Contract Address",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Assets",

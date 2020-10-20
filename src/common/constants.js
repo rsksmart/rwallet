@@ -88,7 +88,7 @@ export const ASSETS_CONTRACT = {
     Testnet: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
     Mainnet: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
   },
-  RIEP: {
+  RIFP: {
     Testnet: '0x23a1aa7b11e68bebe560a36bec04d1f79357f28d',
     Mainnet: '0xf4d27c56595ed59b66cc7f03cff5193e4bd74a61',
   },
@@ -111,4 +111,10 @@ export const WALLET_CONNECT = {
     CONFIRMATION: 'Confirmation',
     NOTIFICATION: 'Notification',
   },
+};
+
+export const TRANSACTION = {
+  DEFAULT_GAS_LIMIT: '0x927c0',
+  DEFAULT_GAS_PRICE: '1200000000',
+  DEFAULT_VALUE: '0x0',
 };
