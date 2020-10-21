@@ -197,7 +197,7 @@ class WalletConnectPage extends Component {
         await this.initWalletConnect();
       }, 500);
 
-      // Show timeout alert if cannot connect within 10s
+      // Show timeout alert if cannot connect within 20s
       this.timeout = setTimeout(async () => {
         console.log('show timeout alert');
         await this.setState({ modalView: null });
@@ -208,7 +208,7 @@ class WalletConnectPage extends Component {
           () => navigation.goBack(),
         );
         addNotification(notification);
-      }, 10000);
+      }, 20000);
     } else {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
