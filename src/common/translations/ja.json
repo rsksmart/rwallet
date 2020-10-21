@@ -448,7 +448,8 @@
     "share": "シェア",
     "check": "小切手",
     "update": "更新",
-    "accept": "受け入れる"
+    "accept": "受け入れる",
+    "okay": "はい"
   },
   "picker": {
     "confirm": "確定",
@@ -712,6 +713,14 @@
         "normal": "入力された受信者アドレスは、%{explorerName}にレコードがなく、RSK%{otherType}ネットワーク上に%{balance}%{otherSymbolName}があります。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？",
         "both": "入力された受信者アドレスは、%{explorerName}にレコードがありません。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？"
       }
+    },
+    "convertWalletAddress": {
+      "title": "無効なRSKウォレットアドレス",
+      "body": "入力されたウォレットアドレスは無効なRSKアドレスです。 RWalletは、予想されるアドレス形式に自動修正しようとします。続行しますか？"
+    },
+    "convertContractAddress": {
+      "title": "無効なRSK契約アドレス",
+      "body": "入力された契約アドレスは無効なRSKアドレスです。 RWalletは、予想されるアドレス形式に自動修正しようとします。続行しますか？"
     }
   },
   "currency": {

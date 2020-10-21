@@ -451,7 +451,8 @@
     "share": "分享",
     "check": "检查",
     "update": "更新",
-    "accept": "接受"
+    "accept": "接受",
+    "okay": "好的"
   },
   "picker": {
     "confirm": "确定",
@@ -715,6 +716,14 @@
         "normal": "输入的接收者地址在%{explorerName}中没有记录，并且在RSK%{otherType}网络上具有%{balance} %{otherSymbolName}。您确定要将%{amount} %{symbolName}发送到RSK %{type}上的地址吗？",
         "both": "输入的接收者地址在%{explorerName}中没有记录。您确定要将%{amount} %{symbolName}发送到RSK %{type}上的地址吗？"
       }
+    },
+    "convertWalletAddress": {
+      "title": "无效的RSK钱包地址",
+      "body": "输入的钱包地址是无效的RSK地址。 RWallet会尝试将其自动更正为预期的地址格式，您要继续吗？"
+    },
+    "convertContractAddress": {
+      "title": "无效的RSK合约地址",
+      "body": "输入的合约地址是无效的RSK地址。 RWallet会尝试将其自动更正为预期的地址格式，您要继续吗？"
     }
   },
   "currency": {

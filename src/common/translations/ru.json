@@ -448,7 +448,8 @@
     "share": "ПОДЕЛИТЬСЯ",
     "check": "ЧЕК",
     "update": "Обновить",
-    "accept": "ПРИНЯТЬ"
+    "accept": "ПРИНЯТЬ",
+    "okay": "Хорошо"
   },
   "picker": {
     "confirm": "подтвердить",
@@ -712,6 +713,14 @@
         "normal": "Введенный адрес получателя не имеет записи в %{explorerName} и имеет %{balance} %{otherSymbolName} в сети RSK %{otherType}. Вы уверены, что отправите %{amount} %{symbolName} на адрес RSK %{type}?",
         "both": "Введенный адрес получателя не имеет записи в %{explorerName}. Вы уверены, что отправите% {amount} % symbolName} на адрес в RSK %{type}?"
       }
+    },
+    "convertWalletAddress": {
+      "title": "Invalid RSK wallet address",
+      "body": "The entered wallet address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "convertContractAddress": {
+      "title": "Invalid RSK contract address",
+      "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
     }
   },
   "currency": {
