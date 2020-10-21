@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
+import BigNumber from 'bignumber.js';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
@@ -38,11 +39,11 @@ export default function TransactionModal({
   const {
     value, from, to, data, gasLimit, gasPrice,
   } = txData;
-  const amount = value ? Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(value)}`, 'ether') : '0';
-  const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-  const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-  const feeWei = gasLimitNumber * gasPriceNumber;
-  const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+  const amount = value ? Rsk3.utils.fromWei(`${new BigNumber(value)}`, 'ether') : '0';
+  const gasLimitNumber = new BigNumber(gasLimit);
+  const gasPriceNumber = new BigNumber(gasPrice);
+  const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
+  const fee = Rsk3.utils.fromWei(feeWei, 'ether');
   return (
     <BaseModal
       title={strings('page.wallet.walletconnect.approveTransaction')}
