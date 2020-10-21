@@ -39,7 +39,8 @@ export default function TransactionModal({
   const {
     value, from, to, data, gasLimit, gasPrice,
   } = txData;
-  const amount = value ? Rsk3.utils.fromWei(`${new BigNumber(value)}`, 'ether') : '0';
+  const stringValue = new BigNumber(value).toString();
+  const amount = value ? Rsk3.utils.fromWei(stringValue, 'ether') : '0';
   const gasLimitNumber = new BigNumber(gasLimit);
   const gasPriceNumber = new BigNumber(gasPrice);
   const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
