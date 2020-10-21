@@ -6,6 +6,7 @@ import Rsk3 from '@rsksmart/rsk3';
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
+import fontFamily from '../../../../assets/styles/font.family';
 import { WALLET_CONNECT } from '../../../../common/constants';
 import common from '../../../../common/common';
 
@@ -20,12 +21,12 @@ const styles = StyleSheet.create({
   lineTitle: {
     color: color.black,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
   },
   lineValue: {
     color: color.dustyGray,
     fontSize: 15,
-    fontFamily: 'Avenir',
+    fontFamily: fontFamily.AvenirBook,
     width: '60%',
     textAlign: 'right',
   },
@@ -37,7 +38,7 @@ export default function TransactionModal({
   const {
     value, from, to, data, gasLimit, gasPrice,
   } = txData;
-  const amount = Rsk3.utils.hexToNumber(value);
+  const amount = value ? Rsk3.utils.fromWei(`${Rsk3.utils.hexToNumber(value)}`, 'ether') : '0';
   const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
   const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
   const feeWei = gasLimitNumber * gasPriceNumber;

@@ -12,6 +12,7 @@ import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import parseHelper from '../../common/parse';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     letterSpacing: 0.4,
     marginBottom: 10,

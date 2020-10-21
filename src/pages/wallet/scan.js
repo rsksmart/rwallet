@@ -6,6 +6,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import BarcodeMask from 'react-native-barcode-mask';
 import { connect } from 'react-redux';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import OperationHeader from '../../components/headers/header.operation';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   },
   unauthorizationText: {
     position: 'absolute',
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 17,
     bottom: '55%',
     marginHorizontal: 45,

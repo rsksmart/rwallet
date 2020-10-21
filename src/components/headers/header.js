@@ -9,6 +9,7 @@ import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../common/misc/responsive.text';
 import { strings } from '../../common/i18n';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },
   headerTitleText: {
     color: color.white,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
   },
   backButton: {
     position: 'absolute',

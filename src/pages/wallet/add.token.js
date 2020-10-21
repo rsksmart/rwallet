@@ -9,6 +9,7 @@ import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
 import coinType from '../../common/wallet/cointype';
@@ -28,13 +29,13 @@ const styles = StyleSheet.create({
   },
   enabledAssetsText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     letterSpacing: -0.44,
   },
   note: {
     color: color.white,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     letterSpacing: 0.07,
     marginTop: 14,
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   addCustomTokenText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 16,
   },
   row: {
@@ -94,11 +95,11 @@ const styles = StyleSheet.create({
     width: 75,
   },
   cornerButtonFont: {
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
   },
   cornerButtonPlus: {
     color: color.app.theme,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
   },
 });

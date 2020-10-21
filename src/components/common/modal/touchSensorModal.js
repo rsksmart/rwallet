@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import * as Animatable from 'react-native-animatable';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
 import { strings } from '../../../common/i18n';
 import common from '../../../common/common';
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.component.touchSensorModal.color,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 30,
   },
   finger: {
@@ -42,14 +43,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   touchToVerify: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
     marginBottom: 17,
   },
   passcode: {},
   passcodeText: {
     color: color.text.warning,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 17,
   },
   errView: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   cancelText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.text.link,
     fontSize: 17,
   },

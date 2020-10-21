@@ -691,6 +691,26 @@ function* initLiveQueryPendingProposals() {
   }
 }
 
+function* updateTokenBalanceRequest(action) {
+  const { tokens } = action;
+  try {
+    const queryTokens = _.map(tokens, (token) => ({
+      chain: token.chain,
+      symbol: token.symbol,
+      type: token.type,
+      address: token.address,
+      contractAddress: token.contractAddress,
+    }));
+    const response = yield call(ParseHelper.updateTokenBalance, queryTokens);
+    yield put({
+      type: actions.FETCH_TOKENS_RESULT,
+      value: response,
+    });
+  } catch (err) {
+    console.warn(err.message);
+  }
+}
+
 export default function* () {
   yield all([
     takeEvery(actions.DELETE_KEY, deleteKeyRequest),
@@ -723,5 +743,7 @@ export default function* () {
     takeEvery(actions.FETCH_PENDING_PROPOSALS, fetchPendingProposals),
     takeEvery(actions.FETCH_PROPOSAL, fetchProposal),
     takeEvery(actions.UPDATE_PROPOSAL, updateProposalRequest),
+
+    takeEvery(actions.UPDATE_TOKEN_BALANCE, updateTokenBalanceRequest),
   ]);
 }

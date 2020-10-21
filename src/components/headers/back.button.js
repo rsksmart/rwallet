@@ -6,11 +6,12 @@ import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Loc from '../common/misc/loc';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 
 const styles = StyleSheet.create({
   headerTitle: {
     color: color.whiteA90,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     letterSpacing: 0.39,
     marginLeft: 12,

@@ -604,6 +604,14 @@ class ParseHelper {
     console.log(`processSignedTransaction, proposal: ${JSON.stringify(proposal)}`);
     return proposal;
   }
+
+  static async updateTokenBalance(tokens) {
+    const params = {
+      tokenList: tokens,
+    };
+    const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
+    return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
+  }
 }
 
 // Create parse helper proxy to add global error handling

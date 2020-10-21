@@ -133,7 +133,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "빈 지갑",
-        "selectAvailableWallet": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
+        "selectMainnetAsset": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
+        "selectTestnetAsset": "적어도 하나의 testnet rsk 자산이있는 지갑을 선택하십시오",
         "isConnecting": "지갑 연결 중 ...",
         "isSigning": "트랜잭션 서명 중 ...",
         "signApproved": "메시지 서명 승인 됨",
@@ -146,6 +147,7 @@
         "agreeTo": "허용을 클릭하면 동의합니다.",
         "agreeOne": "- 현재 지갑 주소 가져 오기 허용",
         "agreeTwo": "- 현재 지갑에서 서명 요청 허용",
+        "advancedOptions": "고급 옵션",
         "reject": "거부",
         "allow": "허용",
         "connected": "연결됨",
@@ -165,6 +167,9 @@
         "leaveToDisconnect": "연결 해제 하시겠습니까?",
         "leaveToDisconnectDesc": "Wallet Connect 페이지를 나가면 현재 연결된 Dapp에서 RWallet 연결이 끊어집니다.",
         "leaveToDisconnectConfirm": "연결 해제 하시겠습니까?",
+        "disconnectAlertTitle": "월렛 연결이 끊어졌습니다",
+        "disconnectAlertContent": "Dapp \"%{dappName}\"에 대한 Wallet Connect 연결이 종료되었습니다. 네트워크 액세스가 약하거나 Dapp이 어떤 이유로 지갑을 직접 거부했기 때문일 수 있습니다. \n\n 아래 버튼을 클릭하면 지갑 대시 보드로 돌아갑니다.",
+        "okGotIt": "알겠습니다",
         "error": "오류",
         "errorDesc": "오류! 오류가 발생했습니다. 나중에 다시 시도해주세요 (네트워크 문제, 사용자 거부, 잘못된 암호, 불충분 한 처리 수수료 등 여러 가지 이유가있을 수 있음).",
         "tryAgain": "다시 시도",
@@ -179,7 +184,11 @@
         "type": "유형",
         "from": "From",
         "to": "To",
-        "data": "데이터"
+        "data": "데이터",
+        "networkQuestion": {
+          "title": "네트워크",
+          "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."
+        }
       },
       "transferCompleted": {
         "title": "전송",
@@ -223,7 +232,8 @@
       "addCustomToken": {
         "title": "사용자 정의 자산 추가",
         "address": "자산 컨트랙트 주소",
-        "mainnet": "메인넷"
+        "mainnet": "메인넷",
+        "testnet": "테스트 넷"
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",

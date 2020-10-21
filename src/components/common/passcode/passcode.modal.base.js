@@ -6,6 +6,7 @@ import * as Animatable from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
 import references from '../../../assets/references';
 
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     right: 16,
   },
   buttonText: {
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 19,
     color: color.component.passcodeModal.number.color,
   },

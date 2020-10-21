@@ -19,6 +19,7 @@ import Button from '../../components/common/button/button';
 import BasePageSimple from '../base/base.page.simple';
 import Header from '../../components/headers/header';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 
 const MNEMONIC_PHRASE_LENGTH = 12;
 const WORD_FIELD_MARGIN = 37;
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
   wordIndex: {
     marginTop: 12,
     color: color.midGrey,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
   },
 });
 

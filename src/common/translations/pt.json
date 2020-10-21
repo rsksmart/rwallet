@@ -136,7 +136,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Carteira vazia",
-        "selectAvailableWallet": "Selecione uma carteira que tenha pelo menos um ativo rsk mainnet",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo rsk mainnet",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo testnet rsk",
         "isConnecting": "Wallet está conectando ...",
         "isSigning": "Transação está assinando ...",
         "signApproved": "Assinatura de mensagem aprovada",
@@ -149,6 +150,7 @@
         "agreeTo": "Clicando em Permitir, você concorda em,",
         "agreeOne": "- Permitir obter o endereço atual da carteira",
         "agreeTwo": "- Permitir solicitação de assinatura da carteira atual",
+        "advancedOptions": "Opções avançadas",
         "reject": "Rejeitar",
         "allow": "Permitir",
         "connected": "Conectado",
@@ -168,6 +170,9 @@
         "leaveToDisconnect": "Deixar para desconectar?",
         "leaveToDisconnectDesc": "Sair da página Wallet Connect desconectará RWallet do Dapp conectado no momento.",
         "leaveToDisconnectConfirm": "Tem certeza que deseja desconectar?",
+        "disconnectAlertTitle": "Wallet Connect está desconectado",
+        "disconnectAlertContent": "A conexão do Wallet Connect com o Dapp \"%{dappName}\" está fechada. Isso pode ser devido a um acesso de rede fraco ou o Dapp rejeitou a carteira diretamente por algum motivo.\n\nAo clicar no botão abaixo, você retornará ao painel da carteira.",
+        "okGotIt": "Ok, entendi",
         "error": "Erro",
         "errorDesc": "Erro! Ocorreu um erro, tente novamente mais tarde (pode haver vários motivos, como problemas de rede, rejeição do usuário, senha incorreta, taxa de manuseio insuficiente, etc.)",
         "tryAgain": "Tente novamente",
@@ -182,7 +187,11 @@
         "type": "Tipo",
         "from": "De",
         "to": "Para",
-        "data": "Dados"
+        "data": "Dados",
+        "networkQuestion": {
+          "title": "Rede",
+          "body": "O testnet é uma cadeia de blocos RSK alternativa, a ser usada para teste."
+        }
       },
       "transferCompleted": {
         "title": "Enviar",
@@ -226,7 +235,8 @@
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
         "address": "Endereço do contrato do ativo",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",

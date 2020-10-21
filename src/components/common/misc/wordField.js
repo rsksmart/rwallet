@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import DashLine from './dashLine';
 
 export const wordFieldWidth = 163;
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 21,
     color: color.word,
   },

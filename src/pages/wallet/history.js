@@ -24,6 +24,7 @@ import appActions from '../../redux/app/actions';
 import RefreshHeader from '../../components/headers/header.history.refresh';
 import storage from '../../common/storage';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
 
@@ -82,11 +83,11 @@ const styles = StyleSheet.create({
   },
   myAssetsText: {
     color: color.black,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
   },
   assetsValue: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 15,
     letterSpacing: 0.94,
     marginTop: 4,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   },
   sending: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 15,
     letterSpacing: 0.94,
     marginLeft: 5,
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   },
   sendText: {
     color: color.shipCove,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -130,14 +131,14 @@ const styles = StyleSheet.create({
   },
   receiveText: {
     color: color.mantis,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   NameText: {
     color: color.nevada,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
@@ -175,20 +176,20 @@ const styles = StyleSheet.create({
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     letterSpacing: 0.33,
   },
   amount: {
     color: color.black,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     letterSpacing: 1,
     alignSelf: 'flex-end',
   },
   datetime: {
     color: color.gray93,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 12,
     letterSpacing: 0,
     alignSelf: 'flex-end',
@@ -483,11 +484,15 @@ class History extends Component {
 
   onRefresh = () => {
     const { isRefreshing, isLoadMore } = this.state;
+    const { updateTokenBalance } = this.props;
     if (isRefreshing || isLoadMore) {
       return;
     }
     this.setState({ isRefreshing: true });
     this.fetchTokenTransactions(0);
+
+    // # Issue 525 - Force refresh wallet balance when user scroll down to trigger balance loading effect
+    updateTokenBalance([this.coin]);
   }
 
   onSendButtonClick() {
@@ -766,6 +771,7 @@ History.propTypes = {
   txTimestamp: PropTypes.number,
   addNotification: PropTypes.func.isRequired,
   fetchProposal: PropTypes.func.isRequired,
+  updateTokenBalance: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -783,9 +789,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   fetchProposal: (token) => dispatch(walletActions.fetchProposal(token)),
+  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
+  updateTokenBalance: (tokens) => dispatch(walletActions.updateTokenBalance(tokens)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

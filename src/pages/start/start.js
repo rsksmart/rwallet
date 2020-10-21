@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
 import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   },
   versionText: {
     color: color.midGrey,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 16,
     fontWeight: '500',
     position: 'absolute',

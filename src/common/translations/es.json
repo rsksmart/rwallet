@@ -136,7 +136,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Cartera vacía",
-        "selectAvailableWallet": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectTestnetAsset": "Seleccione una billetera que tenga al menos un activo testnet rsk",
         "isConnecting": "Wallet se está conectando ...",
         "isSigning": "La transacción se está firmando ...",
         "signApproved": "Firma de mensajes aprobada",
@@ -149,6 +150,7 @@
         "agreeTo": "Al hacer clic en Permitir, estás de acuerdo",
         "agreeOne": "- Permitir obtener la dirección de billetera actual",
         "agreeTwo": "- Permitir solicitud de firma de la billetera actual",
+        "advancedOptions": "Opciones avanzadas",
         "reject": "Rechazar",
         "allow": "Permitir",
         "connected": "Conectado",
@@ -168,6 +170,9 @@
         "leaveToDisconnect": "¿Dejar para desconectar?",
         "leaveToDisconnectDesc": "Salir de la página de Wallet Connect desconectará RWallet de la Dapp conectada actualmente.",
         "leaveToDisconnectConfirm": "¿Está seguro de desconectarse?",
+        "disconnectAlertTitle": "Wallet Connect está desconectado",
+        "disconnectAlertContent": "La conexión de Wallet Connect a Dapp \"%{dappName}\" está cerrada. Esto puede deberse a un acceso débil a la red o que Dapp rechazó la billetera directamente por algún motivo.\n\nHaciendo clic en el botón de abajo, volverá al panel de la billetera.",
+        "okGotIt": "Está bien, lo tengo",
         "error": "Error",
         "errorDesc": "¡Error! Se produjo un error, inténtelo de nuevo más tarde (puede haber muchas razones, como problemas de red, rechazo del usuario, contraseña incorrecta, tarifa de manejo insuficiente, etc.)",
         "tryAgain": "Inténtalo de nuevo",
@@ -182,7 +187,11 @@
         "type": "Tipo",
         "from": "Desde",
         "to": "A",
-        "data": "Datos"
+        "data": "Datos",
+        "networkQuestion": {
+          "title": "Red",
+          "body": "La testnet es una cadena de bloques RSK alternativa, que se utilizará para realizar pruebas."
+        }
       },
       "transferCompleted": {
         "title": "Enviar",
@@ -226,7 +235,8 @@
       "addCustomToken": {
         "title": "Agregar activos personalizados",
         "address": "Dirección del contrato de activo",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",

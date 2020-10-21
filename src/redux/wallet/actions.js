@@ -74,6 +74,8 @@ const actions = {
   JOIN_SHARED_WALLET: 'JOIN_SHARED_WALLET',
   SET_SHARED_WALLET_CREATION_ERROR: 'SET_SHARED_WALLET_CREATION_ERROR',
 
+  UPDATE_TOKEN_BALANCE: 'UPDATE_TOKEN_BALANCE',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -241,6 +243,10 @@ const actions = {
   fetchProposal: (token) => ({
     type: actions.FETCH_PROPOSAL,
     payload: { token },
+  }),
+  updateTokenBalance: (tokens) => ({
+    type: actions.UPDATE_TOKEN_BALANCE,
+    tokens,
   }),
 };
 

@@ -136,7 +136,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "空钱包",
-        "selectAvailableWallet": "请选择拥有RSK主网资产的钱包",
+        "selectMainnetAsset": "请选择拥有RSK主网资产的钱包",
+        "selectTestnetAsset": "请选择拥有RSK测试网资产的钱包",
         "isConnecting": "钱包正在连接...",
         "isSigning": "交易正在签名...",
         "signApproved": "消息签名已批准",
@@ -149,6 +150,7 @@
         "agreeTo": "点击允许，即表示您同意",
         "agreeOne": "- 允许获取当前的钱包地址",
         "agreeTwo": "- 允许来自当前钱包的签名请求",
+        "advancedOptions": "高级选项",
         "reject": "拒绝",
         "allow": "允许",
         "connected": "已连接",
@@ -168,6 +170,9 @@
         "leaveToDisconnect": "要断开连接吗？",
         "leaveToDisconnectDesc": "离开Wallet Connect页面会将RWallet与当前连接的Dapp断开连接。",
         "leaveToDisconnectConfirm": "您确定要断开连接吗？",
+        "disconnectAlertTitle": "Wallet Connect已经断开连接",
+        "disconnectAlertContent": "与Dapp\"%{dappName}\"的电子钱包连接已关闭。这可能是由于网络访问不畅，或者Dapp由于某种原因直接拒绝了钱包。\n\n通过单击下面的按钮，您将返回到钱包首页。",
+        "okGotIt": "好，知道了",
         "error": "错误",
         "errorDesc": "错误！发生错误，请稍后重试（可能有很多原因，例如网络问题，用户拒绝，密码错误，手续费不足等）",
         "tryAgain": "再试一次",
@@ -182,7 +187,11 @@
         "type": "类型",
         "from": "从",
         "to": "到",
-        "data": "数据"
+        "data": "数据",
+        "networkQuestion": {
+          "title": "网络",
+          "body": "测试网是用于测试的备用RSK区块链。"
+        }
       },
       "transferCompleted": {
         "title": "发送",
@@ -226,7 +235,8 @@
       "addCustomToken": {
         "title": "添加自定义资产",
         "address": "资产合约地址",
-        "mainnet": "正式网络"
+        "mainnet": "正式网络",
+        "testnet": "测试网络"
       },
       "addCustomTokenConfirm": {
         "title": "添加自定义资产",

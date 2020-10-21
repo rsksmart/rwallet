@@ -134,7 +134,8 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "emptyWalletError": "Empty wallet",
-        "selectAvailableWallet": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectMainnetAsset": "Please select a wallet that has at least one mainnet rsk asset",
+        "selectTestnetAsset": "Please select a wallet that has at least one testnet rsk asset",
         "isConnecting": "Wallet is connecting...",
         "isSigning": "Transaction is signing...",
         "signApproved": "Message Signing Approved",
@@ -147,6 +148,7 @@
         "agreeTo": "Clicking on Allow, you agree to,",
         "agreeOne": "- Allow getting current wallet address",
         "agreeTwo": "- Allow signature request from the current wallet",
+        "advancedOptions": "Advanced Options",
         "reject": "Reject",
         "allow": "Allow",
         "connected": "Connected",
@@ -166,6 +168,9 @@
         "leaveToDisconnect": "Leave to disconnect?",
         "leaveToDisconnectDesc": "Leaving Wallet Connect page will disconnect RWallet from the current connected Dapp.",
         "leaveToDisconnectConfirm": "Are you sure to disconnect?",
+        "disconnectAlertTitle": "Wallet Connect is disconnected",
+        "disconnectAlertContent": "The Wallet Connect connection to the Dapp \"%{dappName}\" is closed. This may be because of weak network access, or the Dapp rejected the wallet directly for some reason.\n\nBy clicking the button below you will be returned to the wallet dashboard.",
+        "okGotIt": "Okay, got it",
         "error": "Error",
         "errorDesc": "Error! An error occurred, please try again later (there may be many reasons, such as network problems, user rejection, incorrect passcode, insufficient handling fee, etc.)",
         "tryAgain": "Try again",
@@ -180,7 +185,11 @@
         "type": "Type",
         "from": "From",
         "to": "To",
-        "data": "Data"
+        "data": "Data",
+        "networkQuestion": {
+          "title": "Network",
+          "body": "The testnet is an alternative RSK block chain, to be used for testing."
+        }
       },
       "transferCompleted": {
         "title": "Send",
@@ -224,7 +233,8 @@
       "addCustomToken": {
         "title": "Add Custom Assets",
         "address": "Asset Contract Address",
-        "mainnet": "Mainnet"
+        "mainnet": "Mainnet",
+        "testnet": "Testnet"
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Assets",
