@@ -2,7 +2,9 @@ import ERROR_CODE from './error.code';
 import GeneralError from './general.error';
 import FeeCalculationError from './fee.calculation.error';
 import ExistUnfinishedProposalError from './exist.unfinished.proposal.error';
+import InvalidAddressError from './invalid.address.error';
+import InvalidAmountError from './invalid.amount.error';
 
 export {
-  ERROR_CODE, GeneralError, FeeCalculationError, ExistUnfinishedProposalError,
+  ERROR_CODE, GeneralError, FeeCalculationError, InvalidAddressError, InvalidAmountError, ExistUnfinishedProposalError,
 };

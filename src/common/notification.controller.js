@@ -56,6 +56,10 @@ export const errorNotifications = {
     title: 'modal.feeCalculationError.title',
     body: 'modal.feeCalculationError.body',
   },
+  [ERROR_CODE.ERR_INVALID_ADDRESS]: {
+    title: 'modal.invalidAddress.title',
+    body: 'modal.invalidAddress.body',
+  },
 };
 
 
