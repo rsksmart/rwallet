@@ -135,6 +135,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect expirou",
+        "timeoutBody": "RWallet não conseguiu estabelecer uma conexão Wallet Connect com o Dapp em um curto período de tempo. Tente novamente.",
+        "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
         "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo rsk mainnet",
         "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo testnet rsk",

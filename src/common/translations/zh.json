@@ -135,6 +135,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect超时",
+        "timeoutBody": "RWallet在短时间内无法建立与Dapp进行连接，请重试。",
+        "timeoutButton": "好的",
         "emptyWalletError": "空钱包",
         "selectMainnetAsset": "请选择拥有RSK主网资产的钱包",
         "selectTestnetAsset": "请选择拥有RSK测试网资产的钱包",
