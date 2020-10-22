@@ -368,7 +368,7 @@ class ParseHelper {
     const params = {
       symbol, type, size,
     };
-    console.log('getTransactionFees, params: ', params);
+    console.log('getTransactionFees, params: ', JSON.stringify(params));
     const result = await Parse.Cloud.run('getTransactionFees', params);
     console.log('getTransactionFees, result: ', result);
     return result;

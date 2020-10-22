@@ -162,9 +162,8 @@ class VerifyPhrase extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { navigation, isWalletsUpdated, sharedWalletCreationError } = nextProps;
-    const {
-      isCreatingMultisig, isJoiningMultisig, resetSharedWalletCreationError, addNotification, sharedWalletCreationError: lastSharedWalletCreationError,
-    } = navigation.state.params;
+    const { isCreatingMultisig, isJoiningMultisig } = navigation.state.params;
+    const { addNotification, resetSharedWalletCreationError, sharedWalletCreationError: lastSharedWalletCreationError } = this.props;
     const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
     console.log('componentWillReceiveProps, isWalletsUpdated: ', isWalletsUpdated);
@@ -439,7 +438,9 @@ VerifyPhrase.propTypes = {
   passcode: PropTypes.string,
   createSharedWallet: PropTypes.func.isRequired,
   joinSharedWallet: PropTypes.func.isRequired,
-  sharedWalletCreationError: PropTypes.shape({}),
+  sharedWalletCreationError: PropTypes.shape({
+    code: PropTypes.number,
+  }),
   resetSharedWalletCreationError: PropTypes.func.isRequired,
 };
 
