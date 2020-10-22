@@ -22,7 +22,7 @@ import WaleltConnectHeader from '../../../components/headers/header.walletconnec
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK, TRANSACTION } from '../../../common/constants';
+import { NETWORK, TRANSACTION, TIMEOUT_VALUE } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -208,7 +208,7 @@ class WalletConnectPage extends Component {
           () => navigation.goBack(),
         );
         addNotification(notification);
-      }, 20000);
+      }, TIMEOUT_VALUE.WALLET_CONNECT);
     } else {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
