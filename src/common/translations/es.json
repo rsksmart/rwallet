@@ -400,7 +400,8 @@
     "done": "Hecho",
     "share": "COMPARTIR",
     "check": "CHEQUE",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "okay": "Bueno"
   },
   "txState": {
     "Sent": "Enviado",
@@ -624,6 +625,14 @@
         "normal": "La dirección del destinatario ingresada no tiene registro en %{explorerName} y tiene %{balance} %{otherSymbolName} en la red RSK %{otherType}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?",
         "both": "La dirección del destinatario ingresada no tiene registro en %{explorerName}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?"
       }
+    },
+    "convertWalletAddress": {
+      "title": "Dirección de billetera RSK no válida",
+      "body": "La dirección de billetera ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "convertContractAddress": {
+      "title": "Dirección de contrato RSK no válida",
+      "body": "La dirección del contrato ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
     }
   },
   "currency": {
