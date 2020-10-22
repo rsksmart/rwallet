@@ -72,6 +72,12 @@ const config = {
       Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
+  addressUrls: {
+    RBTC: {
+      Mainnet: 'https://explorer.rsk.co/address',
+      Testnet: 'https://explorer.testnet.rsk.co/address',
+    },
+  },
   defaultFontFamily: fontFamily.Roboto, // defaultFontFamily, for android
   coinswitch: {
     // Put the initPair here because
@@ -97,6 +103,7 @@ const config = {
     ko: 'https://www.rsk.co/ko/terms-conditions',
     ja: 'https://www.rsk.co/ja/terms-conditions',
   },
+  accountBasedRskAddressUrl: 'https://developers.rsk.co/rsk/architecture/account-based/',
   rnsDomain: 'wallet.rsk',
   storageVersion: 3,
   defaultDappIcon: 'https://storage.googleapis.com/storage-rwallet/rwallet.png',
