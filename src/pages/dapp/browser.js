@@ -10,6 +10,7 @@ import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
@@ -424,10 +425,10 @@ class DAppBrowser extends Component {
   popupAllowanceModal = async (id, txData, symbol) => {
     const dappUrl = this.getDappUrl();
     const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasLimitNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
+    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
     this.setState({
       modalView: (
         <AllowanceModal
