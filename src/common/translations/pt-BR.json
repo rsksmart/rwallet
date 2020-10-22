@@ -80,7 +80,7 @@
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
         "mainnet": "Rede principal",
-        "testnet": "Rede teste"
+        "testnet": "Rede de testes"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
