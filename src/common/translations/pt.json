@@ -239,7 +239,7 @@
         "title": "Adicionar ativos personalizados",
         "address": "Endereço do contrato do ativo",
         "mainnet": "Rede principal",
-        "testnet": "Testnet"
+        "testnet": "Rede de teste"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
