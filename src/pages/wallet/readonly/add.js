@@ -23,6 +23,7 @@ import { createErrorConfirmation } from '../../../common/confirmation.controller
 import { strings } from '../../../common/i18n';
 import appActions from '../../../redux/app/actions';
 import { createInfoNotification } from '../../../common/notification.controller';
+import ConvertAddressConfirmation from '../../../components/wallet/convert.address.confirmation';
 
 class AddReadOnlyWallet extends Component {
     static navigationOptions = () => ({
@@ -37,8 +38,10 @@ class AddReadOnlyWallet extends Component {
         errorText: undefined,
         isLoading: false,
         canSubmit: false,
+        isShowConvertAddressModal: false,
       };
       this.type = 'Mainnet';
+      this.address = '';
     }
 
     componentDidMount() {
@@ -99,13 +102,26 @@ class AddReadOnlyWallet extends Component {
       </View>
     )
 
+    addAddress = () => {
+      const { navigation, walletManager } = this.props;
+      const {
+        chain, symbol, type, address, subdomain,
+      } = this;
+      const token = walletManager.findToken(symbol, type, address);
+      if (token) {
+        this.setState({ errorText: strings('page.wallet.addReadOnlyWallet.duplicateAddress'), canSubmit: false });
+        return;
+      }
+
+      navigation.navigate('AddReadOnlyWalletConfirmation', {
+        chain, type, address, subdomain,
+      });
+    }
+
     onCheck = async () => {
-      const { navigation, addConfirmation, walletManager } = this.props;
+      const { addConfirmation } = this.props;
       const { address } = this.state;
       const { type } = this;
-      let chain = null;
-      // let coins = [{ symbol: 'BTC' }];
-      let symbol = null;
       let newAddress = address;
       let subdomain = null;
       if (common.isValidRnsSubdomain(address)) {
@@ -134,41 +150,48 @@ class AddReadOnlyWallet extends Component {
           this.setState({ isLoading: false });
         }
       }
-      if (newAddress.startsWith('0x')) {
-        chain = Chain.Rootstock;
-        symbol = 'RBTC';
-      } else {
-        chain = Chain.Bitcoin;
-        symbol = 'BTC';
-      }
+
+      const chain = newAddress.startsWith('0x') ? Chain.Rootstock : Chain.Bitcoin;
+      const symbol = chain === Chain.Rootstock ? 'RBTC' : 'BTC';
 
       const isWalletAddress = common.isWalletAddress(newAddress, symbol, type);
-      const { networkId } = common.getCoinType(symbol, type);
-
-      if (chain === Chain.Rootstock) {
-        newAddress = Rsk3.utils.toChecksumAddress(newAddress, networkId);
-      }
-
       if (!isWalletAddress) {
         this.setState({ errorText: strings('page.wallet.transfer.unavailableAddress'), canSubmit: false });
         return;
       }
 
-      const token = walletManager.findToken(symbol, type, address);
-      if (token) {
-        this.setState({ errorText: strings('page.wallet.addReadOnlyWallet.duplicateAddress'), canSubmit: false });
-        return;
+      this.chain = chain;
+      this.symbol = symbol;
+      this.address = newAddress;
+      this.subdomain = subdomain;
+
+      // If address is not a checksum address, pop up convert address modal to covert it to checksum address.
+      // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
+      if (chain === Chain.Rootstock) {
+        const { networkId } = common.getCoinType(symbol, type);
+        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(newAddress, networkId);
+        if (!isChecksumAddress) {
+          this.setState({ isShowConvertAddressModal: true });
+          return;
+        }
       }
 
-      navigation.navigate('AddReadOnlyWalletConfirmation', {
-        chain, type, address: newAddress, subdomain,
-      });
+      this.addAddress();
+    }
+
+    onConvertAddressConfirmed = () => {
+      this.setState({ isShowConvertAddressModal: false });
+      const { symbol, type } = this;
+      const { networkId } = common.getCoinType(symbol, type);
+      const checksumAddress = common.toChecksumAddress(this.address, networkId);
+      this.address = checksumAddress;
+      this.addAddress();
     }
 
     render() {
       const { navigation } = this.props;
       const {
-        address, isMainnet, errorText, isLoading, canSubmit,
+        address, isMainnet, errorText, isLoading, canSubmit, isShowConvertAddressModal,
       } = this.state;
       const customButton = (<Button text="button.check" onPress={this.onCheck} disabled={!canSubmit} />);
       return (
@@ -208,6 +231,15 @@ class AddReadOnlyWallet extends Component {
               <Text style={readOnlyStyles.errorText}>{errorText}</Text>
             </View>
           </View>
+          { isShowConvertAddressModal
+            && (
+            <ConvertAddressConfirmation
+              title={strings('modal.convertWalletAddress.title')}
+              body={strings('modal.convertWalletAddress.body')}
+              onConfirm={this.onConvertAddressConfirmed}
+              onCancel={() => this.setState({ isShowConvertAddressModal: false })}
+            />
+            )}
         </BasePageGereral>
       );
     }

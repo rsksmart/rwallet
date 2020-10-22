@@ -21,6 +21,7 @@ import config from '../../config';
 import I18n from './i18n';
 import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
 import cointype from './wallet/cointype';
+import { InvalidAddressError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -207,6 +208,22 @@ const common = {
     // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
     // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
     url = `${url}/${hash}${symbol === 'BTC' ? '/' : ''}`;
+    return url;
+  },
+
+  /**
+   * getAddressUrl, returns transaction url
+   * @param {*} symbol, coin symbol
+   * @param {*} type, coin network type
+   * @param {*} hash, transaction hash
+   */
+  getAddressUrl(type, address) {
+    let url = config.addressUrls.RBTC[type];
+    // BTC has / suffix, RSK does not.
+    // For example:
+    // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
+    // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
+    url = `${url}/${address}`;
     return url;
   },
 
@@ -674,6 +691,20 @@ const common = {
       return url;
     }
     return baseUrl;
+  },
+
+  toChecksumAddress(address, networkId) {
+    let checksumAddress = null;
+    try {
+      checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+    } catch (error) {
+      throw new InvalidAddressError();
+    }
+    return checksumAddress;
+  },
+
+  getExplorerName(type) {
+    return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
   },
 };
 

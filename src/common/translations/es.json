@@ -400,7 +400,8 @@
     "done": "Hecho",
     "share": "COMPARTIR",
     "check": "CHEQUE",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "okay": "Bueno"
   },
   "txState": {
     "Sent": "Enviado",
@@ -603,6 +604,35 @@
     "feeCalculationError": {
       "title": "Error de cálculo de tarifa",
       "body": "Se produjo un error al calcular el costo. Vuelva a intentarlo."
+    },
+    "invalidRskAddress": {
+      "title": "Dirección de RSK no válida",
+      "body": {
+        "normal": "La dirección del destinatario ingresada es una dirección RSK no válida. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar.",
+        "ethereum": "La dirección del destinatario ingresada parece ser una dirección de Ethereum. Este es un problema conocido al copiar direcciones de MetaMask. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar."
+      },
+      "question": "¿Por qué ves este mensaje?",
+      "confirm": "Enviar de todos modos",
+      "cancel": "Regresa y vuelve a entrar",
+      "asset": "Activo",
+      "address": "Habla a",
+      "balance": "Equilibrar",
+      "risk": "Bien, entiendo el riesgo."
+    },
+    "emptyRecordAddress": {
+      "title": "Dirección del destinatario del registro vacío",
+      "body": {
+        "normal": "La dirección del destinatario ingresada no tiene registro en %{explorerName} y tiene %{balance} %{otherSymbolName} en la red RSK %{otherType}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?",
+        "both": "La dirección del destinatario ingresada no tiene registro en %{explorerName}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Dirección de billetera RSK no válida",
+      "body": "La dirección de billetera ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "convertContractAddress": {
+      "title": "Dirección de contrato RSK no válida",
+      "body": "La dirección del contrato ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
     }
   },
   "currency": {

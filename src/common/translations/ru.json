@@ -397,7 +397,8 @@
     "done": "Готово",
     "share": "ПОДЕЛИТЬСЯ",
     "check": "ЧЕК",
-    "update": "Обновить"
+    "update": "Обновить",
+    "okay": "Хорошо"
   },
   "txState": {
     "Sent": "Отправлено",
@@ -600,6 +601,35 @@
     "feeCalculationError": {
       "title": "Ошибка расчета комиссии",
       "body": "Произошла ошибка при расчете стоимости. Пожалуйста, попробуйте еще раз."
+    },
+    "invalidRskAddress": {
+      "title": "Недействительный адрес RSK",
+      "body": {
+        "normal": "веденный адрес получателя является недействительным адресом RSK. Убедитесь, что адрес получателя является действительным адресом RSK, и проверьте его на %{explorerName} перед отправкой.",
+        "ethereum": "Введенный адрес получателя выглядит как адрес Ethereum. Это известная проблема при копировании адресов из MetaMask. Убедитесь, что адрес получателя является действительным адресом RSK, и проверьте его на %{explorerName} перед отправкой."
+      },
+      "question": "Почему вы видите это сообщение?",
+      "confirm": "Все равно отправить",
+      "cancel": "Вернитесь и войдите снова",
+      "asset": "Актив",
+      "address": "Адрес",
+      "balance": "Баланс",
+      "risk": "Хорошо, я понимаю риск."
+    },
+    "emptyRecordAddress": {
+      "title": "Пустой адрес получателя записи",
+      "body": {
+        "normal": "Введенный адрес получателя не имеет записи в %{explorerName} и имеет %{balance} %{otherSymbolName} в сети RSK %{otherType}. Вы уверены, что отправите %{amount} %{symbolName} на адрес RSK %{type}?",
+        "both": "Введенный адрес получателя не имеет записи в %{explorerName}. Вы уверены, что отправите% {amount} % symbolName} на адрес в RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Invalid RSK wallet address",
+      "body": "The entered wallet address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "convertContractAddress": {
+      "title": "Invalid RSK contract address",
+      "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
     }
   },
   "currency": {
