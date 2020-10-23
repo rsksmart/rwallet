@@ -34,10 +34,10 @@ The first three steps are needed for both Android and iOS devices.
 1. Create an environment variable file named `.env` in the root directory
     ```
     # Parse server configuration
-    # Server URL https://wallet.app/v1
+    # Server URL https://rwallet.app/v1
     # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
     # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
-    # RWALLET_ENV: Production, Dogfood or others. If RWALLET_ENV value is "Production", or not set, the final server URL value is the same as Server URL such as "https://wallet.app/v1"; otherwise, the RWALLET_ENV value will be prepended to Server URL in lower case as a sub-domain. For example, if RWALLET_ENV is "Dogfood" and Server URL is "https://wallet.app/v1", the final URL is https://dogfood.wallet.app/v1.
+    # RWALLET_ENV: Production, Dogfood or others. If RWALLET_ENV value is "Production", or not set, the final server URL value is the same as Server URL such as "https://rwallet.app/v1"; otherwise, the RWALLET_ENV value will be prepended to Server URL in lower case as a sub-domain. For example, if RWALLET_ENV is "Dogfood" and Server URL is "https://rwallet.app/v1", the final URL is https://dogfood.rwallet.app/v1.
 
     PARSE_SERVER_URL=https://rwallet.app/v1
     RWALLET_API_KEY=6a740128-2ba2-4b82-9301-8cbe07208ee9
