@@ -122,6 +122,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Tempo expirado",
+        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão Wallet Connect com o Dapp dentro do prazo estabelecido. Por favor, tente novamente.",
+        "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
         "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
         "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da rsk",

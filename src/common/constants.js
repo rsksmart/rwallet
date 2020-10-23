@@ -118,3 +118,7 @@ export const TRANSACTION = {
   DEFAULT_GAS_PRICE: '1200000000',
   DEFAULT_VALUE: '0x0',
 };
+
+export const TIMEOUT_VALUE = {
+  WALLET_CONNECT: 20000, // 20 sec
+};

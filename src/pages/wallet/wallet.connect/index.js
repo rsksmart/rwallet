@@ -23,7 +23,7 @@ import WaleltConnectHeader from '../../../components/headers/header.walletconnec
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK, TRANSACTION } from '../../../common/constants';
+import { NETWORK, TRANSACTION, TIMEOUT_VALUE } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -197,6 +197,19 @@ class WalletConnectPage extends Component {
 
         await this.initWalletConnect();
       }, 500);
+
+      // Show timeout alert if cannot connect within 20s
+      this.timeout = setTimeout(async () => {
+        console.log('show timeout alert');
+        await this.setState({ modalView: null });
+        const notification = createErrorNotification(
+          'page.wallet.walletconnect.timeoutTitle',
+          'page.wallet.walletconnect.timeoutBody',
+          'page.wallet.walletconnect.timeoutButton',
+          () => navigation.goBack(),
+        );
+        addNotification(notification);
+      }, TIMEOUT_VALUE.WALLET_CONNECT);
     } else {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
@@ -315,6 +328,9 @@ class WalletConnectPage extends Component {
           contentType: WALLET_CONNECTING,
           connector,
         });
+
+        // Clear timeout if wallet connect establish session connect
+        clearTimeout(this.timeout);
       });
 
       connector.on('session_update', (error) => {
