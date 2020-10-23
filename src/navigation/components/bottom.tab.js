@@ -72,18 +72,27 @@ class TabBar extends Component {
     };
   }
 
+  componentDidMount() {
+    const { walletManager } = this.props;
+    this.updateProposals(walletManager);
+  }
+
   componentWillReceiveProps(nextProps) {
     const { updateTimestamp: lastUpdateTimeStamp } = this.props;
     const { updateTimestamp, walletManager } = nextProps;
     if (updateTimestamp !== lastUpdateTimeStamp) {
-      const proposals = walletManager.getProposals();
-      const proposalNumber = proposals.length;
-      if (proposalNumber > 0) {
-        const proposalNumberText = proposalNumber > 99 ? '99+' : proposalNumber;
-        this.setState({ proposalNumberText });
-      } else {
-        this.setState({ proposalNumberText: null });
-      }
+      this.updateProposals(walletManager);
+    }
+  }
+
+  updateProposals = (walletManager) => {
+    const proposals = walletManager.getProposals();
+    const proposalNumber = proposals.length;
+    if (proposalNumber > 0) {
+      const proposalNumberText = proposalNumber > 99 ? '99+' : proposalNumber;
+      this.setState({ proposalNumberText });
+    } else {
+      this.setState({ proposalNumberText: null });
     }
   }
 
