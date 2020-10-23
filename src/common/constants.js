@@ -120,5 +120,5 @@ export const TRANSACTION = {
 };
 
 export const TIMEOUT_VALUE = {
-  WALLET_CONNECT: 20000, // 20000ms
+  WALLET_CONNECT: 20000, // 20 sec
 };
