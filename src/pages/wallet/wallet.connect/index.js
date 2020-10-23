@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Rsk3 from '@rsksmart/rsk3';
+import BigNumber from 'bignumber.js';
 
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
@@ -476,10 +477,10 @@ class WalletConnectPage extends Component {
   popupAllowanceModal = async () => {
     const { peerMeta, symbol, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasLimitNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
+    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
     this.setState({
       modalView: (
         <AllowanceModal
