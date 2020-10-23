@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Rsk3 from '@rsksmart/rsk3';
+import BigNumber from 'bignumber.js';
 
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
@@ -22,7 +23,7 @@ import WaleltConnectHeader from '../../../components/headers/header.walletconnec
 import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK, TRANSACTION } from '../../../common/constants';
+import { NETWORK, TRANSACTION, TIMEOUT_VALUE } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -208,7 +209,7 @@ class WalletConnectPage extends Component {
           () => navigation.goBack(),
         );
         addNotification(notification);
-      }, 20000);
+      }, TIMEOUT_VALUE.WALLET_CONNECT);
     } else {
       // If current wallet has no mainnet or testnet rsk asset, need to go back
       const notification = createErrorNotification(
@@ -492,10 +493,10 @@ class WalletConnectPage extends Component {
   popupAllowanceModal = async () => {
     const { peerMeta, symbol, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasLimitNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
+    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
     this.setState({
       modalView: (
         <AllowanceModal
