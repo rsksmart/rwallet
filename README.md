@@ -147,7 +147,7 @@ SLACK_URL=""
 1. Make sure you have Android Studio installed, so that it is easy to sync the gradle build config.
 1. To build the APK, run `fastlane android build_apk version:<version_number> code:<version_code>`
 
-## Devleopment
+## Development
 ### Remote Debugging
 #### Remote Debugging on iOS Simulator
 1. Run `npm run ios` to start the app in Simulator.
