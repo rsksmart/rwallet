@@ -111,6 +111,7 @@ export const WALLET_CONNECT = {
     CONFIRMATION: 'Confirmation',
     NOTIFICATION: 'Notification',
   },
+  ASSETS: ['RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP'],
 };
 
 export const TRANSACTION = {

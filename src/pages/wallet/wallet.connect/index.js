@@ -18,17 +18,18 @@ import TransactionModal from './modal/transaction';
 import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
-import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
+import WalletConnectHeader from '../../../components/headers/header.walletconnect';
+import { createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK, TRANSACTION } from '../../../common/constants';
+import { NETWORK, TRANSACTION, WALLET_CONNECT } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
+import coinType from '../../../common/wallet/cointype';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -178,34 +179,22 @@ class WalletConnectPage extends Component {
   }
 
   async componentDidMount() {
-    const { navigation, addNotification } = this.props;
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
     );
 
     const selectedWallet = this.getWallet();
-    if (!_.isEmpty(selectedWallet)) {
-      this.initNetwork();
-      // setTimeout 500ms in order to ui change smoothly
-      setTimeout(async () => {
-        await this.setState({
-          modalView: this.renderWalletConnectingView(),
-          selectedWallet,
-        });
+    this.initNetwork();
+    // setTimeout 500ms in order to ui change smoothly
+    setTimeout(async () => {
+      await this.setState({
+        modalView: this.renderWalletConnectingView(),
+        selectedWallet,
+      });
 
-        await this.initWalletConnect();
-      }, 500);
-    } else {
-      // If current wallet has no mainnet or testnet rsk asset, need to go back
-      const notification = createErrorNotification(
-        'page.wallet.walletconnect.emptyWalletError',
-        'page.wallet.walletconnect.selectMainnetAsset',
-        'page.wallet.walletconnect.gotIt',
-        () => navigation.goBack(),
-      );
-      addNotification(notification);
-    }
+      await this.initWalletConnect();
+    }, 500);
   }
 
   componentWillUnmount() {
@@ -236,34 +225,50 @@ class WalletConnectPage extends Component {
     const network = isTestnet ? 'Testnet' : 'Mainnet';
     const networkId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
-    // If current wallet has no rsk mainnet or testnet coins, return a null value and rwallet will show error notification.
+
+    const coinsListData = [];
+    let rowCoinsData = [];
+    _.forEach(WALLET_CONNECT.ASSETS, (token, index) => {
+      const coinId = isTestnet === 'Testnet' ? token + network : token;
+      const { icon } = coinType[coinId];
+      const name = common.getSymbolName(token, network);
+      const item = {
+        name, icon, selected: false, symbol: token, type: network, token: { symbol: token, type: network },
+      };
+      const coin = _.find(coins, { symbol: token, type: network });
+      if (coin) {
+        item.token = coin;
+        item.selected = true;
+      }
+
+      rowCoinsData.push(item);
+      if (index % 2) {
+        coinsListData.push(rowCoinsData);
+        rowCoinsData = [];
+      }
+    });
+
+    if (WALLET_CONNECT.ASSETS.length % 2) {
+      coinsListData.push(rowCoinsData);
+    }
+
     if (_.isEmpty(rskCoins)) {
-      return null;
+      return {
+        address: '',
+        privateKey: '',
+        coins: coinsListData,
+      };
     }
     return {
       address: Rsk3.utils.toChecksumAddress(rskCoins[0].address, networkId),
       privateKey: rskCoins[0].privateKey,
+      coins: coinsListData,
     };
   }
 
   updateWallet = () => {
-    const { isTestnet } = this.state;
-    const { addNotification } = this.props;
     const selectedWallet = this.getWallet();
-    if (!_.isEmpty(selectedWallet)) {
-      this.setState({ selectedWallet });
-    } else {
-      const notification = createErrorNotification(
-        'page.wallet.walletconnect.emptyWalletError',
-        isTestnet ? 'page.wallet.walletconnect.selectTestnetAsset' : 'page.wallet.walletconnect.selectMainnetAsset',
-        'page.wallet.walletconnect.gotIt',
-        async () => {
-          await this.setState({ isTestnet: !isTestnet });
-          await this.initNetwork();
-        },
-      );
-      addNotification(notification);
-    }
+    this.setState({ selectedWallet });
   }
 
   initWalletConnect = async () => {
@@ -725,11 +730,14 @@ class WalletConnectPage extends Component {
     const {
       contentType, peerMeta, selectedWallet, isTestnet,
     } = this.state;
-    const { address } = selectedWallet;
+    const { navigation: { state: { params: { wallet } } } } = this.props;
+    const { address, coins } = selectedWallet;
     const { name, url } = peerMeta;
     if (contentType === WALLET_CONNECTING) {
       return (
         <WalletConnecting
+          wallet={wallet}
+          updateWallet={this.updateWallet}
           approve={this.approveSession}
           reject={this.rejectSession}
           address={address}
@@ -737,6 +745,7 @@ class WalletConnectPage extends Component {
           dappUrl={url}
           isTestnet={isTestnet}
           onSwitchValueChanged={this.onSwitchValueChanged}
+          coins={coins}
         />
       );
     }
@@ -760,7 +769,7 @@ class WalletConnectPage extends Component {
       <BasePageSimple
         isSafeView={false}
         headerComponent={(
-          <WaleltConnectHeader
+          <WalletConnectHeader
             title={strings('page.wallet.walletconnect.title')}
             onBackButtonPress={this.onBackButtonPress}
           />
