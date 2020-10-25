@@ -226,6 +226,8 @@ class WalletConnectPage extends Component {
     const networkId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
 
+    // Format coins data: [['RBTC Token', 'RIF Token'], [ ... ], ...]
+    // One row shows two tokens
     const coinsListData = [];
     let rowCoinsData = [];
     _.forEach(WALLET_CONNECT.ASSETS, (token, index) => {
