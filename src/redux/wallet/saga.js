@@ -566,23 +566,23 @@ function* joinSharedWalletRequest(action) {
 }
 
 function* updateProposal(proposal) {
-  console.log('updateProposal!!!!!!!!!!updateProposal1!!!!!!!');
   const state = yield select();
   const walletManager = state.Wallet.get('walletManager');
   const multisigWallets = walletManager.getMultisigWallets();
-  for (let i = 0; i < multisigWallets.length; i += 1) {
-    const wallet = multisigWallets[i];
+
+  _.some(multisigWallets, (wallet) => {
     const coin = wallet.coins[0];
-    console.log('updateProposal!!!!!!!!!!updateProposal1!!!!!!!, coin: ', coin);
     if (proposal && proposal.multiSigAddress === coin.address) {
       if (proposal.status !== PROPOSAL_STATUS.PENDING) {
         coin.proposal = null;
       } else if (!coin.proposal || proposal.updatedAt > coin.proposal.updatedAt) {
         coin.proposal = proposal;
       }
-      break;
+      return true;
     }
-  }
+    return false;
+  });
+
   yield put({ type: actions.WALLETS_UPDATED });
 }
 

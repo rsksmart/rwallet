@@ -329,13 +329,14 @@ class WalletManager {
 
   findTokenByInvitationCode = (invitationCode) => {
     let foundCoin = null;
-    for (let i = 0; i < this.wallets.length; i += 1) {
-      const coin = this.wallets[i].coins[0];
+    _.some(this.wallets, (wallet) => {
+      const coin = wallet.coins[0];
       if (coin.invitationCode === invitationCode) {
         foundCoin = coin;
-        break;
+        return true;
       }
-    }
+      return false;
+    });
     return foundCoin;
   }
 
