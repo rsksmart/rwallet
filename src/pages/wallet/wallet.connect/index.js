@@ -790,7 +790,7 @@ class WalletConnectPage extends Component {
 
     return (
       <BasePageSimple
-        isSafeView={false}
+        isSafeView
         headerComponent={(
           <WalletConnectHeader
             title={strings('page.wallet.walletconnect.title')}
