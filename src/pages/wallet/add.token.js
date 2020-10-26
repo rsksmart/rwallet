@@ -21,7 +21,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import { WalletType, BtcAddressType } from '../../common/constants';
-import TokenSwitch from '../../components/common/switch/token.switch';
+import TokenSwitch from '../../components/common/switch/switch.token';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {

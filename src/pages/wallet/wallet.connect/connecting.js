@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import SwitchRow from '../../../components/common/switch/switch.row';
 import Loc from '../../../components/common/misc/loc';
-import TokenSwitch from '../../../components/common/switch/token.switch';
+import TokenSwitch from '../../../components/common/switch/switch.token';
 
 import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
