@@ -119,6 +119,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connectがタイムアウトしました",
+        "timeoutBody": "RWalletは、短い時間枠内にDappへのWalletConnect接続を確立できませんでした。再試行してください。",
+        "timeoutButton": "OK",
         "emptyWalletError": "空のウォレット",
         "selectMainnetAsset": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
         "selectTestnetAsset": "少なくとも1つのtestnetrskアセットを持つウォレットを選択してください",

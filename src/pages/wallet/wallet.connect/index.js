@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Rsk3 from '@rsksmart/rsk3';
+import BigNumber from 'bignumber.js';
 
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
@@ -19,10 +20,12 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WalletConnectHeader from '../../../components/headers/header.walletconnect';
-import { createInfoNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK, TRANSACTION, WALLET_CONNECT } from '../../../common/constants';
+import {
+  NETWORK, TRANSACTION, WALLET_CONNECT, TIMEOUT_VALUE,
+} from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
@@ -179,6 +182,8 @@ class WalletConnectPage extends Component {
   }
 
   async componentDidMount() {
+    const { navigation, addNotification } = this.props;
+
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
@@ -195,6 +200,19 @@ class WalletConnectPage extends Component {
 
       await this.initWalletConnect();
     }, 500);
+
+    // Show timeout alert if cannot connect within 20s
+    this.timeout = setTimeout(async () => {
+      console.log('show timeout alert');
+      await this.setState({ modalView: null });
+      const notification = createErrorNotification(
+        'page.wallet.walletconnect.timeoutTitle',
+        'page.wallet.walletconnect.timeoutBody',
+        'page.wallet.walletconnect.timeoutButton',
+        () => navigation.goBack(),
+      );
+      addNotification(notification);
+    }, TIMEOUT_VALUE.WALLET_CONNECT);
   }
 
   componentWillUnmount() {
@@ -321,6 +339,9 @@ class WalletConnectPage extends Component {
           contentType: WALLET_CONNECTING,
           connector,
         });
+
+        // Clear timeout if wallet connect establish session connect
+        clearTimeout(this.timeout);
       });
 
       connector.on('session_update', (error) => {
@@ -483,10 +504,10 @@ class WalletConnectPage extends Component {
   popupAllowanceModal = async () => {
     const { peerMeta, symbol, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasLimitNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
+    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
     this.setState({
       modalView: (
         <AllowanceModal

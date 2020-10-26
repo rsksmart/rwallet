@@ -119,6 +119,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect timed out",
+        "timeoutBody": "RWallet couldn't establish a Wallet Connect connection to the Dapp within a short timeframe. Please try again.",
+        "timeoutButton": "Okay",
         "emptyWalletError": "Empty wallet",
         "selectMainnetAsset": "Please select a wallet that has at least one mainnet rsk asset",
         "selectTestnetAsset": "Please select a wallet that has at least one testnet rsk asset",

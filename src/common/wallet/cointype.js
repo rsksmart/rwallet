@@ -1,6 +1,7 @@
 // BTC TBTC RBTC TRBTC RIF TRIF
 import { networks } from 'bitcoinjs-lib';
 import references from '../../assets/references';
+import { ASSETS_CONTRACT } from '../constants';
 
 const coinType = {
   BTC: {
@@ -30,7 +31,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RIF',
-    contractAddress: '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5',
+    contractAddress: ASSETS_CONTRACT.RIF.Mainnet,
   },
   DOC: {
     networkId: 30,
@@ -40,7 +41,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'DOC',
-    contractAddress: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
+    contractAddress: ASSETS_CONTRACT.DOC.Mainnet,
   },
   RIFP: {
     networkId: 30,
@@ -50,7 +51,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RIFP',
-    contractAddress: '0xf4d27c56595ed59b66cc7f03cff5193e4bd74a61',
+    contractAddress: ASSETS_CONTRACT.RIFP.Mainnet,
   },
   RDOC: {
     networkId: 30,
@@ -60,7 +61,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RDOC',
-    contractAddress: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
+    contractAddress: ASSETS_CONTRACT.RDOC.Mainnet,
   },
   BITP: {
     networkId: 30,
@@ -70,7 +71,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'BITP',
-    contractAddress: '0x440cd83c160de5c96ddb20246815ea44c7abbca8',
+    contractAddress: ASSETS_CONTRACT.BITP.Mainnet,
   },
   CustomToken: {
     networkId: 30,
@@ -106,7 +107,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RIF',
-    contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    contractAddress: ASSETS_CONTRACT.RIF.Testnet,
   },
   DOCTestnet: {
     networkId: 31,
@@ -116,7 +117,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'DOC',
-    contractAddress: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
+    contractAddress: ASSETS_CONTRACT.DOC.Testnet,
   },
   RIFPTestnet: {
     networkId: 31,
@@ -126,7 +127,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RIFP',
-    contractAddress: '0x23a1aa7b11e68bebe560a36bec04d1f79357f28d',
+    contractAddress: ASSETS_CONTRACT.RIFP.Testnet,
   },
   RDOCTestnet: {
     networkId: 31,
@@ -136,7 +137,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RDOC',
-    contractAddress: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
+    contractAddress: ASSETS_CONTRACT.RDOC.Testnet,
   },
   BITPTestnet: {
     networkId: 31,
@@ -146,7 +147,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'BITP',
-    contractAddress: '0x4dA7997A819bb46B6758b9102234c289Dd2ad3bf',
+    contractAddress: ASSETS_CONTRACT.BITP.Testnet,
   },
   CustomTokenTestnet: {
     networkId: 31,
