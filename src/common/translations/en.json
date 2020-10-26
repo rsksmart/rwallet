@@ -137,6 +137,7 @@
         "agreeTo": "Clicking on Allow, you agree to,",
         "agreeOne": "- Allow getting current wallet address",
         "agreeTwo": "- Allow signature request from the current wallet",
+        "assets": "Assets",
         "advancedOptions": "Advanced Options",
         "reject": "Reject",
         "allow": "Allow",
