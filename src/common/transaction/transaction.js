@@ -10,8 +10,9 @@ import { ASSETS_CONTRACT } from '../constants';
 
 const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
   console.log('Transaction.processSignedTransaction start');
-  const signedTransaction = await symbol === 'BTC' ? btc.signTransaction(rawTransaction, privateKey) : rbtc.signTransaction(rawTransaction, privateKey);
-  return signedTransaction;
+  return symbol === 'BTC'
+    ? btc.signTransaction(rawTransaction, privateKey)
+    : rbtc.signTransaction(rawTransaction, privateKey);
 };
 
 const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));

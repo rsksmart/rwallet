@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
@@ -9,6 +9,14 @@ import Header from '../../../components/headers/header';
 import color from '../../../assets/styles/color';
 
 const sharedWalletIcon = require('../../../assets/images/icon/shared.wallet.png');
+
+const styles = StyleSheet.create({
+  walletTypeList: {
+    marginTop: 10,
+    marginHorizontal: 15,
+    marginBottom: 80,
+  },
+});
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
@@ -57,14 +65,22 @@ class WalletAddIndex extends Component {
 
     render() {
       const { navigation, isShowBackButton } = this.props;
+      const header = (
+        <Header
+          isShowBackButton={isShowBackButton}
+          onBackButtonPress={() => navigation.goBack()}
+          title="page.wallet.add.title"
+          subTitle="page.wallet.add.subTitle"
+        />
+      );
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.add.title" subTitle="page.wallet.add.subTitle" />}
+          headerComponent={header}
         >
-          <WalletTypeList style={[{ marginTop: 10, marginHorizontal: 15, marginBottom: 80 }]} data={this.listData} />
+          <WalletTypeList style={styles.walletTypeList} data={this.listData} />
         </BasePageGereral>
       );
     }

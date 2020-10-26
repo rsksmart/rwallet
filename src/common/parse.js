@@ -485,8 +485,7 @@ class ParseHelper {
     const params = {
       name: chain, type, symbol, address, needFetch,
     };
-    const result = await Parse.Cloud.run('getBalance', params);
-    return result;
+    return Parse.Cloud.run('getBalance', params);
   }
 
   static async createMultisigAddress({
@@ -497,8 +496,7 @@ class ParseHelper {
     };
     console.log('createMultisigAddress, params: ', JSON.stringify(params));
     const result = await Parse.Cloud.run('createMultisigAddress', params);
-    const invitation = parseDataUtil.getInvitation(result);
-    return invitation;
+    return parseDataUtil.getInvitation(result);
   }
 
   static async joinMultisigAddress({
@@ -593,8 +591,7 @@ class ParseHelper {
   static async subscribePendingProposals(addresses) {
     console.log('subscribePendingProposals, addresses: ', addresses);
     const query = ParseHelper.getPendingProposalsQuery(addresses);
-    const subscription = await query.subscribe();
-    return subscription;
+    return query.subscribe();
   }
 
   static async sendSignedMultisigTransaction(params) {

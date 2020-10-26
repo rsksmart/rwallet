@@ -8,8 +8,7 @@ class MultisigTransaction extends Transaction {
   sendSignedTransaction = async (params) => {
     const newParams = params;
     newParams.proposalId = this.proposalId;
-    const proposal = await ParseHelper.sendSignedMultisigTransaction(params);
-    return proposal;
+    return ParseHelper.sendSignedMultisigTransaction(params);
   }
 
   setTxHash(proposal) {

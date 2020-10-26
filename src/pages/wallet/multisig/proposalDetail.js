@@ -385,7 +385,16 @@ class MultisigProposalDetail extends Component {
           break;
         }
         default:
-          statusView = isOperatedUser ? null : (<TouchableOpacity style={[styles.deleteView]} onPress={this.reject}><Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text></TouchableOpacity>);
+          statusView = isOperatedUser
+            ? null
+            : (
+              <TouchableOpacity
+                style={[styles.deleteView]}
+                onPress={this.reject}
+              >
+                <Text style={styles.delete}>{strings('page.wallet.proposal.reject')}</Text>
+              </TouchableOpacity>
+            );
       }
 
       const assetValueText = common.getAssetValueString(assetValue);
