@@ -316,6 +316,7 @@
         "delete": "지불 제안 삭제",
         "reject": "지불 제안 거부",
         "minerFee": "광부 수수료",
+        "timeline": "타임 라인",
         "paymentRemoved": "지불이 제거되었습니다.",
         "paymentFailed": "결제에 실패했습니다.",
         "paymentRejected": "결제가 거부되었습니다."

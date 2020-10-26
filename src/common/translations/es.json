@@ -313,6 +313,7 @@
         "delete": "Eliminar propuesta de pago",
         "reject": "Rechazar propuesta de pago",
         "minerFee": "Tarifa de minero",
+        "timeline": "Cronología",
         "paymentRemoved": "El pago fue eliminado.",
         "paymentFailed": "El pago falló.",
         "paymentRejected": "Pago rechazado."

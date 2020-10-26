@@ -23,6 +23,7 @@ import ResponsiveText from '../../../components/common/misc/responsive.text';
 import common from '../../../common/common';
 import { PROPOSAL_STATUS } from '../../../common/constants';
 import space from '../../../assets/styles/space';
+import txStyles from '../../../assets/styles/transaction.styles';
 
 const styles = StyleSheet.create({
   body: {
@@ -40,31 +41,10 @@ const styles = StyleSheet.create({
     color: color.black,
     marginBottom: 10,
   },
-  state: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  memo: {
-    fontSize: 13,
-    fontWeight: '300',
-  },
-  link: {
-    color: color.app.theme,
-    fontSize: 17,
-    alignSelf: 'center',
-  },
-  linkView: {
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  amount: {
-    flex: 1,
-  },
   amountText: {
     color: color.black,
     fontWeight: '400',
   },
-  amountView: {},
   assetValue: {
     fontSize: 17,
   },
@@ -130,7 +110,6 @@ const styles = StyleSheet.create({
   operationText: {
     fontFamily: 'Avenir-Heavy',
   },
-  dateTimeColumn: {},
   reject: {
     color: color.warningText,
   },
@@ -410,36 +389,36 @@ class MultisigProposalDetail extends Component {
         >
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <View style={styles.amountView}>
-                <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amountText}</ResponsiveText>
+              <View>
+                <ResponsiveText layoutStyle={txStyles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amountText}</ResponsiveText>
                 <Text style={styles.assetValue}>{`${currencySymbol}${assetValueText}`}</Text>
               </View>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.proposal.minerFee')}</Text>
               <Text>{feesText}</Text>
             </View>
             { statusView }
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.transaction.date')}</Text>
               <Text>{dateTimeText}</Text>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.to')}</Text>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.transaction.to')}</Text>
               <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
                 <Text style={[styles.copyText]}>{to}</Text>
                 <Image style={styles.copyIcon} source={references.images.copyIcon} />
               </TouchableOpacity>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle]}>{strings('page.wallet.transaction.from')}</Text>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.transaction.from')}</Text>
               <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
                 <Text style={[styles.copyText]}>{from}</Text>
                 <Image style={styles.copyIcon} source={references.images.copyIcon} />
               </TouchableOpacity>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle]}>Timeline</Text>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.proposal.timeline')}</Text>
               <FlatList
                 style={space.marginTop_5}
                 data={operationSequence}
@@ -452,7 +431,7 @@ class MultisigProposalDetail extends Component {
                       <Text style={[styles.operationText, item.operation === 'Reject' ? styles.reject : null]}>{ item.operation }</Text>
                       <Text>{ item.name }</Text>
                     </View>
-                    <Text style={styles.dateTimeColumn}>{ this.calcDateTime(moment(item.timestamp)) }</Text>
+                    <Text>{ this.calcDateTime(moment(item.timestamp)) }</Text>
                   </View>
                 )}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
@@ -460,7 +439,7 @@ class MultisigProposalDetail extends Component {
               />
             </View>
             { status === PROPOSAL_STATUS.PENDING && (
-              <View style={styles.sectionContainer}>
+              <View style={txStyles.sectionContainer}>
                 <TouchableOpacity style={[styles.deleteView]} onPress={this.delete}>
                   <Text style={styles.delete}>{strings('page.wallet.proposal.delete')}</Text>
                 </TouchableOpacity>

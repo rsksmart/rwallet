@@ -311,6 +311,7 @@
         "delete": "Excluir proposta de pagamento",
         "reject": "Rejeitar proposta de pagamento",
         "minerFee": "Taxa de transação",
+        "timeline": "Linha do tempo",
         "paymentRemoved": "O pagamento foi removido.",
         "paymentFailed": "O pagamento falhou.",
         "paymentRejected": "Pagamento rejeitado.",

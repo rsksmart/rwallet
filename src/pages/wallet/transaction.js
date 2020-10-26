@@ -15,6 +15,8 @@ import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
 import color from '../../assets/styles/color';
+import space from '../../assets/styles/space';
+import txStyles from '../../assets/styles/transaction.styles';
 import references from '../../assets/references';
 import appActions from '../../redux/app/actions';
 import { createInfoNotification } from '../../common/notification.controller';
@@ -24,17 +26,6 @@ const sending = require('../../assets/images/icon/sending.png');
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-  },
-  sectionContainer: {
-    paddingHorizontal: 25,
-    marginTop: 15,
-    marginBottom: 15,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: color.black,
-    marginBottom: 10,
   },
   state: {
     fontSize: 17,
@@ -52,10 +43,6 @@ const styles = StyleSheet.create({
   linkView: {
     marginTop: 20,
     marginBottom: 40,
-  },
-  amount: {
-    flex: 1,
-    marginRight: 75,
   },
   amountText: {
     fontWeight: '400',
@@ -223,47 +210,47 @@ class Transaction extends Component {
           showsVerticalScrollIndicator={false}
           refreshControl={refreshControl}
         >
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, styles.state]} text={txStateText} />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle, styles.state]} text={txStateText} />
             <View style={styles.amountView}>
-              <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amount}</ResponsiveText>
+              <ResponsiveText layoutStyle={[txStyles.amount, space.marginRight_75]} fontStyle={styles.amountText} maxFontSize={40}>{amount}</ResponsiveText>
               <View style={styles.stateIcon}>{stateIcon}</View>
             </View>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.date" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle]} text="page.wallet.transaction.date" />
             <Text>{dateTime}</Text>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.from" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle]} text="page.wallet.transaction.from" />
             <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
               <Text style={[styles.copyText]}>{from}</Text>
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.to" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle]} text="page.wallet.transaction.to" />
             <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
               <Text style={[styles.copyText]}>{to}</Text>
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.confirmations" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle]} text="page.wallet.transaction.confirmations" />
             <Text>{confirmations}</Text>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, memo]} text="page.wallet.transaction.memo" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle, memo]} text="page.wallet.transaction.memo" />
             <Text>{memo}</Text>
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
+          <View style={txStyles.sectionContainer}>
+            <Loc style={[txStyles.sectionTitle]} text="page.wallet.transaction.transactionID" />
             <TouchableOpacity style={[styles.copyView]} onPress={this.onTransactionIdPress}>
               <Text style={[styles.copyText]}>{transactionId}</Text>
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
-          <View style={styles.sectionContainer}>
+          <View style={txStyles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
               <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>

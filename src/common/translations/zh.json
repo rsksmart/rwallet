@@ -313,6 +313,7 @@
         "delete": "删除付款提案",
         "reject": "拒绝付款提案",
         "minerFee": "矿工费",
+        "timeline": "时间线",
         "paymentRemoved": "付款已删除。",
         "paymentFailed": "付款失败。",
         "paymentRejected": "付款被拒。"
