@@ -249,7 +249,7 @@ class WalletConnectPage extends Component {
     const coinsListData = [];
     let rowCoinsData = [];
     _.forEach(WALLET_CONNECT.ASSETS, (token, index) => {
-      const coinId = isTestnet === 'Testnet' ? token + network : token;
+      const coinId = isTestnet ? token + network : token;
       const { icon } = coinType[coinId];
       const name = common.getSymbolName(token, network);
       const item = {

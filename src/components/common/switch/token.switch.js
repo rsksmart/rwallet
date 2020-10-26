@@ -47,6 +47,6 @@ TokenSwitch.defaultProps = {
   icon: '',
   name: '',
   value: false,
-  onSwitchValueChanged: () => {},
+  onSwitchValueChanged: () => null,
   disabled: false,
 };
