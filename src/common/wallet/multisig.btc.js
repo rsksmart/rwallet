@@ -1,13 +1,11 @@
-import _ from 'lodash';
+import BasicCoin from './basic.coin';
 import coinType from './cointype';
 
-class MultisigBtc {
+class MultisigBtc extends BasicCoin {
   constructor(invitationCode, type) {
-    this.symbol = 'BTC';
-    this.type = type;
+    super('Bitcoin', 'BTC', type);
     this.id = type === 'Mainnet' ? this.symbol : this.symbol + this.type;
     this.metadata = coinType[this.id];
-    this.chain = this.metadata.chain;
     this.name = this.metadata.defaultName;
     this.icon = this.metadata.icon;
     this.privateKey = undefined;
@@ -62,35 +60,6 @@ class MultisigBtc {
     this.addressType = addressType;
     this.privateKey = privateKey;
     this.publicKey = publicKey;
-  }
-
-  isEqual(json) {
-    const {
-      address, chain, type, symbol,
-    } = this;
-    return address === json.address
-    && chain === json.chain
-    && type === json.type
-    && symbol === json.symbol;
-  }
-
-
-  updateCoinObjectIds(addresses) {
-    const that = this;
-
-    let isDirty = false;
-
-    _.each(addresses, (address) => {
-      if (that.isEqual(address) && that.objectId !== address.objectId) {
-        that.objectId = address.objectId;
-        isDirty = true;
-        return false; // return false break _.each loop
-      }
-
-      return true; // simply here because eslint requires returning something
-    });
-
-    return isDirty;
   }
 }
 

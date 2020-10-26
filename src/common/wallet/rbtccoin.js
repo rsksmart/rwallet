@@ -1,10 +1,10 @@
-import _ from 'lodash';
 import { Buffer } from 'buffer';
 import Rsk3 from '@rsksmart/rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import common from '../common';
 import storage from '../storage';
+import BasicCoin from './basic.coin';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -45,17 +45,15 @@ function serializePublic(node) {
   return JSON.stringify(ret);
 }
 
-export default class RBTCCoin {
+export default class RBTCCoin extends BasicCoin {
   constructor(symbol, type, path) {
+    super('Rootstock', symbol, type);
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
     // metadata:{network, networkId, icon, defaultName, coinType}
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
-    this.chain = this.metadata.chain;
     this.contractAddress = this.metadata.contractAddress;
-    this.type = type;
-    this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
@@ -179,43 +177,6 @@ export default class RBTCCoin {
     instance.address = Rsk3.utils.checkAddressChecksum(address, instance.networkId) ? address : Rsk3.utils.toChecksumAddress(address, instance.networkId);
     instance.objectId = objectId;
     return instance;
-  }
-
-  /**
-   * Return ture if all class members have the same value as the input json
-   * @param {object} json Another Coin object
-   */
-  isEqual(json) {
-    const {
-      address, chain, type, symbol,
-    } = this;
-    return address === json.address
-    && chain === json.chain
-    && type === json.type
-    && symbol === json.symbol;
-  }
-
-  /**
-   * Set Coin's objectId to values in parseWallets, and return true if there's any change
-   * @param {array} addresses Array of JSON objects
-   * @returns True if this Coin is updated
-   */
-  updateCoinObjectIds(addresses) {
-    const that = this;
-
-    let isDirty = false;
-
-    _.each(addresses, (address) => {
-      if (that.isEqual(address) && that.objectId !== address.objectId) {
-        that.objectId = address.objectId;
-        isDirty = true;
-        return false; // return false break _.each loop
-      }
-
-      return true; // simply here because eslint requires returning something
-    });
-
-    return isDirty;
   }
 
   get icon() {

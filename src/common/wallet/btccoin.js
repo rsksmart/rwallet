@@ -5,20 +5,19 @@ import { payments } from 'bitcoinjs-lib';
 import coinType from './cointype';
 import common from '../common';
 import storage from '../storage';
+import BasicCoin from './basic.coin';
 
 const privateKeySuffix = {
   legacy: '',
   segwit: '|segwit',
 };
 
-export default class Coin {
+export default class Coin extends BasicCoin {
   constructor(symbol, type, path) {
+    super('Bitcoin', symbol, type);
     this.id = type === 'Mainnet' ? symbol : symbol + type;
     // metadata:{network, networkId, icon, defaultName}
     this.metadata = coinType[this.id];
-    this.chain = this.metadata.chain;
-    this.type = type;
-    this.symbol = symbol;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
