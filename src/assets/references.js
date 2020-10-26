@@ -29,5 +29,6 @@ images.passcodeReset = require('./images/icon/passcode.reset.png');
 images.passcodeCancel = require('./images/icon/passcode.cancel.png');
 images.copyIcon = require('./images/icon/copy.png');
 images.completed = require('./images/icon/completed.png');
+images.sharedWalletIcon = require('./images/icon/shared.wallet.png');
 
 export default { images };

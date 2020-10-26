@@ -1,51 +1,41 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, StyleSheet } from 'react-native';
+import { Image } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
-import color from '../../../assets/styles/color';
+import addIndexStyles from '../../../assets/styles/add.index.styles';
+import references from '../../../assets/references';
 
-const sharedWalletIcon = require('../../../assets/images/icon/shared.wallet.png');
-
-const styles = StyleSheet.create({
-  walletTypeList: {
-    marginTop: 10,
-    marginHorizontal: 15,
-  },
-});
-
-
-class SharedWalletIndex extends Component {
+export default class SharedWalletIndex extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    componentDidMount() {
+    constructor(props) {
+      super(props);
       const { navigation } = this.props;
       this.listData = [
         {
           title: 'page.wallet.sharedWallet.createSharedWallet',
           text: 'page.wallet.sharedWallet.createSharedWalletNote',
-          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
           onPress: () => navigation.navigate('CreateMultisigAddress'),
         },
         {
           title: 'page.wallet.sharedWallet.joinSharedWallet',
           text: 'page.wallet.sharedWallet.joinSharedWalletNote',
-          icon: (<Image source={sharedWalletIcon} />),
+          icon: (<Image source={references.images.sharedWalletIcon} />),
           onPress: () => navigation.navigate('JoinMultisigAddress'),
         },
       ];
     }
 
     render() {
-      const { navigation, isShowBackButton } = this.props;
+      const { navigation } = this.props;
       const header = (
         <Header
-          isShowBackButton={isShowBackButton}
           onBackButtonPress={() => navigation.goBack()}
           title="page.wallet.sharedWallet.title"
           subTitle="page.wallet.add.subTitle"
@@ -53,12 +43,12 @@ class SharedWalletIndex extends Component {
       );
       return (
         <BasePageGereral
-          isSafeView={false}
+          isSafeView
           hasBottomBtn={false}
           hasLoader={false}
           headerComponent={header}
         >
-          <WalletTypeList style={styles.walletTypeList} data={this.listData} />
+          <WalletTypeList style={addIndexStyles.walletTypeList} data={this.listData} />
         </BasePageGereral>
       );
     }
@@ -71,13 +61,4 @@ SharedWalletIndex.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
-  isShowBackButton: PropTypes.bool,
 };
-
-SharedWalletIndex.defaultProps = {
-  isShowBackButton: true,
-};
-
-const mapStateToProps = () => ({});
-
-export default connect(mapStateToProps)(SharedWalletIndex);

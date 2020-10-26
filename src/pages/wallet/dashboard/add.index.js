@@ -1,53 +1,46 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, StyleSheet } from 'react-native';
+import { Image } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import WalletTypeList from '../../../components/wallet/wallet.type.list';
 import BasePageGereral from '../../base/base.page.general';
 import Header from '../../../components/headers/header';
-import color from '../../../assets/styles/color';
-
-const sharedWalletIcon = require('../../../assets/images/icon/shared.wallet.png');
-
-const styles = StyleSheet.create({
-  walletTypeList: {
-    marginTop: 10,
-    marginHorizontal: 15,
-    marginBottom: 80,
-  },
-});
+import addIndexStyles from '../../../assets/styles/add.index.styles';
+import space from '../../../assets/styles/space';
+import references from '../../../assets/references';
 
 class WalletAddIndex extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    componentDidMount() {
+    constructor(props) {
+      super(props);
       const { navigation } = this.props;
       this.listData = [
         {
           title: 'page.wallet.add.createWallet',
           text: 'page.wallet.add.createWalletNote',
-          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
           onPress: () => navigation.navigate('WalletSelectCurrency'),
         },
         {
           title: 'page.wallet.add.importWallet',
           text: 'page.wallet.add.importWalletNote',
-          icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
+          icon: (<AntDesign name="download" style={addIndexStyles.icon} />),
           onPress: () => navigation.navigate('WalletRecovery'),
         },
         {
           title: 'page.wallet.add.sharedWallet',
           text: 'page.wallet.add.sharedWalletNote',
-          icon: (<Image source={sharedWalletIcon} />),
+          icon: (<Image source={references.images.sharedWalletIcon} />),
           onPress: () => navigation.navigate('SharedWalletIndex'),
         },
         {
           title: 'page.wallet.add.addReadOnlyWallet',
           text: 'page.wallet.add.addReadOnlyWalletNote',
-          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
           onPress: () => navigation.navigate('AddReadOnlyWallet'),
         },
       ];
@@ -70,7 +63,7 @@ class WalletAddIndex extends Component {
           hasLoader={false}
           headerComponent={header}
         >
-          <WalletTypeList style={styles.walletTypeList} data={this.listData} />
+          <WalletTypeList style={[addIndexStyles.walletTypeList, space.marginBottom_80]} data={this.listData} />
         </BasePageGereral>
       );
     }

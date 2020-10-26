@@ -507,8 +507,7 @@ class ParseHelper {
     };
     console.log('joinMultisigAddress, params: ', params);
     const result = await Parse.Cloud.run('joinMultisigAddress', params);
-    const invitation = parseDataUtil.getInvitation(result);
-    return invitation;
+    return parseDataUtil.getInvitation(result);
   }
 
   /**
