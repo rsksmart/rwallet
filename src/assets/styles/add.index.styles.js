@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import color from './color';
 
-const styles = StyleSheet.create({
+const addIndexStyles = StyleSheet.create({
   walletTypeList: {
     marginTop: 10,
     marginHorizontal: 15,
@@ -12,4 +12,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default addIndexStyles;

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import color from './color';
 
-const styles = StyleSheet.create({
+const transactionStyles = StyleSheet.create({
   sectionContainer: {
     paddingHorizontal: 25,
     marginTop: 15,
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default transactionStyles;
