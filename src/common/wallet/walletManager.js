@@ -89,6 +89,12 @@ class WalletManager {
    * Read permenate storage and load Wallets into this instance;
    */
   async deserialize() {
+    const walletClassList = {
+      [WalletType.Readonly]: ReadOnlyWallet,
+      [WalletType.Shared]: SharedWallet,
+      [WalletType.Normal]: Wallet,
+    };
+
     const result = await storage.getWallets();
 
     if (!_.isNull(result) && _.isObject(result)) {
@@ -98,16 +104,8 @@ class WalletManager {
       }
       // Re-create Wallet objects based on result.wallets JSON
       const promises = _.map(result.wallets, (wallet) => {
-        switch (wallet.walletType) {
-          case WalletType.Readonly: {
-            return ReadOnlyWallet.fromJSON(wallet);
-          }
-          case WalletType.Shared: {
-            return SharedWallet.fromJSON(wallet);
-          }
-          default:
-            return Wallet.fromJSON(wallet);
-        }
+        const walletClass = walletClassList[wallet.walletType] || Wallet;
+        return walletClass.fromJSON(wallet);
       });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
