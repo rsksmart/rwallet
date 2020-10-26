@@ -103,9 +103,10 @@ class WalletManager {
         this.currentKeyId = result.currentKeyId;
       }
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = _.map(result.wallets, (wallet) => {
+      const promises = [];
+      _.each(result.wallets, (wallet) => {
         const walletClass = walletClassList[wallet.walletType] || Wallet;
-        return walletClass.fromJSON(wallet);
+        promises.push(walletClass.fromJSON(wallet));
       });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
