@@ -23,28 +23,22 @@ class SharedWalletIndex extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        title: 'page.wallet.sharedWallet.createSharedWallet',
-        text: 'page.wallet.sharedWallet.createSharedWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('CreateMultisigAddress');
-        },
-      },
-      {
-        title: 'page.wallet.sharedWallet.joinSharedWallet',
-        text: 'page.wallet.sharedWallet.joinSharedWalletNote',
-        icon: (<Image source={sharedWalletIcon} />),
-        onPress: () => {
-          this.createWalletFlow('JoinMultisigAddress');
-        },
-      },
-    ];
-
-    createWalletFlow = async (page) => {
+    componentDidMount() {
       const { navigation } = this.props;
-      navigation.navigate(page);
+      this.listData = [
+        {
+          title: 'page.wallet.sharedWallet.createSharedWallet',
+          text: 'page.wallet.sharedWallet.createSharedWalletNote',
+          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          onPress: () => navigation.navigate('CreateMultisigAddress'),
+        },
+        {
+          title: 'page.wallet.sharedWallet.joinSharedWallet',
+          text: 'page.wallet.sharedWallet.joinSharedWalletNote',
+          icon: (<Image source={sharedWalletIcon} />),
+          onPress: () => navigation.navigate('JoinMultisigAddress'),
+        },
+      ];
     }
 
     render() {

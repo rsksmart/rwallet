@@ -23,44 +23,34 @@ class WalletAddIndex extends Component {
       header: null,
     });
 
-    listData = [
-      {
-        title: 'page.wallet.add.createWallet',
-        text: 'page.wallet.add.createWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('WalletSelectCurrency');
-        },
-      },
-      {
-        title: 'page.wallet.add.importWallet',
-        text: 'page.wallet.add.importWalletNote',
-        icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('WalletRecovery');
-        },
-      },
-      {
-        title: 'page.wallet.add.sharedWallet',
-        text: 'page.wallet.add.sharedWalletNote',
-        icon: (<Image source={sharedWalletIcon} />),
-        onPress: () => {
-          this.createWalletFlow('SharedWalletIndex');
-        },
-      },
-      {
-        title: 'page.wallet.add.addReadOnlyWallet',
-        text: 'page.wallet.add.addReadOnlyWalletNote',
-        icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
-        onPress: () => {
-          this.createWalletFlow('AddReadOnlyWallet');
-        },
-      },
-    ];
-
-    createWalletFlow = async (page) => {
+    componentDidMount() {
       const { navigation } = this.props;
-      navigation.navigate(page);
+      this.listData = [
+        {
+          title: 'page.wallet.add.createWallet',
+          text: 'page.wallet.add.createWalletNote',
+          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          onPress: () => navigation.navigate('WalletSelectCurrency'),
+        },
+        {
+          title: 'page.wallet.add.importWallet',
+          text: 'page.wallet.add.importWalletNote',
+          icon: (<AntDesign name="download" size={25} style={{ color: color.emperor }} />),
+          onPress: () => navigation.navigate('WalletRecovery'),
+        },
+        {
+          title: 'page.wallet.add.sharedWallet',
+          text: 'page.wallet.add.sharedWalletNote',
+          icon: (<Image source={sharedWalletIcon} />),
+          onPress: () => navigation.navigate('SharedWalletIndex'),
+        },
+        {
+          title: 'page.wallet.add.addReadOnlyWallet',
+          text: 'page.wallet.add.addReadOnlyWalletNote',
+          icon: (<AntDesign name="wallet" size={25} style={{ color: color.emperor }} />),
+          onPress: () => navigation.navigate('AddReadOnlyWallet'),
+        },
+      ];
     }
 
     render() {
