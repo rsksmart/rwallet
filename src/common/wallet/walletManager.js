@@ -98,20 +98,16 @@ class WalletManager {
       }
       // Re-create Wallet objects based on result.wallets JSON
       const promises = _.map(result.wallets, (wallet) => {
-        let instance = null;
         switch (wallet.walletType) {
           case WalletType.Readonly: {
-            instance = ReadOnlyWallet.fromJSON(wallet);
-            break;
+            return ReadOnlyWallet.fromJSON(wallet);
           }
           case WalletType.Shared: {
-            instance = SharedWallet.fromJSON(wallet);
-            break;
+            return SharedWallet.fromJSON(wallet);
           }
           default:
-            instance = Wallet.fromJSON(wallet);
+            return Wallet.fromJSON(wallet);
         }
-        return instance;
       });
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
       this.wallets = _.map(wallets, (wallet) => wallet.wallet);
