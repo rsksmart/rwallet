@@ -316,7 +316,8 @@
         "timeline": "Linha do tempo",
         "paymentRemoved": "O pagamento foi removido.",
         "paymentFailed": "O pagamento falhou.",
-        "paymentRejected": "Pagamento rejeitado."
+        "paymentRejected": "Pagamento rejeitado.",
+        "paymentSent": "O pagamento foi enviado."
       }
     },
     "dapp": {

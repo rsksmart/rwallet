@@ -313,7 +313,8 @@
         "timeline": "タイムライン",
         "paymentRemoved": "支払いは削除されました。",
         "paymentFailed": "支払いに失敗しました。",
-        "paymentRejected": "支払いが拒否されました。"
+        "paymentRejected": "支払いが拒否されました。",
+        "paymentSent": "支払いが送られました。"
       }
     },
     "dapp": {

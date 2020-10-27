@@ -308,15 +308,16 @@
         "waiting": "等待中"
       },
       "proposal": {
-        "title": "付款提案",
+        "title": "支付提案",
         "created": "提案已创建",
-        "delete": "删除付款提案",
-        "reject": "拒绝付款提案",
+        "delete": "删除支付提案",
+        "reject": "拒绝支付提案",
         "minerFee": "矿工费",
         "timeline": "时间线",
-        "paymentRemoved": "付款已删除。",
+        "paymentRemoved": "支付已删除。",
         "paymentFailed": "付款失败。",
-        "paymentRejected": "付款被拒。"
+        "paymentRejected": "支付被拒。",
+        "paymentSent": "支付已发送。"
       }
     },
     "dapp": {

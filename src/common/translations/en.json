@@ -314,7 +314,8 @@
         "timeline": "Timeline",
         "paymentRemoved": "The payment was removed.",
         "paymentFailed": "The payment was failed.",
-        "paymentRejected": "Payment Rejected."
+        "paymentRejected": "Payment Rejected.",
+        "paymentSent": "The payment was sent."
       }
     },
     "dapp": {

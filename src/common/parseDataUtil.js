@@ -148,6 +148,7 @@ const parseDataUtil = {
       rejectedMembers: proposalObject.get('rejectedMembers'),
       creator: proposalObject.get('creator'),
       hash: proposalObject.get('hash'),
+      memo: proposalObject.get('memo'),
       objectId: proposalObject.id,
     };
   },

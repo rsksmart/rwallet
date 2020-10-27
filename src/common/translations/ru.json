@@ -313,7 +313,8 @@
         "timeline": "Лента новостей",
         "paymentRemoved": "Оплата снята.",
         "paymentFailed": "Платеж не прошел.",
-        "paymentRejected": "Платеж отклонен."
+        "paymentRejected": "Платеж отклонен.",
+        "paymentSent": "Платеж отправлен."
       }
     },
     "dapp": {

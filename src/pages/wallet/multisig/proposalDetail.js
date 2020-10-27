@@ -183,7 +183,7 @@ class MultisigProposalDetail extends Component {
       const { proposal } = this;
       const { prices, currency } = this.props;
       const {
-        type, createdAt, rawTransaction, status,
+        type, createdAt, rawTransaction, status, memo,
       } = proposal;
       const user = await parseHelper.getUser();
       const username = user.get('username');
@@ -214,7 +214,7 @@ class MultisigProposalDetail extends Component {
       const assetValue = common.getCoinValue(amount, symbol, type, currency, prices);
 
       this.setState({
-        dateTimeText, to, from, amountText, assetValue, feesText, status, isOperatedUser, operationSequence,
+        dateTimeText, to, from, memo, amountText, assetValue, feesText, status, isOperatedUser, operationSequence,
       });
     }
 
@@ -232,7 +232,7 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
-      const { navigation } = this.props;
+      const { navigation, addNotification } = this.props;
       const { rawTransaction, objectId } = this.proposal;
       const { symbol, type } = this.token;
       try {
@@ -251,6 +251,8 @@ class MultisigProposalDetail extends Component {
         }
       } catch (error) {
         console.log('accept, error: ', error);
+        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        addNotification(notification);
       } finally {
         this.setState({ isLoading: false });
       }
@@ -342,7 +344,7 @@ class MultisigProposalDetail extends Component {
     render() {
       const { navigation, currency } = this.props;
       const {
-        dateTimeText, to, from, amountText, assetValue, feesText, isLoading, status, isOperatedUser, operationSequence,
+        dateTimeText, to, from, memo, amountText, assetValue, feesText, isLoading, status, isOperatedUser, operationSequence,
       } = this.state;
 
       const customButton = isOperatedUser || status !== PROPOSAL_STATUS.PENDING ? null : (
@@ -361,6 +363,10 @@ class MultisigProposalDetail extends Component {
         }
         case PROPOSAL_STATUS.REJECTED: {
           statusView = (<Text style={styles.deletedNotice}>{strings('page.wallet.proposal.paymentRejected')}</Text>);
+          break;
+        }
+        case PROPOSAL_STATUS.SENT: {
+          statusView = (<Text style={styles.deletedNotice}>{strings('page.wallet.proposal.paymentSent')}</Text>);
           break;
         }
         default:
@@ -416,6 +422,10 @@ class MultisigProposalDetail extends Component {
                 <Text style={[styles.copyText]}>{from}</Text>
                 <Image style={styles.copyIcon} source={references.images.copyIcon} />
               </TouchableOpacity>
+            </View>
+            <View style={txStyles.sectionContainer}>
+              <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.transaction.memo')}</Text>
+              <Text>{memo}</Text>
             </View>
             <View style={txStyles.sectionContainer}>
               <Text style={[txStyles.sectionTitle]}>{strings('page.wallet.proposal.timeline')}</Text>
