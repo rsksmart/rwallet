@@ -232,7 +232,7 @@ class MultisigProposalDetail extends Component {
     }
 
     accept = async () => {
-      const { navigation, addNotification } = this.props;
+      const { navigation } = this.props;
       const { rawTransaction, objectId } = this.proposal;
       const { symbol, type } = this.token;
       try {
@@ -251,8 +251,7 @@ class MultisigProposalDetail extends Component {
         }
       } catch (error) {
         console.log('accept, error: ', error);
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
-        addNotification(notification);
+        this.addErrorNotification(error);
       } finally {
         this.setState({ isLoading: false });
       }
@@ -264,7 +263,7 @@ class MultisigProposalDetail extends Component {
     }
 
     reject = async () => {
-      const { navigation, addConfirmation, addNotification } = this.props;
+      const { navigation, addConfirmation } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.rejectProposal.title'),
         strings('modal.rejectProposal.body'),
@@ -276,8 +275,7 @@ class MultisigProposalDetail extends Component {
             navigation.goBack();
           } catch (error) {
             console.log('reject, error: ', error);
-            const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
-            addNotification(notification);
+            this.addErrorNotification(error);
           } finally {
             this.setState({ isLoading: false });
           }
@@ -288,7 +286,7 @@ class MultisigProposalDetail extends Component {
     }
 
     delete = () => {
-      const { navigation, addConfirmation, addNotification } = this.props;
+      const { navigation, addConfirmation } = this.props;
       const confirmation = createInfoConfirmation(
         strings('modal.deleteProposal.title'),
         strings('modal.deleteProposal.body'),
@@ -300,8 +298,7 @@ class MultisigProposalDetail extends Component {
             navigation.goBack();
           } catch (error) {
             console.warn('delete, error: ', error);
-            const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
-            addNotification(notification);
+            this.addErrorNotification(error);
           } finally {
             this.setState({ isLoading: false });
           }
@@ -338,6 +335,12 @@ class MultisigProposalDetail extends Component {
         'modal.addressCopied.title',
         'modal.addressCopied.body',
       );
+      addNotification(notification);
+    }
+
+    addErrorNotification = (error) => {
+      const { addNotification } = this.props;
+      const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
       addNotification(notification);
     }
 
