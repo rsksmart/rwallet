@@ -61,12 +61,22 @@ const common = {
     const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
     return result;
   },
-  rskCoinToWei(amount) {
-    const result = new BigNumber(amount).times('1e18');
+  rskCoinToWei(amount, precision = null) {
+    let result;
+    if (precision) {
+      result = new BigNumber(amount).times(`1e${Number(precision)}`);
+    } else {
+      result = new BigNumber(amount).times('1e18');
+    }
     return result;
   },
-  weiToCoin(wei) {
-    const result = new BigNumber(wei).div('1e18');
+  weiToCoin(wei, precision = null) {
+    let result;
+    if (precision) {
+      result = new BigNumber(wei).div(`1e${Number(precision)}`);
+    } else {
+      result = new BigNumber(wei).div('1e18');
+    }
     return result;
   },
   Toast(text, type, onClose, duration, mask) {
@@ -84,11 +94,11 @@ const common = {
    * @param {*} symbol
    * @param {*} unitNumber
    */
-  convertUnitToCoinAmount(symbol, unitNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = null) {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
+    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
     return amount;
   },
 
