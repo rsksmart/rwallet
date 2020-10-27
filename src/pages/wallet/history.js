@@ -647,14 +647,17 @@ class History extends Component {
           heightForIndexPath={() => 70}
           renderIndexPath={({ row }) => {
             const item = (listData && listData[row]) || {};
+            // The outer view prevents the layout of the list from being confused
             return (
-              <Item
-                title={item.state}
-                amount={item.amountText}
-                datetime={item.datetimeText}
-                onPress={() => onPress(row)}
-                itemKey={row.toString()}
-              />
+              <View>
+                <Item
+                  title={item.state}
+                  amount={item.amountText}
+                  datetime={item.datetimeText}
+                  onPress={() => onPress(row)}
+                  itemKey={row.toString()}
+                />
+              </View>
             );
           }}
         />
