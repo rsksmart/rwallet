@@ -57,8 +57,8 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rskCoinToWeiHex(amount) {
-    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
+  rskCoinToWeiHex(amount, precision) {
+    const result = `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
     return result;
   },
   rskCoinToWei(amount, precision = null) {

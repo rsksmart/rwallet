@@ -619,9 +619,9 @@ class Swap extends Component {
     const txAmount = new BigNumber(amount);
     const { swapSource } = this.props;
     const {
-      symbol, type, transactions, privateKey, address, balance,
+      symbol, type, transactions, privateKey, address, balance, precision,
     } = swapSource.coin;
-    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(txAmount) : common.rskCoinToWeiHex(txAmount);
+    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(txAmount) : common.rskCoinToWeiHex(txAmount, precision);
     console.log(`parseHelper.getTransactionFees, symbol: ${symbol}, type: ${type}, address: ${address}, amountHex: ${amountHex}`);
     let transactionFees = null;
     if (symbol === 'BTC') {
