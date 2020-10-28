@@ -19,7 +19,7 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError } from './error';
 
@@ -453,32 +453,19 @@ const common = {
     }
   },
 
-  estimateBtcSize({
-    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  /**
+   * estimateBtcTxSize, estimate BTC transaction size
+   * @param {object} params, { netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance }
+   * @returns {number} BTC transaction size
+   */
+  estimateBtcTxSize({
+    netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
-    const inputTxs = [];
-    let sum = new BigNumber(0);
-
     // If the transactions is empty, returns the default size
-    if (_.isEmpty(transactions)) {
+    if (_.isEmpty(inputTxs)) {
       return DEFAULT_BTC_TX_SIZE;
     }
-
-    // Find out transactions which combines amount
-    for (let i = 0; i < transactions.length; i += 1) {
-      const tx = transactions[i];
-      if (tx.status === TxStatus.SUCCESS) {
-        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
-        sum = sum.plus(txAmount);
-        inputTxs.push(tx.hash);
-      }
-      if (sum.isGreaterThanOrEqualTo(amount)) {
-        break;
-      }
-    }
-    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
-
     const outputSize = isSendAllBalance ? 1 : 2;
     const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const exParams = { network };
@@ -496,7 +483,7 @@ const common = {
     });
     const result = tx.build().toHex();
     const size = result.length / 2;
-    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    console.log(`estimateBtcTxSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
 

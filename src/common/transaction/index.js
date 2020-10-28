@@ -1,4 +1,5 @@
 import Parse from 'parse/lib/react-native/Parse';
+import parseHelper from '../parse';
 import common from '../common';
 import { ERROR_CODE } from '../error';
 import storage from '../storage';
@@ -119,6 +120,15 @@ class Transaction {
     this.txHash = getTxHash(this.symbol, result);
     return result;
   }
+
+  static estimateBtcTxSize = async ({
+    netType, amount, fromAddress, destAddress, privateKey, isSendAllBalance,
+  }) => {
+    const inputTxs = await parseHelper.getInputAddressTXHash(fromAddress, netType, amount);
+    return common.estimateBtcTxSize({
+      netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
+    });
+  };
 }
 
 export default Transaction;
