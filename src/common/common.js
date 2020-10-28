@@ -58,25 +58,33 @@ const common = {
     return result;
   },
   rskCoinToWeiHex(amount, precision) {
-    const result = `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
+    const wei = this.rskCoinToWei(amount, precision);
+    const result = Rsk3.utils.numberToHex(wei);
     return result;
   },
-  rskCoinToWei(amount, precision = null) {
-    let result;
-    if (precision) {
-      result = new BigNumber(amount).times(`1e${Number(precision)}`);
-    } else {
-      result = new BigNumber(amount).times('1e18');
-    }
+  /**
+   * Transform coin value to wei unit
+   * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
+   * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
+   * @param {*} amount
+   * @param {*} precision
+   */
+  rskCoinToWei(amount, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    const result = new BigNumber(amount).times(`1e${precisionInteger}`);
     return result;
   },
-  weiToCoin(wei, precision = null) {
-    let result;
-    if (precision) {
-      result = new BigNumber(wei).div(`1e${Number(precision)}`);
-    } else {
-      result = new BigNumber(wei).div('1e18');
-    }
+
+  /**
+   * Transform wei unit value to coin value
+   * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
+   * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
+   * @param {*} wei
+   * @param {*} precision
+   */
+  weiToCoin(wei, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    const result = new BigNumber(wei).div(`1e${precisionInteger}`);
     return result;
   },
   Toast(text, type, onClose, duration, mask) {
