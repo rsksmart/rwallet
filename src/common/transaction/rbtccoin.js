@@ -8,8 +8,7 @@ const { MAINNET, TESTNET } = NETWORK;
 
 export const getContractAddress = async (symbol, type) => {
   if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
-    const contractAddress = ASSETS_CONTRACT[symbol][type];
-    return Rsk3.utils.toChecksumAddress(contractAddress);
+    return ASSETS_CONTRACT[symbol][type];
   }
   return '';
 };
@@ -39,7 +38,7 @@ export const getTransactionFees = async (type, coin, address, toAddress, value, 
       from, to, value, data: memo,
     });
   } else {
-    const contractAddr = contractAddress || await getContractAddress(symbol, type);
+    const contractAddr = Rsk3.utils.toChecksumAddress(contractAddress || await getContractAddress(symbol, type));
     const data = await encodeContractTransfer(contractAddr, type, to, value);
     gas = await rsk3.estimateGas({
       from, to: contractAddr, value: 0, data,
