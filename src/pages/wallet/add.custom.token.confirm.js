@@ -158,7 +158,7 @@ class AddCustomToken extends Component {
         }
         const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, address), this);
         console.log('UserTokenBalance: ', result);
-        this.setState({ balance: common.weiToCoin(result.balance) });
+        this.setState({ balance: common.weiToCoin(result.balance, this.decimals) });
       } catch (error) {
         console.log('getUserTokenBalance, error: ', error);
       } finally {

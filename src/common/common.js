@@ -57,17 +57,32 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rskCoinToWeiHex(amount) {
-    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
-    return result;
+  rskCoinToWeiHex(amount, precision) {
+    const wei = this.rskCoinToWei(amount, precision);
+    return Rsk3.utils.numberToHex(wei);
   },
-  rskCoinToWei(amount) {
-    const result = new BigNumber(amount).times('1e18');
-    return result;
+  /**
+   * Transform coin value to wei unit
+   * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
+   * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
+   * @param {*} amount
+   * @param {*} precision
+   */
+  rskCoinToWei(amount, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
-  weiToCoin(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
+
+  /**
+   * Transform wei unit value to coin value
+   * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
+   * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
+   * @param {*} wei
+   * @param {*} precision
+   */
+  weiToCoin(wei, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(wei).div(`1e${precisionInteger}`);
   },
   Toast(text, type, onClose, duration, mask) {
     const last = duration > 0 ? duration : 1.5;
@@ -83,13 +98,13 @@ const common = {
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
    * @param {*} unitNumber
+   * @param {*} precision
    */
-  convertUnitToCoinAmount(symbol, unitNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = 18) {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
-    return amount;
+    return symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
   },
 
   /**

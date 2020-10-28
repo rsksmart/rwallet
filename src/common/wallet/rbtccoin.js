@@ -56,6 +56,7 @@ export default class RBTCCoin {
     this.contractAddress = this.metadata.contractAddress;
     this.type = type;
     this.symbol = symbol;
+    this.precision = this.metadata.precision;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);

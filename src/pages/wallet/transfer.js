@@ -714,7 +714,7 @@ class Transfer extends Component {
       coin, txFeesCache, toAddress, txSize,
     } = this;
     const {
-      symbol, type, address,
+      symbol, type, address, precision,
     } = coin;
 
     if (symbol === 'BTC' && !txSize) {
@@ -722,7 +722,7 @@ class Transfer extends Component {
     }
 
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount, precision);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 

@@ -76,7 +76,7 @@ class AddReadOnlyWalletConfirmation extends Component {
           type, symbol: coin.symbol, address, needFetch: false,
         }));
         const newCoins = [...coins];
-        newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance);
+        newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance, newCoins[index].precision);
         this.setState({ coins: newCoins });
       });
     }
