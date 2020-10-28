@@ -101,8 +101,9 @@ const common = {
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
    * @param {*} unitNumber
+   * @param {*} precision
    */
-  convertUnitToCoinAmount(symbol, unitNumber, precision = null) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = 18) {
     if (_.isNil(unitNumber)) {
       return null;
     }
