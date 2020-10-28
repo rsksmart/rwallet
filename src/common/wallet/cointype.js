@@ -22,6 +22,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Mainnet',
     symbol: 'RBTC',
+    precision: 18,
   },
   RIF: {
     networkId: 30,
@@ -32,6 +33,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RIF',
     contractAddress: ASSETS_CONTRACT.RIF.Mainnet,
+    precision: 18,
   },
   DOC: {
     networkId: 30,
@@ -42,6 +44,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'DOC',
     contractAddress: ASSETS_CONTRACT.DOC.Mainnet,
+    precision: 18,
   },
   RIFP: {
     networkId: 30,
@@ -52,6 +55,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RIFP',
     contractAddress: ASSETS_CONTRACT.RIFP.Mainnet,
+    precision: 18,
   },
   RDOC: {
     networkId: 30,
@@ -62,6 +66,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'RDOC',
     contractAddress: ASSETS_CONTRACT.RDOC.Mainnet,
+    precision: 18,
   },
   BITP: {
     networkId: 30,
@@ -72,6 +77,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'BITP',
     contractAddress: ASSETS_CONTRACT.BITP.Mainnet,
+    precision: 18,
   },
   CustomToken: {
     networkId: 30,
@@ -79,6 +85,7 @@ const coinType = {
     icon: references.images.customToken,
     chain: 'Rootstock',
     type: 'Mainnet',
+    precision: 18,
   },
   BTCTestnet: {
     networkId: 1,
@@ -98,6 +105,7 @@ const coinType = {
     chain: 'Rootstock',
     type: 'Testnet',
     symbol: 'RBTC',
+    precision: 18,
   },
   RIFTestnet: {
     networkId: 31,
@@ -108,6 +116,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'RIF',
     contractAddress: ASSETS_CONTRACT.RIF.Testnet,
+    precision: 18,
   },
   DOCTestnet: {
     networkId: 31,
@@ -118,6 +127,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'DOC',
     contractAddress: ASSETS_CONTRACT.DOC.Testnet,
+    precision: 18,
   },
   RIFPTestnet: {
     networkId: 31,
@@ -128,6 +138,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'RIFP',
     contractAddress: ASSETS_CONTRACT.RIFP.Testnet,
+    precision: 18,
   },
   RDOCTestnet: {
     networkId: 31,
@@ -138,6 +149,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'RDOC',
     contractAddress: ASSETS_CONTRACT.RDOC.Testnet,
+    precision: 18,
   },
   BITPTestnet: {
     networkId: 31,
@@ -148,6 +160,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'BITP',
     contractAddress: ASSETS_CONTRACT.BITP.Testnet,
+    precision: 18,
   },
   CustomTokenTestnet: {
     networkId: 31,
@@ -155,6 +168,7 @@ const coinType = {
     icon: references.images.customToken_grey,
     chain: 'Rootstock',
     type: 'Testnet',
+    precision: 18,
   },
 };
 
