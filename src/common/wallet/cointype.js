@@ -13,6 +13,7 @@ const coinType = {
     chain: 'Bitcoin',
     type: 'Mainnet',
     symbol: 'BTC',
+    precision: 8,
   },
   RBTC: {
     networkId: 30,
@@ -96,6 +97,7 @@ const coinType = {
     chain: 'Bitcoin',
     type: 'Testnet',
     symbol: 'BTC',
+    precision: 8,
   },
   RBTCTestnet: {
     networkId: 31,
