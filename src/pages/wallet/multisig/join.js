@@ -42,9 +42,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 0,
     marginLeft: 10,
-    marginVertical: 7,
     flex: 1,
     borderWidth: 0,
+    height: 43,
   },
   fieldName: {
     fontFamily: 'Avenir-Heavy',
