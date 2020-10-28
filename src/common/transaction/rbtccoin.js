@@ -6,7 +6,7 @@ import assetAbi from '../assetAbi.json';
 
 const { MAINNET, TESTNET } = NETWORK;
 
-export const getContractAddress = async (symbol, type) => {
+export const getContractAddress = (symbol, type) => {
   if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
     return ASSETS_CONTRACT[symbol][type];
   }
@@ -38,7 +38,7 @@ export const getTransactionFees = async (type, coin, address, toAddress, value, 
       from, to, value, data: memo,
     });
   } else {
-    const contractAddr = Rsk3.utils.toChecksumAddress(contractAddress || await getContractAddress(symbol, type));
+    const contractAddr = Rsk3.utils.toChecksumAddress(contractAddress || getContractAddress(symbol, type));
     const data = await encodeContractTransfer(contractAddr, type, to, value);
     gas = await rsk3.estimateGas({
       from, to: contractAddr, value: 0, data,
