@@ -59,8 +59,7 @@ const common = {
   },
   rskCoinToWeiHex(amount, precision) {
     const wei = this.rskCoinToWei(amount, precision);
-    const result = Rsk3.utils.numberToHex(wei);
-    return result;
+    return Rsk3.utils.numberToHex(wei);
   },
   /**
    * Transform coin value to wei unit
@@ -71,8 +70,7 @@ const common = {
    */
   rskCoinToWei(amount, precision = 18) {
     const precisionInteger = _.floor(Number(precision));
-    const result = new BigNumber(amount).times(`1e${precisionInteger}`);
-    return result;
+    return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
 
   /**
@@ -84,8 +82,7 @@ const common = {
    */
   weiToCoin(wei, precision = 18) {
     const precisionInteger = _.floor(Number(precision));
-    const result = new BigNumber(wei).div(`1e${precisionInteger}`);
-    return result;
+    return new BigNumber(wei).div(`1e${precisionInteger}`);
   },
   Toast(text, type, onClose, duration, mask) {
     const last = duration > 0 ? duration : 1.5;
@@ -107,8 +104,7 @@ const common = {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
-    return amount;
+    return symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
   },
 
   /**
