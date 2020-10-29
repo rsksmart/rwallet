@@ -131,7 +131,7 @@
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
-        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no Dapp",
+        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no dapp",
         "allowanceApproved": "Autorizado",
         "transactionApproved": "Transação aprovada",
         "request": "Pedido",
