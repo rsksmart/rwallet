@@ -268,7 +268,7 @@ export default class RBTCCoin {
 
   setCustomTokenData = async (data) => {
     const { contractAddress, name, precision } = data;
-    this.precision = precision;
+    this.precision = precision || this.precision;
     this.contractAddress = contractAddress || this.contractAddress;
     this.name = name || this.metadata.defaultName;
   }
