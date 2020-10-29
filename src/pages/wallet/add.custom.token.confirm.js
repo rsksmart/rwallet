@@ -77,14 +77,14 @@ class AddCustomToken extends Component {
         navigation: {
           state: {
             params: {
-              address, symbol, decimals, type, chain, wallet, name,
+              address, symbol, precision, type, chain, wallet, name,
             },
           },
         },
       } = props;
       this.address = address;
       this.symbol = symbol;
-      this.precision = decimals;
+      this.precision = precision;
       this.type = type;
       this.chain = chain;
       this.wallet = wallet;
@@ -123,7 +123,7 @@ class AddCustomToken extends Component {
 
     async onComfirmPressed() {
       const {
-        symbol, type, chain, address, wallet, decimals, name,
+        symbol, type, chain, address, wallet, precision, name,
       } = this;
       const {
         addToken, walletManager, addNotification,
@@ -133,7 +133,7 @@ class AddCustomToken extends Component {
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
         addToken(walletManager, wallet, {
-          symbol, type, contractAddress: address, precision: decimals, chain, name,
+          symbol, type, contractAddress: address, precision, chain, name,
         });
       } catch (error) {
         const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
@@ -169,7 +169,7 @@ class AddCustomToken extends Component {
     render() {
       const { navigation } = this.props;
       const { isLoading, balance, isLoadingBalance } = this.state;
-      const { symbol, type, decimals } = this;
+      const { symbol, type, precision } = this;
       const balanceText = balance ? common.getBalanceString(balance, symbol) : '-';
 
       const symbolName = common.getSymbolName(symbol, type);
@@ -195,7 +195,7 @@ class AddCustomToken extends Component {
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.decimals" />
-                <Text style={styles.rowText}>{decimals}</Text>
+                <Text style={styles.rowText}>{precision}</Text>
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
