@@ -74,8 +74,9 @@ export const createRawTransaction = async ({
     rawTransaction.to = to;
     rawTransaction.data = memo;
   } else if (contractAddress) {
-    const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress));
-    rawTransaction.to = contractAddress;
+    const contractAddr = Rsk3.utils.toChecksumAddress(contractAddress);
+    const contract = rsk3.Contract(assetAbi, contractAddr);
+    rawTransaction.to = contractAddr;
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
   } else {
@@ -106,8 +107,11 @@ export const getRawTransactionParam = ({
 };
 
 export const signTransaction = async (rawTransaction, privateKey) => {
+  console.log('signTransaction, rawTransaction: ', rawTransaction);
+  console.log('signTransaction, privateKey: ', privateKey);
   const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
   const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+  console.log('signTransaction, accountInfo: ', accountInfo);
   const signedTransaction = await accountInfo.signTransaction(
     rawTransaction, privateKey,
   );
