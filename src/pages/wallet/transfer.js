@@ -654,7 +654,7 @@ class Transfer extends Component {
         return;
       }
 
-      this.txSize = symbol === 'BTC' ? await btcTransaction.estimateTxSize(isAllBalance) : null;
+      this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
 
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
@@ -687,7 +687,7 @@ class Transfer extends Component {
     };
     try {
       this.setState({ loading: true });
-      return Transaction.estimateBtcTxSize(estimateParams);
+      return await btcTransaction.estimateBtcTxSize(estimateParams);
     } finally {
       this.setState({ loading: false });
     }
