@@ -107,11 +107,8 @@ export const getRawTransactionParam = ({
 };
 
 export const signTransaction = async (rawTransaction, privateKey) => {
-  console.log('signTransaction, rawTransaction: ', rawTransaction);
-  console.log('signTransaction, privateKey: ', privateKey);
   const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
   const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
-  console.log('signTransaction, accountInfo: ', accountInfo);
   const signedTransaction = await accountInfo.signTransaction(
     rawTransaction, privateKey,
   );
