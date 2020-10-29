@@ -141,6 +141,7 @@ class WalletConnecting extends Component {
       if (asset) {
         rowData.push(
           <TokenSwitch
+            key={asset.name}
             style={styles.assetItem}
             iconStyle={styles.assetIcon}
             switchStyle={styles.assetSwitch}
@@ -241,7 +242,7 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
-  coins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  coins: PropTypes.array.isRequired,
   isTestnet: PropTypes.bool,
   onSwitchValueChanged: PropTypes.func,
   addToken: PropTypes.func.isRequired,
