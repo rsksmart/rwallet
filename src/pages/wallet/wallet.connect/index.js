@@ -401,7 +401,7 @@ class WalletConnectPage extends Component {
     } = this.state;
     const { address } = selectedWallet;
     if (connector) {
-      connector.approveSession({ chainId, accounts: [address] });
+      connector.approveSession({ chainId, accounts: [Rsk3.utils.toChecksumAddress(address)] });
     }
     this.setState({
       connector,
