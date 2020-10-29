@@ -586,6 +586,18 @@ class WalletConnectPage extends Component {
     }
   }
 
+  insufficientRBTC = async () => {
+    const {
+      txData: { gasLimit, gasPrice, value }, selectedWallet: { address }, rsk3,
+    } = this.state;
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const valueNumber = new BigNumber(value);
+    const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
+    const balance = await rsk3.getBalance(address);
+    return Number(balance) < Number(total);
+  }
+
   handleCallRequest = async () => {
     try {
       const {
@@ -616,6 +628,12 @@ class WalletConnectPage extends Component {
         }
 
         case 'eth_sendTransaction': {
+          const insufficientRBTC = await this.insufficientRBTC();
+          if (insufficientRBTC) {
+            const error = new Error('Insufficient RBTC');
+            throw error;
+          }
+
           // Show loading when transaction is signing or sending
           await this.setState({ modalView: this.renderTransactionSigningView() });
           result = await this.sendTransaction(privateKey);
