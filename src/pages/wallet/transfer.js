@@ -732,7 +732,7 @@ class Transfer extends Component {
     }
 
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount, precision);
+    const value = common.convertCoinAmountToUnitHex(symbol, amount, precision);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 

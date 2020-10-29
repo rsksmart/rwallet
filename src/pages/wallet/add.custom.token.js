@@ -143,7 +143,7 @@ class AddCustomToken extends Component {
         const tokenInfo = await CancelablePromiseUtil.makeCancelable(parseHelper.getTokenBasicInfo(type, chain, contractAddress), this);
         const { name, symbol, decimals } = tokenInfo;
         navigation.navigate('AddCustomTokenConfirm', {
-          address: contractAddress, symbol, decimals, name, type, chain, ...navigation.state.params,
+          address: contractAddress, symbol, precision: decimals, name, type, chain, ...navigation.state.params,
         });
       } catch (error) {
         console.log('getTokenBasicInfo, error: ', error);
