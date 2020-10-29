@@ -621,7 +621,7 @@ class Swap extends Component {
     const {
       symbol, type, transactions, privateKey, address, balance, precision,
     } = swapSource.coin;
-    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(txAmount) : common.rskCoinToWeiHex(txAmount, precision);
+    const amountHex = common.convertCoinAmountToUnitHex(symbol, txAmount, precision);
     console.log(`parseHelper.getTransactionFees, symbol: ${symbol}, type: ${type}, address: ${address}, amountHex: ${amountHex}`);
     let transactionFees = null;
     if (symbol === 'BTC') {

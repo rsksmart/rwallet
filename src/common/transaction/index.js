@@ -16,8 +16,6 @@ const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
 
 const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));
 
-const convertTransferValue = (symbol, value, precision) => (symbol === 'BTC' ? common.btcToSatoshiHex(value) : common.rskCoinToWeiHex(value, precision));
-
 const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
   ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
   : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
@@ -39,7 +37,7 @@ class Transaction {
     this.contractAddress = contractAddress || (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) || '';
     this.sender = address;
     this.receiver = receiver;
-    this.value = convertTransferValue(symbol, value, precision);
+    this.value = common.convertCoinAmountToUnitHex(symbol, value, precision);
     this.gasFee = gasFee;
     this.privateKey = privateKey;
     this.data = data || '';
