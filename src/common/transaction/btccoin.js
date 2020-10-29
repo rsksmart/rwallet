@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
+import parseHelper from '../parse';
+import common from '../common';
 
 export const getRawTransactionParam = ({
   netType, sender, receiver, value, data, memo, gasFee, fallback,
@@ -60,6 +62,15 @@ export const getSignedTransactionParam = (signedTransaction, netType, memo, coin
     param.coinSwitch = coinSwitch;
   }
   return param;
+};
+
+export const estimateTxSize = async ({
+  netType, amount, fromAddress, destAddress, privateKey, isSendAllBalance,
+}) => {
+  const inputTxs = await parseHelper.getInputAddressTXHash(fromAddress, netType, amount);
+  return common.estimateBtcTxSize({
+    netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
+  });
 };
 
 export const getTxHash = (txResult) => txResult.tx.hash;
