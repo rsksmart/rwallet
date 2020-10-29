@@ -634,7 +634,7 @@ class Swap extends Component {
         privateKey,
         isSendAllBalance: isAllBalance,
       };
-      const size = btcTransaction.estimateTxSize(estimateParams);
+      const size = await btcTransaction.estimateTxSize(estimateParams);
       console.log('btcTransaction.estimateBtcSize, size: ', size);
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
