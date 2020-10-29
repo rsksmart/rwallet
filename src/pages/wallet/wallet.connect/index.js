@@ -630,8 +630,7 @@ class WalletConnectPage extends Component {
         case 'eth_sendTransaction': {
           const insufficientRBTC = await this.insufficientRBTC();
           if (insufficientRBTC) {
-            const error = new Error('Insufficient RBTC');
-            throw error;
+            throw new Error('Insufficient RBTC');
           }
 
           // Show loading when transaction is signing or sending
