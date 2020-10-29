@@ -126,20 +126,20 @@
         "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão Wallet Connect com o Dapp dentro do prazo estabelecido. Por favor, tente novamente.",
         "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
-        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
-        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da rsk",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da Rsk",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da Rsk",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
-        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no dapp",
+        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no Dapp",
         "allowanceApproved": "Autorizado",
         "transactionApproved": "Transação aprovada",
         "request": "Pedido",
         "connectWallet": "%{dappName} deseja se conectar à sua carteira",
         "content": "Conteúdo",
         "agreeTo": "Ao clicar em permitir, você concorda em",
-        "agreeOne": "- Permitir fornecer o endereço atual da carteira",
-        "agreeTwo": "- Permitir que seja solicitado a assinatura da carteira atual",
+        "agreeOne": "- Permitir fornecer o endereço desta carteira",
+        "agreeTwo": "- Permitir que seja solicitada a assinatura desta carteira",
         "assets": "Ativos",
         "advancedOptions": "Opções avançadas",
         "reject": "Rejeitar",
@@ -181,7 +181,7 @@
         "data": "Dados",
         "networkQuestion": {
           "title": "Rede",
-          "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
+          "body": "A rede de testes ou testnet é uma blockchain alternativa da Rsk usada exclusivamente para realização de testes"
         }
       },
       "transferCompleted": {
@@ -289,7 +289,7 @@
     },
     "mine": {
       "index": {
-        "joinRSKCommunity": "Junte-se à comunidade RSK",
+        "joinRSKCommunity": "Junte-se à comunidade Rsk",
         "settings": "Configurações",
         "createKey": "Criar ou importar uma carteira",
         "keys": "Carteiras",
@@ -623,10 +623,10 @@
       "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
     },
     "invalidRskAddress": {
-      "title": "Endereço RSK inválido",
+      "title": "Endereço Rsk inválido",
       "body": {
-        "normal": "O endereço inserido é um endereço RSK inválido. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o em %{explorerName} antes de enviar.",
-        "ethereum": "O endereço inserido parece ser um endereço Ethereum. Este é um problema conhecido ao copiar endereços do MetaMask. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o em %{explorerName} antes de enviar."
+        "normal": "O endereço inserido é um endereço Rsk inválido. Certifique-se de que o endereço do destinatário é um endereço Rsk válido e verifique-o em %{explorerName} antes de enviar.",
+        "ethereum": "O endereço inserido parece ser um endereço Ethereum. Este é um problema conhecido ao copiar endereços do MetaMask. Certifique-se de que o endereço do destinatário é um endereço Rsk válido e verifique-o em %{explorerName} antes de enviar."
       },
       "question": "Por que estou vendo esta mensagem?",
       "confirm": "Enviar assim mesmo",
@@ -639,17 +639,17 @@
     "emptyRecordAddress": {
       "title": "Endereço sem registro",
       "body": {
-        "normal": "O endereço inserido não tem registro em %{explorerName} e tem %{balance} %{otherSymbolName} na rede RSK %{otherType}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK da %{type}?",
-        "both": "O endereço inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK na %{type}?"
+        "normal": "O endereço inserido não tem registro em %{explorerName} e tem %{balance} %{otherSymbolName} na rede Rsk %{otherType}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço Rsk da %{type}?",
+        "both": "O endereço inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço Rsk na %{type}?"
       }
     },
     "convertWalletAddress": {
-      "title": "Endereço da carteira RSK inválido",
-      "body": "O endereço da carteira RSK inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
+      "title": "Endereço da carteira Rsk inválido",
+      "body": "O endereço da carteira Rsk inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
     },
     "convertContractAddress": {
-      "title": "Endereço de contrato RSK inválido",
-      "body": "O endereço do contrato RSK inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
+      "title": "Endereço de contrato Rsk inválido",
+      "body": "O endereço do contrato Rsk inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
     }
   },
   "currency": {
