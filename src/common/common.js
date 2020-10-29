@@ -58,8 +58,7 @@ const common = {
     return result;
   },
   rskCoinToWeiHex(amount, precision) {
-    const wei = this.rskCoinToWei(amount, precision);
-    return Rsk3.utils.numberToHex(wei);
+    return `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
   },
   /**
    * Transform coin value to wei unit
