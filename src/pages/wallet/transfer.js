@@ -18,7 +18,7 @@ import {
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import Transaction from '../../common/transaction';
+import Transaction, { btcTransaction, rbtcTransaction } from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -33,7 +33,6 @@ import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import {
   ERROR_CODE, FeeCalculationError, InvalidAddressError, InvalidAmountError,
 } from '../../common/error';
-import * as rbtc from '../../common/transaction/rbtccoin';
 import InvalidRskAddressConfirmation from '../../components/wallet/invalid.rskaddress.confirmation';
 
 const MEMO_NUM_OF_LINES = 8;
@@ -655,7 +654,7 @@ class Transfer extends Component {
         return;
       }
 
-      this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
+      this.txSize = symbol === 'BTC' ? await btcTransaction.estimateTxSize(isAllBalance) : null;
 
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
@@ -755,7 +754,7 @@ class Transfer extends Component {
       this.setState({ loading: true });
       const transactionFees = symbol === 'BTC'
         ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-        : await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
+        : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
         amount, toAddress, memo, transactionFees,
