@@ -649,7 +649,7 @@
     },
     "convertContractAddress": {
       "title": "Endereço de contrato RSK inválido",
-      "body": "O endereço do contrato Rsk inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
+      "body": "O endereço do contrato RSK inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
     }
   },
   "currency": {
