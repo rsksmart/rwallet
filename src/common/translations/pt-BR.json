@@ -126,7 +126,7 @@
         "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão Wallet Connect com o Dapp dentro do prazo estabelecido. Por favor, tente novamente.",
         "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
-        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da Rsk",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da RSK",
         "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da Rsk",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
