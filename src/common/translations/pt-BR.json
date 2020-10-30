@@ -640,7 +640,7 @@
       "title": "Endereço sem registro",
       "body": {
         "normal": "O endereço inserido não tem registro em %{explorerName} e tem %{balance} %{otherSymbolName} na rede RSK %{otherType}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK da %{type}?",
-        "both": "O endereço inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço Rsk na %{type}?"
+        "both": "O endereço inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK na %{type}?"
       }
     },
     "convertWalletAddress": {
