@@ -29,6 +29,12 @@ export default class SharedWalletIndex extends Component {
           icon: (<Image source={references.images.sharedWalletIcon} />),
           onPress: () => navigation.navigate('JoinMultisigAddress'),
         },
+        {
+          title: 'page.wallet.sharedWallet.importSharedWallet',
+          text: 'page.wallet.sharedWallet.importSharedWalletNote',
+          icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
+          onPress: () => navigation.navigate('CreateMultisigAddress'),
+        },
       ];
     }
 

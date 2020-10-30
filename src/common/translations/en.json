@@ -88,7 +88,9 @@
         "createSharedWallet": "Create Shared Wallet",
         "createSharedWalletNote": "Create a Multisig Bitcoin Wallet and invite others to join",
         "joinSharedWallet": "Join Shared Wallet",
-        "joinSharedWalletNote": "Requires invitation to join"
+        "joinSharedWalletNote": "Requires invitation to join",
+        "importSharedWallet": "Import Shared Wallet",
+        "importSharedWalletNote": "Import a Multisig Bitcoin Wallet and invite others to join"
       },
       "selectCurrency": {
         "title": "Select Wallet Assets",

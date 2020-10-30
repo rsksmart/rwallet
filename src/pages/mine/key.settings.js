@@ -11,9 +11,11 @@ import { createInfoConfirmation } from '../../common/confirmation.controller';
 import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
+import parseHelper from '../../common/parse';
 import screenHelper from '../../common/screenHelper';
 import color from '../../assets/styles/color';
 import { WalletType } from '../../common/constants';
+import { getDefaultErrorNotification } from '../../common/notification.controller';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -137,12 +139,11 @@ class KeySettings extends Component {
         assetsCount: 0,
         name: '',
         isConfirmDeleteKey: false,
+        isLoading: false,
       };
       this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
       this.onBackupPress = this.onBackupPress.bind(this);
       this.onKeyNamePress = this.onKeyNamePress.bind(this);
-      this.onDeletePress = this.onDeletePress.bind(this);
-      this.deleteKey = this.deleteKey.bind(this);
       this.backup = this.backup.bind(this);
     }
 
@@ -197,7 +198,7 @@ class KeySettings extends Component {
       callAuthVerify(this.deleteKey, () => {});
     }
 
-    onDeletePress() {
+    onDeletePress = () => {
       const { walletType } = this.key;
       const { addConfirmation } = this.props;
       const isReadOnlyWallet = walletType === WalletType.Readonly;
@@ -209,28 +210,44 @@ class KeySettings extends Component {
       addConfirmation(infoConfirmation);
     }
 
-    backup() {
+    backup = () => {
       const { navigation } = this.props;
       // Backup flow will skip phrase and wallet creation.
       navigation.navigate('RecoveryPhrase', { phrase: this.key.mnemonic, shouldCreatePhrase: false, shouldVerifyPhrase: false });
     }
 
-    deleteKey() {
-      const { deleteKey, walletManager } = this.props;
-      deleteKey(this.key, walletManager);
-      this.setState({ isConfirmDeleteKey: true });
+    deleteKey = async () => {
+      const { addNotification } = this.props;
+      const { walletType, coins } = this.key;
+      try {
+        if (walletType === WalletType.Shared) {
+          this.setState({ isLoading: true });
+          const { invitationCode, address } = coins[0];
+          if (!address) {
+            await parseHelper.deleteMultiSigWallet(invitationCode);
+          }
+        }
+        const { deleteKey, walletManager } = this.props;
+        deleteKey(this.key, walletManager);
+        this.setState({ isConfirmDeleteKey: true });
+      } catch (error) {
+        addNotification(getDefaultErrorNotification());
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
 
     render() {
       const { navigation } = this.props;
       const {
-        assetsCount, name, walletListData,
+        assetsCount, name, walletListData, isLoading,
       } = this.state;
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
-          hasLoader={false}
+          hasLoader
+          isLoading={isLoading}
           headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" assetsCount={assetsCount} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.sectionContainer}>
@@ -278,6 +295,7 @@ KeySettings.propTypes = {
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
   callAuthVerify: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
@@ -301,6 +319,7 @@ const mapDispatchToProps = (dispatch) => ({
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

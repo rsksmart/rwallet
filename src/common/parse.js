@@ -628,6 +628,8 @@ class ParseHelper {
    * @returns {array} transaction hash array
    */
   static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
+
+  static deleteMultiSigWallet = async (invitationCode) => Parse.Cloud.run('deleteMultiSigWallet', { invitationCode })
 }
 
 // Create parse helper proxy to add global error handling
