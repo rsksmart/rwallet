@@ -625,7 +625,7 @@
     "invalidRskAddress": {
       "title": "Endereço RSK inválido",
       "body": {
-        "normal": "O endereço inserido é um endereço Rsk inválido. Certifique-se de que o endereço do destinatário é um endereço Rsk válido e verifique-o em %{explorerName} antes de enviar.",
+        "normal": "O endereço inserido é um endereço RSK inválido. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o em %{explorerName} antes de enviar.",
         "ethereum": "O endereço inserido parece ser um endereço Ethereum. Este é um problema conhecido ao copiar endereços do MetaMask. Certifique-se de que o endereço do destinatário é um endereço Rsk válido e verifique-o em %{explorerName} antes de enviar."
       },
       "question": "Por que estou vendo esta mensagem?",
