@@ -20,7 +20,7 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WalletConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification, getErrorNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
 import {
@@ -664,11 +664,7 @@ class WalletConnectPage extends Component {
     await this.setState({ connector, modalView: null });
 
     if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
-      const notification = createErrorNotification(
-        'page.wallet.walletconnect.insufficientTitle',
-        'page.wallet.walletconnect.insufficientBody',
-        'page.wallet.walletconnect.insufficientButton',
-      );
+      const notification = getErrorNotification(error.code);
       setTimeout(() => {
         addNotification(notification);
       }, 500);
