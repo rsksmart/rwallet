@@ -181,7 +181,7 @@
         "data": "Dados",
         "networkQuestion": {
           "title": "Rede",
-          "body": "A rede de testes ou testnet é uma blockchain alternativa da Rsk usada exclusivamente para realização de testes"
+          "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
         }
       },
       "transferCompleted": {
