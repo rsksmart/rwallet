@@ -18,7 +18,7 @@ import {
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import { createTransaction } from '../../common/transaction';
+import { createTransaction, btcTransaction, rbtcTransaction } from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -33,7 +33,6 @@ import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import {
   ERROR_CODE, FeeCalculationError, InvalidAddressError, InvalidAmountError, ExistUnfinishedProposalError,
 } from '../../common/error';
-import * as rbtc from '../../common/transaction/rbtccoin';
 import InvalidRskAddressConfirmation from '../../components/wallet/invalid.rskaddress.confirmation';
 
 const MEMO_NUM_OF_LINES = 8;
@@ -645,39 +644,51 @@ class Transfer extends Component {
    * @param {*} isAllBalance, Indicates whether the user needs to send the entire balance.
    */
   requestFees = async (isAllBalance) => {
+    const { navigation, addConfirmation } = this.props;
     const { amount, to } = this.state;
-    const {
-      isAmountValid, isAddressValid, coin, toAddress,
-    } = this;
-    const {
-      symbol, type, transactions, privateKey, address,
-    } = coin;
+    const { isAmountValid, isAddressValid, coin } = this;
+    const { symbol } = coin;
     try {
       const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
       if (!isValid) {
         return;
       }
 
-      if (symbol === 'BTC') {
-        const estimateParams = {
-          netType: type,
-          amount,
-          transactions,
-          fromAddress: address,
-          destAddress: toAddress,
-          privateKey,
-          isSendAllBalance: isAllBalance,
-        };
-        this.txSize = common.estimateBtcSize(estimateParams);
-      }
-
+      this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
         return;
       }
       this.processFees(transactionFees);
     } catch (error) {
-      this.addErrorNotification(error);
+      const confirmation = createErrorConfirmation(
+        defaultErrorNotification.title,
+        defaultErrorNotification.message,
+        'button.retry',
+        () => this.requestFees(),
+        () => navigation.goBack(),
+      );
+      addConfirmation(confirmation);
+    }
+  }
+
+  estimateBtcTxSize = async (isSendAllBalance) => {
+    const { amount } = this.state;
+    const { coin, toAddress } = this;
+    const { type, privateKey, address } = coin;
+    const estimateParams = {
+      netType: type,
+      amount,
+      fromAddress: address,
+      destAddress: toAddress,
+      privateKey,
+      isSendAllBalance,
+    };
+    try {
+      this.setState({ loading: true });
+      return await btcTransaction.estimateTxSize(estimateParams);
+    } finally {
+      this.setState({ loading: false });
     }
   }
 
@@ -707,14 +718,13 @@ class Transfer extends Component {
     this.setState({ invalidAddressModalVisible: false });
   }
 
-  async loadTransactionFees(isAllBalance) {
-    const { navigation, addConfirmation } = this.props;
+  async loadTransactionFees() {
     const { amount, memo } = this.state;
     const {
       coin, txFeesCache, toAddress, txSize,
     } = this;
     const {
-      symbol, type, address,
+      symbol, type, address, precision,
     } = coin;
 
     if (symbol === 'BTC' && !txSize) {
@@ -722,7 +732,7 @@ class Transfer extends Component {
     }
 
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount, precision);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 
@@ -743,27 +753,15 @@ class Transfer extends Component {
       this.setState({ loading: true });
       const transactionFees = symbol === 'BTC'
         ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-        : await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
-      this.setState({ loading: false });
+        : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
       console.log('transactionFees: ', transactionFees);
       this.txFeesCache = {
         amount, toAddress, memo, transactionFees,
       };
       this.setState({ enableConfirm: true });
       return transactionFees;
-    } catch (error) {
-      // If error, let user try again or quit.
+    } finally {
       this.setState({ loading: false });
-      console.log('loadTransactionFees, error: ', error);
-      const confirmation = createErrorConfirmation(
-        defaultErrorNotification.title,
-        defaultErrorNotification.message,
-        'button.retry',
-        () => this.requestFees(isAllBalance),
-        () => navigation.goBack(),
-      );
-      addConfirmation(confirmation);
-      return null;
     }
   }
 

@@ -19,7 +19,7 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError } from './error';
 
@@ -57,17 +57,31 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rskCoinToWeiHex(amount) {
-    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
-    return result;
+  rskCoinToWeiHex(amount, precision) {
+    return `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
   },
-  rskCoinToWei(amount) {
-    const result = new BigNumber(amount).times('1e18');
-    return result;
+  /**
+   * Transform coin value to wei unit
+   * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
+   * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
+   * @param {*} amount
+   * @param {*} precision
+   */
+  rskCoinToWei(amount, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
-  weiToCoin(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
+
+  /**
+   * Transform wei unit value to coin value
+   * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
+   * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
+   * @param {*} wei
+   * @param {*} precision
+   */
+  weiToCoin(wei, precision = 18) {
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(wei).div(`1e${precisionInteger}`);
   },
   Toast(text, type, onClose, duration, mask) {
     const last = duration > 0 ? duration : 1.5;
@@ -83,13 +97,13 @@ const common = {
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
    * @param {*} unitNumber
+   * @param {*} precision
    */
-  convertUnitToCoinAmount(symbol, unitNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = 18) {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
-    return amount;
+    return symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
   },
 
   /**
@@ -438,32 +452,19 @@ const common = {
     }
   },
 
-  estimateBtcSize({
-    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  /**
+   * estimateBtcTxSize, estimate BTC transaction size
+   * @param {object} params, { netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance }
+   * @returns {number} BTC transaction size
+   */
+  estimateBtcTxSize({
+    netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
-    const inputTxs = [];
-    let sum = new BigNumber(0);
-
     // If the transactions is empty, returns the default size
-    if (_.isEmpty(transactions)) {
+    if (_.isEmpty(inputTxs)) {
       return DEFAULT_BTC_TX_SIZE;
     }
-
-    // Find out transactions which combines amount
-    for (let i = 0; i < transactions.length; i += 1) {
-      const tx = transactions[i];
-      if (tx.status === TxStatus.SUCCESS) {
-        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
-        sum = sum.plus(txAmount);
-        inputTxs.push(tx.hash);
-      }
-      if (sum.isGreaterThanOrEqualTo(amount)) {
-        break;
-      }
-    }
-    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
-
     const outputSize = isSendAllBalance ? 1 : 2;
     const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const exParams = { network };
@@ -481,7 +482,7 @@ const common = {
     });
     const result = tx.build().toHex();
     const size = result.length / 2;
-    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    console.log(`estimateBtcTxSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
 

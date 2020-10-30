@@ -153,6 +153,7 @@
         "agreeTo": "点击允许，即表示您同意",
         "agreeOne": "- 允许获取当前的钱包地址",
         "agreeTwo": "- 允许来自当前钱包的签名请求",
+        "assets": "资产",
         "advancedOptions": "高级选项",
         "reject": "拒绝",
         "allow": "允许",

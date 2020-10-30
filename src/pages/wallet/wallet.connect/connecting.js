@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import SwitchRow from '../../../components/common/switch/switch.row';
 import Loc from '../../../components/common/misc/loc';
+import TokenSwitch from '../../../components/common/switch/switch.token';
 
 import { strings } from '../../../common/i18n';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import { createInfoNotification } from '../../../common/notification.controller';
 import fontFamily from '../../../assets/styles/font.family';
+import walletActions from '../../../redux/wallet/actions';
+
+// Get screen width
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   body: {
@@ -96,6 +103,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: color.white,
   },
+  assetRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  assetItem: {
+    flexDirection: 'row',
+    backgroundColor: color.white,
+    alignItems: 'center',
+    height: 40,
+    marginTop: 10,
+    borderRadius: 10,
+    width: (SCREEN_WIDTH - 23 * 2) / 2,
+  },
+  assetIcon: {
+    width: 40,
+    height: 40,
+    resizeMode: 'stretch',
+  },
+  assetSwitch: {
+    marginRight: 20,
+    transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+  },
 });
 
 class WalletConnecting extends Component {
@@ -103,9 +132,44 @@ class WalletConnecting extends Component {
     header: null,
   });
 
+  renderAssetsRow = (assets) => {
+    const {
+      addToken, deleteToken, wallet, walletManager, updateWallet,
+    } = this.props;
+    const rowData = [];
+    _.forEach(assets, (asset) => {
+      if (asset) {
+        rowData.push(
+          <TokenSwitch
+            style={styles.assetItem}
+            iconStyle={styles.assetIcon}
+            switchStyle={styles.assetSwitch}
+            icon={asset.icon}
+            name={asset.name}
+            value={asset.selected}
+            onSwitchValueChanged={(value) => {
+              if (value) {
+                addToken(walletManager, wallet, asset);
+              } else {
+                deleteToken(walletManager, wallet, asset);
+              }
+              updateWallet();
+            }}
+          />,
+        );
+      }
+    });
+
+    return (
+      <View style={styles.assetRow}>
+        {rowData}
+      </View>
+    );
+  }
+
   render() {
     const {
-      approve, reject, address, dappName, dappUrl, onSwitchValueChanged, isTestnet,
+      approve, reject, dappName, address, dappUrl, onSwitchValueChanged, isTestnet, coins,
     } = this.props;
 
     return (
@@ -135,6 +199,16 @@ class WalletConnecting extends Component {
         </View>
 
         <View style={styles.block}>
+          <Loc style={styles.title} text="page.wallet.walletconnect.assets" />
+          <FlatList
+            extraData={this.porps}
+            data={coins}
+            renderItem={({ item }) => this.renderAssetsRow(item)}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+
+        <View style={[styles.block, { marginBottom: 160 }]}>
           <Loc style={styles.title} text="page.wallet.walletconnect.advancedOptions" />
           <SwitchRow
             value={isTestnet}
@@ -152,7 +226,7 @@ class WalletConnecting extends Component {
             <Text style={styles.rejectText}>{strings('page.wallet.walletconnect.reject')}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.btn, styles.allowBtn]} onPress={approve}>
+          <TouchableOpacity style={[styles.btn, styles.allowBtn]} onPress={approve} disabled={!address}>
             <Text style={styles.allowText}>{strings('page.wallet.walletconnect.allow')}</Text>
           </TouchableOpacity>
         </View>
@@ -167,8 +241,14 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  coins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isTestnet: PropTypes.bool,
   onSwitchValueChanged: PropTypes.func,
+  addToken: PropTypes.func.isRequired,
+  deleteToken: PropTypes.func.isRequired,
+  walletManager: PropTypes.shape({}).isRequired,
+  wallet: PropTypes.shape({}).isRequired,
+  updateWallet: PropTypes.func.isRequired,
 };
 
 WalletConnecting.defaultProps = {
@@ -176,4 +256,13 @@ WalletConnecting.defaultProps = {
   onSwitchValueChanged: () => null,
 };
 
-export default WalletConnecting;
+const mapStateToProps = (state) => ({
+  walletManager: state.Wallet.get('walletManager'),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
+  addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletConnecting);

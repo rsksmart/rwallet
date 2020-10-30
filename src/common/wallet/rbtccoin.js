@@ -54,6 +54,7 @@ export default class RBTCCoin extends BasicCoin {
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.contractAddress = this.metadata.contractAddress;
+    this.precision = this.metadata.precision;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
