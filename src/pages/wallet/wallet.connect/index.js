@@ -33,6 +33,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
+import { ERROR_CODE, InsufficientRbtcError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -439,7 +440,7 @@ class WalletConnectPage extends Component {
           await this.handleCallRequest();
           await this.closeRequest();
         } catch (err) {
-          this.handleError();
+          this.handleError(err);
         }
       }, () => {
         this.handleError();
@@ -630,7 +631,7 @@ class WalletConnectPage extends Component {
         case 'eth_sendTransaction': {
           const insufficientRBTC = await this.insufficientRBTC();
           if (insufficientRBTC) {
-            throw new Error('Insufficient RBTC');
+            throw new InsufficientRbtcError();
           }
 
           // Show loading when transaction is signing or sending
@@ -657,13 +658,25 @@ class WalletConnectPage extends Component {
     }
   }
 
-  handleError = async () => {
+  handleError = async (error) => {
+    const { addNotification } = this.props;
     const { connector } = this.state;
-
     await this.setState({ connector, modalView: null });
-    setTimeout(() => {
-      this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
-    }, 500);
+
+    if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
+      const notification = createErrorNotification(
+        'page.wallet.walletconnect.insufficientTitle',
+        'page.wallet.walletconnect.insufficientBody',
+        'page.wallet.walletconnect.insufficientButton',
+      );
+      setTimeout(() => {
+        addNotification(notification);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
+      }, 500);
+    }
   }
 
   generateTxData = async () => {
