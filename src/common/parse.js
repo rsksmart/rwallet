@@ -499,6 +499,15 @@ class ParseHelper {
     const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
     return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
   }
+
+  /**
+   * getInputAddressTXHash, get transaction input hash array
+   * @param {*} address
+   * @param {*} type
+   * @param {*} value, Amount transferred
+   * @returns {array} transaction hash array
+   */
+  static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
 }
 
 // Create parse helper proxy to add global error handling

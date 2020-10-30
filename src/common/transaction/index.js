@@ -24,7 +24,7 @@ const createSendSignedTransactionParam = (symbol, signedTransaction, netType, me
 
 const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
-class Transaction {
+export default class Transaction {
   constructor(coin, receiver, value, extraParams) {
     const {
       symbol, type, privateKey, address, contractAddress, precision,
@@ -121,4 +121,7 @@ class Transaction {
   }
 }
 
-export default Transaction;
+export {
+  btc as btcTransaction,
+  rbtc as rbtcTransaction,
+};
