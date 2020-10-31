@@ -159,7 +159,7 @@
         "cancel": "Cancelar",
         "gotIt": "ENTENDI",
         "leaveToDisconnect": "Sair para desconectar?",
-        "leaveToDisconnectDesc": "Sair da página WalletConnect irá fazer com que a RWallet se desconecte do Dapp atualmente conectado.",
+        "leaveToDisconnectDesc": "Sair da página WalletConnect irá fazer com que a RWallet se desconecte do dapp atualmente conectado.",
         "leaveToDisconnectConfirm": "Você tem certeza de que deseja desconectar?",
         "disconnectAlertTitle": "WalletConnect desconectada",
         "disconnectAlertContent": "O dapp \"%{dappName}\" foi desconectado da WalletConnect. Pode ter ocorrido alguma instabilidade ou rejeição por parte do dapp. Ao clicar no botão abaixo você será direcionado para a carteira.",
