@@ -664,7 +664,7 @@ class WalletConnectPage extends Component {
     await this.setState({ connector, modalView: null });
 
     if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
-      const notification = getErrorNotification(error.code);
+      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
       setTimeout(() => {
         addNotification(notification);
       }, 500);
