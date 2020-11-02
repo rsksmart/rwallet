@@ -30,9 +30,9 @@ export default function TokenSwitch(props) {
 }
 
 TokenSwitch.propTypes = {
-  style: PropTypes.oneOfType(PropTypes.array, PropTypes.shape({})),
-  iconStyle: PropTypes.oneOfType(PropTypes.array, PropTypes.shape({})),
-  switchStyle: PropTypes.oneOfType(PropTypes.array, PropTypes.shape({})),
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  iconStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  switchStyle: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   icon: PropTypes.number,
   name: PropTypes.string,
   value: PropTypes.bool,

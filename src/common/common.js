@@ -93,6 +93,20 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
+
+  /**
+   * convertCoinAmountToUnitHex, if coinAmount is nil, return null
+   * @param {*} symbol
+   * @param {*} coinAmount
+   * @param {*} precision
+   */
+  convertCoinAmountToUnitHex(symbol, coinAmount, precision = 18) {
+    if (_.isNil(coinAmount)) {
+      return null;
+    }
+
+    return symbol === 'BTC' ? common.btcToSatoshiHex(coinAmount) : common.rskCoinToWeiHex(coinAmount, precision);
+  },
   /**
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
