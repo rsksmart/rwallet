@@ -242,7 +242,7 @@ WalletConnecting.propTypes = {
   dappName: PropTypes.string.isRequired,
   dappUrl: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
-  coins: PropTypes.array.isRequired,
+  coins: PropTypes.arrayOf(PropTypes.array).isRequired,
   isTestnet: PropTypes.bool,
   onSwitchValueChanged: PropTypes.func,
   addToken: PropTypes.func.isRequired,

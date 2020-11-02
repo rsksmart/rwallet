@@ -411,12 +411,10 @@ class WalletConnectPage extends Component {
   rejectSession = () => {
     console.log('ACTION', 'rejectSession');
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector) {
       connector.rejectSession();
     }
     this.setState({ connector });
-    navigation.goBack();
   };
 
   killSession = () => {
