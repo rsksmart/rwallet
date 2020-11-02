@@ -192,15 +192,13 @@ class WalletConnectPage extends Component {
 
     const selectedWallet = this.getWallet();
     this.initNetwork();
-    // setTimeout 500ms in order to ui change smoothly
-    setTimeout(async () => {
-      await this.setState({
-        modalView: this.renderWalletConnectingView(),
-        selectedWallet,
-      });
 
-      await this.initWalletConnect();
-    }, 500);
+    await this.setState({
+      modalView: this.renderWalletConnectingView(),
+      selectedWallet,
+    });
+
+    await this.initWalletConnect();
 
     // Show timeout alert if cannot connect within 20s
     this.timeout = setTimeout(async () => {
@@ -434,18 +432,16 @@ class WalletConnectPage extends Component {
 
     await this.setState({ modalView: null });
 
-    setTimeout(async () => {
-      callAuthVerify(async () => {
-        try {
-          await this.handleCallRequest();
-          await this.closeRequest();
-        } catch (err) {
-          this.handleError(err);
-        }
-      }, () => {
-        this.handleError();
-      });
-    }, 500);
+    callAuthVerify(async () => {
+      try {
+        await this.handleCallRequest();
+        await this.closeRequest();
+      } catch (err) {
+        this.handleError(err);
+      }
+    }, () => {
+      this.handleError();
+    });
   }
 
   rejectRequest = async () => {
@@ -639,13 +635,11 @@ class WalletConnectPage extends Component {
           result = await this.sendTransaction(privateKey);
           await connector.approveRequest({ id, result });
 
-          setTimeout(() => {
-            if (inputDecode && inputDecode.method === 'approve') {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
-            } else {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
-            }
-          }, 500);
+          if (inputDecode && inputDecode.method === 'approve') {
+            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
+          } else {
+            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
+          }
           break;
         }
 
@@ -665,13 +659,9 @@ class WalletConnectPage extends Component {
 
     if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
       const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
-      setTimeout(() => {
-        addNotification(notification);
-      }, 500);
+      addNotification(notification);
     } else {
-      setTimeout(() => {
-        this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
-      }, 500);
+      this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
     }
   }
 
