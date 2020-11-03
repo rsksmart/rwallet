@@ -3,7 +3,7 @@ import {
   View, StyleSheet, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions } from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
@@ -13,6 +13,7 @@ import fontFamily from '../../assets/styles/font.family';
 import operationSuccessStyles from '../../assets/styles/operation.success.style';
 import Button from '../../components/common/button/button';
 import CompletedIcon from '../../components/common/image/completed.icon';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   title: {
@@ -39,17 +40,28 @@ export default class TransferCompleted extends Component {
     header: null,
   });
 
+  constructor(props) {
+    super(props);
+    const { coin, hash } = props.navigation.state.params;
+    this.coin = coin;
+    this.hash = hash;
+  }
+
   onBackButtonPressed = () => {
     const { navigation } = this.props;
-    const stackActions = StackActions.pop({ n: 2 });
-    navigation.dispatch(stackActions);
-    navigation.navigate('Home');
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Dashboard' }),
+        NavigationActions.navigate({ routeName: 'WalletHistory', params: { coin: this.coin, walletType: WalletType.Normal } }),
+      ],
+    });
+    navigation.dispatch(resetAction);
   }
 
   onExplorePressed = () => {
-    const { navigation } = this.props;
-    const { symbol, type, hash } = navigation.state.params;
-    const url = common.getTransactionUrl(symbol, type, hash);
+    const { symbol, type } = this.coin;
+    const url = common.getTransactionUrl(symbol, type, this.hash);
     Linking.openURL(url);
   }
 

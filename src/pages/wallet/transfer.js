@@ -922,8 +922,7 @@ class Transfer extends Component {
       await transaction.processSignedTransaction();
       this.setState({ loading: false });
       const completedParams = {
-        symbol: coin.symbol,
-        type: coin.type,
+        coin,
         hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
