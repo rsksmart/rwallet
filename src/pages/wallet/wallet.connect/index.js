@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, ActivityIndicator, ScrollView, Modal, Dimensions, BackHandler,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import WalletConnect from '@walletconnect/client';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -220,18 +219,9 @@ class WalletConnectPage extends Component {
 
   backAction = () => {
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector.connected) {
-      this.closePress();
-      this.killSession();
+      this.onRequestClose();
     }
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Dashboard' }),
-      ],
-    });
-    navigation.dispatch(resetAction);
   }
 
   // Get current wallet's address and private key
@@ -734,11 +724,12 @@ class WalletConnectPage extends Component {
   }
 
   onRequestClose = () => {
-    const { payload } = this.state;
-    if (payload) {
+    const { modalView } = this.state;
+    if (modalView) {
       this.rejectRequest();
     } else {
       this.closeModalPress();
+      this.killSession();
     }
   }
 
