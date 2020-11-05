@@ -685,21 +685,31 @@ class WalletConnectPage extends Component {
     }
     if (!gasPrice) {
       // Get gasPrice if params[0].gasPrice is null
-      gasPrice = await rsk3.getGasPrice();
+      await rsk3.getGasPrice().then((res) => {
+        gasPrice = res;
+      }).catch((err) => {
+        console.log('getGasPrice error: ', err);
+        gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
+      });
     }
 
     if (!gas) {
-      gas = await rsk3.estimateGas({
+      await rsk3.estimateGas({
         to,
         data,
+      }).then((res) => {
+        gas = res;
+      }).catch((err) => {
+        console.log('estimateGas error: ', err);
+        gas = TRANSACTION.DEFAULT_GAS_LIMIT;
       });
     }
 
     const txData = {
       nonce,
       data,
-      gasLimit: gas || TRANSACTION.DEFAULT_GAS_LIMIT,
-      gasPrice: gasPrice || TRANSACTION.DEFAULT_GAS_PRICE,
+      gasLimit: gas,
+      gasPrice,
       to,
       value: value || TRANSACTION.DEFAULT_VALUE,
     };
