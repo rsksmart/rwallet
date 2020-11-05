@@ -685,8 +685,8 @@ class WalletConnectPage extends Component {
     }
     if (!gasPrice) {
       // Get gasPrice if params[0].gasPrice is null
-      await rsk3.getGasPrice().then((res) => {
-        gasPrice = res;
+      await rsk3.getGasPrice().then((latestGasPrice) => {
+        gasPrice = latestGasPrice;
       }).catch((err) => {
         console.log('getGasPrice error: ', err);
         gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
@@ -697,8 +697,8 @@ class WalletConnectPage extends Component {
       await rsk3.estimateGas({
         to,
         data,
-      }).then((res) => {
-        gas = res;
+      }).then((latestGas) => {
+        gas = latestGas;
       }).catch((err) => {
         console.log('estimateGas error: ', err);
         gas = TRANSACTION.DEFAULT_GAS_LIMIT;

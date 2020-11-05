@@ -508,8 +508,8 @@ class DAppBrowser extends Component {
 
     // Get current gasPrice from blockchain when gasPrice is null
     if (!gasPrice) {
-      await this.rsk3.getGasPrice().then((res) => {
-        gasPrice = res;
+      await this.rsk3.getGasPrice().then((latestGasPrice) => {
+        gasPrice = latestGasPrice;
       }).catch((err) => {
         console.log('getGasPrice error: ', err);
         gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
@@ -521,8 +521,8 @@ class DAppBrowser extends Component {
       await this.rsk3.estimateGas({
         to,
         data,
-      }).then((res) => {
-        gas = res;
+      }).then((latestGas) => {
+        gas = latestGas;
       }).catch((err) => {
         console.log('estimateGas error: ', err);
         gas = TRANSACTION.DEFAULT_GAS_LIMIT;
