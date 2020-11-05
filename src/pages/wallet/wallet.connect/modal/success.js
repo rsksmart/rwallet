@@ -2,7 +2,6 @@ import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import { WALLET_CONNECT } from '../../../../common/constants';
 
@@ -38,9 +37,5 @@ export default function SuccessModal({
 SuccessModal.propTypes = {
   title: PropTypes.string.isRequired,
   cancelPress: PropTypes.func.isRequired,
-  description: PropTypes.string,
-};
-
-SuccessModal.defaultProps = {
-  description: strings('page.wallet.walletconnect.successDesc'),
+  description: PropTypes.string.isRequired,
 };
