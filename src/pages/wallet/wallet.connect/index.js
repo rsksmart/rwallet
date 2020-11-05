@@ -629,9 +629,23 @@ class WalletConnectPage extends Component {
           await connector.approveRequest({ id, result });
 
           if (inputDecode && inputDecode.method === 'approve') {
-            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} description={strings('page.wallet.walletconnect.successDesc')} cancelPress={this.closeModalPress} />) });
+            this.setState({
+              modalView: (
+                <SuccessModal
+                  title={strings('page.wallet.walletconnect.allowanceApproved')}
+                  description={strings('page.wallet.walletconnect.successDesc')}
+                  cancelPress={this.closeModalPress}
+                />),
+            });
           } else {
-            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} description={strings('page.wallet.walletconnect.successDesc')} cancelPress={this.closeModalPress} />) });
+            this.setState({
+              modalView: (
+                <SuccessModal
+                  title={strings('page.wallet.walletconnect.transactionApproved')}
+                  description={strings('page.wallet.walletconnect.successDesc')}
+                  cancelPress={this.closeModalPress}
+                />),
+            });
           }
           break;
         }
