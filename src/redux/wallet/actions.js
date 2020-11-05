@@ -72,6 +72,7 @@ const actions = {
 
   CREATE_SHARED_WALLET: 'CREATE_SHARED_WALLET',
   JOIN_SHARED_WALLET: 'JOIN_SHARED_WALLET',
+  IMPORT_SHARED_WALLET: 'IMPORT_SHARED_WALLET',
   SET_SHARED_WALLET_CREATION_ERROR: 'SET_SHARED_WALLET_CREATION_ERROR',
 
   UPDATE_TOKEN_BALANCE: 'UPDATE_TOKEN_BALANCE',
@@ -220,6 +221,12 @@ const actions = {
   }),
   joinSharedWallet: (phrase, multisigParams) => ({
     type: actions.JOIN_SHARED_WALLET,
+    payload: {
+      phrase, multisigParams,
+    },
+  }),
+  importSharedWallet: (phrase, multisigParams) => ({
+    type: actions.IMPORT_SHARED_WALLET,
     payload: {
       phrase, multisigParams,
     },

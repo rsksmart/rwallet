@@ -47,6 +47,7 @@ import AddReadOnlyWallet from '../pages/wallet/readonly/add';
 import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
 import CreateMultisigAddress from '../pages/wallet/multisig/create';
 import JoinMultisigAddress from '../pages/wallet/multisig/join';
+import ImportMultisigAddress from '../pages/wallet/multisig/import';
 import MultisigAddressInvitation from '../pages/wallet/multisig/invitation';
 import MultisigProposalDetail from '../pages/wallet/multisig/proposalDetail';
 import SharedWalletIndex from '../pages/wallet/dashboard/shared.wallet.index';
@@ -265,6 +266,13 @@ const routeConfigMap = {
       path: 'JoinMultisigAddress',
       navigationOptions: () => ({
         headerTitle: 'JoinMultisigAddress',
+      }),
+    },
+    ImportMultisigAddress: {
+      screen: ImportMultisigAddress,
+      path: 'ImportMultisigAddress',
+      navigationOptions: () => ({
+        headerTitle: 'ImportMultisigAddress',
       }),
     },
     MultisigAddressInvitation: {

@@ -565,6 +565,56 @@ function* joinSharedWalletRequest(action) {
   }
 }
 
+function* importSharedWalletRequest(action) {
+  const { phrase, multisigParams } = action.payload;
+  const state = yield select();
+  const walletManager = state.Wallet.get('walletManager');
+  try {
+    const { type, addressType } = multisigParams;
+
+    // Create shared wallet
+    const wallet = SharedWallet.create({
+      id: walletManager.currentKeyId,
+      name: null,
+      mnemonic: phrase,
+      type,
+      addressType,
+    });
+
+    const params = { publicKey: wallet.getPublicKey() };
+    console.log('params', params);
+
+    const signatureNumber = 2;
+    const copayerNumber = 3;
+    const invitationCode = '19A3A430180511EBAE95459918D7CB1B';
+    const walletName = 'Tiktok';
+    const generatedAddress = '2NBhCyRgEov18mRtVJ3SworMciVBVomMCUf';
+    wallet.name = walletName;
+
+    // Add token to wallet
+    const token = {
+      invitationCode, type, signatureNumber, copayerNumber,
+    };
+    yield call(wallet.addToken, token);
+
+    // Add wallet to wallet manager
+    yield call(walletManager.addWallet, wallet);
+
+    // Save phrase to storage
+    SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
+
+    if (generatedAddress) {
+      yield put(actions.setMultisigBTCAddress(wallet.coins[0], generatedAddress));
+    }
+
+    // Notice UI to update
+    yield put({ type: actions.WALLETS_UPDATED });
+  } catch (error) {
+    console.warn('importSharedWalletRequest, error: ', error);
+    yield put(actions.setSharedWalletCreationError(error));
+  }
+}
+
 function* updateProposal(proposal) {
   const state = yield select();
   const walletManager = state.Wallet.get('walletManager');
@@ -738,6 +788,7 @@ export default function* () {
     takeEvery(actions.SET_MULTISIG_BTC_ADDRESS, setMultisigBTCAddressRequest),
     takeEvery(actions.CREATE_SHARED_WALLET, createSharedWalletRequest),
     takeEvery(actions.JOIN_SHARED_WALLET, joinSharedWalletRequest),
+    takeEvery(actions.IMPORT_SHARED_WALLET, importSharedWalletRequest),
 
     takeEvery(actions.INIT_LIVE_QUERY_PENDING_PROPOSALS, initLiveQueryPendingProposals),
     takeEvery(actions.FETCH_PENDING_PROPOSALS, fetchPendingProposals),
