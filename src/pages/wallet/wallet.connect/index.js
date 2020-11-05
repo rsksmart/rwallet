@@ -32,7 +32,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
-import { ERROR_CODE, InsufficientRbtcError } from '../../../common/error';
+import { InsufficientRbtcError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -541,33 +541,38 @@ class WalletConnectPage extends Component {
   }
 
   popupOperationModal = async () => {
-    const { payload: { method, params } } = this.state;
+    try {
+      const { payload: { method, params } } = this.state;
 
-    switch (method) {
-      case 'personal_sign': {
-        const message = Rsk3.utils.hexToAscii(params[0]);
-        this.popupMessaageModal(message);
-        break;
-      }
+      switch (method) {
+        case 'personal_sign': {
+          const message = Rsk3.utils.hexToAscii(params[0]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_sign': {
-        const message = Rsk3.utils.hexToAscii(params[1]);
-        this.popupMessaageModal(message);
-        break;
-      }
+        case 'eth_sign': {
+          const message = Rsk3.utils.hexToAscii(params[1]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_signTypedData': {
+        case 'eth_signTypedData': {
         // popup sign typed data modal
-        break;
-      }
+          break;
+        }
 
-      case 'eth_sendTransaction': {
-        this.popupTransactionModal();
-        break;
-      }
+        case 'eth_sendTransaction': {
+          await this.popupTransactionModal();
+          break;
+        }
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log('popupOperationModal error: ', error);
+      this.handleError(error);
     }
   }
 
@@ -645,7 +650,7 @@ class WalletConnectPage extends Component {
     const { connector } = this.state;
     await this.setState({ connector, modalView: null });
 
-    if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
+    if (error && error.code) {
       const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
       addNotification(notification);
     } else {
