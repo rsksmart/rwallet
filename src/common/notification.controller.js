@@ -62,7 +62,6 @@ export const errorNotifications = {
   },
 };
 
-
 export const createSuccessNotification = (title, message, buttonText, notificationCloseCallback) => ({
   id: Date.now(),
   type: 'success',
@@ -107,7 +106,6 @@ export const createErrorNotificationWithMessageParams = (title, message, message
   buttonText,
   notificationCloseCallback,
 });
-
 
 /**
  * get error notification by error code

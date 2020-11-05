@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, ActivityIndicator, ScrollView, Modal, Dimensions, BackHandler,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import WalletConnect from '@walletconnect/client';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -20,7 +19,7 @@ import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
 import WalletConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
+import { createErrorNotification, createInfoNotification, getErrorNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
 import {
@@ -33,6 +32,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
+import { ERROR_CODE, InsufficientRbtcError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -191,15 +191,13 @@ class WalletConnectPage extends Component {
 
     const selectedWallet = this.getWallet();
     this.initNetwork();
-    // setTimeout 500ms in order to ui change smoothly
-    setTimeout(async () => {
-      await this.setState({
-        modalView: this.renderWalletConnectingView(),
-        selectedWallet,
-      });
 
-      await this.initWalletConnect();
-    }, 500);
+    await this.setState({
+      modalView: this.renderWalletConnectingView(),
+      selectedWallet,
+    });
+
+    await this.initWalletConnect();
 
     // Show timeout alert if cannot connect within 20s
     this.timeout = setTimeout(async () => {
@@ -221,18 +219,9 @@ class WalletConnectPage extends Component {
 
   backAction = () => {
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector.connected) {
-      this.closePress();
-      this.killSession();
+      this.onRequestClose();
     }
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Dashboard' }),
-      ],
-    });
-    navigation.dispatch(resetAction);
   }
 
   // Get current wallet's address and private key
@@ -412,12 +401,10 @@ class WalletConnectPage extends Component {
   rejectSession = () => {
     console.log('ACTION', 'rejectSession');
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector) {
       connector.rejectSession();
     }
     this.setState({ connector });
-    navigation.goBack();
   };
 
   killSession = () => {
@@ -433,18 +420,16 @@ class WalletConnectPage extends Component {
 
     await this.setState({ modalView: null });
 
-    setTimeout(async () => {
-      callAuthVerify(async () => {
-        try {
-          await this.handleCallRequest();
-          await this.closeRequest();
-        } catch (err) {
-          this.handleError();
-        }
-      }, () => {
-        this.handleError();
-      });
-    }, 500);
+    callAuthVerify(async () => {
+      try {
+        await this.handleCallRequest();
+        await this.closeRequest();
+      } catch (err) {
+        this.handleError(err);
+      }
+    }, () => {
+      this.handleError();
+    });
   }
 
   rejectRequest = async () => {
@@ -586,6 +571,18 @@ class WalletConnectPage extends Component {
     }
   }
 
+  insufficientRBTC = async () => {
+    const {
+      txData: { gasLimit, gasPrice, value }, selectedWallet: { address }, rsk3,
+    } = this.state;
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const valueNumber = new BigNumber(value);
+    const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
+    const balance = await rsk3.getBalance(address);
+    return Number(balance) < Number(total);
+  }
+
   handleCallRequest = async () => {
     try {
       const {
@@ -616,18 +613,21 @@ class WalletConnectPage extends Component {
         }
 
         case 'eth_sendTransaction': {
+          const insufficientRBTC = await this.insufficientRBTC();
+          if (insufficientRBTC) {
+            throw new InsufficientRbtcError();
+          }
+
           // Show loading when transaction is signing or sending
           await this.setState({ modalView: this.renderTransactionSigningView() });
           result = await this.sendTransaction(privateKey);
           await connector.approveRequest({ id, result });
 
-          setTimeout(() => {
-            if (inputDecode && inputDecode.method === 'approve') {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
-            } else {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
-            }
-          }, 500);
+          if (inputDecode && inputDecode.method === 'approve') {
+            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
+          } else {
+            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
+          }
           break;
         }
 
@@ -640,13 +640,17 @@ class WalletConnectPage extends Component {
     }
   }
 
-  handleError = async () => {
+  handleError = async (error) => {
+    const { addNotification } = this.props;
     const { connector } = this.state;
-
     await this.setState({ connector, modalView: null });
-    setTimeout(() => {
+
+    if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
+      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
+      addNotification(notification);
+    } else {
       this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
-    }, 500);
+    }
   }
 
   generateTxData = async () => {
@@ -720,11 +724,12 @@ class WalletConnectPage extends Component {
   }
 
   onRequestClose = () => {
-    const { payload } = this.state;
-    if (payload) {
+    const { modalView } = this.state;
+    if (modalView) {
       this.rejectRequest();
     } else {
       this.closeModalPress();
+      this.killSession();
     }
   }
 
