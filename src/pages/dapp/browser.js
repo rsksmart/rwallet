@@ -497,21 +497,38 @@ class DAppBrowser extends Component {
   popupTransactionModal = async (payload) => {
     const { wallet: { address, network } } = this.state;
     const { id, params } = payload;
-    const nonce = await this.rsk3.getTransactionCount(address, 'pending');
-    const gas = params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT;
-    const gasPrice = params[0].gasPrice || TRANSACTION.DEFAULT_GAS_PRICE;
-    const value = params[0].value || TRANSACTION.DEFAULT_VALUE;
+    let { nonce, gasPrice, gas } = params[0];
+    const { to, data, value } = params[0];
+
+    // Calculate nonce from blockchain when nonce is null
+    if (!nonce) {
+      nonce = await this.rsk3.getTransactionCount(address, 'pending');
+    }
+
+    // Get current gasPrice from blockchain when gasPrice is null
+    if (!gasPrice) {
+      gasPrice = await this.rsk3.getGasPrice();
+    }
+
+    // Estimate gas with { to, data } when gas is null
+    if (!gas) {
+      gas = await this.rsk3.estimateGas({
+        to,
+        data,
+      });
+    }
+
     const txData = {
       nonce,
-      data: params[0].data,
-      gasLimit: new BigNumber(gas).toString(),
-      gasPrice: new BigNumber(gasPrice).toString(),
-      to: params[0].to,
-      value: new BigNumber(value).toString(),
+      data,
+      gasLimit: gas || TRANSACTION.DEFAULT_GAS_LIMIT,
+      gasPrice: gasPrice || TRANSACTION.DEFAULT_GAS_PRICE,
+      to,
+      value: value || TRANSACTION.DEFAULT_VALUE,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, networkId);
-    const inputData = params[0].data;
+    const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
+    const inputData = data;
     const res = await apiHelper.getAbiByAddress(toAddress);
     if (res && res.abi) {
       const { abi, symbol } = res;

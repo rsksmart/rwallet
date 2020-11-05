@@ -658,7 +658,8 @@ class WalletConnectPage extends Component {
       selectedWallet: { address }, payload: { params }, rsk3,
     } = this.state;
 
-    let { nonce, gasPrice } = params[0];
+    let { nonce, gasPrice, gas } = params[0];
+    const { to, data, value } = params[0];
     if (!nonce) {
       // Get nonce if params[0].nonce is null
       nonce = await rsk3.getTransactionCount(address.toLowerCase(), 'pending');
@@ -668,13 +669,20 @@ class WalletConnectPage extends Component {
       gasPrice = await rsk3.getGasPrice();
     }
 
+    if (!gas) {
+      gas = await rsk3.estimateGas({
+        to,
+        data,
+      });
+    }
+
     const txData = {
       nonce,
-      data: params[0].data,
-      gasLimit: params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT,
-      gasPrice,
-      to: params[0].to,
-      value: params[0].value || TRANSACTION.DEFAULT_VALUE,
+      data,
+      gasLimit: gas || TRANSACTION.DEFAULT_GAS_LIMIT,
+      gasPrice: gasPrice || TRANSACTION.DEFAULT_GAS_PRICE,
+      to,
+      value: value || TRANSACTION.DEFAULT_VALUE,
     };
 
     return txData;
