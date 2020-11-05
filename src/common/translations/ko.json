@@ -288,6 +288,11 @@
         "understood": "알았습니다",
         "createOrImport": "생성 또는 불러오기",
         "cancel": "취소"
+      },
+      "browser": {
+        "errorTitle": "실패",
+        "errorContent": "알 수없는 오류가 발생했습니다. 나중에 다시 시도하십시오.",
+        "errorButton": "알겠습니다"
       }
     },
     "mine": {

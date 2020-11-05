@@ -17,6 +17,7 @@ import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import { NETWORK, TRANSACTION } from '../../common/constants';
+import { createErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
@@ -546,6 +547,7 @@ class DAppBrowser extends Component {
   }
 
   onMessage = async (event) => {
+    const { addNotification } = this.props;
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, id } = payload;
@@ -599,6 +601,13 @@ class DAppBrowser extends Component {
           break;
       }
     } catch (err) {
+      console.log('onMessage error: ', err);
+      const notification = createErrorNotification(
+        'page.dapp.browser.errorTitle',
+        'page.dapp.browser.errorContent',
+        'page.dapp.browser.errorButton',
+      );
+      addNotification(notification);
       this.handleReject(id, err.message);
     }
   }
@@ -694,6 +703,7 @@ DAppBrowser.propTypes = {
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -705,6 +715,7 @@ const mapDispatchToProps = (dispatch) => ({
   callAuthVerify: (callback, fallback) => dispatch(
     appActions.callAuthVerify(callback, fallback),
   ),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppBrowser);

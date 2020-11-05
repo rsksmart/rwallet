@@ -285,6 +285,11 @@
         "understood": "明白了",
         "createOrImport": "创建或者导入",
         "cancel": "取消"
+      },
+      "browser": {
+        "errorTitle": "失败",
+        "errorContent": "发生未知错误，请稍后再试。",
+        "errorButton": "好的"
       }
     },
     "mine": {
