@@ -10,6 +10,7 @@ import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
@@ -66,6 +67,7 @@ class DAppBrowser extends Component {
       walletSelectionVisible: false,
       wallet: this.generateWallet(currentWallet),
       web3JsContent: '',
+      ethersJsContent: '',
       modalView: null,
     };
 
@@ -74,7 +76,7 @@ class DAppBrowser extends Component {
   }
 
   componentDidMount() {
-    const { web3JsContent } = this.state;
+    const { web3JsContent, ethersJsContent } = this.state;
     if (web3JsContent === '') {
       if (Platform.OS === 'ios') {
         RNFS.readFile(`${RNFS.MainBundlePath}/web3.1.2.7.js`, 'utf8')
@@ -85,6 +87,19 @@ class DAppBrowser extends Component {
         RNFS.readFileAssets('web3.1.2.7.js', 'utf8')
           .then((content) => {
             this.setState({ web3JsContent: content });
+          });
+      }
+    }
+    if (ethersJsContent === '') {
+      if (Platform.OS === 'ios') {
+        RNFS.readFile(`${RNFS.MainBundlePath}/ethers5.0.js`, 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
+          });
+      } else {
+        RNFS.readFileAssets('ethers5.0.js', 'utf8')
+          .then((content) => {
+            this.setState({ ethersJsContent: content });
           });
       }
     }
@@ -100,9 +115,10 @@ class DAppBrowser extends Component {
   }
 
   getJsCode = (address) => {
-    const { web3JsContent } = this.state;
+    const { web3JsContent, ethersJsContent } = this.state;
     return `
       ${web3JsContent}
+      ${ethersJsContent}
 
         (function() {
           let resolver = {};
@@ -159,8 +175,9 @@ class DAppBrowser extends Component {
           function initWeb3() {
             // Inject the web3 instance to web site
             const rskEndpoint = '${this.rskEndpoint}';
-            const web3Provider = new Web3.providers.HttpProvider(rskEndpoint);
-            const web3 = new Web3(web3Provider);
+            const provider = new Web3.providers.HttpProvider(rskEndpoint);
+            const web3Provider = new ethers.providers.Web3Provider(provider)
+            const web3 = new Web3(provider);
             window.ethereum = web3Provider;
             window.ethereum.selectedAddress = '${address}';
             window.address = '${address}';
@@ -245,7 +262,7 @@ class DAppBrowser extends Component {
               const {method, params, jsonrpc, id} = payload;
               console.log('payload: ', payload);
               try {
-                if (method === 'net_version') {
+                if (method === 'net_version' || method === 'eth_chainId') {
                   result = '${this.networkVersion}';
                 } else if (method === 'eth_requestAccounts' || method === 'eth_accounts' || payload === 'eth_accounts') {
                   result = ['${address}'];
@@ -326,8 +343,15 @@ class DAppBrowser extends Component {
     const { id, params } = payload;
     let res = 0;
     // Get latest block info when passed block number is 0.
-    const blockNumber = (params[0] && params[0] === '0x0') ? 'latest' : params[0];
+    const blockNumber = (_.isEmpty(params) || (params[0] && params[0] === '0x0')) ? 'latest' : params[0];
     res = await this.rsk3.getBlock(blockNumber);
+    const result = { id, result: res };
+    this.webview.current.postMessage(JSON.stringify(result));
+  }
+
+  handleEthGetBlockNumber = async (payload) => {
+    const { id } = payload;
+    const res = await this.rsk3.getBlockNumber();
     const result = { id, result: res };
     this.webview.current.postMessage(JSON.stringify(result));
   }
@@ -369,7 +393,7 @@ class DAppBrowser extends Component {
           })
           .on('error', (error) => {
             console.log('sendSignedTransaction error: ', error);
-            throw new Error(error);
+            this.handleReject(id, error.message);
           });
       } catch (err) {
         console.log('eth_sendTransaction err: ', err);
@@ -474,13 +498,16 @@ class DAppBrowser extends Component {
     const { wallet: { address, network } } = this.state;
     const { id, params } = payload;
     const nonce = await this.rsk3.getTransactionCount(address, 'pending');
+    const gas = params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT;
+    const gasPrice = params[0].gasPrice || TRANSACTION.DEFAULT_GAS_PRICE;
+    const value = params[0].value || TRANSACTION.DEFAULT_VALUE;
     const txData = {
       nonce,
       data: params[0].data,
-      gasLimit: params[0].gas || 600000,
-      gasPrice: params[0].gasPrice || Rsk3.utils.BN((TRANSACTION.DEFAULT_GAS_PRICE)),
+      gasLimit: new BigNumber(gas).toString(),
+      gasPrice: new BigNumber(gasPrice).toString(),
       to: params[0].to,
-      value: (params[0].value && Rsk3.utils.BN(params[0].value)) || TRANSACTION.DEFAULT_VALUE,
+      value: new BigNumber(value).toString(),
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
     const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, networkId);
@@ -526,6 +553,11 @@ class DAppBrowser extends Component {
           break;
         }
 
+        case 'eth_blockNumber': {
+          await this.handleEthGetBlockNumber(payload);
+          break;
+        }
+
         case 'personal_sign': {
           await this.popupMessageModal(payload);
           break;
@@ -560,9 +592,9 @@ class DAppBrowser extends Component {
   }
 
   getWebView = (address) => {
-    const { web3JsContent } = this.state;
+    const { web3JsContent, ethersJsContent } = this.state;
     const dappUrl = this.getDappUrl();
-    if (address && web3JsContent) {
+    if (address && web3JsContent && ethersJsContent) {
       return (
         <ProgressWebView
           source={{ uri: dappUrl }}
