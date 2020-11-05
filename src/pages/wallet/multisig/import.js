@@ -16,6 +16,9 @@ import presetStyles from '../../../assets/styles/style';
 import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
 import { BtcAddressType } from '../../../common/constants';
+import SwitchRow from '../../../components/common/switch/switch.row';
+import { strings } from '../../../common/i18n';
+import space from '../../../assets/styles/space';
 
 const bip39 = require('bip39');
 
@@ -142,9 +145,8 @@ class ImportMultisigAddress extends Component {
         phrase: '',
         isCanSubmit: false,
         isLoading: false,
+        isMainnet: false,
       };
-      // Address option list data
-      this.coins = _.map(this.tokens, (token) => token.displayText);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -191,7 +193,7 @@ class ImportMultisigAddress extends Component {
 
     onImportPress = () => {
       const { addNotification, walletManager, importSharedWallet } = this.props;
-      const { phrases } = this.state;
+      const { phrases, isMainnet } = this.state;
       let inputPhrases = '';
       for (let i = 0; i < phrases.length; i += 1) {
         if (i !== 0) {
@@ -227,7 +229,7 @@ class ImportMultisigAddress extends Component {
       this.setState({ isLoading: true }, () => {
         setTimeout(() => {
           const multisigParams = {
-            type: 'Testnet',
+            type: isMainnet ? 'Mainnet' : 'Testnet',
             addressType: BtcAddressType.legacy,
           };
           importSharedWallet(inputPhrases, multisigParams);
@@ -272,10 +274,14 @@ class ImportMultisigAddress extends Component {
       this.setState({ phrases });
     }
 
+    onSwitchValueChanged = (value) => {
+      this.setState({ isMainnet: value });
+    }
+
     render() {
       const { navigation } = this.props;
       const {
-        phrase, phrases, isCanSubmit, isLoading,
+        phrase, phrases, isCanSubmit, isLoading, isMainnet,
       } = this.state;
 
       const bottomButton = (<Button text="button.IMPORT" onPress={this.onImportPress} disabled={!isCanSubmit} />);
@@ -290,7 +296,7 @@ class ImportMultisigAddress extends Component {
         >
           <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
           <View style={styles.body}>
-            <View style={[styles.phraseSection]}>
+            <View style={[styles.phraseSection, styles.bottomBorder]}>
               <Loc style={styles.phraseTitle} text="page.wallet.recovery.note" />
               <View style={styles.phraseView}>
                 <TextInput
@@ -317,6 +323,13 @@ class ImportMultisigAddress extends Component {
                   />
                 </View>
               </View>
+            </View>
+            <View style={[styles.fieldView, space.marginTop_10]}>
+              <SwitchRow
+                text={strings('page.wallet.addCustomToken.mainnet')}
+                value={isMainnet}
+                onValueChange={this.onSwitchValueChanged}
+              />
             </View>
           </View>
         </BasePageGereral>

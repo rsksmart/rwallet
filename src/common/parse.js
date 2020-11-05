@@ -630,6 +630,14 @@ class ParseHelper {
   static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
 
   static deleteMultiSigWallet = async (invitationCode) => Parse.Cloud.run('deleteMultiSigWallet', { invitationCode })
+
+  static async recoverMultisigInvitationByPublicKey(publicKey) {
+    const params = { publicKey };
+    console.log('publicKey: ', publicKey);
+    const result = await Parse.Cloud.run('recoverMultisigInvitationByPublicKey', params);
+    console.log('recoverMultisigInvitationByPublicKey, result: ', result);
+    return parseDataUtil.getInvitation(result);
+  }
 }
 
 // Create parse helper proxy to add global error handling

@@ -581,19 +581,16 @@ function* importSharedWalletRequest(action) {
       addressType,
     });
 
-    const params = { publicKey: wallet.getPublicKey() };
-    console.log('params', params);
+    const invitation = yield call(ParseHelper.recoverMultisigInvitationByPublicKey, wallet.getPublicKey());
 
-    const signatureNumber = 2;
-    const copayerNumber = 3;
-    const invitationCode = '19A3A430180511EBAE95459918D7CB1B';
-    const walletName = 'Tiktok';
-    const generatedAddress = '2NBhCyRgEov18mRtVJ3SworMciVBVomMCUf';
-    wallet.name = walletName;
+    wallet.name = invitation.walletName;
 
     // Add token to wallet
     const token = {
-      invitationCode, type, signatureNumber, copayerNumber,
+      invitationCode: invitation.invitationCode,
+      type,
+      signatureNumber: invitation.signatureNumber,
+      copayerNumber: invitation.copayerNumber,
     };
     yield call(wallet.addToken, token);
 
@@ -603,8 +600,8 @@ function* importSharedWalletRequest(action) {
     // Save phrase to storage
     SharedWallet.savePhrase(wallet.id, wallet.mnemonic);
 
-    if (generatedAddress) {
-      yield put(actions.setMultisigBTCAddress(wallet.coins[0], generatedAddress));
+    if (invitation.generatedAddress) {
+      yield put(actions.setMultisigBTCAddress(wallet.coins[0], invitation.generatedAddress));
     }
 
     // Notice UI to update
