@@ -508,22 +508,32 @@ class DAppBrowser extends Component {
 
     // Get current gasPrice from blockchain when gasPrice is null
     if (!gasPrice) {
-      gasPrice = await this.rsk3.getGasPrice();
+      await this.rsk3.getGasPrice().then((res) => {
+        gasPrice = res;
+      }).catch((err) => {
+        console.log('getGasPrice error: ', err);
+        gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
+      });
     }
 
     // Estimate gas with { to, data } when gas is null
     if (!gas) {
-      gas = await this.rsk3.estimateGas({
+      await this.rsk3.estimateGas({
         to,
         data,
+      }).then((res) => {
+        gas = res;
+      }).catch((err) => {
+        console.log('estimateGas error: ', err);
+        gas = TRANSACTION.DEFAULT_GAS_LIMIT;
       });
     }
 
     const txData = {
       nonce,
       data,
-      gasLimit: gas || TRANSACTION.DEFAULT_GAS_LIMIT,
-      gasPrice: gasPrice || TRANSACTION.DEFAULT_GAS_PRICE,
+      gasLimit: gas,
+      gasPrice,
       to,
       value: value || TRANSACTION.DEFAULT_VALUE,
     };
