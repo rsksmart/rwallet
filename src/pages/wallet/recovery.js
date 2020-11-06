@@ -6,7 +6,6 @@ import {
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Tags from '../../components/common/misc/tags';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
@@ -15,72 +14,32 @@ import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
-import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
 import coinType from '../../common/wallet/cointype';
 import { BtcAddressType } from '../../common/constants';
+import MnemonicInput from '../../components/common/mnemonic.input';
 
 const bip39 = require('bip39');
 
 const MAX_ACCOUNT = 4294967295;
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    borderWidth: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
   sectionTitle: {
     fontFamily: fontFamily.AvenirHeavy,
     fontSize: 14,
     color: color.black,
     marginBottom: 10,
   },
-  walletName: {
-    fontSize: 20,
-  },
   sectionContainer: {
     marginTop: 10,
     paddingBottom: 10,
   },
-  buttonView: {
-    backgroundColor: color.white,
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 15,
-  },
   bottomBorder: {
     borderBottomColor: color.silver,
     borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  phrasesBorder: {
-    minHeight: 120,
-    paddingBottom: 10,
-  },
-  headerImage: {
-    position: 'absolute',
-    width: '100%',
-    height: 350,
-    marginTop: -150,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 200,
-    left: 24,
-    color: color.white,
-  },
-  phraseView: {
-    borderBottomColor: color.silver,
-    borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: color.component.input.backgroundColor,
-    borderColor: color.component.input.borderColor,
-    borderRadius: 4,
-    borderStyle: 'solid',
   },
   body: {
     flex: 1,
@@ -111,22 +70,6 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontFamily: fontFamily.AvenirBook,
   },
-  selectionModalTitle: {
-    fontSize: 16,
-    fontFamily: fontFamily.AvenirHeavy,
-    color: color.black,
-    marginVertical: 10,
-  },
-  phraseSection: {
-    marginTop: 17,
-    paddingBottom: 17,
-    marginBottom: 10,
-  },
-  phraseTitle: {
-    marginBottom: 14,
-    fontFamily: fontFamily.AvenirRoman,
-    fontSize: 16,
-  },
   fieldLabel: {
     fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
@@ -135,6 +78,11 @@ const styles = StyleSheet.create({
   fieldText: {
     fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
+  },
+  phraseSection: {
+    marginTop: 17,
+    paddingBottom: 17,
+    marginBottom: 10,
   },
 });
 
@@ -146,11 +94,6 @@ class WalletRecovery extends Component {
     constructor(props) {
       super(props);
 
-      this.inputWord = this.inputWord.bind(this);
-      this.deleteWord = this.deleteWord.bind(this);
-      this.onSubmitEditing = this.onSubmitEditing.bind(this);
-      this.onChangeText = this.onChangeText.bind(this);
-      this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
       // Address path parameter list
       this.tokens = [
@@ -174,8 +117,7 @@ class WalletRecovery extends Component {
         },
       ];
       this.state = {
-        phrases: [],
-        phrase: '',
+        mnemonic: '',
         isCanSubmit: false,
         isDerivationPathEnabled: false,
         // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
@@ -187,41 +129,12 @@ class WalletRecovery extends Component {
       this.coins = _.map(this.tokens, (token) => token.displayText);
     }
 
-    onSubmitEditing() {
-      const { phrase } = this.state;
-      const trimText = phrase.trim();
-      this.inputText(trimText);
-    }
-
-    onChangeText(text) {
-      const char = text[text.length - 1];
-      if (char !== ' ') {
-        this.setState({ phrase: text });
-        return;
-      }
-      const trimText = text.trim();
-      this.inputText(trimText);
-    }
-
-    onTagsPress(i) {
-      this.deleteWord(i);
-      this.setState({ isCanSubmit: false });
-      this.phraseInput.focus();
-    }
-
     onImportPress() {
       const { navigation, addNotification, walletManager } = this.props;
-      const { phrases, accounts, isDerivationPathEnabled } = this.state;
+      const { mnemonic, accounts, isDerivationPathEnabled } = this.state;
       const { tokens } = this;
-      let inputPhrases = '';
-      for (let i = 0; i < phrases.length; i += 1) {
-        if (i !== 0) {
-          inputPhrases += ' ';
-        }
-        inputPhrases += phrases[i];
-      }
       // validate phrase
-      const isValid = bip39.validateMnemonic(inputPhrases);
+      const isValid = bip39.validateMnemonic(mnemonic);
       console.log(`isValid: ${isValid}`);
       if (!isValid) {
         const notification = createErrorNotification(
@@ -233,19 +146,22 @@ class WalletRecovery extends Component {
       }
       // If phrases is already in the app, notify user
       const { wallets } = walletManager;
-      const wallet = _.find(wallets, { mnemonic: inputPhrases });
+      const wallet = _.find(wallets, { mnemonic });
       if (wallet) {
         const notification = createErrorNotification(
           'modal.duplicatePhrase.title',
           'modal.duplicatePhrase.body',
           'button.gotIt',
-          () => { this.setState({ phrases: [], isCanSubmit: false }); },
+          () => {
+            this.mnemonicInput.reset();
+            this.setState({ isCanSubmit: false });
+          },
         );
         addNotification(notification);
         return;
       }
 
-      const params = { phrases: inputPhrases };
+      const params = { phrases: mnemonic };
       if (isDerivationPathEnabled) {
         const derivationPaths = {};
         _.each(tokens, (token, index) => {
@@ -291,47 +207,14 @@ class WalletRecovery extends Component {
       this.setState({ accounts });
     }
 
-    inputText(text) {
-      const words = text.split(' ');
-      words.forEach((word) => {
-        const trimWord = word.trim();
-        this.inputWord(trimWord);
-      });
-    }
+    onMnemonicInputted = (mnemonic) => this.setState({ isCanSubmit: true, mnemonic })
 
-    inputWord(word) {
-      const { addNotification } = this.props;
-      const { phrases } = this.state;
-      if (word === '') {
-        this.setState({ phrase: '' });
-        return;
-      }
-      if (phrases.length === 12) {
-        const notification = createErrorNotification(
-          'modal.tooManyPhrase.title',
-          'modal.tooManyPhrase.body',
-        );
-        addNotification(notification);
-        return;
-      }
-      if (phrases.length === 11) {
-        this.setState({ isCanSubmit: true });
-      }
-      phrases.push(word);
-      this.setState({ phrases, phrase: '' });
-      this.phraseInput.focus();
-    }
-
-    deleteWord(i) {
-      const { phrases } = this.state;
-      phrases.splice(i, 1);
-      this.setState({ phrases });
-    }
+    onWordsDeleted = () => this.setState({ isCanSubmit: false })
 
     render() {
       const { navigation } = this.props;
       const {
-        phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
+        isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
       } = this.state;
       const { tokens, coins } = this;
 
@@ -350,34 +233,12 @@ class WalletRecovery extends Component {
         >
           <Header onBackButtonPress={() => navigation.goBack()} title="page.wallet.recovery.title" />
           <View style={styles.body}>
-            <View style={[styles.phraseSection, styles.bottomBorder]}>
-              <Loc style={styles.phraseTitle} text="page.wallet.recovery.note" />
-              <View style={styles.phraseView}>
-                <TextInput
-                  autoFocus // If true, focuses the input on componentDidMount. The default value is false.
-                                          // This code uses a ref to store a reference to a DOM node
-                                          // https://reactjs.org/docs/refs-and-the-dom.html#adding-a-ref-to-a-dom-element
-                  ref={(ref) => {
-                    this.phraseInput = ref;
-                  }}
-                                          // set blurOnSubmit to false, to prevent keyboard flickering.
-                  blurOnSubmit={false}
-                  style={[presetStyles.textInput, styles.input]}
-                  onChangeText={this.onChangeText}
-                  onSubmitEditing={this.onSubmitEditing}
-                  value={phrase}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                <View style={[styles.phrasesBorder, { flexDirection: 'row' }]}>
-                  <Tags
-                    style={[{ flex: 1 }]}
-                    data={phrases}
-                    onPress={this.onTagsPress}
-                  />
-                </View>
-              </View>
-            </View>
+            <MnemonicInput
+              style={[styles.phraseSection, styles.bottomBorder]}
+              ref={(ref) => { this.mnemonicInput = ref; }}
+              onMnemonicInputted={this.onMnemonicInputted}
+              onWordsDeleted={this.onWordsDeleted}
+            />
             <View style={[styles.sectionContainer, styles.bottomBorder]}>
               <Loc style={[styles.sectionTitle]} text="page.wallet.recovery.advancedOptions" />
               <View style={styles.row}>
