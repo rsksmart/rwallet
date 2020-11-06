@@ -727,6 +727,10 @@
     "convertContractAddress": {
       "title": "无效的RSK合约地址",
       "body": "输入的合约地址是无效的RSK地址。 RWallet会尝试将其自动更正为预期的地址格式，您要继续吗？"
+    },
+    "invitationNotFound": {
+      "title": "找不到共享钱包",
+      "body": "找不到相应的共享钱包信息。"
     }
   },
   "currency": {

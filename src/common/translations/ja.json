@@ -724,6 +724,10 @@
     "convertContractAddress": {
       "title": "無効なRSK契約アドレス",
       "body": "入力された契約アドレスは無効なRSKアドレスです。 RWalletは、予想されるアドレス形式に自動修正しようとします。続行しますか？"
+    },
+    "invitationNotFound": {
+      "title": "共有ウォレットが見つかりません",
+      "body": "対応する共有ウォレット情報が見つかりませんでした。"
     }
   },
   "currency": {

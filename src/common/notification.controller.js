@@ -60,6 +60,10 @@ export const errorNotifications = {
     title: 'modal.invalidAddress.title',
     body: 'modal.invalidAddress.body',
   },
+  [ERROR_CODE.ERR_MULTISIG_INVITATION_NOT_FOUND]: {
+    title: 'modal.invitationNotFound.title',
+    body: 'modal.invitationNotFound.body',
+  },
 };
 
 export const createSuccessNotification = (title, message, buttonText, notificationCloseCallback) => ({

@@ -740,6 +740,10 @@
     "convertContractAddress": {
       "title": "Endereço de contrato RSK inválido",
       "body": "O endereço do contrato inserido é um endereço RSK inválido. O RWallet tentará corrigi-lo automaticamente para o formato de endereço esperado. Você quer prosseguir?"
+    },
+    "invitationNotFound": {
+      "title": "Carteira compartilhada não encontrada",
+      "body": "Não foi possível encontrar as informações da carteira compartilhada correspondentes."
     }
   },
   "currency": {

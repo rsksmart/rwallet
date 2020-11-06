@@ -724,6 +724,10 @@
     "convertContractAddress": {
       "title": "Invalid RSK contract address",
       "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "invitationNotFound": {
+      "title": "Общий кошелек не найден",
+      "body": "Не удалось найти информацию о соответствующем общем кошельке."
     }
   },
   "currency": {

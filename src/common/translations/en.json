@@ -727,6 +727,10 @@
     "convertContractAddress": {
       "title": "Invalid RSK contract address",
       "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "invitationNotFound": {
+      "title": "Shared wallet not found",
+      "body": "Could not find the corresponding shared wallet information."
     }
   },
   "currency": {

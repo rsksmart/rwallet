@@ -724,6 +724,10 @@
     "convertContractAddress": {
       "title": "잘못된 RSK 계약 주소",
       "body": "입력 한 계약 주소는 잘못된 RSK 주소입니다. RWallet은 예상 주소 형식으로 자동 수정을 시도합니다. 진행 하시겠습니까?"
+    },
+    "invitationNotFound": {
+      "title": "공유 지갑을 찾을 수 없습니다.",
+      "body": "해당 공유 지갑 정보를 찾을 수 없습니다."
     }
   },
   "currency": {
