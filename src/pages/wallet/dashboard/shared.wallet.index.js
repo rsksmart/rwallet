@@ -16,24 +16,16 @@ export default class SharedWalletIndex extends Component {
     constructor(props) {
       super(props);
       const { navigation } = this.props;
-      this.listData = [{
-        title: 'page.wallet.sharedWallet.createSharedWallet',
-        text: 'page.wallet.sharedWallet.createSharedWalletNote',
-        icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
-        onPress: () => navigation.navigate('CreateMultisigAddress'),
-      },
-      {
-        title: 'page.wallet.sharedWallet.joinSharedWallet',
-        text: 'page.wallet.sharedWallet.joinSharedWalletNote',
-        icon: (<Image source={references.images.sharedWalletIcon} />),
-        onPress: () => navigation.navigate('JoinMultisigAddress'),
-      },
-      {
-        title: 'page.wallet.sharedWallet.importSharedWallet',
-        text: 'page.wallet.sharedWallet.importSharedWalletNote',
-        icon: (<AntDesign name="wallet" style={addIndexStyles.icon} />),
-        onPress: () => navigation.navigate('ImportMultisigAddress'),
-      }];
+      this.listData = [];
+      this.listData.addListItem('page.wallet.sharedWallet.createSharedWallet', 'page.wallet.sharedWallet.createSharedWalletNote', <AntDesign name="wallet" style={addIndexStyles.icon} />, () => navigation.navigate('CreateMultisigAddress'));
+      this.listData.addListItem('page.wallet.sharedWallet.joinSharedWallet', 'page.wallet.sharedWallet.joinSharedWalletNote', <Image source={references.images.sharedWalletIcon} />, () => navigation.navigate('JoinMultisigAddress'));
+      this.listData.addListItem('page.wallet.sharedWallet.importSharedWallet', 'page.wallet.sharedWallet.importSharedWalletNote', <Image source={references.images.sharedWalletIcon} />, () => navigation.navigate('ImportMultisigAddress'));
+    }
+
+    addListItem = (title, text, icon, onPress) => {
+      this.listData.push({
+        title, text, icon, onPress,
+      });
     }
 
     render() {
