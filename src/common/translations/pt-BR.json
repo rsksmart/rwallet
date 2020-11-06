@@ -287,8 +287,8 @@
         "cancel": "Cancelar"
       },
       "browser": {
-        "errorTitle": "Fallou",
-        "errorContent": "Aconteceu um erro desconhecido, por favor tente de novo mais tarde",
+        "errorTitle": "Falhou",
+        "errorContent": "Ocorreu um erro desconhecido, por favor tente novamente mais tarde",
         "errorButton": "Ok"
       }
     },
