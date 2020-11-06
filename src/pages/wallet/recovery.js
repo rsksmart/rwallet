@@ -11,7 +11,7 @@ import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
 import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createUnableRecoverNotification, createDuplicatePhraseNotification } from '../../common/notification.controller';
 import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import flex from '../../assets/styles/layout.flex';
@@ -137,26 +137,17 @@ class WalletRecovery extends Component {
       const isValid = bip39.validateMnemonic(mnemonic);
       console.log(`isValid: ${isValid}`);
       if (!isValid) {
-        const notification = createErrorNotification(
-          'modal.unableRecover.title',
-          'modal.unableRecover.body',
-        );
-        addNotification(notification);
+        addNotification(createUnableRecoverNotification());
         return;
       }
       // If phrases is already in the app, notify user
       const { wallets } = walletManager;
       const wallet = _.find(wallets, { mnemonic });
       if (wallet) {
-        const notification = createErrorNotification(
-          'modal.duplicatePhrase.title',
-          'modal.duplicatePhrase.body',
-          'button.gotIt',
-          () => {
-            this.mnemonicInput.reset();
-            this.setState({ isCanSubmit: false });
-          },
-        );
+        const notification = createDuplicatePhraseNotification(() => {
+          this.mnemonicInput.reset();
+          this.setState({ isCanSubmit: false });
+        });
         addNotification(notification);
         return;
       }

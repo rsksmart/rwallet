@@ -145,3 +145,7 @@ export const getDefaultTxFailedErrorNotification = (buttonText, notificationClos
 );
 
 export const createReadOnlyLimitNotification = () => createInfoNotification('modal.readOnlyLimit.title', 'modal.readOnlyLimit.body');
+
+export const createUnableRecoverNotification = () => createErrorNotification('modal.unableRecover.title', 'modal.unableRecover.body');
+
+export const createDuplicatePhraseNotification = (callback) => createErrorNotification('modal.duplicatePhrase.title', 'modal.duplicatePhrase.body', callback);

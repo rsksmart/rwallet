@@ -7,7 +7,9 @@ import { StackActions } from 'react-navigation';
 import Header from '../../../components/headers/header';
 import appActions from '../../../redux/app/actions';
 import walletActions from '../../../redux/wallet/actions';
-import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../../common/notification.controller';
+import {
+  getErrorNotification, getDefaultErrorNotification, createDuplicatePhraseNotification, createUnableRecoverNotification,
+} from '../../../common/notification.controller';
 import color from '../../../assets/styles/color';
 import BasePageGereral from '../../base/base.page.general';
 import Button from '../../../components/common/button/button';
@@ -76,28 +78,18 @@ class ImportMultisigAddress extends Component {
       const { mnemonic, isMainnet } = this.state;
       // validate phrase
       const isValid = bip39.validateMnemonic(mnemonic);
-      console.log(`isValid: ${isValid}`);
       if (!isValid) {
-        const notification = createErrorNotification(
-          'modal.unableRecover.title',
-          'modal.unableRecover.body',
-        );
-        addNotification(notification);
+        addNotification(createUnableRecoverNotification());
         return;
       }
       // If phrases is already in the app, notify user
       const { wallets } = walletManager;
       const wallet = _.find(wallets, { mnemonic });
       if (wallet) {
-        const notification = createErrorNotification(
-          'modal.duplicatePhrase.title',
-          'modal.duplicatePhrase.body',
-          'button.gotIt',
-          () => {
-            this.mnemonicInput.reset();
-            this.setState({ isCanSubmit: false });
-          },
-        );
+        const notification = createDuplicatePhraseNotification(() => {
+          this.mnemonicInput.reset();
+          this.setState({ isCanSubmit: false });
+        });
         addNotification(notification);
         return;
       }
