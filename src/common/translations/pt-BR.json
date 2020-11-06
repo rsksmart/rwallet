@@ -743,7 +743,7 @@
     },
     "invitationNotFound": {
       "title": "Carteira compartilhada não encontrada",
-      "body": "Não foi possível encontrar as informações da carteira compartilhada correspondentes."
+      "body": "Não foi possível encontrar as informações da carteira compartilhada correspondente."
     }
   },
   "currency": {
