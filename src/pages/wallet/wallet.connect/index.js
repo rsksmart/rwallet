@@ -32,7 +32,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
-import { InsufficientRbtcError } from '../../../common/error';
+import { InsufficientRbtcError, InvalidAmountError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -679,6 +679,9 @@ class WalletConnectPage extends Component {
 
     let { nonce, gasPrice, gas } = params[0];
     const { to, data, value } = params[0];
+    if (_.isNull(value)) {
+      throw new InvalidAmountError();
+    }
     if (!nonce) {
       // Get nonce if params[0].nonce is null
       nonce = await rsk3.getTransactionCount(address.toLowerCase(), 'pending');
@@ -711,7 +714,7 @@ class WalletConnectPage extends Component {
       gasLimit: gas,
       gasPrice,
       to,
-      value: value || TRANSACTION.DEFAULT_VALUE,
+      value,
     };
 
     return txData;

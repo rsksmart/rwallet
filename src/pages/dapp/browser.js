@@ -17,8 +17,10 @@ import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import { NETWORK, TRANSACTION } from '../../common/constants';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
+import { InvalidAmountError } from '../../common/error';
+import { strings } from '../../common/i18n';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
 import AllowanceModal from '../wallet/wallet.connect/modal/allowance';
@@ -501,6 +503,10 @@ class DAppBrowser extends Component {
     let { nonce, gasPrice, gas } = params[0];
     const { to, data, value } = params[0];
 
+    if (_.isNull(value)) {
+      throw new InvalidAmountError();
+    }
+
     // Calculate nonce from blockchain when nonce is null
     if (!nonce) {
       nonce = await this.rsk3.getTransactionCount(address, 'pending');
@@ -535,7 +541,7 @@ class DAppBrowser extends Component {
       gasLimit: gas,
       gasPrice,
       to,
-      value: value || TRANSACTION.DEFAULT_VALUE,
+      value,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
     const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
@@ -612,11 +618,16 @@ class DAppBrowser extends Component {
       }
     } catch (err) {
       console.log('onMessage error: ', err);
-      const notification = createErrorNotification(
-        'page.dapp.browser.errorTitle',
-        'page.dapp.browser.errorContent',
-        'page.dapp.browser.errorButton',
-      );
+      let notification;
+      if (err && err.code) {
+        notification = getErrorNotification(err.code, strings('page.wallet.walletconnect.tryLater'), err.message);
+      } else {
+        notification = createErrorNotification(
+          'page.dapp.browser.errorTitle',
+          'page.dapp.browser.errorContent',
+          'page.dapp.browser.errorButton',
+        );
+      }
       addNotification(notification);
       this.handleReject(id, err.message);
     }
