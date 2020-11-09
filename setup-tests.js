@@ -33,6 +33,12 @@ jest.mock('rn-ethereum-input-data-decoder', () => ({
   InputDataDecoder: jest.fn(),
 }));
 
+jest.mock('rn-secure-storage', () => ({
+  set: jest.fn(),
+  get: jest.fn(),
+  exists: jest.fn(),
+}));
+
 /**
  * Set up Enzyme to mount to DOM, simulate events,
  * and inspect the DOM in tests.
