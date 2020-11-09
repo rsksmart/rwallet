@@ -499,6 +499,30 @@ class ParseHelper {
     }
   }
 
+  /**
+   * getInputAddressTXHash
+   * Get transaction input hash array
+   * @param {*} address
+   * @param {*} type
+   * @param {*} value, Amount transferred
+   * @returns {array} transaction hash array
+   */
+  static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
+
+  static async updateTokenBalance(tokens) {
+    const params = {
+      tokenList: tokens,
+    };
+    const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
+    return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
+  }
+
+  /**
+   * createMultisigAddress
+   * Create a multisig address invitation.
+   * @param {object} params: { signatureNumber, copayerNumber, publicKey, type, name, walletName }
+   * @returns invitation
+   */
   static async createMultisigAddress({
     signatureNumber, copayerNumber, publicKey, type, name, walletName,
   }) {
@@ -510,6 +534,12 @@ class ParseHelper {
     return parseDataUtil.getInvitation(result);
   }
 
+  /**
+   * joinMultisigAddress
+   * Join multisig address invitation by code
+   * @param {*} params, {invitationCode, publicKey, name }
+   * @returns invitation
+   */
   static async joinMultisigAddress({
     invitationCode, publicKey, name,
   }) {
@@ -522,27 +552,38 @@ class ParseHelper {
   }
 
   /**
-   * Fetch invitation object by code
+   * getMultisigInvitation
+   * Get invitation object by code
    * @param {*} invitationCode
    */
-  static async fetchMultisigInvitation(invitationCode) {
-    console.log('fetchMultisigInvitation, invitationCode: ', invitationCode);
+  static async getMultisigInvitation(invitationCode) {
+    console.log('getMultisigInvitation, invitationCode: ', invitationCode);
     const query = new Parse.Query(ParseMultiSigInvitation);
     const result = await query.equalTo('invitationCode', invitationCode).first();
     const invitation = parseDataUtil.getInvitation(result);
-    console.log('fetchMultisigInvitation, invitation: ', invitation);
+    console.log('getMultisigInvitation, invitation: ', invitation);
     return invitation;
   }
 
-  static async fetchProposals(address) {
-    console.log('fetchProposals, address: ', address);
-    const query = new Parse.Query(ParseMultiSigProposal);
-    query.equalTo('multiSigAddress', address);
-    const result = await query.find();
-    console.log('fetchProposals, result: ', result);
-    return result;
+  /**
+   * recoverMultisigInvitationByPublicKey
+   * Find and recover multisig invitation by public key
+   * @param {string} publicKey
+   */
+  static async recoverMultisigInvitationByPublicKey(publicKey) {
+    const params = { publicKey };
+    console.log('publicKey: ', publicKey);
+    const result = await Parse.Cloud.run('recoverMultisigInvitationByPublicKey', params);
+    console.log('recoverMultisigInvitationByPublicKey, result: ', result);
+    return parseDataUtil.getInvitation(result);
   }
 
+  /**
+   * rejectMultisigTransaction
+   * Reject multisig transaction proposal
+   * @param {*} proposalId, proposal id
+   * @returns transaction proposal
+   */
   static async rejectMultisigTransaction(proposalId) {
     const params = { proposalId };
     console.log('rejectMultisigTransaction, params: ', params);
@@ -552,6 +593,12 @@ class ParseHelper {
     return proposal;
   }
 
+  /**
+   * deleteMultiSigProposal
+   * Delete multisig transaction proposal
+   * @param {*} proposalId, proposal id
+   * @returns transaction proposal
+   */
   static async deleteMultiSigProposal(proposalId) {
     const params = { proposalId };
     console.log('deleteMultiSigProposal, params: ', params);
@@ -562,26 +609,41 @@ class ParseHelper {
     return proposal;
   }
 
-  static async fetchProposalByAddress(address) {
-    console.log('fetchProposalByAddress, address: ', address);
+  /**
+   * getLatestProposalByAddress, get the latest proposal in Pending state.
+   * @param {string} address
+   * @returns {object} pending proposal
+   */
+  static async getLatestProposalByAddress(address) {
+    console.log('getLatestProposalByAddress, address: ', address);
     const query = new Parse.Query(ParseMultiSigProposal);
     query.equalTo('multiSigAddress', address);
     const result = await query.descending('createdAt').first();
     const proposal = parseDataUtil.getProposal(result);
-    console.log('fetchProposalByAddress, proposal: ', result);
+    console.log('getLatestProposalByAddress, proposal: ', result);
     return proposal;
   }
 
-  static async fetchProposal(proposalId) {
-    console.log('fetchPendingProposal, proposalId: ', proposalId);
+  /**
+   * getProposal, fetch proposal by id
+   * @param {*} proposalId
+   * @returns {object} proposal
+   */
+  static async getProposal(proposalId) {
+    console.log('getProposal, proposalId: ', proposalId);
     const query = new Parse.Query(ParseMultiSigProposal);
-    query.equalTo('objectId', proposalId);
-    const result = await query.first();
+    const result = await query.get(proposalId);
     const proposal = parseDataUtil.getProposal(result);
-    console.log('fetchPendingProposal, proposal: ', result);
+    console.log('getProposal, proposal: ', result);
     return proposal;
   }
 
+  /**
+   * getPendingProposalsQuery
+   * Get parse query of pending proposals by addresses
+   * @param {*} addresses
+   * @returns {object} parse query
+   */
   static getPendingProposalsQuery(addresses) {
     console.log('getPendingProposalsQuery, addresses: ', addresses);
     const query = new Parse.Query(ParseMultiSigProposal);
@@ -589,6 +651,12 @@ class ParseHelper {
     return query;
   }
 
+  /**
+   * subscribePendingProposals
+   * Fetch pending proposals by addresses
+   * @param {*} addresses
+   * @returns {object} proposals
+   */
   static async fetchPendingProposals(addresses) {
     console.log('fetchPendingProposals, addresses: ', addresses);
     const query = ParseHelper.getPendingProposalsQuery(addresses);
@@ -598,12 +666,22 @@ class ParseHelper {
     return proposals;
   }
 
+  /**
+   * subscribePendingProposals
+   * Subscribe pending proposals
+   * @param {*} addresses
+   */
   static async subscribePendingProposals(addresses) {
     console.log('subscribePendingProposals, addresses: ', addresses);
     const query = ParseHelper.getPendingProposalsQuery(addresses);
     return query.subscribe();
   }
 
+  /**
+   * sendSignedMultisigTransaction
+   * Send signed multisig transaction
+   * @param {*} params
+   */
   static async sendSignedMultisigTransaction(params) {
     console.log(`processSignedTransaction, params: ${JSON.stringify(params)}`);
     const result = await Parse.Cloud.run('sendSignedMultisigTransaction', params);
@@ -612,32 +690,13 @@ class ParseHelper {
     return proposal;
   }
 
-  static async updateTokenBalance(tokens) {
-    const params = {
-      tokenList: tokens,
-    };
-    const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
-    return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
-  }
-
   /**
-   * getInputAddressTXHash, get transaction input hash array
-   * @param {*} address
-   * @param {*} type
-   * @param {*} value, Amount transferred
-   * @returns {array} transaction hash array
+   * deleteMultiSigWallet
+   * Notice server that user has deleted multisig wallet
+   * @param {*} invitationCode
+   * @returns {object} the promise of invitation object
    */
-  static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
-
   static deleteMultiSigWallet = async (invitationCode) => Parse.Cloud.run('deleteMultiSigWallet', { invitationCode })
-
-  static async recoverMultisigInvitationByPublicKey(publicKey) {
-    const params = { publicKey };
-    console.log('publicKey: ', publicKey);
-    const result = await Parse.Cloud.run('recoverMultisigInvitationByPublicKey', params);
-    console.log('recoverMultisigInvitationByPublicKey, result: ', result);
-    return parseDataUtil.getInvitation(result);
-  }
 }
 
 // Create parse helper proxy to add global error handling

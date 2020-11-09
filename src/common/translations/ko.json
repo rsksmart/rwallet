@@ -80,7 +80,7 @@
         "addReadOnlyWallet": "읽기 전용 지갑 추가",
         "addReadOnlyWalletNote": "키없이 자산 모니터링",
         "sharedWallet": "공유 지갑",
-        "sharedWalletNote": "Multisig Bitcoin 지갑"
+        "sharedWalletNote": "다중 서명 비트 코인 지갑"
       },
       "sharedWallet": {
         "title": "공유 지갑",

@@ -79,8 +79,8 @@
         "importWalletNote": "Восстановите свой кошелек, используя фразу для восстановления",
         "addReadOnlyWallet": "Добавить кошелек только для чтения",
         "addReadOnlyWalletNote": "Мониторинг активов без ключей",
-        "sharedWallet": "Carteira Compartilhada",
-        "sharedWalletNote": "Carteira Multisig Bitcoin"
+        "sharedWallet": "Общий кошелек",
+        "sharedWalletNote": "Биткойн-кошелек с несколькими подписями"
       },
       "sharedWallet": {
         "title": "Общий кошелек",

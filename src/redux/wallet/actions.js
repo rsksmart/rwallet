@@ -59,7 +59,7 @@ const actions = {
   INIT_LIVE_QUERY_PENDING_PROPOSALS: 'INIT_LIVE_QUERY_PENDING_PROPOSALS',
   SET_PENDING_PROPOSAL_CHANNEL: 'SET_PENDING_PROPOSAL_CHANNEL',
   FETCH_PENDING_PROPOSALS: 'FETCH_PENDING_PROPOSALS',
-  FETCH_PROPOSAL: 'FETCH_PROPOSAL',
+  GET_LATEST_PROPOSAL_BY_ADDRESS: 'GET_LATEST_PROPOSAL_BY_ADDRESS',
   UPDATE_PROPOSAL: 'UPDATE_PROPOSAL',
 
   SET_SUBDOMAINS: 'SET_SUBDOMAINS',
@@ -247,9 +247,9 @@ const actions = {
     type: actions.UPDATE_PROPOSAL,
     proposal,
   }),
-  fetchProposal: (token) => ({
-    type: actions.FETCH_PROPOSAL,
-    payload: { token },
+  getLatestProposalByAddress: (address) => ({
+    type: actions.GET_LATEST_PROPOSAL_BY_ADDRESS,
+    address,
   }),
   updateTokenBalance: (tokens) => ({
     type: actions.UPDATE_TOKEN_BALANCE,

@@ -81,7 +81,7 @@
         "addReadOnlyWallet": "Adicionar carteira somente leitura",
         "addReadOnlyWalletNote": "Monitore ativos sem precisar usar as chaves de gasto",
         "sharedWallet": "Carteira compartilhada",
-        "sharedWalletNote": "Carteira Multisig Bitcoin"
+        "sharedWalletNote": "Carteira Bitcoin Multi-sig"
       },
       "sharedWallet": {
         "title": "Carteira compartilhada",

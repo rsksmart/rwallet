@@ -672,16 +672,15 @@ function createPendingProposalChannel(subscription, tokens) {
   });
 }
 
-function* fetchProposal(action) {
-  const { token } = action.payload;
-  const { address } = token;
+function* getLatestProposalByAddress(action) {
+  const { address } = action;
   try {
-    const proposal = yield call(ParseHelper.fetchProposalByAddress, address);
+    const proposal = yield call(ParseHelper.getLatestProposalByAddress, address);
     if (proposal) {
       yield call(updateProposal, proposal);
     }
   } catch (error) {
-    console.log('fetchPendingProposal, error:', error);
+    console.log('getLatestProposalByAddress, error:', error);
   }
 }
 
@@ -789,7 +788,7 @@ export default function* () {
 
     takeEvery(actions.INIT_LIVE_QUERY_PENDING_PROPOSALS, initLiveQueryPendingProposals),
     takeEvery(actions.FETCH_PENDING_PROPOSALS, fetchPendingProposals),
-    takeEvery(actions.FETCH_PROPOSAL, fetchProposal),
+    takeEvery(actions.GET_LATEST_PROPOSAL_BY_ADDRESS, getLatestProposalByAddress),
     takeEvery(actions.UPDATE_PROPOSAL, updateProposalRequest),
 
     takeEvery(actions.UPDATE_TOKEN_BALANCE, updateTokenBalanceRequest),

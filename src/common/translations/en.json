@@ -81,7 +81,7 @@
         "addReadOnlyWallet": "Add Read-only Wallet",
         "addReadOnlyWalletNote": "Monitor assets without keys",
         "sharedWallet": "Shared Wallet",
-        "sharedWalletNote": "Multisig Bitcoin Wallet"
+        "sharedWalletNote": "Multi-sig Bitcoin Wallet"
       },
       "sharedWallet": {
         "title": "Shared Wallet",

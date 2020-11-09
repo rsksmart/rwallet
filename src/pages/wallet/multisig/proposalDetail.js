@@ -164,7 +164,7 @@ class MultisigProposalDetail extends Component {
       console.log('refreshProposal, this.proposal: ', this.proposal);
       const { objectId } = this.proposal;
       try {
-        const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchProposal(objectId), this);
+        const proposal = await CancelablePromiseUtil.makeCancelable(parseHelper.getProposal(objectId), this);
         this.proposal = proposal;
         this.processProposal();
         this.updateProposal(proposal);

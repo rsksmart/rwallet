@@ -440,7 +440,7 @@ class History extends Component {
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
     if (isMultisig) {
-      this.fetchProposal();
+      this.getLatestProposalByAddress();
       this.processPendingProposal();
     }
   }
@@ -577,9 +577,10 @@ class History extends Component {
     this.setState({ proposal: newProposal });
   }
 
-  fetchProposal = async () => {
-    const { fetchProposal } = this.props;
-    fetchProposal(this.coin);
+  getLatestProposalByAddress = async () => {
+    const { getLatestProposalByAddress } = this.props;
+    const { address } = this.coin;
+    getLatestProposalByAddress(address);
   }
 
   loadMoreData = () => {
@@ -773,7 +774,7 @@ History.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
   txTimestamp: PropTypes.number,
   addNotification: PropTypes.func.isRequired,
-  fetchProposal: PropTypes.func.isRequired,
+  getLatestProposalByAddress: PropTypes.func.isRequired,
   updateTokenBalance: PropTypes.func.isRequired,
 };
 
@@ -793,7 +794,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
-  fetchProposal: (token) => dispatch(walletActions.fetchProposal(token)),
+  getLatestProposalByAddress: (address) => dispatch(walletActions.getLatestProposalByAddress(address)),
   fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
   updateTokenBalance: (tokens) => dispatch(walletActions.updateTokenBalance(tokens)),
 });

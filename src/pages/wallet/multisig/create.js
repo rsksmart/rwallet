@@ -181,7 +181,8 @@ class CreateMultisigAddress extends Component {
           const { signatures } = this.state;
           let newSignatures = signatures;
           const newCopayers = parseInt(value, 10);
-          if (signatures && newSignatures > newCopayers) {
+          // The number of Signatures must be less or equal to the number of copayers
+          if (newSignatures && newSignatures > newCopayers) {
             newSignatures = newCopayers;
           }
           this.setState({ copayers: newCopayers, signatures: newSignatures }, () => {

@@ -199,9 +199,9 @@ class MultisigAddressInvitation extends Component {
       Share.open(options);
     }
 
-    fetchMultisigInvitation = async () => {
+    getMultisigInvitation = async () => {
       try {
-        const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.fetchMultisigInvitation(this.coin.invitationCode), this);
+        const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.getMultisigInvitation(this.coin.invitationCode), this);
         const { copayerMembers, generatedAddress, copayerNumber } = invitation;
 
         // If the address has been generated, assign it to the corresponding local token
@@ -220,13 +220,13 @@ class MultisigAddressInvitation extends Component {
 
         this.setState({ copayers: copayerMembers });
       } catch (error) {
-        console.warn('fetchMultisigInvitation, error: ', error);
+        console.warn('getMultisigInvitation, error: ', error);
       }
     }
 
     refreshMultisigInvitation = () => {
-      this.fetchMultisigInvitation();
-      this.interval = setInterval(this.fetchMultisigInvitation, 5000);
+      this.getMultisigInvitation();
+      this.interval = setInterval(this.getMultisigInvitation, 5000);
     }
 
     onAddressGenerated = (address) => {

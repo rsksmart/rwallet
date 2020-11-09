@@ -80,7 +80,7 @@
         "addReadOnlyWallet": "Agregar billetera de solo lectura",
         "addReadOnlyWalletNote": "Monitorear activos sin claves",
         "sharedWallet": "Billetera compartida",
-        "sharedWalletNote": "Billetera Bitcoin Multifirma"
+        "sharedWalletNote": "Billetera Bitcoin multi-sig"
       },
       "sharedWallet": {
         "title": "Billetera compartida",
