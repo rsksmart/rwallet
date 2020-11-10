@@ -90,7 +90,7 @@
         "joinSharedWallet": "Join Shared Wallet",
         "joinSharedWalletNote": "Requires invitation to join",
         "importSharedWallet": "Import Shared Wallet",
-        "importSharedWalletNote": "Import a Multisig Bitcoin Wallet and invite others to join"
+        "importSharedWalletNote": "Import an existing Multi-sig Bitcoin Wallet"
       },
       "selectCurrency": {
         "title": "Select Wallet Assets",
@@ -304,6 +304,7 @@
         "title": "Shared Wallet Invitation",
         "note": "Share this address with the devices joining this account. Each copayer has their own recovery phrase. To recover funds stored in a Share Wallet you will need to the recovery phrase from each copayer.",
         "waitingNote": "Waiting for authorized signer to join",
+        "copy": "Copy invitation code",
         "share": "Share this invitation with your signer >",
         "me": "Me",
         "waiting": "waiting"
@@ -731,6 +732,10 @@
     "invitationNotFound": {
       "title": "Shared wallet not found",
       "body": "Could not find the corresponding shared wallet information."
+    },
+    "invitationCodeCopied": {
+      "title": "Copied",
+      "body": "The invitation code has been copied to the clipboard."
     }
   },
   "currency": {

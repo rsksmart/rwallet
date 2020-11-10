@@ -88,7 +88,9 @@
         "createSharedWallet": "Criar carteira compartilhada",
         "createSharedWalletNote": "Crie uma carteira Multisig Bitcoin e convide outras pessoas para aderir",
         "joinSharedWallet": "Junte-se à carteira compartilhada",
-        "joinSharedWalletNote": "Requer convite para participar"
+        "joinSharedWalletNote": "Requer convite para participar",
+        "importSharedWallet": "Importar carteira compartilhada",
+        "importSharedWalletNote": "Importar uma carteira Bitcoin Multi-sig existente"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
@@ -304,6 +306,7 @@
         "title": "Convite da carteira compartilhada",
         "note": "Compartilhe este endereço com os dispositivos que estão ingressando nesta conta. Cada copayer tem sua própria frase de recuperação. Para recuperar fundos armazenados em uma carteira compartilhada, você precisará da frase de recuperação de cada copayer.",
         "waitingNote": "Esperando o signatário autorizado entrar",
+        "copy": "Copiar código de convite",
         "share": "Compartilhe este convite com seu signatário >",
         "me": "Eu",
         "waiting": "Esperando"
@@ -744,6 +747,10 @@
     "invitationNotFound": {
       "title": "Carteira compartilhada não encontrada",
       "body": "Não foi possível encontrar as informações da carteira compartilhada correspondentes."
+    },
+    "invitationCodeCopied": {
+      "title": "Copiado",
+      "body": "O código do convite foi copiado para a área de transferência."
     }
   },
   "currency": {

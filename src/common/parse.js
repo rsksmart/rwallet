@@ -500,7 +500,6 @@ class ParseHelper {
   }
 
   /**
-   * getInputAddressTXHash
    * Get transaction input hash array
    * @param {*} address
    * @param {*} type
@@ -518,7 +517,6 @@ class ParseHelper {
   }
 
   /**
-   * createMultisigAddress
    * Create a multisig address invitation.
    * @param {object} params: { signatureNumber, copayerNumber, publicKey, type, name, walletName }
    * @returns invitation
@@ -535,7 +533,6 @@ class ParseHelper {
   }
 
   /**
-   * joinMultisigAddress
    * Join multisig address invitation by code
    * @param {*} params, {invitationCode, publicKey, name }
    * @returns invitation
@@ -552,7 +549,6 @@ class ParseHelper {
   }
 
   /**
-   * getMultisigInvitation
    * Get invitation object by code
    * @param {*} invitationCode
    */
@@ -566,7 +562,6 @@ class ParseHelper {
   }
 
   /**
-   * recoverMultisigInvitationByPublicKey
    * Find and recover multisig invitation by public key
    * @param {string} publicKey
    */
@@ -579,7 +574,6 @@ class ParseHelper {
   }
 
   /**
-   * rejectMultisigTransaction
    * Reject multisig transaction proposal
    * @param {*} proposalId, proposal id
    * @returns transaction proposal
@@ -594,7 +588,6 @@ class ParseHelper {
   }
 
   /**
-   * deleteMultiSigProposal
    * Delete multisig transaction proposal
    * @param {*} proposalId, proposal id
    * @returns transaction proposal
@@ -610,7 +603,7 @@ class ParseHelper {
   }
 
   /**
-   * getLatestProposalByAddress, get the latest proposal in Pending state.
+   * Get the latest proposal in Pending state.
    * @param {string} address
    * @returns {object} pending proposal
    */
@@ -625,7 +618,7 @@ class ParseHelper {
   }
 
   /**
-   * getProposal, fetch proposal by id
+   * Fetch proposal by id
    * @param {*} proposalId
    * @returns {object} proposal
    */
@@ -639,7 +632,6 @@ class ParseHelper {
   }
 
   /**
-   * getPendingProposalsQuery
    * Get parse query of pending proposals by addresses
    * @param {*} addresses
    * @returns {object} parse query
@@ -652,7 +644,6 @@ class ParseHelper {
   }
 
   /**
-   * subscribePendingProposals
    * Fetch pending proposals by addresses
    * @param {*} addresses
    * @returns {object} proposals
@@ -667,7 +658,6 @@ class ParseHelper {
   }
 
   /**
-   * subscribePendingProposals
    * Subscribe pending proposals
    * @param {*} addresses
    */
@@ -678,7 +668,6 @@ class ParseHelper {
   }
 
   /**
-   * sendSignedMultisigTransaction
    * Send signed multisig transaction
    * @param {*} params
    */
@@ -691,7 +680,6 @@ class ParseHelper {
   }
 
   /**
-   * deleteMultiSigWallet
    * Notice server that user has deleted multisig wallet
    * @param {*} invitationCode
    * @returns {object} the promise of invitation object

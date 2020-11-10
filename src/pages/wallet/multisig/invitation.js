@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, Image, Platform, TouchableOpacity,
+  View, Text, FlatList, StyleSheet, Image, Platform, TouchableOpacity, Clipboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,6 +19,8 @@ import { DEVICE } from '../../../common/info';
 import { strings } from '../../../common/i18n';
 import color from '../../../assets/styles/color';
 import flex from '../../../assets/styles/layout.flex';
+import space from '../../../assets/styles/space';
+import { createInfoNotification } from '../../../common/notification.controller';
 
 const QRCODE_SIZE = DEVICE.screenWidth * 0.6;
 
@@ -81,10 +83,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  shareLinkView: {
-    marginTop: 15,
-    marginHorizontal: 25,
-  },
   shareLink: {
     color: color.app.theme,
     fontFamily: 'Avenir-Roman',
@@ -94,7 +92,7 @@ const styles = StyleSheet.create({
   invitationView: {
     marginHorizontal: 25,
     marginTop: 17,
-    paddingBottom: 20,
+    paddingBottom: 15,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: color.alto,
@@ -199,6 +197,17 @@ class MultisigAddressInvitation extends Component {
       Share.open(options);
     }
 
+    onCopyPressed = () => {
+      const { addNotification } = this.props;
+      const { invitationCode } = this.coin;
+      Clipboard.setString(invitationCode);
+      const notification = createInfoNotification(
+        'modal.invitationCodeCopied.title',
+        'modal.invitationCodeCopied.body',
+      );
+      addNotification(notification);
+    }
+
     getMultisigInvitation = async () => {
       try {
         const invitation = await CancelablePromiseUtil.makeCancelable(parseHelper.getMultisigInvitation(this.coin.invitationCode), this);
@@ -262,7 +271,10 @@ class MultisigAddressInvitation extends Component {
                   <QRCode value={qrText} size={QRCODE_SIZE} />
                   <Image style={styles.invitationLogo} source={invitationLogo} />
                 </View>
-                <TouchableOpacity style={styles.shareLinkView} onPress={this.onSharePressed}>
+                <TouchableOpacity style={[space.marginTop_18]} onPress={this.onCopyPressed}>
+                  <Text style={styles.shareLink}>{strings('page.wallet.multisigInvitation.copy')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[space.marginTop_6]} onPress={this.onSharePressed}>
                   <Text style={styles.shareLink}>{strings('page.wallet.multisigInvitation.share')}</Text>
                 </TouchableOpacity>
               </View>
@@ -296,6 +308,7 @@ MultisigAddressInvitation.propTypes = {
     findToken: PropTypes.func,
   }).isRequired,
   setMultisigBTCAddress: PropTypes.func.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -234,7 +234,6 @@ class MultisigProposalDetail extends Component {
     accept = async () => {
       const { navigation } = this.props;
       const { rawTransaction, objectId } = this.proposal;
-      const { symbol, type } = this.token;
       try {
         this.setState({ isLoading: true });
         const transaction = createTransaction(this.token, null, null, {});
@@ -244,7 +243,7 @@ class MultisigProposalDetail extends Component {
         const proposal = await transaction.processSignedTransaction();
         this.updateProposal(proposal);
         if (transaction.txHash) {
-          const completedParams = { symbol, type, hash: transaction.txHash };
+          const completedParams = { coin: this.token, hash: transaction.txHash };
           navigation.navigate('TransferCompleted', completedParams);
         } else {
           navigation.navigate('CreateProposalSuccess');

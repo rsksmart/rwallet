@@ -87,7 +87,9 @@
         "createSharedWallet": "Crear billetera compartida",
         "createSharedWalletNote": "Cree una billetera Bitcoin Multifirma e invite a otros a unirse",
         "joinSharedWallet": "Unirse a la billetera compartida",
-        "joinSharedWalletNote": "Requiere invitación para unirse"
+        "joinSharedWalletNote": "Requiere invitación para unirse",
+        "importSharedWallet": "Importar billetera compartida",
+        "importSharedWalletNote": "Importar una billetera Bitcoin Multi-sig existente"
       },
       "selectCurrency": {
         "title": "Seleccionar activos de Wallet",
@@ -304,6 +306,7 @@
         "title": "Invitación de billetera compartida",
         "note": "Comparta esta dirección con los dispositivos que se unen a esta cuenta. Cada copago tiene su propia frase de recuperación. Para recuperar los fondos almacenados en Share Wallet, necesitará la frase de recuperación de cada copago.",
         "waitingNote": "Esperando a que el firmante autorizado se una",
+        "copy": "Copiar código de invitación",
         "share": "Comparte esta invitación con tu firmante >",
         "me": "Yo",
         "waiting": "Esperando"
@@ -731,6 +734,10 @@
     "invitationNotFound": {
       "title": "No se encontró la billetera compartida",
       "body": "No se pudo encontrar la información de billetera compartida correspondiente."
+    },
+    "invitationCodeCopied": {
+      "title": "Copiado",
+      "body": "El código de invitación se ha copiado al portapapeles."
     }
   },
   "currency": {

@@ -87,7 +87,9 @@
         "createSharedWallet": "创建共享钱包",
         "createSharedWalletNote": "创建一个多重签名比特币钱包并邀请其他人加入",
         "joinSharedWallet": "加入共享钱包",
-        "joinSharedWalletNote": "需要邀请才能加入"
+        "joinSharedWalletNote": "需要邀请才能加入",
+        "importSharedWallet": "导入共享钱包",
+        "importSharedWalletNote": "导入已有的共享钱包"
       },
       "selectCurrency": {
         "title": "选择钱包资产",
@@ -304,6 +306,7 @@
         "title": "共享钱包邀请",
         "note": "与加入该帐户的设备共享此地址。每个共同付款人都有自己的恢复助记词。要取回存储在股票钱包中的资金，您需要输入每个共同付款人的恢复助记词。",
         "waitingNote": "等待授权签署人加入",
+        "copy": "复制邀请码",
         "share": "与您的签名者共享此邀请 >",
         "me": "我",
         "waiting": "等待中"
@@ -731,6 +734,10 @@
     "invitationNotFound": {
       "title": "找不到共享钱包",
       "body": "找不到相应的共享钱包信息。"
+    },
+    "invitationCodeCopied": {
+      "title": "已复制",
+      "body": "邀请码已复制。"
     }
   },
   "currency": {

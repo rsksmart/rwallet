@@ -1,42 +1,24 @@
-import BasicCoin from './basic.coin';
-import coinType from './cointype';
+import BTCCoin from './btccoin';
 
-class MultisigBtc extends BasicCoin {
+class MultisigBtc extends BTCCoin {
   constructor(invitationCode, type) {
-    super('Bitcoin', 'BTC', type);
-    this.id = type === 'Mainnet' ? this.symbol : this.symbol + this.type;
-    this.metadata = coinType[this.id];
-    this.name = this.metadata.defaultName;
-    this.icon = this.metadata.icon;
-    this.privateKey = undefined;
-    this.publicKey = undefined;
-    this.address = undefined;
+    super('BTC', type, "m/44'/0'/0'/0/0");
     this.isMultisig = true;
     this.invitationCode = invitationCode;
     this.signatureNumber = null;
     this.copayerNumber = null;
   }
 
-  get defaultName() {
-    return this.name;
+  toJSON = () => {
+    const obj = super.toJSON();
+    return {
+      ...obj,
+      invitationCode: this.invitationCode,
+      isMultisig: this.isMultisig,
+      signatureNumber: this.signatureNumber,
+      copayerNumber: this.copayerNumber,
+    };
   }
-
-  toJSON = () => ({
-    id: this.id,
-    symbol: this.symbol,
-    type: this.type,
-    address: this.address,
-    subdomain: this.subdomain,
-    objectId: this.objectId,
-    chain: this.chain,
-    name: this.name,
-    balance: this.balance ? this.balance.toString() : undefined,
-    invitationCode: this.invitationCode,
-    isMultisig: this.isMultisig,
-    addressType: this.addressType,
-    signatureNumber: this.signatureNumber,
-    copayerNumber: this.copayerNumber,
-  })
 
   static fromJSON(json) {
     const {
