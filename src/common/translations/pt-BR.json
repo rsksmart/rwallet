@@ -90,7 +90,7 @@
         "joinSharedWallet": "Junte-se a carteira compartilhada",
         "joinSharedWalletNote": "Requer convite para participar",
         "importSharedWallet": "Importar carteira compartilhada",
-        "importSharedWalletNote": "Importar uma carteira Bitcoin Multi-sig existente"
+        "importSharedWalletNote": "Importar uma carteira Bitcoin compartilhada existente"
       },
       "selectCurrency": {
         "title": "Selecionar ativos da carteira",
