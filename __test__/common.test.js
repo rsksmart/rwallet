@@ -52,20 +52,6 @@ describe('Common Suite', () => {
     expect(unitHex).to.equal('0xde0b6b3a7640000');
   });
 
-  // it('ConvertCoinAmountToUnitHex failure', () => {
-  //   let unitHex = common.convertCoinAmountToUnitHex('RBTC', 2);
-  //   expect(unitHex).to.equal('0xde0b6b3a7640000');
-
-  //   unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, 10);
-  //   expect(unitHex).to.equal('0xde0b6b3a7640000');
-
-  //   unitHex = common.convertCoinAmountToUnitHex('BTC', 1);
-  //   expect(unitHex).to.equal('0xde0b6b3a7640000');
-
-  //   unitHex = common.convertCoinAmountToUnitHex('BTC', 1, 10);
-  //   expect(unitHex).to.equal('0x5f5e100');
-  // });
-
   it('ConvertUnitToCoinAmount success', () => {
     let coinAmount = common.convertUnitToCoinAmount('RBTC', '0xde0b6b3a7640000');
     expect(coinAmount.toString()).to.equal('1');
@@ -94,17 +80,6 @@ describe('Common Suite', () => {
     coinAmount = common.convertUnitToCoinAmount('BTC', '0x5F5E100');
     expect(coinAmount.toString()).to.equal('1');
   });
-
-  // it('ConvertUnitToCoinAmount failure', () => {
-  //   let coinAmount = common.convertUnitToCoinAmount('RBTC', '0xde0b6b3a7640000');
-  //   expect(coinAmount.toString()).to.equal('2');
-
-  //   coinAmount = common.convertUnitToCoinAmount('RBTC', '0xde0b6b3a7640000', 10);
-  //   expect(coinAmount.toString()).to.equal('1');
-
-  //   coinAmount = common.convertUnitToCoinAmount('BTC', '0x5F5E100');
-  //   expect(coinAmount.toString()).to.equal('1');
-  // });
 
   it('GetCoinType success', () => {
     const expected = {
