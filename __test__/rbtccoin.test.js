@@ -7,6 +7,7 @@ const bip39 = require('bip39');
 
 describe('RBTCcoin Suite', () => {
   it('Derive', () => {
+    // Test seed. DO NOT use in dev code or production
     const mnemonic = 'chronic vote exotic upgrade security area add blossom soul youth plate dish';
     const seed = bip39.mnemonicToSeedSync(mnemonic);
     const rbtccoin = new RBTCCoin('RBTC', 'Mainnet', 'm/44\'/137\'/1\'/0/0');
