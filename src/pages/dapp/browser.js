@@ -17,7 +17,10 @@ import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
 import { NETWORK, TRANSACTION } from '../../common/constants';
+import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
+import { InvalidAmountError } from '../../common/error';
+import { strings } from '../../common/i18n';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
 import AllowanceModal from '../wallet/wallet.connect/modal/allowance';
@@ -497,21 +500,52 @@ class DAppBrowser extends Component {
   popupTransactionModal = async (payload) => {
     const { wallet: { address, network } } = this.state;
     const { id, params } = payload;
-    const nonce = await this.rsk3.getTransactionCount(address, 'pending');
-    const gas = params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT;
-    const gasPrice = params[0].gasPrice || TRANSACTION.DEFAULT_GAS_PRICE;
-    const value = params[0].value || TRANSACTION.DEFAULT_VALUE;
+    let { nonce, gasPrice, gas } = params[0];
+    const { to, data, value } = params[0];
+
+    if (_.isNull(value)) {
+      throw new InvalidAmountError();
+    }
+
+    // Calculate nonce from blockchain when nonce is null
+    if (!nonce) {
+      nonce = await this.rsk3.getTransactionCount(address, 'pending');
+    }
+
+    // Get current gasPrice from blockchain when gasPrice is null
+    if (!gasPrice) {
+      await this.rsk3.getGasPrice().then((latestGasPrice) => {
+        gasPrice = latestGasPrice;
+      }).catch((err) => {
+        console.log('getGasPrice error: ', err);
+        gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
+      });
+    }
+
+    // Estimate gas with { to, data } when gas is null
+    if (!gas) {
+      await this.rsk3.estimateGas({
+        to,
+        data,
+      }).then((latestGas) => {
+        gas = latestGas;
+      }).catch((err) => {
+        console.log('estimateGas error: ', err);
+        gas = TRANSACTION.DEFAULT_GAS_LIMIT;
+      });
+    }
+
     const txData = {
       nonce,
-      data: params[0].data,
-      gasLimit: new BigNumber(gas).toString(),
-      gasPrice: new BigNumber(gasPrice).toString(),
-      to: params[0].to,
-      value: new BigNumber(value).toString(),
+      data,
+      gasLimit: gas,
+      gasPrice,
+      to,
+      value,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, networkId);
-    const inputData = params[0].data;
+    const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
+    const inputData = data;
     const res = await apiHelper.getAbiByAddress(toAddress);
     if (res && res.abi) {
       const { abi, symbol } = res;
@@ -529,6 +563,7 @@ class DAppBrowser extends Component {
   }
 
   onMessage = async (event) => {
+    const { addNotification } = this.props;
     const { data } = event.nativeEvent;
     const payload = JSON.parse(data);
     const { method, id } = payload;
@@ -582,6 +617,18 @@ class DAppBrowser extends Component {
           break;
       }
     } catch (err) {
+      console.log('onMessage error: ', err);
+      let notification;
+      if (err && err.code) {
+        notification = getErrorNotification(err.code, strings('page.wallet.walletconnect.tryLater'), err.message);
+      } else {
+        notification = createErrorNotification(
+          'page.dapp.browser.errorTitle',
+          'page.dapp.browser.errorContent',
+          'page.dapp.browser.errorButton',
+        );
+      }
+      addNotification(notification);
       this.handleReject(id, err.message);
     }
   }
@@ -677,6 +724,7 @@ DAppBrowser.propTypes = {
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,
+  addNotification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -688,6 +736,7 @@ const mapDispatchToProps = (dispatch) => ({
   callAuthVerify: (callback, fallback) => dispatch(
     appActions.callAuthVerify(callback, fallback),
   ),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppBrowser);

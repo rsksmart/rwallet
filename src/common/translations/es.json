@@ -285,6 +285,11 @@
         "understood": "Entendido",
         "createOrImport": "Crear o importar",
         "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Fallido",
+        "errorContent": "Se produjo un error desconocido. Vuelva a intentarlo más tarde",
+        "errorButton": "Bien"
       }
     },
     "mine": {

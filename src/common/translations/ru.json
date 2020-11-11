@@ -282,6 +282,11 @@
         "understood": "Понятно",
         "createOrImport": "Создать или импортировать",
         "cancel": "Отмена"
+      },
+      "browser": {
+        "errorTitle": "Не удалось",
+        "errorContent": "Произошла неизвестная ошибка, повторите попытку позже",
+        "errorButton": "Хорошо"
       }
     },
     "mine": {
