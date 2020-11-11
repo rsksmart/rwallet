@@ -53,6 +53,11 @@ class ImportMultisigAddress extends Component {
       };
     }
 
+    componentDidMount() {
+      const { resetWalletsUpdated } = this.props;
+      resetWalletsUpdated();
+    }
+
     componentWillReceiveProps(nextProps) {
       const { navigation, isWalletsUpdated, sharedWalletCreationError } = nextProps;
       const { addNotification, resetSharedWalletCreationError, sharedWalletCreationError: lastSharedWalletCreationError } = this.props;
@@ -70,6 +75,14 @@ class ImportMultisigAddress extends Component {
         const notification = getErrorNotification(sharedWalletCreationError.code, 'button.retry') || getDefaultErrorNotification('button.retry');
         addNotification(notification);
         resetSharedWalletCreationError();
+      }
+    }
+
+    // call resetWalletsUpdated when componentWillUnmount is safe.
+    componentWillUnmount() {
+      const { isWalletsUpdated, resetWalletsUpdated } = this.props;
+      if (isWalletsUpdated) {
+        resetWalletsUpdated();
       }
     }
 
@@ -165,6 +178,7 @@ ImportMultisigAddress.propTypes = {
   sharedWalletCreationError: PropTypes.shape({
     code: PropTypes.number,
   }),
+  resetWalletsUpdated: PropTypes.func.isRequired,
 };
 
 ImportMultisigAddress.defaultProps = {
@@ -183,6 +197,7 @@ const mapDispatchToProps = (dispatch) => ({
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
   importSharedWallet: (phrase, multisigParams) => dispatch(walletActions.importSharedWallet(phrase, multisigParams)),
   resetSharedWalletCreationError: () => dispatch(walletActions.setSharedWalletCreationError(null)),
+  resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImportMultisigAddress);

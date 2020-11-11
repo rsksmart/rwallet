@@ -653,19 +653,17 @@ function createPendingProposalChannel(subscription, tokens) {
       const proposal = parseDataUtil.getProposal(item);
       return emitter(actions.updateProposal(proposal));
     };
-    const deleteHandler = (item) => {
-      console.log('createPendingProposalChannel.deleteHandler', item);
-      const proposal = parseDataUtil.getProposal(item);
-      return emitter(actions.updateProposal(proposal));
-    };
     const errorHandler = (error) => {
       console.log('createPendingProposalChannel.errorHandler', error);
     };
+
     subscription.on('open', subscribeHandler);
-    subscription.on('update', updateHandler);
     subscription.on('error', errorHandler);
+    subscription.on('update', updateHandler);
     subscription.on('create', updateHandler);
-    subscription.on('delete', deleteHandler);
+    subscription.on('enter', updateHandler);
+    subscription.on('enter', updateHandler);
+    subscription.on('delete', updateHandler);
 
     // unsubscribe function, this gets called when we close the channel
     return unsubscribeHandler;

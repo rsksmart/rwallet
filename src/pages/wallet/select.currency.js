@@ -63,6 +63,11 @@ class WalletSelectCurrency extends Component {
       });
     }
 
+    componentDidMount() {
+      const { resetWalletsUpdated } = this.props;
+      resetWalletsUpdated();
+    }
+
     componentWillReceiveProps(nextProps) {
       const { navigation, isWalletsUpdated } = nextProps;
       const { isLoading } = this.state;
