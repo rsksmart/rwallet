@@ -96,12 +96,12 @@ export default function TransactionModal({
 TransactionModal.propTypes = {
   dappUrl: PropTypes.string.isRequired,
   txData: PropTypes.shape({
-    value: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     data: PropTypes.string,
     from: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
-    gasLimit: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
-    gasPrice: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
+    gasLimit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    gasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   }).isRequired,
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,

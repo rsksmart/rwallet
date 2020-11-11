@@ -665,7 +665,7 @@ class WalletConnectPage extends Component {
     await this.setState({ connector, modalView: null });
 
     if (error && error.code) {
-      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
+      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), {}, this.rejectRequest);
       addNotification(notification);
     } else {
       this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
