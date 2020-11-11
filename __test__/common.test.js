@@ -5,7 +5,7 @@ import _ from 'lodash';
 import common from '../src/common/common';
 
 describe('Common Suite', () => {
-  it('ConvertCoinAmountToUnitHex success', () => {
+  it('ConvertCoinAmountToUnitHex', () => {
     let unitHex = common.convertCoinAmountToUnitHex('RBTC', 1);
     expect(unitHex).to.equal('0xde0b6b3a7640000');
 
@@ -52,7 +52,7 @@ describe('Common Suite', () => {
     expect(unitHex).to.equal('0xde0b6b3a7640000');
   });
 
-  it('ConvertUnitToCoinAmount success', () => {
+  it('ConvertUnitToCoinAmount', () => {
     let coinAmount = common.convertUnitToCoinAmount('RBTC', '0xde0b6b3a7640000');
     expect(coinAmount.toString()).to.equal('1');
 
@@ -81,8 +81,8 @@ describe('Common Suite', () => {
     expect(coinAmount.toString()).to.equal('1');
   });
 
-  it('GetCoinType success', () => {
-    const expected = {
+  it('GetCoinType', () => {
+    let expected = {
       networkId: 30,
       coinType: 137,
       defaultName: 'Smart Bitcoin',
@@ -91,13 +91,45 @@ describe('Common Suite', () => {
       symbol: 'RBTC',
       precision: 18,
     };
-    const coinType = common.getCoinType('RBTC', 'Mainnet');
+    let coinType = common.getCoinType('RBTC', 'Mainnet');
+    _.map(expected, (value, key) => {
+      expect(coinType[key]).to.equal(value);
+    });
+
+    expected = {
+      networkId: 30,
+      coinType: 137,
+      chain: 'Rootstock',
+      type: 'Mainnet',
+      precision: 18,
+    };
+    coinType = common.getCoinType('XBTC', 'Mainnet');
+    _.map(expected, (value, key) => {
+      expect(coinType[key]).to.equal(value);
+    });
+    coinType = common.getCoinType('XBTC', '');
+    _.map(expected, (value, key) => {
+      expect(coinType[key]).to.equal(value);
+    });
+    coinType = common.getCoinType('', '');
+    _.map(expected, (value, key) => {
+      expect(coinType[key]).to.equal(value);
+    });
+
+    expected = {
+      networkId: 31,
+      coinType: 37310,
+      chain: 'Rootstock',
+      type: 'Testnet',
+      precision: 18,
+    };
+    coinType = common.getCoinType('XBTC', 'Testnet');
     _.map(expected, (value, key) => {
       expect(coinType[key]).to.equal(value);
     });
   });
 
-  it('GetDomain success', () => {
+  it('GetDomain', () => {
     const expected = 'baidu.com';
 
     let url = 'https://www.baidu.com';
@@ -127,7 +159,7 @@ describe('Common Suite', () => {
     expect(domain).to.equal('');
   });
 
-  it('SortTokens success', () => {
+  it('SortTokens', () => {
     const tokens = [
       { symbol: 'BTC', type: 'Mainnet' },
       { symbol: 'RBTC', type: 'Testnet' },
@@ -150,21 +182,17 @@ describe('Common Suite', () => {
       { symbol: 'XBTC', type: 'Testnet' },
     ];
 
-    let sortedTokens = common.sortTokens(tokens);
+    const sortedTokens = common.sortTokens(tokens);
     expect(sortedTokens.length).to.equal(expected.length);
-    _.forEach(expected, (item, index) => {
-      const { symbol, type } = item;
-      const token = sortedTokens[index];
-      expect(token.symbol).to.equal(symbol);
-      expect(token.type).to.equal(type);
-    });
+    expect(sortedTokens).that.deep.equals(expected);
 
-    sortedTokens = common.sortTokens(null);
-    expect(typeof (sortedTokens)).to.equal('array');
-    expect(sortedTokens.length).to.equal(0);
+    expect(() => common.sortTokens(null)).to.throw("Cannot read property 'sort' of null");
+    expect(() => common.sortTokens(undefined)).to.throw("Cannot read property 'sort' of undefined");
+    expect(() => common.sortTokens(1)).to.throw('tokens.sort is not a function');
+    expect(() => common.sortTokens('1')).to.throw('tokens.sort is not a function');
   });
 
-  it('ParseAccountFromDerivationPath success', () => {
+  it('ParseAccountFromDerivationPath', () => {
     let derivationPath = "m/44'/0'/1'/0/0";
     let account = common.parseAccountFromDerivationPath(derivationPath);
     expect(account).to.equal('1');
@@ -173,7 +201,7 @@ describe('Common Suite', () => {
     account = common.parseAccountFromDerivationPath(derivationPath);
     expect(account).to.equal('-1');
 
-    derivationPath = 'm/44';
+    derivationPath = 'm/44/3';
     account = common.parseAccountFromDerivationPath(derivationPath);
     expect(account).to.equal('0');
 
@@ -184,7 +212,7 @@ describe('Common Suite', () => {
     expect(account).to.equal('0');
   });
 
-  it('IsWalletAddress success', () => {
+  it('IsWalletAddress', () => {
     let address = '0xb1C55DdA8ce352607A9e16944b632A0ce53ba9e2';
     let type = 'Mainnet';
     let symbol = 'RBTC';
@@ -208,11 +236,37 @@ describe('Common Suite', () => {
     symbol = 'RBTC';
     isWalletAddress = common.isWalletAddress(address, symbol, type);
     expect(isWalletAddress).to.equal(false);
+
+    address = '';
+    type = '';
+    symbol = '';
+    isWalletAddress = common.isWalletAddress(address, symbol, type);
+    expect(isWalletAddress).to.equal(false);
   });
 
-  it('GetCoinValue success', () => {
-    const prices = [{ symbol: 'RBTC', price: { CNY: '6.6', USDT: '1' } }];
-    const coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', 'CNY', prices);
+  it('GetCoinValue', () => {
+    let prices = [{ symbol: 'RBTC', price: { CNY: '6.6', USDT: '1' } }];
+    let coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', 'CNY', prices);
     expect(coinValue.toString()).to.equal('6.6');
+
+    prices = [{ symbol: 'RBTC', price: { CNY: undefined, USDT: '1' } }];
+    coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', 'CNY', prices);
+    expect(coinValue).to.equal(null);
+
+    prices = [{ symbol: 'RBTC', price: { CNY: undefined, USDT: '1' } }];
+    coinValue = common.getCoinValue(1, 'RBTC', 'Testnet', 'CNY', prices);
+    expect(coinValue.toString()).to.equal('0');
+
+    prices = [];
+    coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', 'CNY', prices);
+    expect(coinValue).to.equal(null);
+
+    prices = [{ symbol: 'RBTC', price: { CNY: '6.6', USDT: '1' } }];
+    coinValue = common.getCoinValue(1, '', 'Mainnet', 'CNY', prices);
+    expect(coinValue).to.equal(null);
+
+    prices = [{ symbol: 'RBTC', price: { CNY: '6.6', USDT: '1' } }];
+    coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', '', prices);
+    expect(coinValue).to.equal(null);
   });
 });

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import walletManager from '../src/common/wallet/walletManager';
 
 describe('Wallet Manager Suite', () => {
-  it('CreateWallet success', async () => {
+  it('CreateWallet', async () => {
     // Test seed. DO NOT use in dev code or production
     const phrase = 'chronic vote exotic upgrade security area add blossom soul youth plate dish';
     const expected = {
@@ -31,7 +31,7 @@ describe('Wallet Manager Suite', () => {
     });
   });
 
-  it('CreateReadOnlyWallet success', async () => {
+  it('CreateReadOnlyWallet', async () => {
     const expected = {
       address: '0x1Bf155ffd327d645358B6279cEf147BB74146431',
       chain: 'Rootstock',
