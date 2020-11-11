@@ -1,6 +1,6 @@
 import { expect as cexpect } from 'chai';
 
-import Transaction, { rbtcTransaction } from '../src/common/transaction/index';
+import { rbtcTransaction } from '../src/common/transaction/index';
 
 describe('Transaction Suite', () => {
   it('GatTransactionFee success', async () => {
@@ -12,11 +12,5 @@ describe('Transaction Suite', () => {
     cexpect(fee.gasPrice.high).to.equal(expected.gasPrice.high);
     cexpect(fee.gasPrice.low).to.equal(expected.gasPrice.low);
     cexpect(fee.gasPrice.medium).to.equal(expected.gasPrice.medium);
-  });
-
-  it('ProcessRawTransaction success', async () => {
-    const spyFn = jest.spyOn(Transaction, constructor);
-    // const transaction = new Transaction();
-    expect(Transaction).toHaveBeenCalledTimes(1);
   });
 });
