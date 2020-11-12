@@ -222,34 +222,19 @@ describe('Common Suite', () => {
   });
 
   it('IsWalletAddress', () => {
-    let address = '0xb1C55DdA8ce352607A9e16944b632A0ce53ba9e2';
-    let type = 'Mainnet';
-    let symbol = 'RBTC';
-    let isWalletAddress = common.isWalletAddress(address, symbol, type);
+    let isWalletAddress = common.isWalletAddress('0xb1C55DdA8ce352607A9e16944b632A0ce53ba9e2', 'RBTC', 'Mainnet');
     expect(isWalletAddress).to.equal(true);
 
-    address = '135Zt5CfXi8ieZg1buy2N95gdLD4jtpZBd';
-    type = 'Mainnet';
-    symbol = 'BTC';
-    isWalletAddress = common.isWalletAddress(address, symbol, type);
+    isWalletAddress = common.isWalletAddress('135Zt5CfXi8ieZg1buy2N95gdLD4jtpZBd', 'BTC', 'Mainnet');
     expect(isWalletAddress).to.equal(true);
 
-    address = '0xCc3cAB530e2AD0Eb960bAf3C7B59F3447b55D490';
-    type = 'Testnet';
-    symbol = 'RBTC';
-    isWalletAddress = common.isWalletAddress(address, symbol, type);
+    isWalletAddress = common.isWalletAddress('0xCc3cAB530e2AD0Eb960bAf3C7B59F3447b55D490', 'RBTC', 'Testnet');
     expect(isWalletAddress).to.equal(true);
 
-    address = '0xcc3cAb530e2AD0Eb960bAf3C7B59F3455D490';
-    type = 'Testnet';
-    symbol = 'RBTC';
-    isWalletAddress = common.isWalletAddress(address, symbol, type);
+    isWalletAddress = common.isWalletAddress('0xcc3cAb530e2AD0Eb960bAf3C7B59F3455D490', 'RBTC', 'Testnet');
     expect(isWalletAddress).to.equal(false);
 
-    address = '';
-    type = '';
-    symbol = '';
-    isWalletAddress = common.isWalletAddress(address, symbol, type);
+    isWalletAddress = common.isWalletAddress('', '', '');
     expect(isWalletAddress).to.equal(false);
   });
 
