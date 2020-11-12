@@ -662,7 +662,7 @@ function createPendingProposalChannel(subscription, tokens) {
     subscription.on('update', updateHandler);
     subscription.on('create', updateHandler);
     subscription.on('enter', updateHandler);
-    subscription.on('enter', updateHandler);
+    subscription.on('leave', updateHandler);
     subscription.on('delete', updateHandler);
 
     // unsubscribe function, this gets called when we close the channel
