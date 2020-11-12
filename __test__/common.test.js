@@ -82,7 +82,7 @@ describe('Common Suite', () => {
   });
 
   it('GetCoinType', () => {
-    let expected = {
+    const rbtcExpected = {
       networkId: 30,
       coinType: 137,
       defaultName: 'Smart Bitcoin',
@@ -90,43 +90,52 @@ describe('Common Suite', () => {
       type: 'Mainnet',
       symbol: 'RBTC',
       precision: 18,
+      icon: { testUri: '../../../src/assets/images/icon/RBTC.png' },
     };
-    let coinType = common.getCoinType('RBTC', 'Mainnet');
-    _.map(expected, (value, key) => {
-      expect(coinType[key]).to.equal(value);
-    });
-
-    expected = {
+    const trbtcExpected = {
+      networkId: 31,
+      coinType: 37310,
+      defaultName: 'Smart Bitcoin',
+      chain: 'Rootstock',
+      type: 'Testnet',
+      symbol: 'RBTC',
+      precision: 18,
+      icon: { testUri: '../../../src/assets/images/icon/RBTC.grey.png' },
+    };
+    const xbtcExpected = {
       networkId: 30,
       coinType: 137,
       chain: 'Rootstock',
       type: 'Mainnet',
       precision: 18,
+      icon: { testUri: '../../../src/assets/images/icon/customToken.png' },
     };
-    coinType = common.getCoinType('XBTC', 'Mainnet');
-    _.map(expected, (value, key) => {
-      expect(coinType[key]).to.equal(value);
-    });
-    coinType = common.getCoinType('XBTC', '');
-    _.map(expected, (value, key) => {
-      expect(coinType[key]).to.equal(value);
-    });
-    coinType = common.getCoinType('', '');
-    _.map(expected, (value, key) => {
-      expect(coinType[key]).to.equal(value);
-    });
-
-    expected = {
+    const txbtcExpected = {
       networkId: 31,
       coinType: 37310,
       chain: 'Rootstock',
       type: 'Testnet',
       precision: 18,
+      icon: { testUri: '../../../src/assets/images/icon/customToken.grey.png' },
     };
+
+    let coinType = common.getCoinType('RBTC', 'Mainnet');
+    expect(coinType).that.deep.equals(rbtcExpected);
+
+    coinType = common.getCoinType('RBTC', 'Testnet');
+    expect(coinType).that.deep.equals(trbtcExpected);
+
+    coinType = common.getCoinType('XBTC', 'Mainnet');
+    expect(coinType).that.deep.equals(xbtcExpected);
+
+    coinType = common.getCoinType('XBTC', '');
+    expect(coinType).that.deep.equals(xbtcExpected);
+
+    coinType = common.getCoinType('', '');
+    expect(coinType).that.deep.equals(xbtcExpected);
+
     coinType = common.getCoinType('XBTC', 'Testnet');
-    _.map(expected, (value, key) => {
-      expect(coinType[key]).to.equal(value);
-    });
+    expect(coinType).that.deep.equals(txbtcExpected);
   });
 
   it('GetDomain', () => {
@@ -186,10 +195,10 @@ describe('Common Suite', () => {
     expect(sortedTokens.length).to.equal(expected.length);
     expect(sortedTokens).that.deep.equals(expected);
 
-    expect(() => common.sortTokens(null)).to.throw("Cannot read property 'sort' of null");
-    expect(() => common.sortTokens(undefined)).to.throw("Cannot read property 'sort' of undefined");
-    expect(() => common.sortTokens(1)).to.throw('tokens.sort is not a function');
-    expect(() => common.sortTokens('1')).to.throw('tokens.sort is not a function');
+    expect(() => common.sortTokens(null)).to.throw();
+    expect(() => common.sortTokens(undefined)).to.throw();
+    expect(() => common.sortTokens(1)).to.throw();
+    expect(() => common.sortTokens('1')).to.throw();
   });
 
   it('ParseAccountFromDerivationPath', () => {
