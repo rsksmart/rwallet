@@ -2,9 +2,10 @@ import { expect } from 'chai';
 import _ from 'lodash';
 
 import walletManager from '../src/common/wallet/walletManager';
+import storage from '../src/common/storage';
 
 describe('Wallet Manager Suite', () => {
-  it('CreateWallet', async () => {
+  it('Normal Wallet', async () => {
     // Test seed. DO NOT use in dev code or production
     const phrase = 'chronic vote exotic upgrade security area add blossom soul youth plate dish';
     const expected = {
@@ -17,6 +18,8 @@ describe('Wallet Manager Suite', () => {
       coinType: 137,
       path: 'm/44\'/137\'/1\'/0/0',
     };
+
+    // Test createWallet function
     const wallet = await walletManager.createWallet('Wallet Name', phrase, [{ symbol: 'RBTC', type: 'Mainnet' }], { RBTC: "m/44'/137'/1'/0/0" });
     const { name, mnemonic, coins } = wallet;
     const {
@@ -29,9 +32,20 @@ describe('Wallet Manager Suite', () => {
     _.map(expected, (value, key) => {
       expect(result[key]).to.equal(value);
     });
+
+    // Test renameWallet function
+    await walletManager.renameWallet(wallet, 'New Wallet Name');
+    const newWallets = _.filter(walletManager.wallets, (item) => item === wallet);
+    expect(newWallets.length).to.equal(1);
+    const renamedWallet = newWallets[0];
+    expect(renamedWallet.name).to.equal('New Wallet Name');
+
+    // Test deleteWallet function
+    await walletManager.deleteWallet(wallet);
+    expect(walletManager.wallets).that.deep.equals([]);
   });
 
-  it('CreateReadOnlyWallet', async () => {
+  it('Read Only Wallet', async () => {
     const expected = {
       address: '0x1Bf155ffd327d645358B6279cEf147BB74146431',
       chain: 'Rootstock',
