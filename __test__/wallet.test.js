@@ -28,10 +28,7 @@ describe('Wallet Manager Suite', () => {
     const result = {
       name, mnemonic, symbol, address, type, precision, coinType, path,
     };
-
-    _.map(expected, (value, key) => {
-      expect(result[key]).to.equal(value);
-    });
+    expect(result).that.deep.equals(expected);
 
     // Test renameWallet function
     await walletManager.renameWallet(wallet, 'New Wallet Name');
@@ -55,8 +52,12 @@ describe('Wallet Manager Suite', () => {
       walletType: 'Readonly',
     };
     const wallet = await walletManager.createReadOnlyWallet('Rootstock', 'Mainnet', '0x1Bf155ffd327d645358B6279cEf147BB74146431', [{ symbol: 'RBTC', type: 'Mainnet' }]);
-    _.map(expected, (value, key) => {
-      expect(wallet[key]).to.equal(value);
-    });
+    const {
+      address, chain, id, name, type, walletType,
+    } = wallet;
+    const result = {
+      address, chain, id, name, type, walletType,
+    };
+    expect(result).that.deep.equals(expected);
   });
 });
