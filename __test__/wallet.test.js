@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import _ from 'lodash';
 
 import walletManager from '../src/common/wallet/walletManager';
-import storage from '../src/common/storage';
 
 describe('Wallet Manager Suite', () => {
   it('Normal Wallet', async () => {

@@ -1,6 +1,4 @@
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js';
-import _ from 'lodash';
 import RBTCCoin from '../src/common/wallet/rbtccoin';
 
 const bip39 = require('bip39');

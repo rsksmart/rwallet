@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
 
 import common from '../src/common/common';
 
