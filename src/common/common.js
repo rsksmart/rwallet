@@ -21,7 +21,7 @@ import config from '../../config';
 import I18n from './i18n';
 import { BIOMETRY_TYPES, CustomToken } from './constants';
 import cointype from './wallet/cointype';
-import { InvalidAddressError } from './error';
+import { InvalidAddressError, InvalidParamError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
@@ -61,25 +61,39 @@ const common = {
     return `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
   },
   /**
-   * Transform coin value to wei unit
+   * Transform coin value to wei unit. Throw InvalidParamError If param is not valid.
    * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
    * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
    * @param {*} amount
    * @param {*} precision
    */
   rskCoinToWei(amount, precision = 18) {
+    if (!(amount
+      && (BigNumber.isBigNumber(amount) || _.isNumber(amount) || _.isString(amount)))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
     const precisionInteger = _.floor(Number(precision));
     return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
 
   /**
-   * Transform wei unit value to coin value
+   * Transform wei unit value to coin value. Throw InvalidParamError If param is not valid.
    * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
    * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
    * @param {*} wei
    * @param {*} precision
    */
   weiToCoin(wei, precision = 18) {
+    if (!(wei
+      && (BigNumber.isBigNumber(wei) || _.isNumber(wei) || (_.isString(wei) && wei.startsWith('0x'))))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
     const precisionInteger = _.floor(Number(precision));
     return new BigNumber(wei).div(`1e${precisionInteger}`);
   },

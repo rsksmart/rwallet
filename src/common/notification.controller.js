@@ -44,6 +44,10 @@ export const errorNotifications = {
     title: 'modal.invalidAddress.title',
     body: 'modal.invalidAddress.body',
   },
+  [ERROR_CODE.ERR_INVALID_PARAM]: {
+    title: 'modal.invalidParam.title',
+    body: 'modal.invalidParam.body',
+  },
 };
 
 export const createSuccessNotification = (title, message, buttonText, notificationCloseCallback) => ({
