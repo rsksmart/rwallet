@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   addressLineValue: {
     width: '100%',
     color: color.app.theme,
+    fontSize: 13,
   },
 });
 
