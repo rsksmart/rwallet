@@ -64,6 +64,10 @@ export const errorNotifications = {
     title: 'modal.invitationNotFound.title',
     body: 'modal.invitationNotFound.body',
   },
+  [ERROR_CODE.ERR_INVALID_PARAM]: {
+    title: 'modal.invalidParam.title',
+    body: 'modal.invalidParam.body',
+  },
 };
 
 export const createSuccessNotification = (title, message, buttonText, notificationCloseCallback) => ({

@@ -333,6 +333,11 @@
         "understood": "理解しました",
         "createOrImport": "作成またはインポート",
         "cancel": "取り消す"
+      },
+      "browser": {
+        "errorTitle": "Failed",
+        "errorContent": "不明なエラーが発生しました。しばらくしてからもう一度お試しください",
+        "errorButton": "わかりました"
       }
     },
     "mine": {
@@ -735,6 +740,10 @@
     "invitationCodeCopied": {
       "title": "コピー",
       "body": "招待コードがクリップボードにコピーされました。"
+    },
+    "invalidParam": {
+      "title": "無効なパラメーター",
+      "body": "パラメータが無効です。"
     }
   },
   "currency": {

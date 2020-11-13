@@ -117,6 +117,10 @@ class ParseHelper {
       parseUser.set('deviceId', deviceId);
     }
 
+    if (!_.isEmpty(VersionNumber.appVersion)) {
+      parseUser.set('clientVersion', VersionNumber.appVersion);
+    }
+
     // Only set wallets when it's defined.
     if (_.isArray(wallets)) {
       // 1. Save Address into database if Coin has no objectId

@@ -339,6 +339,11 @@
         "understood": "알았습니다",
         "createOrImport": "생성 또는 불러오기",
         "cancel": "취소"
+      },
+      "browser": {
+        "errorTitle": "실패",
+        "errorContent": "알 수없는 오류가 발생했습니다. 나중에 다시 시도하십시오.",
+        "errorButton": "알겠습니다"
       }
     },
     "mine": {
@@ -735,6 +740,10 @@
     "invitationCodeCopied": {
       "title": "복사 됨",
       "body": "초대 코드가 클립 보드에 복사되었습니다."
+    },
+    "invalidParam": {
+      "title": "잘못된 매개 변수",
+      "body": "매개 변수가 유효하지 않습니다."
     }
   },
   "currency": {

@@ -336,6 +336,11 @@
         "understood": "Entendido",
         "createOrImport": "Crear o importar",
         "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Fallido",
+        "errorContent": "Se produjo un error desconocido. Vuelva a intentarlo más tarde",
+        "errorButton": "Bien"
       }
     },
     "mine": {
@@ -738,6 +743,10 @@
     "invitationCodeCopied": {
       "title": "Copiado",
       "body": "El código de invitación se ha copiado al portapapeles."
+    },
+    "invalidParam": {
+      "title": "Parametro invalido",
+      "body": "El parámetro no es válido."
     }
   },
   "currency": {

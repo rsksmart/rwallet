@@ -336,6 +336,11 @@
         "understood": "Entendi",
         "createOrImport": "Criar ou importar",
         "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Falhou",
+        "errorContent": "Ocorreu um erro desconhecido, por favor tente novamente mais tarde",
+        "errorButton": "Ok"
       }
     },
     "mine": {
@@ -751,6 +756,10 @@
     "invitationCodeCopied": {
       "title": "Copiado",
       "body": "O código do convite foi copiado para a área de transferência."
+    },
+    "invalidParam": {
+      "title": "Parâmetro inválido",
+      "body": "O parâmetro não é válido."
     }
   },
   "currency": {

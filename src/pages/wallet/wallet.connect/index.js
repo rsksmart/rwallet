@@ -32,7 +32,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
-import { ERROR_CODE, InsufficientRbtcError } from '../../../common/error';
+import { InsufficientRbtcError, InvalidAmountError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -522,7 +522,7 @@ class WalletConnectPage extends Component {
 
   popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
     const {
-      peerMeta, txData, chainId, selectedWallet: { address },
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
     const from = Rsk3.utils.toChecksumAddress(address, chainId);
     const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
@@ -533,7 +533,9 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          txData={{ ...txData, from, to }}
+          txData={{
+            ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
+          }}
           txType={contractMethod}
         />
       ),
@@ -541,33 +543,38 @@ class WalletConnectPage extends Component {
   }
 
   popupOperationModal = async () => {
-    const { payload: { method, params } } = this.state;
+    try {
+      const { payload: { method, params } } = this.state;
 
-    switch (method) {
-      case 'personal_sign': {
-        const message = Rsk3.utils.hexToAscii(params[0]);
-        this.popupMessaageModal(message);
-        break;
-      }
+      switch (method) {
+        case 'personal_sign': {
+          const message = Rsk3.utils.hexToAscii(params[0]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_sign': {
-        const message = Rsk3.utils.hexToAscii(params[1]);
-        this.popupMessaageModal(message);
-        break;
-      }
+        case 'eth_sign': {
+          const message = Rsk3.utils.hexToAscii(params[1]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_signTypedData': {
+        case 'eth_signTypedData': {
         // popup sign typed data modal
-        break;
-      }
+          break;
+        }
 
-      case 'eth_sendTransaction': {
-        this.popupTransactionModal();
-        break;
-      }
+        case 'eth_sendTransaction': {
+          await this.popupTransactionModal();
+          break;
+        }
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log('popupOperationModal error: ', error);
+      this.handleError(error);
     }
   }
 
@@ -624,9 +631,23 @@ class WalletConnectPage extends Component {
           await connector.approveRequest({ id, result });
 
           if (inputDecode && inputDecode.method === 'approve') {
-            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
+            this.setState({
+              modalView: (
+                <SuccessModal
+                  title={strings('page.wallet.walletconnect.allowanceApproved')}
+                  description={strings('page.wallet.walletconnect.successDesc')}
+                  cancelPress={this.closeModalPress}
+                />),
+            });
           } else {
-            this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
+            this.setState({
+              modalView: (
+                <SuccessModal
+                  title={strings('page.wallet.walletconnect.transactionApproved')}
+                  description={strings('page.wallet.walletconnect.successDesc')}
+                  cancelPress={this.closeModalPress}
+                />),
+            });
           }
           break;
         }
@@ -645,8 +666,8 @@ class WalletConnectPage extends Component {
     const { connector } = this.state;
     await this.setState({ connector, modalView: null });
 
-    if (error && error.code === ERROR_CODE.NOT_ENOUGH_RBTC) {
-      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), error.message, this.rejectRequest);
+    if (error && error.code) {
+      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), {}, this.rejectRequest);
       addNotification(notification);
     } else {
       this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
@@ -658,23 +679,44 @@ class WalletConnectPage extends Component {
       selectedWallet: { address }, payload: { params }, rsk3,
     } = this.state;
 
-    let { nonce, gasPrice } = params[0];
+    let { nonce, gasPrice, gas } = params[0];
+    const { to, data, value } = params[0];
+    if (_.isNull(value)) {
+      throw new InvalidAmountError();
+    }
     if (!nonce) {
       // Get nonce if params[0].nonce is null
       nonce = await rsk3.getTransactionCount(address.toLowerCase(), 'pending');
     }
     if (!gasPrice) {
       // Get gasPrice if params[0].gasPrice is null
-      gasPrice = await rsk3.getGasPrice();
+      await rsk3.getGasPrice().then((latestGasPrice) => {
+        gasPrice = latestGasPrice;
+      }).catch((err) => {
+        console.log('getGasPrice error: ', err);
+        gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
+      });
+    }
+
+    if (!gas) {
+      await rsk3.estimateGas({
+        to,
+        data,
+      }).then((latestGas) => {
+        gas = latestGas;
+      }).catch((err) => {
+        console.log('estimateGas error: ', err);
+        gas = TRANSACTION.DEFAULT_GAS_LIMIT;
+      });
     }
 
     const txData = {
       nonce,
-      data: params[0].data,
-      gasLimit: params[0].gas || TRANSACTION.DEFAULT_GAS_LIMIT,
+      data,
+      gasLimit: gas,
       gasPrice,
-      to: params[0].to,
-      value: params[0].value || TRANSACTION.DEFAULT_VALUE,
+      to,
+      value,
     };
 
     return txData;
