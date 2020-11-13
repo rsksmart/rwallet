@@ -513,9 +513,7 @@ class DAppBrowser extends Component {
     } = params[0];
     const { to, data } = params[0];
 
-    // if (!value) {
-    //   throw new InvalidAmountError();
-    // }
+    // When value is undefiend, set to default value.
     if (!value) {
       value = TRANSACTION.DEFAULT_VALUE;
     }

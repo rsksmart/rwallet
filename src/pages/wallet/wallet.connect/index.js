@@ -690,6 +690,8 @@ class WalletConnectPage extends Component {
       nonce, gasPrice, gas, value,
     } = params[0];
     const { to, data } = params[0];
+
+    // When value is undefiend, set to default value.
     if (!value) {
       value = TRANSACTION.DEFAULT_VALUE;
     }
