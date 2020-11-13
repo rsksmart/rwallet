@@ -639,6 +639,10 @@
     "convertContractAddress": {
       "title": "Invalid RSK contract address",
       "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "invalidParam": {
+      "title": "Неверный параметр",
+      "body": "Параметр недействителен."
     }
   },
   "currency": {

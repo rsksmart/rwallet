@@ -639,6 +639,10 @@
     "convertContractAddress": {
       "title": "잘못된 RSK 계약 주소",
       "body": "입력 한 계약 주소는 잘못된 RSK 주소입니다. RWallet은 예상 주소 형식으로 자동 수정을 시도합니다. 진행 하시겠습니까?"
+    },
+    "invalidParam": {
+      "title": "잘못된 매개 변수",
+      "body": "매개 변수가 유효하지 않습니다."
     }
   },
   "currency": {
