@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 });
 
 export default function AllowanceModal({
-  dappUrl, cancelPress, asset, fee, confimPress,
+  dappUrl, cancelPress, asset, fee, confirmPress,
 }) {
   return (
     <BaseModal
@@ -54,7 +54,7 @@ export default function AllowanceModal({
           </View>
         </>
       )}
-      confimPress={confimPress}
+      confirmPress={confirmPress}
       cancelPress={cancelPress}
       modalType={MODAL_TYPE.CONFIRMATION}
     />
@@ -63,7 +63,7 @@ export default function AllowanceModal({
 
 AllowanceModal.propTypes = {
   dappUrl: PropTypes.string.isRequired,
-  confimPress: PropTypes.func.isRequired,
+  confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
   asset: PropTypes.string.isRequired,
   fee: PropTypes.string.isRequired,

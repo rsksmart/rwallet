@@ -37,7 +37,7 @@ export default function TransactionModal({
   txData, dappUrl, cancelPress, confirmPress, txType,
 }) {
   const {
-    value, from, to, data, gasLimit, gasPrice,
+    value, from, to, data, gasLimit, gasPrice, symbol,
   } = txData;
   const stringValue = new BigNumber(value).toString();
   const amount = value ? Rsk3.utils.fromWei(stringValue, 'ether') : '0';
@@ -53,7 +53,7 @@ export default function TransactionModal({
         <>
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
-            <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
+            <Text style={styles.lineValue}>{`${amount} ${symbol}`}</Text>
           </View>
 
           {
@@ -98,6 +98,7 @@ TransactionModal.propTypes = {
   txData: PropTypes.shape({
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     data: PropTypes.string,
+    symbol: PropTypes.string,
     from: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
     gasLimit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,

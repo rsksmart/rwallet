@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Rsk3 from '@rsksmart/rsk3';
 
 import ParseHelper from './parse';
 
@@ -14,7 +15,7 @@ const apiHelper = {
     try {
       const parseServer = ParseHelper.getServerUrl();
       const url = `${parseServer}/functions/getAbiByAddress`;
-      const result = await axios.post(url, { address }, { headers, timeout: 5000 });
+      const result = await axios.post(url, { address: Rsk3.utils.toChecksumAddress(address) }, { headers, timeout: 5000 });
       return result.data.result;
     } catch (error) {
       console.log('getAbiByAddress error: ', error);
