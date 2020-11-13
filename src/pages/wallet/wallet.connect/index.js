@@ -522,7 +522,7 @@ class WalletConnectPage extends Component {
 
   popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
     const {
-      peerMeta, txData, chainId, selectedWallet: { address },
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
     const from = Rsk3.utils.toChecksumAddress(address, chainId);
     const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
@@ -533,7 +533,9 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          txData={{ ...txData, from, to }}
+          txData={{
+            ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
+          }}
           txType={contractMethod}
         />
       ),
