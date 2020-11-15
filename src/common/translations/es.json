@@ -642,6 +642,10 @@
     "convertContractAddress": {
       "title": "Dirección de contrato RSK no válida",
       "body": "La dirección del contrato ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "invalidParam": {
+      "title": "Parametro invalido",
+      "body": "El parámetro no es válido."
     }
   },
   "currency": {

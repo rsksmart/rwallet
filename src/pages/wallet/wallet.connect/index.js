@@ -520,7 +520,7 @@ class WalletConnectPage extends Component {
 
   popupNormalTransactionModal = async (inputData, symbol = 'RBTC') => {
     const {
-      peerMeta, txData, chainId, selectedWallet: { address },
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
     const from = Rsk3.utils.toChecksumAddress(address, chainId);
     let to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
@@ -541,7 +541,7 @@ class WalletConnectPage extends Component {
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           txData={{
-            ...txData, value, from, to, symbol,
+            ...txData, value, from, to, symbol, network: isTestnet ? 'Mainnet' : 'Testnet',
           }}
           txType={contractMethod}
         />
