@@ -150,7 +150,7 @@
         "waitingForOperationsDesc": "请从%{dappName} dapp执行任何操作。如果需要，RWallet将提示要求签名批准。",
         "disconnect": "断开连接",
         "approveAllowance": "批准权限",
-        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您转让资产。",
+        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您执行智能合约呼叫。",
         "asset": "资产",
         "permission": "权限",
         "allowance": "Allowance",

@@ -147,7 +147,7 @@
         "waitingForOperationsDesc": "%{dappName} dapp 에서 작업을 수행하십시오. RWallet은 요청시 서명 승인을 요청하는 메시지를 표시합니다.",
         "disconnect": "연결 해제",
         "approveAllowance": "수당 승인",
-        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl} 이 (가) 귀하를 대신하여 토큰을 전송하는 데 동의하는 것입니다.",
+        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl}이 사용자를 대신하여 스마트 계약 호출을 실행하는 데 동의하는 것입니다.",
         "asset": "자산",
         "permission": "Permission",
         "allowance": "허용",

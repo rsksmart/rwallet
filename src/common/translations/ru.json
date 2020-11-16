@@ -147,7 +147,7 @@
         "waitingForOperationsDesc": "Выполните любые операции из dapp %{dappName}. RWallet предложит запросить подтверждение подписи, если потребуется.",
         "disconnect": "Отключить",
         "approveAllowance": "Подтвердить пособие",
-        "approveAllowanceDesc": "Нажимая \"Подтвердить\", вы соглашаетесь разрешить %{dappUrl} передавать токены от вашего имени.",
+        "approveAllowanceDesc": "Нажимая «Подтвердить», вы соглашаетесь разрешить %{dappUrl} выполнять вызовы смарт-контрактов от вашего имени.",
         "asset": "Актив",
         "permission": "Разрешение",
         "allowance": "Allowance",

@@ -150,7 +150,7 @@
         "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar a aprovação da assinatura.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
-        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "approveAllowanceDesc": "Ao clicar em Confirmar, você concorda em permitir que %{dappUrl} execute chamadas de contrato inteligente em seu nome.",
         "asset": "Ativo",
         "permission": "Permissão",
         "allowance": "Autorizar",

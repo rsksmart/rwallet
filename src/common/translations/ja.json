@@ -147,7 +147,7 @@
         "waitingForOperationsDesc": "%{dappName}から操作してください。 RWalletは、要求された場合、署名の承認を求めるプロンプトを表示します。",
         "disconnect": "切断する",
         "approveAllowance": "許可を承認",
-        "approveAllowanceDesc": "[確認]をクリックすると、％{dappUrl}があなたに代わってトークンを転送することを許可することに同意したことになります。",
+        "approveAllowanceDesc": "[確認]をクリックすると、%{dappUrl}があなたに代わってスマートコントラクトコールを実行することを許可することに同意したことになります。",
         "asset": "資産",
         "permission": "許可",
         "allowance": "手当",
