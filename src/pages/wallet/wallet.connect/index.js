@@ -474,9 +474,12 @@ class WalletConnectPage extends Component {
       const input = common.ethereumInputDecoder(abi, inputData);
       await this.setState({ inputDecode: input, symbol });
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal();
+        const { inputs } = input;
+        const unitAmount = new BigNumber(inputs[1].toString());
+        const amount = common.convertUnitToCoinAmount(symbol, unitAmount);
+        this.popupAllowanceModal(amount);
       } else {
-        this.popupNormalTransactionModal(inputData, symbol);
+        this.popupNormalTransactionModal(input, symbol);
       }
     } else {
       console.log('abi is not exsit');
@@ -484,7 +487,7 @@ class WalletConnectPage extends Component {
     }
   }
 
-  popupAllowanceModal = async () => {
+  popupAllowanceModal = async (amount) => {
     const { peerMeta, symbol, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -497,6 +500,7 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
+          amount={amount.toString()}
           asset={symbol}
           fee={fee}
         />
@@ -531,7 +535,7 @@ class WalletConnectPage extends Component {
       const { inputs } = inputData;
       to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
       // eslint-disable-next-line prefer-destructuring
-      value = inputs[2];
+      value = inputs[2].toString();
     }
 
     this.setState({

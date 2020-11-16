@@ -448,7 +448,7 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupAllowanceModal = async (id, txData, symbol) => {
+  popupAllowanceModal = async (id, txData, amount, symbol) => {
     const dappUrl = this.getDappUrl();
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -464,6 +464,7 @@ class DAppBrowser extends Component {
             await this.handleEthSendTransaction(id, txData);
           }}
           cancelPress={() => this.handleReject(id)}
+          amount={amount}
           asset={symbol}
           fee={fee}
         />
@@ -484,7 +485,7 @@ class DAppBrowser extends Component {
       const { inputs } = inputData;
       to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
       // eslint-disable-next-line prefer-destructuring
-      value = inputs[2];
+      value = inputs[2].toString();
     }
 
     this.setState({
@@ -565,9 +566,12 @@ class DAppBrowser extends Component {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(id, txData, symbol);
+        const { inputs } = input;
+        const unitAmount = new BigNumber(inputs[1].toString());
+        const amount = common.convertUnitToCoinAmount(symbol, unitAmount);
+        this.popupAllowanceModal(id, txData, amount, symbol);
       } else {
-        this.popupNormalTransactionModal(id, txData, inputData, symbol);
+        this.popupNormalTransactionModal(id, txData, input, symbol);
       }
     } else {
       console.log('abi is not exsit');

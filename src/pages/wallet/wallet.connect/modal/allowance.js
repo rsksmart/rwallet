@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 });
 
 export default function AllowanceModal({
-  dappUrl, cancelPress, asset, fee, confirmPress,
+  dappUrl, cancelPress, amount, asset, fee, confirmPress,
 }) {
   return (
     <BaseModal
@@ -40,7 +40,11 @@ export default function AllowanceModal({
         <>
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('Asset')}</Text>
-            <Text style={styles.lineValue}>{asset}</Text>
+            <Text style={styles.lineValue}>
+              {amount}
+              {' '}
+              {asset}
+            </Text>
           </View>
 
           <View style={styles.line}>
@@ -65,6 +69,11 @@ AllowanceModal.propTypes = {
   dappUrl: PropTypes.string.isRequired,
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
+  amount: PropTypes.string,
   asset: PropTypes.string.isRequired,
   fee: PropTypes.string.isRequired,
+};
+
+AllowanceModal.defaultProps = {
+  amount: null,
 };
