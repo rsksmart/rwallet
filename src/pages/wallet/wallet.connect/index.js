@@ -172,7 +172,6 @@ class WalletConnectPage extends Component {
       chainId: 30,
       payload: null,
       inputDecode: null,
-      symbol: null,
       selectedWallet: {},
       contentType: null,
       modalView: null,
@@ -472,14 +471,13 @@ class WalletConnectPage extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      await this.setState({ inputDecode: input, symbol });
+      const formatedInput = common.formatInputData(input, symbol);
+      await this.setState({ inputDecode: input });
       if (input && input.method === 'approve') {
-        const { inputs } = input;
-        const unitAmount = new BigNumber(inputs[1].toString());
-        const amount = common.convertUnitToCoinAmount(symbol, unitAmount);
-        this.popupAllowanceModal(amount);
+        this.popupAllowanceModal(formatedInput);
       } else {
-        this.popupNormalTransactionModal(input, symbol);
+        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(contractMethod, formatedInput);
       }
     } else {
       console.log('abi is not exsit');
@@ -487,8 +485,8 @@ class WalletConnectPage extends Component {
     }
   }
 
-  popupAllowanceModal = async (amount) => {
-    const { peerMeta, symbol, txData } = this.state;
+  popupAllowanceModal = async (formatedInput) => {
+    const { peerMeta, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
@@ -500,8 +498,7 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          amount={amount.toString()}
-          asset={symbol}
+          inputData={formatedInput}
           fee={fee}
         />
       ),
@@ -522,29 +519,12 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (inputData, symbol = 'RBTC') => {
+  popupNormalTransactionModal = async (contractMethod, formatedInput) => {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
-    let from = Rsk3.utils.toChecksumAddress(address, chainId);
-    let to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
-    let { value } = txData;
-
-    const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
-    if (contractMethod === 'transfer') {
-      const { inputs } = inputData;
-      // transfer event inputs: [{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
-      to = Rsk3.utils.toChecksumAddress(inputs[0], chainId);
-      // eslint-disable-next-line prefer-destructuring
-      value = inputs[1].toString();
-    } else if (contractMethod === 'transferFrom') {
-      const { inputs } = inputData;
-      // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
-      from = Rsk3.utils.toChecksumAddress(inputs[0], chainId);
-      to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
-      // eslint-disable-next-line prefer-destructuring
-      value = inputs[2].toString();
-    }
+    const from = Rsk3.utils.toChecksumAddress(address, chainId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
 
     this.setState({
       modalView: (
@@ -553,8 +533,9 @@ class WalletConnectPage extends Component {
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           txData={{
-            ...txData, value, from, to, symbol, network: isTestnet ? 'Mainnet' : 'Testnet',
+            ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
           }}
+          formatedInput={formatedInput}
           txType={contractMethod}
         />
       ),
@@ -739,7 +720,7 @@ class WalletConnectPage extends Component {
       nonce,
       data,
       // gas * 1.5 to ensure gas limit is enough
-      gasLimit: gas * 1.5,
+      gasLimit: parseInt(gas * 1.5, 10),
       gasPrice,
       to,
       value,

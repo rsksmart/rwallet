@@ -472,29 +472,12 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (id, txData, inputData, symbol = 'RBTC') => {
+  popupNormalTransactionModal = async (id, txData, contractMethod, formatedInput) => {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    let from = Rsk3.utils.toChecksumAddress(address, networkId);
-    let to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
-    let { value } = txData;
-
-    const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
-    if (contractMethod === 'transfer') {
-      const { inputs } = inputData;
-      // transfer event inputs: [{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
-      to = Rsk3.utils.toChecksumAddress(inputs[0], networkId);
-      // eslint-disable-next-line prefer-destructuring
-      value = inputs[1].toString();
-    } else if (contractMethod === 'transferFrom') {
-      const { inputs } = inputData;
-      // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
-      from = Rsk3.utils.toChecksumAddress(inputs[0], networkId);
-      to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
-      // eslint-disable-next-line prefer-destructuring
-      value = inputs[2].toString();
-    }
+    const from = Rsk3.utils.toChecksumAddress(address, networkId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
 
     this.setState({
       modalView: (
@@ -506,8 +489,9 @@ class DAppBrowser extends Component {
           }}
           cancelPress={() => this.handleReject(id)}
           txData={{
-            ...txData, value, from, to, gasLimit: String(txData.gasLimit), symbol,
+            ...txData, from, to, gasLimit: String(txData.gasLimit),
           }}
+          formatedInput={formatedInput}
           txType={contractMethod}
         />
       ),
@@ -561,7 +545,7 @@ class DAppBrowser extends Component {
       nonce,
       data,
       // gas * 1.5 to ensure gas limit is enough
-      gasLimit: gas * 1.5,
+      gasLimit: parseInt(gas * 1.5, 10),
       gasPrice,
       to,
       value,
@@ -573,13 +557,12 @@ class DAppBrowser extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
+      const formatedInput = common.formatInputData(input, symbol);
       if (input && input.method === 'approve') {
-        const { inputs } = input;
-        const unitAmount = new BigNumber(inputs[1].toString());
-        const amount = common.convertUnitToCoinAmount(symbol, unitAmount);
-        this.popupAllowanceModal(id, txData, amount, symbol);
+        this.popupAllowanceModal(id, txData, formatedInput);
       } else {
-        this.popupNormalTransactionModal(id, txData, input, symbol);
+        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(id, txData, contractMethod, formatedInput);
       }
     } else {
       console.log('abi is not exsit');

@@ -633,6 +633,33 @@ const common = {
     return result;
   },
 
+  UppercaseFirstLetter(letters) {
+    return letters.charAt(0).toUpperCase() + letters.slice(1);
+  },
+
+  formatInputData(inputData, symbol) {
+    if (!inputData) {
+      return null;
+    }
+    const { inputs, names, types } = inputData;
+    const result = {};
+    _.forEach(inputs, (value, index) => {
+      const key = this.UppercaseFirstLetter(names[index]);
+      const type = types[index];
+      if (type === 'address') {
+        result[key] = this.ellipsisAddress(value);
+      } else if (key === 'Value') {
+        const unitAmount = new BigNumber(value.toString());
+        const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
+        result[key] = `${amount} ${symbol}`;
+      } else {
+        result[key] = value;
+      }
+    });
+
+    return result;
+  },
+
   /**
    * Ellipsis a rsk address
    * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'

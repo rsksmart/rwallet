@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
 });
 
 export default function AllowanceModal({
-  dappUrl, cancelPress, amount, asset, fee, confirmPress,
+  dappUrl, cancelPress, inputData, fee, confirmPress,
 }) {
   return (
     <BaseModal
@@ -38,14 +39,16 @@ export default function AllowanceModal({
       description={strings('page.wallet.walletconnect.approveAllowanceDesc', { dappUrl })}
       content={(
         <>
-          <View style={styles.line}>
-            <Text style={styles.lineTitle}>{strings('Asset')}</Text>
-            <Text style={styles.lineValue}>
-              {amount}
-              {' '}
-              {asset}
-            </Text>
-          </View>
+          {
+            _.map(inputData, (value, key) => (
+              <View style={styles.line} key={key}>
+                <Text style={styles.lineTitle}>{strings(key)}</Text>
+                <Text style={styles.lineValue}>
+                  {value}
+                </Text>
+              </View>
+            ))
+          }
 
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.permission')}</Text>
@@ -69,11 +72,10 @@ AllowanceModal.propTypes = {
   dappUrl: PropTypes.string.isRequired,
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
-  amount: PropTypes.string,
-  asset: PropTypes.string.isRequired,
+  inputData: PropTypes.shape({}),
   fee: PropTypes.string.isRequired,
 };
 
 AllowanceModal.defaultProps = {
-  amount: null,
+  inputData: null,
 };

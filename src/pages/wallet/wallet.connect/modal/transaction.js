@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
@@ -54,10 +55,10 @@ export default class TransactionModal extends Component {
 
   render() {
     const {
-      txData, dappUrl, cancelPress, confirmPress, txType,
+      txData, dappUrl, cancelPress, confirmPress, txType, formatedInput,
     } = this.props;
     const {
-      value, from, to, data, gasLimit, gasPrice, symbol,
+      value, from, to, data, gasLimit, gasPrice,
     } = txData;
     const stringValue = new BigNumber(value).toString();
     const amount = value ? Rsk3.utils.fromWei(stringValue, 'ether') : '0';
@@ -71,10 +72,6 @@ export default class TransactionModal extends Component {
         description={strings('page.wallet.walletconnect.approveTransactionDesc', { dappUrl })}
         content={(
           <>
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
-              <Text style={styles.lineValue}>{`${amount} ${symbol}`}</Text>
-            </View>
             {
               txType && (
                 <View style={styles.line}>
@@ -84,17 +81,34 @@ export default class TransactionModal extends Component {
               )
             }
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-              <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
-            </View>
+            {
+              formatedInput ? (
+                _.map(formatedInput, (inputValue, key) => (
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
+                    <Text style={styles.lineValue}>{inputValue}</Text>
+                  </View>
+                ))
+              ) : (
+                <>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
+                    <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
+                  </View>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                  </View>
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
-              <TouchableOpacity style={styles.toAddressLink} onPress={this.onToAddressPressed}>
-                <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
-              </TouchableOpacity>
-            </View>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={this.onToAddressPressed}>
+                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )
+            }
 
             <View style={styles.line}>
               <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
@@ -120,13 +134,13 @@ TransactionModal.propTypes = {
   txData: PropTypes.shape({
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     data: PropTypes.string,
-    symbol: PropTypes.string,
     from: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
     gasLimit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     gasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     network: PropTypes.string,
   }).isRequired,
+  formatedInput: PropTypes.shape({}),
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
   txType: PropTypes.string,
@@ -134,4 +148,5 @@ TransactionModal.propTypes = {
 
 TransactionModal.defaultProps = {
   txType: null,
+  formatedInput: null,
 };
