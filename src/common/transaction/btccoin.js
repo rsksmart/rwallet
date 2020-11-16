@@ -27,26 +27,54 @@ export const getRawTransactionParam = ({
   return param;
 };
 
-export const signTransaction = async (transaction, privateKey) => {
-  const rawTransaction = _.cloneDeep(transaction);
-  const { tx: { addresses } } = rawTransaction;
-  const fromAddress = addresses[0];
-  // The signatures of segwit and legacy addresses are somewhat different
+/**
+ * Create and sign transaction
+ * @param {object} params, { transaction, privateKey, fromAddress, toAddress, amount, netType }
+ * @returns {string} transaction hex
+ */
+export const getSignedTransactionHex = ({
+  transaction, privateKey, fromAddress, toAddress, amount, netType, fees,
+}) => {
+  const { tx: { inputs } } = transaction;
+  const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+
   const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
-  const hashType = isSegwitAddress ? bitcoin.Transaction.SIGHASH_ALL : bitcoin.Transaction.SIGHASH_NONE;
   const buf = Buffer.from(privateKey, 'hex');
-  const keys = bitcoin.ECPair.fromPrivateKey(buf);
-  rawTransaction.pubkeys = [];
-  rawTransaction.signatures = rawTransaction.tosign.map((tosign) => {
-    rawTransaction.pubkeys.push(keys.publicKey.toString('hex'));
-    const signature = keys.sign(Buffer.from(tosign, 'hex'));
-    const encodedSignature = bitcoin.script.signature.encode(signature, hashType);
-    let hexStr = encodedSignature.toString('hex');
-    hexStr = isSegwitAddress ? hexStr : hexStr.substr(0, hexStr.length - 2);
-    return hexStr;
+  const keyPair = bitcoin.ECPair.fromPrivateKey(buf, { network });
+  const txb = new bitcoin.TransactionBuilder(network);
+
+  // Calculate redeem script
+  let redeemScript = null;
+  if (isSegwitAddress) {
+    const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network });
+    const p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network });
+    redeemScript = p2sh.redeem.output;
+  }
+
+  // Add transaction inputs
+  let inputsValue = 0;
+  _.each(inputs, (input) => {
+    txb.addInput(input.prev_hash, input.output_index, null, redeemScript);
+    inputsValue += input.output_value;
   });
-  console.log(`signedTransaction: ${JSON.stringify(rawTransaction)}`);
-  return rawTransaction;
+
+  const value = parseInt(amount, 16);
+  txb.addOutput(toAddress, value);
+  const restValue = inputsValue - value - parseInt(fees, 16);
+  if (restValue > 0) {
+    txb.addOutput(fromAddress, restValue);
+  }
+
+  // sign
+  _.each(inputs, (input, index) => {
+    if (isSegwitAddress) {
+      txb.sign(index, keyPair, null, null, input.output_value);
+    } else {
+      txb.sign(index, keyPair);
+    }
+  });
+
+  return txb.build().toHex();
 };
 
 export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {

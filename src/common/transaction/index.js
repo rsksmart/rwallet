@@ -8,12 +8,6 @@ import * as rbtc from './rbtccoin';
 
 import { ASSETS_CONTRACT } from '../constants';
 
-const createSignedTransaction = async (symbol, rawTransaction, privateKey) => {
-  console.log('Transaction.processSignedTransaction start');
-  const signedTransaction = await symbol === 'BTC' ? btc.signTransaction(rawTransaction, privateKey) : rbtc.signTransaction(rawTransaction, privateKey);
-  return signedTransaction;
-};
-
 const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));
 
 const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
@@ -80,7 +74,19 @@ export default class Transaction {
     if (this.rawTransaction) {
       const { symbol, rawTransaction, privateKey } = this;
       try {
-        result = await createSignedTransaction(symbol, rawTransaction, privateKey);
+        if (symbol === 'BTC') {
+          result = btc.getSignedTransactionHex({
+            transaction: rawTransaction,
+            privateKey,
+            fromAddress: this.sender,
+            toAddress: this.receiver,
+            amount: this.value,
+            netType: this.netType,
+            fees: this.gasFee.fees,
+          });
+        } else {
+          result = await rbtc.signTransaction(rawTransaction, privateKey);
+        }
       } catch (e) {
         console.log('Transaction.signTransaction err: ', e.message);
         throw e;
