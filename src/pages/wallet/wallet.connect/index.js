@@ -526,7 +526,7 @@ class WalletConnectPage extends Component {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
-    const from = Rsk3.utils.toChecksumAddress(address, chainId);
+    let from = Rsk3.utils.toChecksumAddress(address, chainId);
     let to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
     let { value } = txData;
 
@@ -540,6 +540,7 @@ class WalletConnectPage extends Component {
     } else if (contractMethod === 'transferFrom') {
       const { inputs } = inputData;
       // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      from = Rsk3.utils.toChecksumAddress(inputs[0], chainId);
       to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[2].toString();

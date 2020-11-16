@@ -476,7 +476,7 @@ class DAppBrowser extends Component {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const from = Rsk3.utils.toChecksumAddress(address, networkId);
+    let from = Rsk3.utils.toChecksumAddress(address, networkId);
     let to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
     let { value } = txData;
 
@@ -490,6 +490,7 @@ class DAppBrowser extends Component {
     } else if (contractMethod === 'transferFrom') {
       const { inputs } = inputData;
       // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      from = Rsk3.utils.toChecksumAddress(inputs[0], networkId);
       to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[2].toString();
