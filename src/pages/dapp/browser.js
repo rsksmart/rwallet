@@ -483,14 +483,14 @@ class DAppBrowser extends Component {
     const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
     if (contractMethod === 'transfer') {
       const { inputs } = inputData;
-      to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
       // transfer event inputs: [{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      to = Rsk3.utils.toChecksumAddress(inputs[0], networkId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[1].toString();
     } else if (contractMethod === 'transferFrom') {
       const { inputs } = inputData;
-      to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
       // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      to = Rsk3.utils.toChecksumAddress(inputs[1], networkId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[2].toString();
     }

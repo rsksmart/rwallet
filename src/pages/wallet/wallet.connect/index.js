@@ -533,14 +533,14 @@ class WalletConnectPage extends Component {
     const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
     if (contractMethod === 'transfer') {
       const { inputs } = inputData;
-      to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
       // transfer event inputs: [{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      to = Rsk3.utils.toChecksumAddress(inputs[0], chainId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[1].toString();
     } else if (contractMethod === 'transferFrom') {
       const { inputs } = inputData;
-      to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
       // transferFrom event inputs: [{"name": "_from","type": "address"},{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}]
+      to = Rsk3.utils.toChecksumAddress(inputs[1], chainId);
       // eslint-disable-next-line prefer-destructuring
       value = inputs[2].toString();
     }
