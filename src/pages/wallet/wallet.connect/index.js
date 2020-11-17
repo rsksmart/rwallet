@@ -32,7 +32,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
-import { InsufficientRbtcError, InvalidAmountError } from '../../../common/error';
+import { InsufficientRbtcError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -172,7 +172,6 @@ class WalletConnectPage extends Component {
       chainId: 30,
       payload: null,
       inputDecode: null,
-      symbol: null,
       selectedWallet: {},
       contentType: null,
       modalView: null,
@@ -433,7 +432,6 @@ class WalletConnectPage extends Component {
   }
 
   rejectRequest = async () => {
-    console.log('rejectRequest');
     const { connector, payload } = this.state;
     if (connector) {
       connector.rejectRequest({
@@ -473,12 +471,13 @@ class WalletConnectPage extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      await this.setState({ inputDecode: input, symbol });
+      const abiInputData = common.formatContractABIInputData(input, symbol);
+      await this.setState({ inputDecode: input });
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal();
+        this.popupAllowanceModal(abiInputData, toAddress);
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(contractMethod);
+        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');
@@ -486,20 +485,23 @@ class WalletConnectPage extends Component {
     }
   }
 
-  popupAllowanceModal = async () => {
-    const { peerMeta, symbol, txData } = this.state;
+  popupAllowanceModal = async (abiInputData, toAddress) => {
+    const { peerMeta, txData, isTestnet } = this.state;
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
     const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
     const fee = Rsk3.utils.fromWei(feeWei, 'ether');
+    const network = isTestnet ? 'Testnet' : 'Mainnet';
     this.setState({
       modalView: (
         <AllowanceModal
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          asset={symbol}
+          abiInputData={abiInputData}
+          contract={toAddress}
+          network={network}
           fee={fee}
         />
       ),
@@ -520,7 +522,7 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
+  popupNormalTransactionModal = async (contractMethod, abiInputData) => {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
@@ -534,8 +536,9 @@ class WalletConnectPage extends Component {
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           txData={{
-            ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
+            ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
           }}
+          abiInputData={abiInputData}
           txType={contractMethod}
         />
       ),
@@ -679,10 +682,14 @@ class WalletConnectPage extends Component {
       selectedWallet: { address }, payload: { params }, rsk3,
     } = this.state;
 
-    let { nonce, gasPrice, gas } = params[0];
-    const { to, data, value } = params[0];
-    if (_.isNull(value)) {
-      throw new InvalidAmountError();
+    let {
+      nonce, gasPrice, gas, value,
+    } = params[0];
+    const { to, data } = params[0];
+
+    // When value is undefiend, set to default value.
+    if (!value) {
+      value = TRANSACTION.DEFAULT_VALUE;
     }
     if (!nonce) {
       // Get nonce if params[0].nonce is null
@@ -700,8 +707,10 @@ class WalletConnectPage extends Component {
 
     if (!gas) {
       await rsk3.estimateGas({
+        from: address,
         to,
         data,
+        value,
       }).then((latestGas) => {
         gas = latestGas;
       }).catch((err) => {
@@ -713,7 +722,8 @@ class WalletConnectPage extends Component {
     const txData = {
       nonce,
       data,
-      gasLimit: gas,
+      // gas * 1.5 to ensure gas limit is enough
+      gasLimit: parseInt(gas * 1.5, 10),
       gasPrice,
       to,
       value,

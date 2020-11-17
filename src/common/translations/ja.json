@@ -138,6 +138,10 @@
         "agreeOne": "- 現在のウォレットアドレスの取得を許可",
         "agreeTwo": "- 現在のウォレットからの署名リクエストを許可する",
         "assets": "資産名",
+        "Spender": "スペンダ",
+        "Value": "値",
+        "From": "から",
+        "To": "に",
         "advancedOptions": "詳細オプション",
         "reject": "拒否する",
         "allow": "許可する",
@@ -147,7 +151,7 @@
         "waitingForOperationsDesc": "%{dappName}から操作してください。 RWalletは、要求された場合、署名の承認を求めるプロンプトを表示します。",
         "disconnect": "切断する",
         "approveAllowance": "許可を承認",
-        "approveAllowanceDesc": "[確認]をクリックすると、％{dappUrl}があなたに代わってトークンを転送することを許可することに同意したことになります。",
+        "approveAllowanceDesc": "[確認]をクリックすると、%{dappUrl}があなたに代わってスマートコントラクトコールを実行することを許可することに同意したことになります。",
         "asset": "資産",
         "permission": "許可",
         "allowance": "手当",
@@ -176,6 +180,7 @@
         "from": "から",
         "to": "に",
         "data": "データ",
+        "contract": "契約する",
         "networkQuestion": {
           "title": "通信網",
           "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"

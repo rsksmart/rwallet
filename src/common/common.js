@@ -634,6 +634,47 @@ const common = {
   },
 
   /**
+   * Uppercase first letter in letters
+   * For Example, letters = 'onoznxiu123Z'
+   * Return 'Onoznxiu123Z'
+   * @param {*} letters
+   */
+  UppercaseFirstLetter(letters) {
+    return letters.charAt(0).toUpperCase() + letters.slice(1);
+  },
+
+  /**
+   * Format contract abi input data
+   * For Example, inputData = { inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 }
+   * @param {*} inputData
+   * @param {*} symbol
+   */
+  formatContractABIInputData(inputData, symbol) {
+    if (!inputData) {
+      return null;
+    }
+    const { inputs, names, types } = inputData;
+    const result = {};
+    _.forEach(inputs, (value, index) => {
+      const key = this.UppercaseFirstLetter(names[index]);
+      const type = types[index];
+      // To address display the whole address
+      if (type === 'address' && key !== 'To') {
+        result[key] = this.ellipsisAddress(value);
+      } else if (key === 'Value') {
+        const unitAmount = new BigNumber(value.toString());
+        const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
+        result[key] = `${amount} ${symbol}`;
+      } else {
+        result[key] = value;
+      }
+    });
+
+    return result;
+  },
+
+  /**
    * Ellipsis a rsk address
    * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
    * @param {*} address, a rsk address

@@ -150,8 +150,12 @@
         "waitingForOperationsDesc": "Realice cualquier operación desde la dapp %{dappName}. RWallet solicitará la aprobación de la firma, si se solicita.",
         "disconnect": "Desconectar",
         "approveAllowance": "Aprobar asignación",
-        "approveAllowanceDesc": "Al hacer clic en Confirmar, aceptas permitir que %{dappUrl} transfiera tokens en tu nombre.",
+        "approveAllowanceDesc": "Al hacer clic en Confirmar, acepta permitir que %{dappUrl} ejecute llamadas de contrato inteligente en su nombre.",
         "asset": "Activo",
+        "Spender": "Gastador",
+        "Value": "Valor",
+        "From": "Desde",
+        "To": "A",
         "permission": "Permiso",
         "allowance": "Allowance",
         "minerFee": "Tarifa de minero",
@@ -179,6 +183,7 @@
         "from": "Desde",
         "to": "A",
         "data": "Datos",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Red",
           "body": "La testnet es una cadena de bloques RSK alternativa, que se utilizará para realizar pruebas."

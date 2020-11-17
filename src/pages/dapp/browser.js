@@ -19,7 +19,6 @@ import WalletSelection from '../../components/common/modal/wallet.selection.moda
 import { NETWORK, TRANSACTION } from '../../common/constants';
 import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
-import { InvalidAmountError } from '../../common/error';
 import { strings } from '../../common/i18n';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
@@ -449,7 +448,8 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupAllowanceModal = async (id, txData, symbol) => {
+  popupAllowanceModal = async (id, txData, abiInputData, toAddress) => {
+    const { wallet: { network } } = this.state;
     const dappUrl = this.getDappUrl();
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -465,14 +465,16 @@ class DAppBrowser extends Component {
             await this.handleEthSendTransaction(id, txData);
           }}
           cancelPress={() => this.handleReject(id)}
-          asset={symbol}
+          abiInputData={abiInputData}
+          contract={toAddress}
+          network={network}
           fee={fee}
         />
       ),
     });
   }
 
-  popupNormalTransactionModal = async (id, txData, contractMethod = 'Smart Contract Call') => {
+  popupNormalTransactionModal = async (id, txData, contractMethod, abiInputData) => {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
@@ -491,6 +493,7 @@ class DAppBrowser extends Component {
           txData={{
             ...txData, from, to, gasLimit: String(txData.gasLimit), network,
           }}
+          abiInputData={abiInputData}
           txType={contractMethod}
         />
       ),
@@ -500,11 +503,14 @@ class DAppBrowser extends Component {
   popupTransactionModal = async (payload) => {
     const { wallet: { address, network } } = this.state;
     const { id, params } = payload;
-    let { nonce, gasPrice, gas } = params[0];
-    const { to, data, value } = params[0];
+    let {
+      nonce, gasPrice, gas, value,
+    } = params[0];
+    const { to, data } = params[0];
 
-    if (_.isNull(value)) {
-      throw new InvalidAmountError();
+    // When value is undefiend, set to default value.
+    if (!value) {
+      value = TRANSACTION.DEFAULT_VALUE;
     }
 
     // Calculate nonce from blockchain when nonce is null
@@ -525,8 +531,10 @@ class DAppBrowser extends Component {
     // Estimate gas with { to, data } when gas is null
     if (!gas) {
       await this.rsk3.estimateGas({
+        from: address,
         to,
         data,
+        value,
       }).then((latestGas) => {
         gas = latestGas;
       }).catch((err) => {
@@ -538,7 +546,8 @@ class DAppBrowser extends Component {
     const txData = {
       nonce,
       data,
-      gasLimit: gas,
+      // gas * 1.5 to ensure gas limit is enough
+      gasLimit: parseInt(gas * 1.5, 10),
       gasPrice,
       to,
       value,
@@ -550,11 +559,12 @@ class DAppBrowser extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
+      const abiInputData = common.formatContractABIInputData(input, symbol);
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(id, txData, symbol);
+        this.popupAllowanceModal(id, txData, abiInputData, toAddress);
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(id, txData, contractMethod);
+        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');

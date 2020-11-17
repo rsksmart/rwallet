@@ -138,6 +138,10 @@
         "agreeOne": "- 현재 지갑 주소 가져 오기 허용",
         "agreeTwo": "- 현재 지갑에서 서명 요청 허용",
         "assets": "자산",
+        "Spender": "돈 쓰는 사람",
+        "Value": "값",
+        "From": "From",
+        "To": "To",
         "advancedOptions": "고급 옵션",
         "reject": "거부",
         "allow": "허용",
@@ -147,7 +151,7 @@
         "waitingForOperationsDesc": "%{dappName} dapp 에서 작업을 수행하십시오. RWallet은 요청시 서명 승인을 요청하는 메시지를 표시합니다.",
         "disconnect": "연결 해제",
         "approveAllowance": "수당 승인",
-        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl} 이 (가) 귀하를 대신하여 토큰을 전송하는 데 동의하는 것입니다.",
+        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl}이 사용자를 대신하여 스마트 계약 호출을 실행하는 데 동의하는 것입니다.",
         "asset": "자산",
         "permission": "Permission",
         "allowance": "허용",
@@ -176,6 +180,7 @@
         "from": "From",
         "to": "To",
         "data": "데이터",
+        "contract": "계약",
         "networkQuestion": {
           "title": "네트워크",
           "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."

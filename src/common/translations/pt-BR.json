@@ -150,8 +150,12 @@
         "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar aprovação para realizar transações.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
-        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
         "asset": "Ativo",
+        "Spender": "Usuário",
+        "Value": "Valor",
+        "From": "De",
+        "To": "Para",
         "permission": "Permissão",
         "allowance": "Autorizar",
         "minerFee": "Taxa de transação",
@@ -179,6 +183,7 @@
         "from": "De",
         "to": "Para",
         "data": "Dados",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Rede",
           "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
