@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: 36,
+    marginTop: 16,
   },
   lineTitle: {
     color: color.black,
@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     color: color.dustyGray,
     fontSize: 15,
     fontFamily: fontFamily.AvenirBook,
+    width: '60%',
+    textAlign: 'right',
   },
   toAddressLink: {
     width: '60%',

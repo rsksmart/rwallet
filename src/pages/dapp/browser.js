@@ -491,7 +491,7 @@ class DAppBrowser extends Component {
           }}
           cancelPress={() => this.handleReject(id)}
           txData={{
-            ...txData, from, to, gasLimit: String(txData.gasLimit),
+            ...txData, from, to, gasLimit: String(txData.gasLimit), network,
           }}
           abiInputData={abiInputData}
           txType={contractMethod}
