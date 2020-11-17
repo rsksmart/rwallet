@@ -2,13 +2,12 @@ import Parse from 'parse/lib/react-native/Parse';
 import common from '../common';
 import { ERROR_CODE } from '../error';
 import storage from '../storage';
+import parseHelper from '../parse';
 
 import * as btc from './btccoin';
 import * as rbtc from './rbtccoin';
 
 import { ASSETS_CONTRACT } from '../constants';
-
-const createRawTransactionParam = (params) => (params.symbol === 'BTC' ? btc.getRawTransactionParam(params) : rbtc.getRawTransactionParam(params));
 
 const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
   ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
@@ -36,66 +35,40 @@ export default class Transaction {
     this.privateKey = privateKey;
     this.data = data || '';
     this.memo = memo;
-    this.rawTransaction = null;
     this.signedTransaction = null;
     this.txHash = null;
     this.coinswitch = coinswitch;
   }
 
-  async processRawTransaction() {
-    console.log('Transaction.processRawTransaction start');
-    let result = null;
-    const {
-      symbol, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
-    } = this;
-    try {
-      // If the last transaction is time out, createRawTransaction should use the fallback parameter
-      const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(this.sender);
-      const param = createRawTransactionParam({
-        symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
-      });
-      console.log(`Transaction.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
-      if (symbol === 'BTC') {
-        result = await Parse.Cloud.run('createRawTransaction', param);
-      } else {
-        result = await rbtc.createRawTransaction({ ...param, contractAddress });
-      }
-    } catch (e) {
-      console.log('Transaction.processRawTransaction err: ', e.message);
-      throw e;
-    }
-    console.log(`Transaction.processRawTransaction finished, result: ${JSON.stringify(result)}`);
-    this.rawTransaction = result;
-  }
-
   async signTransaction() {
     console.log('Transaction.signTransaction start');
     let result = null;
-    if (this.rawTransaction) {
-      const { symbol, rawTransaction, privateKey } = this;
-      try {
-        if (symbol === 'BTC') {
-          result = btc.getSignedTransactionHex({
-            rawTransaction,
-            privateKey,
-            fromAddress: this.sender,
-            toAddress: this.receiver,
-            amount: this.value,
-            netType: this.netType,
-            fees: this.gasFee.fees,
-          });
-        } else {
-          result = await rbtc.signTransaction(rawTransaction, privateKey);
-        }
-      } catch (e) {
-        console.log('Transaction.signTransaction err: ', e.message);
-        throw e;
+    const {
+      symbol, privateKey, netType, sender,
+    } = this;
+    try {
+      if (symbol === 'BTC') {
+        // Get the past transactions associated with this address as the inputs of the next transaction.
+        const addressInfo = await parseHelper.getAddress(symbol, netType, sender);
+        result = btc.getSignedTransactionHex({
+          addressInfo,
+          privateKey,
+          fromAddress: this.sender,
+          toAddress: this.receiver,
+          amount: this.value,
+          netType: this.netType,
+          fees: this.gasFee.fees,
+        });
+      } else {
+        const rawTransaction = rbtc.processRawTransaction();
+        result = await rbtc.signTransaction(rawTransaction, privateKey);
       }
-      console.log(`Transaction.processRawTransaction finished, result: ${JSON.stringify(result)}`);
-      this.signedTransaction = result;
-    } else {
-      throw new Error('Transaction.signTransaction err: this.rawTransaction is null');
+    } catch (e) {
+      console.log('Transaction.signTransaction err: ', e.message);
+      throw e;
     }
+    console.log(`Transaction.processRawTransaction finished, result: ${JSON.stringify(result)}`);
+    this.signedTransaction = result;
   }
 
   async processSignedTransaction() {
@@ -122,6 +95,14 @@ export default class Transaction {
     console.log(`Transaction.processSignedTransaction finished, result: ${JSON.stringify(result)}`);
     this.txHash = getTxHash(this.symbol, result);
     return result;
+  }
+
+  /**
+   * Broadcast transaction
+   */
+  broadcast = async () => {
+    await this.signTransaction();
+    await this.processSignedTransaction();
   }
 }
 

@@ -3,45 +3,26 @@ import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
 import parseHelper from '../parse';
 import common from '../common';
-
-export const getRawTransactionParam = ({
-  netType, sender, receiver, value, data, memo, gasFee, fallback,
-}) => {
-  const param = {
-    symbol: 'BTC',
-    type: netType,
-    sender,
-    receiver,
-    value,
-    data,
-    fallback,
-  };
-  if (!_.isEmpty(memo)) {
-    param.memo = memo;
-  }
-  if (gasFee.preference) {
-    param.preference = gasFee.preference;
-  } else {
-    param.fees = gasFee.fees;
-  }
-  return param;
-};
+import { InsufficientBtcError } from '../error';
 
 /**
- * Create and sign transaction
- * @param {object} params, { rawTransaction, privateKey, fromAddress, toAddress, amount, netType, fees }
+ * Get signed transaction hex
+ * @param {object} params, { addressInfo, privateKey, fromAddress, toAddress, amount, netType, fees }
  * @returns {string} transaction hex
  */
 export const getSignedTransactionHex = ({
-  rawTransaction, privateKey, fromAddress, toAddress, amount, netType, fees,
+  addressInfo, privateKey, fromAddress, toAddress, amount, netType, fees,
 }) => {
-  const { tx: { inputs } } = rawTransaction;
+  // eslint-disable-next-line camelcase
+  const { txrefs: confirmedTransactions, unconfirmed_txrefs: unconfirmedTransactions } = addressInfo;
   const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
-
   const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
   const buf = Buffer.from(privateKey, 'hex');
   const keyPair = bitcoin.ECPair.fromPrivateKey(buf, { network });
   const txb = new bitcoin.TransactionBuilder(network);
+  const value = parseInt(amount, 16);
+  const feesValue = parseInt(fees, 16);
+  const cost = value + feesValue;
 
   // Calculate redeem script
   let redeemScript = null;
@@ -51,17 +32,40 @@ export const getSignedTransactionHex = ({
     redeemScript = p2sh.redeem.output;
   }
 
-  // Add transaction inputs
+  // merge confirmedTransactions and unconfirmedTransactions to transactions.
+  let transactions = [];
+  if (!_.isEmpty(confirmedTransactions)) {
+    transactions = _.concat(transactions, confirmedTransactions);
+  }
+  if (!_.isEmpty(unconfirmedTransactions)) {
+    transactions = _.concat(transactions, unconfirmedTransactions);
+  }
+
+  // Use past transaction associated with this address as the inputs of the next transaction.
+  // Calculate transaction inputs. Find the output whose sum is not greater than amount.
+  const inputs = [];
   let inputsValue = 0;
-  _.each(inputs, (input) => {
-    txb.addInput(input.prev_hash, input.output_index, null, redeemScript);
-    inputsValue += input.output_value;
+  _.some(transactions, (transaction) => {
+    // Filter transaction with input and spent
+    if (transaction.tx_output_n === -1) {
+      return false;
+    }
+    if (transaction.spent) {
+      return false;
+    }
+    txb.addInput(transaction.tx_hash, transaction.tx_output_n, null, redeemScript);
+    inputs.push(transaction);
+    inputsValue += transaction.value;
+    return inputsValue > cost;
   });
 
+  if (inputsValue < cost) {
+    throw new InsufficientBtcError();
+  }
+
   // Add transaction outputs
-  const value = parseInt(amount, 16);
   txb.addOutput(toAddress, value);
-  const restValue = inputsValue - value - parseInt(fees, 16);
+  const restValue = inputsValue - cost;
   if (restValue > 0) {
     txb.addOutput(fromAddress, restValue);
   }
@@ -69,7 +73,7 @@ export const getSignedTransactionHex = ({
   // Sign
   _.each(inputs, (input, index) => {
     if (isSegwitAddress) {
-      txb.sign(index, keyPair, null, null, input.output_value);
+      txb.sign(index, keyPair, null, null, input.value);
     } else {
       txb.sign(index, keyPair);
     }

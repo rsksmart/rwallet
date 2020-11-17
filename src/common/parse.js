@@ -512,6 +512,15 @@ class ParseHelper {
    * @returns {array} transaction hash array
    */
   static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
+
+  /**
+   * Get Address info
+   * @param {*} symbol
+   * @param {*} type
+   * @param {*} address
+   * @returns {object} address info
+   */
+  static getAddress = async (symbol, type, address) => Parse.Cloud.run('getAddress', { symbol, type, address });
 }
 
 // Create parse helper proxy to add global error handling
