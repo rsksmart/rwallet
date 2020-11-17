@@ -83,20 +83,30 @@ export default class TransactionModal extends Component {
 
             {
               abiInputData ? (
-                _.map(abiInputData, (inputValue, key) => (
+                <>
+                  {
+                    _.map(abiInputData, (inputValue, key) => (
+                      <View style={styles.line}>
+                        <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
+                        {
+                        key === 'To' ? (
+                          <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
+                            <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <Text style={styles.lineValue}>{inputValue}</Text>
+                        )
+                      }
+                      </View>
+                    ))
+                  }
                   <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
-                    {
-                      key === 'To' ? (
-                        <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
-                          <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
-                        </TouchableOpacity>
-                      ) : (
-                        <Text style={styles.lineValue}>{inputValue}</Text>
-                      )
-                    }
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
+                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
+                    </TouchableOpacity>
                   </View>
-                ))
+                </>
               ) : (
                 <>
                   <View style={styles.line}>
@@ -107,7 +117,6 @@ export default class TransactionModal extends Component {
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
                     <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
                   </View>
-
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
                     <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>

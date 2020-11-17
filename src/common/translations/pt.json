@@ -183,6 +183,7 @@
         "from": "De",
         "to": "Para",
         "data": "Dados",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Rede",
           "body": "O testnet é uma cadeia de blocos RSK alternativa, a ser usada para teste."

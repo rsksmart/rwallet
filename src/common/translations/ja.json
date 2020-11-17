@@ -180,6 +180,7 @@
         "from": "から",
         "to": "に",
         "data": "データ",
+        "contract": "契約する",
         "networkQuestion": {
           "title": "通信網",
           "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"

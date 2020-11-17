@@ -448,7 +448,8 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupAllowanceModal = async (id, txData, abiInputData) => {
+  popupAllowanceModal = async (id, txData, abiInputData, toAddress) => {
+    const { wallet: { network } } = this.state;
     const dappUrl = this.getDappUrl();
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -465,6 +466,8 @@ class DAppBrowser extends Component {
           }}
           cancelPress={() => this.handleReject(id)}
           abiInputData={abiInputData}
+          contract={toAddress}
+          network={network}
           fee={fee}
         />
       ),
@@ -558,7 +561,7 @@ class DAppBrowser extends Component {
       const input = common.ethereumInputDecoder(abi, inputData);
       const abiInputData = common.formatContractABIInputData(input, symbol);
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(id, txData, abiInputData);
+        this.popupAllowanceModal(id, txData, abiInputData, toAddress);
       } else {
         const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
         this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);

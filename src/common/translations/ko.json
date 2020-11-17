@@ -180,6 +180,7 @@
         "from": "From",
         "to": "To",
         "data": "데이터",
+        "contract": "계약",
         "networkQuestion": {
           "title": "네트워크",
           "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."

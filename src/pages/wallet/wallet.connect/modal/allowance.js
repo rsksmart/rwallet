@@ -1,5 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import {
+  View, Text, StyleSheet, TouchableOpacity, Linking,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -8,6 +10,7 @@ import BaseModal from './base';
 import color from '../../../../assets/styles/color';
 import fontFamily from '../../../../assets/styles/font.family';
 import { WALLET_CONNECT } from '../../../../common/constants';
+import common from '../../../../common/common';
 
 const { MODAL_TYPE } = WALLET_CONNECT;
 
@@ -28,44 +31,69 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: fontFamily.AvenirBook,
   },
+  toAddressLink: {
+    width: '60%',
+    alignSelf: 'flex-end',
+  },
+  addressLineValue: {
+    width: '100%',
+    color: color.app.theme,
+    fontSize: 13,
+  },
 });
 
-export default function AllowanceModal({
-  dappUrl, cancelPress, abiInputData, fee, confirmPress,
-}) {
-  return (
-    <BaseModal
-      title={strings('page.wallet.walletconnect.approveAllowance')}
-      description={strings('page.wallet.walletconnect.approveAllowanceDesc', { dappUrl })}
-      content={(
-        <>
-          {
-            _.map(abiInputData, (value, key) => (
-              <View style={styles.line} key={key}>
-                <Text style={styles.lineTitle}>{strings(key)}</Text>
-                <Text style={styles.lineValue}>
-                  {value}
-                </Text>
-              </View>
-            ))
-          }
+export default class AllowanceModal extends Component {
+  onToAddressPressed = () => {
+    const { network, contract } = this.props;
+    const url = common.getAddressUrl(network, contract);
+    Linking.openURL(url);
+  }
 
-          <View style={styles.line}>
-            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.permission')}</Text>
-            <Text style={styles.lineValue}>{strings('page.wallet.walletconnect.allowance')}</Text>
-          </View>
+  render() {
+    const {
+      dappUrl, cancelPress, abiInputData, fee, confirmPress, contract,
+    } = this.props;
+    return (
+      <BaseModal
+        title={strings('page.wallet.walletconnect.approveAllowance')}
+        description={strings('page.wallet.walletconnect.approveAllowanceDesc', { dappUrl })}
+        content={(
+          <>
+            {
+              _.map(abiInputData, (value, key) => (
+                <View style={styles.line} key={key}>
+                  <Text style={styles.lineTitle}>{strings(key)}</Text>
+                  <Text style={styles.lineValue}>
+                    {value}
+                  </Text>
+                </View>
+              ))
+            }
 
-          <View style={styles.line}>
-            <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
-            <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
-          </View>
-        </>
-      )}
-      confirmPress={confirmPress}
-      cancelPress={cancelPress}
-      modalType={MODAL_TYPE.CONFIRMATION}
-    />
-  );
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
+              <TouchableOpacity style={styles.toAddressLink} onPress={this.onToAddressPressed}>
+                <Text style={[styles.lineValue, styles.addressLineValue]}>{contract}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.permission')}</Text>
+              <Text style={styles.lineValue}>{strings('page.wallet.walletconnect.allowance')}</Text>
+            </View>
+
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
+              <Text style={styles.lineValue}>{`${fee} RBTC`}</Text>
+            </View>
+          </>
+        )}
+        confirmPress={confirmPress}
+        cancelPress={cancelPress}
+        modalType={MODAL_TYPE.CONFIRMATION}
+      />
+    );
+  }
 }
 
 AllowanceModal.propTypes = {
@@ -74,6 +102,8 @@ AllowanceModal.propTypes = {
   cancelPress: PropTypes.func.isRequired,
   abiInputData: PropTypes.shape({}),
   fee: PropTypes.string.isRequired,
+  contract: PropTypes.string.isRequired,
+  network: PropTypes.string.isRequired,
 };
 
 AllowanceModal.defaultProps = {

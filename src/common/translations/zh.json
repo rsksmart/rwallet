@@ -183,6 +183,7 @@
         "from": "从",
         "to": "到",
         "data": "数据",
+        "contract": "合约",
         "networkQuestion": {
           "title": "网络",
           "body": "测试网是用于测试的备用RSK区块链。"

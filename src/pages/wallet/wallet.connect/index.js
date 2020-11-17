@@ -474,7 +474,7 @@ class WalletConnectPage extends Component {
       const abiInputData = common.formatContractABIInputData(input, symbol);
       await this.setState({ inputDecode: input });
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(abiInputData);
+        this.popupAllowanceModal(abiInputData, toAddress);
       } else {
         const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
         this.popupNormalTransactionModal(contractMethod, abiInputData);
@@ -485,13 +485,14 @@ class WalletConnectPage extends Component {
     }
   }
 
-  popupAllowanceModal = async (abiInputData) => {
-    const { peerMeta, txData } = this.state;
+  popupAllowanceModal = async (abiInputData, toAddress) => {
+    const { peerMeta, txData, isTestnet } = this.state;
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
     const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
     const fee = Rsk3.utils.fromWei(feeWei, 'ether');
+    const network = isTestnet ? 'Testnet' : 'Mainnet';
     this.setState({
       modalView: (
         <AllowanceModal
@@ -499,6 +500,8 @@ class WalletConnectPage extends Component {
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           abiInputData={abiInputData}
+          contract={toAddress}
+          network={network}
           fee={fee}
         />
       ),
@@ -533,7 +536,7 @@ class WalletConnectPage extends Component {
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
           txData={{
-            ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
+            ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
           }}
           abiInputData={abiInputData}
           txType={contractMethod}

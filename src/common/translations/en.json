@@ -180,6 +180,7 @@
         "from": "From",
         "to": "To",
         "data": "Data",
+        "contract": "Contract",
         "networkQuestion": {
           "title": "Network",
           "body": "The testnet is an alternative RSK block chain, to be used for testing."
