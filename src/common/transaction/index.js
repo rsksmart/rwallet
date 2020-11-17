@@ -44,7 +44,7 @@ export default class Transaction {
     console.log('Transaction.signTransaction start');
     let result = null;
     const {
-      symbol, privateKey, netType, sender,
+      symbol, privateKey, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
     } = this;
     try {
       if (symbol === 'BTC') {
@@ -53,14 +53,16 @@ export default class Transaction {
         result = btc.getSignedTransactionHex({
           addressInfo,
           privateKey,
-          fromAddress: this.sender,
-          toAddress: this.receiver,
-          amount: this.value,
-          netType: this.netType,
-          fees: this.gasFee.fees,
+          fromAddress: sender,
+          toAddress: receiver,
+          amount: value,
+          netType,
+          fees: gasFee.fees,
         });
       } else {
-        const rawTransaction = rbtc.processRawTransaction();
+        const rawTransaction = await rbtc.processRawTransaction({
+          symbol, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
+        });
         result = await rbtc.signTransaction(rawTransaction, privateKey);
       }
     } catch (e) {
