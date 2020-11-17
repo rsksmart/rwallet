@@ -152,7 +152,7 @@
         "approveAllowance": "Autorizar",
         "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
         "asset": "Ativo",
-        "Spender": "Gastador",
+        "Spender": "Usuário",
         "Value": "Valor",
         "From": "De",
         "To": "Para",
