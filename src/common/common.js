@@ -633,10 +633,23 @@ const common = {
     return result;
   },
 
+  /**
+   * Uppercase first letter in letters
+   * For Example, letters = 'onoznxiu123Z'
+   * Return 'Onoznxiu123Z'
+   * @param {*} letters
+   */
   UppercaseFirstLetter(letters) {
     return letters.charAt(0).toUpperCase() + letters.slice(1);
   },
 
+  /**
+   * Format input data
+   * For Example, inputData = { inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 }
+   * @param {*} inputData
+   * @param {*} symbol
+   */
   formatInputData(inputData, symbol) {
     if (!inputData) {
       return null;
