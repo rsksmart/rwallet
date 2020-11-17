@@ -29,13 +29,13 @@ export const getRawTransactionParam = ({
 
 /**
  * Create and sign transaction
- * @param {object} params, { transaction, privateKey, fromAddress, toAddress, amount, netType }
+ * @param {object} params, { rawTransaction, privateKey, fromAddress, toAddress, amount, netType, fees }
  * @returns {string} transaction hex
  */
 export const getSignedTransactionHex = ({
-  transaction, privateKey, fromAddress, toAddress, amount, netType, fees,
+  rawTransaction, privateKey, fromAddress, toAddress, amount, netType, fees,
 }) => {
-  const { tx: { inputs } } = transaction;
+  const { tx: { inputs } } = rawTransaction;
   const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
 
   const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
@@ -58,6 +58,7 @@ export const getSignedTransactionHex = ({
     inputsValue += input.output_value;
   });
 
+  // Add transaction outputs
   const value = parseInt(amount, 16);
   txb.addOutput(toAddress, value);
   const restValue = inputsValue - value - parseInt(fees, 16);
@@ -65,7 +66,7 @@ export const getSignedTransactionHex = ({
     txb.addOutput(fromAddress, restValue);
   }
 
-  // sign
+  // Sign
   _.each(inputs, (input, index) => {
     if (isSegwitAddress) {
       txb.sign(index, keyPair, null, null, input.output_value);
@@ -74,6 +75,7 @@ export const getSignedTransactionHex = ({
     }
   });
 
+  // Build transaction and return hex
   return txb.build().toHex();
 };
 

@@ -76,7 +76,7 @@ export default class Transaction {
       try {
         if (symbol === 'BTC') {
           result = btc.getSignedTransactionHex({
-            transaction: rawTransaction,
+            rawTransaction,
             privateKey,
             fromAddress: this.sender,
             toAddress: this.receiver,
