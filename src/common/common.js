@@ -644,13 +644,13 @@ const common = {
   },
 
   /**
-   * Format input data
+   * Format contract abi input data
    * For Example, inputData = { inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
    * returns { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 }
    * @param {*} inputData
    * @param {*} symbol
    */
-  formatInputData(inputData, symbol) {
+  formatContractABIInputData(inputData, symbol) {
     if (!inputData) {
       return null;
     }
@@ -659,7 +659,8 @@ const common = {
     _.forEach(inputs, (value, index) => {
       const key = this.UppercaseFirstLetter(names[index]);
       const type = types[index];
-      if (type === 'address') {
+      // To address display the whole address
+      if (type === 'address' && key !== 'To') {
         result[key] = this.ellipsisAddress(value);
       } else if (key === 'Value') {
         const unitAmount = new BigNumber(value.toString());

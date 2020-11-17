@@ -471,13 +471,13 @@ class WalletConnectPage extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      const formatedInput = common.formatInputData(input, symbol);
+      const abiInputData = common.formatContractABIInputData(input, symbol);
       await this.setState({ inputDecode: input });
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(formatedInput);
+        this.popupAllowanceModal(abiInputData);
       } else {
         const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(contractMethod, formatedInput);
+        this.popupNormalTransactionModal(contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');
@@ -485,7 +485,7 @@ class WalletConnectPage extends Component {
     }
   }
 
-  popupAllowanceModal = async (formatedInput) => {
+  popupAllowanceModal = async (abiInputData) => {
     const { peerMeta, txData } = this.state;
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -498,7 +498,7 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          inputData={formatedInput}
+          abiInputData={abiInputData}
           fee={fee}
         />
       ),
@@ -519,7 +519,7 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (contractMethod, formatedInput) => {
+  popupNormalTransactionModal = async (contractMethod, abiInputData) => {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
@@ -535,7 +535,7 @@ class WalletConnectPage extends Component {
           txData={{
             ...txData, from, to, network: isTestnet ? 'Mainnet' : 'Testnet',
           }}
-          formatedInput={formatedInput}
+          abiInputData={abiInputData}
           txType={contractMethod}
         />
       ),

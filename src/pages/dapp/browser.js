@@ -448,7 +448,7 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupAllowanceModal = async (id, txData, amount, symbol) => {
+  popupAllowanceModal = async (id, txData, abiInputData) => {
     const dappUrl = this.getDappUrl();
     const { gasLimit, gasPrice } = txData;
     const gasLimitNumber = new BigNumber(gasLimit);
@@ -464,15 +464,14 @@ class DAppBrowser extends Component {
             await this.handleEthSendTransaction(id, txData);
           }}
           cancelPress={() => this.handleReject(id)}
-          amount={amount}
-          asset={symbol}
+          abiInputData={abiInputData}
           fee={fee}
         />
       ),
     });
   }
 
-  popupNormalTransactionModal = async (id, txData, contractMethod, formatedInput) => {
+  popupNormalTransactionModal = async (id, txData, contractMethod, abiInputData) => {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
@@ -491,7 +490,7 @@ class DAppBrowser extends Component {
           txData={{
             ...txData, from, to, gasLimit: String(txData.gasLimit),
           }}
-          formatedInput={formatedInput}
+          abiInputData={abiInputData}
           txType={contractMethod}
         />
       ),
@@ -557,12 +556,12 @@ class DAppBrowser extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
-      const formatedInput = common.formatInputData(input, symbol);
+      const abiInputData = common.formatContractABIInputData(input, symbol);
       if (input && input.method === 'approve') {
-        this.popupAllowanceModal(id, txData, formatedInput);
+        this.popupAllowanceModal(id, txData, abiInputData);
       } else {
         const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(id, txData, contractMethod, formatedInput);
+        this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');

@@ -46,16 +46,16 @@ const styles = StyleSheet.create({
 });
 
 export default class TransactionModal extends Component {
-  onToAddressPressed = () => {
+  onToAddressPressed = (toAddress) => {
     const { txData } = this.props;
-    const { network, to } = txData;
-    const url = common.getAddressUrl(network, to);
+    const { network } = txData;
+    const url = common.getAddressUrl(network, toAddress);
     Linking.openURL(url);
   }
 
   render() {
     const {
-      txData, dappUrl, cancelPress, confirmPress, txType, formatedInput,
+      txData, dappUrl, cancelPress, confirmPress, txType, abiInputData,
     } = this.props;
     const {
       value, from, to, data, gasLimit, gasPrice,
@@ -82,11 +82,19 @@ export default class TransactionModal extends Component {
             }
 
             {
-              formatedInput ? (
-                _.map(formatedInput, (inputValue, key) => (
+              abiInputData ? (
+                _.map(abiInputData, (inputValue, key) => (
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
-                    <Text style={styles.lineValue}>{inputValue}</Text>
+                    {
+                      key === 'To' ? (
+                        <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
+                          <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <Text style={styles.lineValue}>{inputValue}</Text>
+                      )
+                    }
                   </View>
                 ))
               ) : (
@@ -102,7 +110,7 @@ export default class TransactionModal extends Component {
 
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
-                    <TouchableOpacity style={styles.toAddressLink} onPress={this.onToAddressPressed}>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
                       <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
                     </TouchableOpacity>
                   </View>
@@ -140,7 +148,7 @@ TransactionModal.propTypes = {
     gasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     network: PropTypes.string,
   }).isRequired,
-  formatedInput: PropTypes.shape({}),
+  abiInputData: PropTypes.shape({}),
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
   txType: PropTypes.string,
@@ -148,5 +156,5 @@ TransactionModal.propTypes = {
 
 TransactionModal.defaultProps = {
   txType: null,
-  formatedInput: null,
+  abiInputData: null,
 };
