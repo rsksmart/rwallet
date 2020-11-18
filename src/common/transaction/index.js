@@ -77,7 +77,7 @@ export default class Transaction {
       console.log('Transaction.processTransaction err: ', e.message);
       throw e;
     }
-    console.log(`Transaction.processTransaction finished, result: ${JSON.stringify(result)}`);
+    console.log('Transaction.processTransaction finished, result: ', result);
     this.signedTransaction = result;
   }
 
