@@ -2,7 +2,6 @@ import Parse from 'parse/lib/react-native/Parse';
 import common from '../common';
 import { ERROR_CODE } from '../error';
 import storage from '../storage';
-import parseHelper from '../parse';
 
 import * as btc from './btccoin';
 import * as rbtc from './rbtccoin';
@@ -18,7 +17,7 @@ const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResu
 export default class Transaction {
   constructor(coin, receiver, value, extraParams) {
     const {
-      symbol, type, privateKey, address, contractAddress, precision,
+      symbol, type, privateKey, address, contractAddress, precision, addressType, publicKey,
     } = coin;
     const {
       data, memo, gasFee, coinswitch,
@@ -38,26 +37,35 @@ export default class Transaction {
     this.signedTransaction = null;
     this.txHash = null;
     this.coinswitch = coinswitch;
+    this.addressType = addressType;
+    this.publicKey = publicKey;
   }
 
-  async signTransaction() {
-    console.log('Transaction.signTransaction start');
+  async processTransaction() {
+    console.log('Transaction.processTransaction start');
     let result = null;
     const {
-      symbol, privateKey, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
+      symbol, privateKey, netType, sender, receiver, value, data, memo, gasFee, contractAddress, addressType, publicKey,
     } = this;
     try {
       if (symbol === 'BTC') {
-        // Get the past transactions associated with this address as the inputs of the next transaction.
-        const addressInfo = await parseHelper.getAddress(symbol, netType, sender);
-        result = btc.getSignedTransactionHex({
-          addressInfo,
-          privateKey,
+        const amount = parseInt(value, 16);
+        const fees = parseInt(gasFee.fees, 16);
+        const inputs = await btc.getTransactionInputs({
+          symbol, netType, sender, amount, fees,
+        });
+        const transactionBuilder = btc.buildTransaction({
+          inputs,
           fromAddress: sender,
+          addressType,
           toAddress: receiver,
-          amount: value,
+          amount,
           netType,
-          fees: gasFee.fees,
+          fees,
+          publicKey,
+        });
+        result = btc.signTransaction({
+          transactionBuilder, inputs, privateKey, netType, addressType,
         });
       } else {
         const rawTransaction = await rbtc.processRawTransaction({
@@ -66,25 +74,25 @@ export default class Transaction {
         result = await rbtc.signTransaction(rawTransaction, privateKey);
       }
     } catch (e) {
-      console.log('Transaction.signTransaction err: ', e.message);
+      console.log('Transaction.processTransaction err: ', e.message);
       throw e;
     }
-    console.log(`Transaction.processRawTransaction finished, result: ${JSON.stringify(result)}`);
+    console.log(`Transaction.processTransaction finished, result: ${JSON.stringify(result)}`);
     this.signedTransaction = result;
   }
 
-  async processSignedTransaction() {
-    console.log('Transaction.processSignedTransaction start');
+  async sendSignedTransaction() {
+    console.log('Transaction.sendSignedTransaction start');
     let result = null;
     if (this.signedTransaction) {
       try {
         const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
-        console.log(`processSignedTransaction, param: ${JSON.stringify(param)}`);
+        console.log(`sendSignedTransaction, param: ${JSON.stringify(param)}`);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
         // If the transaction uses the fallback parameter and is sent successfully, you need to delete this address in the list
         await storage.removeUseTransactionFallbackAddress(this.sender);
       } catch (e) {
-        console.log('Transaction.processSignedTransaction err: ', e.message);
+        console.log('Transaction.sendSignedTransaction err: ', e.message);
         if (e.code === ERROR_CODE.ERR_REQUEST_TIMEOUT) {
           // If it times out, record the address of the transaction so that the fallback parameter can be used in the next transaction
           await storage.addUseTransactionFallbackAddress(this.sender);
@@ -92,9 +100,9 @@ export default class Transaction {
         throw e;
       }
     } else {
-      throw new Error('Transaction.processSignedTransaction err: this.signedTransaction is null');
+      throw new Error('Transaction.sendSignedTransaction err: this.signedTransaction is null');
     }
-    console.log(`Transaction.processSignedTransaction finished, result: ${JSON.stringify(result)}`);
+    console.log(`Transaction.sendSignedTransaction finished, result: ${JSON.stringify(result)}`);
     this.txHash = getTxHash(this.symbol, result);
     return result;
   }
@@ -103,8 +111,8 @@ export default class Transaction {
    * Broadcast transaction
    */
   broadcast = async () => {
-    await this.signTransaction();
-    await this.processSignedTransaction();
+    await this.processTransaction();
+    await this.sendSignedTransaction();
   }
 }
 
