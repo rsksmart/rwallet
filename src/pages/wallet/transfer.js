@@ -917,9 +917,7 @@ class Transfer extends Component {
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
       let transaction = new Transaction(coin, toAddress, amount, extraParams);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      await transaction.processSignedTransaction();
+      await transaction.broadcast();
       this.setState({ loading: false });
       const completedParams = {
         coin,

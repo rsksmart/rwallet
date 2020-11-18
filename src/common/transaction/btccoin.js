@@ -3,50 +3,111 @@ import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
 import parseHelper from '../parse';
 import common from '../common';
+import { InsufficientBtcError } from '../error';
+import { BtcAddressType } from '../constants';
 
-export const getRawTransactionParam = ({
-  netType, sender, receiver, value, data, memo, gasFee, fallback,
+/**
+ * Get transaction inputs
+ * @param {object} params, { symbol, netType, sender, amount, fees }
+ * @returns {array} transaction inputs
+ */
+export const getTransactionInputs = async ({
+  symbol, netType, sender, amount, fees,
 }) => {
-  const param = {
-    symbol: 'BTC',
-    type: netType,
-    sender,
-    receiver,
-    value,
-    data,
-    fallback,
-  };
-  if (!_.isEmpty(memo)) {
-    param.memo = memo;
+  const cost = amount + fees;
+  // Get the past transactions associated with this address as the inputs of the next transaction.
+  const addressInfo = await parseHelper.getAddress(symbol, netType, sender);
+  const { txrefs: confirmedTransactions, unconfirmed_txrefs: unconfirmedTransactions } = addressInfo;
+  // merge confirmedTransactions and unconfirmedTransactions to transactions.
+  let transactions = [];
+  if (!_.isEmpty(confirmedTransactions)) {
+    transactions = _.concat(transactions, confirmedTransactions);
   }
-  if (gasFee.preference) {
-    param.preference = gasFee.preference;
-  } else {
-    param.fees = gasFee.fees;
+  if (!_.isEmpty(unconfirmedTransactions)) {
+    transactions = _.concat(transactions, unconfirmedTransactions);
   }
-  return param;
+
+  // Use past transaction associated with this address as the inputs of the next transaction.
+  // Calculate transaction inputs. Find the output whose sum is not greater than amount.
+  const inputs = [];
+  let inputsValue = 0;
+  _.each(transactions, (transaction) => {
+    // Filter transaction with input and spent
+    if (transaction.tx_output_n === -1 || transaction.spent) {
+      return true;
+    }
+    inputs.push(transaction);
+    inputsValue += transaction.value;
+    return inputsValue < cost;
+  });
+
+  if (inputsValue < cost) {
+    throw new InsufficientBtcError();
+  }
+
+  return inputs;
 };
 
-export const signTransaction = async (transaction, privateKey) => {
-  const rawTransaction = _.cloneDeep(transaction);
-  const { tx: { addresses } } = rawTransaction;
-  const fromAddress = addresses[0];
-  // The signatures of segwit and legacy addresses are somewhat different
-  const isSegwitAddress = _.startsWith(fromAddress, 'bc') || _.startsWith(fromAddress, 'tb');
-  const hashType = isSegwitAddress ? bitcoin.Transaction.SIGHASH_ALL : bitcoin.Transaction.SIGHASH_NONE;
+/**
+ * Build transaction
+ * @param {object} params, { inputs, fromAddress, addressType, toAddress, amount, netType, fees, publicKey }
+ * @returns {object} Transaction builder
+ */
+export const buildTransaction = ({
+  inputs, fromAddress, addressType, toAddress, amount, netType, fees, publicKey,
+}) => {
+  const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+  const txb = new bitcoin.TransactionBuilder(network);
+  const value = parseInt(amount, 16);
+  const feesValue = parseInt(fees, 16);
+  const cost = value + feesValue;
+
+  // Calculate redeem script
+  let redeemScript = null;
+  if (addressType === BtcAddressType.segwit) {
+    const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: publicKey, network });
+    const p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network });
+    redeemScript = p2sh.redeem.output;
+  }
+
+  const inputsValue = _.reduce(inputs, (sum, input) => {
+    txb.addInput(input.tx_hash, input.tx_output_n, null, redeemScript);
+    return sum + input.value;
+  }, 0);
+
+  // Add transaction outputs
+  txb.addOutput(toAddress, value);
+  const restValue = inputsValue - cost;
+  if (restValue > 0) {
+    txb.addOutput(fromAddress, restValue);
+  }
+
+  return txb;
+};
+
+/**
+ * Get signed transaction hex
+ * @param {object} params, { transactionBuilder, inputs, privateKey, netType, addressType }
+ * @returns {string} transaction hex
+ */
+export const signTransaction = ({
+  transactionBuilder, inputs, privateKey, netType, addressType,
+}) => {
+  const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
   const buf = Buffer.from(privateKey, 'hex');
-  const keys = bitcoin.ECPair.fromPrivateKey(buf);
-  rawTransaction.pubkeys = [];
-  rawTransaction.signatures = rawTransaction.tosign.map((tosign) => {
-    rawTransaction.pubkeys.push(keys.publicKey.toString('hex'));
-    const signature = keys.sign(Buffer.from(tosign, 'hex'));
-    const encodedSignature = bitcoin.script.signature.encode(signature, hashType);
-    let hexStr = encodedSignature.toString('hex');
-    hexStr = isSegwitAddress ? hexStr : hexStr.substr(0, hexStr.length - 2);
-    return hexStr;
+  const keyPair = bitcoin.ECPair.fromPrivateKey(buf, { network });
+
+  // Sign
+  _.each(inputs, (input, index) => {
+    if (addressType === BtcAddressType.segwit) {
+      transactionBuilder.sign(index, keyPair, null, null, input.value);
+    } else {
+      transactionBuilder.sign(index, keyPair);
+    }
   });
-  console.log(`signedTransaction: ${JSON.stringify(rawTransaction)}`);
-  return rawTransaction;
+
+  // Build transaction and return hex
+  return transactionBuilder.build().toHex();
 };
 
 export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {

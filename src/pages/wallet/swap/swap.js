@@ -458,9 +458,7 @@ class Swap extends Component {
       };
       let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       console.log('transaction: ', transaction);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      await transaction.processSignedTransaction();
+      await transaction.broadcast();
       this.setState({ isLoading: false });
       const completedParams = {
         symbol: swapSource.coin.symbol,
