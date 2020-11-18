@@ -653,7 +653,7 @@ class Transfer extends Component {
       if (!isValid) {
         return;
       }
-
+      this.setState({ loading: true });
       this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
@@ -669,6 +669,8 @@ class Transfer extends Component {
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
+    } finally {
+      this.setState({ loading: false });
     }
   }
 
@@ -684,12 +686,7 @@ class Transfer extends Component {
       privateKey,
       isSendAllBalance,
     };
-    try {
-      this.setState({ loading: true });
-      return await btcTransaction.estimateTxSize(estimateParams);
-    } finally {
-      this.setState({ loading: false });
-    }
+    return btcTransaction.estimateTxSize(estimateParams);
   }
 
   confirmTransactionWithAddress = () => {
@@ -749,20 +746,15 @@ class Transfer extends Component {
       return null;
     }
 
-    try {
-      this.setState({ loading: true });
-      const transactionFees = symbol === 'BTC'
-        ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-        : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
-      console.log('transactionFees: ', transactionFees);
-      this.txFeesCache = {
-        amount, toAddress, memo, transactionFees,
-      };
-      this.setState({ enableConfirm: true });
-      return transactionFees;
-    } finally {
-      this.setState({ loading: false });
-    }
+    const transactionFees = symbol === 'BTC'
+      ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
+      : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
+    console.log('transactionFees: ', transactionFees);
+    this.txFeesCache = {
+      amount, toAddress, memo, transactionFees,
+    };
+    this.setState({ enableConfirm: true });
+    return transactionFees;
   }
 
   calcCustomFee(value) {
