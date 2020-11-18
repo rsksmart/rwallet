@@ -38,7 +38,7 @@ export const getTransactionInputs = async ({
     }
     inputs.push(transaction);
     inputsValue += transaction.value;
-    return inputsValue > cost;
+    return inputsValue <= cost;
   });
 
   if (inputsValue < cost) {
