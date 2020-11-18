@@ -264,8 +264,10 @@ class DAppBrowser extends Component {
               const {method, params, jsonrpc, id} = payload;
               console.log('payload: ', payload);
               try {
-                if (method === 'net_version' || method === 'eth_chainId') {
+                if (method === 'net_version') {
                   result = '${this.networkVersion}';
+                } else if (method === 'eth_chainId') {
+                  result = web3.utils.toHex(${this.networkVersion});
                 } else if (method === 'eth_requestAccounts' || method === 'eth_accounts' || payload === 'eth_accounts') {
                   result = ['${address}'];
                 } else {
