@@ -8,16 +8,16 @@ import { BtcAddressType } from '../constants';
 
 /**
  * Get transaction inputs
- * @param {object} params, { symbol, netType, sender, amount, fees }
+ * @param {object} params, { symbol, netType, sender, cost }
  * @returns {array} transaction inputs
  */
 export const getTransactionInputs = async ({
-  symbol, netType, sender, amount, fees,
+  symbol, netType, sender, cost,
 }) => {
-  const cost = amount + fees;
   // Get the past transactions associated with this address as the inputs of the next transaction.
   const addressInfo = await parseHelper.getAddress(symbol, netType, sender);
   const { txrefs: confirmedTransactions, unconfirmed_txrefs: unconfirmedTransactions } = addressInfo;
+
   // merge confirmedTransactions and unconfirmedTransactions to transactions.
   let transactions = [];
   if (!_.isEmpty(confirmedTransactions)) {
@@ -28,7 +28,7 @@ export const getTransactionInputs = async ({
   }
 
   // Use past transaction associated with this address as the inputs of the next transaction.
-  // Calculate transaction inputs. Find the output whose sum is not greater than amount.
+  // Calculate transaction inputs. Find the output whose sum is not greater than cost.
   const inputs = [];
   let inputsValue = 0;
   _.each(transactions, (transaction) => {
@@ -50,17 +50,15 @@ export const getTransactionInputs = async ({
 
 /**
  * Build transaction
- * @param {object} params, { inputs, fromAddress, addressType, toAddress, amount, netType, fees, publicKey }
+ * @param {object} params, { inputs, fromAddress, addressType, toAddress, netType, amount, fees, publicKey }
  * @returns {object} Transaction builder
  */
 export const buildTransaction = ({
-  inputs, fromAddress, addressType, toAddress, amount, netType, fees, publicKey,
+  inputs, fromAddress, addressType, toAddress, netType, amount, fees, publicKey,
 }) => {
   const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+  const cost = amount + fees;
   const txb = new bitcoin.TransactionBuilder(network);
-  const value = parseInt(amount, 16);
-  const feesValue = parseInt(fees, 16);
-  const cost = value + feesValue;
 
   // Calculate redeem script
   let redeemScript = null;
@@ -70,13 +68,14 @@ export const buildTransaction = ({
     redeemScript = p2sh.redeem.output;
   }
 
+  // Add transaction inputs
   const inputsValue = _.reduce(inputs, (sum, input) => {
     txb.addInput(input.tx_hash, input.tx_output_n, null, redeemScript);
     return sum + input.value;
   }, 0);
 
   // Add transaction outputs
-  txb.addOutput(toAddress, value);
+  txb.addOutput(toAddress, amount);
   const restValue = inputsValue - cost;
   if (restValue > 0) {
     txb.addOutput(fromAddress, restValue);
