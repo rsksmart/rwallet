@@ -662,6 +662,8 @@ const common = {
       // To address display the whole address
       if (type === 'address' && key !== 'To' && key !== 'Recipient') {
         result[key] = this.ellipsisAddress(value);
+      } else if (type === 'address' && !value.startsWith('0x')) {
+        result[key] = `0x${value}`;
       } else if (type === 'uint256') {
         const unitAmount = new BigNumber(value.toString());
         const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
