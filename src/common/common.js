@@ -684,15 +684,16 @@ const common = {
     if (!address) {
       return '';
     }
-    const { length } = address;
-    if (length <= (showLength * 2 + 2)) {
-      return address;
-    }
-    if (address.startsWith('0x')) {
-      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
-    }
 
-    return this.ellipsisString(address, showLength);
+    let completionAddress = address;
+    if (!address.startsWith('0x')) {
+      completionAddress = `0x${address}`;
+    }
+    const { length } = completionAddress;
+    if (length <= (showLength * 2 + 2)) {
+      return completionAddress;
+    }
+    return `${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**
