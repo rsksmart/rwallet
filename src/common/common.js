@@ -660,9 +660,9 @@ const common = {
       const key = this.UppercaseFirstLetter(names[index]);
       const type = types[index];
       // To address display the whole address
-      if (type === 'address' && key !== 'To') {
+      if (type === 'address' && key !== 'To' && key !== 'Recipient') {
         result[key] = this.ellipsisAddress(value);
-      } else if (key === 'Value') {
+      } else if (type === 'uint256') {
         const unitAmount = new BigNumber(value.toString());
         const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
         result[key] = `${amount} ${symbol}`;

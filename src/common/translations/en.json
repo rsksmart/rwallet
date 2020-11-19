@@ -151,6 +151,8 @@
         "asset": "Asset",
         "Spender": "Spender",
         "Value": "Value",
+        "Amount": "Amount",
+        "Recipient": "Recipient",
         "From": "From",
         "To": "To",
         "permission": "Permission",

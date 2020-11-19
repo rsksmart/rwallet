@@ -143,6 +143,8 @@
         "assets": "资产",
         "Spender": "花费者",
         "Value": "值",
+        "Amount": "数量",
+        "Recipient": "接收者",
         "From": "从",
         "To": "到",
         "advancedOptions": "高级选项",
