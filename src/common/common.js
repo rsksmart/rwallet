@@ -664,7 +664,7 @@ const common = {
         if (key !== 'To' && key !== 'Recipient') {
           result[key] = this.ellipsisAddress(value);
         } else {
-          result[key] = `0x${value}`;
+          result[key] = value.startsWith('0x') ? value : `0x${value}`;
         }
       } else if (type === 'uint256') {
         if (key === 'Value' || key === 'Amount') {
@@ -784,6 +784,17 @@ const common = {
 
   getExplorerName(type) {
     return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
+  },
+
+  /**
+   * To check the dapp need display thumb logo icon
+   * @param {*} item { name: { en: '', zh: '', ... } }
+   */
+  needDisplayThumbIcon(item) {
+    if (item && item.name && (_.includes(item.name.en, 'Sovryn') || item.name.en === 'RSK Swap')) {
+      return true;
+    }
+    return false;
   },
 };
 

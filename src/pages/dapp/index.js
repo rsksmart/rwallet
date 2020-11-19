@@ -64,17 +64,25 @@ const styles = StyleSheet.create({
   firstItem: {
     marginLeft: 20,
   },
-  dappIcon: {
-    borderColor: color.lightGray,
-    borderWidth: StyleSheet.hairlineWidth,
+  dappIconView: {
+    borderRadius: 12,
     width: 62,
     height: 62,
-    resizeMode: 'cover',
-    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recentDappSize: {
     width: 50,
     height: 50,
+  },
+  dappIcon: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  thumbDappIcon: {
+    width: '85%',
+    height: '85%',
   },
   dappInfo: {
     flex: 1,
@@ -255,7 +263,9 @@ class DAppIndex extends Component {
         style={[styles.item, ...itemStyles]}
         onPress={() => this.onDappPress(item)}
       >
-        <Image style={styles.dappIcon} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+        <View style={styles.dappIconView}>
+          <Image style={[styles.dappIcon, common.needDisplayThumbIcon(item) ? styles.thumbDappIcon : {}]} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+        </View>
         <View style={styles.dappInfo}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappName, { fontSize: 18 }]}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
           <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc, { width: 100 }]}>{(item.description && (item.description[language] || item.description.en)) || item.description}</Text>
@@ -332,7 +342,9 @@ class DAppIndex extends Component {
               style={[styles.item, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={[styles.dappIcon, styles.recentDappSize]} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+              <View style={[styles.dappIconView, styles.recentDappSize]}>
+                <Image style={[styles.dappIcon, common.needDisplayThumbIcon(item) ? styles.thumbDappIcon : {}]} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+              </View>
               <View style={[styles.dappInfo, { marginLeft: 6 }]}>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{(item.name && (item.name[language] || item.name.en)) || item.name}</Text>
               </View>
