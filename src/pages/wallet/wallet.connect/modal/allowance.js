@@ -9,8 +9,9 @@ import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
 import color from '../../../../assets/styles/color';
 import fontFamily from '../../../../assets/styles/font.family';
-import { WALLET_CONNECT, DEFAULT_FIXED_DIGITS } from '../../../../common/constants';
+import { WALLET_CONNECT } from '../../../../common/constants';
 import common from '../../../../common/common';
+import config from '../../../../../config';
 
 const { MODAL_TYPE } = WALLET_CONNECT;
 
@@ -86,7 +87,7 @@ export default class AllowanceModal extends Component {
 
             <View style={styles.line}>
               <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
-              <Text style={styles.lineValue}>{`${Number(fee).toFixed(DEFAULT_FIXED_DIGITS)} RBTC`}</Text>
+              <Text style={styles.lineValue}>{`${Number(fee).toFixed(config.symbolDecimalPlaces.RBTC)} RBTC`}</Text>
             </View>
           </>
         )}
