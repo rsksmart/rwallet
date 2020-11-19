@@ -664,10 +664,12 @@ const common = {
         result[key] = this.ellipsisAddress(value);
       } else if (type === 'address' && !value.startsWith('0x')) {
         result[key] = `0x${value}`;
-      } else if (type === 'uint256') {
+      } else if (type === 'uint256' && (key === 'Value' || key === 'Amount')) {
         const unitAmount = new BigNumber(value.toString());
         const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
         result[key] = `${amount} ${symbol}`;
+      } else if (type === 'uint256') {
+        result[key] = value.toString();
       } else {
         result[key] = value;
       }
