@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dappIcon: {
+    borderColor: color.lightGray,
+    borderWidth: StyleSheet.hairlineWidth,
     width: 62,
     height: 62,
     resizeMode: 'cover',

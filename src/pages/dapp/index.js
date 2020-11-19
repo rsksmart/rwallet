@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   dappIcon: {
+    borderColor: color.lightGray,
+    borderWidth: StyleSheet.hairlineWidth,
     width: 62,
     height: 62,
     resizeMode: 'cover',

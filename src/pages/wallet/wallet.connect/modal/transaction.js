@@ -104,7 +104,26 @@ export default class TransactionModal extends Component {
             }
 
             {
-              !_.isEmpty(abiInputData) ? (
+              // If abiInputData is empty, display the normal transaction info
+              // otherwise display contract abi info
+              _.isEmpty(abiInputData) ? (
+                <>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
+                    <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
+                  </View>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                  </View>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
+                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
                 <>
                   {
                     _.isEmpty(abiInputData.From) && (
@@ -117,23 +136,6 @@ export default class TransactionModal extends Component {
                   { this.getAbiInputView(abiInputData) }
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
-                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
-                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                <>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
-                    <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
-                  </View>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
-                  </View>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
                     <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
                       <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
                     </TouchableOpacity>
