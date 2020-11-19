@@ -121,11 +121,14 @@ export const signTransaction = async (rawTransaction, privateKey) => {
   return signedTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
+export const getSignedTransactionParam = ({
+  signedTransaction, netType, memo, coinSwitch, rawTransaction,
+}) => {
   const param = {
     name: 'Rootstock',
     hash: signedTransaction.rawTransaction,
     type: netType,
+    raw: rawTransaction,
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
@@ -145,7 +148,7 @@ export const processRawTransaction = async ({
     // If the last transaction is time out, createRawTransaction should use the fallback parameter
     const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(sender);
     const param = getRawTransactionParam({
-      symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback,
+      symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback, contractAddress,
     });
     console.log(`rbtc.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
     result = await createRawTransaction({ ...param, contractAddress });
