@@ -701,7 +701,7 @@ const common = {
     if (length <= (showLength * 2 + 2)) {
       return completionAddress;
     }
-    return `${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
+    return `0x${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**

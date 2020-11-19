@@ -16,7 +16,7 @@ import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { NETWORK, TRANSACTION } from '../../common/constants';
+import { NETWORK, TRANSACTION, DEFAULT_CONTRACT_METHOD } from '../../common/constants';
 import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
@@ -571,12 +571,12 @@ class DAppBrowser extends Component {
       if (input && input.method === 'approve') {
         this.popupAllowanceModal(id, txData, abiInputData, toAddress);
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
+        const contractMethod = (input && input.method) || DEFAULT_CONTRACT_METHOD;
         this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');
-      this.popupNormalTransactionModal(id, txData);
+      this.popupNormalTransactionModal(id, txData, DEFAULT_CONTRACT_METHOD);
     }
   }
 

@@ -23,7 +23,7 @@ import { createErrorNotification, createInfoNotification, getErrorNotification }
 
 import { strings } from '../../../common/i18n';
 import {
-  NETWORK, TRANSACTION, WALLET_CONNECT, TIMEOUT_VALUE,
+  NETWORK, TRANSACTION, WALLET_CONNECT, TIMEOUT_VALUE, DEFAULT_CONTRACT_METHOD,
 } from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
@@ -476,12 +476,12 @@ class WalletConnectPage extends Component {
       if (input && input.method === 'approve') {
         this.popupAllowanceModal(abiInputData, toAddress);
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
+        const contractMethod = (input && input.method) || DEFAULT_CONTRACT_METHOD;
         this.popupNormalTransactionModal(contractMethod, abiInputData);
       }
     } else {
       console.log('abi is not exsit');
-      this.popupNormalTransactionModal();
+      this.popupNormalTransactionModal(DEFAULT_CONTRACT_METHOD);
     }
   }
 
