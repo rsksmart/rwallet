@@ -125,3 +125,5 @@ export const TIMEOUT_VALUE = {
 };
 
 export const DEFAULT_CONTRACT_METHOD = 'Smart Contract Call';
+
+export const DEFAULT_FIXED_DIGITS = 6;
