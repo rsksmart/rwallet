@@ -57,15 +57,15 @@ export default class Transaction {
         const amount = parseInt(value, 16);
         const fees = parseInt(gasFee.fees, 16);
         const inputs = await btc.getTransactionInputs({
-          symbol, netType, sender, amount, fees,
+          symbol, netType, sender, cost: amount + fees,
         });
         const transactionBuilder = btc.buildTransaction({
           inputs,
           fromAddress: sender,
           addressType,
           toAddress: receiver,
-          amount,
           netType,
+          amount,
           fees,
           publicKey,
         });
@@ -82,7 +82,7 @@ export default class Transaction {
       console.log('Transaction.processTransaction err: ', e.message);
       throw e;
     }
-    console.log(`Transaction.processTransaction finished, result: ${JSON.stringify(result)}`);
+    console.log('Transaction.processTransaction finished, result: ', result);
     this.signedTransaction = result;
   }
 
