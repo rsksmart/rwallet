@@ -53,6 +53,28 @@ export default class TransactionModal extends Component {
     Linking.openURL(url);
   }
 
+  getAbiInputView = (abiInputData) => {
+    const abiInputView = [];
+    _.forEach(abiInputData, (inputValue, key) => {
+      abiInputView.push(
+        <View style={styles.line} key={key}>
+          <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
+          {
+            (key === 'To' || key === 'Recipient') ? (
+              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
+                <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.lineValue}>{inputValue}</Text>
+            )
+          }
+        </View>,
+      );
+    });
+
+    return abiInputView;
+  }
+
   render() {
     const {
       txData, dappUrl, cancelPress, confirmPress, txType, abiInputData,
@@ -82,32 +104,9 @@ export default class TransactionModal extends Component {
             }
 
             {
-              abiInputData ? (
-                <>
-                  {
-                    _.map(abiInputData, (inputValue, key) => (
-                      <View style={styles.line}>
-                        <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
-                        {
-                        key === 'To' ? (
-                          <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
-                            <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
-                          </TouchableOpacity>
-                        ) : (
-                          <Text style={styles.lineValue}>{inputValue}</Text>
-                        )
-                      }
-                      </View>
-                    ))
-                  }
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
-                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
-                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
+              // If abiInputData is empty, display the normal transaction info
+              // otherwise display contract abi info
+              _.isEmpty(abiInputData) ? (
                 <>
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
@@ -119,6 +118,24 @@ export default class TransactionModal extends Component {
                   </View>
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
+                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <>
+                  {
+                    _.isEmpty(abiInputData.From) && (
+                      <View style={styles.line}>
+                        <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+                        <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                      </View>
+                    )
+                  }
+                  { this.getAbiInputView(abiInputData) }
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
                     <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
                       <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
                     </TouchableOpacity>
@@ -157,7 +174,9 @@ TransactionModal.propTypes = {
     gasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     network: PropTypes.string,
   }).isRequired,
-  abiInputData: PropTypes.shape({}),
+  abiInputData: PropTypes.shape({
+    From: PropTypes.string,
+  }),
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
   txType: PropTypes.string,

@@ -154,6 +154,8 @@
         "asset": "Ativo",
         "Spender": "Usuário",
         "Value": "Valor",
+        "Amount": "Quantidade",
+        "Recipient": "Recipiente",
         "From": "De",
         "To": "Para",
         "permission": "Permissão",

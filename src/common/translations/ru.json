@@ -151,6 +151,8 @@
         "asset": "Актив",
         "Spender": "Спендер",
         "Value": "Значение",
+        "Amount": "Сумма",
+        "Recipient": "Получатель",
         "From": "From",
         "To": "To",
         "permission": "Разрешение",

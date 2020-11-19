@@ -140,6 +140,8 @@
         "assets": "資産名",
         "Spender": "スペンダ",
         "Value": "値",
+        "Amount": "量",
+        "Recipient": "受信者",
         "From": "から",
         "To": "に",
         "advancedOptions": "詳細オプション",

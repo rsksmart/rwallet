@@ -154,6 +154,8 @@
         "asset": "Activo",
         "Spender": "Gastador",
         "Value": "Valor",
+        "Amount": "Importe",
+        "Recipient": "Destinatario",
         "From": "Desde",
         "To": "A",
         "permission": "Permiso",

@@ -660,12 +660,20 @@ const common = {
       const key = this.UppercaseFirstLetter(names[index]);
       const type = types[index];
       // To address display the whole address
-      if (type === 'address' && key !== 'To') {
-        result[key] = this.ellipsisAddress(value);
-      } else if (key === 'Value') {
-        const unitAmount = new BigNumber(value.toString());
-        const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
-        result[key] = `${amount} ${symbol}`;
+      if (type === 'address') {
+        if (key !== 'To' && key !== 'Recipient') {
+          result[key] = this.ellipsisAddress(value);
+        } else {
+          result[key] = value.startsWith('0x') ? value : `0x${value}`;
+        }
+      } else if (type === 'uint256') {
+        if (key === 'Value' || key === 'Amount') {
+          const unitAmount = new BigNumber(value.toString());
+          const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
+          result[key] = `${amount} ${symbol}`;
+        } else {
+          result[key] = value.toString();
+        }
       } else {
         result[key] = value;
       }
@@ -684,15 +692,16 @@ const common = {
     if (!address) {
       return '';
     }
-    const { length } = address;
-    if (length <= (showLength * 2 + 2)) {
-      return address;
-    }
-    if (address.startsWith('0x')) {
-      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
-    }
 
-    return this.ellipsisString(address, showLength);
+    let completionAddress = address;
+    if (!address.startsWith('0x')) {
+      completionAddress = `0x${address}`;
+    }
+    const { length } = completionAddress;
+    if (length <= (showLength * 2 + 2)) {
+      return completionAddress;
+    }
+    return `${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**
@@ -775,6 +784,17 @@ const common = {
 
   getExplorerName(type) {
     return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
+  },
+
+  /**
+   * Return true if the dapp needs to display thumb dapp icon
+   * @param {*} item { name: { en: '', zh: '', ... } }
+   */
+  needDisplayThumbIcon(item) {
+    if (item && item.name && (_.includes(item.name.en, 'Sovryn') || item.name.en === 'RSK Swap')) {
+      return true;
+    }
+    return false;
   },
 };
 

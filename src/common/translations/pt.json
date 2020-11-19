@@ -143,6 +143,8 @@
         "assets": "Ativos",
         "Spender": "Gastador",
         "Value": "Valor",
+        "Amount": "Quantidade",
+        "Recipient": "Recebedor",
         "From": "De",
         "To": "Para",
         "advancedOptions": "Opções avançadas",

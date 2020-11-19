@@ -565,11 +565,13 @@ class DAppBrowser extends Component {
     if (res && res.abi) {
       const { abi, symbol } = res;
       const input = common.ethereumInputDecoder(abi, inputData);
+      console.log('input: ', input);
       const abiInputData = common.formatContractABIInputData(input, symbol);
+      console.log('abiInputData: ', abiInputData);
       if (input && input.method === 'approve') {
         this.popupAllowanceModal(id, txData, abiInputData, toAddress);
       } else {
-        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        const contractMethod = (input && input.method) || 'Smart Contract Call';
         this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);
       }
     } else {

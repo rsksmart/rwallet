@@ -140,6 +140,8 @@
         "assets": "자산",
         "Spender": "돈 쓰는 사람",
         "Value": "값",
+        "Amount": "금액",
+        "Recipient": "받는 사람",
         "From": "From",
         "To": "To",
         "advancedOptions": "고급 옵션",

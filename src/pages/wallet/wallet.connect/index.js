@@ -476,7 +476,7 @@ class WalletConnectPage extends Component {
       if (input && input.method === 'approve') {
         this.popupAllowanceModal(abiInputData, toAddress);
       } else {
-        const contractMethod = (inputData && inputData.method) || 'Smart Contract Call';
+        const contractMethod = (input && input.method) || 'Smart Contract Call';
         this.popupNormalTransactionModal(contractMethod, abiInputData);
       }
     } else {
