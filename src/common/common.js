@@ -787,7 +787,7 @@ const common = {
   },
 
   /**
-   * Return true if the dapp need to display thumb dapp icon
+   * Return true if the dapp needs to display thumb dapp icon
    * @param {*} item { name: { en: '', zh: '', ... } }
    */
   needDisplayThumbIcon(item) {
