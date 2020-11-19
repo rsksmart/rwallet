@@ -117,7 +117,10 @@ class DAppBrowser extends Component {
   }
 
   getJsCode = (address) => {
+    const { navigation } = this.props;
     const { web3JsContent, ethersJsContent } = this.state;
+    const dapp = navigation.state.params.dapp || { url: '', title: '', name: { en: '' } };
+    const dappName = dapp.name.en || '';
     return `
       ${web3JsContent}
       ${ethersJsContent}
@@ -180,7 +183,7 @@ class DAppBrowser extends Component {
             const provider = new Web3.providers.HttpProvider(rskEndpoint);
             const web3Provider = new ethers.providers.Web3Provider(provider)
             const web3 = new Web3(provider);
-            window.ethereum = web3Provider;
+            window.ethereum = '${dappName}' === 'Money on Chain' ? provider : web3Provider;
             window.ethereum.selectedAddress = '${address}';
             window.address = '${address}';
             window.ethereum.networkVersion = '${this.networkVersion}';
@@ -682,7 +685,7 @@ class DAppBrowser extends Component {
     const {
       walletSelectionVisible, wallet: { address }, modalView,
     } = this.state;
-    const dapp = navigation.state.params.dapp || { url: '', title: '' };
+    const dapp = navigation.state.params.dapp || { url: '', title: '', name: { en: '' } };
     const { url, title } = dapp;
     const domain = common.getDomain(url);
 
