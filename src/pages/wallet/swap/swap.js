@@ -454,7 +454,7 @@ class Swap extends Component {
       }
       const gasFee = feeObject.feeParams;
       const extraParams = {
-        data: '', memo: '', gasFee, coinswitch: { order },
+        data: '', memo: '', gasFee, coinSwitch: { order },
       };
       let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       console.log('transaction: ', transaction);

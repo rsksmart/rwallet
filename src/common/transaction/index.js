@@ -8,9 +8,13 @@ import * as rbtc from './rbtccoin';
 
 import { ASSETS_CONTRACT } from '../constants';
 
-const createSendSignedTransactionParam = (symbol, signedTransaction, netType, memo, coinswitch) => (symbol === 'BTC'
-  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch)
-  : rbtc.getSignedTransactionParam(signedTransaction, netType, memo, coinswitch));
+const createSendSignedTransactionParam = ({
+  symbol, signedTransaction, netType, memo, coinSwitch, rawTransaction,
+}) => (symbol === 'BTC'
+  ? btc.getSignedTransactionParam(signedTransaction, netType, memo, coinSwitch)
+  : rbtc.getSignedTransactionParam({
+    signedTransaction, netType, memo, coinSwitch, rawTransaction,
+  }));
 
 const getTxHash = (symbol, txResult) => (symbol === 'BTC' ? btc.getTxHash(txResult) : rbtc.getTxHash(txResult));
 
@@ -20,7 +24,7 @@ export default class Transaction {
       symbol, type, privateKey, address, contractAddress, precision, addressType, publicKey,
     } = coin;
     const {
-      data, memo, gasFee, coinswitch,
+      data, memo, gasFee, coinSwitch,
     } = extraParams;
     this.symbol = symbol;
     this.netType = type;
@@ -36,9 +40,10 @@ export default class Transaction {
     this.memo = memo;
     this.signedTransaction = null;
     this.txHash = null;
-    this.coinswitch = coinswitch;
+    this.coinSwitch = coinSwitch;
     this.addressType = addressType;
     this.publicKey = publicKey;
+    this.rawTransaction = null;
   }
 
   async processTransaction() {
@@ -68,10 +73,10 @@ export default class Transaction {
           transactionBuilder, inputs, privateKey, netType, addressType,
         });
       } else {
-        const rawTransaction = await rbtc.processRawTransaction({
+        this.rawTransaction = await rbtc.processRawTransaction({
           symbol, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
         });
-        result = await rbtc.signTransaction(rawTransaction, privateKey);
+        result = await rbtc.signTransaction(this.rawTransaction, privateKey);
       }
     } catch (e) {
       console.log('Transaction.processTransaction err: ', e.message);
@@ -86,7 +91,12 @@ export default class Transaction {
     let result = null;
     if (this.signedTransaction) {
       try {
-        const param = createSendSignedTransactionParam(this.symbol, this.signedTransaction, this.netType, this.memo, this.coinswitch);
+        const {
+          symbol, signedTransaction, netType, memo, coinSwitch, rawTransaction,
+        } = this;
+        const param = createSendSignedTransactionParam({
+          symbol, signedTransaction, netType, memo, coinSwitch, rawTransaction,
+        });
         console.log(`sendSignedTransaction, param: ${JSON.stringify(param)}`);
         result = await Parse.Cloud.run('sendSignedTransaction', param);
         // If the transaction uses the fallback parameter and is sent successfully, you need to delete this address in the list
