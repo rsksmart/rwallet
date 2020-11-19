@@ -183,6 +183,7 @@ class DAppBrowser extends Component {
             const provider = new Web3.providers.HttpProvider(rskEndpoint);
             const web3Provider = new ethers.providers.Web3Provider(provider)
             const web3 = new Web3(provider);
+            // When Dapp is "Money on Chain", webview uses Web3's Provider, others uses Ethers' Provider
             window.ethereum = '${dappName}' === 'Money on Chain' ? provider : web3Provider;
             window.ethereum.selectedAddress = '${address}';
             window.address = '${address}';
