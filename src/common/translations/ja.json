@@ -282,6 +282,8 @@
       "search": "ウェブサイトのURLを検索または入力してください",
       "recent": "最近",
       "recommended": "お勧め",
+      "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "all": "すべて",
       "button": {
         "seeAll": "すべて表示",

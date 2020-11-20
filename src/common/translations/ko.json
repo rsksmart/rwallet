@@ -288,6 +288,8 @@
       "search": "웹사이트 url을 검색하거나 입력하십시오",
       "recent": "최근",
       "recommended": "추천",
+      "mainnet": "메인넷",
+      "testnet": "테스트넷",
       "all": "모두",
       "button": {
         "seeAll": "모두 보기",

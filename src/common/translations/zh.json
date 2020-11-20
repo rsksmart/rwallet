@@ -285,6 +285,8 @@
       "search": "搜索或输入网站链接",
       "recent": "最近",
       "recommended": "推荐",
+      "mainnet": "正式网络",
+      "testnet": "测试网络",
       "all": "全部",
       "button": {
         "seeAll": "全部",
