@@ -275,6 +275,14 @@ class DAppIndex extends Component {
     );
   }
 
+  dappCardGetItem = (items, index) => {
+    const column = [];
+    _.forEach(items, (item, row) => {
+      column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: (row !== 0) ? 15 : 0 }]));
+    });
+    return <View style={!index ? styles.firstItem : {}}>{column}</View>;
+  }
+
   render() {
     const {
       navigation, language, advertisements,
@@ -354,30 +362,18 @@ class DAppIndex extends Component {
 
         <DappCard
           navigation={navigation}
-          title="page.dapp.mainnet"
+          title="page.wallet.selectCurrency.mainnet"
           data={mainnetDappList}
           type="Mainnet"
-          getItem={(items, index) => {
-            const column = [];
-            _.forEach(items, (item, row) => {
-              column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: row ? 15 : 0 }]));
-            });
-            return <View style={!index ? styles.firstItem : {}}>{column}</View>;
-          }}
+          getItem={(items, index) => this.dappCardGetItem(items, index)}
         />
 
         <DappCard
           navigation={navigation}
-          title="page.dapp.testnet"
+          title="page.wallet.selectCurrency.testnet"
           data={testnetDappList}
           type="Testnet"
-          getItem={(items, index) => {
-            const column = [];
-            _.forEach(items, (item, row) => {
-              column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: row ? 15 : 0 }]));
-            });
-            return <View style={!index ? styles.firstItem : {}}>{column}</View>;
-          }}
+          getItem={(items, index) => this.dappCardGetItem(items, index)}
         />
 
         <View style={styles.bottomView} />
