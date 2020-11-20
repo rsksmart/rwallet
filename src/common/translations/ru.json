@@ -662,7 +662,7 @@
       "body": "Не удается подключить ваше устройство к серверу."
     }
   },
-  "network": {
+  "networkType": {
     "mainnet": "Mainnet",
     "testnet": "Testnet"
   }
