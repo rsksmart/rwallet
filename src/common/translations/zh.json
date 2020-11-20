@@ -668,5 +668,9 @@
       "title": "网络错误",
       "body": "您的设备无法连接到服务器。"
     }
+  },
+  "networkType": {
+    "mainnet": "正式网络",
+    "testnet": "测试网络"
   }
 }

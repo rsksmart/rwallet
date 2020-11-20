@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "Monitorear activos sin claves"
       },
       "selectCurrency": {
-        "title": "Seleccionar activos de Wallet",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Seleccionar activos de Wallet"
       },
       "selectWallet": {
         "title": "Seleccionar activo"
@@ -232,9 +230,7 @@
       },
       "addCustomToken": {
         "title": "Agregar activos personalizados",
-        "address": "Dirección del contrato de activo",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "address": "Dirección del contrato de activo"
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",
@@ -668,5 +664,9 @@
       "title": "Error de red",
       "body": "Su dispositivo no puede conectarse al servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

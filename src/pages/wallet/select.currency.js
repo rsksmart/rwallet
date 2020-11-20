@@ -195,11 +195,11 @@ class WalletSelectCurrency extends Component {
           customBottomButton={bottomButton}
         >
           <View style={[styles.sectionContainer]}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.mainnet" />
+            <Loc style={[styles.sectionTitle]} text="networkType.mainnet" />
             { this.renderList(this.mainnet) }
           </View>
           <View style={[styles.sectionContainer]}>
-            <Loc style={[styles.sectionTitle]} text="page.wallet.selectCurrency.testnet" />
+            <Loc style={[styles.sectionTitle]} text="networkType.testnet" />
             { this.renderList(this.testnet) }
           </View>
         </BasePageGereral>

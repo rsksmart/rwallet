@@ -12,6 +12,7 @@ import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import Loc from '../misc/loc';
 import common from '../../../common/common';
+import { strings } from '../../../common/i18n';
 
 // Get modal view width
 const MODAL_WIDTH = Dimensions.get('window').width * 0.87;
@@ -124,7 +125,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.azureRadianceA65,
     borderRadius: 4,
     padding: 5,
-    width: 49,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.component.listItemIndicator.color,
     borderRadius: 4,
     padding: 5,
-    width: 49,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -250,7 +249,7 @@ class WalletSelection extends PureComponent {
         <View style={styles.selection}>
           <View style={styles.row}>
             <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
-              <Text style={styles.network}>{network}</Text>
+              <Text style={styles.network}>{strings(`networkType.${network.toLowerCase()}`)}</Text>
             </View>
             <Text style={styles.address}>{common.ellipsisAddress(address, 6)}</Text>
           </View>

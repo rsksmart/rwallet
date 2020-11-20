@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "Мониторинг активов без ключей"
       },
       "selectCurrency": {
-        "title": "Выберите активы кошелька",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Выберите активы кошелька"
       },
       "selectWallet": {
         "title": "Выберите актив"
@@ -229,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "Добавить пользовательские активы",
-        "address": "Адрес договора для актива",
-        "mainnet": "Mainnet",
-        "testnet": "Тестовая сеть"
+        "address": "Адрес договора для актива"
       },
       "addCustomTokenConfirm": {
         "title": "Добавить пользовательские активы",
@@ -665,5 +661,9 @@
       "title": "Сетевая ошибка",
       "body": "Не удается подключить ваше устройство к серверу."
     }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

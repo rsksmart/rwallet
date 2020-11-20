@@ -167,7 +167,7 @@ class AddReadOnlyWalletConfirmation extends Component {
               multiline
             />
             <View style={readOnlyStyles.chainType}>
-              <Loc style={[readOnlyStyles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+              <Loc style={[readOnlyStyles.switchTitle]} text="networkType.mainnet" />
               <Switch value={type === 'Mainnet'} onValueChange={this.onSwitchValueChanged} disabled />
             </View>
             <View style={readOnlyStyles.questionRow}>
