@@ -362,7 +362,7 @@ class DAppIndex extends Component {
 
         <DappCard
           navigation={navigation}
-          title="page.wallet.selectCurrency.mainnet"
+          title="networkType.mainnet"
           data={mainnetDappList}
           type="Mainnet"
           getItem={(items, index) => this.dappCardGetItem(items, index)}
@@ -370,7 +370,7 @@ class DAppIndex extends Component {
 
         <DappCard
           navigation={navigation}
-          title="page.wallet.selectCurrency.testnet"
+          title="networkType.testnet"
           data={testnetDappList}
           type="Testnet"
           getItem={(items, index) => this.dappCardGetItem(items, index)}
