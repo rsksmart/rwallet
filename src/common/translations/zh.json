@@ -122,6 +122,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect超时",
+        "timeoutBody": "RWallet在短时间内无法建立与Dapp进行连接，请重试。",
+        "timeoutButton": "好的",
         "emptyWalletError": "空钱包",
         "selectMainnetAsset": "请选择拥有RSK主网资产的钱包",
         "selectTestnetAsset": "请选择拥有RSK测试网资产的钱包",
@@ -137,6 +140,7 @@
         "agreeTo": "点击允许，即表示您同意",
         "agreeOne": "- 允许获取当前的钱包地址",
         "agreeTwo": "- 允许来自当前钱包的签名请求",
+        "assets": "资产",
         "advancedOptions": "高级选项",
         "reject": "拒绝",
         "allow": "允许",
@@ -146,7 +150,7 @@
         "waitingForOperationsDesc": "请从%{dappName} dapp执行任何操作。如果需要，RWallet将提示要求签名批准。",
         "disconnect": "断开连接",
         "approveAllowance": "批准权限",
-        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您转让资产。",
+        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您执行智能合约呼叫。",
         "asset": "资产",
         "permission": "权限",
         "allowance": "Allowance",
@@ -170,11 +174,18 @@
         "successDesc": "成功！您的交易已发布到区块链中。一旦确认，它应该显示在dapp中。",
         "approveTransaction": "批准交易",
         "approveTransactionDesc": "通过单击确认，您同意签署源自%{dappUrl}的交易",
+        "approveSmartContract": "批准智能合约调用",
+        "approveSmartContractDesc": "通过单击确认，您同意签署源自%{dappUrl}的智能合约的调用",
+        "spender": "花费者",
+        "value": "值",
+        "recipient": "接收者",
+        "method": "方法",
         "amount": "数量",
         "type": "类型",
         "from": "从",
         "to": "到",
         "data": "数据",
+        "contract": "合约",
         "networkQuestion": {
           "title": "网络",
           "body": "测试网是用于测试的备用RSK区块链。"
@@ -281,6 +292,11 @@
         "understood": "明白了",
         "createOrImport": "创建或者导入",
         "cancel": "取消"
+      },
+      "browser": {
+        "errorTitle": "失败",
+        "errorContent": "发生未知错误，请稍后再试。",
+        "errorButton": "好的"
       }
     },
     "mine": {
@@ -400,7 +416,8 @@
     "done": "已完成",
     "share": "分享",
     "check": "检查",
-    "update": "更新"
+    "update": "更新",
+    "okay": "好的"
   },
   "txState": {
     "Sent": "已发送",
@@ -603,6 +620,39 @@
     "feeCalculationError": {
       "title": "费用计算错误",
       "body": "计算费用时发生了错误，请重试。"
+    },
+    "invalidRskAddress": {
+      "title": "无效的RSK地址",
+      "body": {
+        "normal": "输入的接收者地址是无效的RSK地址。请确保接收者地址是有效的RSK地址，并在发送前在%{explorerName}上进行验证。",
+        "ethereum": "输入的接收者地址似乎是一个以太坊地址。这是从MetaMask复制值的已知错误。请确保接收者地址是有效的RSK地址，并在发送前在%{explorerName}上进行验证。"
+      },
+      "question": "为什么会看到此消息？",
+      "confirm": "仍发送",
+      "cancel": "返回并重新输入",
+      "asset": "资产",
+      "address": "地址",
+      "balance": "余额",
+      "risk": "好的，我了解风险。"
+    },
+    "emptyRecordAddress": {
+      "title": "空记录的接收者地址",
+      "body": {
+        "normal": "输入的接收者地址在%{explorerName}中没有记录，并且在RSK%{otherType}网络上具有%{balance} %{otherSymbolName}。您确定要将%{amount} %{symbolName}发送到RSK %{type}上的地址吗？",
+        "both": "输入的接收者地址在%{explorerName}中没有记录。您确定要将%{amount} %{symbolName}发送到RSK %{type}上的地址吗？"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "无效的RSK钱包地址",
+      "body": "输入的钱包地址是无效的RSK地址。 RWallet会尝试将其自动更正为预期的地址格式，您要继续吗？"
+    },
+    "convertContractAddress": {
+      "title": "无效的RSK合约地址",
+      "body": "输入的合约地址是无效的RSK地址。 RWallet会尝试将其自动更正为预期的地址格式，您要继续吗？"
+    },
+    "invalidParam": {
+      "title": "无效的参数",
+      "body": "参数是无效的。"
     }
   },
   "currency": {
@@ -618,5 +668,9 @@
       "title": "网络错误",
       "body": "您的设备无法连接到服务器。"
     }
+  },
+  "networkType": {
+    "mainnet": "正式网络",
+    "testnet": "测试网络"
   }
 }

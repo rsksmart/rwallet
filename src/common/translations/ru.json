@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "Мониторинг активов без ключей"
       },
       "selectCurrency": {
-        "title": "Выберите активы кошелька",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Выберите активы кошелька"
       },
       "selectWallet": {
         "title": "Выберите актив"
@@ -119,6 +117,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Истекло время ожидания подключения к кошельку",
+        "timeoutBody": "RWallet не смог установить соединение Wallet Connect с Dapp за короткий промежуток времени. Повторите попытку.",
+        "timeoutButton": "Хорошо",
         "emptyWalletError": "Пустой кошелек",
         "selectMainnetAsset": "Выберите кошелек, в котором есть хотя бы один актив rsk основной сети",
         "selectTestnetAsset": "Выберите кошелек, в котором есть хотя бы один актив rsk testnet",
@@ -134,6 +135,7 @@
         "agreeTo": "Нажимая \"Разрешить\", вы соглашаетесь,",
         "agreeOne": "- Разрешить получение текущего адреса кошелька",
         "agreeTwo": "- Разрешить запрос подписи из текущего кошелька",
+        "assets": "Активы",
         "advancedOptions": "Дополнительные параметры",
         "reject": "Отклонить",
         "allow": "Разрешить",
@@ -143,7 +145,7 @@
         "waitingForOperationsDesc": "Выполните любые операции из dapp %{dappName}. RWallet предложит запросить подтверждение подписи, если потребуется.",
         "disconnect": "Отключить",
         "approveAllowance": "Подтвердить пособие",
-        "approveAllowanceDesc": "Нажимая \"Подтвердить\", вы соглашаетесь разрешить %{dappUrl} передавать токены от вашего имени.",
+        "approveAllowanceDesc": "Нажимая «Подтвердить», вы соглашаетесь разрешить %{dappUrl} выполнять вызовы смарт-контрактов от вашего имени.",
         "asset": "Актив",
         "permission": "Разрешение",
         "allowance": "Allowance",
@@ -167,11 +169,18 @@
         "successDesc": "Успех! Ваша транзакция была опубликована в блокчейне. После подтверждения она должна отображаться в приложении.",
         "approveTransaction": "Подтвердить транзакцию",
         "approveTransactionDesc": "Нажимая \"Подтвердить\", вы соглашаетесь подписать транзакцию, исходящую от %{dappUrl}",
+        "approveSmartContract": "Утвердить вызов смарт-контракта",
+        "approveSmartContractDesc": "Нажимая \"Подтвердить\", вы соглашаетесь подписать вызов смарт-контракта, исходящий от %{dappUrl}",
+        "spender": "Спендер",
+        "value": "Значение",
+        "recipient": "Получатель",
+        "method": "Метод",
         "amount": "Сумма",
         "type": "Тип",
         "from": "From",
         "to": "To",
         "data": "Данные",
+        "contract": "Договор",
         "networkQuestion": {
           "title": "Сеть",
           "body": "Тестовая сеть - это альтернативная цепочка блоков RSK, которая будет использоваться для тестирования."
@@ -218,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "Добавить пользовательские активы",
-        "address": "Адрес договора для актива",
-        "mainnet": "Mainnet",
-        "testnet": "Тестовая сеть"
+        "address": "Адрес договора для актива"
       },
       "addCustomTokenConfirm": {
         "title": "Добавить пользовательские активы",
@@ -278,6 +285,11 @@
         "understood": "Понятно",
         "createOrImport": "Создать или импортировать",
         "cancel": "Отмена"
+      },
+      "browser": {
+        "errorTitle": "Не удалось",
+        "errorContent": "Произошла неизвестная ошибка, повторите попытку позже",
+        "errorButton": "Хорошо"
       }
     },
     "mine": {
@@ -397,7 +409,8 @@
     "done": "Готово",
     "share": "ПОДЕЛИТЬСЯ",
     "check": "ЧЕК",
-    "update": "Обновить"
+    "update": "Обновить",
+    "okay": "Хорошо"
   },
   "txState": {
     "Sent": "Отправлено",
@@ -600,6 +613,39 @@
     "feeCalculationError": {
       "title": "Ошибка расчета комиссии",
       "body": "Произошла ошибка при расчете стоимости. Пожалуйста, попробуйте еще раз."
+    },
+    "invalidRskAddress": {
+      "title": "Недействительный адрес RSK",
+      "body": {
+        "normal": "веденный адрес получателя является недействительным адресом RSK. Убедитесь, что адрес получателя является действительным адресом RSK, и проверьте его на %{explorerName} перед отправкой.",
+        "ethereum": "Введенный адрес получателя выглядит как адрес Ethereum. Это известная проблема при копировании адресов из MetaMask. Убедитесь, что адрес получателя является действительным адресом RSK, и проверьте его на %{explorerName} перед отправкой."
+      },
+      "question": "Почему вы видите это сообщение?",
+      "confirm": "Все равно отправить",
+      "cancel": "Вернитесь и войдите снова",
+      "asset": "Актив",
+      "address": "Адрес",
+      "balance": "Баланс",
+      "risk": "Хорошо, я понимаю риск."
+    },
+    "emptyRecordAddress": {
+      "title": "Пустой адрес получателя записи",
+      "body": {
+        "normal": "Введенный адрес получателя не имеет записи в %{explorerName} и имеет %{balance} %{otherSymbolName} в сети RSK %{otherType}. Вы уверены, что отправите %{amount} %{symbolName} на адрес RSK %{type}?",
+        "both": "Введенный адрес получателя не имеет записи в %{explorerName}. Вы уверены, что отправите% {amount} % symbolName} на адрес в RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Invalid RSK wallet address",
+      "body": "The entered wallet address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "convertContractAddress": {
+      "title": "Invalid RSK contract address",
+      "body": "The entered contract address is an invalid RSK address. RWallet will try to auto-correct it into the expected address format. Do you want to proceed?"
+    },
+    "invalidParam": {
+      "title": "Неверный параметр",
+      "body": "Параметр недействителен."
     }
   },
   "currency": {
@@ -615,5 +661,9 @@
       "title": "Сетевая ошибка",
       "body": "Не удается подключить ваше устройство к серверу."
     }
+  },
+  "networkType": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

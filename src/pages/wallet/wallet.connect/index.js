@@ -2,34 +2,37 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, ActivityIndicator, ScrollView, Modal, Dimensions, BackHandler,
 } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import WalletConnect from '@walletconnect/client';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { ethers } from 'ethers';
 import Rsk3 from '@rsksmart/rsk3';
+import BigNumber from 'bignumber.js';
 
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
 import WalletConnected from './connected';
-import AllowanceModal from './modal/allowance';
 import MessageModal from './modal/message';
+import ContractModal from './modal/contract';
 import TransactionModal from './modal/transaction';
 import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
 import ErrorModal from './modal/error';
-import WaleltConnectHeader from '../../../components/headers/header.walletconnect';
-import { createErrorNotification, createInfoNotification } from '../../../common/notification.controller';
+import WalletConnectHeader from '../../../components/headers/header.walletconnect';
+import { createErrorNotification, createInfoNotification, getErrorNotification } from '../../../common/notification.controller';
 
 import { strings } from '../../../common/i18n';
-import { NETWORK } from '../../../common/constants';
+import {
+  NETWORK, TRANSACTION, WALLET_CONNECT, TIMEOUT_VALUE,
+} from '../../../common/constants';
 import common from '../../../common/common';
 import apiHelper from '../../../common/apiHelper';
 import screenHelper from '../../../common/screenHelper';
 import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
+import coinType from '../../../common/wallet/cointype';
+import { InsufficientRbtcError } from '../../../common/error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -168,44 +171,44 @@ class WalletConnectPage extends Component {
       },
       chainId: 30,
       payload: null,
-      inputDecode: null,
-      symbol: null,
       selectedWallet: {},
       contentType: null,
       modalView: null,
       isTestnet: false,
+      rsk3: null,
     };
   }
 
   async componentDidMount() {
     const { navigation, addNotification } = this.props;
+
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction,
     );
 
     const selectedWallet = this.getWallet();
-    if (!_.isEmpty(selectedWallet)) {
-      this.initNetwork();
-      // setTimeout 500ms in order to ui change smoothly
-      setTimeout(async () => {
-        await this.setState({
-          modalView: this.renderWalletConnectingView(),
-          selectedWallet,
-        });
+    this.initNetwork();
 
-        await this.initWalletConnect();
-      }, 500);
-    } else {
-      // If current wallet has no mainnet or testnet rsk asset, need to go back
+    await this.setState({
+      modalView: this.renderWalletConnectingView(),
+      selectedWallet,
+    });
+
+    await this.initWalletConnect();
+
+    // Show timeout alert if cannot connect within 20s
+    this.timeout = setTimeout(async () => {
+      console.log('show timeout alert');
+      await this.setState({ modalView: null });
       const notification = createErrorNotification(
-        'page.wallet.walletconnect.emptyWalletError',
-        'page.wallet.walletconnect.selectMainnetAsset',
-        'page.wallet.walletconnect.gotIt',
+        'page.wallet.walletconnect.timeoutTitle',
+        'page.wallet.walletconnect.timeoutBody',
+        'page.wallet.walletconnect.timeoutButton',
         () => navigation.goBack(),
       );
       addNotification(notification);
-    }
+    }, TIMEOUT_VALUE.WALLET_CONNECT);
   }
 
   componentWillUnmount() {
@@ -214,18 +217,9 @@ class WalletConnectPage extends Component {
 
   backAction = () => {
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector.connected) {
-      this.closePress();
-      this.killSession();
+      this.onRequestClose();
     }
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Dashboard' }),
-      ],
-    });
-    navigation.dispatch(resetAction);
   }
 
   // Get current wallet's address and private key
@@ -236,34 +230,52 @@ class WalletConnectPage extends Component {
     const network = isTestnet ? 'Testnet' : 'Mainnet';
     const networkId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
     const rskCoins = _.filter(coins, (coin) => coin.symbol !== 'BTC' && coin.type === network);
-    // If current wallet has no rsk mainnet or testnet coins, return a null value and rwallet will show error notification.
+
+    // Format coins data: [['RBTC Token', 'RIF Token'], [ ... ], ...]
+    // One row shows two tokens
+    const coinsListData = [];
+    let rowCoinsData = [];
+    _.forEach(WALLET_CONNECT.ASSETS, (token, index) => {
+      const coinId = isTestnet ? token + network : token;
+      const { icon } = coinType[coinId];
+      const name = common.getSymbolName(token, network);
+      const item = {
+        name, icon, selected: false, symbol: token, type: network, token: { symbol: token, type: network },
+      };
+      const coin = _.find(coins, { symbol: token, type: network });
+      if (coin) {
+        item.token = coin;
+        item.selected = true;
+      }
+
+      rowCoinsData.push(item);
+      if (index % 2) {
+        coinsListData.push(rowCoinsData);
+        rowCoinsData = [];
+      }
+    });
+
+    if (WALLET_CONNECT.ASSETS.length % 2) {
+      coinsListData.push(rowCoinsData);
+    }
+
     if (_.isEmpty(rskCoins)) {
-      return null;
+      return {
+        address: '',
+        privateKey: '',
+        coins: coinsListData,
+      };
     }
     return {
       address: Rsk3.utils.toChecksumAddress(rskCoins[0].address, networkId),
       privateKey: rskCoins[0].privateKey,
+      coins: coinsListData,
     };
   }
 
   updateWallet = () => {
-    const { isTestnet } = this.state;
-    const { addNotification } = this.props;
     const selectedWallet = this.getWallet();
-    if (!_.isEmpty(selectedWallet)) {
-      this.setState({ selectedWallet });
-    } else {
-      const notification = createErrorNotification(
-        'page.wallet.walletconnect.emptyWalletError',
-        isTestnet ? 'page.wallet.walletconnect.selectTestnetAsset' : 'page.wallet.walletconnect.selectMainnetAsset',
-        'page.wallet.walletconnect.gotIt',
-        async () => {
-          await this.setState({ isTestnet: !isTestnet });
-          await this.initNetwork();
-        },
-      );
-      addNotification(notification);
-    }
+    this.setState({ selectedWallet });
   }
 
   initWalletConnect = async () => {
@@ -289,9 +301,9 @@ class WalletConnectPage extends Component {
   initNetwork = () => {
     const { isTestnet } = this.state;
     const rskEndpoint = isTestnet ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
-    const provider = new ethers.providers.JsonRpcProvider(rskEndpoint);
+    const rsk3 = new Rsk3(rskEndpoint);
     const chainId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
-    this.setState({ chainId, provider });
+    this.setState({ chainId, rsk3 });
   }
 
   subscribeToEvents = () => {
@@ -314,6 +326,9 @@ class WalletConnectPage extends Component {
           contentType: WALLET_CONNECTING,
           connector,
         });
+
+        // Clear timeout if wallet connect establish session connect
+        clearTimeout(this.timeout);
       });
 
       connector.on('session_update', (error) => {
@@ -384,12 +399,10 @@ class WalletConnectPage extends Component {
   rejectSession = () => {
     console.log('ACTION', 'rejectSession');
     const { connector } = this.state;
-    const { navigation } = this.props;
     if (connector) {
       connector.rejectSession();
     }
     this.setState({ connector });
-    navigation.goBack();
   };
 
   killSession = () => {
@@ -405,22 +418,19 @@ class WalletConnectPage extends Component {
 
     await this.setState({ modalView: null });
 
-    setTimeout(async () => {
-      callAuthVerify(async () => {
-        try {
-          await this.handleCallRequest();
-          await this.closeRequest();
-        } catch (err) {
-          this.handleError();
-        }
-      }, () => {
-        this.handleError();
-      });
-    }, 500);
+    callAuthVerify(async () => {
+      try {
+        await this.handleCallRequest();
+        await this.closeRequest();
+      } catch (err) {
+        this.handleError(err);
+      }
+    }, () => {
+      this.handleError();
+    });
   }
 
   rejectRequest = async () => {
-    console.log('rejectRequest');
     const { connector, payload } = this.state;
     if (connector) {
       connector.rejectRequest({
@@ -453,41 +463,53 @@ class WalletConnectPage extends Component {
   popupTransactionModal = async () => {
     const { payload: { params }, chainId } = this.state;
     const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, chainId);
-    const inputData = params[0].data;
-    const res = await apiHelper.getAbiByAddress(toAddress);
     const txData = await this.generateTxData();
     await this.setState({ txData });
-    if (res && res.abi) {
-      const { abi, symbol } = res;
-      const input = common.ethereumInputDecoder(abi, inputData);
-      await this.setState({ inputDecode: input, symbol });
-      if (input && input.method === 'approve') {
-        this.popupAllowanceModal();
+
+    const isContractAddress = await common.isContractAddress(toAddress, chainId);
+    if (isContractAddress) {
+      // popup contract modal
+      const input = params[0].data;
+      const res = await apiHelper.getAbiByAddress(toAddress);
+      if (res && res.abi) {
+        const { abi, symbol } = res;
+        const inputData = common.ethereumInputDecoder(abi, input);
+
+        const formatedInputData = common.formatContractABIInputData(inputData, symbol);
+        if (formatedInputData) {
+          // popup decode contract modal
+          this.popupContractModal(formatedInputData);
+        } else {
+          // popup default contract modal
+          this.popupContractModal();
+        }
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(contractMethod);
+        // popup default contract modal
+        this.popupContractModal();
       }
     } else {
-      console.log('abi is not exsit');
+      // popup normal transaction modal
       this.popupNormalTransactionModal();
     }
   }
 
-  popupAllowanceModal = async () => {
-    const { peerMeta, symbol, txData } = this.state;
-    const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = Rsk3.utils.hexToNumber(gasLimit);
-    const gasPriceNumber = Rsk3.utils.hexToNumber(gasPrice);
-    const feeWei = gasLimitNumber * gasPriceNumber;
-    const fee = Rsk3.utils.fromWei(String(feeWei), 'ether');
+  popupContractModal = async (formatedInputData) => {
+    const {
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
+    } = this.state;
+    const from = Rsk3.utils.toChecksumAddress(address, chainId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
+
     this.setState({
       modalView: (
-        <AllowanceModal
+        <ContractModal
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          asset={symbol}
-          fee={fee}
+          txData={{
+            ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
+          }}
+          abiInputData={formatedInputData}
         />
       ),
     });
@@ -507,8 +529,12 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (contractMethod = 'Smart Contract Call') => {
-    const { peerMeta, txData, selectedWallet: { address } } = this.state;
+  popupNormalTransactionModal = async () => {
+    const {
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
+    } = this.state;
+    const from = Rsk3.utils.toChecksumAddress(address, chainId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
 
     this.setState({
       modalView: (
@@ -516,57 +542,74 @@ class WalletConnectPage extends Component {
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          txData={{ ...txData, from: address }}
-          txType={contractMethod}
+          txData={{
+            ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
+          }}
         />
       ),
     });
   }
 
   popupOperationModal = async () => {
-    const { payload: { method, params } } = this.state;
+    try {
+      const { payload: { method, params } } = this.state;
 
-    switch (method) {
-      case 'personal_sign': {
-        const message = Rsk3.utils.hexToAscii(params[0]);
-        this.popupMessaageModal(message);
-        break;
-      }
+      switch (method) {
+        case 'personal_sign': {
+          const message = Rsk3.utils.hexToAscii(params[0]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_sign': {
-        const message = Rsk3.utils.hexToAscii(params[1]);
-        this.popupMessaageModal(message);
-        break;
-      }
+        case 'eth_sign': {
+          const message = Rsk3.utils.hexToAscii(params[1]);
+          await this.popupMessaageModal(message);
+          break;
+        }
 
-      case 'eth_signTypedData': {
+        case 'eth_signTypedData': {
         // popup sign typed data modal
-        break;
-      }
+          break;
+        }
 
-      case 'eth_sendTransaction': {
-        this.popupTransactionModal();
-        break;
-      }
+        case 'eth_sendTransaction': {
+          await this.popupTransactionModal();
+          break;
+        }
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log('popupOperationModal error: ', error);
+      this.handleError(error);
     }
+  }
+
+  insufficientRBTC = async () => {
+    const {
+      txData: { gasLimit, gasPrice, value }, selectedWallet: { address }, rsk3,
+    } = this.state;
+    const gasLimitNumber = new BigNumber(gasLimit);
+    const gasPriceNumber = new BigNumber(gasPrice);
+    const valueNumber = new BigNumber(value);
+    const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
+    const balance = await rsk3.getBalance(address);
+    return Number(balance) < Number(total);
   }
 
   handleCallRequest = async () => {
     try {
       const {
-        selectedWallet: { privateKey }, payload, connector, inputDecode, provider,
+        selectedWallet: { privateKey }, payload, connector,
       } = this.state;
       const { id, method, params } = payload;
 
       let result = null;
-      const signWallet = new ethers.Wallet(privateKey, provider);
       switch (method) {
         case 'personal_sign': {
           const message = Rsk3.utils.hexToAscii(params[0]);
-          result = await this.signMessage(signWallet, message);
+          result = await this.signMessage(privateKey, message);
           await connector.approveRequest({ id, result });
           this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
           break;
@@ -574,7 +617,7 @@ class WalletConnectPage extends Component {
 
         case 'eth_sign': {
           const message = Rsk3.utils.hexToAscii(params[1]);
-          result = await this.signMessage(signWallet, message);
+          result = await this.signMessage(privateKey, message);
           await connector.approveRequest({ id, result });
           this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
           break;
@@ -585,18 +628,24 @@ class WalletConnectPage extends Component {
         }
 
         case 'eth_sendTransaction': {
+          const insufficientRBTC = await this.insufficientRBTC();
+          if (insufficientRBTC) {
+            throw new InsufficientRbtcError();
+          }
+
           // Show loading when transaction is signing or sending
           await this.setState({ modalView: this.renderTransactionSigningView() });
-          result = await this.sendTransaction(signWallet);
+          result = await this.sendTransaction(privateKey);
           await connector.approveRequest({ id, result });
 
-          setTimeout(() => {
-            if (inputDecode && inputDecode.method === 'approve') {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.allowanceApproved')} cancelPress={this.closeModalPress} />) });
-            } else {
-              this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.transactionApproved')} cancelPress={this.closeModalPress} />) });
-            }
-          }, 500);
+          this.setState({
+            modalView: (
+              <SuccessModal
+                title={strings('page.wallet.walletconnect.transactionApproved')}
+                description={strings('page.wallet.walletconnect.successDesc')}
+                cancelPress={this.closeModalPress}
+              />),
+          });
           break;
         }
 
@@ -609,58 +658,102 @@ class WalletConnectPage extends Component {
     }
   }
 
-  handleError = async () => {
+  handleError = async (error) => {
+    const { addNotification } = this.props;
     const { connector } = this.state;
-
     await this.setState({ connector, modalView: null });
-    setTimeout(() => {
+
+    if (error && error.code) {
+      const notification = getErrorNotification(error.code, strings('page.wallet.walletconnect.tryLater'), {}, this.rejectRequest);
+      addNotification(notification);
+    } else {
       this.setState({ modalView: <ErrorModal tryAgain={this.approveRequest} tryLater={this.rejectRequest} /> });
-    }, 500);
+    }
   }
 
   generateTxData = async () => {
     const {
-      selectedWallet: { address }, payload: { params }, provider, chainId,
+      selectedWallet: { address }, payload: { params }, rsk3,
     } = this.state;
 
-    let { nonce, gasPrice } = params[0];
+    let {
+      nonce, gasPrice, gas, value,
+    } = params[0];
+    const { to, data } = params[0];
+
+    // When value is undefiend, set to default value.
+    if (!value) {
+      value = TRANSACTION.DEFAULT_VALUE;
+    }
     if (!nonce) {
       // Get nonce if params[0].nonce is null
-      nonce = await provider.getTransactionCount(address.toLowerCase(), 'pending');
+      nonce = await rsk3.getTransactionCount(address.toLowerCase(), 'pending');
     }
     if (!gasPrice) {
       // Get gasPrice if params[0].gasPrice is null
-      gasPrice = await provider.getGasPrice();
+      await rsk3.getGasPrice().then((latestGasPrice) => {
+        gasPrice = latestGasPrice;
+      }).catch((err) => {
+        console.log('getGasPrice error: ', err);
+        gasPrice = TRANSACTION.DEFAULT_GAS_PRICE;
+      });
+    }
+
+    if (!gas) {
+      await rsk3.estimateGas({
+        from: address,
+        to,
+        data,
+        value,
+      }).then((latestGas) => {
+        gas = latestGas;
+      }).catch((err) => {
+        console.log('estimateGas error: ', err);
+        gas = TRANSACTION.DEFAULT_GAS_LIMIT;
+      });
     }
 
     const txData = {
       nonce,
-      data: params[0].data,
-      gasLimit: params[0].gas || '0x927c0', // Set default gasLimit to 600000(hex: 0x927c0),
+      data,
+      // gas * 1.5 to ensure gas limit is enough
+      gasLimit: parseInt(gas * 1.5, 10),
       gasPrice,
-      to: Rsk3.utils.toChecksumAddress(params[0].to, chainId),
-      value: params[0].value || '0x0',
+      to,
+      value,
     };
 
     return txData;
   }
 
-  signMessage = async (signWallet, message) => {
-    const signature = await signWallet.signMessage(message);
-    return signature;
+  signMessage = async (privateKey, message) => {
+    const { rsk3 } = this.state;
+    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+    const signature = await accountInfo.sign(
+      message, privateKey,
+    );
+
+    return signature.signature;
   }
 
-  sendTransaction = async (signWallet) => {
-    try {
-      const { txData, provider } = this.state;
-      const rawTransaction = await signWallet.sign(txData);
-      const res = await provider.sendTransaction(rawTransaction);
-      const { hash } = res;
-      return hash;
-    } catch (error) {
-      console.log('send transaction error: ', error);
-      throw error;
-    }
+  sendTransaction = async (privateKey) => {
+    const { txData, rsk3 } = this.state;
+    console.log('sendTransaction txData: ', txData);
+    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+    const signedTransaction = await accountInfo.signTransaction(
+      txData, privateKey,
+    );
+
+    const { rawTransaction } = signedTransaction;
+    return new Promise((resolve, reject) => {
+      rsk3.sendSignedTransaction(rawTransaction)
+        .on('transactionHash', (hash) => {
+          resolve(hash);
+        })
+        .on('error', (error) => {
+          reject(error);
+        });
+    });
   }
 
   closeModalPress = () => {
@@ -677,11 +770,12 @@ class WalletConnectPage extends Component {
   }
 
   onRequestClose = () => {
-    const { payload } = this.state;
-    if (payload) {
+    const { modalView } = this.state;
+    if (modalView) {
       this.rejectRequest();
     } else {
       this.closeModalPress();
+      this.killSession();
     }
   }
 
@@ -710,11 +804,14 @@ class WalletConnectPage extends Component {
     const {
       contentType, peerMeta, selectedWallet, isTestnet,
     } = this.state;
-    const { address } = selectedWallet;
+    const { navigation: { state: { params: { wallet } } } } = this.props;
+    const { address, coins } = selectedWallet;
     const { name, url } = peerMeta;
     if (contentType === WALLET_CONNECTING) {
       return (
         <WalletConnecting
+          wallet={wallet}
+          updateWallet={this.updateWallet}
           approve={this.approveSession}
           reject={this.rejectSession}
           address={address}
@@ -722,6 +819,7 @@ class WalletConnectPage extends Component {
           dappUrl={url}
           isTestnet={isTestnet}
           onSwitchValueChanged={this.onSwitchValueChanged}
+          coins={coins}
         />
       );
     }
@@ -743,9 +841,9 @@ class WalletConnectPage extends Component {
 
     return (
       <BasePageSimple
-        isSafeView={false}
+        isSafeView
         headerComponent={(
-          <WaleltConnectHeader
+          <WalletConnectHeader
             title={strings('page.wallet.walletconnect.title')}
             onBackButtonPress={this.onBackButtonPress}
           />

@@ -78,9 +78,7 @@
         "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira",
-        "mainnet": "Rede principal",
-        "testnet": "Rede teste"
+        "title": "Selecionar ativos da carteira"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
@@ -121,32 +119,36 @@
         "unauthorization": "Por favor, ative as permissões da câmera para usar esse recurso."
       },
       "walletconnect": {
-        "title": "Wallet Connect",
+        "title": "WalletConnect",
+        "timeoutTitle": "Tempo expirado",
+        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão WalletConnect com o dapp dentro do prazo estabelecido. Por favor, tente novamente.",
+        "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
-        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da rsk",
-        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da rsk",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da RSK",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da RSK",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
-        "signApprovedDesc": "Sucesso!Sua mensagem foi assinada e deve aparecer no dapp",
+        "signApprovedDesc": "Sucesso! Sua mensagem foi assinada e deve aparecer no dapp",
         "allowanceApproved": "Autorizado",
         "transactionApproved": "Transação aprovada",
         "request": "Pedido",
-        "connectWallet": "%{dappName} deseja se conectar à sua carteira",
+        "connectWallet": "%{dappName} deseja acessar sua carteira",
         "content": "Conteúdo",
         "agreeTo": "Ao clicar em permitir, você concorda em",
-        "agreeOne": "- Permitir fornecer o endereço atual da carteira",
-        "agreeTwo": "- Permitir que seja solicitado a assinatura da carteira atual",
+        "agreeOne": "- Permitir fornecer o endereço desta carteira",
+        "agreeTwo": "- Permitir que seja solicitada a assinatura desta carteira",
+        "assets": "Ativos",
         "advancedOptions": "Opções avançadas",
         "reject": "Rejeitar",
         "allow": "Permitir",
         "connected": "Conectado",
         "connectedWallet": "%{dappName} se conectou à sua carteira",
         "waitingForOperations": "Aguardando por operações",
-        "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar a aprovação da assinatura.",
+        "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar aprovação para realizar transações.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
-        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
         "asset": "Ativo",
         "permission": "Permissão",
         "allowance": "Autorizar",
@@ -155,13 +157,13 @@
         "cancel": "Cancelar",
         "gotIt": "ENTENDI",
         "leaveToDisconnect": "Sair para desconectar?",
-        "leaveToDisconnectDesc": "Sair da página Wallet Connect irá fazer com que a RWallet se desconecte do Dapp atualmente conectado.",
-        "leaveToDisconnectConfirm": "Você tem certeza que deseja desconectar?",
-        "disconnectAlertTitle": "Wallet Connect desconectada",
-        "disconnectAlertContent": "A conexão Wallet Connect com o Dapp \"%{dappName}\" está fechada.Isto pode ser por causa de fraco acesso à rede, ou o Dapp rejeitou a carteira diretamente por alguma razão.\n\nAo clicar no botão embaixo você será retornado ao painel de carteira.",
+        "leaveToDisconnectDesc": "Sair da página WalletConnect irá fazer com que a RWallet se desconecte do dapp atualmente conectado.",
+        "leaveToDisconnectConfirm": "Você tem certeza de que deseja desconectar?",
+        "disconnectAlertTitle": "WalletConnect desconectada",
+        "disconnectAlertContent": "O dapp \"%{dappName}\" foi desconectado da WalletConnect. Pode ter ocorrido alguma instabilidade ou rejeição por parte do dapp. Ao clicar no botão abaixo você será direcionado para a carteira.",
         "okGotIt": "Ok, entendi",
         "error": "Erro",
-        "errorDesc": "Erro!Aconteceu um erro, por favor tente novamente mais tarde (pode haver muitas razões, como problemas de rede, rejeição do usuário, código de senha incorreto, taxa insuficiente, etc.)",
+        "errorDesc": "Erro! Aconteceu um erro, por favor tente novamente mais tarde (pode haver muitas razões, como problemas de rede, rejeição do usuário, código de senha incorreto, taxa insuficiente, etc.)",
         "tryAgain": "Tente novamente",
         "tryLater": "Tente mais tarde",
         "approveMessage": "Aprovar assinatura de mensagem",
@@ -170,11 +172,18 @@
         "successDesc": "Sucesso!Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
         "approveTransaction": "Aprovar transação",
         "approveTransactionDesc": "Ao clicar em confirmar, você concorda em assinar a transação gerada por %{dappUrl}",
+        "approveSmartContract": "Aprovar Chamada de Contrato Inteligente",
+        "approveSmartContractDesc": "Ao clicar em Confirmar, você concorda em assinar a chamada de contrato inteligente originada de %{dappUrl}",
+        "spender": "Usuário",
+        "value": "Valor",
+        "recipient": "Recipiente",
+        "method": "Método",
         "amount": "Quantidade",
         "type": "Tipo",
         "from": "De",
         "to": "Para",
         "data": "Dados",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Rede",
           "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
@@ -221,9 +230,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do ativo",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de testes"
+        "address": "Endereço do contrato do ativo"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
@@ -281,6 +288,11 @@
         "understood": "Entendi",
         "createOrImport": "Criar ou importar",
         "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Falhou",
+        "errorContent": "Ocorreu um erro desconhecido, por favor tente novamente mais tarde",
+        "errorButton": "Ok"
       }
     },
     "mine": {
@@ -413,7 +425,8 @@
     "done": "Pronto",
     "share": "COMPARTILHAR",
     "check": "VERIFICAR",
-    "update": "Atualizar"
+    "update": "Atualizar",
+    "okay": "OK"
   },
   "txState": {
     "Sent": "Enviado",
@@ -616,6 +629,39 @@
     "feeCalculationError": {
       "title": "Erro de cálculo de taxa",
       "body": "Ocorreu um erro ao calcular o custo. Por favor, tente novamente."
+    },
+    "invalidRskAddress": {
+      "title": "Endereço RSK inválido",
+      "body": {
+        "normal": "O endereço inserido é um endereço RSK inválido. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o em %{explorerName} antes de enviar.",
+        "ethereum": "O endereço inserido parece ser um endereço Ethereum. Este é um problema conhecido ao copiar endereços do MetaMask. Certifique-se de que o endereço do destinatário é um endereço RSK válido e verifique-o em %{explorerName} antes de enviar."
+      },
+      "question": "Por que estou vendo esta mensagem?",
+      "confirm": "Enviar assim mesmo",
+      "cancel": "Voltar e reinserir",
+      "asset": "Ativo",
+      "address": "Endereço",
+      "balance": "Saldo",
+      "risk": "Ok, eu entendo o risco."
+    },
+    "emptyRecordAddress": {
+      "title": "Endereço sem registro",
+      "body": {
+        "normal": "O endereço inserido não tem registro em %{explorerName} e tem %{balance} %{otherSymbolName} na rede RSK %{otherType}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK da %{type}?",
+        "both": "O endereço inserido não tem registro em %{explorerName}. Tem certeza de que deseja enviar %{amount} %{symbolName} para o endereço RSK na %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Endereço da carteira RSK inválido",
+      "body": "O endereço da carteira RSK inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
+    },
+    "convertContractAddress": {
+      "title": "Endereço de contrato RSK inválido",
+      "body": "O endereço do contrato RSK inserido é inválido. A RWallet tentará corrigi-lo automaticamente para o formato de endereço correto. Você deseja prosseguir?"
+    },
+    "invalidParam": {
+      "title": "Parâmetro inválido",
+      "body": "O parâmetro não é válido."
     }
   },
   "currency": {
@@ -631,5 +677,9 @@
       "title": "Erro de rede",
       "body": "Seu dispositivo não pode se conectar ao servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Principal",
+    "testnet": "Teste"
   }
 }

@@ -40,8 +40,15 @@ export const errorNotifications = {
     title: 'modal.feeCalculationError.title',
     body: 'modal.feeCalculationError.body',
   },
+  [ERROR_CODE.ERR_INVALID_ADDRESS]: {
+    title: 'modal.invalidAddress.title',
+    body: 'modal.invalidAddress.body',
+  },
+  [ERROR_CODE.ERR_INVALID_PARAM]: {
+    title: 'modal.invalidParam.title',
+    body: 'modal.invalidParam.body',
+  },
 };
-
 
 export const createSuccessNotification = (title, message, buttonText, notificationCloseCallback) => ({
   id: Date.now(),
@@ -87,7 +94,6 @@ export const createErrorNotificationWithMessageParams = (title, message, message
   buttonText,
   notificationCloseCallback,
 });
-
 
 /**
  * get error notification by error code

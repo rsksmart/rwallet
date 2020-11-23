@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "키없이 자산 모니터링"
       },
       "selectCurrency": {
-        "title": "지갑 자산 선택",
-        "mainnet": "메인넷",
-        "testnet": "테스트넷"
+        "title": "지갑 자산 선택"
       },
       "selectWallet": {
         "title": "자산 선택"
@@ -119,6 +117,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "월렛 연결 시간 초과",
+        "timeoutBody": "RWallet이 짧은 시간 내에 Dapp에 대한 Wallet Connect 연결을 설정할 수 없습니다. 다시 시도하십시오.",
+        "timeoutButton": "알겠습니다",
         "emptyWalletError": "빈 지갑",
         "selectMainnetAsset": "하나 이상의 메인 넷 rsk 자산이있는 지갑을 선택하십시오",
         "selectTestnetAsset": "적어도 하나의 testnet rsk 자산이있는 지갑을 선택하십시오",
@@ -134,6 +135,7 @@
         "agreeTo": "허용을 클릭하면 동의합니다.",
         "agreeOne": "- 현재 지갑 주소 가져 오기 허용",
         "agreeTwo": "- 현재 지갑에서 서명 요청 허용",
+        "assets": "자산",
         "advancedOptions": "고급 옵션",
         "reject": "거부",
         "allow": "허용",
@@ -143,7 +145,7 @@
         "waitingForOperationsDesc": "%{dappName} dapp 에서 작업을 수행하십시오. RWallet은 요청시 서명 승인을 요청하는 메시지를 표시합니다.",
         "disconnect": "연결 해제",
         "approveAllowance": "수당 승인",
-        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl} 이 (가) 귀하를 대신하여 토큰을 전송하는 데 동의하는 것입니다.",
+        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl}이 사용자를 대신하여 스마트 계약 호출을 실행하는 데 동의하는 것입니다.",
         "asset": "자산",
         "permission": "Permission",
         "allowance": "허용",
@@ -167,11 +169,18 @@
         "successDesc": "성공! 거래가 블록 체인에 게시되었습니다. 확인되면 dapp에 표시되어야합니다.",
         "approveTransaction": "거래 승인",
         "approveTransactionDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 거래에 서명하는 데 동의하는 것입니다.",
+        "approveSmartContract": "스마트 계약 호출 승인",
+        "approveSmartContractDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 스마트 계약 호출에 서명하는 데 동의하는 것입니다.",
+        "spender": "돈 쓰는 사람",
+        "value": "값",
+        "recipient": "받는 사람",
+        "method": "방법",
         "amount": "금액",
         "type": "유형",
         "from": "From",
         "to": "To",
         "data": "데이터",
+        "contract": "계약",
         "networkQuestion": {
           "title": "네트워크",
           "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."
@@ -218,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "사용자 정의 자산 추가",
-        "address": "자산 컨트랙트 주소",
-        "mainnet": "메인넷",
-        "testnet": "테스트 넷"
+        "address": "자산 컨트랙트 주소"
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",
@@ -284,6 +291,11 @@
         "understood": "알았습니다",
         "createOrImport": "생성 또는 불러오기",
         "cancel": "취소"
+      },
+      "browser": {
+        "errorTitle": "실패",
+        "errorContent": "알 수없는 오류가 발생했습니다. 나중에 다시 시도하십시오.",
+        "errorButton": "알겠습니다"
       }
     },
     "mine": {
@@ -403,7 +415,8 @@
     "done": "완료",
     "share": "공유",
     "check": "검사",
-    "update": "최신 정보"
+    "update": "최신 정보",
+    "okay": "괜찮아"
   },
   "txState": {
     "Sent": "전송 완료",
@@ -600,6 +613,39 @@
     "feeCalculationError": {
       "title": "수수료 계산 오류",
       "body": "비용을 계산하는 중에 오류가 발생했습니다. 다시 시도하십시오."
+    },
+    "invalidRskAddress": {
+      "title": "잘못된 RSK 주소",
+      "body": {
+        "normal": "입력 한 수신자 주소는 잘못된 RSK 주소입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오.",
+        "ethereum": "입력 한 수신자 주소가 이더 리움 주소 인 것 같습니다. 이것은 MetaMask에서 주소를 복사 할 때 알려진 문제입니다. 수신자 주소가 유효한 RSK 주소인지 확인하고 보내기 전에 %{explorerName}에서 확인하십시오."
+      },
+      "question": "이 메시지가 표시되는 이유는 무엇입니까?",
+      "confirm": "어쨌든 보내",
+      "cancel": "돌아가서 다시 입력",
+      "asset": "유산",
+      "address": "주소",
+      "balance": "밸런스",
+      "risk": "좋아요, 위험을 이해합니다."
+    },
+    "emptyRecordAddress": {
+      "title": "레코드 수신자 주소가 비어 있습니다.",
+      "body": {
+        "normal": "입력 한 수신자 주소는 %{explorerName}에 레코드가 없으며 RSK %{otherType} 네트워크에 %{balance} %{otherSymbolName}이 있습니다. %{amount} %{symbolName}을 RSK %{type}의 주소로 보내시겠습니까?",
+        "both": "The entered recipient address has no record in %{explorerName}. Are you sure about sending %{amount} %{symbolName} to the address on RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "잘못된 RSK 지갑 주소",
+      "body": "입력 한 지갑 주소는 잘못된 RSK 주소입니다. RWallet은 예상 주소 형식으로 자동 수정을 시도합니다. 진행 하시겠습니까?"
+    },
+    "convertContractAddress": {
+      "title": "잘못된 RSK 계약 주소",
+      "body": "입력 한 계약 주소는 잘못된 RSK 주소입니다. RWallet은 예상 주소 형식으로 자동 수정을 시도합니다. 진행 하시겠습니까?"
+    },
+    "invalidParam": {
+      "title": "잘못된 매개 변수",
+      "body": "매개 변수가 유효하지 않습니다."
     }
   },
   "currency": {
@@ -615,5 +661,9 @@
       "title": "네트워크 오류",
       "body": "기기가 서버에 연결할 수 없습니다."
     }
+  },
+  "networkType": {
+    "mainnet": "메인 넷",
+    "testnet": "테스트 네트"
   }
 }

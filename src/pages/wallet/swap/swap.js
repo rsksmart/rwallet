@@ -16,7 +16,7 @@ import fontFamily from '../../../assets/styles/font.family';
 import presetStyles from '../../../assets/styles/style';
 import common from '../../../common/common';
 import CoinswitchHelper from '../../../common/coinswitch.helper';
-import Transaction from '../../../common/transaction';
+import Transaction, { btcTransaction } from '../../../common/transaction';
 import appActions from '../../../redux/app/actions';
 import {
   createErrorNotification, createInfoNotification, getErrorNotification, getDefaultTxFailedErrorNotification,
@@ -454,13 +454,11 @@ class Swap extends Component {
       }
       const gasFee = feeObject.feeParams;
       const extraParams = {
-        data: '', memo: '', gasFee, coinswitch: { order },
+        data: '', memo: '', gasFee, coinSwitch: { order },
       };
       let transaction = new Transaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
       console.log('transaction: ', transaction);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      await transaction.processSignedTransaction();
+      await transaction.broadcast();
       this.setState({ isLoading: false });
       const completedParams = {
         symbol: swapSource.coin.symbol,
@@ -619,9 +617,9 @@ class Swap extends Component {
     const txAmount = new BigNumber(amount);
     const { swapSource } = this.props;
     const {
-      symbol, type, transactions, privateKey, address, balance,
+      symbol, type, privateKey, address, balance, precision,
     } = swapSource.coin;
-    const amountHex = symbol === 'BTC' ? common.btcToSatoshiHex(txAmount) : common.rskCoinToWeiHex(txAmount);
+    const amountHex = common.convertCoinAmountToUnitHex(symbol, txAmount, precision);
     console.log(`parseHelper.getTransactionFees, symbol: ${symbol}, type: ${type}, address: ${address}, amountHex: ${amountHex}`);
     let transactionFees = null;
     if (symbol === 'BTC') {
@@ -629,14 +627,13 @@ class Swap extends Component {
       const estimateParams = {
         netType: type,
         amount: txAmount,
-        transactions,
         fromAddress: address,
         destAddress: toAddress,
         privateKey,
         isSendAllBalance: isAllBalance,
       };
-      const size = common.estimateBtcSize(estimateParams);
-      console.log('common.estimateBtcSize, size: ', size);
+      const size = await btcTransaction.estimateTxSize(estimateParams);
+      console.log('btcTransaction.estimateBtcSize, size: ', size);
       transactionFees = await parseHelper.getBtcTransactionFees(symbol, type, size);
       console.log('loadTransactionFees, transactionFees: ', transactionFees);
     } else {

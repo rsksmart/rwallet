@@ -27,6 +27,7 @@ import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
+import TypeTag from '../../components/common/misc/type.tag';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
   myAssets: {
     marginTop: 17,
     marginHorizontal: 25,
+    height: 50,
   },
   myAssetsText: {
     color: color.black,
@@ -237,6 +239,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 10 + screenHelper.topHeight,
   },
+  tagView: {
+    width: 87,
+    marginLeft: 10,
+    flexDirection: 'row',
+  },
 });
 
 const stateIcons = {
@@ -287,13 +294,13 @@ class History extends Component {
   /**
   * Returns transactions, pendingBalance, pendingBalanceValue
   * @param {array} rawTransactions
-  * @param {string} address
   * @param {string} symbol
   * @param {string} currency
   * @param {array} prices
+  * @param {array} precision
   * @returns {object} { transactions, pendingBalance, pendingBalanceValue }
   */
-  static processRawTransactions(rawTransactions, address, symbol, type, currency, prices) {
+  static processRawTransactions(rawTransactions, symbol, type, currency, prices, precision) {
     if (_.isEmpty(rawTransactions)) {
       const result = { pendingBalance: null, pendingBalanceValue: null };
       result.transactions = rawTransactions ? [] : null;
@@ -318,7 +325,7 @@ class History extends Component {
       }
 
       if (transaction.value) {
-        amount = common.convertUnitToCoinAmount(symbol, transaction.value);
+        amount = common.convertUnitToCoinAmount(symbol, transaction.value, precision);
         amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
       }
       transactions.push({
@@ -398,9 +405,9 @@ class History extends Component {
   componentDidMount() {
     const { currency, prices } = this.props;
     const {
-      balance, balanceValue, transactions, address, symbol, type,
+      balance, balanceValue, transactions, symbol, type, precision,
     } = this.coin;
-    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+    const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, symbol, type, currency, prices, precision);
     const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
     this.setState({ listData, ...balanceTexts, isRefreshing: true });
     this.fetchTokenTransactions(0);
@@ -414,9 +421,9 @@ class History extends Component {
     const { fetchTxTimestamp } = this.state;
     if ((updateTimestamp !== lastUpdateTimestamp || prices !== lastPrices || currency !== lastCurrency || txTimestamp === fetchTxTimestamp) && this.coin) {
       const {
-        balance, balanceValue, transactions, address, symbol, type,
+        balance, balanceValue, transactions, symbol, type, precision,
       } = this.coin;
-      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, address, symbol, type, currency, prices);
+      const { pendingBalance, pendingBalanceValue, transactions: listData } = History.processRawTransactions(transactions, symbol, type, currency, prices, precision);
       const balanceTexts = History.getBalanceTexts(balance, balanceValue, pendingBalance, pendingBalanceValue, symbol, type, currency);
 
       // When txTimestamp === fetchTxTimestamp, the new data is retrieved,
@@ -441,11 +448,15 @@ class History extends Component {
 
   onRefresh = () => {
     const { isRefreshing, isLoadMore } = this.state;
+    const { updateTokenBalance } = this.props;
     if (isRefreshing || isLoadMore) {
       return;
     }
     this.setState({ isRefreshing: true });
     this.fetchTokenTransactions(0);
+
+    // # Issue 525 - Force refresh wallet balance when user scroll down to trigger balance loading effect
+    updateTokenBalance([this.coin]);
   }
 
   onSendButtonClick() {
@@ -593,7 +604,15 @@ class History extends Component {
       <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText
+              layoutStyle={styles.myAssets}
+              fontStyle={styles.myAssetsText}
+              maxFontSize={35}
+              suffixElement={(<View style={styles.tagView}><TypeTag type={type} /></View>)}
+              suffixElementWidth={97}
+            >
+              {balanceText}
+            </ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
             {
               pendingBalanceText && (
@@ -663,6 +682,7 @@ History.propTypes = {
   fetchTransactions: PropTypes.func.isRequired,
   txTimestamp: PropTypes.number,
   addNotification: PropTypes.func.isRequired,
+  updateTokenBalance: PropTypes.func.isRequired,
 };
 
 History.defaultProps = {
@@ -680,8 +700,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  fetchTransactions: (params) => dispatch(walletActions.fetchTransactions(params)),
+  updateTokenBalance: (tokens) => dispatch(walletActions.updateTokenBalance(tokens)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

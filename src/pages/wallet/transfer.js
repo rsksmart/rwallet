@@ -7,7 +7,6 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
-import Rsk3 from '@rsksmart/rsk3';
 import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import RadioGroup from './transfer.radio.group';
@@ -19,7 +18,7 @@ import {
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import Transaction from '../../common/transaction';
+import Transaction, { btcTransaction, rbtcTransaction } from '../../common/transaction';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -31,8 +30,10 @@ import {
 import parseHelper from '../../common/parse';
 import references from '../../assets/references';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
-import { ERROR_CODE, FeeCalculationError } from '../../common/error';
-import * as rbtc from '../../common/transaction/rbtccoin';
+import {
+  ERROR_CODE, FeeCalculationError, InvalidAddressError, InvalidAmountError,
+} from '../../common/error';
+import InvalidRskAddressConfirmation from '../../components/wallet/invalid.rskaddress.confirmation';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -295,7 +296,6 @@ class Transfer extends Component {
     this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
     this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
     this.onSendAllPress = this.onSendAllPress.bind(this);
-    this.onConfirmPress = this.onConfirmPress.bind(this);
     this.onAmountInputBlur = this.onAmountInputBlur.bind(this);
     this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
     this.onAmountInputChangeText = this.onAmountInputChangeText.bind(this);
@@ -317,6 +317,10 @@ class Transfer extends Component {
       levelFees: null, // [ { fee, value }... ]
       addressError: null,
       addressText: '',
+      invalidAddressBalance: undefined,
+      invalidAddressModalTitle: undefined,
+      invalidAddressModalBody: undefined,
+      invalidAddressModalVisible: false,
     };
   }
 
@@ -415,35 +419,25 @@ class Transfer extends Component {
     });
   }
 
-  async onConfirmPress() {
-    const { symbol, type, networkId } = this.coin;
-    const { amount } = this.state;
+  onConfirmPressed = async () => {
+    const { symbol, type } = this.coin;
     const { toAddress } = this;
-    // This app use checksum address with chainId, but some third-party app use web3 address,
-    // so we need to convert input address to checksum address with chainId before validation and transfer
-    // https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
-    let checksumAddress = toAddress;
-    if (symbol !== 'BTC') {
-      try {
-        checksumAddress = Rsk3.utils.toChecksumAddress(toAddress, networkId);
-      } catch (error) {
-        this.showInvalidAddressNotification();
+    try {
+      const address = symbol === 'BTC' ? toAddress : await this.getRskAddress();
+      if (!address) {
         return;
       }
-    }
 
-    if (!common.isWalletAddress(checksumAddress, symbol, type)) {
-      this.showInvalidAddressNotification();
-      return;
-    }
+      if (!common.isWalletAddress(address, symbol, type)) {
+        throw new InvalidAddressError();
+      }
 
-    if (!common.isAmount(amount)) {
-      this.showInvalidAmountNotification();
-      return;
+      this.confirmTransactionWithAddress();
+    } catch (error) {
+      this.addErrorNotification(error);
+    } finally {
+      this.setState({ loading: false });
     }
-
-    const { callAuthVerify } = this.props;
-    callAuthVerify(() => { this.confirm(checksumAddress); }, () => null);
   }
 
   onAmountInputBlur() {
@@ -545,6 +539,103 @@ class Transfer extends Component {
     return feeParams;
   }
 
+  validateAddressBalance = async () => {
+    const { symbol, type } = this.coin;
+    const { toAddress } = this;
+    const { amount } = this.state;
+    const explorerName = common.getExplorerName(type);
+
+    this.setState({ loading: true });
+
+    const mainnetBalance = await parseHelper.getBalance({
+      type: 'Mainnet', symbol, address: toAddress, needFetch: false,
+    });
+
+    const testnetBalance = await parseHelper.getBalance({
+      type: 'Testnet', symbol, address: toAddress, needFetch: false,
+    });
+
+    const addressBalance = type === 'Mainnet' ? mainnetBalance : testnetBalance;
+    const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', addressBalance), 'RBTC');
+
+    if ((type === 'Mainnet' && mainnetBalance === '0x0') || (type === 'Testnet' && testnetBalance === '0x0')) {
+      const invalidAddressModalTitle = strings('modal.emptyRecordAddress.title');
+      const symbolName = common.getSymbolName(symbol, type);
+      let invalidAddressModalBody = null;
+      if (mainnetBalance === '0x0' && testnetBalance === '0x0') {
+        invalidAddressModalBody = strings('modal.emptyRecordAddress.body.both', {
+          explorerName, symbol, type, symbolName, amount,
+        });
+      } else {
+        const otherType = type === 'Mainnet' ? 'Testnet' : 'Mainnet';
+        const otherSymbolName = common.getSymbolName(symbol, otherType);
+        const otherTypeBalance = otherType === 'Mainnet' ? mainnetBalance : testnetBalance;
+        const balanceAmount = common.convertUnitToCoinAmount('RBTC', otherTypeBalance);
+        const balanceText = common.getBalanceString(balanceAmount, 'RBTC');
+        invalidAddressModalBody = strings('modal.emptyRecordAddress.body.normal', {
+          explorerName, symbol, type, symbolName, amount, otherType, otherSymbolName, balance: balanceText,
+        });
+      }
+
+      this.setState({
+        loading: false,
+        invalidAddressBalance,
+        invalidAddressModalTitle,
+        invalidAddressModalBody,
+        invalidAddressModalVisible: true,
+      });
+
+      return false;
+    }
+
+    return true;
+  }
+
+  getRskAddress = async () => {
+    const { symbol, type, networkId } = this.coin;
+    const { toAddress } = this;
+    const explorerName = common.getExplorerName(type);
+    const checksumAddress = common.toChecksumAddress(toAddress, networkId);
+    if (checksumAddress !== toAddress) {
+      const ethereumChecksumAddress = common.toChecksumAddress(toAddress);
+
+      this.setState({ loading: true });
+
+      const balance = await parseHelper.getBalance({
+        type, symbol, address: toAddress, needFetch: false,
+      });
+
+      const invalidAddressModalTitle = strings('modal.invalidRskAddress.title');
+      const invalidAddressModalBody = ethereumChecksumAddress === toAddress
+        ? strings('modal.invalidRskAddress.body.ethereum', { explorerName })
+        : strings('modal.invalidRskAddress.body.normal', { explorerName });
+      const invalidAddressBalance = common.getBalanceString(common.convertUnitToCoinAmount('RBTC', balance), 'RBTC');
+
+      this.setState({
+        loading: false,
+        invalidAddressBalance,
+        invalidAddressModalTitle,
+        invalidAddressModalBody,
+        invalidAddressModalVisible: true,
+      });
+
+      return null;
+    }
+
+    const isHasBalance = await this.validateAddressBalance();
+    if (!isHasBalance) {
+      return null;
+    }
+
+    return checksumAddress;
+  }
+
+  addErrorNotification = (error) => {
+    const { addNotification } = this.props;
+    const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
+    addNotification(notification);
+  }
+
   /**
    * requestFees
    * This function checks user input and requests fees.
@@ -553,60 +644,92 @@ class Transfer extends Component {
    * @param {*} isAllBalance, Indicates whether the user needs to send the entire balance.
    */
   requestFees = async (isAllBalance) => {
-    const { addNotification } = this.props;
+    const { navigation, addConfirmation } = this.props;
     const { amount, to } = this.state;
-    const {
-      isAmountValid, isAddressValid, coin, toAddress,
-    } = this;
-    const {
-      symbol, type, transactions, privateKey, address,
-    } = coin;
+    const { isAmountValid, isAddressValid, coin } = this;
+    const { symbol } = coin;
     try {
       const isValid = !_.isEmpty(amount) && !_.isEmpty(to) && isAmountValid && isAddressValid;
       if (!isValid) {
         return;
       }
-
-      if (symbol === 'BTC') {
-        const estimateParams = {
-          netType: type,
-          amount,
-          transactions,
-          fromAddress: address,
-          destAddress: toAddress,
-          privateKey,
-          isSendAllBalance: isAllBalance,
-        };
-        this.txSize = common.estimateBtcSize(estimateParams);
-      }
-
+      this.setState({ loading: true });
+      this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
         return;
       }
       this.processFees(transactionFees);
     } catch (error) {
-      const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
-      addNotification(notification);
+      const confirmation = createErrorConfirmation(
+        defaultErrorNotification.title,
+        defaultErrorNotification.message,
+        'button.retry',
+        () => this.requestFees(),
+        () => navigation.goBack(),
+      );
+      addConfirmation(confirmation);
+    } finally {
+      this.setState({ loading: false });
     }
   }
 
-  async loadTransactionFees(isAllBalance) {
-    const { navigation, addConfirmation } = this.props;
+  estimateBtcTxSize = async (isSendAllBalance) => {
+    const { amount } = this.state;
+    const { coin, toAddress } = this;
+    const { type, privateKey, address } = coin;
+    const estimateParams = {
+      netType: type,
+      amount,
+      fromAddress: address,
+      destAddress: toAddress,
+      privateKey,
+      isSendAllBalance,
+    };
+    return btcTransaction.estimateTxSize(estimateParams);
+  }
+
+  confirmTransactionWithAddress = () => {
+    const { toAddress } = this;
+    const { symbol, networkId } = this.coin;
+    const { amount } = this.state;
+    try {
+      const address = symbol === 'BTC' ? toAddress : common.toChecksumAddress(toAddress, networkId);
+      if (!common.isAmount(amount)) {
+        throw new InvalidAmountError();
+      }
+
+      const { callAuthVerify } = this.props;
+      callAuthVerify(() => this.confirm(address), () => null);
+    } catch (error) {
+      this.addErrorNotification(error);
+    }
+  }
+
+  onInvalidRskAddressModalConfirmed = () => {
+    this.confirmTransactionWithAddress();
+    this.setState({ invalidAddressModalVisible: false });
+  }
+
+  onInvalidRskAddressModalCanceled = () => {
+    this.setState({ invalidAddressModalVisible: false });
+  }
+
+  async loadTransactionFees() {
     const { amount, memo } = this.state;
     const {
       coin, txFeesCache, toAddress, txSize,
     } = this;
     const {
-      symbol, type, address,
+      symbol, type, address, precision,
     } = coin;
 
-    if (!txSize) {
+    if (symbol === 'BTC' && !txSize) {
       throw new FeeCalculationError();
     }
 
     const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const value = symbol === 'BTC' ? common.btcToSatoshiHex(amount) : common.rskCoinToWeiHex(amount);
+    const value = common.convertCoinAmountToUnitHex(symbol, amount, precision);
     console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
     console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
 
@@ -623,32 +746,15 @@ class Transfer extends Component {
       return null;
     }
 
-    try {
-      this.setState({ loading: true });
-      const transactionFees = symbol === 'BTC'
-        ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-        : await rbtc.getTransactionFees(type, coin, address, toAddress, value, memo);
-      this.setState({ loading: false });
-      console.log('transactionFees: ', transactionFees);
-      this.txFeesCache = {
-        amount, toAddress, memo, transactionFees,
-      };
-      this.setState({ enableConfirm: true });
-      return transactionFees;
-    } catch (error) {
-      // If error, let user try again or quit.
-      this.setState({ loading: false });
-      console.log('loadTransactionFees, error: ', error);
-      const confirmation = createErrorConfirmation(
-        defaultErrorNotification.title,
-        defaultErrorNotification.message,
-        'button.retry',
-        () => this.requestFees(isAllBalance),
-        () => navigation.goBack(),
-      );
-      addConfirmation(confirmation);
-      return null;
-    }
+    const transactionFees = symbol === 'BTC'
+      ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
+      : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
+    console.log('transactionFees: ', transactionFees);
+    this.txFeesCache = {
+      amount, toAddress, memo, transactionFees,
+    };
+    this.setState({ enableConfirm: true });
+    return transactionFees;
   }
 
   calcCustomFee(value) {
@@ -679,7 +785,7 @@ class Transfer extends Component {
     const { isRequestSendAll, coin, txSize } = this;
     const { symbol, type } = coin;
 
-    if (!txSize) {
+    if (symbol === 'BTC' && !txSize) {
       throw new FeeCalculationError();
     }
 
@@ -803,13 +909,10 @@ class Transfer extends Component {
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
       let transaction = new Transaction(coin, toAddress, amount, extraParams);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      await transaction.processSignedTransaction();
+      await transaction.broadcast();
       this.setState({ loading: false });
       const completedParams = {
-        symbol: coin.symbol,
-        type: coin.type,
+        coin,
         hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
@@ -946,10 +1049,10 @@ class Transfer extends Component {
   render() {
     const {
       loading, to, amount, memo, /* isConfirm, */ isCustomFee, amountPlaceholderText,
-      enableConfirm, levelFees,
+      enableConfirm, levelFees, invalidAddressBalance, invalidAddressModalTitle, invalidAddressModalBody, invalidAddressModalVisible,
     } = this.state;
     const { navigation, currency, prices } = this.props;
-    const { coin } = this;
+    const { coin, toAddress } = this;
     const symbol = coin && coin.symbol;
     const type = coin && coin.type;
     const symbolName = common.getSymbolName(symbol, type);
@@ -1063,8 +1166,20 @@ class Transfer extends Component {
                   )}
                 label={isConfirm ? strings('page.wallet.transfer.CONFIRMED') : strings('page.wallet.transfer.slideConfirm')}
               /> */}
-          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPress} />
+          <Button style={styles.confirmButton} text="button.confirm" onPress={this.onConfirmPressed} />
         </View>
+        { invalidAddressModalVisible && (
+          <InvalidRskAddressConfirmation
+            title={invalidAddressModalTitle}
+            body={invalidAddressModalBody}
+            ref={(ref) => { this.invalidRskAddressModal = ref; }}
+            data={{
+              balance: invalidAddressBalance, symbol, type, address: toAddress,
+            }}
+            onConfirm={this.onInvalidRskAddressModalConfirmed}
+            onCancel={this.onInvalidRskAddressModalCanceled}
+          />
+        )}
       </BasePageGereral>
     );
   }

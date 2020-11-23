@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, ImageBackground,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
-import Switch from '../../components/common/switch/switch';
 import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import space from '../../assets/styles/space';
@@ -22,6 +21,7 @@ import ResponsiveText from '../../components/common/misc/responsive.text';
 import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import { WalletType, BtcAddressType } from '../../common/constants';
+import TokenSwitch from '../../components/common/switch/switch.token';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -64,13 +64,6 @@ const styles = StyleSheet.create({
     height: 67,
     marginTop: 10,
     borderRadius: 10,
-  },
-  rowTitle: {
-    marginLeft: 20,
-    flex: 1,
-  },
-  icon: {
-    marginLeft: 20,
   },
   switch: {
     marginRight: 20,
@@ -230,17 +223,15 @@ class AddToken extends Component {
         extraData={this.state}
         data={listData}
         renderItem={({ item, index }) => (
-          <View style={[styles.row, index === 0 ? space.marginTop_0 : 0]}>
-            <Image style={styles.icon} source={item.icon} />
-            <Text style={styles.rowTitle}>{item.name}</Text>
-            <Switch
-              style={styles.switch}
-              value={item.selected}
-              onValueChange={(value) => this.onSwitchValueChanged(index, value)}
-              // Restrict the deletion of the last token
-              disabled={selectedItems.length === 1 && item.selected}
-            />
-          </View>
+          <TokenSwitch
+            style={[styles.row, space.paddingLeft_20, index === 0 ? space.marginTop_0 : 0]}
+            switchStyle={styles.switch}
+            icon={item.icon}
+            name={item.name}
+            value={item.selected}
+            disabled={selectedItems.length === 1 && item.selected}
+            onSwitchValueChanged={(value) => this.onSwitchValueChanged(index, value)}
+          />
         )}
         keyExtractor={(item, index) => index.toString()}
       />

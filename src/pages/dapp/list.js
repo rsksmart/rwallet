@@ -27,11 +27,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dappIcon: {
+  dappIconView: {
     width: 62,
     height: 62,
-    resizeMode: 'cover',
     borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dappIcon: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  thumbDappIcon: {
+    width: '85%',
+    height: '85%',
   },
   dappInfo: {
     flex: 1,
@@ -108,10 +118,8 @@ class DAppList extends Component {
     let dappList = [];
     if (type === 'recent') {
       dappList = recentDapps;
-    } else if (type === 'recommended') {
-      dappList = _.filter(dapps, (item) => item.isRecommended);
     } else {
-      dappList = _.filter(dapps, (item) => item.type === type);
+      dappList = _.filter(dapps, (item) => _.includes(item.networks, type));
     }
     return (
       <BasePageSimple
@@ -125,7 +133,9 @@ class DAppList extends Component {
               style={[styles.item, { marginRight: 15 }]}
               onPress={() => this.onDappPress(item)}
             >
-              <Image style={styles.dappIcon} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+              <View style={styles.dappIconView}>
+                <Image style={[styles.dappIcon, common.needDisplayThumbIcon(item) ? styles.thumbDappIcon : {}]} source={{ uri: (item.iconUrl || config.defaultDappIcon) }} />
+              </View>
               <View style={styles.dappInfo}>
                 { item.name ? <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dappName}>{item.name[language] || item.name.en || item.name}</Text> : null }
                 { item.description ? <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.dappDesc]}>{item.description[language] || item.description.en}</Text> : null }

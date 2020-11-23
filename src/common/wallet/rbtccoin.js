@@ -53,8 +53,10 @@ export default class RBTCCoin {
     // If coinType does not contain this.id, use custom token metadata;
     this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.chain = this.metadata.chain;
+    this.contractAddress = this.metadata.contractAddress;
     this.type = type;
     this.symbol = symbol;
+    this.precision = this.metadata.precision;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
     this.account = common.parseAccountFromDerivationPath(path);
@@ -266,8 +268,8 @@ export default class RBTCCoin {
 
   setCustomTokenData = async (data) => {
     const { contractAddress, name, precision } = data;
-    this.precision = precision;
-    this.contractAddress = contractAddress;
+    this.precision = precision || this.precision;
+    this.contractAddress = contractAddress || this.contractAddress;
     this.name = name || this.metadata.defaultName;
   }
 }

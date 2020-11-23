@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "Monitorear activos sin claves"
       },
       "selectCurrency": {
-        "title": "Seleccionar activos de Wallet",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Seleccionar activos de Wallet"
       },
       "selectWallet": {
         "title": "Seleccionar activo"
@@ -122,6 +120,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect agotó el tiempo de espera",
+        "timeoutBody": "RWallet no pudo establecer una conexión de Wallet Connect con el Dapp en un breve período de tiempo. Vuelva a intentarlo.",
+        "timeoutButton": "Bien",
         "emptyWalletError": "Cartera vacía",
         "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
         "selectTestnetAsset": "Seleccione una billetera que tenga al menos un activo testnet rsk",
@@ -137,6 +138,7 @@
         "agreeTo": "Al hacer clic en Permitir, estás de acuerdo",
         "agreeOne": "- Permitir obtener la dirección de billetera actual",
         "agreeTwo": "- Permitir solicitud de firma de la billetera actual",
+        "assets": "Bienes",
         "advancedOptions": "Opciones avanzadas",
         "reject": "Rechazar",
         "allow": "Permitir",
@@ -146,7 +148,7 @@
         "waitingForOperationsDesc": "Realice cualquier operación desde la dapp %{dappName}. RWallet solicitará la aprobación de la firma, si se solicita.",
         "disconnect": "Desconectar",
         "approveAllowance": "Aprobar asignación",
-        "approveAllowanceDesc": "Al hacer clic en Confirmar, aceptas permitir que %{dappUrl} transfiera tokens en tu nombre.",
+        "approveAllowanceDesc": "Al hacer clic en Confirmar, acepta permitir que %{dappUrl} ejecute llamadas de contrato inteligente en su nombre.",
         "asset": "Activo",
         "permission": "Permiso",
         "allowance": "Allowance",
@@ -170,11 +172,18 @@
         "successDesc": "¡Éxito! Su transacción se ha publicado en blockchain. Una vez confirmada, debería aparecer en el dapp.",
         "approveTransaction": "Aprobar transacción",
         "approveTransactionDesc": "Al hacer clic en Confirmar, acepta firmar la transacción originada en %{dappUrl}",
+        "approveSmartContract": "Aprobar llamada de contrato inteligente",
+        "approveSmartContractDesc": "Al hacer clic en Confirmar, acepta firmar la llamada de contrato inteligente originada en %{dappUrl}",
+        "spender": "Gastador",
+        "value": "Valor",
+        "recipient": "Destinatario",
+        "method": "Método",
         "amount": "Importe",
         "type": "Tipo",
         "from": "Desde",
         "to": "A",
         "data": "Datos",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Red",
           "body": "La testnet es una cadena de bloques RSK alternativa, que se utilizará para realizar pruebas."
@@ -221,9 +230,7 @@
       },
       "addCustomToken": {
         "title": "Agregar activos personalizados",
-        "address": "Dirección del contrato de activo",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "address": "Dirección del contrato de activo"
       },
       "addCustomTokenConfirm": {
         "title": "Agregar activos personalizados",
@@ -281,6 +288,11 @@
         "understood": "Entendido",
         "createOrImport": "Crear o importar",
         "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Fallido",
+        "errorContent": "Se produjo un error desconocido. Vuelva a intentarlo más tarde",
+        "errorButton": "Bien"
       }
     },
     "mine": {
@@ -400,7 +412,8 @@
     "done": "Hecho",
     "share": "COMPARTIR",
     "check": "CHEQUE",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "okay": "Bueno"
   },
   "txState": {
     "Sent": "Enviado",
@@ -603,6 +616,39 @@
     "feeCalculationError": {
       "title": "Error de cálculo de tarifa",
       "body": "Se produjo un error al calcular el costo. Vuelva a intentarlo."
+    },
+    "invalidRskAddress": {
+      "title": "Dirección de RSK no válida",
+      "body": {
+        "normal": "La dirección del destinatario ingresada es una dirección RSK no válida. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar.",
+        "ethereum": "La dirección del destinatario ingresada parece ser una dirección de Ethereum. Este es un problema conocido al copiar direcciones de MetaMask. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar."
+      },
+      "question": "¿Por qué ves este mensaje?",
+      "confirm": "Enviar de todos modos",
+      "cancel": "Regresa y vuelve a entrar",
+      "asset": "Activo",
+      "address": "Habla a",
+      "balance": "Equilibrar",
+      "risk": "Bien, entiendo el riesgo."
+    },
+    "emptyRecordAddress": {
+      "title": "Dirección del destinatario del registro vacío",
+      "body": {
+        "normal": "La dirección del destinatario ingresada no tiene registro en %{explorerName} y tiene %{balance} %{otherSymbolName} en la red RSK %{otherType}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?",
+        "both": "La dirección del destinatario ingresada no tiene registro en %{explorerName}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Dirección de billetera RSK no válida",
+      "body": "La dirección de billetera ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "convertContractAddress": {
+      "title": "Dirección de contrato RSK no válida",
+      "body": "La dirección del contrato ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "invalidParam": {
+      "title": "Parametro invalido",
+      "body": "El parámetro no es válido."
     }
   },
   "currency": {
@@ -618,5 +664,9 @@
       "title": "Error de red",
       "body": "Su dispositivo no puede conectarse al servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

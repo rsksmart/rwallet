@@ -8,7 +8,7 @@ import parseDataUtil from './parseDataUtil';
 import { blockHeightKeys } from './constants';
 import actions from '../redux/app/actions';
 import common from './common';
-import cointype from './wallet/cointype';
+import { ERROR_CODE } from './error';
 
 const parseConfig = config && config.parse;
 
@@ -113,6 +113,10 @@ class ParseHelper {
 
     if (!_.isNil(deviceId)) {
       parseUser.set('deviceId', deviceId);
+    }
+
+    if (!_.isEmpty(VersionNumber.appVersion)) {
+      parseUser.set('clientVersion', VersionNumber.appVersion);
     }
 
     // Only set wallets when it's defined.
@@ -471,20 +475,52 @@ class ParseHelper {
     return filterAds;
   }
 
+  /**
+   * getBalance
+   * @param {object} { type, symbol, address, needFetch }. If needFetch is true, back-end will refresh transactions and balance.
+   * @returns {string} the hex amount of balance
+   */
   static async getBalance({
     type, symbol, address, needFetch,
   }) {
-    const { chain } = cointype[symbol];
     const params = {
-      name: chain, type, symbol, address, needFetch,
+      type, symbol, address, needFetch,
     };
-    console.log('getBalance, params: ', params);
-    const result = await Parse.Cloud.run('getBalance', {
-      name: chain, type, symbol, address, needFetch,
-    });
-    console.log('getBalance, result: ', result);
-    return result;
+    try {
+      return await Parse.Cloud.run('getBalance', params);
+    } catch (error) {
+      if (error.code === ERROR_CODE.ERR_SYMBOL_NOT_FOUND) {
+        return '0x0';
+      }
+      throw error;
+    }
   }
+
+  static async updateTokenBalance(tokens) {
+    const params = {
+      tokenList: tokens,
+    };
+    const addressObjects = await Parse.Cloud.run('updateTokenBalance', params);
+    return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
+  }
+
+  /**
+   * getInputAddressTXHash, get transaction input hash array
+   * @param {*} address
+   * @param {*} type
+   * @param {*} value, Amount transferred
+   * @returns {array} transaction hash array
+   */
+  static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
+
+  /**
+   * Get Address info
+   * @param {*} symbol
+   * @param {*} type
+   * @param {*} address
+   * @returns {object} address info
+   */
+  static getAddress = async (symbol, type, address) => Parse.Cloud.run('getAddress', { symbol, type, address });
 }
 
 // Create parse helper proxy to add global error handling

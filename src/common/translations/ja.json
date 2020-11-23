@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "キーなしで資産を監視する"
       },
       "selectCurrency": {
-        "title": "ウォレットアセットを選択",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "ウォレットアセットを選択"
       },
       "selectWallet": {
         "title": "資産を選択"
@@ -119,6 +117,9 @@
       },
       "walletconnect": {
         "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connectがタイムアウトしました",
+        "timeoutBody": "RWalletは、短い時間枠内にDappへのWalletConnect接続を確立できませんでした。再試行してください。",
+        "timeoutButton": "OK",
         "emptyWalletError": "空のウォレット",
         "selectMainnetAsset": "mainnet rskアセットが少なくとも1つあるウォレットを選択してください",
         "selectTestnetAsset": "少なくとも1つのtestnetrskアセットを持つウォレットを選択してください",
@@ -134,6 +135,7 @@
         "agreeTo": "許可をクリックすると、あなたは同意します、",
         "agreeOne": "- 現在のウォレットアドレスの取得を許可",
         "agreeTwo": "- 現在のウォレットからの署名リクエストを許可する",
+        "assets": "資産名",
         "advancedOptions": "詳細オプション",
         "reject": "拒否する",
         "allow": "許可する",
@@ -143,7 +145,7 @@
         "waitingForOperationsDesc": "%{dappName}から操作してください。 RWalletは、要求された場合、署名の承認を求めるプロンプトを表示します。",
         "disconnect": "切断する",
         "approveAllowance": "許可を承認",
-        "approveAllowanceDesc": "[確認]をクリックすると、％{dappUrl}があなたに代わってトークンを転送することを許可することに同意したことになります。",
+        "approveAllowanceDesc": "[確認]をクリックすると、%{dappUrl}があなたに代わってスマートコントラクトコールを実行することを許可することに同意したことになります。",
         "asset": "資産",
         "permission": "許可",
         "allowance": "手当",
@@ -167,11 +169,18 @@
         "successDesc": "成功！ あなたの取引はブロックチェーンに公開されました。 確認すると、dappに表示されます。",
         "approveTransaction": "トランザクションを承認",
         "approveTransactionDesc": "[確認]をクリックすると、％{dappUrl}からのトランザクションに署名することに同意したことになります",
+        "approveSmartContract": "スマートコントラクトコールを承認す",
+        "approveSmartContractDesc": "[確認]をクリックすると、%{dappUrl}から発信されたスマートコントラクト呼び出しに署名することに同意したことになります",
+        "spender": "スペンダ",
+        "value": "値",
+        "recipient": "受信者",
+        "method": "方法",
         "amount": "量",
         "type": "タイプ",
         "from": "から",
         "to": "に",
         "data": "データ",
+        "contract": "契約する",
         "networkQuestion": {
           "title": "通信網",
           "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"
@@ -218,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "カスタム資産を追加",
-        "address": "資産契約アドレス",
-        "mainnet": "メインネット",
-        "testnet": "テストネット"
+        "address": "資産契約アドレス"
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",
@@ -278,6 +285,11 @@
         "understood": "理解しました",
         "createOrImport": "作成またはインポート",
         "cancel": "取り消す"
+      },
+      "browser": {
+        "errorTitle": "Failed",
+        "errorContent": "不明なエラーが発生しました。しばらくしてからもう一度お試しください",
+        "errorButton": "わかりました"
       }
     },
     "mine": {
@@ -397,7 +409,8 @@
     "done": "完了です",
     "share": "シェア",
     "check": "小切手",
-    "update": "更新"
+    "update": "更新",
+    "okay": "はい"
   },
   "txState": {
     "Sent": "送金されました",
@@ -600,6 +613,39 @@
     "feeCalculationError": {
       "title": "料金計算エラー",
       "body": "コストの計算中にエラーが発生しました。もう一度やり直してください。"
+    },
+    "invalidRskAddress": {
+      "title": "無効なRSKアドレス",
+      "body": {
+        "normal": "入力された受信者アドレスは無効なRSKアドレスです。受信者のアドレスが有効なRSKアドレスであることを確認し、送信する前に%{explorerName}で確認してください。",
+        "ethereum": "入力された受信者アドレスはイーサリアムアドレスのようです。これは、MetaMaskからアドレスをコピーする際の既知の問題です。受信者のアドレスが有効なRSKアドレスであることを確認し、送信する前に%{explorerName}で確認してください。"
+      },
+      "question": "なぜこのメッセージが表示されるのですか？",
+      "confirm": "とにかく送る",
+      "cancel": "戻って再入場",
+      "asset": "資産",
+      "address": "住所",
+      "balance": "残高",
+      "risk": "さて、私はリスクを理解しています。"
+    },
+    "emptyRecordAddress": {
+      "title": "空のレコード受信者アドレス",
+      "body": {
+        "normal": "入力された受信者アドレスは、%{explorerName}にレコードがなく、RSK%{otherType}ネットワーク上に%{balance}%{otherSymbolName}があります。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？",
+        "both": "入力された受信者アドレスは、%{explorerName}にレコードがありません。 %{amount}%{symbolName}をRSK%{type}のアドレスに送信してもよろしいですか？"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "無効なRSKウォレットアドレス",
+      "body": "入力されたウォレットアドレスは無効なRSKアドレスです。 RWalletは、予想されるアドレス形式に自動修正しようとします。続行しますか？"
+    },
+    "convertContractAddress": {
+      "title": "無効なRSK契約アドレス",
+      "body": "入力された契約アドレスは無効なRSKアドレスです。 RWalletは、予想されるアドレス形式に自動修正しようとします。続行しますか？"
+    },
+    "invalidParam": {
+      "title": "無効なパラメーター",
+      "body": "パラメータが無効です。"
     }
   },
   "currency": {
@@ -615,5 +661,9 @@
       "title": "ネットワークエラーです",
       "body": "ご使用のデバイスはサーバーに接続できません。"
     }
+  },
+  "networkType": {
+    "mainnet": "メインネット",
+    "testnet": "テストネット"
   }
 }

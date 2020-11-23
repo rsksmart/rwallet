@@ -19,11 +19,13 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, TxStatus, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
 import cointype from './wallet/cointype';
+import { InvalidAddressError, InvalidParamError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+const { MAINNET, TESTNET } = NETWORK;
 
 // Default BTC transaction size
 const DEFAULT_BTC_TX_SIZE = 400;
@@ -56,17 +58,45 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rskCoinToWeiHex(amount) {
-    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
-    return result;
+  rskCoinToWeiHex(amount, precision) {
+    return `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
   },
-  rskCoinToWei(amount) {
-    const result = new BigNumber(amount).times('1e18');
-    return result;
+  /**
+   * Transform coin value to wei unit. Throw InvalidParamError If param is not valid.
+   * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
+   * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
+   * @param {*} amount
+   * @param {*} precision
+   */
+  rskCoinToWei(amount, precision = 18) {
+    if (!(amount
+      && (BigNumber.isBigNumber(amount) || _.isNumber(amount) || _.isString(amount)))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
-  weiToCoin(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
+
+  /**
+   * Transform wei unit value to coin value. Throw InvalidParamError If param is not valid.
+   * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
+   * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
+   * @param {*} wei
+   * @param {*} precision
+   */
+  weiToCoin(wei, precision = 18) {
+    if (!(wei
+      && (BigNumber.isBigNumber(wei) || _.isNumber(wei) || (_.isString(wei) && wei.startsWith('0x'))))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(wei).div(`1e${precisionInteger}`);
   },
   Toast(text, type, onClose, duration, mask) {
     const last = duration > 0 ? duration : 1.5;
@@ -78,17 +108,31 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
+
+  /**
+   * convertCoinAmountToUnitHex, if coinAmount is nil, return null
+   * @param {*} symbol
+   * @param {*} coinAmount
+   * @param {*} precision
+   */
+  convertCoinAmountToUnitHex(symbol, coinAmount, precision = 18) {
+    if (_.isNil(coinAmount)) {
+      return null;
+    }
+
+    return symbol === 'BTC' ? common.btcToSatoshiHex(coinAmount) : common.rskCoinToWeiHex(coinAmount, precision);
+  },
   /**
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
    * @param {*} unitNumber
+   * @param {*} precision
    */
-  convertUnitToCoinAmount(symbol, unitNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = 18) {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
-    return amount;
+    return symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
   },
 
   /**
@@ -207,6 +251,22 @@ const common = {
     // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
     // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
     url = `${url}/${hash}${symbol === 'BTC' ? '/' : ''}`;
+    return url;
+  },
+
+  /**
+   * getAddressUrl, returns transaction url
+   * @param {*} symbol, coin symbol
+   * @param {*} type, coin network type
+   * @param {*} hash, transaction hash
+   */
+  getAddressUrl(type, address) {
+    let url = config.addressUrls.RBTC[type];
+    // BTC has / suffix, RSK does not.
+    // For example:
+    // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
+    // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
+    url = `${url}/${address}`;
     return url;
   },
 
@@ -421,32 +481,19 @@ const common = {
     }
   },
 
-  estimateBtcSize({
-    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  /**
+   * estimateBtcTxSize, estimate BTC transaction size
+   * @param {object} params, { netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance }
+   * @returns {number} BTC transaction size
+   */
+  estimateBtcTxSize({
+    netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
-    const inputTxs = [];
-    let sum = new BigNumber(0);
-
     // If the transactions is empty, returns the default size
-    if (_.isEmpty(transactions)) {
+    if (_.isEmpty(inputTxs)) {
       return DEFAULT_BTC_TX_SIZE;
     }
-
-    // Find out transactions which combines amount
-    for (let i = 0; i < transactions.length; i += 1) {
-      const tx = transactions[i];
-      if (tx.status === TxStatus.SUCCESS) {
-        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
-        sum = sum.plus(txAmount);
-        inputTxs.push(tx.hash);
-      }
-      if (sum.isGreaterThanOrEqualTo(amount)) {
-        break;
-      }
-    }
-    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
-
     const outputSize = isSendAllBalance ? 1 : 2;
     const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const exParams = { network };
@@ -464,7 +511,7 @@ const common = {
     });
     const result = tx.build().toHex();
     const size = result.length / 2;
-    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    console.log(`estimateBtcTxSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
 
@@ -574,6 +621,28 @@ const common = {
   },
 
   /**
+   * Chcke address is contract addrsss
+   * @param {*} address need check address
+   * @param {*} chainId chain id
+   */
+  async isContractAddress(address, chainId) {
+    return new Promise((resolve, reject) => {
+      const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
+      const rsk3 = new Rsk3(rskEndpoint);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address, chainId);
+      rsk3.getCode(checksumAddress).then((code) => {
+        if (code !== '0x00') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  /**
    * Decode ethereum transaction input data
    * return contract function name, types and other info
    * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
@@ -588,6 +657,64 @@ const common = {
   },
 
   /**
+   * uppercase first letter in letters
+   * For Example
+   * letters = 'onoznxiu123Z', returns 'Onoznxiu123Z'
+   * letters = '_onoznxiu123Z', returns 'Onoznxiu123Z'
+   * @param {*} letters
+   */
+  uppercaseFirstLetter(letters) {
+    if (letters[0] !== '_') {
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return letters.charAt(1).toUpperCase() + letters.slice(2);
+  },
+
+  /**
+   * Format contract abi input data
+   * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
+   * @param {*} inputData
+   * @param {*} symbol
+   */
+  formatContractABIInputData(inputData, symbol) {
+    if (!inputData || !inputData.method) {
+      return null;
+    }
+    const {
+      inputs, names, types, method,
+    } = inputData;
+    const params = { };
+    _.forEach(inputs, (value, index) => {
+      const key = this.uppercaseFirstLetter(names[index]);
+      const type = types[index];
+      // To address display the whole address
+      if (type === 'address') {
+        if (key !== 'To' && key !== 'Recipient') {
+          params[key] = this.ellipsisAddress(value);
+        } else {
+          params[key] = value.startsWith('0x') ? value : `0x${value}`;
+        }
+      } else if (type === 'uint256') {
+        if (key === 'Value' || key === 'Amount') {
+          const unitAmount = new BigNumber(value.toString());
+          const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
+          params[key] = `${amount} ${symbol}`;
+        } else {
+          params[key] = value.toString();
+        }
+      } else {
+        params[key] = value;
+      }
+    });
+
+    return {
+      method: this.uppercaseFirstLetter(method),
+      params,
+    };
+  },
+
+  /**
    * Ellipsis a rsk address
    * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
    * @param {*} address, a rsk address
@@ -597,15 +724,16 @@ const common = {
     if (!address) {
       return '';
     }
-    const { length } = address;
-    if (length <= (showLength * 2 + 2)) {
-      return address;
-    }
-    if (address.startsWith('0x')) {
-      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
-    }
 
-    return this.ellipsisString(address, showLength);
+    let completionAddress = address;
+    if (!address.startsWith('0x')) {
+      completionAddress = `0x${address}`;
+    }
+    const { length } = completionAddress;
+    if (length <= (showLength * 2 + 2)) {
+      return completionAddress;
+    }
+    return `0x${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**
@@ -674,6 +802,31 @@ const common = {
       return url;
     }
     return baseUrl;
+  },
+
+  toChecksumAddress(address, networkId) {
+    let checksumAddress = null;
+    try {
+      checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+    } catch (error) {
+      throw new InvalidAddressError();
+    }
+    return checksumAddress;
+  },
+
+  getExplorerName(type) {
+    return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
+  },
+
+  /**
+   * Return true if the dapp needs to display thumb dapp icon
+   * @param {*} item { name: { en: '', zh: '', ... } }
+   */
+  needDisplayThumbIcon(item) {
+    if (item && item.name && (_.includes(item.name.en, 'Sovryn') || item.name.en === 'RSK Swap')) {
+      return true;
+    }
+    return false;
   },
 };
 

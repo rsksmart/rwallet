@@ -76,7 +76,7 @@ class AddReadOnlyWalletConfirmation extends Component {
           type, symbol: coin.symbol, address, needFetch: false,
         }));
         const newCoins = [...coins];
-        newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance);
+        newCoins[index].balance = common.convertUnitToCoinAmount(newCoins[index].symbol, balance, newCoins[index].precision);
         this.setState({ coins: newCoins });
       });
     }
@@ -96,6 +96,7 @@ class AddReadOnlyWalletConfirmation extends Component {
       const balanceText = item.balance ? common.getBalanceString(item.balance, item.symbol) : '0';
       const worseText = item.balance ? common.getCoinValue(item.balance, item.symbol, item.type, currency, prices) : '0';
       const balanceValueText = common.getAssetValueString(worseText) || '0';
+      const currencySymbol = common.getCurrencySymbol(currency);
 
       return (
         <View style={coinListItemStyles.row} onPress={item.onPress}>
@@ -110,7 +111,7 @@ class AddReadOnlyWalletConfirmation extends Component {
                 : (
                   <View style={styles.rowAmountViewRight}>
                     <Text style={coinListItemStyles.worth}>{balanceText}</Text>
-                    <Text style={coinListItemStyles.amount}>{balanceValueText}</Text>
+                    <Text style={coinListItemStyles.amount}>{`${currencySymbol}${balanceValueText}`}</Text>
                   </View>
                 )}
             </View>
@@ -166,7 +167,7 @@ class AddReadOnlyWalletConfirmation extends Component {
               multiline
             />
             <View style={readOnlyStyles.chainType}>
-              <Loc style={[readOnlyStyles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+              <Loc style={[readOnlyStyles.switchTitle]} text="networkType.mainnet" />
               <Switch value={type === 'Mainnet'} onValueChange={this.onSwitchValueChanged} disabled />
             </View>
             <View style={readOnlyStyles.questionRow}>

@@ -153,7 +153,6 @@ class WalletManager {
     }
   }
 
-
   /**
    * Update tokens based on input
    * @param {array} updatedItems Array of items in form of {objectId, balance(hex string), subdomain}, which are always fetched from server.
@@ -172,7 +171,7 @@ class WalletManager {
         // update balance
         try {
           // Try to convert hex string to BigNumber
-          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, matchedToken.balance);
+          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, matchedToken.balance, newToken.precision);
           // Update if it fetched new balance value
           if (newBalance && !newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;

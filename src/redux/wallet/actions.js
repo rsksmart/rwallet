@@ -60,6 +60,8 @@ const actions = {
 
   CREATE_READ_ONLY_WALLET: 'CREATE_READ_ONLY_WALLET',
 
+  UPDATE_TOKEN_BALANCE: 'UPDATE_TOKEN_BALANCE',
+
   // Functions definition
   getPrice: (symbols, currencies) => ({
     type: actions.GET_PRICE,
@@ -182,6 +184,10 @@ const actions = {
     payload: {
       chain, type, address, coins,
     },
+  }),
+  updateTokenBalance: (tokens) => ({
+    type: actions.UPDATE_TOKEN_BALANCE,
+    tokens,
   }),
 };
 
