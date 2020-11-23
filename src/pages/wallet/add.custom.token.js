@@ -184,7 +184,7 @@ class AddCustomToken extends Component {
             </View>
             { this.wallet.walletType !== WalletType.Readonly && (
               <View style={[styles.switchView]}>
-                <Loc style={[styles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+                <Loc style={[styles.switchTitle]} text="networkType.mainnet" />
                 <Switch
                   value={isMainnet}
                   onValueChange={this.onSwitchValueChanged}

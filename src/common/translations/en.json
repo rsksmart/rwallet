@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "Monitor assets without keys"
       },
       "selectCurrency": {
-        "title": "Select Wallet Assets",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Select Wallet Assets"
       },
       "selectWallet": {
         "title": "Select Asset"
@@ -229,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "Add Custom Assets",
-        "address": "Asset Contract Address",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "address": "Asset Contract Address"
       },
       "addCustomTokenConfirm": {
         "title": "Add Custom Assets",
@@ -665,5 +661,9 @@
       "title": "Network Error",
       "body": "Your device can not connect to the server."
     }
+  },
+  "networkType": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

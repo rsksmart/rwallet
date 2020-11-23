@@ -78,9 +78,7 @@
         "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de testes"
+        "title": "Selecionar ativos da carteira"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
@@ -232,9 +230,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do ativo",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de testes"
+        "address": "Endereço do contrato do ativo"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
@@ -681,5 +677,9 @@
       "title": "Erro de rede",
       "body": "Seu dispositivo não pode se conectar ao servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Principal",
+    "testnet": "Teste"
   }
 }

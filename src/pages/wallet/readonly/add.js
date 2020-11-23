@@ -224,7 +224,7 @@ class AddReadOnlyWallet extends Component {
               multiline
             />
             <View style={readOnlyStyles.chainType}>
-              <Loc style={[readOnlyStyles.switchTitle]} text="page.wallet.addCustomToken.mainnet" />
+              <Loc style={[readOnlyStyles.switchTitle]} text="networkType.mainnet" />
               <Switch value={isMainnet} onValueChange={this.onSwitchValueChanged} />
             </View>
             <View style={readOnlyStyles.addressRow}>
