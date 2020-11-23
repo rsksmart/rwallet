@@ -387,7 +387,6 @@ class RnsAddress extends Component {
     const addressText = common.ellipsisAddress(address);
     const isTouchDisabled = !(index === 0 || rnsRows.length === this.tokens.length);
     const { errorMessage, rnsNameState, type } = rnsRows[index];
-    const netTypeText = strings(`networkType.${type.toLowerCase()}`);
     let message = null;
     if (rnsNameState !== RnsNameState.UNCHECKED) {
       message = rnsNameState === RnsNameState.UNAVAILABLE
@@ -413,7 +412,7 @@ class RnsAddress extends Component {
               onPress={() => { this.onTokenButtonPressed(index, address); }}
               disabled={!isTouchDisabled}
             >
-              <TypeTag type={netTypeText} />
+              <TypeTag type={type} />
               <Text style={[styles.rnsRowAddress, space.marginLeft_8]}>{addressText}</Text>
               { isTouchDisabled && <EvilIcons style={styles.rnsRowChevron} name="chevron-down" /> }
             </TouchableOpacity>
