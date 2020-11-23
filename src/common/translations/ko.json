@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "키없이 자산 모니터링"
       },
       "selectCurrency": {
-        "title": "지갑 자산 선택",
-        "mainnet": "메인넷",
-        "testnet": "테스트넷"
+        "title": "지갑 자산 선택"
       },
       "selectWallet": {
         "title": "자산 선택"
@@ -229,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "사용자 정의 자산 추가",
-        "address": "자산 컨트랙트 주소",
-        "mainnet": "메인넷",
-        "testnet": "테스트 넷"
+        "address": "자산 컨트랙트 주소"
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",
@@ -665,5 +661,9 @@
       "title": "네트워크 오류",
       "body": "기기가 서버에 연결할 수 없습니다."
     }
+  },
+  "networkType": {
+    "mainnet": "메인 넷",
+    "testnet": "테스트 네트"
   }
 }

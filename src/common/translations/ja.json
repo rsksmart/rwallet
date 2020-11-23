@@ -77,9 +77,7 @@
         "addReadOnlyWalletNote": "キーなしで資産を監視する"
       },
       "selectCurrency": {
-        "title": "ウォレットアセットを選択",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "ウォレットアセットを選択"
       },
       "selectWallet": {
         "title": "資産を選択"
@@ -229,9 +227,7 @@
       },
       "addCustomToken": {
         "title": "カスタム資産を追加",
-        "address": "資産契約アドレス",
-        "mainnet": "メインネット",
-        "testnet": "テストネット"
+        "address": "資産契約アドレス"
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",
@@ -665,5 +661,9 @@
       "title": "ネットワークエラーです",
       "body": "ご使用のデバイスはサーバーに接続できません。"
     }
+  },
+  "networkType": {
+    "mainnet": "メインネット",
+    "testnet": "テストネット"
   }
 }
