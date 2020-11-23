@@ -174,7 +174,7 @@
         "successDesc": "¡Éxito! Su transacción se ha publicado en blockchain. Una vez confirmada, debería aparecer en el dapp.",
         "approveTransaction": "Aprobar transacción",
         "approveTransactionDesc": "Al hacer clic en Confirmar, acepta firmar la transacción originada en %{dappUrl}",
-        "approveSmartContract": "Aprobar contrato inteligente",
+        "approveSmartContract": "Aprobar llamada de contrato inteligente",
         "approveSmartContractDesc": "Al hacer clic en Confirmar, acepta firmar la llamada de contrato inteligente originada en %{dappUrl}",
         "spender": "Gastador",
         "value": "Valor",

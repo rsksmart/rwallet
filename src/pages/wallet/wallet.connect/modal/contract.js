@@ -54,10 +54,10 @@ export default class Contract extends Component {
     Linking.openURL(url);
   }
 
-  getAbiInputView = (abiInputData) => {
-    const abiInputView = [];
-    _.forEach(abiInputData, (inputValue, key) => {
-      abiInputView.push(
+  getParamsView = (params) => {
+    const paramsView = [];
+    _.forEach(params, (inputValue, key) => {
+      paramsView.push(
         <View style={styles.line} key={key}>
           <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${(key && key.toLocaleLowerCase())}`)}</Text>
           {
@@ -73,7 +73,7 @@ export default class Contract extends Component {
       );
     });
 
-    return abiInputView;
+    return paramsView;
   }
 
   render() {
@@ -97,17 +97,17 @@ export default class Contract extends Component {
               _.isEmpty(abiInputData) ? (
                 <>
                   <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
-                  </View>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
                     <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
                       <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                  </View>
+                  <View style={styles.line}>
+                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
                     <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
                       <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
                     </TouchableOpacity>
@@ -120,15 +120,15 @@ export default class Contract extends Component {
               ) : (
                 <>
                   {
-                    _.isEmpty(abiInputData.From) && (
+                    abiInputData.method !== null && (
                       <View style={styles.line}>
-                        <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                        <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                        <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.method')}</Text>
+                        <Text style={styles.lineValue}>{abiInputData.method}</Text>
                       </View>
                     )
                   }
                   {
-                    _.isEmpty(abiInputData.Contract) && (
+                    _.isEmpty(abiInputData.params.Contract) && (
                       <View style={styles.line}>
                         <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
                         <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
@@ -137,7 +137,15 @@ export default class Contract extends Component {
                       </View>
                     )
                   }
-                  {this.getAbiInputView(abiInputData)}
+                  {
+                    _.isEmpty(abiInputData.params.From) && (
+                      <View style={styles.line}>
+                        <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+                        <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                      </View>
+                    )
+                  }
+                  {this.getParamsView(abiInputData.params)}
                 </>
               )
             }
@@ -168,8 +176,11 @@ Contract.propTypes = {
     network: PropTypes.string,
   }).isRequired,
   abiInputData: PropTypes.shape({
-    From: PropTypes.string,
-    Contract: PropTypes.string,
+    method: PropTypes.string,
+    params: {
+      From: PropTypes.string,
+      Contract: PropTypes.string,
+    },
   }),
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,

@@ -672,8 +672,8 @@ const common = {
 
   /**
    * Format contract abi input data
-   * For Example, inputData = { inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
-   * returns { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 }
+   * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
    * @param {*} inputData
    * @param {*} symbol
    */
@@ -684,31 +684,34 @@ const common = {
     const {
       inputs, names, types, method,
     } = inputData;
-    const result = { Method: this.uppercaseFirstLetter(method) };
+    const params = { };
     _.forEach(inputs, (value, index) => {
       const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
       // To address display the whole address
       if (type === 'address') {
         if (key !== 'To' && key !== 'Recipient') {
-          result[key] = this.ellipsisAddress(value);
+          params[key] = this.ellipsisAddress(value);
         } else {
-          result[key] = value.startsWith('0x') ? value : `0x${value}`;
+          params[key] = value.startsWith('0x') ? value : `0x${value}`;
         }
       } else if (type === 'uint256') {
         if (key === 'Value' || key === 'Amount') {
           const unitAmount = new BigNumber(value.toString());
           const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
-          result[key] = `${amount} ${symbol}`;
+          params[key] = `${amount} ${symbol}`;
         } else {
-          result[key] = value.toString();
+          params[key] = value.toString();
         }
       } else {
-        result[key] = value;
+        params[key] = value;
       }
     });
 
-    return result;
+    return {
+      method: this.uppercaseFirstLetter(method),
+      params,
+    };
   },
 
   /**

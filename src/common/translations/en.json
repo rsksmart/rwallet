@@ -171,7 +171,7 @@
         "successDesc": "Success! Your transaction has been published to blockchain. Once confirmed, it should show in the dapp.",
         "approveTransaction": "Approve Transaction",
         "approveTransactionDesc": "By clicking on Confirm, you agree to sign the transaction originated from %{dappUrl}",
-        "approveSmartContract": "Approve Smart Contract",
+        "approveSmartContract": "Approve Smart Contract Call",
         "approveSmartContractDesc": "By clicking on Confirm, you agree to sign the smart contract call originated from %{dappUrl}",
         "spender": "Spender",
         "value": "Value",

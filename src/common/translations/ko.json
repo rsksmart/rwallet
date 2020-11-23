@@ -171,7 +171,7 @@
         "successDesc": "성공! 거래가 블록 체인에 게시되었습니다. 확인되면 dapp에 표시되어야합니다.",
         "approveTransaction": "거래 승인",
         "approveTransactionDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 거래에 서명하는 데 동의하는 것입니다.",
-        "approveSmartContract": "스마트 계약 승인",
+        "approveSmartContract": "스마트 계약 호출 승인",
         "approveSmartContractDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 스마트 계약 호출에 서명하는 데 동의하는 것입니다.",
         "spender": "돈 쓰는 사람",
         "value": "값",

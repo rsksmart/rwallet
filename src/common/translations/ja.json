@@ -171,7 +171,7 @@
         "successDesc": "成功！ あなたの取引はブロックチェーンに公開されました。 確認すると、dappに表示されます。",
         "approveTransaction": "トランザクションを承認",
         "approveTransactionDesc": "[確認]をクリックすると、％{dappUrl}からのトランザクションに署名することに同意したことになります",
-        "approveSmartContract": "Approve Smart Contract",
+        "approveSmartContract": "スマートコントラクトコールを承認す",
         "approveSmartContractDesc": "[確認]をクリックすると、%{dappUrl}から発信されたスマートコントラクト呼び出しに署名することに同意したことになります",
         "spender": "スペンダ",
         "value": "値",
