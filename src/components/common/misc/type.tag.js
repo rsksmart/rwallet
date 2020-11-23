@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import color from '../../../assets/styles/color';
+import { strings } from '../../../common/i18n';
 
 const styles = StyleSheet.create({
   tag: {
-    width: 60,
+    minWidth: 60,
+    paddingHorizontal: 5,
     height: 23,
     borderRadius: 2,
     alignItems: 'center',
@@ -24,7 +26,7 @@ const styles = StyleSheet.create({
 
 const TypeTag = ({ type }) => (
   <View style={[styles.tag, type === 'Testnet' ? styles.testnet : null]}>
-    <Text style={styles.tagText}>{type}</Text>
+    <Text style={styles.tagText}>{strings(`networkType.${type.toLowerCase()}`)}</Text>
   </View>
 );
 
@@ -36,4 +38,8 @@ TypeTag.defaultProps = {
   type: 'Mainnet',
 };
 
-export default TypeTag;
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
+
+export default connect(mapStateToProps, null)(TypeTag);

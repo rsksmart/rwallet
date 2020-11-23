@@ -27,6 +27,7 @@ import color from '../../assets/styles/color';
 import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
+import TypeTag from '../../components/common/misc/type.tag';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
   myAssets: {
     marginTop: 17,
     marginHorizontal: 25,
+    height: 50,
   },
   myAssetsText: {
     color: color.black,
@@ -236,6 +238,11 @@ const styles = StyleSheet.create({
   largelistView: {
     flex: 1,
     paddingBottom: 10 + screenHelper.topHeight,
+  },
+  tagView: {
+    width: 87,
+    marginLeft: 10,
+    flexDirection: 'row',
   },
 });
 
@@ -597,7 +604,15 @@ class History extends Component {
       <BasePageSimple headerComponent={<HistoryHeader title={symbolName} onBackButtonPress={() => navigation.goBack()} />}>
         <View style={styles.headerBoardView}>
           <View style={styles.headerBoard}>
-            <ResponsiveText layoutStyle={styles.myAssets} fontStyle={styles.myAssetsText} maxFontSize={35}>{balanceText}</ResponsiveText>
+            <ResponsiveText
+              layoutStyle={styles.myAssets}
+              fontStyle={styles.myAssetsText}
+              maxFontSize={35}
+              suffixElement={(<View style={styles.tagView}><TypeTag type={type} /></View>)}
+              suffixElementWidth={97}
+            >
+              {balanceText}
+            </ResponsiveText>
             <Text style={styles.assetsValue}>{balanceValueText}</Text>
             {
               pendingBalanceText && (
