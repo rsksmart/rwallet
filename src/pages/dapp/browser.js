@@ -116,6 +116,7 @@ class DAppBrowser extends Component {
   handleBackButtonPressAndroid = () => {
     const { navigation, addConfirmation } = this.props;
     if (!navigation.isFocused()) {
+      // The screen is not focused, so don't do anything
       return false;
     }
 
@@ -128,6 +129,8 @@ class DAppBrowser extends Component {
     );
     addConfirmation(confirmation);
 
+    // react-navigation have handled the back button
+    // Return `true` to prevent react-navigation from handling it
     return true;
   }
 
