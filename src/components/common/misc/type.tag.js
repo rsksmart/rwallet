@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import color from '../../../assets/styles/color';
 import { strings } from '../../../common/i18n';
 
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
 
 const TypeTag = ({ type }) => (
   <View style={[styles.tag, type === 'Testnet' ? styles.testnet : null]}>
-    <Text style={styles.tagText}>{strings(`networkType.${type.toLowerCase()}`)}</Text>
+    {type && <Text style={styles.tagText}>{strings(`networkType.${_.toLower(type)}`)}</Text>}
   </View>
 );
 
