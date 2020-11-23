@@ -249,7 +249,7 @@ class WalletSelection extends PureComponent {
         <View style={styles.selection}>
           <View style={styles.row}>
             <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
-              <Text style={styles.network}>{strings(`networkType.${network.toLowerCase()}`)}</Text>
+              {network && <Text style={styles.network}>{strings(`networkType.${_.toLower(network)}`)}</Text>}
             </View>
             <Text style={styles.address}>{common.ellipsisAddress(address, 6)}</Text>
           </View>
