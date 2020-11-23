@@ -290,7 +290,9 @@
         "errorTitle": "Failed",
         "errorContent": "An unknown error occurred, please try again later",
         "errorButton": "Okay"
-      }
+      },
+      "backTitle": "Warning",
+      "backMessage": "You are leaving the dapp, are you sure want to exist?"
     },
     "mine": {
       "index": {

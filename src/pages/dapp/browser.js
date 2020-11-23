@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Modal,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
@@ -24,6 +25,7 @@ import TransactionModal from '../wallet/wallet.connect/modal/transaction';
 import ContractModal from '../wallet/wallet.connect/modal/contract';
 import color from '../../assets/styles/color';
 import apiHelper from '../../common/apiHelper';
+import { createInfoConfirmation } from '../../common/confirmation.controller';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -104,6 +106,29 @@ class DAppBrowser extends Component {
           });
       }
     }
+
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonPressAndroid,
+    );
+  }
+
+  handleBackButtonPressAndroid = () => {
+    const { navigation, addConfirmation } = this.props;
+    if (!navigation.isFocused()) {
+      return false;
+    }
+
+    const confirmation = createInfoConfirmation(
+      'page.dapp.backTitle',
+      'page.dapp.backMessage',
+      () => {
+        navigation.pop();
+      },
+    );
+    addConfirmation(confirmation);
+
+    return true;
   }
 
   // Rif faucet dapp need using lower case address, otherwise will catch invalid address error.
@@ -749,11 +774,14 @@ DAppBrowser.propTypes = {
     dispatch: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    isFocused: PropTypes.func.isRequired,
+    pop: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,
   addNotification: PropTypes.func.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -766,6 +794,7 @@ const mapDispatchToProps = (dispatch) => ({
     appActions.callAuthVerify(callback, fallback),
   ),
   addNotification: (notification) => dispatch(appActions.addNotification(notification)),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DAppBrowser);

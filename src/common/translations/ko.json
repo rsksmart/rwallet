@@ -296,7 +296,9 @@
         "errorTitle": "실패",
         "errorContent": "알 수없는 오류가 발생했습니다. 나중에 다시 시도하십시오.",
         "errorButton": "알겠습니다"
-      }
+      },
+      "backTitle": "경고",
+      "backMessage": "당신은 dapp을 떠납니다. 정말로 존재 하시겠습니까?"
     },
     "mine": {
       "index": {

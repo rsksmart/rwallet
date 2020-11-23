@@ -293,7 +293,9 @@
         "errorTitle": "Fallido",
         "errorContent": "Se produjo un error desconocido. Vuelva a intentarlo más tarde",
         "errorButton": "Bien"
-      }
+      },
+      "backTitle": "Advertencia",
+      "backMessage": "Vas a dejar el dapp, ¿estás seguro de que quieres existir?"
     },
     "mine": {
       "index": {
