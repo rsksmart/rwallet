@@ -295,7 +295,7 @@
         "errorButton": "Ok"
       },
       "backTitle": "Aviso",
-      "backMessage": "Você está deixando a calçada, você tem certeza de querer existir?"
+      "backMessage": "Você tem certeza de que deseja sair do dapp?"
     },
     "mine": {
       "index": {
