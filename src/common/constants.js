@@ -123,5 +123,3 @@ export const TRANSACTION = {
 export const TIMEOUT_VALUE = {
   WALLET_CONNECT: 20000, // 20 sec
 };
-
-export const DEFAULT_CONTRACT_METHOD = 'Smart Contract Call';

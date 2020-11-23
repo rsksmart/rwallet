@@ -19,12 +19,13 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError, InvalidParamError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+const { MAINNET, TESTNET } = NETWORK;
 
 // Default BTC transaction size
 const DEFAULT_BTC_TX_SIZE = 400;
@@ -620,6 +621,28 @@ const common = {
   },
 
   /**
+   * Chcke address is contract addrsss
+   * @param {*} address need check address
+   * @param {*} chainId chain id
+   */
+  async isContractAddress(address, chainId) {
+    return new Promise((resolve, reject) => {
+      const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
+      const rsk3 = new Rsk3(rskEndpoint);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address);
+      rsk3.getCode(checksumAddress).then((code) => {
+        if (code !== '0x00') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  /**
    * Decode ethereum transaction input data
    * return contract function name, types and other info
    * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
@@ -634,13 +657,17 @@ const common = {
   },
 
   /**
-   * Uppercase first letter in letters
-   * For Example, letters = 'onoznxiu123Z'
-   * Return 'Onoznxiu123Z'
+   * uppercase first letter in letters
+   * For Example
+   * letters = 'onoznxiu123Z', returns 'Onoznxiu123Z'
+   * letters = '_onoznxiu123Z', returns 'Onoznxiu123Z'
    * @param {*} letters
    */
-  UppercaseFirstLetter(letters) {
-    return letters.charAt(0).toUpperCase() + letters.slice(1);
+  uppercaseFirstLetter(letters) {
+    if (letters[0] !== '_') {
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return letters.charAt(1).toUpperCase() + letters.slice(2);
   },
 
   /**
@@ -651,13 +678,15 @@ const common = {
    * @param {*} symbol
    */
   formatContractABIInputData(inputData, symbol) {
-    if (!inputData) {
+    if (!inputData || !inputData.method) {
       return null;
     }
-    const { inputs, names, types } = inputData;
-    const result = {};
+    const {
+      inputs, names, types, method,
+    } = inputData;
+    const result = { Method: this.uppercaseFirstLetter(method) };
     _.forEach(inputs, (value, index) => {
-      const key = this.UppercaseFirstLetter(names[index]);
+      const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
       // To address display the whole address
       if (type === 'address') {

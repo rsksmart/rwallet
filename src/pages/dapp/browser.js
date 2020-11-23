@@ -11,18 +11,17 @@ import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import appActions from '../../redux/app/actions';
 import BrowserHeader from '../../components/headers/header.dappbrowser';
 import ProgressWebView from '../../components/common/progress.webview';
 import WalletSelection from '../../components/common/modal/wallet.selection.modal';
-import { NETWORK, TRANSACTION, DEFAULT_CONTRACT_METHOD } from '../../common/constants';
+import { NETWORK, TRANSACTION } from '../../common/constants';
 import { createErrorNotification, getErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import MessageModal from '../wallet/wallet.connect/modal/message';
 import TransactionModal from '../wallet/wallet.connect/modal/transaction';
-import AllowanceModal from '../wallet/wallet.connect/modal/allowance';
+import ContractModal from '../wallet/wallet.connect/modal/contract';
 import color from '../../assets/styles/color';
 import apiHelper from '../../common/apiHelper';
 
@@ -325,26 +324,32 @@ class DAppBrowser extends Component {
     }
   }
 
+  postMessageToWebView = (result) => {
+    if (this.webview && this.webview.current) {
+      this.webview.current.postMessage(JSON.stringify(result));
+    }
+  }
+
   handleEthEstimateGas = async (payload) => {
     const { params, id } = payload;
     const res = await this.rsk3.estimateGas(params[0]);
     const estimateGas = Number(res);
     const result = { id, result: estimateGas };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleEthGasPrice = async (payload) => {
     const { id } = payload;
     const res = await this.rsk3.getGasPrice();
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleEthCall = async (payload) => {
     const { id, params } = payload;
     const res = await this.rsk3.call(params[0], params[1]);
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleEthGetBlockByNumber = async (payload) => {
@@ -354,14 +359,14 @@ class DAppBrowser extends Component {
     const blockNumber = (_.isEmpty(params) || (params[0] && params[0] === '0x0')) ? 'latest' : params[0];
     res = await this.rsk3.getBlock(blockNumber);
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleEthGetBlockNumber = async (payload) => {
     const { id } = payload;
     const res = await this.rsk3.getBlockNumber();
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handlePersonalSign = async (id, message) => {
@@ -375,7 +380,7 @@ class DAppBrowser extends Component {
           message, privateKey,
         );
         const result = { id, result: signature.signature };
-        this.webview.current.postMessage(JSON.stringify(result));
+        this.postMessageToWebView(result);
       } catch (err) {
         console.log('personal_sign err: ', err);
         this.handleReject(id, err.message);
@@ -397,7 +402,7 @@ class DAppBrowser extends Component {
         this.rsk3.sendSignedTransaction(rawTransaction)
           .on('transactionHash', (hash) => {
             const result = { id, result: hash };
-            this.webview.current.postMessage(JSON.stringify(result));
+            this.postMessageToWebView(result);
           })
           .on('error', (error) => {
             console.log('sendSignedTransaction error: ', error);
@@ -420,19 +425,19 @@ class DAppBrowser extends Component {
       res.status = res.status ? 1 : 0;
     }
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleEthGetTransactionByHash = async (payload) => {
     const { id, params } = payload;
     const res = await this.rsk3.getTransaction(params[0]);
     const result = { id, result: res };
-    this.webview.current.postMessage(JSON.stringify(result));
+    this.postMessageToWebView(result);
   }
 
   handleReject = async (id, message = 'User reject') => {
     this.setState({ modalView: null });
-    this.webview.current.postMessage(JSON.stringify({ id, error: 1, message }));
+    this.postMessageToWebView({ id, error: 1, message });
   }
 
   popupMessageModal = async (payload) => {
@@ -454,33 +459,32 @@ class DAppBrowser extends Component {
     });
   }
 
-  popupAllowanceModal = async (id, txData, abiInputData, toAddress) => {
-    const { wallet: { network } } = this.state;
+  popupContractModal = async (id, txData, formatedInputData) => {
+    const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
-    const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = new BigNumber(gasLimit);
-    const gasPriceNumber = new BigNumber(gasPrice);
-    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
-    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
+    const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
+    const from = Rsk3.utils.toChecksumAddress(address, networkId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
+
     this.setState({
       modalView: (
-        <AllowanceModal
+        <ContractModal
           dappUrl={dappUrl}
           confirmPress={async () => {
             this.setState({ modalView: null });
             await this.handleEthSendTransaction(id, txData);
           }}
           cancelPress={() => this.handleReject(id)}
-          abiInputData={abiInputData}
-          contract={toAddress}
-          network={network}
-          fee={fee}
+          txData={{
+            ...txData, from, to, network,
+          }}
+          abiInputData={formatedInputData}
         />
       ),
     });
   }
 
-  popupNormalTransactionModal = async (id, txData, contractMethod, abiInputData) => {
+  popupNormalTransactionModal = async (id, txData) => {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
@@ -499,8 +503,6 @@ class DAppBrowser extends Component {
           txData={{
             ...txData, from, to, gasLimit: String(txData.gasLimit), network,
           }}
-          abiInputData={abiInputData}
-          txType={contractMethod}
         />
       ),
     });
@@ -560,23 +562,32 @@ class DAppBrowser extends Component {
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
     const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
-    const inputData = data;
-    const res = await apiHelper.getAbiByAddress(toAddress);
-    if (res && res.abi) {
-      const { abi, symbol } = res;
-      const input = common.ethereumInputDecoder(abi, inputData);
-      console.log('input: ', input);
-      const abiInputData = common.formatContractABIInputData(input, symbol);
-      console.log('abiInputData: ', abiInputData);
-      if (input && input.method === 'approve') {
-        this.popupAllowanceModal(id, txData, abiInputData, toAddress);
+
+    const isContractAddress = await common.isContractAddress(toAddress, networkId);
+
+    if (isContractAddress) {
+      const input = data;
+      const res = await apiHelper.getAbiByAddress(toAddress);
+      if (res && res.abi) {
+        const { abi, symbol } = res;
+        const inputData = common.ethereumInputDecoder(abi, input);
+        const formatedInputData = common.formatContractABIInputData(inputData, symbol);
+
+        if (formatedInputData) {
+          // popup decode contract modal
+          this.popupContractModal(id, txData, formatedInputData);
+        } else {
+          // popup default contract modal
+          this.popupContractModal(id, txData);
+        }
       } else {
-        const contractMethod = (input && input.method) || DEFAULT_CONTRACT_METHOD;
-        this.popupNormalTransactionModal(id, txData, contractMethod, abiInputData);
+        console.log('abi is not exist');
+        // popup default contract modal
+        this.popupContractModal(id, txData);
       }
     } else {
-      console.log('abi is not exsit');
-      this.popupNormalTransactionModal(id, txData, DEFAULT_CONTRACT_METHOD);
+      // popup normal transaction modal
+      this.popupNormalTransactionModal(id, txData);
     }
   }
 

@@ -5,7 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
@@ -54,31 +53,9 @@ export default class TransactionModal extends Component {
     Linking.openURL(url);
   }
 
-  getAbiInputView = (abiInputData) => {
-    const abiInputView = [];
-    _.forEach(abiInputData, (inputValue, key) => {
-      abiInputView.push(
-        <View style={styles.line} key={key}>
-          <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${key}`)}</Text>
-          {
-            (key === 'To' || key === 'Recipient') ? (
-              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
-                <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
-              </TouchableOpacity>
-            ) : (
-              <Text style={styles.lineValue}>{inputValue}</Text>
-            )
-          }
-        </View>,
-      );
-    });
-
-    return abiInputView;
-  }
-
   render() {
     const {
-      txData, dappUrl, cancelPress, confirmPress, txType, abiInputData,
+      txData, dappUrl, cancelPress, confirmPress,
     } = this.props;
     const {
       value, from, to, data, gasLimit, gasPrice,
@@ -95,55 +72,20 @@ export default class TransactionModal extends Component {
         description={strings('page.wallet.walletconnect.approveTransactionDesc', { dappUrl })}
         content={(
           <>
-            {
-              txType && (
-                <View style={styles.line}>
-                  <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.type')}</Text>
-                  <Text style={styles.lineValue}>{txType}</Text>
-                </View>
-              )
-            }
-
-            {
-              // If abiInputData is empty, display the normal transaction info
-              // otherwise display contract abi info
-              _.isEmpty(abiInputData) ? (
-                <>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
-                    <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
-                  </View>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
-                  </View>
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
-                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
-                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                <>
-                  {
-                    _.isEmpty(abiInputData.From) && (
-                      <View style={styles.line}>
-                        <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                        <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
-                      </View>
-                    )
-                  }
-                  { this.getAbiInputView(abiInputData) }
-                  <View style={styles.line}>
-                    <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.contract')}</Text>
-                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
-                      <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              )
-            }
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.amount')}</Text>
+              <Text style={styles.lineValue}>{`${amount} RBTC`}</Text>
+            </View>
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
+              <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+            </View>
+            <View style={styles.line}>
+              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
+              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(to)}>
+                <Text style={[styles.lineValue, styles.addressLineValue]}>{to}</Text>
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.line}>
               <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.minerFee')}</Text>
@@ -175,15 +117,6 @@ TransactionModal.propTypes = {
     gasPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     network: PropTypes.string,
   }).isRequired,
-  abiInputData: PropTypes.shape({
-    From: PropTypes.string,
-  }),
   confirmPress: PropTypes.func.isRequired,
   cancelPress: PropTypes.func.isRequired,
-  txType: PropTypes.string,
-};
-
-TransactionModal.defaultProps = {
-  txType: null,
-  abiInputData: null,
 };
