@@ -19,12 +19,13 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError, InvalidParamError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+const { MAINNET, TESTNET } = NETWORK;
 
 // Default BTC transaction size
 const DEFAULT_BTC_TX_SIZE = 400;
@@ -620,6 +621,28 @@ const common = {
   },
 
   /**
+   * Chcke address is contract addrsss
+   * @param {*} address need check address
+   * @param {*} chainId chain id
+   */
+  async isContractAddress(address, chainId) {
+    return new Promise((resolve, reject) => {
+      const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
+      const rsk3 = new Rsk3(rskEndpoint);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address, chainId);
+      rsk3.getCode(checksumAddress).then((code) => {
+        if (code !== '0x00') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  /**
    * Decode ethereum transaction input data
    * return contract function name, types and other info
    * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
@@ -634,52 +657,61 @@ const common = {
   },
 
   /**
-   * Uppercase first letter in letters
-   * For Example, letters = 'onoznxiu123Z'
-   * Return 'Onoznxiu123Z'
+   * uppercase first letter in letters
+   * For Example
+   * letters = 'onoznxiu123Z', returns 'Onoznxiu123Z'
+   * letters = '_onoznxiu123Z', returns 'Onoznxiu123Z'
    * @param {*} letters
    */
-  UppercaseFirstLetter(letters) {
-    return letters.charAt(0).toUpperCase() + letters.slice(1);
+  uppercaseFirstLetter(letters) {
+    if (letters[0] !== '_') {
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return letters.charAt(1).toUpperCase() + letters.slice(2);
   },
 
   /**
    * Format contract abi input data
-   * For Example, inputData = { inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
-   * returns { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 }
+   * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
    * @param {*} inputData
    * @param {*} symbol
    */
   formatContractABIInputData(inputData, symbol) {
-    if (!inputData) {
+    if (!inputData || !inputData.method) {
       return null;
     }
-    const { inputs, names, types } = inputData;
-    const result = {};
+    const {
+      inputs, names, types, method,
+    } = inputData;
+    const params = { };
     _.forEach(inputs, (value, index) => {
-      const key = this.UppercaseFirstLetter(names[index]);
+      const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
       // To address display the whole address
       if (type === 'address') {
         if (key !== 'To' && key !== 'Recipient') {
-          result[key] = this.ellipsisAddress(value);
+          params[key] = this.ellipsisAddress(value);
         } else {
-          result[key] = value.startsWith('0x') ? value : `0x${value}`;
+          params[key] = value.startsWith('0x') ? value : `0x${value}`;
         }
       } else if (type === 'uint256') {
         if (key === 'Value' || key === 'Amount') {
           const unitAmount = new BigNumber(value.toString());
           const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
-          result[key] = `${amount} ${symbol}`;
+          params[key] = `${amount} ${symbol}`;
         } else {
-          result[key] = value.toString();
+          params[key] = value.toString();
         }
       } else {
-        result[key] = value;
+        params[key] = value;
       }
     });
 
-    return result;
+    return {
+      method: this.uppercaseFirstLetter(method),
+      params,
+    };
   },
 
   /**
@@ -701,7 +733,7 @@ const common = {
     if (length <= (showLength * 2 + 2)) {
       return completionAddress;
     }
-    return `${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
+    return `0x${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**

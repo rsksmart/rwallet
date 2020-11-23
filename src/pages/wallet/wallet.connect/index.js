@@ -12,8 +12,8 @@ import BigNumber from 'bignumber.js';
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
 import WalletConnected from './connected';
-import AllowanceModal from './modal/allowance';
 import MessageModal from './modal/message';
+import ContractModal from './modal/contract';
 import TransactionModal from './modal/transaction';
 import DisconnectModal from './modal/disconnect';
 import SuccessModal from './modal/success';
@@ -171,7 +171,6 @@ class WalletConnectPage extends Component {
       },
       chainId: 30,
       payload: null,
-      inputDecode: null,
       selectedWallet: {},
       contentType: null,
       modalView: null,
@@ -464,45 +463,53 @@ class WalletConnectPage extends Component {
   popupTransactionModal = async () => {
     const { payload: { params }, chainId } = this.state;
     const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, chainId);
-    const inputData = params[0].data;
-    const res = await apiHelper.getAbiByAddress(toAddress);
     const txData = await this.generateTxData();
     await this.setState({ txData });
-    if (res && res.abi) {
-      const { abi, symbol } = res;
-      const input = common.ethereumInputDecoder(abi, inputData);
-      const abiInputData = common.formatContractABIInputData(input, symbol);
-      await this.setState({ inputDecode: input });
-      if (input && input.method === 'approve') {
-        this.popupAllowanceModal(abiInputData, toAddress);
+
+    const isContractAddress = await common.isContractAddress(toAddress, chainId);
+    if (isContractAddress) {
+      // popup contract modal
+      const input = params[0].data;
+      const res = await apiHelper.getAbiByAddress(toAddress);
+      if (res && res.abi) {
+        const { abi, symbol } = res;
+        const inputData = common.ethereumInputDecoder(abi, input);
+
+        const formatedInputData = common.formatContractABIInputData(inputData, symbol);
+        if (formatedInputData) {
+          // popup decode contract modal
+          this.popupContractModal(formatedInputData);
+        } else {
+          // popup default contract modal
+          this.popupContractModal();
+        }
       } else {
-        const contractMethod = (input && input.method) || 'Smart Contract Call';
-        this.popupNormalTransactionModal(contractMethod, abiInputData);
+        // popup default contract modal
+        this.popupContractModal();
       }
     } else {
-      console.log('abi is not exsit');
+      // popup normal transaction modal
       this.popupNormalTransactionModal();
     }
   }
 
-  popupAllowanceModal = async (abiInputData, toAddress) => {
-    const { peerMeta, txData, isTestnet } = this.state;
-    const { gasLimit, gasPrice } = txData;
-    const gasLimitNumber = new BigNumber(gasLimit);
-    const gasPriceNumber = new BigNumber(gasPrice);
-    const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
-    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
-    const network = isTestnet ? 'Testnet' : 'Mainnet';
+  popupContractModal = async (formatedInputData) => {
+    const {
+      peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
+    } = this.state;
+    const from = Rsk3.utils.toChecksumAddress(address, chainId);
+    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
+
     this.setState({
       modalView: (
-        <AllowanceModal
+        <ContractModal
           dappUrl={peerMeta.url}
           confirmPress={this.approveRequest}
           cancelPress={this.rejectRequest}
-          abiInputData={abiInputData}
-          contract={toAddress}
-          network={network}
-          fee={fee}
+          txData={{
+            ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
+          }}
+          abiInputData={formatedInputData}
         />
       ),
     });
@@ -522,7 +529,7 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupNormalTransactionModal = async (contractMethod, abiInputData) => {
+  popupNormalTransactionModal = async () => {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
@@ -538,8 +545,6 @@ class WalletConnectPage extends Component {
           txData={{
             ...txData, from, to, network: isTestnet ? 'Testnet' : 'Mainnet',
           }}
-          abiInputData={abiInputData}
-          txType={contractMethod}
         />
       ),
     });
@@ -596,7 +601,7 @@ class WalletConnectPage extends Component {
   handleCallRequest = async () => {
     try {
       const {
-        selectedWallet: { privateKey }, payload, connector, inputDecode,
+        selectedWallet: { privateKey }, payload, connector,
       } = this.state;
       const { id, method, params } = payload;
 
@@ -633,25 +638,14 @@ class WalletConnectPage extends Component {
           result = await this.sendTransaction(privateKey);
           await connector.approveRequest({ id, result });
 
-          if (inputDecode && inputDecode.method === 'approve') {
-            this.setState({
-              modalView: (
-                <SuccessModal
-                  title={strings('page.wallet.walletconnect.allowanceApproved')}
-                  description={strings('page.wallet.walletconnect.successDesc')}
-                  cancelPress={this.closeModalPress}
-                />),
-            });
-          } else {
-            this.setState({
-              modalView: (
-                <SuccessModal
-                  title={strings('page.wallet.walletconnect.transactionApproved')}
-                  description={strings('page.wallet.walletconnect.successDesc')}
-                  cancelPress={this.closeModalPress}
-                />),
-            });
-          }
+          this.setState({
+            modalView: (
+              <SuccessModal
+                title={strings('page.wallet.walletconnect.transactionApproved')}
+                description={strings('page.wallet.walletconnect.successDesc')}
+                cancelPress={this.closeModalPress}
+              />),
+          });
           break;
         }
 
