@@ -118,10 +118,8 @@ class DAppList extends Component {
     let dappList = [];
     if (type === 'recent') {
       dappList = recentDapps;
-    } else if (type === 'recommended') {
-      dappList = _.filter(dapps, (item) => item.isRecommended);
     } else {
-      dappList = _.filter(dapps, (item) => item.type === type);
+      dappList = _.filter(dapps, (item) => _.includes(item.networks, type));
     }
     return (
       <BasePageSimple

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Platform,
+  View, Text, StyleSheet, TouchableOpacity, StatusBar, Platform,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -138,19 +138,17 @@ class DAppIndex extends Component {
   }
 
   componentDidMount() {
-    const { fetchDapps, fetchDappTypes, fetchAdvertisements } = this.props;
+    const { fetchDapps, fetchAdvertisements } = this.props;
     fetchDapps();
-    fetchDappTypes();
     fetchAdvertisements();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { language, fetchDapps, fetchDappTypes } = this.props;
+    const { language, fetchDapps } = this.props;
 
     // reload dapp page when language changed
     if (language !== nextProps.language) {
       fetchDapps();
-      fetchDappTypes();
     }
   }
 
@@ -178,22 +176,22 @@ class DAppIndex extends Component {
     }
   }
 
-  // format recommended source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
-  formatRecommendedSourceData = (recommendedList) => {
-    const recommendedSourceData = [];
+  // format source data, such as [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
+  formatSourceData = (dappList) => {
+    const sourceData = [];
     let column = [];
-    _.forEach(recommendedList, (dapp, index) => {
+    _.forEach(dappList, (dapp, index) => {
       column.push(dapp);
 
       if (!((index + 1) % DAPP_PER_COLUMN)) {
-        recommendedSourceData.push(column);
+        sourceData.push(column);
         column = [];
       }
     });
     if (column && column.length) {
-      recommendedSourceData.push(column);
+      sourceData.push(column);
     }
-    return recommendedSourceData;
+    return sourceData;
   }
 
   getSourceData = () => {
@@ -202,14 +200,16 @@ class DAppIndex extends Component {
     // show recent dapps
     const recentSourceData = (recentDapps && recentDapps.length > RECENT_DAPPS_NUMBER) ? recentDapps.slice(0, RECENT_DAPPS_NUMBER) : recentDapps;
 
-    // filter out recommended dapps from all dapps
-    const recommendedList = _.isEmpty(dapps) ? PLACEHOLDER_LIST : _.filter(dapps, { isRecommended: true });
-    // format recommended data to [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
-    const recommendedSourceData = this.formatRecommendedSourceData(recommendedList);
+    const mainnetDapps = _.isEmpty(dapps) ? PLACEHOLDER_LIST : _.filter(dapps, (dapp) => _.includes(dapp.networks, 'Mainnet'));
+    const testnetDapps = _.isEmpty(dapps) ? PLACEHOLDER_LIST : _.filter(dapps, (dapp) => _.includes(dapp.networks, 'Testnet'));
+    // format source data to [[dapp, dapp, dapp], [dapp, dapp, dapp], ...]
+    const mainnetDappList = this.formatSourceData(mainnetDapps);
+    const testnetDappList = this.formatSourceData(testnetDapps);
 
     return {
       recent: recentSourceData,
-      recommended: recommendedSourceData,
+      mainnetDappList,
+      testnetDappList,
     };
   }
 
@@ -275,14 +275,22 @@ class DAppIndex extends Component {
     );
   }
 
+  dappCardGetItem = (items, index) => {
+    const column = [];
+    _.forEach(items, (item, row) => {
+      column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: (row !== 0) ? 15 : 0 }]));
+    });
+    return <View style={!index ? styles.firstItem : {}}>{column}</View>;
+  }
+
   render() {
     const {
-      navigation, language, dappTypes, dapps, advertisements,
+      navigation, language, advertisements,
     } = this.props;
     const { searchUrl, walletSelectionVisible, clickedDapp } = this.state;
 
     const sourceData = this.getSourceData();
-    const { recent, recommended } = sourceData;
+    const { recent, mainnetDappList, testnetDappList } = sourceData;
 
     return (
       <BasePageGereral
@@ -354,39 +362,18 @@ class DAppIndex extends Component {
 
         <DappCard
           navigation={navigation}
-          title="page.dapp.recommended"
-          data={recommended}
-          type="recommended"
-          getItem={(items, index) => {
-            const column = [];
-            _.forEach(items, (item, row) => {
-              column.push(this.getDappItem({ item, row }, [{ marginRight: 20, marginTop: row ? 15 : 0 }]));
-            });
-            return <View style={!index ? styles.firstItem : {}}>{column}</View>;
-          }}
+          title="networkType.mainnet"
+          data={mainnetDappList}
+          type="Mainnet"
+          getItem={(items, index) => this.dappCardGetItem(items, index)}
         />
 
-        <FlatList
-          data={dappTypes || []}
-          extraData={dapps}
-          keyExtractor={(item, index) => `type-${index}`}
-          renderItem={({ item: dappType }) => {
-            const dappList = _.filter(dapps, (dapp) => dapp.type === dappType.name);
-            if (dappList.length) {
-              return (
-                <DappCard
-                  type={dappType.name}
-                  navigation={navigation}
-                  title={(dappType.translation && (dappType.translation[language] || dappType.translation.en))}
-                  data={dappList}
-                  getItem={(item, index) => (
-                    this.getDappItem({ item, index }, [!index ? styles.firstItem : {}, { flex: 1, justifyContent: 'flex-start', marginRight: 15 }])
-                  )}
-                />
-              );
-            }
-            return null;
-          }}
+        <DappCard
+          navigation={navigation}
+          title="networkType.testnet"
+          data={testnetDappList}
+          type="Testnet"
+          getItem={(items, index) => this.dappCardGetItem(items, index)}
         />
 
         <View style={styles.bottomView} />
@@ -410,11 +397,9 @@ DAppIndex.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   fetchDapps: PropTypes.func.isRequired,
-  fetchDappTypes: PropTypes.func.isRequired,
   fetchAdvertisements: PropTypes.func.isRequired,
   recentDapps: PropTypes.arrayOf(PropTypes.object),
   dapps: PropTypes.arrayOf(PropTypes.object),
-  dappTypes: PropTypes.arrayOf(PropTypes.object),
   advertisements: PropTypes.arrayOf(PropTypes.object),
   language: PropTypes.string.isRequired,
   addConfirmation: PropTypes.func.isRequired,
@@ -423,13 +408,11 @@ DAppIndex.propTypes = {
 DAppIndex.defaultProps = {
   recentDapps: null,
   dapps: null,
-  dappTypes: null,
   advertisements: null,
 };
 
 const mapStateToProps = (state) => ({
   dapps: state.App.get('dapps'),
-  dappTypes: state.App.get('dappTypes'),
   advertisements: state.App.get('advertisements'),
   recentDapps: state.App.get('recentDapps'),
   language: state.App.get('language'),
@@ -437,7 +420,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchDapps: () => dispatch(appActions.fetchDapps()),
-  fetchDappTypes: () => dispatch(appActions.fetchDappTypes()),
   fetchAdvertisements: () => dispatch(appActions.fetchAdvertisements()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
