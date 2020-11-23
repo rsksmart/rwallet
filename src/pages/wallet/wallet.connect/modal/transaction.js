@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Linking,
+  View, Text, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
@@ -8,42 +8,12 @@ import BigNumber from 'bignumber.js';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
-import color from '../../../../assets/styles/color';
-import fontFamily from '../../../../assets/styles/font.family';
 import { WALLET_CONNECT } from '../../../../common/constants';
 import config from '../../../../../config';
 import common from '../../../../common/common';
+import styles from '../../../../assets/styles/dapp.popup';
 
 const { MODAL_TYPE } = WALLET_CONNECT;
-
-const styles = StyleSheet.create({
-  line: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-  lineTitle: {
-    color: color.black,
-    fontSize: 15,
-    fontFamily: fontFamily.AvenirBook,
-  },
-  lineValue: {
-    color: color.dustyGray,
-    fontSize: 15,
-    fontFamily: fontFamily.AvenirBook,
-    width: '60%',
-    textAlign: 'right',
-  },
-  toAddressLink: {
-    width: '60%',
-    alignSelf: 'flex-end',
-  },
-  addressLineValue: {
-    width: '100%',
-    color: color.app.theme,
-    fontSize: 13,
-  },
-});
 
 export default class TransactionModal extends Component {
   onToAddressPressed = (toAddress) => {
