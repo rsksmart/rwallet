@@ -629,7 +629,7 @@ const common = {
     return new Promise((resolve, reject) => {
       const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
       const rsk3 = new Rsk3(rskEndpoint);
-      const checksumAddress = Rsk3.utils.toChecksumAddress(address);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address, chainId);
       rsk3.getCode(checksumAddress).then((code) => {
         if (code !== '0x00') {
           resolve(true);
