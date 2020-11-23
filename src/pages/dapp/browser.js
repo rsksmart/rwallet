@@ -120,8 +120,8 @@ class DAppBrowser extends Component {
     }
 
     const confirmation = createInfoConfirmation(
-      'page.dapp.backTitle',
-      'page.dapp.backMessage',
+      strings('page.dapp.backTitle'),
+      strings('page.dapp.backMessage'),
       () => {
         navigation.pop();
       },
