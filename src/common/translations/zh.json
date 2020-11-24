@@ -297,7 +297,9 @@
         "errorTitle": "失败",
         "errorContent": "发生未知错误，请稍后再试。",
         "errorButton": "好的"
-      }
+      },
+      "backTitle": "警告",
+      "backMessage": "您将要离开这款Dapp，您确定要离开吗？"
     },
     "mine": {
       "addressBook": {

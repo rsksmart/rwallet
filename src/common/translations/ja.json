@@ -290,7 +290,9 @@
         "errorTitle": "Failed",
         "errorContent": "不明なエラーが発生しました。しばらくしてからもう一度お試しください",
         "errorButton": "わかりました"
-      }
+      },
+      "backTitle": "警告",
+      "backMessage": "あなたはdappを離れます、本当に存在したいですか？"
     },
     "mine": {
       "index": {
