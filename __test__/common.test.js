@@ -41,14 +41,9 @@ describe('Common Suite', () => {
     unitHex = common.convertCoinAmountToUnitHex('RBTC', '0x1');
     expect(unitHex).to.equal('0xde0b6b3a7640000');
 
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, '18');
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
-
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, '0x12');
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
-
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, new BigNumber(18));
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '18')).to.throw();
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '0x12')).to.throw();
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, new BigNumber(18))).to.throw();
   });
 
   it('ConvertUnitToCoinAmount', () => {
