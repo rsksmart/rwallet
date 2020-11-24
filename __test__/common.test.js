@@ -262,4 +262,52 @@ describe('Common Suite', () => {
     coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', '', prices);
     expect(coinValue).to.equal(null);
   });
+
+  it('GetSymbolName', () => {
+    let symbolName = common.getSymbolName('RBTC', 'Mainnet');
+    expect(symbolName).to.equal('RBTC');
+
+    symbolName = common.getSymbolName('DOC', 'Testnet');
+    expect(symbolName).to.equal('tDOC');
+  });
+
+  it('ToChecksumAddress', () => {
+    const checksumAddress = common.toChecksumAddress('0x95708CA0902d5ac81A37450556396CA6511a6fdE', 31);
+    expect(checksumAddress).to.equal('0x95708CA0902D5AC81A37450556396CA6511A6FdE');
+
+    expect(() => common.toChecksumAddress('9ED44100F8DE11EAADF1C35744E5C417')).to.throw();
+  });
+
+  it('GetServerUrl', () => {
+    let serverUrl = common.getServerUrl('https://rwallet.app');
+    expect(serverUrl).to.equal('https://rwallet.app');
+
+    serverUrl = common.getServerUrl('https://rwallet.app', 'Production');
+    expect(serverUrl).to.equal('https://rwallet.app');
+
+    serverUrl = common.getServerUrl('https://rwallet.app', 'production');
+    expect(serverUrl).to.equal('https://rwallet.app');
+
+    serverUrl = common.getServerUrl('https://rwallet.app', 'Dogfood');
+    expect(serverUrl).to.equal('https://dogfood.rwallet.app');
+
+    serverUrl = common.getServerUrl('https://rwallet.app', 'dogfood');
+    expect(serverUrl).to.equal('https://dogfood.rwallet.app');
+  });
+
+  it('EllipsisAddress', () => {
+    let serverUrl = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', 6);
+    expect(serverUrl).to.equal('0xe62278...631257');
+
+    serverUrl = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257');
+    expect(serverUrl).to.equal('0xe62278ac...3B631257');
+  });
+
+  it('uppercaseFirstLetter', () => {
+    let serverUrl = common.uppercaseFirstLetter('onoznxiu123Z');
+    expect(serverUrl).to.equal('Onoznxiu123Z');
+
+    serverUrl = common.uppercaseFirstLetter('_onoznxiu123Z');
+    expect(serverUrl).to.equal('Onoznxiu123Z');
+  });
 });
