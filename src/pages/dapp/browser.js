@@ -113,6 +113,13 @@ class DAppBrowser extends Component {
     );
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonPressAndroid,
+    );
+  }
+
   handleBackButtonPressAndroid = () => {
     const { navigation, addConfirmation } = this.props;
     if (!navigation.isFocused()) {
