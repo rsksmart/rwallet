@@ -29,7 +29,7 @@ describe('Transaction Suite', () => {
     expect(typeof (medium)).to.equal('string');
   });
 
-  it('processRawTransaction', async () => {
+  it('ProcessRawTransaction', async () => {
     const expected = {
       data: undefined,
       from: '0x1c067E968bFF32a2f231BED86cc6f56f3fF49Ad0',
@@ -96,7 +96,7 @@ describe('Transaction Suite', () => {
     expectThrowsAsync(() => rbtcTransaction.processRawTransaction({ ...params, netType: 'Mainnet', receiver: '' }));
   });
 
-  it('signTransaction', async () => {
+  it('SignTransaction', async () => {
     // Just for unit test
     const privateKey = '3f98102e063576efc92513e3465b7432d000c3047274d60eefd27af1f6ef82c0';
     const rawTransaction = {

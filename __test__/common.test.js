@@ -257,4 +257,36 @@ describe('Common Suite', () => {
     coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', '', prices);
     expect(coinValue).to.equal(null);
   });
+
+  it('GetCurrencySymbol', () => {
+    // {USD: '$', CNY: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+    const usdSymbol = common.getCurrencySymbol('USD');
+    expect(usdSymbol).to.equal('$');
+
+    const cnySymbol = common.getCurrencySymbol('CNY');
+    expect(cnySymbol).to.equal('￥');
+
+    const euroSymbol = common.getCurrencySymbol('EUR');
+    expect(euroSymbol).to.equal('$');
+
+    const symbol = common.getCurrencySymbol('');
+    expect(symbol).to.equal('$');
+  });
+
+  it('GetCurrencyNames', () => {
+    const expected = ['USD', 'ARS', 'JPY', 'KRW', 'CNY', 'GBP'];
+    const currencies = common.getCurrencyNames();
+    expect(currencies).that.deep.equals(expected);
+  });
+
+  it('GetFullDomain', () => {
+    let fullDomain = common.getFullDomain('98xass');
+    expect(fullDomain).to.equal('98xass.wallet.rsk');
+
+    fullDomain = common.getFullDomain('');
+    expect(fullDomain).to.equal('.wallet.rsk');
+
+    fullDomain = common.getFullDomain(undefined);
+    expect(fullDomain).to.equal('undefined.wallet.rsk');
+  });
 });
