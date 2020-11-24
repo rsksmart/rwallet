@@ -279,16 +279,18 @@ describe('Common Suite', () => {
   });
 
   it('GetServerUrl', () => {
-    let serverUrl = common.getServerUrl('https://rwallet.app');
-    expect(serverUrl).to.equal('https://rwallet.app');
+    const baseUrl = 'https://rwallet.app';
 
-    serverUrl = common.getServerUrl('https://rwallet.app', 'Production');
-    expect(serverUrl).to.equal('https://rwallet.app');
+    let serverUrl = common.getServerUrl(baseUrl);
+    expect(serverUrl).to.equal(baseUrl);
 
-    serverUrl = common.getServerUrl('https://rwallet.app', 'production');
-    expect(serverUrl).to.equal('https://rwallet.app');
+    serverUrl = common.getServerUrl(baseUrl, 'Production');
+    expect(serverUrl).to.equal(baseUrl);
 
-    serverUrl = common.getServerUrl('https://rwallet.app', 'Dogfood');
+    serverUrl = common.getServerUrl(baseUrl, 'production');
+    expect(serverUrl).to.equal(baseUrl);
+
+    serverUrl = common.getServerUrl(baseUrl, 'Dogfood');
     expect(serverUrl).to.equal('https://dogfood.rwallet.app');
 
     serverUrl = common.getServerUrl('https://rwallet.app', 'dogfood');
