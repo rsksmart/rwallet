@@ -302,18 +302,18 @@ describe('Common Suite', () => {
   });
 
   it('EllipsisAddress', () => {
-    let serverUrl = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', 6);
-    expect(serverUrl).to.equal('0xe62278...631257');
+    let address = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', 6);
+    expect(address).to.equal('0xe62278...631257');
 
-    serverUrl = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257');
-    expect(serverUrl).to.equal('0xe62278ac...3B631257');
+    address = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257');
+    expect(address).to.equal('0xe62278ac...3B631257');
   });
 
   it('uppercaseFirstLetter', () => {
-    let serverUrl = common.uppercaseFirstLetter('onoznxiu123Z');
-    expect(serverUrl).to.equal('Onoznxiu123Z');
+    let str = common.uppercaseFirstLetter('onoznxiu123Z');
+    expect(str).to.equal('Onoznxiu123Z');
 
-    serverUrl = common.uppercaseFirstLetter('_onoznxiu123Z');
-    expect(serverUrl).to.equal('Onoznxiu123Z');
+    str = common.uppercaseFirstLetter('_onoznxiu123Z');
+    expect(str).to.equal('Onoznxiu123Z');
   });
 });
