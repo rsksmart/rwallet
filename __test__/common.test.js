@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 import common from '../src/common/common';
 
-describe('Common', () => {
+describe('Common Suite', () => {
   it('ConvertCoinAmountToUnitHex', () => {
     let unitHex = common.convertCoinAmountToUnitHex('RBTC', 1);
     expect(unitHex).to.equal('0xde0b6b3a7640000');
