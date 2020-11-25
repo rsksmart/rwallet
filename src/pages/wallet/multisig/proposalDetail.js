@@ -240,7 +240,7 @@ class MultisigProposalDetail extends Component {
         transaction.rawTransaction = rawTransaction;
         transaction.proposalId = objectId;
         await transaction.signTransaction();
-        const proposal = await transaction.processSignedTransaction();
+        const proposal = await transaction.sendSignedTransaction();
         this.updateProposal(proposal);
         if (transaction.txHash) {
           const completedParams = { coin: this.token, hash: transaction.txHash };

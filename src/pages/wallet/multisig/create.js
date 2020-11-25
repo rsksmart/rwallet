@@ -262,7 +262,7 @@ class CreateMultisigAddress extends Component {
             <Loc style={styles.advancedOptions} text="page.wallet.createMultisigAddress.advancedOptions" />
             <View style={[styles.fieldView, space.marginTop_23]}>
               <SwitchRow
-                text={strings('page.wallet.addCustomToken.mainnet')}
+                text={strings('networkType.mainnet')}
                 value={isMainnet}
                 onValueChange={this.onSwitchValueChanged}
                 questionNotification={createInfoNotification(
