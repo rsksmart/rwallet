@@ -19,12 +19,13 @@ import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
 import I18n from './i18n';
-import { BIOMETRY_TYPES, CustomToken } from './constants';
+import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError, InvalidParamError } from './error';
 
 const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+const { MAINNET, TESTNET } = NETWORK;
 
 // Default BTC transaction size
 const DEFAULT_BTC_TX_SIZE = 400;
@@ -620,6 +621,28 @@ const common = {
   },
 
   /**
+   * Chcke address is contract addrsss
+   * @param {*} address need check address
+   * @param {*} chainId chain id
+   */
+  async isContractAddress(address, chainId) {
+    return new Promise((resolve, reject) => {
+      const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
+      const rsk3 = new Rsk3(rskEndpoint);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address, chainId);
+      rsk3.getCode(checksumAddress).then((code) => {
+        if (code !== '0x00') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  /**
    * Decode ethereum transaction input data
    * return contract function name, types and other info
    * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
@@ -634,6 +657,64 @@ const common = {
   },
 
   /**
+   * uppercase first letter in letters
+   * For Example
+   * letters = 'onoznxiu123Z', returns 'Onoznxiu123Z'
+   * letters = '_onoznxiu123Z', returns 'Onoznxiu123Z'
+   * @param {*} letters
+   */
+  uppercaseFirstLetter(letters) {
+    if (letters[0] !== '_') {
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return letters.charAt(1).toUpperCase() + letters.slice(2);
+  },
+
+  /**
+   * Format contract abi input data
+   * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
+   * @param {*} inputData
+   * @param {*} symbol
+   */
+  formatContractABIInputData(inputData, symbol) {
+    if (!inputData || !inputData.method) {
+      return null;
+    }
+    const {
+      inputs, names, types, method,
+    } = inputData;
+    const params = { };
+    _.forEach(inputs, (value, index) => {
+      const key = this.uppercaseFirstLetter(names[index]);
+      const type = types[index];
+      // To address display the whole address
+      if (type === 'address') {
+        if (key !== 'To' && key !== 'Recipient') {
+          params[key] = this.ellipsisAddress(value);
+        } else {
+          params[key] = value.startsWith('0x') ? value : `0x${value}`;
+        }
+      } else if (type === 'uint256') {
+        if (key === 'Value' || key === 'Amount') {
+          const unitAmount = new BigNumber(value.toString());
+          const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
+          params[key] = `${amount} ${symbol}`;
+        } else {
+          params[key] = value.toString();
+        }
+      } else {
+        params[key] = value;
+      }
+    });
+
+    return {
+      method: this.uppercaseFirstLetter(method),
+      params,
+    };
+  },
+
+  /**
    * Ellipsis a rsk address
    * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
    * @param {*} address, a rsk address
@@ -643,15 +724,16 @@ const common = {
     if (!address) {
       return '';
     }
-    const { length } = address;
-    if (length <= (showLength * 2 + 2)) {
-      return address;
-    }
-    if (address.startsWith('0x')) {
-      return `0x${this.ellipsisString(address.substr(2, length), showLength)}`;
-    }
 
-    return this.ellipsisString(address, showLength);
+    let completionAddress = address;
+    if (!address.startsWith('0x')) {
+      completionAddress = `0x${address}`;
+    }
+    const { length } = completionAddress;
+    if (length <= (showLength * 2 + 2)) {
+      return completionAddress;
+    }
+    return `0x${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
   },
 
   /**
@@ -734,6 +816,17 @@ const common = {
 
   getExplorerName(type) {
     return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
+  },
+
+  /**
+   * Return true if the dapp needs to display thumb dapp icon
+   * @param {*} item { name: { en: '', zh: '', ... } }
+   */
+  needDisplayThumbIcon(item) {
+    if (item && item.name && (_.includes(item.name.en, 'Sovryn') || item.name.en === 'RSK Swap')) {
+      return true;
+    }
+    return false;
   },
 };
 

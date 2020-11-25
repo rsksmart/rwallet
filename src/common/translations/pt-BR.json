@@ -93,9 +93,7 @@
         "importSharedWalletNote": "Importar uma carteira Bitcoin compartilhada existente"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de testes"
+        "title": "Selecionar ativos da carteira"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
@@ -165,7 +163,7 @@
         "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar aprovação para realizar transações.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
-        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
         "asset": "Ativo",
         "permission": "Permissão",
         "allowance": "Autorizar",
@@ -186,14 +184,21 @@
         "approveMessage": "Aprovar assinatura de mensagem",
         "approveMessageDesc": "Ao clicar em confirmar, você concorda em assinar a mensagem gerada por %{dappUrl}",
         "message": "Mensagem",
-        "successDesc": "Sucesso!Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
+        "successDesc": "Sucesso! Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
         "approveTransaction": "Aprovar transação",
         "approveTransactionDesc": "Ao clicar em confirmar, você concorda em assinar a transação gerada por %{dappUrl}",
+        "approveSmartContract": "Aprovar chamada de contrato inteligente",
+        "approveSmartContractDesc": "Ao clicar em confirmar, você concorda em assinar a chamada de contrato inteligente gerada por %{dappUrl}",
+        "spender": "Endereço",
+        "value": "Valor",
+        "recipient": "Destinatário",
+        "method": "Método",
         "amount": "Quantidade",
         "type": "Tipo",
         "from": "De",
         "to": "Para",
         "data": "Dados",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Rede",
           "body": "A rede de testes ou testnet é uma blockchain alternativa da RSK usada exclusivamente para realização de testes"
@@ -240,9 +245,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do ativo",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de testes"
+        "address": "Endereço do contrato do ativo"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
@@ -341,7 +344,9 @@
         "errorTitle": "Falhou",
         "errorContent": "Ocorreu um erro desconhecido, por favor tente novamente mais tarde",
         "errorButton": "Ok"
-      }
+      },
+      "backTitle": "Aviso",
+      "backMessage": "Você tem certeza de que deseja sair do dapp?"
     },
     "mine": {
       "index": {
@@ -775,5 +780,9 @@
       "title": "Erro de rede",
       "body": "Seu dispositivo não pode se conectar ao servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Principal",
+    "testnet": "Teste"
   }
 }

@@ -165,7 +165,7 @@
         "waitingForOperationsDesc": "请从%{dappName} dapp执行任何操作。如果需要，RWallet将提示要求签名批准。",
         "disconnect": "断开连接",
         "approveAllowance": "批准权限",
-        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您转让资产。",
+        "approveAllowanceDesc": "通过单击确认，您同意允许%{dappUrl}代表您执行智能合约呼叫。",
         "asset": "资产",
         "permission": "权限",
         "allowance": "Allowance",
@@ -189,11 +189,18 @@
         "successDesc": "成功！您的交易已发布到区块链中。一旦确认，它应该显示在dapp中。",
         "approveTransaction": "批准交易",
         "approveTransactionDesc": "通过单击确认，您同意签署源自%{dappUrl}的交易",
+        "approveSmartContract": "批准智能合约调用",
+        "approveSmartContractDesc": "通过单击确认，您同意签署源自%{dappUrl}的智能合约的调用",
+        "spender": "花费者",
+        "value": "值",
+        "recipient": "接收者",
+        "method": "方法",
         "amount": "数量",
         "type": "类型",
         "from": "从",
         "to": "到",
         "data": "数据",
+        "contract": "合约",
         "networkQuestion": {
           "title": "网络",
           "body": "测试网是用于测试的备用RSK区块链。"
@@ -341,7 +348,9 @@
         "errorTitle": "失败",
         "errorContent": "发生未知错误，请稍后再试。",
         "errorButton": "好的"
-      }
+      },
+      "backTitle": "警告",
+      "backMessage": "您将要离开这款Dapp，您确定要离开吗？"
     },
     "mine": {
       "addressBook": {
@@ -762,5 +771,9 @@
       "title": "网络错误",
       "body": "您的设备无法连接到服务器。"
     }
+  },
+  "networkType": {
+    "mainnet": "正式网络",
+    "testnet": "测试网络"
   }
 }

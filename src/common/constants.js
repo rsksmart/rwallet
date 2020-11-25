@@ -91,24 +91,24 @@ export const PROPOSAL_STATUS = {
 
 export const ASSETS_CONTRACT = {
   RIF: {
-    Testnet: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-    Mainnet: '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5',
+    Testnet: '0x19F64674D8A5B4E652319F5e239eFd3bc969A1fE',
+    Mainnet: '0x2AcC95758f8b5F583470ba265EB685a8F45fC9D5',
   },
   DOC: {
-    Testnet: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
-    Mainnet: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
+    Testnet: '0xCB46c0ddc60D18eFEB0E586C17Af6ea36452Dae0',
+    Mainnet: '0xe700691dA7b9851F2F35f8b8182c69c53CcaD9Db',
   },
   RIFP: {
-    Testnet: '0x23a1aa7b11e68bebe560a36bec04d1f79357f28d',
-    Mainnet: '0xf4d27c56595ed59b66cc7f03cff5193e4bd74a61',
+    Testnet: '0x23A1aA7b11e68beBE560a36beC04D1f79357f28d',
+    Mainnet: '0xf4d27c56595Ed59B66cC7F03CFF5193e4bd74a61',
   },
   RDOC: {
-    Testnet: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
-    Mainnet: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
+    Testnet: '0xC3De9F38581f83e281f260d0DdbaAc0e102ff9F8',
+    Mainnet: '0x2d919F19D4892381D58edeBeca66D5642Cef1a1f',
   },
   BITP: {
-    Testnet: '0x4dA7997A819bb46B6758b9102234c289Dd2ad3bf',
-    Mainnet: '0x440cd83c160de5c96ddb20246815ea44c7abbca8',
+    Testnet: '0x30c7aDdAb4B6e17bFA71a78c8116C157dF4f6a4B',
+    Mainnet: '0x440CD83C160De5C96Ddb20246815eA44C7aBBCa8',
   },
   'T!': {
     Testnet: '0x42ced11891E641F15AcAe3f540378052C37f5B00',

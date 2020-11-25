@@ -92,9 +92,7 @@
         "importSharedWalletNote": "기존 다중 서명 비트 코인 지갑 가져 오기"
       },
       "selectCurrency": {
-        "title": "지갑 자산 선택",
-        "mainnet": "메인넷",
-        "testnet": "테스트넷"
+        "title": "지갑 자산 선택"
       },
       "selectWallet": {
         "title": "자산 선택"
@@ -162,7 +160,7 @@
         "waitingForOperationsDesc": "%{dappName} dapp 에서 작업을 수행하십시오. RWallet은 요청시 서명 승인을 요청하는 메시지를 표시합니다.",
         "disconnect": "연결 해제",
         "approveAllowance": "수당 승인",
-        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl} 이 (가) 귀하를 대신하여 토큰을 전송하는 데 동의하는 것입니다.",
+        "approveAllowanceDesc": "확인을 클릭하면 %{dappUrl}이 사용자를 대신하여 스마트 계약 호출을 실행하는 데 동의하는 것입니다.",
         "asset": "자산",
         "permission": "Permission",
         "allowance": "허용",
@@ -186,11 +184,18 @@
         "successDesc": "성공! 거래가 블록 체인에 게시되었습니다. 확인되면 dapp에 표시되어야합니다.",
         "approveTransaction": "거래 승인",
         "approveTransactionDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 거래에 서명하는 데 동의하는 것입니다.",
+        "approveSmartContract": "스마트 계약 호출 승인",
+        "approveSmartContractDesc": "확인을 클릭하면 %{dappUrl} 에서 시작된 스마트 계약 호출에 서명하는 데 동의하는 것입니다.",
+        "spender": "돈 쓰는 사람",
+        "value": "값",
+        "recipient": "받는 사람",
+        "method": "방법",
         "amount": "금액",
         "type": "유형",
         "from": "From",
         "to": "To",
         "data": "데이터",
+        "contract": "계약",
         "networkQuestion": {
           "title": "네트워크",
           "body": "테스트 넷은 테스트에 사용되는 대체 RSK 블록 체인입니다."
@@ -237,9 +242,7 @@
       },
       "addCustomToken": {
         "title": "사용자 정의 자산 추가",
-        "address": "자산 컨트랙트 주소",
-        "mainnet": "메인넷",
-        "testnet": "테스트 넷"
+        "address": "자산 컨트랙트 주소"
       },
       "addCustomTokenConfirm": {
         "title": "사용자 정의 자산 추가",
@@ -344,7 +347,9 @@
         "errorTitle": "실패",
         "errorContent": "알 수없는 오류가 발생했습니다. 나중에 다시 시도하십시오.",
         "errorButton": "알겠습니다"
-      }
+      },
+      "backTitle": "경고",
+      "backMessage": "당신은 dapp을 떠납니다. 정말로 존재 하시겠습니까?"
     },
     "mine": {
       "index": {
@@ -759,5 +764,9 @@
       "title": "네트워크 오류",
       "body": "기기가 서버에 연결할 수 없습니다."
     }
+  },
+  "networkType": {
+    "mainnet": "메인 넷",
+    "testnet": "테스트 네트"
   }
 }

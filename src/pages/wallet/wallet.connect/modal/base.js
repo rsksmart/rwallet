@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.AvenirHeavy,
     fontWeight: 'bold',
     alignSelf: 'center',
+    textAlign: 'center',
   },
   description: {
     color: color.black,

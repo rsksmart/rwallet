@@ -454,12 +454,11 @@ class Swap extends Component {
       }
       const gasFee = feeObject.feeParams;
       const extraParams = {
-        data: '', memo: '', gasFee, coinswitch: { order },
+        data: '', memo: '', gasFee, coinSwitch: { order },
       };
       const transaction = createTransaction(swapSource.coin, agentAddress, sourceAmount, extraParams);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      const result = await transaction.processSignedTransaction();
+      console.log('transaction: ', transaction);
+      const result = await transaction.broadcast();
       this.setState({ isLoading: false });
       if (isMultisig) {
         updateProposal(result);

@@ -290,11 +290,8 @@ class Transfer extends Component {
     this.txSize = null;
 
     this.confirm = this.confirm.bind(this);
-    this.onGroupSelect = this.onGroupSelect.bind(this);
     this.inputAmount = this.inputAmount.bind(this);
     // this.onConfirmSliderVerified = this.onConfirmSliderVerified.bind(this);
-    this.onCustomFeeSlideValueChange = this.onCustomFeeSlideValueChange.bind(this);
-    this.onCustomFeeSlidingComplete = this.onCustomFeeSlidingComplete.bind(this);
     this.onSendAllPress = this.onSendAllPress.bind(this);
     this.onAmountInputBlur = this.onAmountInputBlur.bind(this);
     this.onMemoInputBlur = this.onMemoInputBlur.bind(this);
@@ -351,8 +348,14 @@ class Transfer extends Component {
     CancelablePromiseUtil.cancel(this);
   }
 
-  onGroupSelect(index) {
-    this.setState({ feeLevel: index, isCustomFee: false });
+  onGroupSelect = (index) => {
+    const {
+      levelFees, isCustomFee, feeLevel, customFee,
+    } = this.state;
+    this.setState({ feeLevel: index, isCustomFee: false }, () => {
+      // When the fee is changed by the user, modify the amount in the text box.
+      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee);
+    });
   }
 
   onQrcodeScanPress = () => {
@@ -393,12 +396,19 @@ class Transfer extends Component {
    * onCustomFeeSlideValueChange
    * @param {number} value slider value, 0-1
    */
-  onCustomFeeSlideValueChange(value) {
-    const { customFee, customFeeValue } = this.calcCustomFee(value);
-    this.setState({ customFee, customFeeValue });
+  onCustomFeeSlideValueChange = (value) => {
+    const {
+      levelFees, isCustomFee, feeLevel,
+    } = this.state;
+
+    const { customFee: newCustomFee, customFeeValue } = this.calcCustomFee(value);
+    this.setState({ customFee: newCustomFee, customFeeValue }, () => {
+      // When the fee is changed by the user, modify the amount in the text box.
+      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee);
+    });
   }
 
-  onCustomFeeSlidingComplete(value) {
+  onCustomFeeSlidingComplete = (value) => {
     this.setState({ feeSliderValue: value });
   }
 
@@ -519,6 +529,7 @@ class Transfer extends Component {
   }
 
   onAmountInputChangeText(text) {
+    // When modifying the amount, set isRequestSendAll to false
     this.isRequestSendAll = false;
     this.inputAmount(text);
   }
@@ -653,7 +664,7 @@ class Transfer extends Component {
       if (!isValid) {
         return;
       }
-
+      this.setState({ loading: true });
       this.txSize = symbol === 'BTC' ? await this.estimateBtcTxSize(isAllBalance) : null;
       const transactionFees = await this.loadTransactionFees(isAllBalance);
       if (!transactionFees) {
@@ -669,6 +680,8 @@ class Transfer extends Component {
         () => navigation.goBack(),
       );
       addConfirmation(confirmation);
+    } finally {
+      this.setState({ loading: false });
     }
   }
 
@@ -684,12 +697,7 @@ class Transfer extends Component {
       privateKey,
       isSendAllBalance,
     };
-    try {
-      this.setState({ loading: true });
-      return await btcTransaction.estimateTxSize(estimateParams);
-    } finally {
-      this.setState({ loading: false });
-    }
+    return btcTransaction.estimateTxSize(estimateParams);
   }
 
   confirmTransactionWithAddress = () => {
@@ -749,20 +757,15 @@ class Transfer extends Component {
       return null;
     }
 
-    try {
-      this.setState({ loading: true });
-      const transactionFees = symbol === 'BTC'
-        ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-        : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
-      console.log('transactionFees: ', transactionFees);
-      this.txFeesCache = {
-        amount, toAddress, memo, transactionFees,
-      };
-      this.setState({ enableConfirm: true });
-      return transactionFees;
-    } finally {
-      this.setState({ loading: false });
-    }
+    const transactionFees = symbol === 'BTC'
+      ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
+      : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
+    console.log('transactionFees: ', transactionFees);
+    this.txFeesCache = {
+      amount, toAddress, memo, transactionFees,
+    };
+    this.setState({ enableConfirm: true });
+    return transactionFees;
   }
 
   calcCustomFee(value) {
@@ -788,9 +791,9 @@ class Transfer extends Component {
     console.log('processFees, transactionFees: ', transactionFees);
     const { prices, currency } = this.props;
     const {
-      feeSymbol, feeSliderValue, isCustomFee, feeLevel, amount, customFee,
+      feeSymbol, feeSliderValue, isCustomFee, feeLevel, customFee,
     } = this.state;
-    const { isRequestSendAll, coin, txSize } = this;
+    const { coin, txSize } = this;
     const { symbol, type } = coin;
 
     if (symbol === 'BTC' && !txSize) {
@@ -842,21 +845,21 @@ class Transfer extends Component {
 
     // If user request send all, we need to adjust amount text.
     // We can only use the rest money without fees for transfers
-    if (isRequestSendAll) {
-      if (symbol === 'BTC' || symbol === 'RBTC') {
-        this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee, amount);
-      }
-      this.isRequestSendAll = false;
-    }
+    this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee);
   }
 
-  adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee, amount) {
+  adjustSendAllAmount(levelFees, feeLevel, isCustomFee, customFee) {
+    const { isRequestSendAll, coin } = this;
+    const { symbol, balance } = coin;
+    if (!isRequestSendAll || (symbol !== 'BTC' && symbol !== 'RBTC')) {
+      return;
+    }
     const { feeSymbol } = this.state;
     let restAmount = null;
     if (isCustomFee) {
-      restAmount = new BigNumber(amount).minus(customFee);
+      restAmount = balance.minus(customFee);
     } else {
-      restAmount = new BigNumber(amount).minus(levelFees[feeLevel].fee);
+      restAmount = balance.minus(levelFees[feeLevel].fee);
     }
     restAmount = restAmount.isGreaterThan(0) ? restAmount : new BigNumber(0);
     const restAmountText = common.getBalanceString(restAmount, feeSymbol);
@@ -910,12 +913,11 @@ class Transfer extends Component {
     const {
       navigation, addNotification, getBalance, updateProposal,
     } = this.props;
-    const { coin } = this;
+    const { coin, isRequestSendAll } = this;
     const {
-      symbol, type, address, isMultisig,
+      symbol, type, address, balance, precision, isMultisig,
     } = coin;
-    const { memo } = this.state;
-    const { amount } = this.state;
+    const { memo, amount } = this.state;
     try {
       this.setState({ loading: true });
       // If proposal exist, throw ERR_EXIST_UNFINISHED_PROPOSAL error
@@ -924,10 +926,20 @@ class Transfer extends Component {
       }
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
-      const transaction = createTransaction(coin, toAddress, amount, extraParams);
-      await transaction.processRawTransaction();
-      await transaction.signTransaction();
-      const result = await transaction.processSignedTransaction();
+      // In order to send all all balances, we cannot use the amount in the text box to calculate the amount sent, but use the coin balance.
+      // The amount of the text box is fixed decimal places
+      let value = new BigNumber(amount);
+      if (isRequestSendAll) {
+        if (symbol === 'BTC') {
+          value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.fees, precision));
+        } else if (symbol === 'RBTC') {
+          value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.gas.times(feeParams.gasPrice), precision));
+        } else {
+          value = balance;
+        }
+      }
+      const transaction = createTransaction(coin, toAddress, value, extraParams);
+      const result = await transaction.broadcast();
       if (isMultisig) {
         updateProposal(result);
         navigation.navigate('CreateProposalSuccess');

@@ -15,7 +15,7 @@ class MultisigTransaction extends Transaction {
     this.txHash = proposal.hash;
   }
 
-  async processRawTransaction() {
+  async processTransaction() {
     console.log('Transaction.processRawTransaction start');
     let result = null;
     const {

@@ -213,7 +213,7 @@ class WalletConnecting extends Component {
           <Loc style={styles.title} text="page.wallet.walletconnect.advancedOptions" />
           <SwitchRow
             value={isTestnet}
-            text={strings('page.wallet.addCustomToken.testnet')}
+            text={strings('networkType.testnet')}
             onValueChange={onSwitchValueChanged}
             questionNotification={createInfoNotification(
               'page.wallet.walletconnect.networkQuestion.title',

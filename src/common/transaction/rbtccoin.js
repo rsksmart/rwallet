@@ -1,6 +1,7 @@
 import Rsk3 from '@rsksmart/rsk3';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
+import storage from '../storage';
 import { NETWORK, ASSETS_CONTRACT } from '../constants';
 import assetAbi from '../assetAbi.json';
 
@@ -120,11 +121,14 @@ export const signTransaction = async (rawTransaction, privateKey) => {
   return signedTransaction;
 };
 
-export const getSignedTransactionParam = (signedTransaction, netType, memo, coinSwitch) => {
+export const getSignedTransactionParam = ({
+  signedTransaction, netType, memo, coinSwitch, rawTransaction,
+}) => {
   const param = {
     name: 'Rootstock',
     hash: signedTransaction.rawTransaction,
     type: netType,
+    raw: rawTransaction,
   };
   if (!_.isEmpty(memo)) {
     param.memo = memo;
@@ -133,6 +137,27 @@ export const getSignedTransactionParam = (signedTransaction, netType, memo, coin
     param.coinSwitch = coinSwitch;
   }
   return param;
+};
+
+export const processRawTransaction = async ({
+  symbol, netType, sender, receiver, value, data, memo, gasFee, contractAddress,
+}) => {
+  console.log('rbtc.processRawTransaction start');
+  let result = null;
+  try {
+    // If the last transaction is time out, createRawTransaction should use the fallback parameter
+    const isUseTransactionFallback = await storage.isUseTransactionFallbackAddress(sender);
+    const param = getRawTransactionParam({
+      symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback, contractAddress,
+    });
+    console.log(`rbtc.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
+    result = await createRawTransaction({ ...param, contractAddress });
+  } catch (e) {
+    console.log('rbtc.processRawTransaction err: ', e.message);
+    throw e;
+  }
+  console.log(`rbtc.processRawTransaction finished, result: ${JSON.stringify(result)}`);
+  return result;
 };
 
 export const getTxHash = (txResult) => txResult.hash;

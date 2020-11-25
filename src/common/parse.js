@@ -520,6 +520,17 @@ class ParseHelper {
     return _.map(addressObjects, (addressObject) => parseDataUtil.getToken(addressObject));
   }
 
+  static getInputAddressTXHash = async (address, type, amount) => Parse.Cloud.run('getInputAddressTXHash', { address, type, value: amount })
+
+  /**
+   * Get Address info
+   * @param {*} symbol
+   * @param {*} type
+   * @param {*} address
+   * @returns {object} address info
+   */
+  static getAddress = async (symbol, type, address) => Parse.Cloud.run('getAddress', { symbol, type, address });
+
   /**
    * Create a multisig address invitation.
    * @param {object} params: { signatureNumber, copayerNumber, publicKey, type, name, walletName }

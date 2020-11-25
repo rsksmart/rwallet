@@ -93,9 +93,7 @@
         "importSharedWalletNote": "Importar uma carteira Bitcoin compartilhada existente"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira",
-        "mainnet": "Rede principal",
-        "testnet": "Rede teste"
+        "title": "Selecionar ativos da carteira"
       },
       "selectWallet": {
         "title": "Selecionar ativo"
@@ -165,7 +163,7 @@
         "waitingForOperationsDesc": "Agora você pode começar a usar o dapp %{dappName}. Se for necessário, a RWallet irá solicitar a aprovação da assinatura.",
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
-        "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em autorizar %{dappUrl} transferir tokens em seu nome.",
+        "approveAllowanceDesc": "Ao clicar em Confirmar, você concorda em permitir que %{dappUrl} execute chamadas de contrato inteligente em seu nome.",
         "asset": "Ativo",
         "permission": "Permissão",
         "allowance": "Autorizar",
@@ -189,11 +187,18 @@
         "successDesc": "Sucesso!Sua transação foi publicada na blockchain. Uma vez confirmada, ela deve aparecer no dapp.",
         "approveTransaction": "Aprovar transação",
         "approveTransactionDesc": "Ao clicar em confirmar, você concorda em assinar a transação gerada por %{dappUrl}",
+        "approveSmartContract": "Aprovar Chamada de Contrato Inteligente",
+        "approveSmartContractDesc": "Ao clicar em Confirmar, você concorda em assinar a chamada de contrato inteligente originada de %{dappUrl}",
+        "spender": "Gastador",
+        "value": "Valor",
+        "recipient": "Recebedor",
+        "method": "Método",
         "amount": "Quantidade",
         "type": "Tipo",
         "from": "De",
         "to": "Para",
         "data": "Dados",
+        "contract": "Contrato",
         "networkQuestion": {
           "title": "Rede",
           "body": "O testnet é uma cadeia de blocos RSK alternativa, a ser usada para teste."
@@ -240,9 +245,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do ativo",
-        "mainnet": "Rede principal",
-        "testnet": "Rede de teste"
+        "address": "Endereço do contrato do ativo"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
@@ -341,7 +344,9 @@
         "errorTitle": "Falha",
         "errorContent": "Ocorreu um erro desconhecido, tente novamente mais tarde",
         "errorButton": "Ok"
-      }
+      },
+      "backTitle": "Aviso",
+      "backMessage": "Você está saindo do dapp, tem certeza que deseja existir?"
     },
     "mine": {
       "index": {
@@ -775,5 +780,9 @@
       "title": "Erro de rede",
       "body": "Seu dispositivo não pode se conectar ao servidor."
     }
+  },
+  "networkType": {
+    "mainnet": "Principal",
+    "testnet": "Teste"
   }
 }

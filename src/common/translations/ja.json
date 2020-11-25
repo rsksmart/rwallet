@@ -92,9 +92,7 @@
         "importSharedWalletNote": "既存のマルチシグビットコインウォレットをインポートする"
       },
       "selectCurrency": {
-        "title": "ウォレットアセットを選択",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "ウォレットアセットを選択"
       },
       "selectWallet": {
         "title": "資産を選択"
@@ -162,7 +160,7 @@
         "waitingForOperationsDesc": "%{dappName}から操作してください。 RWalletは、要求された場合、署名の承認を求めるプロンプトを表示します。",
         "disconnect": "切断する",
         "approveAllowance": "許可を承認",
-        "approveAllowanceDesc": "[確認]をクリックすると、％{dappUrl}があなたに代わってトークンを転送することを許可することに同意したことになります。",
+        "approveAllowanceDesc": "[確認]をクリックすると、%{dappUrl}があなたに代わってスマートコントラクトコールを実行することを許可することに同意したことになります。",
         "asset": "資産",
         "permission": "許可",
         "allowance": "手当",
@@ -186,11 +184,18 @@
         "successDesc": "成功！ あなたの取引はブロックチェーンに公開されました。 確認すると、dappに表示されます。",
         "approveTransaction": "トランザクションを承認",
         "approveTransactionDesc": "[確認]をクリックすると、％{dappUrl}からのトランザクションに署名することに同意したことになります",
+        "approveSmartContract": "スマートコントラクトコールを承認す",
+        "approveSmartContractDesc": "[確認]をクリックすると、%{dappUrl}から発信されたスマートコントラクト呼び出しに署名することに同意したことになります",
+        "spender": "スペンダ",
+        "value": "値",
+        "recipient": "受信者",
+        "method": "方法",
         "amount": "量",
         "type": "タイプ",
         "from": "から",
         "to": "に",
         "data": "データ",
+        "contract": "契約する",
         "networkQuestion": {
           "title": "通信網",
           "body": "テストネットは、テストに使用される代替のRSKブロックチェーンです。"
@@ -237,9 +242,7 @@
       },
       "addCustomToken": {
         "title": "カスタム資産を追加",
-        "address": "資産契約アドレス",
-        "mainnet": "メインネット",
-        "testnet": "テストネット"
+        "address": "資産契約アドレス"
       },
       "addCustomTokenConfirm": {
         "title": "カスタム資産を追加",
@@ -338,7 +341,9 @@
         "errorTitle": "Failed",
         "errorContent": "不明なエラーが発生しました。しばらくしてからもう一度お試しください",
         "errorButton": "わかりました"
-      }
+      },
+      "backTitle": "警告",
+      "backMessage": "あなたはdappを離れます、本当に存在したいですか？"
     },
     "mine": {
       "index": {
@@ -759,5 +764,9 @@
       "title": "ネットワークエラーです",
       "body": "ご使用のデバイスはサーバーに接続できません。"
     }
+  },
+  "networkType": {
+    "mainnet": "メインネット",
+    "testnet": "テストネット"
   }
 }
