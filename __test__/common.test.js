@@ -41,14 +41,14 @@ describe('Common Suite', () => {
     unitHex = common.convertCoinAmountToUnitHex('RBTC', '0x1');
     expect(unitHex).to.equal('0xde0b6b3a7640000');
 
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, '18');
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
+    // Test convertCoinAmountToUnitHex with a string precision
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '18')).to.throw();
 
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, '0x12');
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
+    // Test convertCoinAmountToUnitHex with a hex string precision
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '0x12')).to.throw();
 
-    unitHex = common.convertCoinAmountToUnitHex('RBTC', 1, new BigNumber(18));
-    expect(unitHex).to.equal('0xde0b6b3a7640000');
+    // Test convertCoinAmountToUnitHex with a big number precision
+    expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, new BigNumber(18))).to.throw();
   });
 
   it('ConvertUnitToCoinAmount', () => {
@@ -261,6 +261,39 @@ describe('Common Suite', () => {
     prices = [{ symbol: 'RBTC', price: { CNY: '6.6', USDT: '1' } }];
     coinValue = common.getCoinValue(1, 'RBTC', 'Mainnet', '', prices);
     expect(coinValue).to.equal(null);
+  });
+
+  it('GetCurrencySymbol', () => {
+    // currencies: {USD: '$', CNY: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+    const usdSymbol = common.getCurrencySymbol('USD');
+    expect(usdSymbol).to.equal('$');
+
+    const cnySymbol = common.getCurrencySymbol('CNY');
+    expect(cnySymbol).to.equal('￥');
+
+    // If currency is not included in currencies, return the default currency symbol '$'
+    const euroSymbol = common.getCurrencySymbol('EUR');
+    expect(euroSymbol).to.equal('$');
+
+    const symbol = common.getCurrencySymbol('');
+    expect(symbol).to.equal('$');
+  });
+
+  it('GetCurrencyNames', () => {
+    const expected = ['USD', 'ARS', 'JPY', 'KRW', 'CNY', 'GBP'];
+    const currencies = common.getCurrencyNames();
+    expect(currencies).that.deep.equals(expected);
+  });
+
+  it('GetFullDomain', () => {
+    let fullDomain = common.getFullDomain('98xass');
+    expect(fullDomain).to.equal('98xass.wallet.rsk');
+
+    fullDomain = common.getFullDomain('');
+    expect(fullDomain).to.equal('.wallet.rsk');
+
+    fullDomain = common.getFullDomain(undefined);
+    expect(fullDomain).to.equal('undefined.wallet.rsk');
   });
 
   it('GetSymbolName', () => {
