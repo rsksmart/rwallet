@@ -41,8 +41,13 @@ describe('Common Suite', () => {
     unitHex = common.convertCoinAmountToUnitHex('RBTC', '0x1');
     expect(unitHex).to.equal('0xde0b6b3a7640000');
 
+    // Test convertCoinAmountToUnitHex with a string precision
     expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '18')).to.throw();
+
+    // Test convertCoinAmountToUnitHex with a hex string precision
     expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, '0x12')).to.throw();
+
+    // Test convertCoinAmountToUnitHex with a big number precision
     expect(() => common.convertCoinAmountToUnitHex('RBTC', 1, new BigNumber(18))).to.throw();
   });
 
