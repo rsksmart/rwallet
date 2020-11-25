@@ -5,6 +5,7 @@ import { rbtcTransaction } from '../src/common/transaction/index';
 const docContractAddress = '0xe700691dA7b9851F2F35f8b8182c69c53CcaD9Db';
 const docData = '0xa9059cbb0000000000000000000000001c067e968bff32a2f231bed86cc6f56f3ff49ad00000000000000000000000000000000000000000000000000000000000000001';
 
+// Check async method throw error
 const expectThrowsAsync = async (method) => {
   let error = null;
   try {

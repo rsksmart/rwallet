@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 import common from '../src/common/common';
 
-describe('Common Suite', () => {
+describe('Common', () => {
   it('ConvertCoinAmountToUnitHex', () => {
     let unitHex = common.convertCoinAmountToUnitHex('RBTC', 1);
     expect(unitHex).to.equal('0xde0b6b3a7640000');
@@ -259,13 +259,14 @@ describe('Common Suite', () => {
   });
 
   it('GetCurrencySymbol', () => {
-    // {USD: '$', CNY: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
+    // currencies: {USD: '$', CNY: '￥', ARS: 'ARS$', KRW: '₩', JPY: '￥', GBP: '£',}
     const usdSymbol = common.getCurrencySymbol('USD');
     expect(usdSymbol).to.equal('$');
 
     const cnySymbol = common.getCurrencySymbol('CNY');
     expect(cnySymbol).to.equal('￥');
 
+    // If currency is not included in currencies, return the default currency symbol '$'
     const euroSymbol = common.getCurrencySymbol('EUR');
     expect(euroSymbol).to.equal('$');
 
