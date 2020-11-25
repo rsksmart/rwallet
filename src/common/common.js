@@ -795,7 +795,7 @@ const common = {
    * @param {string} environment
    */
   getServerUrl(baseUrl, environment) {
-    if (!_.isEmpty(environment) && environment.toLocaleLowerCase() !== 'production') {
+    if (!_.isEmpty(environment) && environment.toLowerCase() !== 'production') {
       const regex = /^([\w.]*:\/\/)(.*)\S*/g;
       const matches = regex.exec(baseUrl);
       const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
