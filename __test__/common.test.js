@@ -279,7 +279,7 @@ describe('Common Suite', () => {
   });
 
   it('GetServerUrl', () => {
-    const baseUrl = 'https://rwallet.app';
+    const baseUrl = 'https://rwallet.app/foo';
 
     let serverUrl = common.getServerUrl(baseUrl);
     expect(serverUrl).to.equal(baseUrl);
@@ -290,11 +290,15 @@ describe('Common Suite', () => {
     serverUrl = common.getServerUrl(baseUrl, 'production');
     expect(serverUrl).to.equal(baseUrl);
 
-    serverUrl = common.getServerUrl(baseUrl, 'Dogfood');
-    expect(serverUrl).to.equal('https://dogfood.rwallet.app');
 
-    serverUrl = common.getServerUrl('https://rwallet.app', 'dogfood');
-    expect(serverUrl).to.equal('https://dogfood.rwallet.app');
+    const url = new URL(baseUrl);
+    const path = baseUrl.slice(url.origin.length);
+
+    serverUrl = common.getServerUrl(baseUrl, 'Dogfood');
+    expect(serverUrl).to.equal(`${url.protocol}//${'Dogfood'.toLowerCase()}.${url.host}${path}`);
+
+    serverUrl = common.getServerUrl(baseUrl, 'dogfood');
+    expect(serverUrl).to.equal(`${url.protocol}//dogfood.${url.host}${path}`);
   });
 
   it('EllipsisAddress', () => {
