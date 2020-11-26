@@ -295,7 +295,8 @@
         "errorButton": "Ok"
       },
       "backTitle": "Aviso",
-      "backMessage": "Você tem certeza de que deseja sair do dapp?"
+      "backMessage": "Você está deixando a calçada, você tem certeza de querer existir?",
+      "infinitePositiveNumber": "Número infinito positivo"
     },
     "mine": {
       "index": {

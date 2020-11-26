@@ -292,7 +292,8 @@
         "errorButton": "Okay"
       },
       "backTitle": "Warning",
-      "backMessage": "You are leaving the dapp, are you sure want to exist?"
+      "backMessage": "You are leaving the dapp, are you sure want to exist?",
+      "infinitePositiveNumber": "Infinite positive number"
     },
     "mine": {
       "index": {

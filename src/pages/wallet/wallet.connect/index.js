@@ -216,10 +216,15 @@ class WalletConnectPage extends Component {
   }
 
   backAction = () => {
-    const { connector } = this.state;
-    if (connector.connected) {
-      this.onRequestClose();
+    const { navigation } = this.props;
+    if (!navigation.isFocused()) {
+      // The screen is not focused, so don't do anything
+      return false;
     }
+
+    this.onBackButtonPress();
+
+    return true;
   }
 
   // Get current wallet's address and private key
@@ -770,12 +775,11 @@ class WalletConnectPage extends Component {
   }
 
   onRequestClose = () => {
-    const { modalView } = this.state;
-    if (modalView) {
+    const { modalView, payload } = this.state;
+    if (modalView && payload && payload.id) {
       this.rejectRequest();
     } else {
       this.closeModalPress();
-      this.killSession();
     }
   }
 
@@ -876,6 +880,7 @@ WalletConnectPage.propTypes = {
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
+    isFocused: PropTypes.func.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
   addNotification: PropTypes.func.isRequired,

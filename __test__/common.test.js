@@ -296,6 +296,35 @@ describe('Common Suite', () => {
     expect(fullDomain).to.equal('undefined.wallet.rsk');
   });
 
+  it('IsPositiveInfinity', () => {
+    let isPositiveInfinity = common.isPositiveInfinity(123);
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity('123');
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity(new BigNumber('123'));
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity(Number.MAX_VALUE);
+    expect(isPositiveInfinity).to.equal(true);
+
+    isPositiveInfinity = common.isPositiveInfinity(Number.POSITIVE_INFINITY);
+    expect(isPositiveInfinity).to.equal(true);
+
+    isPositiveInfinity = common.isPositiveInfinity(undefined);
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity('');
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity(-Infinity);
+    expect(isPositiveInfinity).to.equal(false);
+
+    isPositiveInfinity = common.isPositiveInfinity(Infinity);
+    expect(isPositiveInfinity).to.equal(true);
+  });
+
   it('GetSymbolName', () => {
     let symbolName = common.getSymbolName('RBTC', 'Mainnet');
     expect(symbolName).to.equal('RBTC');
@@ -322,7 +351,6 @@ describe('Common Suite', () => {
 
     serverUrl = common.getServerUrl(baseUrl, 'production');
     expect(serverUrl).to.equal(baseUrl);
-
 
     const url = new URL(baseUrl);
     const path = baseUrl.slice(url.origin.length);
