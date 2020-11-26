@@ -728,6 +728,8 @@ const common = {
         } else {
           value = inputValue.toString();
         }
+      } else if (key === 'Data') {
+        value = common.ellipsisString(inputValue, 15);
       }
       params[key] = {
         type,
