@@ -791,11 +791,11 @@ const common = {
 
   /**
    * getServerUrl, Return the url with the environment prefix. For example, the environment is development, url is development.rwallet.app.
-   * @param {*} baseUrl
-   * @param {*} environment
+   * @param {string} baseUrl
+   * @param {string} environment
    */
   getServerUrl(baseUrl, environment) {
-    if (!_.isEmpty(environment) && environment !== 'Production') {
+    if (!_.isEmpty(environment) && environment.toLowerCase() !== 'production') {
       const regex = /^([\w.]*:\/\/)(.*)\S*/g;
       const matches = regex.exec(baseUrl);
       const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
