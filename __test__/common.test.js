@@ -324,4 +324,57 @@ describe('Common Suite', () => {
     isPositiveInfinity = common.isPositiveInfinity(Infinity);
     expect(isPositiveInfinity).to.equal(true);
   });
+
+  it('GetSymbolName', () => {
+    let symbolName = common.getSymbolName('RBTC', 'Mainnet');
+    expect(symbolName).to.equal('RBTC');
+
+    symbolName = common.getSymbolName('DOC', 'Testnet');
+    expect(symbolName).to.equal('tDOC');
+  });
+
+  it('ToChecksumAddress', () => {
+    const checksumAddress = common.toChecksumAddress('0x95708CA0902d5ac81A37450556396CA6511a6fdE', 31);
+    expect(checksumAddress).to.equal('0x95708CA0902D5AC81A37450556396CA6511A6FdE');
+
+    expect(() => common.toChecksumAddress('9ED44100F8DE11EAADF1C35744E5C417')).to.throw();
+  });
+
+  it('GetServerUrl', () => {
+    const baseUrl = 'https://rwallet.app/foo';
+
+    let serverUrl = common.getServerUrl(baseUrl);
+    expect(serverUrl).to.equal(baseUrl);
+
+    serverUrl = common.getServerUrl(baseUrl, 'Production');
+    expect(serverUrl).to.equal(baseUrl);
+
+    serverUrl = common.getServerUrl(baseUrl, 'production');
+    expect(serverUrl).to.equal(baseUrl);
+
+    const url = new URL(baseUrl);
+    const path = baseUrl.slice(url.origin.length);
+
+    serverUrl = common.getServerUrl(baseUrl, 'Dogfood');
+    expect(serverUrl).to.equal(`${url.protocol}//${'Dogfood'.toLowerCase()}.${url.host}${path}`);
+
+    serverUrl = common.getServerUrl(baseUrl, 'dogfood');
+    expect(serverUrl).to.equal(`${url.protocol}//dogfood.${url.host}${path}`);
+  });
+
+  it('EllipsisAddress', () => {
+    let address = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', 6);
+    expect(address).to.equal('0xe62278...631257');
+
+    address = common.ellipsisAddress('0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257');
+    expect(address).to.equal('0xe62278ac...3B631257');
+  });
+
+  it('uppercaseFirstLetter', () => {
+    let str = common.uppercaseFirstLetter('onoznxiu123Z');
+    expect(str).to.equal('Onoznxiu123Z');
+
+    str = common.uppercaseFirstLetter('_onoznxiu123Z');
+    expect(str).to.equal('Onoznxiu123Z');
+  });
 });
