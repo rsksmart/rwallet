@@ -199,6 +199,13 @@ TODO: How to debug android app with Mac OS is to be added
 
 ### Unit Testing
 Unit Testing module is to be added.
+1. Run all test suites
+    - npm test
+2. Run a specific test suite file
+    - npm test -t "__test__/transaction.test.js"
+3. Run a specific describe test or it test
+    - node node_modules/jest/bin/jest.js -i <test_file_name> -t "<describe_string> (or <it_string>)"
+    - Example: 'node node_modules/jest/bin/jest.js -i __test__/common.test.js -t "ConvertCoinAmountToUnitHex"'
 
 ### Manual Testing
 Manual Testing has to be done on a real iOS/android device. This is to make sure we mimic real user's experience.
