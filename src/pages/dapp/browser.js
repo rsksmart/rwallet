@@ -539,8 +539,8 @@ class DAppBrowser extends Component {
     // Estimate gas with { to, data } when gas is null
     if (!gas) {
       await this.rsk3.estimateGas({
-        from: address,
-        to,
+        from: Rsk3.utils.toChecksumAddress(address),
+        to: Rsk3.utils.toChecksumAddress(to),
         data,
         value,
       }).then((latestGas) => {

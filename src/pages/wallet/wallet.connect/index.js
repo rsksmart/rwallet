@@ -701,8 +701,8 @@ class WalletConnectPage extends Component {
 
     if (!gas) {
       await rsk3.estimateGas({
-        from: address,
-        to,
+        from: Rsk3.utils.toChecksumAddress(address),
+        to: Rsk3.utils.toChecksumAddress(to),
         data,
         value,
       }).then((latestGas) => {
