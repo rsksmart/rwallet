@@ -298,7 +298,8 @@
         "errorButton": "알겠습니다"
       },
       "backTitle": "경고",
-      "backMessage": "당신은 dapp을 떠납니다. 정말로 존재 하시겠습니까?"
+      "backMessage": "당신은 dapp을 떠납니다. 정말로 존재 하시겠습니까?",
+      "infinitePositiveNumber": "무한 양수"
     },
     "mine": {
       "index": {
