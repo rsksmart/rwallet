@@ -9,5 +9,6 @@ import InsufficientRbtcError from './insufficient.rbtc.error';
 import InsufficientBtcError from './insufficient.btc';
 
 export {
-  ERROR_CODE, GeneralError, FeeCalculationError, InvalidAddressError, InvalidAmountError, ExistUnfinishedProposalError, InsufficientBtcError, InsufficientRbtcError, InvalidParamError,
+  ERROR_CODE, GeneralError, FeeCalculationError, InvalidAddressError, InvalidAmountError,
+  ExistUnfinishedProposalError, InsufficientBtcError, InsufficientRbtcError, InvalidParamError,
 };
