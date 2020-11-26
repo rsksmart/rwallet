@@ -299,7 +299,8 @@
         "errorButton": "好的"
       },
       "backTitle": "警告",
-      "backMessage": "您将要离开这款Dapp，您确定要离开吗？"
+      "backMessage": "您将要离开这款Dapp，您确定要离开吗？",
+      "infinitePositiveNumber": "正无穷大"
     },
     "mine": {
       "addressBook": {

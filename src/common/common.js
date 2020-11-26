@@ -18,7 +18,7 @@ import 'moment/locale/ja';
 import 'moment/locale/ko';
 import 'moment/locale/ru';
 import config from '../../config';
-import I18n from './i18n';
+import I18n, { strings } from './i18n';
 import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
 import cointype from './wallet/cointype';
 import { InvalidAddressError, InvalidParamError } from './error';
@@ -671,6 +671,21 @@ const common = {
   },
 
   /**
+   * Check the number is positive infinity or not
+   * @param {*} number
+   */
+  isPositiveInfinity(number) {
+    const maxNumber = (2 ** 256) - 1;
+    let convertNumber = number;
+    if (BigNumber.isBigNumber(number)) {
+      convertNumber = number.toNumber();
+    } else if (typeof (number) === 'string') {
+      convertNumber = Number(number);
+    }
+    return _.isNumber(convertNumber) && convertNumber >= maxNumber;
+  },
+
+  /**
    * Format contract abi input data
    * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
    * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
@@ -688,24 +703,24 @@ const common = {
     _.forEach(inputs, (value, index) => {
       const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
-      // To address display the whole address
+      let newValue = value;
+      // Address display the whole address
       if (type === 'address') {
-        if (key !== 'To' && key !== 'Recipient') {
-          params[key] = this.ellipsisAddress(value);
-        } else {
-          params[key] = value.startsWith('0x') ? value : `0x${value}`;
-        }
+        newValue = value.startsWith('0x') ? value : `0x${value}`;
       } else if (type === 'uint256') {
         if (key === 'Value' || key === 'Amount') {
           const unitAmount = new BigNumber(value.toString());
-          const amount = this.convertUnitToCoinAmount(symbol, unitAmount);
-          params[key] = `${amount} ${symbol}`;
+          const isPositiveInfinity = this.isPositiveInfinity(unitAmount);
+          const amount = isPositiveInfinity ? strings('page.dapp.infinitePositiveNumber') : this.convertUnitToCoinAmount(symbol, unitAmount);
+          newValue = `${amount} ${symbol}`;
         } else {
-          params[key] = value.toString();
+          newValue = value.toString();
         }
-      } else {
-        params[key] = value;
       }
+      params[key] = {
+        type,
+        value: newValue,
+      };
     });
 
     return {
