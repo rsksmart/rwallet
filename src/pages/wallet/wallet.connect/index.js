@@ -599,7 +599,7 @@ class WalletConnectPage extends Component {
     const gasPriceNumber = new BigNumber(gasPrice);
     const valueNumber = new BigNumber(value);
     const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
-    const balance = await rsk3.getBalance(address);
+    const balance = await rsk3.getBalance(Rsk3.utils.toChecksumAddress(address));
     return Number(balance) < Number(total);
   }
 
