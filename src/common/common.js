@@ -688,7 +688,19 @@ const common = {
   /**
    * Format contract abi input data
    * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
-   * returns { method: 'Transfer', params: { To: '0xsd1923yjasdhi9812y3uasnd', Value: 1000000 } }
+   * returns {
+   *   method: 'Transfer',
+   *   params: {
+   *     To: {
+   *       type: 'address',
+   *       value: '0xsd1923yjasdhi9812y3uasnd',
+   *     },
+   *     Value: {
+   *       type: 'uint256',
+   *       value: 1000000,
+   *     },
+   *   },
+   * };
    * @param {*} inputData
    * @param {*} symbol
    */
