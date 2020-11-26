@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Rsk3 from '@rsksmart/rsk3';
 import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 
 import { strings } from '../../../../common/i18n';
 import BaseModal from './base';
@@ -48,7 +49,9 @@ export default class TransactionModal extends Component {
             </View>
             <View style={styles.line}>
               <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-              <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(from)}>
+                <Text style={[styles.lineValue, styles.addressLineValue]}>{from}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.line}>
               <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
@@ -62,10 +65,14 @@ export default class TransactionModal extends Component {
               <Text style={styles.lineValue}>{`${Number(fee).toFixed(config.symbolDecimalPlaces.RBTC)} RBTC`}</Text>
             </View>
 
-            <View style={styles.line}>
-              <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.data')}</Text>
-              <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
-            </View>
+            {
+              !_.isEmpty(data) && (
+                <View style={styles.line}>
+                  <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.data')}</Text>
+                  <Text style={styles.lineValue}>{common.ellipsisString(data, 15)}</Text>
+                </View>
+              )
+            }
           </>
           )}
         confirmPress={confirmPress}

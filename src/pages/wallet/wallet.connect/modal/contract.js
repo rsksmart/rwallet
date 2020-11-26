@@ -26,17 +26,18 @@ export default class Contract extends Component {
 
   getParamsView = (params) => {
     const paramsView = [];
-    _.forEach(params, (inputValue, key) => {
+    _.forEach(params, (param, key) => {
+      const { type, value } = param;
       paramsView.push(
         <View style={styles.line} key={key}>
           <Text style={styles.lineTitle}>{strings(`page.wallet.walletconnect.${(key && key.toLocaleLowerCase())}`)}</Text>
           {
-            (key === 'To' || key === 'Recipient') ? (
-              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(inputValue)}>
-                <Text style={[styles.lineValue, styles.addressLineValue]}>{inputValue}</Text>
+            (type === 'address') ? (
+              <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(value)}>
+                <Text style={[styles.lineValue, styles.addressLineValue]}>{value}</Text>
               </TouchableOpacity>
             ) : (
-              <Text style={styles.lineValue}>{inputValue}</Text>
+              <Text style={styles.lineValue}>{value}</Text>
             )
           }
         </View>,
@@ -74,7 +75,9 @@ export default class Contract extends Component {
                   </View>
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                    <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                    <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(from)}>
+                      <Text style={[styles.lineValue, styles.addressLineValue]}>{from}</Text>
+                    </TouchableOpacity>
                   </View>
                   <View style={styles.line}>
                     <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.to')}</Text>
@@ -111,7 +114,9 @@ export default class Contract extends Component {
                     _.isEmpty(abiInputData.params.From) && (
                       <View style={styles.line}>
                         <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.from')}</Text>
-                        <Text style={styles.lineValue}>{common.ellipsisAddress(from, 7)}</Text>
+                        <TouchableOpacity style={styles.toAddressLink} onPress={() => this.onToAddressPressed(from)}>
+                          <Text style={[styles.lineValue, styles.addressLineValue]}>{from}</Text>
+                        </TouchableOpacity>
                       </View>
                     )
                   }
