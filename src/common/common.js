@@ -712,26 +712,26 @@ const common = {
       inputs, names, types, method,
     } = inputData;
     const params = { };
-    _.forEach(inputs, (value, index) => {
+    _.forEach(inputs, (inputValue, index) => {
       const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
-      let newValue = value;
+      let value = inputValue;
       // Address display the whole address
       if (type === 'address') {
-        newValue = value.startsWith('0x') ? value : `0x${value}`;
+        value = inputValue.startsWith('0x') ? inputValue : `0x${inputValue}`;
       } else if (type === 'uint256') {
         if (key === 'Value' || key === 'Amount') {
-          const unitAmount = new BigNumber(value.toString());
+          const unitAmount = new BigNumber(inputValue.toString());
           const isPositiveInfinity = this.isPositiveInfinity(unitAmount);
           const amount = isPositiveInfinity ? strings('page.dapp.infinitePositiveNumber') : this.convertUnitToCoinAmount(symbol, unitAmount);
-          newValue = `${amount} ${symbol}`;
+          value = `${amount} ${symbol}`;
         } else {
-          newValue = value.toString();
+          value = inputValue.toString();
         }
       }
       params[key] = {
         type,
-        value: newValue,
+        value,
       };
     });
 
