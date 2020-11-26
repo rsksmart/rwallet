@@ -393,7 +393,7 @@ class WalletConnectPage extends Component {
     } = this.state;
     const { address } = selectedWallet;
     if (connector) {
-      connector.approveSession({ chainId, accounts: [address] });
+      connector.approveSession({ chainId, accounts: [Rsk3.utils.toChecksumAddress(address)] });
     }
     this.setState({
       connector,
@@ -599,7 +599,7 @@ class WalletConnectPage extends Component {
     const gasPriceNumber = new BigNumber(gasPrice);
     const valueNumber = new BigNumber(value);
     const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
-    const balance = await rsk3.getBalance(address);
+    const balance = await rsk3.getBalance(Rsk3.utils.toChecksumAddress(address));
     return Number(balance) < Number(total);
   }
 
