@@ -134,7 +134,7 @@ export const signRawTransaction = (transaction, privateKey) => {
 };
 
 export const getRawTransactionParam = ({
-  netType, sender, receiver, value, data, memo, gasFee, fallback,
+  netType, sender, receiver, value, data, memo, gasFee, fallback, rawTransaction,
 }) => {
   const param = {
     symbol: 'BTC',
@@ -152,6 +152,9 @@ export const getRawTransactionParam = ({
     param.preference = gasFee.preference;
   } else {
     param.fees = gasFee.fees;
+  }
+  if (rawTransaction) {
+    param.rawTransaction = rawTransaction;
   }
   return param;
 };

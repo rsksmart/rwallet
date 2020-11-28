@@ -24,6 +24,7 @@ import common from '../../../common/common';
 import { PROPOSAL_STATUS } from '../../../common/constants';
 import space from '../../../assets/styles/space';
 import txStyles from '../../../assets/styles/transaction.styles';
+import PsbtHelper from '../../../common/psbt.helper';
 
 const styles = StyleSheet.create({
   body: {
@@ -180,21 +181,25 @@ class MultisigProposalDetail extends Component {
     }
 
     processProposal = async () => {
-      const { proposal } = this;
+      const { proposal, token } = this;
       const { prices, currency } = this.props;
       const {
         type, createdAt, rawTransaction, status, memo,
       } = proposal;
+      const { address } = token;
       const user = await parseHelper.getUser();
       const username = user.get('username');
       const symbol = 'BTC';
 
       const dateTimeText = moment(createdAt).format('LLL');
-      const from = rawTransaction.tx.addresses[0];
-      const to = rawTransaction.tx.addresses[1];
-      const feesValue = rawTransaction.tx.fees;
 
-      const amountValue = rawTransaction.tx.outputs[0].value;
+      const psbt = PsbtHelper.fromBase64(rawTransaction, type);
+      const tx = PsbtHelper.getTransactionInfo(psbt);
+      const from = address;
+      const to = tx.outputs[0].address;
+      const feesValue = tx.fee;
+      const amountValue = tx.outputs[0].value;
+
       const amount = common.convertUnitToCoinAmount(symbol, amountValue);
       const amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
 

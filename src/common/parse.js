@@ -530,6 +530,20 @@ class ParseHelper {
   static getAddress = async (symbol, type, address) => Parse.Cloud.run('getAddress', { symbol, type, address });
 
   /**
+   * Get Address info
+   * @param {*} symbol
+   * @param {*} type
+   * @param {*} address
+   * @returns {object} address info
+   */
+  static getTransaction = async (chainName, type, transactionHash) => {
+    console.log('getTransaction: ', chainName, type, transactionHash);
+    const transaction = await Parse.Cloud.run('getTransaction', { name: chainName, type, hash: transactionHash });
+    console.log('getTransaction: ', transaction);
+    return transaction;
+  }
+
+  /**
    * Create a multisig address invitation.
    * @param {object} params: { signatureNumber, copayerNumber, publicKey, type, name, walletName }
    * @returns invitation
@@ -685,10 +699,10 @@ class ParseHelper {
    * @param {*} params
    */
   static async sendSignedMultisigTransaction(params) {
-    console.log(`processSignedTransaction, params: ${JSON.stringify(params)}`);
+    console.log(`sendSignedMultisigTransaction, params: ${JSON.stringify(params)}`);
     const result = await Parse.Cloud.run('sendSignedMultisigTransaction', params);
     const proposal = parseDataUtil.getProposal(result);
-    console.log(`processSignedTransaction, proposal: ${JSON.stringify(proposal)}`);
+    console.log(`sendSignedMultisigTransaction, proposal: ${JSON.stringify(proposal)}`);
     return proposal;
   }
 

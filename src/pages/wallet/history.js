@@ -28,6 +28,7 @@ import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import { createReadOnlyLimitNotification } from '../../common/notification.controller';
 import TypeTag from '../../components/common/misc/type.tag';
+import PsbtHelper from '../../common/psbt.helper';
 
 const NUMBER_OF_FETCHING_TRANSACTIONS = 10;
 
@@ -570,8 +571,10 @@ class History extends Component {
     const creator = proposal.acceptedMembers[0].name;
     const dateTime = this.calculateDateTime(moment(proposal.createdAt));
     const { rawTransaction } = proposal;
-    const amountValue = rawTransaction.tx.outputs[0].value;
-    const amount = common.convertUnitToCoinAmount(symbol, amountValue);
+
+    const psbt = PsbtHelper.fromBase64(rawTransaction, type);
+    const { txOutputs } = psbt;
+    const amount = common.convertUnitToCoinAmount(symbol, txOutputs[0].value);
     const amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
 
     const newProposal = {
