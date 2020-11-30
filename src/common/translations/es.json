@@ -295,7 +295,8 @@
         "errorButton": "Bien"
       },
       "backTitle": "Advertencia",
-      "backMessage": "Vas a dejar el dapp, ¿estás seguro de que quieres existir?"
+      "backMessage": "Vas a dejar el dapp, ¿estás seguro de que quieres existir?",
+      "infinitePositiveNumber": "Número positivo infinito"
     },
     "mine": {
       "index": {

@@ -292,7 +292,8 @@
         "errorButton": "わかりました"
       },
       "backTitle": "警告",
-      "backMessage": "あなたはdappを離れます、本当に存在したいですか？"
+      "backMessage": "あなたはdappを離れます、本当に存在したいですか？",
+      "infinitePositiveNumber": "無限の正の数"
     },
     "mine": {
       "index": {
