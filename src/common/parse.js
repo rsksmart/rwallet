@@ -536,12 +536,9 @@ class ParseHelper {
    * @param {*} address
    * @returns {object} address info
    */
-  static getTransaction = async (chainName, type, transactionHash) => {
-    console.log('getTransaction: ', chainName, type, transactionHash);
-    const transaction = await Parse.Cloud.run('getTransaction', { name: chainName, type, hash: transactionHash });
-    console.log('getTransaction: ', transaction);
-    return transaction;
-  }
+  static getTransaction = async (chainName, type, transactionHash) => Parse.Cloud.run('getTransaction', { name: chainName, type, hash: transactionHash });
+
+  static getBitcoinTransactionHex = async (type, txHashes) => Parse.Cloud.run('getBitcoinTransactionHex', { type, txHash: txHashes });
 
   /**
    * Create a multisig address invitation.

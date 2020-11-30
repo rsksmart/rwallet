@@ -87,8 +87,8 @@ class ImportMultisigAddress extends Component {
     }
 
     onImportPress = () => {
-      const { addNotification, walletManager, importSharedWallet } = this.props;
-      const { mnemonic, isMainnet } = this.state;
+      const { addNotification, walletManager, callAuthVerify } = this.props;
+      const { mnemonic } = this.state;
       // validate phrase
       const isValid = bip39.validateMnemonic(mnemonic);
       if (!isValid) {
@@ -106,7 +106,13 @@ class ImportMultisigAddress extends Component {
         addNotification(notification);
         return;
       }
+      callAuthVerify(this.import, () => null);
+      this.import();
+    }
 
+    import = async () => {
+      const { importSharedWallet } = this.props;
+      const { mnemonic, isMainnet } = this.state;
       this.setState({ isLoading: true }, () => {
         setTimeout(() => {
           const multisigParams = {
@@ -150,7 +156,7 @@ class ImportMultisigAddress extends Component {
             />
             <View style={[styles.fieldView, space.marginTop_10]}>
               <SwitchRow
-                text={strings('page.wallet.addCustomToken.mainnet')}
+                text={strings('networkType.mainnet')}
                 value={isMainnet}
                 onValueChange={this.onSwitchValueChanged}
               />
@@ -179,6 +185,7 @@ ImportMultisigAddress.propTypes = {
     code: PropTypes.number,
   }),
   resetWalletsUpdated: PropTypes.func.isRequired,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 ImportMultisigAddress.defaultProps = {
@@ -198,6 +205,7 @@ const mapDispatchToProps = (dispatch) => ({
   importSharedWallet: (phrase, multisigParams) => dispatch(walletActions.importSharedWallet(phrase, multisigParams)),
   resetSharedWalletCreationError: () => dispatch(walletActions.setSharedWalletCreationError(null)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImportMultisigAddress);

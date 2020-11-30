@@ -20,7 +20,9 @@ class MultisigTransaction extends Transaction {
     const params = btc.getSignedTransactionParam(signedTransaction, netType, memo, coinSwitch);
     const newParams = params;
     newParams.proposalId = this.proposalId;
-    return ParseHelper.sendSignedMultisigTransaction(params);
+    const result = await ParseHelper.sendSignedMultisigTransaction(params);
+    this.setTxHash(result);
+    return result;
   }
 
   setTxHash(proposal) {
@@ -38,48 +40,60 @@ class MultisigTransaction extends Transaction {
       const fees = parseInt(gasFee.fees, 16);
       const cost = amount + fees;
       const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+
+      // Get multisig wallet members' public Keys
       const invitation = await ParseHelper.getMultisigInvitation(invitationCode);
       const pubkeys = _.map(invitation.copayerMembers, (copayerMember) => Buffer.from(copayerMember.publicKey, 'hex'));
+
+      // Build PSBT(Partially Signed Bitcoin Transactions)
       const psbt = new bitcoin.Psbt({ network });
+
       // Calculate redeem script
       const redeem = bitcoin.payments.p2ms({ m: invitation.signatureNumber, pubkeys, network });
       const p2sh = bitcoin.payments.p2sh({ redeem, network });
       const redeemScript = p2sh.redeem.output;
 
+      // Get transaction inputs
       const inputs = await btc.getTransactionInputs({
         symbol: 'BTC', netType, sender, cost,
       });
 
-      const promises = _.map(inputs, (input) => ParseHelper.getTransaction('Bitcoin', netType, input.tx_hash));
+      // Get transaction hexs
+      const hashes = _.map(inputs, (input) => input.tx_hash);
+      const hexs = await ParseHelper.getBitcoinTransactionHex(netType, hashes);
+
+      // Add transaction inputs
       let inputsValue = 0;
-      const transactions = await Promise.all(promises);
-      console.log('transactions: ', transactions);
       _.each(inputs, (input, index) => {
         const { tx_hash: hash, tx_output_n: outputIndex, value: txValue } = input;
-        const transaction = transactions[index];
         psbt.addInput({
           hash,
           index: outputIndex,
-          nonWitnessUtxo: Buffer.from(transaction.hex, 'hex'),
+          nonWitnessUtxo: Buffer.from(hexs[index], 'hex'),
           redeemScript,
         });
         inputsValue += txValue;
       });
 
+      // Add outputs
       psbt.addOutput({ address: receiver, value: amount });
       psbt.addOutput({ address: sender, value: inputsValue - amount - fees });
 
-      // encode to send out to the signers
+      // Encode to send out to the signers
       const rawTransaction = psbt.toBase64();
 
+      // Create transaction proposal
       const param = btc.getRawTransactionParam({
         symbol, netType, sender, receiver, value, data, memo, gasFee, rawTransaction,
       });
-      console.log(`createRawMultisigTransaction!!!!, param: ${JSON.stringify(param)}`);
+      console.log(`createRawMultisigTransaction, param: ${JSON.stringify(param)}`);
       result = await Parse.Cloud.run('createRawMultisigTransaction', param);
       console.log('createRawMultisigTransaction, result: ', result);
+
       this.rawTransaction = rawTransaction;
       this.proposalId = result.id;
+
+      // Signed transaction
       this.signTransaction();
     } catch (e) {
       console.log('Transaction.processRawTransaction err: ', e.message);
@@ -100,7 +114,7 @@ class MultisigTransaction extends Transaction {
       this.signedTransaction = signedTransaction.toBase64();
       console.log('this.signedTransaction: ', this.signedTransaction);
     } catch (e) {
-      console.log('Transaction.signTransaction err: ', e.message);
+      console.log('MultisigTransaction.signTransaction err: ', e.message);
       throw e;
     }
   }
