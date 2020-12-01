@@ -264,7 +264,7 @@ class WalletPage extends Component {
     const isMultisig = walletType === WalletType.Shared;
 
     const assetValueText = assetValue ? common.getAssetValueString(assetValue) : '';
-    const addAssetDisabled = walletType === WalletType.Readonly && chain === 'Bitcoin';
+    const addAssetDisabled = walletType === WalletType.Shared || (walletType === WalletType.Readonly && chain === 'Bitcoin');
     const addAssetButton = (
       <View style={styles.addAssetView}>
         <TouchableOpacity style={[styles.addAsset, { opacity: !addAssetDisabled ? 1 : 0.5 }]} disabled={addAssetDisabled} onPress={onAddAssetPressed}>
