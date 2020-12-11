@@ -2,6 +2,7 @@
 
 ## Introduction
 This is a multi-cryptocurrency wallet application. Supports both english and spanish.
+![example branch parameter](https://github.com/actions/hello-world/workflows/Greet%20Everyone/badge.svg?branch=feature-1)
 
 ## Prerequisite
 
