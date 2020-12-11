@@ -1,0 +1,2 @@
+- name: Fastlane Action
+  uses: maierj/fastlane-action@v1.4.0
