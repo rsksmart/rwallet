@@ -2,7 +2,9 @@
 
 ## Introduction
 This is a multi-cryptocurrency wallet application. Supports both english and spanish.
-![example branch parameter](https://github.com/imstar15/rwallet-1/workflows/CI/badge.svg?branch=imstar15-action_test)
+
+![action test](https://github.com/imstar15/rwallet-1/workflows/CI/badge.svg?branch=imstar15-action_test)
+![fastlane](https://github.com/imstar15/rwallet-1/workflows/Fastlane%20Action/badge.svg?branch=imstar15-action_test)
 
 ## Prerequisite
 
