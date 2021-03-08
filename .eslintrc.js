@@ -21,9 +21,10 @@ module.exports = {
     'react',
   ],
   rules: {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     'no-console': 'off',
-    "max-len": ["error", { "code": 250, "ignoreComments": true }]
+    "max-len": ["error", { "code": 250, "ignoreComments": true }],
+    "complexity": "warn",
   },
   "parser": "babel-eslint",
 };
