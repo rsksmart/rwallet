@@ -3,7 +3,7 @@ import {
   StyleSheet, View, Text, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   tags: {
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   itemView: {
     marginLeft: 10,
     padding: 5,
-    backgroundColor: color.component.tags.backgroundColor,
+    backgroundColor: color.azureRadiance,
     borderRadius: 5,
     marginTop: 10,
     height: 30,

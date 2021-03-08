@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
 import Loc from '../common/misc/loc';
+import color from '../../assets/styles/color';
 
 const header = require('../../assets/images/misc/header.png');
 
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 65,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   headerText: {
     fontSize: 15,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 45,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   backButton: {
     position: 'absolute',
@@ -40,18 +41,16 @@ const styles = StyleSheet.create({
     bottom: 97,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
 });
 
-export default function KeySettingsHeader({ title, walletCount, onBackButtonPress }) {
+export default function KeySettingsHeader({ title, assetsCount, onBackButtonPress }) {
   return (
     <ImageBackground source={header} style={[styles.headerImage]}>
       <Loc style={[styles.headerTitle]} text={title} />
       <Text style={[styles.headerText]}>
-        <Loc text="page.mine.keySettings.keyContains" />
-        {` ${walletCount} `}
-        <Loc text="page.mine.keySettings.wallets" />
+        <Loc text="page.mine.keySettings.walletContains" interpolates={{ count: assetsCount }} />
       </Text>
       <TouchableOpacity
         style={styles.backButton}
@@ -65,6 +64,6 @@ export default function KeySettingsHeader({ title, walletCount, onBackButtonPres
 
 KeySettingsHeader.propTypes = {
   onBackButtonPress: PropTypes.func.isRequired,
-  walletCount: PropTypes.number.isRequired,
+  assetsCount: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
 };

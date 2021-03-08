@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import Notification from './notification.wrapper';
+import Alert from './alert';
 
 const Notifications = (props) => {
   const {
@@ -10,7 +10,7 @@ const Notifications = (props) => {
   return (
     <View>
       {showNotification && notification && (
-      <Notification
+      <Alert
         type={notification.type}
         title={notification.title}
         message={notification.message}
@@ -25,14 +25,17 @@ const Notifications = (props) => {
 
 Notifications.propTypes = {
   showNotification: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  notification: PropTypes.object,
+  notification: PropTypes.shape({
+    type: PropTypes.string,
+    title: PropTypes.string,
+    message: PropTypes.string,
+    buttonText: PropTypes.string,
+  }),
   removeNotification: PropTypes.func.isRequired,
   notificationCloseCallback: PropTypes.func,
 };
 
 Notifications.defaultProps = {
-  // eslint-disable-next-line react/forbid-prop-types
   notification: null,
   notificationCloseCallback: null,
 };

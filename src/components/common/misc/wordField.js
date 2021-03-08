@@ -3,14 +3,15 @@ import {
   StyleSheet, View, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import DashLine from './dashLine';
 
 export const wordFieldWidth = 163;
 
 const styles = StyleSheet.create({
   frame: {
-    borderColor: '#00B520',
+    borderColor: color.app.theme,
     backgroundColor: color.component.input.backgroundColor,
     borderRadius: 4,
     borderWidth: 1,
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   },
   textView: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    paddingTop: 30,
+    paddingTop: 40,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -39,6 +40,9 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
+    fontFamily: fontFamily.AvenirBlack,
+    fontSize: 21,
+    color: color.word,
   },
 });
 

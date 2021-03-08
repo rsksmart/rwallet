@@ -1,24 +1,27 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TextInput, Text, TouchableOpacity, Switch,
+  View, StyleSheet, TextInput, Text, TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Tags from '../../components/common/misc/tags';
 import Header from '../../components/headers/header';
+import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
 import SelectionModal from '../../components/common/modal/selection.modal';
 import appActions from '../../redux/app/actions';
 import { createErrorNotification } from '../../common/notification.controller';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import presetStyles from '../../assets/styles/style';
 import flex from '../../assets/styles/layout.flex';
 import BasePageGereral from '../base/base.page.general';
 import Button from '../../components/common/button/button';
 import { strings } from '../../common/i18n';
 import coinType from '../../common/wallet/cointype';
+import { BtcAddressType } from '../../common/constants';
 
 const bip39 = require('bip39');
 
@@ -31,9 +34,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   sectionTitle: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 14,
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
   },
   walletName: {
@@ -44,13 +47,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   buttonView: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: color.white,
     width: '100%',
     alignItems: 'center',
     paddingVertical: 15,
   },
   bottomBorder: {
-    borderBottomColor: '#bbb',
+    borderBottomColor: color.silver,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   phrasesBorder: {
@@ -69,10 +72,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 200,
     left: 24,
-    color: '#FFF',
+    color: color.white,
   },
   phraseView: {
-    borderBottomColor: '#bbb',
+    borderBottomColor: color.silver,
     borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: color.component.input.backgroundColor,
     borderColor: color.component.input.borderColor,
@@ -88,20 +91,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  pathInput: {
+  pathInputView: {
+    borderColor: color.component.input.borderColor,
+    backgroundColor: color.component.input.backgroundColor,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
     marginHorizontal: 5,
-    fontSize: 14,
     height: 30,
-    minWidth: 30,
-    paddingHorizontal: 5,
+    justifyContent: 'center',
+  },
+  pathInput: {
+    fontSize: 15,
     textAlign: 'center',
+    paddingVertical: 0,
+    paddingHorizontal: 3,
+    minWidth: 27,
   },
   switchLabel: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
   },
   selectionModalTitle: {
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
     marginVertical: 10,
   },
@@ -112,16 +124,16 @@ const styles = StyleSheet.create({
   },
   phraseTitle: {
     marginBottom: 14,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
   },
   fieldLabel: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     marginBottom: 5,
   },
   fieldText: {
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
   },
 });
@@ -140,9 +152,26 @@ class WalletRecovery extends Component {
       this.onChangeText = this.onChangeText.bind(this);
       this.onTagsPress = this.onTagsPress.bind(this);
       this.onImportPress = this.onImportPress.bind(this);
+      // Address path parameter list
       this.tokens = [
-        { symbol: 'BTC', prefix: "m/44'/0'/", name: coinType.BTC.defaultName },
-        { symbol: 'RBTC', prefix: "m/44'/137'/", name: coinType.RBTC.defaultName },
+        {
+          symbol: 'BTC',
+          prefix: "m/44'/0'/",
+          addressType: BtcAddressType.legacy,
+          displayText: `${coinType.BTC.defaultName} (BTC)`,
+        },
+        {
+          symbol: 'BTC',
+          prefix: "m/84'/0'/",
+          addressType: BtcAddressType.segwit,
+          displayText: `${coinType.BTC.defaultName} (BTC-SegWit)`,
+        },
+        {
+          symbol: 'RBTC',
+          prefix: "m/44'/137'/",
+          name: coinType.RBTC.defaultName,
+          displayText: `${coinType.BTC.defaultName} (RBTC)`,
+        },
       ];
       this.state = {
         phrases: [],
@@ -154,6 +183,8 @@ class WalletRecovery extends Component {
         accounts: [undefined, undefined],
         selectedTokenIndex: 0,
       };
+      // Address option list data
+      this.coins = _.map(this.tokens, (token) => token.displayText);
     }
 
     onSubmitEditing() {
@@ -238,7 +269,8 @@ class WalletRecovery extends Component {
     }
 
     onTokenPressed = () => {
-      this.selectionModal.show();
+      const { selectedTokenIndex } = this.state;
+      this.selectionModal.show(selectedTokenIndex);
     }
 
     onAccountIndexChanged = (value) => {
@@ -301,10 +333,9 @@ class WalletRecovery extends Component {
       const {
         phrase, phrases, isCanSubmit, isDerivationPathEnabled, selectedTokenIndex, accounts,
       } = this.state;
-      const { tokens } = this;
+      const { tokens, coins } = this;
 
       const { prefix } = tokens[selectedTokenIndex];
-      const coins = _.map(tokens, (token) => `${token.name} (${token.symbol})`);
       const selectedCoin = coins[selectedTokenIndex];
       const accountIndexText = !_.isNil(accounts[selectedTokenIndex]) ? accounts[selectedTokenIndex].toString() : '';
 
@@ -364,7 +395,7 @@ class WalletRecovery extends Component {
                   <TouchableOpacity onPress={this.onTokenPressed}>
                     <View style={styles.row}>
                       <Text style={[flex.flex1, styles.fieldText]}>{selectedCoin}</Text>
-                      <EvilIcons name="chevron-down" color="#9B9B9B" size={30} />
+                      <EvilIcons name="chevron-down" color={color.dustyGray} size={30} />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -372,14 +403,16 @@ class WalletRecovery extends Component {
                   <Text style={styles.fieldLabel}>{strings('page.wallet.recovery.derivationPath')}</Text>
                   <View style={[styles.row]}>
                     <Text style={styles.fieldText}>{prefix}</Text>
-                    <TextInput
-                      style={[presetStyles.textInput, styles.pathInput]}
-                      value={accountIndexText}
-                      onChangeText={this.onAccountIndexChanged}
-                      multiline={false}
-                      placeholder="0"
-                      placeholderTextColor="#555"
-                    />
+                    <View style={styles.pathInputView}>
+                      <TextInput
+                        style={styles.pathInput}
+                        value={accountIndexText}
+                        onChangeText={this.onAccountIndexChanged}
+                        multiline={false}
+                        placeholder="0"
+                        placeholderTextColor="#555"
+                      />
+                    </View>
                     <Text>{'\''}</Text>
                   </View>
                 </View>
@@ -389,9 +422,8 @@ class WalletRecovery extends Component {
           <SelectionModal
             ref={(ref) => { this.selectionModal = ref; }}
             items={coins}
-            selectIndex={selectedTokenIndex}
-            onSelected={this.onSelectedTokenIndexSelected}
-            title={strings('page.wallet.recovery.coin')}
+            onConfirm={this.onSelectedTokenIndexSelected}
+            title={strings('page.wallet.recovery.selectCoin')}
           />
         </BasePageGereral>
       );

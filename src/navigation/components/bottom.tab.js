@@ -2,12 +2,14 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
-
 import posed from 'react-native-pose';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
+import color from '../../assets/styles/color';
 
-const TABCOUNT = 3; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
 const windowWidth = Dimensions.get('window').width;
 const tabWidth = windowWidth / TABCOUNT;
@@ -16,6 +18,7 @@ const SpotLight = posed.View({
   route0: { x: tabWidth * 0.25 },
   route1: { x: tabWidth * 1.25 },
   route2: { x: tabWidth * 2.25 },
+  route3: { x: tabWidth * 3.25 },
 });
 
 const Scaler = posed.View({
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 70 + screenHelper.bottomHeight,
     elevation: 2,
-    backgroundColor: 'black',
+    backgroundColor: color.black,
     borderTopRightRadius: 26,
     borderTopLeftRadius: 26,
     paddingBottom: screenHelper.bottomHeight,
@@ -37,11 +40,11 @@ const styles = StyleSheet.create({
   spotLight: {
     width: tabWidth * 0.5,
     height: 6,
-    backgroundColor: 'green',
+    backgroundColor: color.royalBlue,
     borderRadius: 8,
   },
   tabButtonText: {
-    color: 'white',
+    color: color.white,
   },
 });
 
@@ -84,7 +87,7 @@ const TabBar = (props) => {
               {renderIcon({ route, focused: isRouteActive, tintColor })}
             </Scaler>
 
-            <Text style={[styles.tabButtonText, { opacity }]}>{getLabelText({ route })}</Text>
+            <Text style={[styles.tabButtonText, { opacity }]}>{strings(getLabelText({ route }))}</Text>
           </TouchableOpacity>
         );
       })}
@@ -93,7 +96,6 @@ const TabBar = (props) => {
 };
 
 TabBar.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   renderIcon: PropTypes.func.isRequired,
   getLabelText: PropTypes.func.isRequired,
   activeTintColor: PropTypes.string.isRequired,
@@ -109,4 +111,8 @@ TabBar.propTypes = {
   }).isRequired,
 };
 
-export default TabBar;
+const mapStateToProps = (state) => ({
+  language: state.Wallet.get('language'),
+});
+
+export default connect(mapStateToProps)(TabBar);

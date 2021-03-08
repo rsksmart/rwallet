@@ -1,5 +1,4 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
+import _ from 'lodash';
 import { Text } from 'react-native';
 import React from 'react';
 
@@ -14,13 +13,13 @@ import RecoveryPhrase from '../pages/wallet/recovery.phrase';
 import WalletList from '../pages/wallet/dashboard/list';
 import VerifyPhrase from '../pages/wallet/verify.phrase';
 import VerifyPhraseSuccess from '../pages/wallet/verify.phrase.success';
-import VerifyFingerprint from '../pages/wallet/verify.fingerprint';
 import Transfer from '../pages/wallet/transfer';
 import TransferCompleted from '../pages/wallet/transfer.completed';
 import WalletReceive from '../pages/wallet/receive';
 import WalletHistory from '../pages/wallet/history';
 import SelectWallet from '../pages/wallet/select.wallet';
 import Scan from '../pages/wallet/scan';
+import WalletConnectPage from '../pages/wallet/wallet.connect';
 import Transaction from '../pages/wallet/transaction';
 import Swap from '../pages/wallet/swap/swap';
 import SwapSelection from '../pages/wallet/swap/swap.selection';
@@ -33,13 +32,19 @@ import TermsPage from '../pages/start/terms';
 import MineIndex from '../pages/mine/index';
 import ExchangeIndex from '../pages/wallet/swap';
 import ResetPasscodeSuccess from '../pages/mine/reset.passcode.success';
-/* eslint-disable import/no-named-as-default */
 import Language from '../pages/mine/language';
 import Currency from '../pages/mine/currency';
 import TwoFactorAuth from '../pages/mine/two.factor.auth';
 import KeySettings from '../pages/mine/key.settings';
 import KeyName from '../pages/mine/key.name';
 import Rename from '../pages/mine/rename';
+import DAppIndex from '../pages/dapp/index';
+import DAppList from '../pages/dapp/list';
+import DAppBrowser from '../pages/dapp/browser';
+import RnsCreateName from '../pages/wallet/rns/create';
+import RnsStatus from '../pages/wallet/rns/status';
+import AddReadOnlyWallet from '../pages/wallet/readonly/add';
+import AddReadOnlyWalletConfirmation from '../pages/wallet/readonly/confirm';
 
 const defaultNavigationOptions = () => ({ navigation }) => {
   common.currentNavigation = navigation;
@@ -109,6 +114,13 @@ const routeConfigMap = {
         headerTitle: 'Select Wallet',
       }),
     },
+    WalletConnectPage: {
+      screen: WalletConnectPage,
+      path: 'WalletConnectPage',
+      navigationOptions: () => ({
+        headerTitle: 'WalletConnectPage',
+      }),
+    },
     StartPage: {
       screen: StartPage,
       path: 'StartPage',
@@ -165,14 +177,6 @@ const routeConfigMap = {
         headerTitle: 'WalletHistory',
       }),
     },
-
-    VerifyFingerprint: {
-      screen: VerifyFingerprint,
-      path: 'VerifyFingerprint',
-      navigationOptions: () => ({
-        headerTitle: 'VerifyFingerprint',
-      }),
-    },
     Scan: {
       screen: Scan,
       path: 'Scan',
@@ -227,6 +231,20 @@ const routeConfigMap = {
       path: 'AddCustomTokenConfirm',
       navigationOptions: () => ({
         headerTitle: 'AddCustomTokenConfirm',
+      }),
+    },
+    AddReadOnlyWallet: {
+      screen: AddReadOnlyWallet,
+      path: 'AddReadOnlyWallet',
+      navigationOptions: () => ({
+        headerTitle: 'AddReadOnlyWallet',
+      }),
+    },
+    AddReadOnlyWalletConfirmation: {
+      screen: AddReadOnlyWalletConfirmation,
+      path: 'AddReadOnlyWalletConfirmation',
+      navigationOptions: () => ({
+        headerTitle: 'AddReadOnlyWalletConfirmation',
       }),
     },
   },
@@ -296,30 +314,67 @@ const routeConfigMap = {
         headerTitle: 'Rename',
       }),
     },
+    RnsCreateName: {
+      screen: RnsCreateName,
+      path: 'RnsCreateName',
+      navigationOptions: () => ({
+        headerTitle: 'RnsCreateName',
+      }),
+    },
+    RnsStatus: {
+      screen: RnsStatus,
+      path: 'RnsStatus',
+      navigationOptions: () => ({
+        headerTitle: 'RnsStatus',
+      }),
+    },
+  },
+  app: {
+    DAppIndex: {
+      screen: DAppIndex,
+      path: 'DAppIndex',
+      navigationOptions: () => ({
+        headerTitle: 'DAppIndex',
+      }),
+    },
+    DAppList: {
+      screen: DAppList,
+      path: 'DAppList',
+      navigationOptions: () => ({
+        headerTitle: 'DAppList',
+      }),
+    },
+    DAppBrowser: {
+      screen: DAppBrowser,
+      path: 'DAppBrowser',
+      navigationOptions: () => ({
+        headerTitle: 'DAppBrowser',
+      }),
+    },
   },
 };
 
 function hasEqualKey(obj1, obj2) {
-  for (const o1 in obj1) {
-    for (const o2 in obj2) {
-      if (o1 === o2) {
-        return o1;
-      }
-    }
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  const equalKeys = _.intersection(keys1, keys2);
+  if (equalKeys.length === 0) {
+    return false;
   }
-  return false;
+  return equalKeys[0];
 }
 
 const routeConfigMaps = (() => {
   let ret = {};
-  for (const key in routeConfigMap) {
+  const keys = Object.keys(routeConfigMap);
+  _.each(keys, (key) => {
     const crt = routeConfigMap[key];
     const equalKey = hasEqualKey(ret, crt);
     if (equalKey) {
       console.error(`导航配置地图错误，定义了相同名称:${equalKey}`);
     }
     ret = { ...ret, ...crt };
-  }
+  });
   return ret;
 })();
 

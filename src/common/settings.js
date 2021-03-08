@@ -3,6 +3,7 @@ import _ from 'lodash';
 import storage from './storage';
 import config from '../../config';
 import { getCurrentLanguage } from './i18n';
+import { NAME_MAX_LENGTH } from './constants';
 
 /**
 * defaultSettings
@@ -72,14 +73,13 @@ class Settings {
    * validateName
    * @param {string} name, accept a-z, A-Z, 0-9 and space, max length is 32
    */
-  // eslint-disable-next-line class-methods-use-this
-  validateName(name) {
+  validateName = (name) => {
     if (name.length < 1) {
       throw new Error('err.nametooshort');
-    } else if (name.length > 32) {
+    } else if (name.length > NAME_MAX_LENGTH) {
       throw new Error('err.nametoolong');
     }
-    const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
+    const regex = /^[a-zA-Z0-9 ]+$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('err.nameinvalid');

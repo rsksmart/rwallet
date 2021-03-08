@@ -3,7 +3,7 @@ import {
   StyleSheet, View, TextInput, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   textInput: {
@@ -17,21 +17,54 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
   },
+  searchBar: {
+    width: '87%',
+    height: 28,
+    marginTop: 14,
+    backgroundColor: color.wildSand,
+    borderRadius: 35,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    paddingHorizontal: 15,
+  },
+  searchIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'cover',
+  },
 });
 
 const search = require('../../../assets/images/icon/search.png');
 
-export default function SearchInput({ placeholder }) {
+export default function SearchInput({
+  placeholder, placeholderTextColor, onChangeText, onSubmit, style,
+}) {
   return (
-    <View style={styles.textInput}>
-      <View style={{ flexDirection: 'row' }}>
-        <Image style={{ marginTop: 7 }} source={search} />
-        <TextInput style={{ flex: 1 }} placeholder={placeholder} />
-      </View>
+    <View style={styles.searchBar}>
+      <Image style={styles.searchIcon} source={search} />
+      <TextInput
+        style={style}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderTextColor}
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmit}
+      />
     </View>
   );
 }
 SearchInput.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   placeholder: PropTypes.string.isRequired,
+  placeholderTextColor: PropTypes.string,
+  onChangeText: PropTypes.func,
+  onSubmit: PropTypes.func,
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+};
+
+SearchInput.defaultProps = {
+  placeholderTextColor: null,
+  onChangeText: () => null,
+  onSubmit: () => null,
+  style: null,
 };

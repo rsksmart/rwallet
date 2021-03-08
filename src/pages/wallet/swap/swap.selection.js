@@ -14,8 +14,11 @@ import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 import presetStyles from '../../../assets/styles/style';
 import walletActions from '../../../redux/wallet/actions';
 import Loc from '../../../components/common/misc/loc';
-// import CoinswitchHelper from '../../../common/coinswitch.helper';
 import config from '../../../../config';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
+import appActions from '../../../redux/app/actions';
+import { createErrorNotification } from '../../../common/notification.controller';
 
 const styles = StyleSheet.create({
   body: {
@@ -27,17 +30,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   walletName: {
-    color: '#000',
+    color: color.black,
     fontSize: 14,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     letterSpacing: 0.27,
     marginTop: 10,
     marginBottom: 7,
   },
   coinName: {
-    color: '#000',
+    color: color.black,
     fontSize: 16,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     letterSpacing: 0.4,
     flex: 1,
   },
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listItemIndicator: {
-    color: '#D5D5D5',
+    color: color.grayD5,
     marginLeft: -3,
   },
   rowTitleView: {
@@ -66,19 +69,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balance: {
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 12,
-    color: '#77869E',
+    color: color.lynch,
     letterSpacing: 1,
   },
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Avenir-Medium',
+    color: color.whiteA90,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     letterSpacing: 0.39,
   },
   noCoinInfoText: {
-    color: '#FFF',
+    color: color.white,
     fontSize: 18,
     marginBottom: 10,
   },
@@ -139,7 +142,7 @@ class SwapSelection extends Component {
     const {
       navigation, walletManager,
     } = this.props;
-    const wallets = this.selectedWallet ? [this.selectedWallet] : walletManager.wallets;
+    const wallets = this.selectedWallet ? [this.selectedWallet] : walletManager.getNormalWallets();
     const { selectionType } = navigation.state.params || { selectionType: 'source' };
     // let rawList;
     // let filters = [];
@@ -149,7 +152,6 @@ class SwapSelection extends Component {
     //   } catch {
     //     rawList = [];
     //   }
-    //   // eslint-disable-next-line no-plusplus
     //   for (let i = 0; i < rawList.length; i += 1) {
     //     const item = rawList[i];
     //     if (item.isActive) {
@@ -162,7 +164,6 @@ class SwapSelection extends Component {
     //   } catch {
     //     rawList = [];
     //   }
-    //   // eslint-disable-next-line no-plusplus
     //   for (let i = 0; i < rawList.length; i += 1) {
     //     const item = rawList[i];
     //     if (item.isActive) {
@@ -176,6 +177,7 @@ class SwapSelection extends Component {
     if (coinList.length) {
       contentComponent = (
         <FlatList
+          bounces={false}
           data={coinList}
           renderItem={({ item }) => (
             <View style={[presetStyles.board, styles.board, coinListItemStyles.itemView]}>
@@ -194,11 +196,14 @@ class SwapSelection extends Component {
             <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
               <Loc text="page.wallet.swapSelection.create" style={[styles.noCoinInfoText, styles.underlineText]} />
             </TouchableOpacity>
-            <Loc text="page.wallet.swapSelection.or" style={[styles.noCoinInfoText]} suffix="&space&" prefix="&space&" />
+            <Text style={[styles.noCoinInfoText]}> </Text>
+            <Loc text="page.wallet.swapSelection.or" style={[styles.noCoinInfoText]} />
+            <Text style={[styles.noCoinInfoText]}> </Text>
             <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex', { skipPasscode: true })}>
               <Loc text="page.wallet.swapSelection.import" style={[styles.noCoinInfoText, styles.underlineText]} />
             </TouchableOpacity>
-            <Loc text="page.wallet.swapSelection.aWallet" style={[styles.noCoinInfoText]} prefix="&space&" />
+            <Text style={[styles.noCoinInfoText]}> </Text>
+            <Loc text="page.wallet.swapSelection.aWallet" style={[styles.noCoinInfoText]} />
           </View>
           <Loc text="page.wallet.swapSelection.startSwap" style={[styles.noCoinInfoText]} />
         </View>
@@ -209,6 +214,7 @@ class SwapSelection extends Component {
 
   renderWalletList = (listData) => (
     <FlatList
+      bounces={false}
       data={listData}
       extraData={listData}
       renderItem={({ item, index }) => {
@@ -234,7 +240,7 @@ class SwapSelection extends Component {
 
   createListData = (wallets, navigation, selectionType, filters) => {
     const {
-      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, resetSwap,
+      setSwapSource, setSwapDest, swapSource, swapDest, switchSwap, addNotification,
     } = this.props;
 
     const { init } = navigation.state.params || { init: true };
@@ -261,13 +267,18 @@ class SwapSelection extends Component {
         if (filters && (filters.length === 0 || !filters.includes(coin.id.toLowerCase()))) {
           return;
         }
-        const coinType = common.getSymbolFullName(coin.id, coin.type);
-        const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.decimalPlaces) : '';
+        const coinType = common.getSymbolName(coin.id, coin.type);
+        const amountText = coin.balance ? common.getBalanceString(coin.balance, coin.symbol) : '';
         const item = {
           title: coinType,
           amount: amountText,
           icon: coin.icon,
           onPress: () => {
+            if (_.isNil(coin.balance)) {
+              const notification = createErrorNotification('modal.balanceInvalid.title', 'modal.balanceInvalid.body');
+              addNotification(notification);
+              return;
+            }
             if (swapSource && swapDest
               && ((selectionType === 'source' && coin.id === swapSource.coin.id && wallet.name === swapSource.walletName)
                 || (selectionType === 'dest' && coin.id === swapDest.coin.id && wallet.name === swapDest.walletName))
@@ -283,8 +294,8 @@ class SwapSelection extends Component {
                 if (swapDest && wallet.name === swapDest.walletName && coin.id === swapDest.coin.id) {
                   switchSwap();
                 } else if (swapDest && !config.coinswitch.initPairs[coin.id].includes(swapDest.coin.id)) {
+                  switchSwap();
                   setSwapSource(wallet.name, coin);
-                  resetSwap();
                 } else {
                   setSwapSource(wallet.name, coin);
                 }
@@ -325,7 +336,7 @@ class SwapSelection extends Component {
         isSafeView
         hasBottomBtn={false}
         hasLoader={false}
-        bgColor="#00B520"
+        bgColor={color.app.theme}
         headerComponent={<Header isShowBackButton={isShowBackButton} onBackButtonPress={() => navigation.goBack()} title="page.wallet.swapSelection.title" />}
       >
         <View style={[styles.body]}>
@@ -348,6 +359,7 @@ SwapSelection.propTypes = {
   }).isRequired,
   walletManager: PropTypes.shape({
     wallets: PropTypes.array.isRequired,
+    getNormalWallets: PropTypes.func.isRequired,
   }),
   swapSource: PropTypes.shape({
     walletName: PropTypes.string.isRequired,
@@ -362,8 +374,8 @@ SwapSelection.propTypes = {
   resetSwap: PropTypes.func.isRequired,
   switchSwap: PropTypes.func.isRequired,
   isShowBackButton: PropTypes.bool,
-  // eslint-disable-next-line react/forbid-prop-types
-  bottomPaddingComponent: PropTypes.object,
+  bottomPaddingComponent: PropTypes.shape({}),
+  addNotification: PropTypes.func.isRequired,
 };
 
 SwapSelection.defaultProps = {
@@ -385,6 +397,7 @@ const mapDispatchToProps = (dispatch) => ({
   setSwapDest: (walletName, coin) => dispatch(walletActions.setSwapDest(walletName, coin)),
   resetSwap: () => dispatch(walletActions.resetSwapDest()),
   switchSwap: () => dispatch(walletActions.switchSwap()),
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwapSelection);

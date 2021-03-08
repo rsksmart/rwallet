@@ -3,7 +3,7 @@ import { View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 
 import CommonPress from '../common.press';
-import style from '../../../assets/styles/style.ts';
+import style from '../../../assets/styles/style';
 
 export default class IconBtnStateless extends Component {
   constructor(props) {

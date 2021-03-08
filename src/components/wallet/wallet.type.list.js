@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/Entypo';
 import Loc from '../common/misc/loc';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   item: {
@@ -23,25 +24,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 13,
-    borderBottomColor: '#D5D5D5',
+    borderBottomColor: color.grayD5,
   },
   textView: {
     flex: 1,
     flexDirection: 'column',
   },
   title: {
-    color: '#0B0B0B',
+    color: color.codGray,
+    fontFamily: 'Avenir-Medium',
     fontSize: 16,
     flex: 1,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
+    fontFamily: 'Avenir-Book',
     fontSize: 15,
     flex: 1,
     marginTop: 9,
   },
   chevron: {
-    color: '#D5D5D5',
+    color: this.grayD5,
   },
 });
 

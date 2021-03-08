@@ -4,19 +4,28 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
-import rsk3 from 'rsk3';
+import Rsk3 from '@rsksmart/rsk3';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
+import InputDataDecoder from 'rn-ethereum-input-data-decoder';
 import moment from 'moment';
 // import moment locales
 import 'moment/locale/zh-cn';
 import 'moment/locale/es';
 import 'moment/locale/pt';
+import 'moment/locale/pt-br';
+import 'moment/locale/ja';
+import 'moment/locale/ko';
+import 'moment/locale/ru';
 import config from '../../config';
-import I18n from './i18n';
-import definitions from './definitions';
+import I18n, { strings } from './i18n';
+import { BIOMETRY_TYPES, CustomToken, NETWORK } from './constants';
+import cointype from './wallet/cointype';
+import { InvalidAddressError, InvalidParamError } from './error';
 
-const { consts: { currencies } } = config;
+const { consts: { currencies, supportedTokens } } = config;
 const DEFAULT_CURRENCY_SYMBOL = currencies[0].symbol;
+const { MAINNET, TESTNET } = NETWORK;
 
 // Default BTC transaction size
 const DEFAULT_BTC_TX_SIZE = 400;
@@ -35,6 +44,7 @@ const currencySymbols = _.reduce(currencies, (obj, row) => {
 
 const common = {
   currentNavigation: null,
+  store: undefined,
   isIphoneX() {
     // TODO
     // return DeviceInfo.getModel().toLowerCase().indexOf('iphone x') >= 0
@@ -48,17 +58,45 @@ const common = {
     const result = new BigNumber(satoshi).div('1e8');
     return result;
   },
-  rskCoinToWeiHex(amount) {
-    const result = `0x${this.rskCoinToWei(amount).decimalPlaces(0).toString(16)}`;
-    return result;
+  rskCoinToWeiHex(amount, precision) {
+    return `0x${this.rskCoinToWei(amount, precision).decimalPlaces(0).toString(16)}`;
   },
-  rskCoinToWei(amount) {
-    const result = new BigNumber(amount).times('1e18');
-    return result;
+  /**
+   * Transform coin value to wei unit. Throw InvalidParamError If param is not valid.
+   * Example: RIF, precision = 18, 0.001 RIF = 1e15 (wei) RIF
+   * Example: SOL, precision = 2, 1 SOL = 100 (wei) SOL
+   * @param {*} amount
+   * @param {*} precision
+   */
+  rskCoinToWei(amount, precision = 18) {
+    if (!(amount
+      && (BigNumber.isBigNumber(amount) || _.isNumber(amount) || _.isString(amount)))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(amount).times(`1e${precisionInteger}`);
   },
-  weiToCoin(wei) {
-    const result = new BigNumber(wei).div('1e18');
-    return result;
+
+  /**
+   * Transform wei unit value to coin value. Throw InvalidParamError If param is not valid.
+   * Example: RIF, precision = 18, 1e15 (wei) RIF = 0.001 RIF
+   * Example: SOL, precision = 2, 100 (wei) SOL = 1 SOL
+   * @param {*} wei
+   * @param {*} precision
+   */
+  weiToCoin(wei, precision = 18) {
+    if (!(wei
+      && (BigNumber.isBigNumber(wei) || _.isNumber(wei) || (_.isString(wei) && wei.startsWith('0x'))))) {
+      throw new InvalidParamError();
+    }
+    if (!_.isNumber(precision)) {
+      throw new InvalidParamError();
+    }
+    const precisionInteger = _.floor(Number(precision));
+    return new BigNumber(wei).div(`1e${precisionInteger}`);
   },
   Toast(text, type, onClose, duration, mask) {
     const last = duration > 0 ? duration : 1.5;
@@ -70,28 +108,42 @@ const common = {
       Toast.info(text, last, onClose, mask);
     }
   },
+
+  /**
+   * convertCoinAmountToUnitHex, if coinAmount is nil, return null
+   * @param {*} symbol
+   * @param {*} coinAmount
+   * @param {*} precision
+   */
+  convertCoinAmountToUnitHex(symbol, coinAmount, precision = 18) {
+    if (_.isNil(coinAmount)) {
+      return null;
+    }
+
+    return symbol === 'BTC' ? common.btcToSatoshiHex(coinAmount) : common.rskCoinToWeiHex(coinAmount, precision);
+  },
   /**
    * convertUnitToCoinAmount, if unitNumber is nil, return null
    * @param {*} symbol
    * @param {*} unitNumber
+   * @param {*} precision
    */
-  convertUnitToCoinAmount(symbol, unitNumber) {
+  convertUnitToCoinAmount(symbol, unitNumber, precision = 18) {
     if (_.isNil(unitNumber)) {
       return null;
     }
-    const amount = symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber);
-    return amount;
+    return symbol === 'BTC' ? common.satoshiToBtc(unitNumber) : common.weiToCoin(unitNumber, precision);
   },
 
   /**
    * getAmountBigNumber, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The result will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} amount
+   * @param {string} symbol
    * @returns number
    */
-  getAmountBigNumber(amount, decimalPlaces) {
-    // const decimalPlaces = config.symbolDecimalPlaces[symbol];
+  getAmountBigNumber(amount, symbol) {
+    const decimalPlaces = this.getSymbolDecimalPlaces(symbol);
     if (_.isNull(amount) || !(typeof amount === 'number' || typeof amount === 'string' || BigNumber.isBigNumber(amount))) {
       return null;
     }
@@ -105,23 +157,23 @@ const common = {
   /**
    * getBalanceString, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The balance will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} balance
+   * @param {string} symbol
    */
-  getBalanceString(balance, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(balance, decimalPlaces);
+  getBalanceString(balance, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(balance, symbol);
     return amountBigNumber.toFixed();
   },
 
   /**
    * formatAmount, diffrent symbol apply diffrent decimalPlaces, subfix 0 will be omitted.
    * The result will be round down by default.
-   * @param {string} symbol
    * @param {BigNumber | number | string} amount
+   * @param {string} symbol
    * @returns number
    */
-  formatAmount(amount, decimalPlaces) {
-    const amountBigNumber = this.getAmountBigNumber(amount, decimalPlaces);
+  formatAmount(amount, symbol) {
+    const amountBigNumber = this.getAmountBigNumber(amount, symbol);
     return amountBigNumber.toNumber();
   },
 
@@ -149,7 +201,10 @@ const common = {
     }
     return null;
   },
-  getCoinValue(amount, symbol, currency, prices) {
+  getCoinValue(amount, symbol, type, currency, prices) {
+    if (type === 'Testnet') {
+      return new BigNumber(0);
+    }
     if (!amount || !prices || prices.length === 0) {
       return null;
     }
@@ -200,6 +255,22 @@ const common = {
   },
 
   /**
+   * getAddressUrl, returns transaction url
+   * @param {*} symbol, coin symbol
+   * @param {*} type, coin network type
+   * @param {*} hash, transaction hash
+   */
+  getAddressUrl(type, address) {
+    let url = config.addressUrls.RBTC[type];
+    // BTC has / suffix, RSK does not.
+    // For example:
+    // BTC, https://live.blockcypher.com/btc-testnet/tx/5c1d076fd99db0313722afdfc4d16221c4f3429cdad2410f6056f5357f569533/
+    // RSK, https://explorer.rsk.co/tx/0x1b62fedd34d6d27955997be55703285d004b77d38f345ed0d99f291fcef64358
+    url = `${url}/${address}`;
+    return url;
+  },
+
+  /**
    * getLatestBlockHeight, return latestBlockHeight. If it's not found, return null.
    * @param {array} latestBlockHeights
    * @param {string} chain
@@ -235,19 +306,23 @@ const common = {
 
   /**
    * Validate wallet address
+   * As long as it can be converted into rsk checksum address, it is a valid rsk address.
    * @param {string} address
    * @param {string} symbol, BTC, RBTC, RIF
    * @param {string} type, MainTest or Testnet
    * @param {string} networkId
    */
-  isWalletAddress(address, symbol, type, networkId) {
-    let isAdress = false;
+  isWalletAddress(address, symbol, type) {
     if (symbol === 'BTC') {
-      isAdress = this.isBtcAddress(address, type);
-    } else {
-      isAdress = rsk3.utils.isAddress(address, networkId);
+      return common.isBtcAddress(address, type);
     }
-    return isAdress;
+    try {
+      const { networkId } = this.getCoinType(symbol, type);
+      Rsk3.utils.toChecksumAddress(address, networkId);
+      return true;
+    } catch (error) {
+      return false;
+    }
   },
 
   /**
@@ -280,12 +355,30 @@ const common = {
   },
 
   /**
-   * getSymbolFullName
-   * @param {string} symbol, BTC, RBTC, RIF
+   * getSymbolName
+   * @param {string} symbol, BTC, RBTC, RIF...
    * @param {string} type, MainTest or Testnet
    */
-  getSymbolFullName(symbol, type) {
-    return `${type === 'Testnet' ? 'Test' : ''} ${symbol}`;
+  getSymbolName(symbol, type) {
+    return `${type === 'Testnet' ? 't' : ''}${symbol}`;
+  },
+
+  /**
+   * Returns the biometry type.
+   * iPhone: ("Touch ID", "Face ID"), Android: ("Fingerprint")
+   * @returns {string} the device biometry type
+   * @returns {null} if this device has no available biometry types
+   */
+  async getBiometryType() {
+    try {
+      const biometryType = await FingerprintScanner.isSensorAvailable();
+      if (biometryType === BIOMETRY_TYPES.TOUCH_ID || biometryType === BIOMETRY_TYPES.FACE_ID || biometryType === BIOMETRY_TYPES.Biometrics) {
+        return biometryType;
+      }
+    } catch (error) {
+      console.log('The device does not support fingerprint, error: ', error);
+    }
+    return null;
   },
 
   getRandom(count) {
@@ -293,6 +386,20 @@ const common = {
       if (err) reject(err);
       else resolve(bytes);
     }));
+  },
+
+  /**
+   * Init price object with { symbol, price: {} }
+   * Return new price object
+   * @param {symbol} the price symbol
+   * @param {priceKeys} the price keys
+   */
+  initPriceObject(symbol, priceKeys) {
+    const priceObject = { symbol, price: {} };
+    _.each(priceKeys, (key) => {
+      priceObject.price[key] = '0';
+    });
+    return priceObject;
   },
 
   /**
@@ -324,6 +431,26 @@ const common = {
         docPrice.price[key] = (currency / usdPrice).toString();
       }
     });
+
+    let rdocPrice = _.find(newPrice, { symbol: 'RDOC' });
+    if (_.isUndefined(rdocPrice)) {
+      rdocPrice = _.cloneDeep(docPrice);
+      rdocPrice.symbol = 'RDOC';
+      newPrice.push(rdocPrice);
+    }
+
+    let rifPrice = _.find(newPrice, { symbol: 'RIF' });
+    if (_.isUndefined(rifPrice)) {
+      rifPrice = this.initPriceObject('RIF', btcPriceKeys);
+      newPrice.push(rifPrice);
+    }
+
+    let rifpPrice = _.find(newPrice, { symbol: 'RIFP' });
+    if (_.isUndefined(rifpPrice)) {
+      rifpPrice = _.cloneDeep(rifPrice);
+      rifpPrice.symbol = 'RIFP';
+      newPrice.push(rifpPrice);
+    }
     return newPrice;
   },
 
@@ -331,37 +458,42 @@ const common = {
     I18n.locale = language;
   },
 
-  setMomentLocale(locale) {
-    const newLocale = locale === 'zh' ? 'zh-cn' : locale;
-    moment.locale(newLocale);
+  normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
   },
 
-  estimateBtcSize({
-    netType, amount, transactions, fromAddress, destAddress, privateKey, isSendAllBalance,
+  convertToMomentLocale(locale) {
+    let newLocale = this.normalizeLocale(locale);
+    // The locale code of Brazilian Portuguese is ptbr in Mi Note 9s and Mi Max.
+    // We need to convert it to 'pt-br'.
+    newLocale = newLocale === 'ptbr' ? 'pt-br' : newLocale;
+    newLocale = newLocale === 'zh' ? 'zh-cn' : newLocale;
+    return newLocale;
+  },
+
+  setMomentLocale(locale) {
+    try {
+      // pt-BR will be normalize to pt-br
+      const newLocale = this.convertToMomentLocale(locale);
+      moment.locale(newLocale);
+    } catch (error) {
+      console.warn('Failed to set moment locale, locale: ', locale);
+    }
+  },
+
+  /**
+   * estimateBtcTxSize, estimate BTC transaction size
+   * @param {object} params, { netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance }
+   * @returns {number} BTC transaction size
+   */
+  estimateBtcTxSize({
+    netType, inputTxs, fromAddress, destAddress, privateKey, isSendAllBalance,
   }) {
     console.log(`estimateBtcSize, isSendAllBalance: ${isSendAllBalance}`);
-    const inputTxs = [];
-    let sum = new BigNumber(0);
-
     // If the transactions is empty, returns the default size
-    if (_.isEmpty(transactions)) {
+    if (_.isEmpty(inputTxs)) {
       return DEFAULT_BTC_TX_SIZE;
     }
-
-    // Find out transactions which combines amount
-    for (let i = 0; i < transactions.length; i += 1) {
-      const tx = transactions[i];
-      if (tx.status === definitions.txStatus.SUCCESS) {
-        const txAmount = this.convertUnitToCoinAmount('BTC', tx.value);
-        sum = sum.plus(txAmount);
-        inputTxs.push(tx.hash);
-      }
-      if (sum.isGreaterThanOrEqualTo(amount)) {
-        break;
-      }
-    }
-    console.log(`estimateBtcSize, inputTxs: ${JSON.stringify(inputTxs)}`);
-
     const outputSize = isSendAllBalance ? 1 : 2;
     const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
     const exParams = { network };
@@ -379,7 +511,7 @@ const common = {
     });
     const result = tx.build().toHex();
     const size = result.length / 2;
-    console.log(`estimateBtcSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
+    console.log(`estimateBtcTxSize, inputSize: ${inputTxs.length}, outputSize: ${outputSize}, size: ${size}`);
     return size;
   },
 
@@ -402,6 +534,326 @@ const common = {
       }
     }
     return '0';
+  },
+  /**
+   * sortTokens
+   * sort tokens by config.supportedTokens. If token is custom token, Should be at the end of the list.
+   * If two tokens are custom token, compare by unicode of symbol.
+   * @param {Array} tokens, array of objects {symbol, token}
+   * @returns array of sorted objects
+   */
+  sortTokens(tokens) {
+    return tokens.sort((a, b) => {
+      if (a.type !== b.type) {
+        return b.type === 'Testnet' ? -1 : 1;
+      }
+      let symbolIndexA = _.findIndex(supportedTokens, (token) => a.symbol === token);
+      // If token is not found in supportedTokens, indicating it is a custom token, Should be at the end of the list
+      symbolIndexA = symbolIndexA !== -1 ? symbolIndexA : Number.MAX_SAFE_INTEGER;
+      let symbolIndexB = _.findIndex(supportedTokens, (token) => b.symbol === token);
+      symbolIndexB = symbolIndexB !== -1 ? symbolIndexB : Number.MAX_SAFE_INTEGER;
+      if (symbolIndexA === symbolIndexB) {
+        // compare by unicode of symbol
+        return a.symbol < b.symbol ? -1 : 1;
+      }
+      return symbolIndexA - symbolIndexB;
+    });
+  },
+
+  getSymbolDecimalPlaces(symbol) {
+    return config.symbolDecimalPlaces[symbol] || config.symbolDecimalPlaces.CustomToken;
+  },
+
+  isValidRnsSubdomain(text) {
+    const regex = /^(([a-z0-9])+\.)+rsk$/g;
+    return regex.test(text);
+  },
+
+  getFullDomain(subdomain) {
+    return `${subdomain}.${config.rnsDomain}`;
+  },
+
+  // set redux store
+  setStore(store) {
+    this.store = store;
+  },
+
+  // get redux store
+  getStore() {
+    return this.store;
+  },
+
+  // get domain from url
+  getDomain(url) {
+    try {
+      let domain = url.toLowerCase();
+      if (domain.startsWith('http://')) {
+        domain = domain.substring(7, domain.length);
+      }
+      if (domain.startsWith('https://')) {
+        domain = domain.substring(8, domain.length);
+      }
+      if (domain.startsWith('www.')) {
+        domain = domain.substring(4, domain.length);
+      }
+
+      // delete sub route
+      [domain] = _.split(domain, '/');
+
+      // delete params
+      [domain] = _.split(domain, '?');
+
+      return domain;
+    } catch (error) {
+      return url;
+    }
+  },
+
+  // completion dapp url with 'http'
+  completionUrl(url) {
+    try {
+      let newUrl = url.toLowerCase();
+      newUrl = (newUrl.startsWith('http://') || newUrl.startsWith('https://')) ? newUrl : `https://${newUrl}`;
+      return newUrl;
+    } catch (error) {
+      return url;
+    }
+  },
+
+  /**
+   * Chcke address is contract addrsss
+   * @param {*} address need check address
+   * @param {*} chainId chain id
+   */
+  async isContractAddress(address, chainId) {
+    return new Promise((resolve, reject) => {
+      const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
+      const rsk3 = new Rsk3(rskEndpoint);
+      const checksumAddress = Rsk3.utils.toChecksumAddress(address, chainId);
+      rsk3.getCode(checksumAddress).then((code) => {
+        if (code !== '0x00') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  /**
+   * Decode ethereum transaction input data
+   * return contract function name, types and other info
+   * For Example, abi = [{...}], input = '0x12kz....uoisaiw'
+   * returns { method: 'registerOffChainDonation', type: ['address', 'unit256', 'uint256', 'string', 'bytes32'], ... }
+   * @param {*} abi, contract address abi
+   * @param {*} input, transaction's input
+   */
+  ethereumInputDecoder(abi, input) {
+    const decoder = new InputDataDecoder(abi);
+    const result = decoder.decodeData(input);
+    return result;
+  },
+
+  /**
+   * uppercase first letter in letters
+   * For Example
+   * letters = 'onoznxiu123Z', returns 'Onoznxiu123Z'
+   * letters = '_onoznxiu123Z', returns 'Onoznxiu123Z'
+   * @param {*} letters
+   */
+  uppercaseFirstLetter(letters) {
+    if (letters[0] !== '_') {
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return letters.charAt(1).toUpperCase() + letters.slice(2);
+  },
+
+  /**
+   * Check the number is positive infinity or not
+   * @param {*} number
+   */
+  isPositiveInfinity(number) {
+    const maxNumber = (2 ** 256) - 1;
+    let convertNumber = number;
+    if (BigNumber.isBigNumber(number)) {
+      convertNumber = number.toNumber();
+    } else if (typeof (number) === 'string') {
+      convertNumber = Number(number);
+    }
+    return _.isNumber(convertNumber) && convertNumber >= maxNumber;
+  },
+
+  /**
+   * Format contract abi input data
+   * For Example, inputData = { method: "transfer", inputs: ['0xsd1923yjasdhi9812y3uasnd', BN], names: ['_to', '_value'], types: ['address', 'unit256'] }, symbol = 'DOC'
+   * returns {
+   *   method: 'Transfer',
+   *   params: {
+   *     To: {
+   *       type: 'address',
+   *       value: '0xsd1923yjasdhi9812y3uasnd',
+   *     },
+   *     Value: {
+   *       type: 'uint256',
+   *       value: 1000000,
+   *     },
+   *   },
+   * };
+   * @param {*} inputData
+   * @param {*} symbol
+   */
+  formatContractABIInputData(inputData, symbol) {
+    if (!inputData || !inputData.method) {
+      return null;
+    }
+    const {
+      inputs, names, types, method,
+    } = inputData;
+    const params = { };
+    _.forEach(inputs, (inputValue, index) => {
+      const key = this.uppercaseFirstLetter(names[index]);
+      const type = types[index];
+      let value = inputValue;
+      // Address display the whole address
+      if (type === 'address') {
+        value = inputValue.startsWith('0x') ? inputValue : `0x${inputValue}`;
+      } else if (type === 'uint256') {
+        if (key === 'Value' || key === 'Amount') {
+          const unitAmount = new BigNumber(inputValue.toString());
+          const isPositiveInfinity = this.isPositiveInfinity(unitAmount);
+          const amount = isPositiveInfinity ? strings('page.dapp.infinitePositiveNumber') : this.convertUnitToCoinAmount(symbol, unitAmount);
+          value = `${amount} ${symbol}`;
+        } else {
+          value = inputValue.toString();
+        }
+      }
+      params[key] = {
+        type,
+        value,
+      };
+    });
+
+    return {
+      method: this.uppercaseFirstLetter(method),
+      params,
+    };
+  },
+
+  /**
+   * Ellipsis a rsk address
+   * For Example, address = '0xe62278ac258bda2ae6e8EcA32d01d4cB3B631257', showLength = 6, return '0xe62278...631257'
+   * @param {*} address, a rsk address
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisAddress(address, showLength = 8) {
+    if (!address) {
+      return '';
+    }
+
+    let completionAddress = address;
+    if (!address.startsWith('0x')) {
+      completionAddress = `0x${address}`;
+    }
+    const { length } = completionAddress;
+    if (length <= (showLength * 2 + 2)) {
+      return completionAddress;
+    }
+    return `0x${this.ellipsisString(completionAddress.substr(2, length), showLength)}`;
+  },
+
+  /**
+   * Ellipsis a string
+   * For Example, string = '12aushd9123niasuhdu123', showLength = 6, return '12aush...hdu123'
+   * @param {*} string, a string value
+   * @param {*} showLength, the length of shown characters at the start and the end
+   */
+  ellipsisString(string, showLength) {
+    if (!string) {
+      return '';
+    }
+    const { length } = string;
+    if (length <= (showLength * 2)) {
+      return string;
+    }
+    return `${string.slice(0, showLength)}...${string.slice(length - showLength, length)}`;
+  },
+
+  getCoinId(symbol, type) {
+    const foundSymbol = _.find(supportedTokens, (token) => token === symbol);
+    if (foundSymbol) {
+      return type === 'Mainnet' ? symbol : `${symbol}${type}`;
+    }
+    return type === 'Mainnet' ? CustomToken : `${CustomToken}${type}`;
+  },
+
+  getCoinType(symbol, type) {
+    const coinId = this.getCoinId(symbol, type);
+    return cointype[coinId];
+  },
+
+  // Returns a new random alphanumeric string of the given size.
+  //
+  // Note: to simplify implementation, the result has slight modulo bias,
+  // because chars length of 62 doesn't divide the number of all bytes
+  // (256) evenly. Such bias is acceptable for most cases when the output
+  // length is long enough and doesn't need to be uniform.
+  randomString(size, charRange) {
+    if (size === 0) {
+      throw new Error('Zero-length randomString is useless.');
+    }
+
+    const chars = charRange || ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      + 'abcdefghijklmnopqrstuvwxyz'
+      + '0123456789');
+
+    let objectId = '';
+    const bytes = randomBytes(size);
+    for (let i = 0; i < bytes.length; i += 1) {
+      objectId += chars[bytes.readUInt8(i) % chars.length];
+    }
+    return objectId;
+  },
+
+  /**
+   * getServerUrl, Return the url with the environment prefix. For example, the environment is development, url is development.rwallet.app.
+   * @param {string} baseUrl
+   * @param {string} environment
+   */
+  getServerUrl(baseUrl, environment) {
+    if (!_.isEmpty(environment) && environment.toLowerCase() !== 'production') {
+      const regex = /^([\w.]*:\/\/)(.*)\S*/g;
+      const matches = regex.exec(baseUrl);
+      const url = `${matches[1]}${environment.toLowerCase()}.${matches[2]}`;
+      return url;
+    }
+    return baseUrl;
+  },
+
+  toChecksumAddress(address, networkId) {
+    let checksumAddress = null;
+    try {
+      checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+    } catch (error) {
+      throw new InvalidAddressError();
+    }
+    return checksumAddress;
+  },
+
+  getExplorerName(type) {
+    return type === 'Mainnet' ? 'RSK Explorer' : 'RSK Testnet Explorer';
+  },
+
+  /**
+   * Return true if the dapp needs to display thumb dapp icon
+   * @param {*} item { name: { en: '', zh: '', ... } }
+   */
+  needDisplayThumbIcon(item) {
+    if (item && item.name && (_.includes(item.name.en, 'Sovryn') || item.name.en === 'RSK Swap')) {
+      return true;
+    }
+    return false;
   },
 };
 

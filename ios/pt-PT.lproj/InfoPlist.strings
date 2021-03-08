@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  rwallet
+
+  Created by star on 2020/5/25.
+*/
+{
+  "NSCameraUsageDescription" = "O RWallet precisa acessar sua câmera para digitalizar o código QR do destinatário.";
+  "NSFaceIDUsageDescription" = "O RWallet requer acesso ao FaceID para permitir acesso rápido e seguro.";
+  "NSPhotoLibraryUsageDescription" = "O RWallet precisa de acesso à Biblioteca de fotos.";
+}

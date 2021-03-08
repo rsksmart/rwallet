@@ -21,8 +21,7 @@ const CommonPress = (props) => {
 
 CommonPress.propTypes = {
   onPress: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
+  children: PropTypes.shape({}).isRequired,
   style: PropTypes.string.isRequired,
 };
 

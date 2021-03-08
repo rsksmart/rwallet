@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Chevron } from 'react-native-shapes';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
 
 const styles = StyleSheet.create({
   pickerView: {
@@ -27,7 +27,7 @@ export default function Picker() {
         ]}
         style={{
           inputAndroid: {
-            backgroundColor: 'transparent',
+            backgroundColor: color.transparent,
           },
           iconContainer: {
             top: 20,

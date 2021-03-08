@@ -1,42 +1,47 @@
 import React, { Component } from 'react';
 import {
   Image,
-  StyleSheet, Text, TouchableOpacity, View,
+  StyleSheet, TouchableOpacity, View,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
-import Carousel from './carousel';
+import Carousel from '@amazingbeerbelly/react-native-snap-carousel';
 import WalletPage from './wallet.carousel.page.wallet';
 import { screen } from '../../../common/info';
 import references from '../../../assets/references';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
+import Loc from '../../../components/common/misc/loc';
 
 const styles = StyleSheet.create({
   carousel: {
   },
   item: {
     borderWidth: 2,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
     flex: 1,
     borderRadius: 5,
-    borderColor: 'white',
+    borderColor: color.white,
     elevation: 3,
   },
   imageBackground: {
     flex: 2,
-    backgroundColor: '#EBEBEB',
+    backgroundColor: color.grayEB,
     borderWidth: 5,
-    borderColor: 'white',
+    borderColor: color.white,
   },
   rightTextContainer: {
     marginLeft: 'auto',
     marginRight: -2,
-    backgroundColor: 'rgba(49, 49, 51,0.5)',
+    backgroundColor: color.tunaA50,
     padding: 3,
     marginTop: 3,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
-  rightText: { color: 'white' },
+  rightText: {
+    color: color.white,
+  },
   lowerContainer: {
     flex: 1,
     margin: 10,
@@ -51,16 +56,16 @@ const styles = StyleSheet.create({
   },
   addWalletButtonView: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: color.transparent,
   },
   addWalletText: {
-    color: '#FFF',
-    fontFamily: 'Avenir-Medium',
+    color: color.white,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 12,
     marginTop: 10,
   },
   addWalletButton: {
-    backgroundColor: 'rgba(255,255,255, 0.5)',
+    backgroundColor: color.whiteA50,
     borderTopRightRadius: 12,
     borderBottomRightRadius: 12,
     height: 166,
@@ -73,7 +78,11 @@ const styles = StyleSheet.create({
 class WalletCarousel extends Component {
   onAddWalletPressed = () => {
     const { navigation } = this.props;
-    this.carousel.scrollToIndex(1);
+    try {
+      this.carousel.scrollToIndex(1);
+    } catch (error) {
+      this.carousel.snapToItem(1);
+    }
     navigation.navigate('WalletAddIndex');
   }
 
@@ -89,11 +98,9 @@ class WalletCarousel extends Component {
       if (index < 0) {
         return (
           <View style={[styles.addWalletButtonView]}>
-            <TouchableOpacity style={styles.addWalletButton} onPress={this.onAddWalletPressed}>
+            <TouchableOpacity style={[styles.addWalletButton, { width: pageWidth / 2 + (screen.width - pageWidth) / 3 }]} onPress={this.onAddWalletPressed}>
               <Image source={references.images.addWallet} />
-              <Text style={[styles.addWalletText]}>
-                Add Wallet
-              </Text>
+              <Loc style={[styles.addWalletText]} text="page.wallet.list.addWallet" />
             </TouchableOpacity>
           </View>
         );
@@ -118,10 +125,13 @@ class WalletCarousel extends Component {
         style={styles.carousel}
         data={data}
         renderItem={renderItem}
+        sliderWidth={screen.width}
         itemWidth={pageWidth}
-        inActiveOpacity={0.5}
         containerWidth={screen.width}
         initialIndex={1}
+        firstItem={1}
+        bounces={false}
+        removeClippedSubviews={false}
       />
     );
   }

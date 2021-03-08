@@ -12,6 +12,8 @@ import KeysettingsHeader from '../../components/headers/header.keysettings';
 import BasePageGereral from '../base/base.page.general';
 import common from '../../common/common';
 import screenHelper from '../../common/screenHelper';
+import color from '../../assets/styles/color';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -22,22 +24,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 17,
   },
   keyNameView: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED',
+    borderBottomColor: color.grayED,
     paddingVertical: 20,
   },
   keyNameLabel: {
-    backgroundColor: '#F3F3F3',
+    backgroundColor: color.concrete,
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    color: '#000',
+    color: color.black,
     position: 'absolute',
     right: 0,
   },
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED',
+    borderBottomColor: color.grayED,
     paddingVertical: 10,
   },
   walletRowTitle: {
@@ -61,14 +63,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED',
+    borderBottomColor: color.grayED,
     paddingVertical: 20,
   },
   listRowTitle: {
     marginLeft: 5,
   },
   warningText: {
-    color: '#DF5264',
+    color: color.warningText,
     fontWeight: '500',
   },
   advancedBlock: {
@@ -93,7 +95,7 @@ class KeySettings extends Component {
     static createWalletListData(coins) {
       const listData = [];
       coins.forEach((coin) => {
-        const coinType = common.getSymbolFullName(coin.symbol, coin.type);
+        const coinType = common.getSymbolName(coin.symbol, coin.type);
         const item = { icon: coin.icon, title: coinType };
         listData.push(item);
       });
@@ -132,7 +134,7 @@ class KeySettings extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        walletCount: 0,
+        assetsCount: 0,
         name: '',
         isConfirmDeleteKey: false,
       };
@@ -151,7 +153,7 @@ class KeySettings extends Component {
       const walletListData = KeySettings.createWalletListData(coins);
       this.key = key;
       this.setState({
-        walletCount: coins.length,
+        assetsCount: coins.length,
         name,
         walletListData,
       });
@@ -181,12 +183,8 @@ class KeySettings extends Component {
     }
 
     onBackupPress() {
-      const { showPasscode, passcode } = this.props;
-      if (passcode) {
-        showPasscode('verify', this.backup, () => {});
-      } else {
-        this.backup();
-      }
+      const { callAuthVerify } = this.props;
+      callAuthVerify(this.backup, () => {});
     }
 
     onKeyNamePress() {
@@ -195,26 +193,17 @@ class KeySettings extends Component {
     }
 
     onDeleteConfirm() {
-      const {
-        passcode, showPasscode, resetSwapSource, resetSwapDest,
-      } = this.props;
-      if (passcode) {
-        showPasscode('verify', this.deleteKey, () => {
-          resetSwapSource();
-          resetSwapDest();
-        });
-      } else {
-        resetSwapSource();
-        resetSwapDest();
-        this.deleteKey();
-      }
+      const { callAuthVerify } = this.props;
+      callAuthVerify(this.deleteKey, () => {});
     }
 
     onDeletePress() {
+      const { walletType } = this.key;
       const { addConfirmation } = this.props;
+      const isReadOnlyWallet = walletType === WalletType.Readonly;
       const infoConfirmation = createInfoConfirmation(
-        'modal.deleteKey.title',
-        'modal.deleteKey.body',
+        isReadOnlyWallet ? 'modal.deleteReadOnlyWallet.title' : 'modal.deleteWallet.title',
+        isReadOnlyWallet ? 'modal.deleteReadOnlyWallet.body' : 'modal.deleteWallet.body',
         () => this.onDeleteConfirm(),
       );
       addConfirmation(infoConfirmation);
@@ -235,14 +224,14 @@ class KeySettings extends Component {
     render() {
       const { navigation } = this.props;
       const {
-        walletCount, name, walletListData,
+        assetsCount, name, walletListData,
       } = this.state;
       return (
         <BasePageGereral
           isSafeView={false}
           hasBottomBtn={false}
           hasLoader={false}
-          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" walletCount={walletCount} onBackButtonPress={() => navigation.goBack()} />}
+          headerComponent={<KeysettingsHeader title="page.mine.keySettings.title" assetsCount={assetsCount} onBackButtonPress={() => navigation.goBack()} />}
         >
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.keyNameView} onPress={this.onKeyNamePress}>
@@ -251,13 +240,18 @@ class KeySettings extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Wallets" />
+            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.Assets" />
             {KeySettings.renderWalletList(walletListData)}
           </View>
-          <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
-            <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
-          </View>
+          {
+            // If it is read-only wallet, hide back up button
+            this.key.walletType === WalletType.Normal && (
+              <View style={styles.sectionContainer}>
+                <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.security" />
+                <ListRow title="page.mine.keySettings.backup" onPress={this.onBackupPress} />
+              </View>
+            )
+          }
           <View style={[styles.sectionContainer, styles.advancedBlock]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.keySettings.advanced" />
             <TouchableOpacity style={styles.listRow} onPress={this.onDeletePress}>
@@ -283,16 +277,12 @@ KeySettings.propTypes = {
   confirmation: PropTypes.shape({}),
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
-  showPasscode: PropTypes.func.isRequired,
-  resetSwapSource: PropTypes.func.isRequired,
-  resetSwapDest: PropTypes.func.isRequired,
-  passcode: PropTypes.string,
+  callAuthVerify: PropTypes.func.isRequired,
 };
 
 KeySettings.defaultProps = {
   walletManager: undefined,
   confirmation: undefined,
-  passcode: undefined,
 };
 
 const mapStateToProps = (state) => ({
@@ -307,11 +297,10 @@ const mapDispatchToProps = (dispatch) => ({
   deleteKey: (key, walletManager) => dispatch(walletActions.deleteKey(key, walletManager)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
   addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
+  callAuthVerify: (callback, fallback) => dispatch(appActions.callAuthVerify(callback, fallback)),
   showPasscode: (category, callback, fallback) => dispatch(
     appActions.showPasscode(category, callback, fallback),
   ),
-  resetSwapSource: () => dispatch(walletActions.resetSwapSource()),
-  resetSwapDest: () => dispatch(walletActions.resetSwapDest()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeySettings);

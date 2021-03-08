@@ -1,12 +1,14 @@
 import { Map } from 'immutable';
 import actions from './actions';
 import config from '../../../config';
+import storage from '../../common/storage';
 
 const { defaultSettings } = config;
 
 const initState = new Map({
   isInitFromStorageDone: false, // Mark whether the first step, initalization from Storage done
-  isInitWithParseDone: false, // Mark whether the second step, initalization with Parse done
+  isLogin: false, // Mark whether user logged in
+  isLoginError: false,
 
   application: undefined,
   settings: undefined, // Settings instance
@@ -14,6 +16,8 @@ const initState = new Map({
 
   isPageLoading: false,
   serverVersion: undefined,
+  updateVersionInfo: undefined,
+
   error: undefined,
   transactions: undefined,
   showNotification: false,
@@ -27,32 +31,41 @@ const initState = new Map({
   language: defaultSettings.language,
   fingerprint: defaultSettings.fingerprint,
   username: defaultSettings.username,
+  isUsernameUpdated: false,
   isShowConfirmation: false,
   confirmation: null,
-  isUsernameUpdated: false,
   confirmationCallback: null,
+  isShowFingerprintModal: false,
+  fingerprintPasscodeDisabled: false,
+  fingerprintCallback: null,
+  fingerprintFallback: null,
   appLock: true,
   passcode: undefined,
+  isShowInAppNotification: false,
+  inAppNotification: undefined,
+  fcmNavParams: undefined,
+  fcmToken: undefined,
+  dapps: undefined,
+  dappTypes: undefined,
+  advertisements: undefined,
+  recentDapps: undefined,
+  page: undefined,
+  isReadOnlyWalletIntroShowed: false,
+  isShowUpdateModal: false, // show update modal
+  isShowedUpdateModal: false, //  This time the app launch has showed update modal
 });
 
 export default function appReducer(state = initState, action) {
   switch (action.type) {
-    case actions.IS_PAGE_LOADING:
-    {
-      return state.set('isPageLoading', action.value);
-    }
     case actions.INIT_FROM_STORAGE_DONE:
     {
       return state.set('isInitFromStorageDone', true);
     }
-    case actions.INIT_WITH_PARSE_DONE:
-    {
-      return state.set('isInitWithParseDone', true);
-    }
     case actions.GET_SERVER_INFO_RESULT:
     {
-      const serverVersion = action.value && action.value.version;
-      return state.set('serverVersion', serverVersion);
+      const { serverVersion, updateVersionInfo } = action.value;
+      return state.set('serverVersion', serverVersion)
+        .set('updateVersionInfo', updateVersionInfo);
     }
     case actions.CREATE_RAW_TRANSATION_RESULT:
     {
@@ -111,10 +124,73 @@ export default function appReducer(state = initState, action) {
       return state.set('isUsernameUpdated', true);
     case actions.RESET_USER_NAME_UPDATED:
       return state.set('isUsernameUpdated', false);
+    case actions.SHOW_FINGERPRINT_MODAL:
+      return state.set('isShowFingerprintModal', true)
+        .set('fingerprintPasscodeDisabled', action.value.fingerprintPasscodeDisabled)
+        .set('fingerprintCallback', action.value.callback)
+        .set('fingerprintFallback', action.value.fallback);
+    case actions.HIDE_FINGERPRINT_MODAL:
+      return state.set('isShowFingerprintModal', false)
+        .set('fingerprintPasscodeDisabled', false)
+        .set('fingerprintCallback', null)
+        .set('fingerprintFallback', null);
     case actions.LOCK_APP:
       return state.set('appLock', action.lock);
     case actions.UPDATE_PASSCODE:
       return state.set('passcode', action.passcode);
+    case actions.SHOW_INAPP_NOTIFICATION:
+      return state.set('isShowInAppNotification', true)
+        .set('inAppNotification', action.inAppNotification);
+    case actions.RESET_INAPP_NOTIFICATION:
+      return state.set('isShowInAppNotification', false)
+        .set('inAppNotification', null);
+    case actions.SET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', action.fcmNavParams);
+    case actions.RESET_FCM_NAV_PARAMS:
+      return state.set('fcmNavParams', null);
+    case actions.SET_FCM_TOKEN:
+      return state.set('fcmToken', action.fcmToken);
+    case actions.SET_LOGIN:
+      return state.set('isLogin', action.isLogin);
+    case actions.SET_LOGIN_ERROR:
+      return state.set('isLoginError', true);
+    case actions.RESET_LOGIN_ERROR:
+      return state.set('isLoginError', false);
+    case actions.UPDATE_DAPPS: {
+      const { dapps } = action;
+      storage.setDapps(dapps);
+      return state.set('dapps', dapps);
+    }
+    case actions.UPDATE_DAPP_TYPES: {
+      const { dappTypes } = action;
+      storage.setDappTypes(dappTypes);
+      return state.set('dappTypes', dappTypes);
+    }
+    case actions.UPDATE_ADVERTISEMENT: {
+      const { advertisements } = action;
+      storage.setAdvertisements(advertisements);
+      return state.set('advertisements', advertisements);
+    }
+    case actions.UPDATE_RECENT_DAPPS: {
+      const { recentDapps } = action;
+      storage.setRecentDapps(recentDapps);
+      return state.set('recentDapps', recentDapps);
+    }
+    case actions.SET_PAGE:
+      return state.set('page', action.page);
+    case actions.RESET_PAGE:
+      return state.set('page', null);
+    case actions.SET_READ_ONLY_WALLET_INTRO_SHOWED:
+      return state.set('isReadOnlyWalletIntroShowed', true);
+    case actions.SET_UPDATE_MODAL: {
+      let newState = state.set('isShowUpdateModal', action.visible);
+      if (action.visible) {
+        newState = newState.set('isShowedUpdateModal', true);
+      }
+      return newState;
+    }
+    case actions.SET_UPDATE_VERSION_INFO:
+      return state.set('updateVersionInfo', action.updateVersionInfo);
     default:
       return state;
   }

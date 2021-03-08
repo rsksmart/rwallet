@@ -1,18 +1,27 @@
-import React, { Component } from 'react';
-import { View, Image } from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
-
+import React from 'react';
+import { View, Image, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from 'react-navigation';
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
 import ExchangeStackNavigator from './stack.exchange';
-import topNavigator from './top.navigator';
-import flex from '../assets/styles/layout.flex';
-import { strings } from '../common/i18n';
+import DAppStackNavigator from './stack.dapp';
 import TabBar from './components/bottom.tab';
+import color from '../assets/styles/color';
 
 import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
+import dappLight from '../assets/images/root/tab/dapp.l.png';
+
+
+const styles = StyleSheet.create({
+  tabBarView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+});
 
 const PrimaryTabNavigator = createBottomTabNavigator(
   {
@@ -20,40 +29,55 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       screen: HomeStackNavigator,
       path: 'home',
       navigationOptions: {
-        title: strings('root.Wallet'),
+        title: 'root.Wallet',
       },
     },
     Exchange: {
       screen: ExchangeStackNavigator,
       path: 'exchange',
       navigationOptions: {
-        title: strings('root.Exchange'),
+        title: 'root.Exchange',
+      },
+    },
+    DApp: {
+      screen: DAppStackNavigator,
+      path: 'dapp',
+      navigationOptions: {
+        title: 'root.DApp',
       },
     },
     Mine: {
       screen: MineStackNavigator,
       path: 'mine',
       navigationOptions: {
-        title: strings('root.Me'),
+        title: 'root.Me',
       },
     },
   },
   {
-    tabBarComponent: (props) => (
-      <View style={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}
-      >
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <TabBar {...props} />
-      </View>
-    ),
+    tabBarComponent: (properties) => {
+      const {
+        renderIcon, getLabelText, activeTintColor, inactiveTintColor,
+        onTabPress, onTabLongPress, getAccessibilityLabel, navigation,
+      } = properties;
+      return (
+        <View style={styles.tabBarView}>
+          <TabBar
+            renderIcon={renderIcon}
+            getLabelText={getLabelText}
+            activeTintColor={activeTintColor}
+            inactiveTintColor={inactiveTintColor}
+            onTabPress={onTabPress}
+            onTabLongPress={onTabLongPress}
+            getAccessibilityLabel={getAccessibilityLabel}
+            navigation={navigation}
+          />
+        </View>
+      );
+    },
     defaultNavigationOptions: ({ navigation }) => ({
-      // eslint-disable-next-line react/prop-types
-      tabBarIcon: ({ focused }) => {
+      tabBarIcon: (properties) => {
+        const { focused } = properties;
         let img = null;
         let width = 18;
         let height = 18;
@@ -68,6 +92,9 @@ const PrimaryTabNavigator = createBottomTabNavigator(
             break;
           case 'Exchange':
             img = spendLight;
+            break;
+          case 'DApp':
+            img = dappLight;
             break;
           default:
             console.error(`unexpected tab：${navigation.state.routeName}`);
@@ -90,31 +117,10 @@ const PrimaryTabNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#df394d', // 激活颜色
-      inactiveTintColor: 'gray', // 未激活颜色,
+      activeTintColor: color.ceriseRed,
+      inactiveTintColor: color.gray,
     },
   },
 );
 
-const PrimaryTabNavigatorContainer = createAppContainer(PrimaryTabNavigator);
-
-export default class PrimaryTabNavigatorComp extends Component {
-  componentDidMount() {
-  }
-
-  static router = null;
-
-  render() {
-    return (
-      <View style={[flex.flex1]}>
-        <PrimaryTabNavigatorContainer
-          ref={(navigatorRef) => {
-            topNavigator.setTopLevelNavigator(navigatorRef);
-          }}
-        />
-      </View>
-    );
-  }
-}
-
-PrimaryTabNavigatorComp.router = PrimaryTabNavigatorContainer.router;
+export default PrimaryTabNavigator;

@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js';
 import Wallet from './wallet';
 import storage from '../storage';
 import common from '../common';
+import { KEYNAME_MAX_LENGTH, WalletType } from '../constants';
+import ReadOnlyWallet from './readonly.wallet';
 
 class WalletManager {
   constructor(wallets = [], currentKeyId = 0) {
@@ -41,7 +43,7 @@ class WalletManager {
       id: this.currentKeyId, name, phrase, coins, derivationPaths,
     });
 
-    this.wallets.push(wallet);
+    this.wallets.unshift(wallet);
 
     // Increment current pointer
     this.currentKeyId += 1;
@@ -93,12 +95,16 @@ class WalletManager {
       if (_.isNumber(result.currentKeyId)) {
         this.currentKeyId = result.currentKeyId;
       }
-
       // Re-create Wallet objects based on result.wallets JSON
-      const promises = _.map(result.wallets, (walletJSON) => Wallet.fromJSON(walletJSON));
+      const promises = _.map(result.wallets, (wallet) => (wallet.walletType === WalletType.Readonly ? ReadOnlyWallet.fromJSON(wallet) : Wallet.fromJSON(wallet)));
       const wallets = _.filter(await Promise.all(promises), (obj) => !_.isNull(obj));
+      this.wallets = _.map(wallets, (wallet) => wallet.wallet);
 
-      this.wallets = wallets;
+      // If the version is upgraded, the data needs to be saved again
+      const needSaveWallet = _.find(wallets, { isNeedSave: true });
+      if (needSaveWallet) {
+        await this.serialize();
+      }
     }
 
     console.log('Deserialized Wallets from Storage.', this.wallets);
@@ -147,35 +153,46 @@ class WalletManager {
     }
   }
 
-
   /**
-   * Update balances of Token based on input
-   * @param {array} balances Array of balance object in form of {objectId, balance(hex string)}
-   * @returns {boolean} True if any balance has changed
+   * Update tokens based on input
+   * @param {array} updatedItems Array of items in form of {objectId, balance(hex string), subdomain}, which are always fetched from server.
+   * @returns {boolean} True if any tokens has changed
    */
-  updateBalance(balances) {
-    console.log('updateBalance, balances: ', balances);
+  updateTokens(updatedItems) {
+    console.log('updateTokens, updatedItems: ', updatedItems);
     const tokenInstances = this.getTokens();
     let isDirty = false;
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const match = _.find(balances, (balanceObject) => balanceObject.address === token.address && balanceObject.symbol === token.symbol);
+      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol && item.type === token.type);
 
-      if (match) {
+      if (matchedToken) {
+        // update balance
         try {
           // Try to convert hex string to BigNumber
-          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, match.balance);
+          const newBalance = common.convertUnitToCoinAmount(newToken.symbol, matchedToken.balance, newToken.precision);
           // Update if it fetched new balance value
           if (newBalance && !newBalance.isEqualTo(newToken.balance)) {
             newToken.balance = newBalance;
             isDirty = true;
           }
         } catch (err) {
-          console.warn(`fetchBalance, unable to convert ${match.symbol} balance ${match.balance} to BigNumber`);
+          console.warn(`updateTokens, unable to convert ${matchedToken.symbol} balance ${matchedToken.balance} to BigNumber`);
+        }
+
+        // update subdomain
+        if (matchedToken.subdomain && newToken.subdomain !== matchedToken.subdomain) {
+          newToken.subdomain = matchedToken.subdomain;
+          isDirty = true;
         }
       }
     });
+
+    // serialize balance
+    if (isDirty) {
+      this.serialize();
+    }
 
     return isDirty;
   }
@@ -235,10 +252,10 @@ class WalletManager {
   async renameWallet(wallet, name) {
     if (name.length < 1) {
       throw new Error('modal.incorrectKeyName.tooShort');
-    } else if (name.length > 32) {
+    } else if (name.length > KEYNAME_MAX_LENGTH) {
       throw new Error('modal.incorrectKeyName.tooLong');
     }
-    const regex = /^[a-zA-Z0-9 ]{1,32}$/g;
+    const regex = /^[a-zA-Z0-9 ]+$/g;
     const match = regex.exec(name);
     if (!match) {
       throw new Error('modal.incorrectKeyName.invalid');
@@ -257,6 +274,39 @@ class WalletManager {
     symbols.push('BTC');
     return _.uniq(symbols);
   }
+
+  findToken = (symbol, type, address) => {
+    for (let i = 0; i < this.wallets.length; i += 1) {
+      const wallet = this.wallets[i];
+      const coin = _.find(wallet.coins, { address, symbol, type });
+      if (coin) {
+        return coin;
+      }
+    }
+    return null;
+  }
+
+  createReadOnlyWallet = async (chain, type, address, coins) => {
+    console.log('walletManager.createReadOnlyWallet, coins', coins);
+
+    // 2. Create a Wallet instance and save into wallets
+    const wallet = ReadOnlyWallet.create({
+      id: this.currentKeyId, name: null, chain, type, address, coins,
+    });
+
+    console.log(`createReadOnlyWallet, address: ${address}`);
+    this.wallets.unshift(wallet);
+
+    // Increment current pointer
+    this.currentKeyId += 1;
+
+    // Save to storage
+    await this.serialize();
+
+    return wallet;
+  }
+
+  getNormalWallets = () => _.filter(this.wallets, { walletType: WalletType.Normal });
 }
 
 export default new WalletManager();

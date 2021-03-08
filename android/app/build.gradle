@@ -100,6 +100,7 @@ def getCurrentTime() {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -110,9 +111,10 @@ android {
         applicationId "com.rsk.rwallet.reactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 28
+        versionName "1.4.0"
         missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -153,13 +155,19 @@ android {
         }
         variant.outputs.all {
             def buildType = variant.buildType.name
-            outputFileName = "rWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
+            outputFileName = "RWallet-V${defaultConfig.versionName}-${getCurrentTime()}-${buildType}.apk"
         }
     }
 }
 
 dependencies {
-    implementation project(':react-native-firebase')
+    implementation project(':react-native-view-shot')
+    implementation project(':react-native-device-info')
+    implementation project(':@imstar15_react-native-firebase')
+    implementation project(':react-native-fs')
+    implementation project(':react-native-share')
+    implementation project(':react-native-spring-scrollview')
+    implementation project(':@react-native-community_blur')
     implementation project(':react-native-version-number')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-vector-icons')
@@ -185,6 +193,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-base:16.0.1"
     implementation "com.google.firebase:firebase-core:16.0.6"
     implementation "com.google.firebase:firebase-messaging:17.3.3"
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation project(':react-native-webview')
 }
 
 // Run this once to be able to run the application with BUCK

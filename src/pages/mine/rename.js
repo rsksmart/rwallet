@@ -9,6 +9,8 @@ import Loc from '../../components/common/misc/loc';
 import presetStyle from '../../assets/styles/style';
 import appActions from '../../redux/app/actions';
 import BasePageGereral from '../base/base.page.general';
+import { NAME_MAX_LENGTH } from '../../common/constants';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -18,11 +20,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 20,
   },
   title: {
-    color: '#000000',
+    color: color.black,
     fontSize: 15,
     letterSpacing: 0.25,
     fontWeight: 'bold',
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
   notice: {
     marginTop: 5,
     fontSize: 12,
-    color: '#DF5264',
+    color: color.warningText,
     marginHorizontal: 5,
   },
   body: {
@@ -113,8 +115,9 @@ class Rename extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               blurOnSubmit={false}
+              maxLength={NAME_MAX_LENGTH}
             />
-            <Loc style={[styles.notice]} text="page.mine.rename.comment" />
+            <Loc style={[styles.notice]} text="page.mine.rename.comment" interpolates={{ maxLength: NAME_MAX_LENGTH }} />
           </View>
         </BasePageGereral>
       );

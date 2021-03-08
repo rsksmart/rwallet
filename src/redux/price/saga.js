@@ -1,6 +1,5 @@
-/* eslint no-console: 0 */
 import {
-  all, take, takeEvery, put, call, cancelled,
+  all, take, takeEvery, put, call, cancelled, select,
 } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import actions from './actions';
@@ -12,7 +11,7 @@ function createSocketChannel(socket) {
   return eventChannel((emitter) => {
     const subscribeHandler = () => {
       console.log('createSocketChannel.subscribeHandler.');
-      return emitter({ type: actions.PRICE_SUBSCRIBED });
+      return emitter({ type: actions.FETCH_PRICE });
     };
 
     // the subscriber must return an unsubscribe function
@@ -38,8 +37,6 @@ function createSocketChannel(socket) {
       return emitter({ type: actions.PRICE_CHANNEL_ERROR, error });
     };
 
-    console.log('socket: ', socket);
-
     socket.on('open', subscribeHandler);
     socket.on('update', updateHandler);
     socket.on('error', errorHandler);
@@ -52,7 +49,7 @@ function createSocketChannel(socket) {
 /**
  * Fetch prices of token sand update tokens
  */
-function* fetchPrices() {
+function* fetchPricesRequest() {
   try {
     const prices = yield call(ParseHelper.fetchPrices);
     yield put({ type: actions.PRICE_OBJECT_UPDATED, data: prices });
@@ -68,8 +65,16 @@ function* subscribePrices() {
   let socket;
   let socketChannel;
   try {
+    const state = yield select();
     socket = yield call(ParseHelper.subscribePrice);
     socketChannel = yield call(createSocketChannel, socket);
+
+    // When resubscribing we need to close the last channel
+    const priceChannel = state.Price.get('priceChannel');
+    if (priceChannel) {
+      priceChannel.close();
+    }
+    yield put({ type: actions.SET_PRICE_CHANNEL, value: socketChannel });
 
     while (true) {
       const payload = yield take(socketChannel);
@@ -92,12 +97,12 @@ function* subscribePrices() {
  * @param {array} tokens Array of Coin class instance
  */
 function* initPriceSocketRequest() {
-  yield call(fetchPrices);
   yield call(subscribePrices);
 }
 
 export default function* topicSaga() {
   yield all([
     takeEvery(actions.INIT_SOCKET_PRICE, initPriceSocketRequest),
+    takeEvery(actions.FETCH_PRICE, fetchPricesRequest),
   ]);
 }

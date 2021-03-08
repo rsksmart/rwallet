@@ -14,6 +14,8 @@ import references from '../../../assets/references';
 import Loc from '../../../components/common/misc/loc';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import coinListItemStyles from '../../../assets/styles/coin.listitem.styles';
 
 const styles = StyleSheet.create({
@@ -31,8 +33,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   headerTitle: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Avenir-Heavy',
+    color: color.whiteA90,
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 20,
     letterSpacing: 0.39,
     lineHeight: 28,
@@ -44,14 +46,14 @@ const styles = StyleSheet.create({
     height: 166,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: color.white,
   },
   headerBoardView: {
     alignItems: 'center',
@@ -68,28 +70,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   sendText: {
-    color: '#6875B7',
-    fontFamily: 'Avenir-Medium',
+    color: color.shipCove,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   receiveText: {
-    color: '#6FC062',
-    fontFamily: 'Avenir-Medium',
+    color: color.mantis,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   swapText: {
-    color: '#656667',
-    fontFamily: 'Avenir-Medium',
+    color: color.nevada,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 13,
     letterSpacing: 0.25,
     marginLeft: 10,
   },
   assetsTitle: {
-    color: '#000000',
+    color: color.black,
     fontSize: 13,
     letterSpacing: 0.25,
     fontWeight: 'bold',
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
   },
   spliteLine: {
     borderRightWidth: 1,
-    borderColor: '#D1D1D1',
+    borderColor: color.grayD1,
     height: 15,
     marginBottom: 2,
     marginLeft: 20,
@@ -108,14 +110,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   addWalletText: {
-    color: '#FFF',
-    fontFamily: 'Avenir-Medium',
+    color: color.white,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 12,
     marginTop: 10,
     marginBottom: 15,
   },
   addWalletButton: {
-    backgroundColor: 'rgba(255,255,255, 0.5)',
+    backgroundColor: color.whiteA50,
     borderRadius: 12,
     height: 155,
     marginTop: 70,

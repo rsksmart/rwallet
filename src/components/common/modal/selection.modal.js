@@ -4,14 +4,16 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import flex from '../../../assets/styles/layout.flex';
 import space from '../../../assets/styles/space';
 import Loc from '../misc/loc';
+import { DEVICE } from '../../../common/info';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: color.blackA50,
     justifyContent: 'center',
     flex: 1,
   },
@@ -19,6 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     borderRadius: 5,
     marginHorizontal: 45,
+    maxHeight: DEVICE.screenHeight * 0.6,
   },
   row: {
     flexDirection: 'row',
@@ -32,7 +35,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     color: color.black,
     marginVertical: 14,
   },
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   selectedColor: {
-    color: color.lightGreen,
+    color: color.azureRadiance,
   },
   ButtonsView: {
     flexDirection: 'row',
@@ -67,7 +70,6 @@ class SelectionModal extends Component {
     super(props);
     this.state = {
       visible: false,
-      selectedIndex: 0,
       currentIndex: 0,
     };
   }
@@ -76,8 +78,7 @@ class SelectionModal extends Component {
     this.setState({ currentIndex: index });
   }
 
-  show = () => {
-    const { selectedIndex } = this.state;
+  show = (selectedIndex) => {
     this.setState({ visible: true, currentIndex: selectedIndex });
   }
 
@@ -87,16 +88,16 @@ class SelectionModal extends Component {
 
   onConfirmPressed = () => {
     const { currentIndex } = this.state;
-    const { onSelected } = this.props;
-    onSelected(currentIndex);
-    this.setState({ visible: false, selectedIndex: currentIndex });
+    const { onConfirm } = this.props;
+    onConfirm(currentIndex);
+    this.setState({ visible: false });
   }
 
   render() {
-    const { items, title } = this.props;
-    const { visible, currentIndex } = this.state;
+    const { title, items } = this.props;
+    const { currentIndex, visible } = this.state;
     return (
-      <Modal visible={visible} transparent>
+      <Modal visible={visible} transparent onRequestClose={this.onCancelPressed}>
         <View style={styles.container}>
           <View style={styles.panel}>
             <View style={[styles.row, styles.titleView]}><Text style={styles.title}>{title}</Text></View>
@@ -133,13 +134,9 @@ class SelectionModal extends Component {
 }
 
 SelectionModal.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.string),
-  onSelected: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-};
-
-SelectionModal.defaultProps = {
-  items: undefined,
+  items: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default SelectionModal;

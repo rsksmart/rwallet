@@ -12,6 +12,7 @@ import { createInfoNotification } from '../../common/notification.controller';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
+import color from '../../assets/styles/color';
 
 const bip39 = require('bip39');
 
@@ -27,12 +28,20 @@ const styles = StyleSheet.create({
   },
   copy: {
     textAlign: 'center',
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 15,
   },
   tagsView: {
     marginTop: 15,
     marginHorizontal: 20,
+  },
+  copyView: {
+    marginTop: 10,
+    width: 100,
+    height: 40,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -121,7 +130,7 @@ class RecoveryPhrase extends Component {
           <View style={styles.tagsView}>
             <Tags data={phrases} style={[{ justifyContent: 'center' }]} />
           </View>
-          <TouchableOpacity style={{ marginTop: 10 }} onPress={this.onCopyPressed}>
+          <TouchableOpacity style={styles.copyView} onPress={this.onCopyPressed}>
             <Loc style={[styles.copy]} text="button.Copy" />
           </TouchableOpacity>
         </BasePageGereral>

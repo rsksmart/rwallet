@@ -1,39 +1,39 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Image,
-  Linking,
-  Platform,
+  View, Text, Modal, TouchableOpacity, Linking, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { screen } from '../../common/info';
-import flex from '../../assets/styles/layout.flex';
 import space from '../../assets/styles/space';
-
-import updateBanner from '../../assets/images/root/update/banner.update.png';
+import notificationStyles from '../../assets/styles/notification.styles';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
+import Loc from '../common/misc/loc';
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    height: screen.height,
-    width: screen.width,
+  row: {
+    flexDirection: 'row',
+  },
+  button: {
+    width: '50%',
+  },
+  buttonText: {
+    color: color.app.theme,
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 12,
+    marginBottom: 11,
+    fontFamily: fontFamily.AvenirHeavy,
+  },
+  buttonLeftLine: {
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftColor: color.gainsboro,
   },
 });
 
 class UpdateModal extends Component {
-  static immediateUpdate() {
-    const url = Platform.OS === 'ios' ? 'itms-apps://https://itunes.apple.com/app/id414478124?action=write-review' : 'market://details?id=com.tencent.mm';
+  onUpdateButtonPressed = () => {
+    const { updateVersionInfo } = this.props;
+    const { url } = updateVersionInfo;
     Linking.canOpenURL(url)
       .then((supported) => {
         if (supported) {
@@ -45,122 +45,60 @@ class UpdateModal extends Component {
       .catch((err) => console.error('An error occurred', err));
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      showUpdate: props.showUpdate,
-      isMandatory: props.mandatory,
-    };
+  onCancelButtonPressed = () => {
+    const { onUpdateModalClose } = this.props;
+    onUpdateModalClose();
+  }
+
+  onRequestClose = () => {
+    const { updateVersionInfo } = this.props;
+    const { forceUpdate } = updateVersionInfo;
+    if (!forceUpdate) {
+      this.onCancelButtonPressed();
+    }
+  }
+
+  renderButtons = () => {
+    const { updateVersionInfo } = this.props;
+    const { forceUpdate } = updateVersionInfo;
+    let buttons = null;
+    if (forceUpdate) {
+      buttons = (
+        <TouchableOpacity onPress={this.onUpdateButtonPressed}>
+          <Loc style={[styles.buttonText]} text="button.update" />
+        </TouchableOpacity>
+      );
+    } else {
+      buttons = (
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button} onPress={this.onCancelButtonPressed}>
+            <Loc style={[styles.buttonText]} text="button.cancel" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.buttonLeftLine]} onPress={this.onUpdateButtonPressed}>
+            <Loc style={[styles.buttonText]} text="button.update" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return buttons;
   }
 
   render() {
-    const { showUpdate, isMandatory } = this.state;
+    const { updateVersionInfo } = this.props;
+    const { title, body } = updateVersionInfo;
     return (
-      <Modal visible={showUpdate} transparent onRequestClose={() => {}}>
-        <View style={[flex.flex1, styles.container]}>
-          <View style={[space.marginBottom_5, { width: 0.8 * screen.width }]}>
-            <Image
-              source={updateBanner}
-              style={{ width: 0.8 * screen.width, height: 0.348 * screen.width }}
-            />
-            <View
-              style={[
-                {
-                  backgroundColor: '#fff',
-                  width: 0.8 * screen.width,
-                  borderBottomLeftRadius: 5,
-                  borderBottomRightRadius: 5,
-                },
-                flex.alignCenter,
-              ]}
-            >
-              <Text
-                style={{
-                  color: '#2979FF',
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  justifyContent: 'center',
-                }}
-              >
-                Updating
-              </Text>
-              <View style={{ marginBottom: 65 }} />
-              <View
-                style={{
-                  borderBottomLeftRadius: 5,
-                  borderBottomRightRadius: 5,
-                  borderTopWidth: StyleSheet.hairlineWidth,
-                  borderTopColor: '#eee',
-                  height: 60,
-                  width: 0.8 * screen.width,
-                  position: 'absolute',
-                  bottom: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    height: 60,
-                    width: 0.8 * screen.width,
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                  }}
-                >
-                  {isMandatory ? null : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({ showUpdate: false });
-                      }}
-                      style={{
-                        height: 40,
-                        maxWidth: 0.5 * screen.width,
-                        marginHorizontal: 10,
-                        flex: 1,
-                      }}
-                    >
-                      <View
-                        style={{
-                          height: 40,
-                          maxWidth: 0.5 * screen.width,
-                          alignItems: 'center',
-                          borderRadius: 20,
-                          justifyContent: 'center',
-                          backgroundColor: '#eee',
-                          flex: 1,
-                        }}
-                      >
-                        <Text style={{ color: '#666' }}>Update Later</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    onPress={() => { UpdateModal.immediateUpdate(); }}
-                    style={{
-                      height: 40,
-                      maxWidth: 0.5 * screen.width,
-                      marginHorizontal: 10,
-                      flex: 1,
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: 40,
-                        maxWidth: 0.5 * screen.width,
-                        alignItems: 'center',
-                        borderRadius: 20,
-                        justifyContent: 'center',
-                        backgroundColor: '#2979FF',
-                        flex: 1,
-                      }}
-                    >
-                      <Text style={{ color: '#fff' }}>Update Now</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
+      <Modal
+        transparent
+        onRequestClose={this.onRequestClose}
+      >
+        <View style={notificationStyles.backgroundBoard}>
+          <View style={notificationStyles.frontBoard}>
+            <View style={space.paddingHorizontal_20}>
+              <Text style={[notificationStyles.title]}>{title}</Text>
+              <Text style={[notificationStyles.text]}>{body}</Text>
             </View>
+            <View style={notificationStyles.line} />
+            { this.renderButtons() }
           </View>
         </View>
       </Modal>
@@ -168,10 +106,18 @@ class UpdateModal extends Component {
   }
 }
 
-export default UpdateModal;
-
 UpdateModal.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  showUpdate: PropTypes.bool.isRequired,
-  mandatory: PropTypes.bool.isRequired,
+  onUpdateModalClose: PropTypes.func,
+  updateVersionInfo: PropTypes.shape({
+    title: PropTypes.string,
+    body: PropTypes.string,
+    url: PropTypes.string,
+    forceUpdate: PropTypes.bool,
+  }).isRequired,
 };
+
+UpdateModal.defaultProps = {
+  onUpdateModalClose: () => null,
+};
+
+export default UpdateModal;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-
+import flex from '../../../assets/styles/layout.flex';
 import PasscodeModal from './passcode.modal.wrapper';
 
 const PasscodeModals = (props) => {
@@ -10,7 +10,7 @@ const PasscodeModals = (props) => {
   } = props;
 
   return (
-    <View>
+    <View style={flex.flex1}>
       {(showPasscode && passcodeType && closePasscodeModal) && (
         <PasscodeModal
           type={passcodeType}
@@ -32,7 +32,6 @@ PasscodeModals.propTypes = {
 };
 
 PasscodeModals.defaultProps = {
-  // eslint-disable-next-line react/forbid-prop-types
   passcodeType: null,
   passcodeCallback: null,
   passcodeFallback: null,

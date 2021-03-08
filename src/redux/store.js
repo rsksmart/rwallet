@@ -8,6 +8,7 @@ import { routerReducer } from 'react-router-redux';
 import reducers from './reducers';
 import rootSaga from './sagas';
 import config from '../../config';
+import common from '../common/common';
 
 const { development: { reduxLoggerEnabled } } = config;
 
@@ -32,5 +33,7 @@ const store = createStore(
 
 // Start Saga middle ware
 sagaMiddleware.run(rootSaga);
+
+common.setStore(store);
 
 export default store;

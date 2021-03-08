@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Switch, ImageBackground,
+  View, StyleSheet, Text, TouchableOpacity, FlatList, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import BasePageGereral from '../base/base.page.general';
 import Header from '../../components/headers/header';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import space from '../../assets/styles/space';
 import Loc from '../../components/common/misc/loc';
 import coinType from '../../common/wallet/cointype';
@@ -15,6 +16,12 @@ import common from '../../common/common';
 import config from '../../../config';
 import references from '../../assets/references';
 import walletActions from '../../redux/wallet/actions';
+import { strings } from '../../common/i18n';
+import ResponsiveText from '../../components/common/misc/responsive.text';
+import { createBTCAddressTypeConfirmation } from '../../common/confirmation.controller';
+import appActions from '../../redux/app/actions';
+import { WalletType, BtcAddressType } from '../../common/constants';
+import TokenSwitch from '../../components/common/switch/switch.token';
 
 const styles = StyleSheet.create({
   enabledAssetsView: {
@@ -22,13 +29,13 @@ const styles = StyleSheet.create({
   },
   enabledAssetsText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
     letterSpacing: -0.44,
   },
   note: {
     color: color.white,
-    fontFamily: 'Avenir-Book',
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     letterSpacing: 0.07,
     marginTop: 14,
@@ -38,7 +45,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   addCustomTokenView: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: color.whiteA50,
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 20,
@@ -47,7 +54,7 @@ const styles = StyleSheet.create({
   },
   addCustomTokenText: {
     color: color.white,
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 16,
   },
   row: {
@@ -57,13 +64,6 @@ const styles = StyleSheet.create({
     height: 67,
     marginTop: 10,
     borderRadius: 10,
-  },
-  rowTitle: {
-    marginLeft: 20,
-    flex: 1,
-  },
-  icon: {
-    marginLeft: 20,
   },
   switch: {
     marginRight: 20,
@@ -80,14 +80,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
   },
-  cornerButtonText: {
-    fontFamily: 'Avenir-Medium',
-    fontSize: 16,
+  cornerButtonView: {
     marginLeft: 13,
+    flexDirection: 'row',
+  },
+  cornerButtonText: {
+    width: 75,
+  },
+  cornerButtonFont: {
+    fontFamily: fontFamily.AvenirMedium,
   },
   cornerButtonPlus: {
-    color: '#00BA00',
-    fontFamily: 'Avenir-Medium',
+    color: color.app.theme,
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 20,
   },
 });
@@ -108,8 +113,6 @@ class AddToken extends Component {
   constructor(props) {
     super(props);
     this.wallet = props.navigation.state.params.wallet;
-    this.onSwitchValueChanged = this.onSwitchValueChanged.bind(this);
-    this.onAddCustomTokenPressed = this.onAddCustomTokenPressed.bind(this);
     const listData = this.createListData();
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.state = { listData, tokenCount: listData.length, selectedTokenCount };
@@ -122,36 +125,58 @@ class AddToken extends Component {
     }
   }
 
-  onSwitchValueChanged(index, value) {
-    const { walletManager, addToken, deleteToken } = this.props;
+  onSwitchValueChanged = (index, value) => {
+    const {
+      walletManager, addToken, deleteToken, resetWalletsUpdated, addConfirmation,
+    } = this.props;
     const { listData } = this.state;
-    listData[index].selected = value;
+    const listItem = listData[index];
+    listItem.selected = value;
+
+    if (listItem.selected && listItem.token.symbol === 'BTC' && !this.wallet.getBtcAddressType()) {
+      // If the BTC address type has not been set before, when we choose BTC, we should ask the user for the BTC address type
+      const confirmation = createBTCAddressTypeConfirmation(() => {
+        this.addBTCToken(listItem.token, BtcAddressType.legacy);
+      }, () => {
+        this.addBTCToken(listItem.token, BtcAddressType.segwit);
+      });
+      addConfirmation(confirmation);
+    } else if (listItem.selected) {
+      addToken(walletManager, this.wallet, listItem.token);
+    } else {
+      deleteToken(walletManager, this.wallet, listItem.token);
+    }
     const selectedTokenCount = AddToken.getSelectedTokenCount(listData);
     this.setState({ listData, selectedTokenCount });
-    if (listData[index].selected) {
-      addToken(walletManager, this.wallet, listData[index].token);
-    } else {
-      deleteToken(walletManager, this.wallet, listData[index].token);
-    }
+    // Before changing the token, force to reset the isWalletsUpdated state.
+    // Avoid other pages not being able to detect the change of state.
+    resetWalletsUpdated();
   }
 
-  onAddCustomTokenPressed() {
+  onAddCustomTokenPressed = () => {
     const { navigation, resetWalletsUpdated } = this.props;
     resetWalletsUpdated();
     navigation.navigate('AddCustomToken', navigation.state.params);
   }
 
+  addBTCToken = (token, btcAddressType) => {
+    const { walletManager, addToken } = this.props;
+    const newToken = token;
+    newToken.addressType = btcAddressType;
+    addToken(walletManager, this.wallet, newToken);
+  }
+
   createListData() {
     const { coins } = this.wallet;
-    const listData = [];
+    let listData = [];
     const { consts: { supportedTokens } } = config;
 
     const createItem = (token, type) => {
       const coinId = type === 'Mainnet' ? token : token + type;
       const { icon } = coinType[coinId];
-      const name = common.getSymbolFullName(token, type);
+      const name = common.getSymbolName(token, type);
       const item = {
-        name, icon, selected: false, token: { symbol: token, type },
+        name, icon, selected: false, symbol: token, type, token: { symbol: token, type },
       };
       const coin = _.find(coins, { symbol: token, type });
       if (coin) {
@@ -165,39 +190,48 @@ class AddToken extends Component {
     _.each(coins, (coin) => {
       const foundToken = _.find(supportedTokens, (token) => coin.symbol === token);
       if (!foundToken) {
-        const name = common.getSymbolFullName(coin.symbol, coin.type);
+        const name = common.getSymbolName(coin.symbol, coin.type);
         listData.push({
-          name, icon: coin.metadata.icon, selected: true, token: coin,
+          name, icon: coin.icon, symbol: coin.symbol, type: coin.type, selected: true, token: coin,
         });
       }
     });
 
     // add supportedTokens to list data
     _.each(supportedTokens, (token) => {
-      listData.push(createItem(token, 'Mainnet'));
-      listData.push(createItem(token, 'Testnet'));
+      if (this.wallet.walletType === WalletType.Readonly) {
+        if (token !== 'BTC') {
+          listData.push(createItem(token, this.wallet.type));
+        }
+      } else {
+        listData.push(createItem(token, 'Mainnet'));
+        listData.push(createItem(token, 'Testnet'));
+      }
     });
+
+    listData = common.sortTokens(listData);
 
     return listData;
   }
 
   renderList() {
     const { listData } = this.state;
+    const selectedItems = _.filter(listData, { selected: true });
     return (
       <FlatList
         style={space.marginBottom_4}
         extraData={this.state}
         data={listData}
         renderItem={({ item, index }) => (
-          <View style={[styles.row, index === 0 ? space.marginTop_0 : 0]}>
-            <Image style={styles.icon} source={item.icon} />
-            <Text style={styles.rowTitle}>{item.name}</Text>
-            <Switch
-              style={styles.switch}
-              value={item.selected}
-              onValueChange={(value) => this.onSwitchValueChanged(index, value)}
-            />
-          </View>
+          <TokenSwitch
+            style={[styles.row, space.paddingLeft_20, index === 0 ? space.marginTop_0 : 0]}
+            switchStyle={styles.switch}
+            icon={item.icon}
+            name={item.name}
+            value={item.selected}
+            disabled={selectedItems.length === 1 && item.selected}
+            onSwitchValueChanged={(value) => this.onSwitchValueChanged(index, value)}
+          />
         )}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -210,17 +244,17 @@ class AddToken extends Component {
 
     const customButton = (
       <TouchableOpacity style={styles.addCustomTokenView} onPress={this.onAddCustomTokenPressed}>
-        <Text style={styles.addCustomTokenText}>+ Add Custom Tokens</Text>
+        <Text style={styles.addCustomTokenText}>{`+ ${strings('page.wallet.addToken.addCustomToken')}`}</Text>
       </TouchableOpacity>
     );
 
     const rightButton = () => (
       <TouchableOpacity style={styles.rightButtonView} onPress={this.onAddCustomTokenPressed}>
         <ImageBackground source={references.images.cornerButton} style={styles.cornerButton}>
-          <Text style={styles.cornerButtonText}>
+          <View style={styles.cornerButtonView}>
             <Text style={styles.cornerButtonPlus}>+ </Text>
-            Custom
-          </Text>
+            <ResponsiveText layoutStyle={styles.cornerButtonText} fontStyle={styles.cornerButtonFont} maxFontSize={16}>{strings('page.wallet.addToken.custom')}</ResponsiveText>
+          </View>
         </ImageBackground>
       </TouchableOpacity>
     );
@@ -239,7 +273,7 @@ class AddToken extends Component {
         isSafeView
         customBottomButton={customButton}
         hasLoader={false}
-        bgColor="#00B520"
+        bgColor={color.app.theme}
         headerComponent={header}
       >
         <View style={[styles.body, { flex: 1 }]}>
@@ -269,16 +303,19 @@ AddToken.propTypes = {
   walletManager: PropTypes.shape({}).isRequired,
   resetWalletsUpdated: PropTypes.func.isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
+  addConfirmation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   walletManager: state.Wallet.get('walletManager'),
   isWalletsUpdated: state.Wallet.get('isWalletsUpdated'),
+  language: state.App.get('language'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteToken: (walletManager, wallet, token) => dispatch(walletActions.deleteToken(walletManager, wallet, token)),
   addToken: (walletManager, wallet, token) => dispatch(walletActions.addToken(walletManager, wallet, token)),
   resetWalletsUpdated: () => dispatch(walletActions.resetWalletsUpdated()),
+  addConfirmation: (confirmation) => dispatch(appActions.addConfirmation(confirmation)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(AddToken);

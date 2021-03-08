@@ -7,15 +7,17 @@ const actions = {
   GET_PRICE: 'GET_PRICE',
   GET_PRICE_RESULT: 'GET_PRICE_RESULT',
 
-  FETCH_BALANCE: 'FETCH_BALANCE',
-  FETCH_BALANCE_RESULT: 'FETCH_BALANCE_RESULT',
-  RESET_BALANCE_UPDATED: 'RESET_BALANCE_UPDATED',
+  FETCH_TOKENS: 'FETCH_TOKENS',
+  FETCH_TOKENS_RESULT: 'FETCH_TOKENS_RESULT',
+  RESET_TOKENS_UPDATED: 'RESET_TOKENS_UPDATED',
 
-  FETCH_TRANSACTION: 'FETCH_TRANSACTION',
-  FETCH_TRANSACTION_RESULT: 'FETCH_TRANSACTION_RESULT',
+  FETCH_TRANSACTIONS: 'FETCH_TRANSACTIONS',
+  FETCH_TRANSACTIONS_RESULT: 'FETCH_TRANSACTIONS_RESULT',
+  UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
 
   FETCH_LATEST_BLOCK_HEIGHT: 'FETCH_LATEST_BLOCK_HEIGHT',
   FETCH_LATEST_BLOCK_HEIGHT_RESULT: 'FETCH_LATEST_BLOCK_HEIGHT_RESULT',
+  UPDATE_LATEST_BLOCK_HEIGHT: 'UPDATE_LATEST_BLOCK_HEIGHT',
 
   DELETE_KEY: 'DELETE_KEY',
   RENAME_KEY: 'RENAME_KEY',
@@ -24,15 +26,9 @@ const actions = {
   UPDATE_ASSET_VALUE: 'UPDATE_ASSET_VALUE',
   WALLETS_UPDATED: 'WALLETS_UPDATED',
 
-  START_FETCH_PRICE_TIMER: 'START_FETCH_PRICE_TIMER',
-  START_FETCH_BALANCE_TIMER: 'START_FETCH_BALANCE_TIMER',
-  START_FETCH_TRANSACTION_TIMER: 'START_FETCH_TRANSACTION_TIMER',
-  START_FETCH_LATEST_BLOCK_HEIGHT_TIMER: 'START_FETCH_LATEST_BLOCK_HEIGHT_TIMER',
-
-  WALLTES_UPDATED: 'WALLTES_UPDATED',
   RESET_WALLETS_UPDATED: 'RESET_WALLETS_UPDATED',
-  WALLTE_NAME_UPDATED: 'WALLTE_NAME_UPDATED',
-  RESET_WALLET_NAME_UPDATED: 'RESET_WALLTE_NAME_UPDATED',
+  WALLET_NAME_UPDATED: 'WALLET_NAME_UPDATED',
+  RESET_WALLET_NAME_UPDATED: 'RESET_WALLET_NAME_UPDATED',
 
   SET_SWAP_SOURCE: 'SET_SWAP_SOURCE',
   SET_SWAP_DEST: 'SET_SWAP_DEST',
@@ -50,12 +46,21 @@ const actions = {
   SET_SWAP_RATE_RESULT_ERROR: 'GET_SWAP_RATE_RESULT_ERROR',
   RESET_SWAP_RATE_RESULT_ERROR: 'RESET_SWAP_RATE_RESULT_ERROR',
 
-  INIT_LIVE_QUERY_BALANCES: 'INIT_LIVE_QUERY_BALANCES',
-  SET_BALANCES_CHANNEL: 'SET_BALANCES_CHANNEL',
-  BALANCE_UPDATED: 'BALANCE_UPDATED',
+  INIT_LIVE_QUERY_TOKENS: 'INIT_LIVE_QUERY_TOKENS',
+  SET_TOKENS_CHANNEL: 'SET_TOKENS_CHANNEL',
 
   INIT_LIVE_QUERY_TRANSACTIONS: 'INIT_LIVE_QUERY_TRANSACTIONS',
   SET_TRANSACTIONS_CHANNEL: 'SET_TRANSACTIONS_CHANNEL',
+
+  INIT_LIVE_QUERY_BLOCK_HEIGHTS: 'INIT_LIVE_QUERY_BLOCK_HEIGHTS',
+  SET_BLOCK_HEIGHTS_CHANNEL: 'SET_BLOCK_HEIGHT_CHANNEL',
+
+  SET_SUBDOMAINS: 'SET_SUBDOMAINS',
+  GET_BALANCE: 'GET_BALANCE',
+
+  CREATE_READ_ONLY_WALLET: 'CREATE_READ_ONLY_WALLET',
+
+  UPDATE_TOKEN_BALANCE: 'UPDATE_TOKEN_BALANCE',
 
   // Functions definition
   getPrice: (symbols, currencies) => ({
@@ -69,27 +74,16 @@ const actions = {
     type: actions.FETCH_BALANCE,
     payload: walletManager,
   }),
-  resetBalanceUpdated: () => ({
-    type: actions.RESET_BALANCE_UPDATED,
+  resetTokensUpdated: () => ({
+    type: actions.RESET_TOKENS_UPDATED,
   }),
-  fetchTransaction: (walletManager) => ({
-    type: actions.FETCH_TRANSACTION,
-    payload: walletManager,
+  fetchTransactions: (params) => ({
+    type: actions.FETCH_TRANSACTIONS,
+    payload: params,
   }),
   updateAssetValue: (currency, prices) => ({
     type: actions.UPDATE_ASSET_VALUE,
     payload: { currency, prices },
-  }),
-  startFetchBalanceTimer: (walletManager) => ({
-    type: actions.START_FETCH_BALANCE_TIMER,
-    payload: walletManager,
-  }),
-  startFetchTransactionTimer: (walletManager) => ({
-    type: actions.START_FETCH_TRANSACTION_TIMER,
-    payload: walletManager,
-  }),
-  startFetchLatestBlockHeightTimer: () => ({
-    type: actions.START_FETCH_LATEST_BLOCK_HEIGHT_TIMER,
   }),
   deleteKey: (key, walletManager) => ({
     type: actions.DELETE_KEY,
@@ -162,12 +156,37 @@ const actions = {
   resetSwapRateResultError: () => ({
     type: actions.RESET_SWAP_RATE_RESULT_ERROR,
   }),
-  initLiveQueryBalances: (tokens) => ({
-    type: actions.INIT_LIVE_QUERY_BALANCES,
+  initLiveQueryTokens: (tokens) => ({
+    type: actions.INIT_LIVE_QUERY_TOKENS,
     tokens,
   }),
   initLiveQueryTransactions: (tokens) => ({
     type: actions.INIT_LIVE_QUERY_TRANSACTIONS,
+    tokens,
+  }),
+  initLiveQueryBlockHeights: () => ({
+    type: actions.INIT_LIVE_QUERY_BLOCK_HEIGHTS,
+  }),
+  setSubdomains: (subdomains) => ({
+    type: actions.SET_SUBDOMAINS,
+    subdomains,
+  }),
+  getBalance: ({
+    symbol, type, address, needFetch,
+  }) => ({
+    type: actions.GET_BALANCE,
+    payload: {
+      symbol, type, address, needFetch,
+    },
+  }),
+  createReadOnlyWallet: (chain, type, address, coins) => ({
+    type: actions.CREATE_READ_ONLY_WALLET,
+    payload: {
+      chain, type, address, coins,
+    },
+  }),
+  updateTokenBalance: (tokens) => ({
+    type: actions.UPDATE_TOKEN_BALANCE,
     tokens,
   }),
 };

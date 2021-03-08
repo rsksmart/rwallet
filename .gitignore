@@ -31,6 +31,9 @@ local.properties
 *.iml
 android/.project
 android/.settings/
+android/keystores/
+android/app/release/
+android/app/google-services.json
 
 # node.js
 #
@@ -67,3 +70,9 @@ out.log
 
 # Environment variable config for each developer
 .env 
+
+# Android signature file
+android/app/keystores/*.jks
+
+yarn.lock
+/android/app/google-services.json

@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import {
   View, Image, StyleSheet, Text,
 } from 'react-native';
-import { isEmpty } from 'lodash';
+import _ from 'lodash';
 import VersionNumber from 'react-native-version-number';
 
 import { connect } from 'react-redux';
 import Button from '../../components/common/button/button';
 import SafeAreaView from '../../components/common/misc/safe.area.view';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import screenHelper from '../../common/screenHelper';
 
 const logo = require('../../assets/images/icon/logo.png');
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   },
   versionText: {
     color: color.midGrey,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 16,
     fontWeight: '500',
     position: 'absolute',
@@ -51,8 +52,8 @@ class StartPage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { isInitWithParseDone, wallets, navigation } = nextProps;
-    if (isInitWithParseDone && !isEmpty(wallets)) {
+    const { wallets, navigation, isInitFromStorageDone } = nextProps;
+    if (isInitFromStorageDone && !_.isEmpty(wallets)) {
       navigation.navigate('PrimaryTabNavigator');
     }
     return null;
@@ -64,14 +65,14 @@ class StartPage extends Component {
   }
 
   render() {
-    const { navigation, isInitWithParseDone, wallets } = this.props;
+    const { navigation, wallets, isInitFromStorageDone } = this.props;
     const { version } = this.state;
     return (
       <SafeAreaView style={[styles.page]}>
         <View style={styles.logo}>
           <Image source={logo} />
         </View>
-        {(isInitWithParseDone && isEmpty(wallets)) && (
+        {isInitFromStorageDone && _.isEmpty(wallets) && (
         <View style={styles.buttonView}>
           <Button text="page.start.start.button" onPress={() => navigation.navigate('TermsPage')} />
         </View>
@@ -90,7 +91,7 @@ StartPage.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
   wallets: PropTypes.arrayOf(PropTypes.object),
-  isInitWithParseDone: PropTypes.bool.isRequired,
+  isInitFromStorageDone: PropTypes.bool.isRequired,
 };
 
 StartPage.defaultProps = {
@@ -98,8 +99,8 @@ StartPage.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
   wallets: state.Wallet.get('walletManager') && state.Wallet.get('walletManager').wallets,
+  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
 });
 
 export default connect(mapStateToProps, null)(StartPage);

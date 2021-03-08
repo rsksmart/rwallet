@@ -1,12 +1,25 @@
-/* eslint class-methods-use-this: 0 */
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSecureStorage from 'rn-secure-storage';
+import _ from 'lodash';
 
 const KEY_WALLETS = 'WALLETS';
+const KEY_PRICES = 'PRICE';
 const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
+const SECURE_USER_PASSWORD = 'USER_PASSWORD';
+
+const KEY_DAPPS = 'DAPPS';
+const KEY_DAPP_TYPES = 'DAPPTYPES';
+const ADVERTISEMENTS = 'ADVERTISEMENTS';
+const KEY_RECENT_DAPPS = 'RECENTDAPPS';
+const IS_SHOW_RNS_FEATURE = 'isShowRnsFeature';
+const RNS_REGISTERING_SUBDOMAINS = 'rnsRegisteringSubdomains';
+const USE_TRANSACTION_FALLBACK_ADDRESSES = 'useTransactionFallbackAddress';
+const STORAGE_VERSION = 'storageVersion';
+const IS_READ_ONLY_WALLET_INTRO_SHOWED = 'isReadOnlyWalletIntroShowed';
+const UPDATE_VERSION_INFO = 'updateVersionInfo';
 
 class RNStorage {
   constructor() {
@@ -47,7 +60,6 @@ class RNStorage {
    * @param {object} params { key: "" }
    */
   async load(params) {
-    // eslint-disable-next-line no-return-await
     return this.instance.load(params)
       .catch((err) => {
       // any exception including data not found goes to catch()
@@ -190,44 +202,195 @@ class RNStorage {
   }
 
   /**
+   * Set price using normal storage
+   * @param {string} id Key local Id
+   * @param {string} phrase String of price json
+   */
+  setPrices = (json) => this.save(KEY_PRICES, json)
+
+  /**
+   * Return price json data from normal storage; null if not found or failed
+   * @param {string} id Key local Id
+   */
+  getPrices = () => this.load({ key: KEY_PRICES })
+
+  /**
    * Set Passcode using secure storage
    * @param {string} passcode String of Passcode
    */
-  setPasscode(passcode) {
-    return RNStorage.secureSet(SECURE_KEY_PASSCODE, passcode);
-  }
+  setPasscode = (passcode) => RNStorage.secureSet(SECURE_KEY_PASSCODE, passcode)
 
   /**
    * Return Passcode from secure storage; null if not found or failed
    */
-  getPasscode() {
-    return RNStorage.secureGet(SECURE_KEY_PASSCODE);
-  }
+  getPasscode = () => RNStorage.secureGet(SECURE_KEY_PASSCODE)
+
+  /**
+   * Set dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} dapps all active dapps
+   */
+  setDapps = (dapps) => this.save(KEY_DAPPS, dapps)
+
+  /**
+   * Return dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDapps = () => this.load({ key: KEY_DAPPS })
+
+  /**
+   * Set dapp types using normal storage
+   * @param {string} id Key local id
+   * @param {string} dappTypes all active dapp types
+   */
+  setDappTypes = (dappTypes) => this.save(KEY_DAPP_TYPES, dappTypes)
+
+  /**
+   * Return dapp types from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getDappTypes = () => this.load({ key: KEY_DAPP_TYPES })
+
+  /**
+   * Set advertisements using normal storage
+   * @param {string} id Key local id
+   * @param {string} ads all active advertisements
+   */
+  setAdvertisements = (ads) => this.save(ADVERTISEMENTS, ads)
+
+  /**
+   * Return advertisements from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getAdvertisements = () => this.load({ key: ADVERTISEMENTS })
+
+  /**
+   * Set recent dapps using normal storage
+   * @param {string} id Key local id
+   * @param {string} recentDapps recent dapps
+   */
+  setRecentDapps = (recentDapps) => this.save(KEY_RECENT_DAPPS, recentDapps)
+
+  /**
+   * Return recent dapps from nomal storage; null if not found or failed
+   * @param {string} id Key local id
+   */
+  getRecentDapps = () => this.load({ key: KEY_RECENT_DAPPS })
 
   /**
    * Set Mnemonic Phrase using secure storage
    * @param {string} id Key local Id
    * @param {string} phrase String of Mnemonic Phrase
    */
-  setMnemonicPhrase(id, phrase) {
-    return RNStorage.secureSet(`${SECURE_KEY_PHRASE_PREFIX}${id}`, phrase);
-  }
+  setMnemonicPhrase = (id, phrase) => RNStorage.secureSet(`${SECURE_KEY_PHRASE_PREFIX}${id}`, phrase)
 
   /**
    * Return Mnemonic Phrase from secure storage; null if not found or failed
    * @param {string} id Key local Id
    */
-  getMnemonicPhrase(id) {
-    return RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`);
+  getMnemonicPhrase = (id) => RNStorage.secureGet(`${SECURE_KEY_PHRASE_PREFIX}${id}`)
+
+  setPrivateKey = (id, symbol, type, privateKey) => RNStorage.secureSet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`, privateKey)
+
+  getPrivateKey = (id, symbol, type) => RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`)
+
+  async getIsShowRnsFeature() {
+    const isShowRnsFeature = await this.load({ key: IS_SHOW_RNS_FEATURE });
+    return isShowRnsFeature || false;
   }
 
-  setPrivateKey(id, symbol, type, privateKey) {
-    return RNStorage.secureSet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`, privateKey);
+  setIsShowRnsFeature() {
+    return this.save(IS_SHOW_RNS_FEATURE, true);
   }
 
-  getPrivateKey(id, symbol, type) {
-    return RNStorage.secureGet(`${SECURE_KEY_PRIVATE_KEY_PREFIX}${id}_${symbol}_${type}`);
+  getRnsRegisteringSubdomains() {
+    return this.load({ key: RNS_REGISTERING_SUBDOMAINS });
   }
+
+  setRnsRegisteringSubdomains(records) {
+    return this.save(RNS_REGISTERING_SUBDOMAINS, records);
+  }
+
+  clearRnsRegisteringSubdomains() {
+    this.remove(RNS_REGISTERING_SUBDOMAINS);
+  }
+
+  getUseTransactionFallbackAddresses() {
+    return this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+  }
+
+  setUseTransactionFallback(addresses) {
+    this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
+  }
+
+  /**
+   * add address to transaction fallback address list
+   * @param {*} address
+   */
+  async addUseTransactionFallbackAddress(address) {
+    let addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (_.isNull(addresses)) {
+      addresses = [];
+    }
+    const foundAddress = _.find(addresses, (item) => address === item);
+    if (foundAddress) {
+      return;
+    }
+    addresses.push(address);
+    await this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
+  }
+
+  /**
+   * remove address from transaction fallback address list
+   * @param {*} address
+   */
+  async removeUseTransactionFallbackAddress(address) {
+    const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (_.isEmpty(addresses)) {
+      return;
+    }
+    _.remove(addresses, (item) => address === item);
+    await this.save(USE_TRANSACTION_FALLBACK_ADDRESSES, addresses);
+  }
+
+  /**
+   * check if the address is in the transaction fallback address list
+   * @param {*} address
+   */
+  async isUseTransactionFallbackAddress(address) {
+    const addresses = await this.load({ key: USE_TRANSACTION_FALLBACK_ADDRESSES });
+    if (_.isEmpty(addresses)) {
+      return false;
+    }
+    const foundAddress = _.find(addresses, (item) => address === item);
+    return !!foundAddress;
+  }
+
+  setStorageVersion = async (version) => {
+    await this.save(STORAGE_VERSION, version);
+  }
+
+  getStorageVersion = async () => this.load({ key: STORAGE_VERSION })
+
+  setReadOnlyWalletIntroShowed = async () => this.save(IS_READ_ONLY_WALLET_INTRO_SHOWED, true);
+
+  getReadOnlyWalletIntroShowed = async () => this.load({ key: IS_READ_ONLY_WALLET_INTRO_SHOWED });
+
+  /**
+   * Get update version info that is fetched from server.
+   */
+  getUpdateVersionInfo = async () => {
+    const updateVersionInfo = await this.load({ key: UPDATE_VERSION_INFO });
+    return updateVersionInfo;
+  }
+
+  setUpdateVersionInfo = async (versionInfo) => {
+    await this.save(UPDATE_VERSION_INFO, versionInfo);
+  }
+
+  setUserPassword = (password) => RNStorage.secureSet(SECURE_USER_PASSWORD, password)
+
+  getUserPassword = () => RNStorage.secureGet(SECURE_USER_PASSWORD)
 }
 
 export default new RNStorage();

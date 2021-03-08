@@ -9,27 +9,27 @@ import _ from 'lodash';
 import Header from '../../components/headers/header';
 import Loc from '../../components/common/misc/loc';
 import BasePageGereral from '../base/base.page.general';
-// import color from '../../assets/styles/color.ts';
 import space from '../../assets/styles/space';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import references from '../../assets/references';
 import parseHelper from '../../common/parse';
 import walletActions from '../../redux/wallet/actions';
-import definitions from '../../common/definitions';
 import appActions from '../../redux/app/actions';
-import { createErrorNotification } from '../../common/notification.controller';
+import { createErrorNotification, getErrorNotification, getDefaultErrorNotification } from '../../common/notification.controller';
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
   sectionContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
+    borderColor: color.grayD8,
     paddingBottom: 20,
   },
   title: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 17,
     alignSelf: 'center',
   },
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   rowTitle: {
     color: color.black,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 16,
     flex: 1,
   },
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     height: 26,
   },
   symbol: {
-    color: '#042C5C',
-    fontFamily: 'Avenir-Heavy',
+    color: color.greenVogue,
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 20,
     letterSpacing: 0.5,
   },
   rowText: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     letterSpacing: 1,
   },
@@ -77,14 +77,14 @@ class AddCustomToken extends Component {
         navigation: {
           state: {
             params: {
-              address, symbol, decimals, type, chain, wallet, name,
+              address, symbol, precision, type, chain, wallet, name,
             },
           },
         },
       } = props;
       this.address = address;
       this.symbol = symbol;
-      this.decimals = decimals;
+      this.precision = precision;
       this.type = type;
       this.chain = chain;
       this.wallet = wallet;
@@ -123,7 +123,7 @@ class AddCustomToken extends Component {
 
     async onComfirmPressed() {
       const {
-        symbol, type, chain, address, wallet, decimals, name,
+        symbol, type, chain, address, wallet, precision, name,
       } = this;
       const {
         addToken, walletManager, addNotification,
@@ -133,10 +133,10 @@ class AddCustomToken extends Component {
         const saveResult = await parseHelper.saveToken(type, chain, address);
         console.log(saveResult);
         addToken(walletManager, wallet, {
-          symbol, type, contractAddress: address, decimalPlaces: decimals, chain, name,
+          symbol, type, contractAddress: address, precision, chain, name,
         });
       } catch (error) {
-        const notification = createErrorNotification(definitions.defaultErrorNotification.title, definitions.defaultErrorNotification.message);
+        const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
         addNotification(notification);
       } finally {
         this.setState({ isLoading: false });
@@ -149,10 +149,16 @@ class AddCustomToken extends Component {
       } = this;
       try {
         this.setState({ isLoadingBalance: true });
-        const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });
-        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, derivation.address), this);
+        let address = null;
+        if (this.wallet.walletType === WalletType.Readonly) {
+          address = this.wallet.address;
+        } else {
+          const derivation = _.find(wallet.derivations, { symbol: 'RBTC', type });
+          address = derivation.address;
+        }
+        const result = await CancelablePromiseUtil.makeCancelable(parseHelper.getUserTokenBalance(type, chain, contractAddress, address), this);
         console.log('UserTokenBalance: ', result);
-        this.setState({ balance: common.weiToCoin(result.balance) });
+        this.setState({ balance: common.weiToCoin(result.balance, this.precision) });
       } catch (error) {
         console.log('getUserTokenBalance, error: ', error);
       } finally {
@@ -163,8 +169,12 @@ class AddCustomToken extends Component {
     render() {
       const { navigation } = this.props;
       const { isLoading, balance, isLoadingBalance } = this.state;
-      const { symbol, decimals } = this;
-      const balanceText = balance ? common.getBalanceString(balance, decimals) : '-';
+      const { symbol, type, precision } = this;
+      const balanceText = balance ? common.getBalanceString(balance, symbol) : '-';
+
+      const symbolName = common.getSymbolName(symbol, type);
+      const icon = type === 'Mainnet' ? references.images.customToken : references.images.customToken_grey;
+
       return (
         <BasePageGereral
           isSafeView
@@ -180,17 +190,17 @@ class AddCustomToken extends Component {
             <View style={styles.tokenView}>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.token" />
-                <Image style={[styles.tokenLogo, space.marginRight_10]} source={references.images.customToken} />
-                <Text style={styles.symbol}>{symbol}</Text>
+                <Image style={[styles.tokenLogo, space.marginRight_10]} source={icon} />
+                <Text style={styles.symbol}>{symbolName}</Text>
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.decimals" />
-                <Text style={styles.rowText}>{decimals}</Text>
+                <Text style={styles.rowText}>{precision}</Text>
               </View>
               <View style={styles.row}>
                 <Loc style={styles.rowTitle} text="page.wallet.addCustomTokenConfirm.balance" />
                 { isLoadingBalance && (<ActivityIndicator size="small" animating={isLoadingBalance} />)}
-                { !isLoadingBalance && (<Text style={styles.rowText}>{`${balanceText} ${symbol}`}</Text>)}
+                { !isLoadingBalance && (<Text style={styles.rowText}>{`${balanceText} ${symbolName}`}</Text>)}
               </View>
             </View>
           </View>

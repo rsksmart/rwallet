@@ -1,49 +1,36 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image,
+  View, Text, StyleSheet, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { StackActions, NavigationActions } from 'react-navigation';
-import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
+import Button from '../../components/common/button/button';
+import { strings } from '../../common/i18n';
+import operationSuccessStyles from '../../assets/styles/operation.success.style';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
+import CompletedIcon from '../../components/common/image/completed.icon';
 
-
-const completed = require('../../assets/images/icon/completed.png');
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  content: {
-    alignItems: 'center',
-    marginTop: 100,
-  },
-  check: {
-    margin: 25,
-  },
   title: {
-    fontSize: 25,
-    fontWeight: '300',
-    color: '#000000',
+    fontSize: screenWidth > 400 ? 24 : 22,
+    color: color.black,
+    fontFamily: fontFamily.AvenirBook,
+    textAlign: 'center',
   },
 });
 
-export default class ResetPasscodeSuccess extends Component {
+class ResetPasscodeSuccess extends Component {
     static navigationOptions = () => ({
       header: null,
     });
 
-    constructor(props) {
-      super(props);
-      this.onBackButtonPress = this.onBackButtonPress.bind(this);
-    }
-
-    onBackButtonPress() {
+    onBackButtonPressed = () => {
       const { navigation } = this.props;
       const resetAction = StackActions.reset({
         index: 1,
@@ -56,20 +43,27 @@ export default class ResetPasscodeSuccess extends Component {
     }
 
     render() {
+      const { navigation } = this.props;
+      const { operation } = navigation.state.params;
+      const title = `page.mine.resetPasscodeSuccess.${operation}.title`;
+      const body = `page.mine.resetPasscodeSuccess.${operation}.body`;
       return (
-        <BasePageGereral
+        <BasePageSimple
           isSafeView
           hasBottomBtn
           hasLoader={false}
-          bottomBtnText="button.backToSetting"
-          bottomBtnOnPress={this.onBackButtonPress}
-          headerComponent={<Header onBackButtonPress={this.onBackButtonPress} title="page.mine.resetPasscodeSuccess.title" />}
+          headerComponent={<Header onBackButtonPress={this.onBackButtonPressed} title={title} />}
         >
-          <View style={styles.content}>
-            <Image style={styles.check} source={completed} />
-            <Loc style={[styles.title]} text="page.mine.resetPasscodeSuccess.title" />
+          <View style={operationSuccessStyles.wrapper}>
+            <View style={operationSuccessStyles.content}>
+              <View style={operationSuccessStyles.centerView}>
+                <CompletedIcon style={operationSuccessStyles.check} />
+                <Text style={styles.title}>{strings(body)}</Text>
+              </View>
+            </View>
+            <Button style={operationSuccessStyles.button} text="button.backToSetting" onPress={this.onBackButtonPressed} />
           </View>
-        </BasePageGereral>
+        </BasePageSimple>
       );
     }
 }
@@ -82,3 +76,9 @@ ResetPasscodeSuccess.propTypes = {
     state: PropTypes.object.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  language: state.App.get('language'),
+});
+
+export default connect(mapStateToProps, null)(ResetPasscodeSuccess);

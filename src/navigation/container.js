@@ -5,40 +5,68 @@ import walletActions from '../redux/wallet/actions';
 import priceActions from '../redux/price/actions';
 
 const mapStateToProps = (state) => ({
+  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
+  isLogin: state.App.get('isLogin'),
+  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
+  isTokensUpdated: state.Wallet.get('isTokensUpdated'),
+
+  walletManager: state.Wallet.get('walletManager'),
+  currency: state.App.get('currency'),
+  prices: state.Price.get('prices'),
+
   showNotification: state.App.get('showNotification'),
   notification: state.App.get('notification'),
   notificationCloseCallback: state.App.get('notificationCloseCallback'),
+
   showPasscode: state.App.get('showPasscode'),
   passcodeType: state.App.get('passcodeType'),
   passcodeCallback: state.App.get('passcodeCallback'),
   passcodeFallback: state.App.get('passcodeFallback'),
-  isInitFromStorageDone: state.App.get('isInitFromStorageDone'),
-  isInitWithParseDone: state.App.get('isInitWithParseDone'),
-  walletManager: state.Wallet.get('walletManager'),
-  isAssetValueUpdated: state.Wallet.get('isAssetValueUpdated'),
-  isBalanceUpdated: state.Wallet.get('isBalanceUpdated'),
-  currency: state.App.get('currency'),
-  prices: state.Price.get('prices'),
+
   isShowConfirmation: state.App.get('isShowConfirmation'),
   confirmation: state.App.get('confirmation'),
   confirmationCallback: state.App.get('confirmationCallback'),
   confirmationCancelCallback: state.App.get('confirmationCancelCallback'),
+
+  isShowFingerprintModal: state.App.get('isShowFingerprintModal'),
+  fingerprintPasscodeDisabled: state.App.get('fingerprintPasscodeDisabled'),
+  fingerprintCallback: state.App.get('fingerprintCallback'),
+  fingerprintFallback: state.App.get('fingerprintFallback'),
+
+  inAppNotification: state.App.get('inAppNotification'),
+  isShowInAppNotification: state.App.get('isShowInAppNotification'),
+  isShowUpdateModal: state.App.get('isShowUpdateModal'),
+
+  updateVersionInfo: state.App.get('updateVersionInfo'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  closePasscodeModal: () => dispatch(appActions.hidePasscode()),
+  initFcm: () => dispatch(appActions.initFcm()),
+  initFcmChannel: () => dispatch(appActions.initFcmChannel()),
+  login: () => dispatch(appActions.login()),
+
+  getServerInfo: () => dispatch(appActions.getServerInfo()),
+  updateUser: () => dispatch(appActions.updateUser()),
   initializeFromStorage: () => dispatch(appActions.initializeFromStorage()),
-  initializeWithParse: () => dispatch(appActions.initializeWithParse()),
-  startFetchBalanceTimer: (walletManager) => dispatch(walletActions.startFetchBalanceTimer(walletManager)),
-  startFetchTransactionTimer: (walletManager) => dispatch(walletActions.startFetchTransactionTimer(walletManager)),
-  startFetchLatestBlockHeightTimer: () => dispatch(walletActions.startFetchLatestBlockHeightTimer()),
-  resetBalanceUpdated: () => dispatch(walletActions.resetBalanceUpdated()),
+  initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
+  initLiveQueryTokens: (tokens) => dispatch(walletActions.initLiveQueryTokens(tokens)),
+  initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
+  initLiveQueryBlockHeights: () => dispatch(walletActions.initLiveQueryBlockHeights()),
+
+  resetTokensUpdated: () => dispatch(walletActions.resetTokensUpdated()),
   updateWalletAssetValue: (currency, prices) => dispatch(walletActions.updateAssetValue(currency, prices)),
+
   removeNotification: () => dispatch(appActions.removeNotification()),
   removeConfirmation: () => dispatch(appActions.removeConfirmation()),
-  initLiveQueryPrice: () => dispatch(priceActions.initLiveQueryPrice()),
-  initLiveQueryBalances: (tokens) => dispatch(walletActions.initLiveQueryBalances(tokens)),
-  initLiveQueryTransactions: (tokens) => dispatch(walletActions.initLiveQueryTransactions(tokens)),
+
+  fingerprintUsePasscode: (callback, fallback) => dispatch(appActions.fingerprintUsePasscode(callback, fallback)),
+  hideFingerprintModal: () => dispatch(appActions.hideFingerprintModal()),
+  closePasscodeModal: () => dispatch(appActions.hidePasscode()),
+
+  resetInAppNotification: () => dispatch(appActions.resetInAppNotification()),
+  processNotification: (notification) => dispatch(appActions.processNotification(notification)),
+
+  hideUpdateModal: () => dispatch(appActions.hideUpdateModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootComponent);

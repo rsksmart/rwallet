@@ -1,10 +1,9 @@
 {
   "root": {
     "Wallet": "Billetera",
-    "Spend": "Gastar",
-    "Earn": "Ganar",
     "Me": "Yo",
-    "Exchange": "Intercambiar"
+    "Exchange": "Intercambiar",
+    "DApp": "Dapps"
   },
   "page": {
     "start": {
@@ -16,7 +15,8 @@
         "term2": "Entiendo que si esta aplicación se mueve a otro dispositivo o se elimina, mis fondos solo se pueden recuperar con la frase de recuperación.",
         "term3": "He leído, comprendido y acepto los términos de uso.",
         "viewTerms": "Ver términos de uso completos",
-        "button": "Confirmar y aceptar"
+        "button": "Confirmar y aceptar",
+        "termsOfUse": "Términos de Uso"
       }
     },
     "wallet": {
@@ -24,10 +24,12 @@
         "title": "Su Wallet",
         "myAssets": "Mis activos",
         "allAssets": "Todos los activos",
-        "addAsset": "Agregar activo"
+        "addAsset": "Agregar activo",
+        "addWallet": "Agregar billetera",
+        "readOnly": "Solo lectura"
       },
       "history": {
-        "noTransNote": "No se encontró ninguna transacción en esta wallet.",
+        "noTransNote": "No se ha encontrado ninguna transacción para este activo",
         "recent": "Reciente",
         "loading": "cargando..."
       },
@@ -43,7 +45,9 @@
         "noMemo": "Sin memo",
         "transactionID": "ID de transacción",
         "viewOnChain": "Ver en blockchain",
-        "Unconfirmed": "Inconfirmado"
+        "Unconfirmed": "Inconfirmado",
+        "from": "De",
+        "to": "A"
       },
       "receive": {
         "address": "Dirección"
@@ -51,27 +55,29 @@
       "transfer": {
         "to": "Para",
         "memo": "Memo (opcional)",
-        "fee": "Tarifa del minero",
+        "fee": "Tarifa de transacción",
         "custom": "Personalizado",
-        "feeQuestion": "¿Qué tan rápido quieres su transacción?",
+        "feeQuestion": "¿Qué tan rápido quieres que se haga esto?",
         "slow": "Lento",
         "Average": "Promedio",
         "Fast": "Rápido",
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
-        "slideConfirm": "Deslice para confirmar"
+        "slideConfirm": "Deslice para confirmar",
+        "balance": "Equilibrar",
+        "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
       },
       "add": {
         "title": "Agregar Wallet",
         "createWallet": "Crear Wallet básica",
         "createWalletNote": "Recomendado para usuarios nuevos",
-        "importWallet": "Importar Wallet existente",
-        "importWalletNote": "Recupere su Wallet usando su frase de contraseña"
+        "importWallet": "Importar billetera existente",
+        "importWalletNote": "Restaura tu billetera usando la frase de recuperación",
+        "addReadOnlyWallet": "Agregar billetera de solo lectura",
+        "addReadOnlyWalletNote": "Monitorear activos sin claves"
       },
       "selectCurrency": {
-        "title": "Seleccionar moneda de Wallet",
-        "mainnet": "Mainnet",
-        "testnet": "Testnet"
+        "title": "Seleccionar activos de Wallet"
       },
       "selectWallet": {
         "title": "Seleccionar activo"
@@ -82,6 +88,7 @@
         "advancedOptions": "Opciones avanzadas",
         "specifyPath": "Especificar ruta de derivación",
         "coin": "Coin",
+        "selectCoin": "Selecciona una Coin",
         "derivationPath": "Ruta de derivación"
       },
       "recoveryPhrase": {
@@ -90,8 +97,8 @@
         "note2": "en el orden correcto y guárdelos",
         "note3": "un lugar seguro"
       },
-      "backupPhrase": {
-        "title": "Frase de respaldo",
+      "verifyPhrase": {
+        "title": "Verifica tu frase",
         "note": "Toca cada palabra en el orden correcto",
         "isCorrect": "¿Es esto correcto?"
       },
@@ -111,6 +118,77 @@
         },
         "unauthorization": "Active los permisos de la cámara para usar esta función."
       },
+      "walletconnect": {
+        "title": "Wallet Connect",
+        "timeoutTitle": "Wallet Connect agotó el tiempo de espera",
+        "timeoutBody": "RWallet no pudo establecer una conexión de Wallet Connect con el Dapp en un breve período de tiempo. Vuelva a intentarlo.",
+        "timeoutButton": "Bien",
+        "emptyWalletError": "Cartera vacía",
+        "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
+        "selectTestnetAsset": "Seleccione una billetera que tenga al menos un activo testnet rsk",
+        "isConnecting": "Wallet se está conectando ...",
+        "isSigning": "La transacción se está firmando ...",
+        "signApproved": "Firma de mensajes aprobada",
+        "signApprovedDesc": "¡Éxito! Su mensaje ha sido firmado y debería aparecer en el dapp",
+        "allowanceApproved": "Asignación aprobada",
+        "transactionApproved": "Transacción aprobada",
+        "request": "Solicitud",
+        "connectWallet": "%{dappName} solicita conectar su billetera",
+        "content": "Contenido",
+        "agreeTo": "Al hacer clic en Permitir, estás de acuerdo",
+        "agreeOne": "- Permitir obtener la dirección de billetera actual",
+        "agreeTwo": "- Permitir solicitud de firma de la billetera actual",
+        "assets": "Bienes",
+        "advancedOptions": "Opciones avanzadas",
+        "reject": "Rechazar",
+        "allow": "Permitir",
+        "connected": "Conectado",
+        "connectedWallet": "%{dappName} está conectado a su billetera",
+        "waitingForOperations": "Esperando operaciones",
+        "waitingForOperationsDesc": "Realice cualquier operación desde la dapp %{dappName}. RWallet solicitará la aprobación de la firma, si se solicita.",
+        "disconnect": "Desconectar",
+        "approveAllowance": "Aprobar asignación",
+        "approveAllowanceDesc": "Al hacer clic en Confirmar, acepta permitir que %{dappUrl} ejecute llamadas de contrato inteligente en su nombre.",
+        "asset": "Activo",
+        "permission": "Permiso",
+        "allowance": "Allowance",
+        "minerFee": "Tarifa de minero",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "gotIt": "OBTENGO",
+        "leaveToDisconnect": "¿Dejar para desconectar?",
+        "leaveToDisconnectDesc": "Salir de la página de Wallet Connect desconectará RWallet de la Dapp conectada actualmente.",
+        "leaveToDisconnectConfirm": "¿Está seguro de desconectarse?",
+        "disconnectAlertTitle": "Wallet Connect está desconectado",
+        "disconnectAlertContent": "La conexión de Wallet Connect a Dapp \"%{dappName}\" está cerrada. Esto puede deberse a un acceso débil a la red o que Dapp rechazó la billetera directamente por algún motivo.\n\nHaciendo clic en el botón de abajo, volverá al panel de la billetera.",
+        "okGotIt": "Está bien, lo tengo",
+        "error": "Error",
+        "errorDesc": "¡Error! Se produjo un error, inténtelo de nuevo más tarde (puede haber muchas razones, como problemas de red, rechazo del usuario, contraseña incorrecta, tarifa de manejo insuficiente, etc.)",
+        "tryAgain": "Inténtalo de nuevo",
+        "tryLater": "Pruébelo más tarde",
+        "approveMessage": "Aprobar firma de mensajes",
+        "approveMessageDesc": "Al hacer clic en Confirmar, acepta firmar el mensaje que se originó en %{dappUrl}",
+        "message": "Mensaje",
+        "successDesc": "¡Éxito! Su transacción se ha publicado en blockchain. Una vez confirmada, debería aparecer en el dapp.",
+        "approveTransaction": "Aprobar transacción",
+        "approveTransactionDesc": "Al hacer clic en Confirmar, acepta firmar la transacción originada en %{dappUrl}",
+        "approveSmartContract": "Aprobar llamada de contrato inteligente",
+        "approveSmartContractDesc": "Al hacer clic en Confirmar, acepta firmar la llamada de contrato inteligente originada en %{dappUrl}",
+        "spender": "Gastador",
+        "value": "Valor",
+        "recipient": "Destinatario",
+        "method": "Método",
+        "amount": "Importe",
+        "type": "Tipo",
+        "from": "Desde",
+        "to": "A",
+        "data": "Datos",
+        "contract": "Contrato",
+        "networkQuestion": {
+          "title": "Red",
+          "body": "La testnet es una cadena de bloques RSK alternativa, que se utilizará para realizar pruebas."
+        }
+      },
       "transferCompleted": {
         "title": "Enviar",
         "body": "¡Transferencia completada!",
@@ -127,11 +205,16 @@
         },
         "errorBalanceEnough": "Lo siento, pero no tienes suficiente saldo",
         "errorAmountInvalid": "La cantidad de %{symbol} no es válida.",
-        "have": "Tengo %{balance} en %{wallet}"
+        "have": "Tengo %{balance} en %{wallet}",
+        "min": "MIN",
+        "half": "MEDIO",
+        "all": "TODAS",
+        "exchanging": "Intercambiar",
+        "receiving": "Recepción"
       },
       "swapSelection": {
-        "title": "Seleccione el tipo de moneda",
-        "noSwappableCoin": "Lo sentimos, no tienes ninguna moneda intercambiable",
+        "title": "Seleccione activo",
+        "noSwappableCoin": "Lo sentimos, no tienes ningún activo intercambiable",
         "please": "Por favor",
         "create": "crear",
         "or": "o",
@@ -146,32 +229,94 @@
         "viewExplorer": "Haga clic para ver en el explorador"
       },
       "addCustomToken": {
-        "title": "Agregar tokens personalizados",
-        "address": "Dirección del contrato de token",
-        "mainnet": "Mainnet"
+        "title": "Agregar activos personalizados",
+        "address": "Dirección del contrato de activo"
       },
       "addCustomTokenConfirm": {
-        "title": "Agregar tokens personalizados",
-        "question": "¿Te gustaría agregar estos tokens?",
-        "token": "Simbólico",
-        "symbol": "Símbolo simbólico",
+        "title": "Agregar activos personalizados",
+        "question": "¿Desea agregar este activo?",
+        "token": "Activo",
+        "symbol": "Símbolo de activo",
         "decimals": "Decimales de precisión",
         "balance": "Equilibrar"
       },
       "addToken": {
-        "title": "Add Tokens",
+        "title": "Agregar activo",
         "enabledAssets": "Activos habilitados",
-        "note": "Inhabilite los activos para ocultarlos de su cartera."
+        "note": "Inhabilite los activos para ocultarlos de su cartera.",
+        "addCustomToken": "Agregar activo personalizado",
+        "custom": "Customizar"
+      },
+      "rnsCreateName": {
+        "title": "Crear apodo",
+        "address": "Habla a",
+        "rnsName": "Apodo RNS",
+        "anotherAddress": "Otra dirección",
+        "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
+        "nameUnavailable": "Lo sentimos, el sobrenombre ingresado no está disponible",
+        "nameAvailable": "El apodo ingresado está disponible",
+        "selectAddress": "Seleccione una direccion",
+        "confirmNotice": {
+          "one": "Confirme que desea crear apodos para menos de 1 billetera.",
+          "other": "Confirme que desea crear apodos para menos de {{count}} billeteras."
+        }
+      },
+      "rnsStatus": {
+        "pending": "Registro a la espera de ser confirmado.",
+        "success": "¡Éxito! Tu apodo es creado.",
+        "failed": "¡Ha fallado! No se pudo registrar su apodo."
+      },
+      "addReadOnlyWallet": {
+        "title": "Agregar Wallet de solo lectura",
+        "address": "Dirección de Wallet",
+        "note": "Ingrese un BTC, una dirección de billetera RBTC o un nombre RNS para monitorear.",
+        "question": "Encontramos los siguientes activos en esta billetera. ¿Le gustaría monitorear esta dirección?",
+        "rnsQuestion": "Encontramos la dirección de la billetera y los activos a continuación. ¿Le gustaría monitorear esta dirección?",
+        "rnsInvalid": "Lo sentimos, el nombre de RNS no está asociado con una dirección de billetera en la cadena de bloques de Rootstock. Vuelva a intentarlo",
+        "duplicateAddress": "Esta dirección ya está importada en la aplicación. Intente con una dirección diferente."
       }
+    },
+    "dapp": {
+      "title": "DApp",
+      "search": "Buscar o ingresar la URL del sitio web",
+      "recent": "Reciente",
+      "recommended": "Recomendar",
+      "all": "Todas",
+      "button": {
+        "seeAll": "Ver Todo",
+        "confirm": "Confirmar",
+        "understood": "Entendido",
+        "createOrImport": "Crear o importar",
+        "cancel": "Cancelar"
+      },
+      "browser": {
+        "errorTitle": "Fallido",
+        "errorContent": "Se produjo un error desconocido. Vuelva a intentarlo más tarde",
+        "errorButton": "Bien"
+      },
+      "backTitle": "Advertencia",
+      "backMessage": "Vas a dejar el dapp, ¿estás seguro de que quieres existir?",
+      "infinitePositiveNumber": "Número positivo infinito"
     },
     "mine": {
       "index": {
         "joinRSKCommunity": "Únete a la comunidad de RSK",
         "settings": "Configuraciones",
-        "createKey": "Crear o importar una clave",
-        "keys": "Llaves",
+        "createKey": "Crear o importar una billetera",
+        "keys": "Billeteras",
         "anonymousUser": "Usuario anónimo",
-        "wallets": "Carteras"
+        "assets": {
+          "one": "1 activo",
+          "other": "{{count}} activos"
+        },
+        "support": "Apoyo",
+        "contactUs": "Contacta con nosotros",
+        "developerPortal": "Portal del desarrollador"
+      },
+      "addressBook": {
+        "title": "Directorio",
+        "recent": "RECIENTE",
+        "all": "TODAS"
       },
       "language": {
         "title": "Idioma"
@@ -181,55 +326,50 @@
       },
       "2fa": {
         "title": "Autenticación de dos factores",
-        "resetPasscode": "Restablecer contraseña"
+        "setPasscode": "Código de acceso establecido",
+        "resetPasscode": "Restablecer contraseña",
+        "useFingerprint": "Usar huella digital",
+        "useFaceID": "Usar Face ID",
+        "useBiometrics": "Usar biometría"
       },
       "resetPasscodeSuccess" :{
-        "title": "Contraseña restablecida exitosamente"
+        "create": {
+          "title": "Código de acceso establecido",
+          "body": "¡Conjunto completado!"
+        } ,
+        "reset": {
+          "title": "Restablecer contraseña",
+          "body": "¡Reinicio completado!"
+        }
       },
       "keySettings": {
-        "title": "Configuraciones clave",
-        "keyContains": "Esta clave contiene",
+        "title": "Configurar billetera",
+        "walletContains": {
+          "one": "Esta billetera contiene 1 activos",
+          "other": "Esta billetera contiene {count} activos"
+        },
         "wallets": "billeteras",
         "security": "Seguridad",
         "advanced": "Avanzado",
-        "Wallets": "Carteras",
-        "keyName": "Nombre clave",
+        "Assets": "Bienes",
+        "keyName": "Nombre de billetera",
         "delete": "Eliminar",
         "backup": "Respaldo"
       },
       "keyName": {
-        "title": "Nombre clave",
-        "question": "¿Cómo llamas a esta llave?",
+        "title": "Nombre de billetera",
+        "question": "¿Cómo se llama esta billetera?",
         "notice": "Puede cambiar el nombre que se muestra en el dispositivo a continuación.",
         "name": "Nombre",
-        "comment": "* El nombre de la clave puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre de la billetera puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "rename": {
         "title": "Tu nombre",
         "question": "¿Cuál es tu nombre?",
-        "comment": "* El nombre puede contener 1-32 letras (a-z), números (0-9) y espacio"
+        "comment": "* El nombre puede contener 1-%{maxLength} letras (a-z), números (0-9) y espacio"
       },
       "resetcompleted": {
         "title": "¡Reinicio completado!"
-      }
-    },
-    "earn": {
-      "index": {
-        "title": "Gana criptomonedas con facilidad",
-        "comingSoon": "Próximamente...",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para ganar ...",
-        "feature1": "- Gana criptomonedas completando tareas",
-        "feature2": "- Obtenga intereses de una variedad de productos Defi",
-        "feature3": "- \"Devolución de efectivo\" en compras con criptomoneda"
-      }
-    },
-    "spend": {
-      "index": {
-        "title": "estión de activos a su alcance",
-        "featuresTitle": "Las siguientes características estarán disponibles pronto para gastar ...",
-        "feature1": "- Compre más de 100 tarjetas de regalo con criptomoneda",
-        "feature2": "- Cambia entre cualquier ficha en tu billetera",
-        "feature3": "- Aprobación de transacciones con múltiples signos"
       }
     }
   },
@@ -237,7 +377,11 @@
     "English": "Inglés",
     "Spanish": "Español",
     "Portuguese": "Portugués",
-    "Chinese": "Chino"
+    "Chinese": "Chino",
+    "Brazilian Portuguese": "Portuguesa brasileña",
+    "Japanese": "Japonés",
+    "Russian": "Ruso",
+    "Korean": "Koreano"
   },
   "button": {
     "save": "GUARDAR",
@@ -253,7 +397,7 @@
     "Copy": "Copiar",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
-    "Send All": "Envia todo",
+    "sendAll": "Envia todo",
     "goToWallet": "IR A LA WALLET",
     "backToWallet": "VOLVER A LA WALLET",
     "backToSetting": "VOLVER A LA CONFIGURACIÓN",
@@ -265,7 +409,14 @@
     "Finish": "Terminar",
     "Exchange": "Intercambiar",
     "addAsset": "Agregar activo",
-    "ok": "Okay"
+    "ok": "Okay",
+    "nickname": "Apodo",
+    "pending": "Pendiente",
+    "done": "Hecho",
+    "share": "COMPARTIR",
+    "check": "CHEQUE",
+    "update": "Actualizar",
+    "okay": "Bueno"
   },
   "txState": {
     "Sent": "Enviado",
@@ -281,7 +432,7 @@
     },
     "unableRecover": {
       "title": "Incapaz de recuperarse",
-      "body": "No se puede importar la wallet con su frase de recuperación. Asegúrate de que la frase sea correcta."
+      "body": "No podemos importar una billetera con su frase de recuperación. Asegúrate de que la frase sea correcta."
     },
     "duplicatePhrase": {
       "title Phrase": "Frase duplicada",
@@ -290,6 +441,10 @@
     "tooManyPhrase": {
       "title": "Demasiadas palabras",
       "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
+    },
+    "amountExceeds": {
+      "title": "No hay suficiente equilibrio",
+      "body": "La cantidad ingresada excede el saldo de la billetera"
     },
     "txFailed": {
       "title": "La transferencia ha fallado",
@@ -315,10 +470,10 @@
       "invalid": "Nombre contiene caracteres inválidos."
     },
     "incorrectKeyName": {
-      "title": "Nombre de clave incorrecto",
-      "tooShort": "El nombre de la clave es demasiado corto.",
-      "tooLong": "El nombre de la clave es demasiado largo.",
-      "invalid": "El nombre de la clave contiene caracteres no válidos."
+      "title": "Nombre de billetera incorrecto",
+      "tooShort": "El nombre de la billetera es demasiado corto.",
+      "tooLong": "El nombre de la billetera es demasiado largo.",
+      "invalid": "El nombre de la billetera contiene caracteres inválidos."
     },
     "guardPhrase": {
       "title": "Resguarde su frase de recuperación",
@@ -336,6 +491,14 @@
       "title": "Copiado",
       "body": "La dirección se ha copiado en el portapapeles."
     },
+    "subdomainCopied": {
+      "title": "Copiado",
+      "body": "El apodo se ha copiado en el portapapeles."
+    },
+    "txIdCopied": {
+      "title": "Copied",
+      "body": "La ID de transacción se ha copiado en el portapapeles."
+    },
     "passcode": {
       "typeOldPasscode": "Escriba su contraseña anterior",
       "typeNewPasscode": "Escriba su nueva contraseña",
@@ -345,19 +508,42 @@
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",
-      "incorrected": "El código de acceso está incorrecto"
+      "incorrect": "La contraseña es incorrecta"
     },
     "touchSensor": {
-      "title": "Sensor tátil",
-      "usePasscode": "Usar contraseña"
+      "usePasscode": "Usar contraseña",
+      "fingerprint": {
+        "title": "Sensor tátil",
+        "touchToVerify": "Toque para verificar la huella digital",
+        "nativeNote": "Escanee su huella digital en el escáner del dispositivo para continuar",
+        "notMatch": "La huella digital no coincide. Inténtalo de nuevo."
+      },
+      "faceID": {
+        "title": "ID de cara",
+        "touchToVerify": "Toque para verificar la identificación de la cara",
+        "nativeNote": "Apunte a la cámara para el reconocimiento facial",
+        "notMatch": "FaceID no marcha. Inténtalo de nuevo."
+      },
+      "biometrics": {
+        "title": "Biometría",
+        "touchToVerify": "Toque para verificar la biometría",
+        "nativeNote": "Verifique sus datos biométricos",
+        "notMatch": "La biometría no coincide. Inténtalo de nuevo."
+      },
+      "failedAndTryPasscode": "Autenticación fallida. Por favor, intente la contraseña.",
+      "failedAndTryAgain": "Autenticación fallida. Inténtalo de nuevo."
     },
     "createPasscode": {
-      "title": "Por favor establezca una contraseña",
+      "title": "Por favor, establezca una contraseña",
       "body": "La contraseña puede proteger sus fondos si este dispositivo es robado o comprometido por software malicioso."
     },
-    "deleteKey": {
+    "deleteWallet": {
       "title": "¡Advertencia!",
-      "body": "¿Está seguro de que desea eliminar todas las billeteras con esta clave?"
+      "body": "¿Estás seguro de que quieres eliminar esta billetera?"
+    },
+    "deleteReadOnlyWallet": {
+      "title": "¡Advertencia!",
+      "body": "¿Está seguro de que desea eliminar esta billetera de solo lectura?"
     },
     "swap": {
       "title": "No hay monedas intercambiables",
@@ -370,6 +556,120 @@
     "duplicateToken": {
       "title": "Token duplicado",
       "body": "Este token ya está agregado en la billetera. Intenta con un token diferente."
+    },
+    "dappWarning": {
+      "title": "Redireccionamiento a Dapp de terceros \"%{dappName}\"",
+      "body": "%{description}Nota: serás redirigido a una aplicación de terceros \"%{dappName}\". Lea atentamente el Acuerdo de usuario y la Política de privacidad del tercero Dapp. \"%{dappName}\" se reservará la responsabilidad total de todas las acciones y el uso de Dapp.\n\n"
+    },
+    "walletSelection": {
+      "title": "Por favor seleccione una billetera"
+    },
+    "noWalletAvailable": {
+      "title": "No hay billetera disponible",
+      "body": "Todavía no hay una billetera disponible para este Dapp. Navegue a la página de Creación de billetera para crear o importar una billetera primero.\n\n"
+    },
+    "requestTimeout": {
+      "title": "Pide tiempo fuera",
+      "body": "El servidor no pudo completar la solicitud dentro del tiempo especificado."
+    },
+    "rnsNameUnavailable": {
+      "title": "Apodo RNS no disponible",
+      "body": "Los sobrenombres ingresados ​​a continuación no están disponibles. Vuelve a intentarlo con diferentes apodos."
+    },
+    "rnsSubdomainNotFound": {
+      "title": "Apodo RNS no encontrado",
+      "body": "El apodo de RNS no se encuentra en el servidor."
+    },
+    "rnsNewFeature": {
+      "title": "Enviar y recibir es más fácil",
+      "body": "Hemos lanzado soporte para RNS, o RIF Name Service que permite la identificación de direcciones blockchain por nombres legibles por humanos.",
+      "confirmText": "Vamos a intentarlo",
+      "cancelText": "omitir"
+    },
+    "balanceInvalid": {
+      "title": "El saldo de la billetera no está disponible",
+      "body": "Tenemos problemas para recuperar el saldo de su billetera. Por favor, inténtelo de nuevo más tarde."
+    },
+    "InvalidTokenSymbol": {
+      "title": "Símbolo de token no válido",
+      "body": "Ya existe un mismo símbolo de token en esta cadena de bloques."
+    },
+    "rnsExceeded": {
+      "title": "Número máximo alcanzado",
+      "body": "No se pueden crear más de {{count}} apodos por día."
+    },
+    "chooseBTCAddressType": {
+      "title": "Elegir tipo de dirección",
+      "body": "Por favor seleccione el tipo de dirección de bitcoin",
+      "legacy": "legado",
+      "segwit": "segwit"
+    },
+    "readOnlyWallet": {
+      "title": "Billetera de solo lectura",
+      "body": "La función Wallet de solo lectura le permite monitorear activos en blockchain sin importar claves privadas.\n\nLas entradas actualmente permitidas son la dirección de Bitcoin (tanto SegWit como Legacy), dirección de Rootstock o apodo de RNS."
+    },
+    "readOnlyLimit": {
+      "title": "Operación no disponible",
+      "body": "Las operaciones de envío, intercambio y escaneo de códigos QR no están disponibles para una billetera de solo lectura. Para habilitarlos, importe esta billetera con sus frases de 12 palabras."
+    },
+    "httpIsNotAllowed": {
+      "title": "URL not allowed to open",
+      "body": "In order to protect users from unsafe websites, RWallet browser allows only URLs with HTTPS encryption. Please make sure the URL entered start with https://"
+    },
+    "feeCalculationError": {
+      "title": "Error de cálculo de tarifa",
+      "body": "Se produjo un error al calcular el costo. Vuelva a intentarlo."
+    },
+    "invalidRskAddress": {
+      "title": "Dirección de RSK no válida",
+      "body": {
+        "normal": "La dirección del destinatario ingresada es una dirección RSK no válida. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar.",
+        "ethereum": "La dirección del destinatario ingresada parece ser una dirección de Ethereum. Este es un problema conocido al copiar direcciones de MetaMask. Asegúrese de que la dirección del destinatario sea una dirección RSK válida y verifíquela en %{explorerName} antes de enviar."
+      },
+      "question": "¿Por qué ves este mensaje?",
+      "confirm": "Enviar de todos modos",
+      "cancel": "Regresa y vuelve a entrar",
+      "asset": "Activo",
+      "address": "Habla a",
+      "balance": "Equilibrar",
+      "risk": "Bien, entiendo el riesgo."
+    },
+    "emptyRecordAddress": {
+      "title": "Dirección del destinatario del registro vacío",
+      "body": {
+        "normal": "La dirección del destinatario ingresada no tiene registro en %{explorerName} y tiene %{balance} %{otherSymbolName} en la red RSK %{otherType}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?",
+        "both": "La dirección del destinatario ingresada no tiene registro en %{explorerName}. ¿Está seguro de enviar %{amount} %{symbolName} a la dirección en RSK %{type}?"
+      }
+    },
+    "convertWalletAddress": {
+      "title": "Dirección de billetera RSK no válida",
+      "body": "La dirección de billetera ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "convertContractAddress": {
+      "title": "Dirección de contrato RSK no válida",
+      "body": "La dirección del contrato ingresada es una dirección RSK no válida. RWallet intentará corregirlo automáticamente en el formato de dirección esperado. Quieres proceder?"
+    },
+    "invalidParam": {
+      "title": "Parametro invalido",
+      "body": "El parámetro no es válido."
     }
+  },
+  "currency": {
+    "USD": "Dólar americano",
+    "ARS": "Peso argentino",
+    "JPY": "Yen japonés",
+    "KRW": "Won coreano",
+    "CNY": "Yuan chino",
+    "GBP": "Libra esterlina"
+  },
+  "notification": {
+    "networkError": {
+      "title": "Error de red",
+      "body": "Su dispositivo no puede conectarse al servidor."
+    }
+  },
+  "networkType": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

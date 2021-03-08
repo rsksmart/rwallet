@@ -4,10 +4,10 @@ import {
   View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import Loc from '../../components/common/misc/loc';
 import ResponsiveText from '../../components/common/misc/responsive.text';
-
 
 const styles = StyleSheet.create({
   headerView: {
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 48,
     left: 55,
-    color: '#FFF',
+    color: color.white,
   },
   backButton: {
     position: 'absolute',
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     top: 37,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   headImage: {
     position: 'absolute',
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
     marginLeft: 10,
   },
@@ -61,10 +61,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#000000',
+    color: color.black,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 15,
     fontWeight: '300',
     width: '80%',
@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
   },
   body: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.white,
   },
   title1: {
-    color: '#000000',
+    color: color.black,
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.39,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title2: {
-    color: '#000000',
+    color: color.black,
     fontSize: 16,
     fontWeight: '900',
     letterSpacing: 0.31,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title3: {
-    color: '#000000',
+    color: color.black,
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 0.23,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textInput: {
-    color: '#B5B5B5',
+    color: color.grayB5,
     fontSize: 12,
     fontWeight: '300',
     paddingVertical: 0,
@@ -135,20 +135,19 @@ const styles = StyleSheet.create({
   },
   radioItemLeft: {},
   radioItemTitle: {
-    color: '#000000',
+    color: color.black,
     fontSize: 16,
-    letterSpacing: 0.31,
-    fontWeight: '500',
+    fontFamily: fontFamily.AvenirRoman,
     marginBottom: 1,
   },
   radioItemTitleSelected: {
-    fontWeight: '700',
+    fontFamily: fontFamily.AvenirHeavy,
   },
   radioItemText: {
     marginTop: 2,
   },
   radioItemTextFont: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontWeight: '300',
     letterSpacing: 0.23,
     marginTop: 2,
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ACACAC',
+    borderColor: color.silverChalice,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#00B520',
+    backgroundColor: color.app.theme,
   },
   customRow: {
     flexDirection: 'row',

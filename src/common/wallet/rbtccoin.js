@@ -1,11 +1,10 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
-import rsk3 from 'rsk3';
+import Rsk3 from '@rsksmart/rsk3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
-import references from '../../assets/references';
-import config from '../../../config';
 import common from '../common';
+import storage from '../storage';
 
 const HDNode = require('hdkey');
 const crypto = require('crypto');
@@ -47,37 +46,30 @@ function serializePublic(node) {
 }
 
 export default class RBTCCoin {
-  constructor(symbol, type, derivationPath, contractAddress, decimalPlaces, name) {
+  constructor(symbol, type, path) {
     this.id = type === 'Mainnet' ? symbol : symbol + type;
 
-    // metadata:{network, networkId, icon, queryKey, defaultName}
-    // If coinType does not contain this.id, use RBTC metadata;
-    this.metadata = coinType[this.id];
-    if (!this.metadata) {
-      const metadata = type === 'Mainnet' ? coinType.RBTC : coinType[`RBTC${type}`];
-      this.metadata = _.clone(metadata);
-      this.metadata.icon = references.images.customToken;
-      this.metadata.defaultName = name;
-    }
-
-    this.contractAddress = contractAddress;
-    this.decimalPlaces = decimalPlaces || config.symbolDecimalPlaces[symbol];
+    // metadata:{network, networkId, icon, defaultName, coinType}
+    // If coinType does not contain this.id, use custom token metadata;
+    this.metadata = coinType[this.id] || (type === 'Mainnet' ? coinType.CustomToken : coinType.CustomTokenTestnet);
     this.chain = this.metadata.chain;
+    this.contractAddress = this.metadata.contractAddress;
     this.type = type;
     this.symbol = symbol;
+    this.precision = this.metadata.precision;
     // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // m / purpose' / coin_type' / account' / change / address_index
-    this.account = common.parseAccountFromDerivationPath(derivationPath);
+    this.account = common.parseAccountFromDerivationPath(path);
     this.networkId = this.metadata.networkId;
-    this.derivationPath = `m/44'/${this.networkId}'/${this.account}'/0/0`;
+    this.coinType = this.metadata.coinType;
+    this.path = `m/44'/${this.coinType}'/${this.account}'/0/0`;
     this.name = this.metadata.defaultName;
-    this.networkId = this.metadata.networkId;
   }
 
   derive(seed) {
     try {
       const master = RBTCCoin.generateMasterFromSeed(seed);
-      const accountNode = RBTCCoin.generateAccountNode(master, this.networkId, this.account);
+      const accountNode = RBTCCoin.generateAccountNode(master, this.coinType, this.account);
       const changeNode = RBTCCoin.generateChangeNode(accountNode, 0);
       const addressNode = RBTCCoin.generateAddressNode(changeNode, 0);
       this.address = RBTCCoin.getAddress(addressNode, this.networkId);
@@ -117,9 +109,9 @@ export default class RBTCCoin {
     });
   }
 
-  static generateAccountNode(master, networkId, account) {
+  static generateAccountNode(master, tokenCoinType, account) {
     let node = deserializePrivate(master);
-    const path = `m/44'/${networkId}'/${account}'`;
+    const path = `m/44'/${tokenCoinType}'/${account}'`;
     node = node.derive(path);
     return new PathKeyPair(path, serializePublic(node));
   }
@@ -145,7 +137,7 @@ export default class RBTCCoin {
     const publicKey = JSON.parse(addressNode.public_key).puk;
     const addressBin = ethereumjsUtil.pubToAddress(Buffer.from(publicKey, 'hex'), true);
     const address = Buffer.from(addressBin).toString('hex');
-    const checksumAddress = rsk3.utils.toChecksumAddress(address, networkId);
+    const checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
     return checksumAddress;
   }
 
@@ -158,23 +150,35 @@ export default class RBTCCoin {
       symbol: this.symbol,
       type: this.type,
       metadata: this.metadata,
-      derivationPath: this.derivationPath,
+      path: this.path,
       address: this.address,
+      subdomain: this.subdomain,
       objectId: this.objectId,
       contractAddress: this.contractAddress,
-      decimalPlaces: this.decimalPlaces,
+      precision: this.precision,
       chain: this.chain,
       name: this.name,
+      balance: this.balance ? this.balance.toString() : undefined,
+    };
+  }
+
+  toDerivationJson() {
+    const {
+      symbol, type, path, address,
+    } = this;
+    return {
+      symbol, type, path, address,
     };
   }
 
   static fromJSON(json) {
     const {
-      id, amount, address, objectId,
+      symbol, type, path, address, objectId,
     } = json;
-    const instance = new RBTCCoin(id, amount, address);
+    const instance = new RBTCCoin(symbol, type, path);
+    // Convert old address to checksum address
+    instance.address = Rsk3.utils.checkAddressChecksum(address, instance.networkId) ? address : Rsk3.utils.toChecksumAddress(address, instance.networkId);
     instance.objectId = objectId;
-
     return instance;
   }
 
@@ -219,10 +223,6 @@ export default class RBTCCoin {
     return this.metadata.icon;
   }
 
-  get queryKey() {
-    return this.metadata.queryKey;
-  }
-
   get defaultName() {
     return this.name;
   }
@@ -238,5 +238,38 @@ export default class RBTCCoin {
     let serialized = '';
     if (pub) { serialized = serializePublic(derived); } else { serialized = serializePrivate(derived); }
     return serialized;
+  }
+
+  setupWithDerivation = (derivation) => {
+    const { path, address, privateKey } = derivation;
+    this.path = path;
+    this.address = address;
+    this.privateKey = privateKey;
+  }
+
+  savePrivateKey = async (walletId) => {
+    const { symbol, type, privateKey } = this;
+    try {
+      await storage.setPrivateKey(walletId, symbol, type, privateKey);
+    } catch (ex) {
+      console.log('savePrivateKey, error', ex.message);
+    }
+  }
+
+  restorePrivateKey = async (walletId) => {
+    try {
+      const { symbol, type } = this;
+      const privateKey = await storage.getPrivateKey(walletId, symbol, type);
+      this.privateKey = privateKey;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  setCustomTokenData = async (data) => {
+    const { contractAddress, name, precision } = data;
+    this.precision = precision || this.precision;
+    this.contractAddress = contractAddress || this.contractAddress;
+    this.name = name || this.metadata.defaultName;
   }
 }

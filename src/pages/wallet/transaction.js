@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, Linking, Image,
+  View, StyleSheet, Text, Linking, Image, ScrollView, RefreshControl, Clipboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -14,6 +14,10 @@ import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import ResponsiveText from '../../components/common/misc/responsive.text';
 import BasePageGereral from '../base/base.page.general';
+import color from '../../assets/styles/color';
+import references from '../../assets/references';
+import appActions from '../../redux/app/actions';
+import { createInfoNotification } from '../../common/notification.controller';
 
 const sending = require('../../assets/images/icon/sending.png');
 
@@ -29,7 +33,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000',
+    color: color.black,
     marginBottom: 10,
   },
   state: {
@@ -41,7 +45,7 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
   link: {
-    color: '#00B520',
+    color: color.app.theme,
     fontSize: 17,
     alignSelf: 'center',
   },
@@ -69,14 +73,26 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
   },
+  copyView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  copyText: {
+    flex: 1,
+    color: color.app.theme,
+  },
+  copyIcon: {
+    marginLeft: 4,
+    marginBottom: 2,
+  },
 });
 
 const stateIcons = {
-  Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: '#6875B7' }]} />,
+  Sent: <SimpleLineIcons name="arrow-up-circle" size={45} style={[{ color: color.shipCove }]} />,
   Sending: <Image source={sending} style={{ width: 37, height: 37 }} />,
-  Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: '#6FC062' }]} />,
+  Received: <SimpleLineIcons name="arrow-down-circle" size={45} style={[{ color: color.mantis }]} />,
   Receiving: <Image source={sending} style={{ width: 37, height: 37 }} />,
-  Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: '#E73934' }]} />,
+  Failed: <MaterialIcons name="error-outline" size={50} style={[{ color: color.cinnabar }]} />,
 };
 
 class Transaction extends Component {
@@ -84,61 +100,117 @@ class Transaction extends Component {
     header: null,
   });
 
-  static processViewData(transation, latestBlockHeights) {
-    const { rawTransaction } = transation;
+  static processViewData(transaction, latestBlockHeights) {
+    const {
+      chain, symbol, type, value, blockHeight, hash, memo, from, to, dateTime, statusText,
+    } = transaction;
     let amountText = null;
-    if (!_.isNil(rawTransaction.value)) {
-      const amount = common.convertUnitToCoinAmount(rawTransaction.symbol, rawTransaction.value);
-      amountText = `${common.getBalanceString(amount, transation.decimalPlaces)} ${rawTransaction.symbol}`;
+    if (!_.isNil(value)) {
+      const amount = common.convertUnitToCoinAmount(symbol, value);
+      amountText = `${common.getBalanceString(amount, symbol)} ${common.getSymbolName(symbol, type)}`;
     }
-    const datetimeText = transation.datetime ? transation.datetime.format('MMM Do YYYY HH:mm:ss A ZZ') : '';
+    const dateTimeText = dateTime ? dateTime.format('LLL') : '';
     let confirmations = strings('page.wallet.transaction.Unconfirmed');
-    if (transation.state === 'Sent' || transation.state === 'Received') {
-      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, rawTransaction.chain, rawTransaction.type);
+    if (transaction.state === 'Sent' || transaction.state === 'Received') {
+      let latestBlockHeight = common.getLatestBlockHeight(latestBlockHeights, chain, type);
       latestBlockHeight = _.isNil(latestBlockHeight) ? 0 : latestBlockHeight;
-      confirmations = latestBlockHeight - rawTransaction.blockHeight;
+      confirmations = latestBlockHeight - blockHeight;
       confirmations = confirmations < 0 ? 0 : confirmations;
       confirmations = confirmations >= 6 ? '6+' : confirmations;
     }
     return {
-      transactionState: transation.state,
-      transactionId: rawTransaction.hash,
+      transactionState: statusText,
+      transactionId: hash,
       amount: amountText,
-      stateIcon: stateIcons[transation.state],
-      datetime: datetimeText,
+      stateIcon: stateIcons[statusText],
+      dateTime: dateTimeText,
       confirmations,
-      memo: rawTransaction.memo || strings('page.wallet.transaction.noMemo'),
-      title: `${transation.state} Funds`,
+      memo: memo || strings('page.wallet.transaction.noMemo'),
+      title: `${statusText} Funds`,
+      isRefreshing: false,
+      from,
+      to,
     };
   }
 
   constructor(props) {
     super(props);
     const { navigation, latestBlockHeights } = this.props;
-    const transation = navigation.state.params;
-    this.state = Transaction.processViewData(transation, latestBlockHeights);
+    const transaction = navigation.state.params;
+    this.state = Transaction.processViewData(transaction, latestBlockHeights);
     this.onLinkPress = this.onLinkPress.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     const { navigation, latestBlockHeights } = nextProps;
-    const transation = navigation.state.params;
-    this.setState(Transaction.processViewData(transation, latestBlockHeights));
+    const transaction = navigation.state.params;
+    this.setState(Transaction.processViewData(transaction, latestBlockHeights));
+  }
+
+  onRefresh = () => {
+    this.setState({ isRefreshing: true });
+    // simulate 1s network delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   }
 
   onLinkPress() {
     const { navigation } = this.props;
-    const transation = navigation.state.params;
-    const { rawTransaction } = transation;
-    const url = common.getTransactionUrl(rawTransaction.symbol, rawTransaction.type, rawTransaction.hash);
+    const transaction = navigation.state.params;
+    const { symbol, type, hash } = transaction;
+    const url = common.getTransactionUrl(symbol, type, hash);
     Linking.openURL(url);
+  }
+
+  onFromPress = () => {
+    const { addNotification } = this.props;
+    const { from } = this.state;
+    Clipboard.setString(from);
+    const notification = createInfoNotification(
+      'modal.addressCopied.title',
+      'modal.addressCopied.body',
+    );
+    addNotification(notification);
+  }
+
+  onToPress = () => {
+    const { addNotification } = this.props;
+    const { to } = this.state;
+    Clipboard.setString(to);
+    const notification = createInfoNotification(
+      'modal.addressCopied.title',
+      'modal.addressCopied.body',
+    );
+    addNotification(notification);
+  }
+
+  onTransactionIdPress = () => {
+    const { addNotification } = this.props;
+    const { transactionId } = this.state;
+    Clipboard.setString(transactionId);
+    const notification = createInfoNotification(
+      'modal.txIdCopied.title',
+      'modal.txIdCopied.body',
+    );
+    addNotification(notification);
   }
 
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, datetime, memo, confirmations, title, stateIcon,
+      transactionState, transactionId, amount, dateTime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
     } = this.state;
+
+    const txStateText = strings(`txState.${transactionState}`);
+
+    const refreshControl = (
+      <RefreshControl
+        refreshing={isRefreshing}
+        onRefresh={this.onRefresh}
+      />
+    );
+
     return (
       <BasePageGereral
         isSafeView
@@ -146,9 +218,13 @@ class Transaction extends Component {
         hasLoader={false}
         headerComponent={<Header title={`page.wallet.transaction.${title}`} onBackButtonPress={() => navigation.goBack()} />}
       >
-        <View style={styles.body}>
+        <ScrollView
+          style={styles.body}
+          showsVerticalScrollIndicator={false}
+          refreshControl={refreshControl}
+        >
           <View style={styles.sectionContainer}>
-            <Loc style={[styles.sectionTitle, styles.state]} text={transactionState} />
+            <Loc style={[styles.sectionTitle, styles.state]} text={txStateText} />
             <View style={styles.amountView}>
               <ResponsiveText layoutStyle={styles.amount} fontStyle={styles.amountText} maxFontSize={40}>{amount}</ResponsiveText>
               <View style={styles.stateIcon}>{stateIcon}</View>
@@ -156,7 +232,21 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.date" />
-            <Text>{datetime}</Text>
+            <Text>{dateTime}</Text>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.from" />
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
+              <Text style={[styles.copyText]}>{from}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.to" />
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
+              <Text style={[styles.copyText]}>{to}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.confirmations" />
@@ -168,14 +258,17 @@ class Transaction extends Component {
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.transactionID" />
-            <Text selectable>{transactionId}</Text>
+            <TouchableOpacity style={[styles.copyView]} onPress={this.onTransactionIdPress}>
+              <Text style={[styles.copyText]}>{transactionId}</Text>
+              <Image style={styles.copyIcon} source={references.images.copyIcon} />
+            </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
             <TouchableOpacity style={styles.linkView} onPress={this.onLinkPress}>
               <Loc style={styles.link} text="page.wallet.transaction.viewOnChain" />
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </BasePageGereral>
     );
   }
@@ -188,16 +281,17 @@ Transaction.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
   }).isRequired,
+  addNotification: PropTypes.func.isRequired,
   latestBlockHeights: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  updateTimestamp: state.Wallet.get('updateTimestamp'),
   latestBlockHeights: state.Wallet.get('latestBlockHeights'),
   currentLocale: state.App.get('language'),
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
+  addNotification: (notification) => dispatch(appActions.addNotification(notification)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transaction);

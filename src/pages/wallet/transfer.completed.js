@@ -1,85 +1,37 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity, Linking,
+  View, StyleSheet, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions } from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
 import Header from '../../components/headers/header';
 import common from '../../common/common';
-import BasePageGereral from '../base/base.page.general';
-
-const completed = require('../../assets/images/icon/completed.png');
+import BasePageSimple from '../base/base.page.simple';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
+import operationSuccessStyles from '../../assets/styles/operation.success.style';
+import Button from '../../components/common/button/button';
+import CompletedIcon from '../../components/common/image/completed.icon';
+import { WalletType } from '../../common/constants';
 
 const styles = StyleSheet.create({
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 48,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    top: 37,
-  },
-  chevron: {
-    color: '#FFF',
-  },
-  headImage: {
-    position: 'absolute',
-    width: '100%',
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 10,
-    marginLeft: 10,
-  },
-  sectionContainer: {
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  content: {
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  check: {
-    margin: 25,
-  },
   title: {
     fontSize: 17,
-    fontWeight: '900',
-    color: '#000000',
+    fontFamily: fontFamily.AvenirHeavy,
+    color: color.black,
   },
   text: {
-    color: '#4A4A4A',
+    color: color.tundora,
     fontSize: 15,
-    fontWeight: '300',
+    fontFamily: fontFamily.AvenirBook,
     width: '80%',
-    marginTop: 15,
+    marginTop: 10,
     textAlign: 'center',
   },
   link: {
-    color: '#00B520',
-  },
-  body: {
-    flex: 1,
-    backgroundColor: 'white',
+    color: color.app.theme,
+    fontFamily: fontFamily.AvenirRoman,
   },
 });
 
@@ -90,42 +42,51 @@ export default class TransferCompleted extends Component {
 
   constructor(props) {
     super(props);
-    this.onBackPress = this.onBackPress.bind(this);
-    this.onExplorePress = this.onExplorePress.bind(this);
+    const { coin, hash } = props.navigation.state.params;
+    this.coin = coin;
+    this.hash = hash;
   }
 
-  onBackPress() {
+  onBackButtonPressed = () => {
     const { navigation } = this.props;
-    const statckActions = StackActions.popToTop();
-    navigation.dispatch(statckActions);
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Dashboard' }),
+        NavigationActions.navigate({ routeName: 'WalletHistory', params: { coin: this.coin, walletType: WalletType.Normal } }),
+      ],
+    });
+    navigation.dispatch(resetAction);
   }
 
-  onExplorePress() {
-    const { navigation } = this.props;
-    const { symbol, type, hash } = navigation.state.params;
-    const url = common.getTransactionUrl(symbol, type, hash);
+  onExplorePressed = () => {
+    const { symbol, type } = this.coin;
+    const url = common.getTransactionUrl(symbol, type, this.hash);
     Linking.openURL(url);
   }
 
   render() {
     return (
-      <BasePageGereral
+      <BasePageSimple
         isSafeView
         hasBottomBtn
-        bottomBtnText="button.goToWallet"
-        bottomBtnOnPress={this.onBackPress}
         hasLoader={false}
-        headerComponent={<Header title="page.wallet.transferCompleted.title" onBackButtonPress={this.onBackPress} />}
+        headerComponent={<Header onBackButtonPress={this.onBackButtonPressed} title="page.wallet.transferCompleted.title" />}
       >
-        <View style={styles.content}>
-          <Image style={styles.check} source={completed} />
-          <Loc style={[styles.title]} text="page.wallet.transferCompleted.body" />
-          <Loc style={[styles.text]} text="page.wallet.transferCompleted.note" />
-          <TouchableOpacity onPress={this.onExplorePress}>
-            <Loc style={[styles.text, styles.link]} text="page.wallet.transferCompleted.viewExplorer" />
-          </TouchableOpacity>
+        <View style={operationSuccessStyles.wrapper}>
+          <View style={operationSuccessStyles.content}>
+            <View style={[operationSuccessStyles.centerView, styles.centerView]}>
+              <CompletedIcon style={operationSuccessStyles.check} />
+              <Loc style={[styles.title]} text="page.wallet.transferCompleted.body" />
+              <Loc style={[styles.text]} text="page.wallet.transferCompleted.note" />
+              <TouchableOpacity onPress={this.onExplorePressed}>
+                <Loc style={[styles.text, styles.link]} text="page.wallet.transferCompleted.viewExplorer" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Button style={operationSuccessStyles.button} text="button.goToWallet" onPress={this.onBackButtonPressed} />
         </View>
-      </BasePageGereral>
+      </BasePageSimple>
     );
   }
 }

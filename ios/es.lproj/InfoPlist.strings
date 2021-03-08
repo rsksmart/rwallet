@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  rwallet
+
+  Created by star on 2020/5/25.
+*/
+{
+  "NSCameraUsageDescription" = "RWallet necesita acceso a su cámara para escanear el código QR del destinatario.";
+  "NSFaceIDUsageDescription" = "RWallet requiere acceso FaceID para permitirle un acceso rápido y seguro.";
+  "NSPhotoLibraryUsageDescription" = "RWallet necesita acceso a la biblioteca de fotos.";
+}

@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native';
-import color from './color.ts';
+import color from './color';
+import fontFamily from './font.family';
 
 const coinListItemStyles = StyleSheet.create({
   sectionTitle: {
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     marginBottom: 10,
     fontSize: 14,
-    color: '#000',
+    color: color.black,
     paddingHorizontal: 10,
   },
   itemView: {
@@ -37,24 +38,24 @@ const coinListItemStyles = StyleSheet.create({
   title: {
     color: color.component.swipableButtonList.title.color,
     fontSize: 16,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     letterSpacing: 0.4,
   },
   text: {
     color: color.component.swipableButtonList.text.color,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 13,
     letterSpacing: 0.27,
   },
   worth: {
     color: color.component.swipableButtonList.worth.color,
-    fontFamily: 'Avenir-Heavy',
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 16,
     letterSpacing: 1,
   },
   amount: {
     color: color.component.swipableButtonList.amount.color,
-    fontFamily: 'Avenir-Roman',
+    fontFamily: fontFamily.AvenirRoman,
     fontSize: 12,
     letterSpacing: 1,
   },

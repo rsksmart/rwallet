@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, TouchableOpacity, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
-import style from '../../../assets/styles/style.ts';
-import color from '../../../assets/styles/color.ts';
+import style from '../../../assets/styles/style';
+import color from '../../../assets/styles/color';
 import flex from '../../../assets/styles/layout.flex';
 
 import BtnBg from '../../../assets/images/common/button.bg.png';

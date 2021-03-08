@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Image, Text, Switch,
+  StyleSheet, View, Image, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import color from '../../assets/styles/color.ts';
+import Switch from '../common/switch/switch';
+import color from '../../assets/styles/color';
 
 const styles = StyleSheet.create({
   item: {
@@ -35,6 +36,13 @@ export default class Item extends Component {
     this.state = { value: data.selected };
   }
 
+  onValueChange = (value) => {
+    const { data, onValueChange } = this.props;
+    this.setState({ value });
+    data.selected = value;
+    onValueChange();
+  }
+
   render() {
     const { data } = this.props;
     const { value } = this.state;
@@ -45,10 +53,7 @@ export default class Item extends Component {
           <Text style={[styles.title]}>{data.title}</Text>
           <Switch
             value={value}
-            onValueChange={(v) => {
-              this.setState({ value: v });
-              data.selected = v;
-            }}
+            onValueChange={this.onValueChange}
           />
         </View>
       </View>
@@ -63,4 +68,5 @@ Item.propTypes = {
     coin: PropTypes.string,
     selected: PropTypes.bool.isRequired,
   }).isRequired,
+  onValueChange: PropTypes.func.isRequired,
 };

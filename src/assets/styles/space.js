@@ -1,17 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { screen } from '../../common/info';
-
-// eslint-disable-next-line no-unused-vars
-function fWidthPer(iPerValue) {
-  // eslint-disable-next-line no-mixed-operators
-  return screen.width * iPerValue / 100;
-}
-
-// eslint-disable-next-line no-unused-vars
-function fHeightPer(iPerValue) {
-  // eslint-disable-next-line no-mixed-operators
-  return screen.height * iPerValue / 100;
-}
 
 function styleScript() {
   const style = {};

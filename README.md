@@ -34,13 +34,18 @@ The first three steps are needed for both Android and iOS devices.
 1. Create an environment variable file named `.env` in the root directory
     ```
     # Parse server configuration
-    # Dogfood Server URL http://130.211.12.3/parse
+    # Server URL https://rwallet.app/v1
     # Devbox Server URL for Android Simulator http://10.0.2.2:1338/parse
     # Devbox Server URL for iOS Simulator http://<YOUR_IP_ADDRESS>:1338/parse
-    PARSE_SERVER_URL=
-    ```
-    If .env file is changed, manually edit the file importing react-native-dotenv by either adding an empty line or whitespace will work.
+    # RWALLET_ENV: Production, Dogfood or others. If RWALLET_ENV value is "Production", or not set, the final server URL value is the same as Server URL such as "https://rwallet.app/v1"; otherwise, the RWALLET_ENV value will be prepended to Server URL in lower case as a sub-domain. For example, if RWALLET_ENV is "Dogfood" and Server URL is "https://rwallet.app/v1", the final URL is https://dogfood.rwallet.app/v1.
 
+    PARSE_SERVER_URL=https://rwallet.app/v1
+    RWALLET_API_KEY=6a740128-2ba2-4b82-9301-8cbe07208ee9
+    RWALLET_ENV=Dogfood
+    ```
+    * If .env file is changed, manually edit the file importing react-native-dotenv (`rwallet/config.js`) by either adding an empty line or whitespace will work.
+    * For security, we force the use of https to transfer data. If you use http during development, you need to set NSAllowsArbitraryLoads to true in the iOS environment and useCleartextTraffic to true in the Android environment.
+1.  In order to use firebase messaging on Android, put google-services.json in the android/app.
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
     > rwallet@0.0.1 start /Users/mikasa/Documents/repos/rwallet
@@ -92,7 +97,43 @@ The first three steps are needed for both Android and iOS devices.
 </tr>
 </table>
 
+## Setup fastlane environment variable
+```
+APP_IDENTIFIER="com.rsk.rwallet.reactnative"
+
+
+# Apple id
+USERNAME=""
+
+# Apple password
+FASTLANE_PASSWORD=""
+
+# Apple specific password
+FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=""
+
+# Apple developer team id
+TEAM_ID=""
+
+# itunes connect team name
+FASTLANE_ITC_TEAM_NAME=""
+
+# Apple certs storage
+GIT_URL="git@xxx.com:xxxx/xxxxx.git"
+MATCH_PASSWORD=""
+
+
+# Android sign file
+ANDROID_SIGN_FILE="android/app/keystores/release.rwallet.jks"
+ANDROID_SIGN_PASSWORD=""
+ANDROID_SIGN_KEY_ALIAS="key0"
+ANDROID_SIGN_KEY_PASSWORD=""
+
+
+SLACK_URL=""
+```
+
 ### Build on iOS
+1. <a href="https://developer.apple.com/news/?id=12232019b">The App Store will no longer accept new apps using UIWebView as of April 2020 and app updates using UIWebView as of December 2020.</a> Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
 1. Make sure you have the latest version of the Xcode command line tools installed:
     ```
     xcode-select --install
@@ -106,7 +147,7 @@ The first three steps are needed for both Android and iOS devices.
 1. Make sure you have Android Studio installed, so that it is easy to sync the gradle build config.
 1. To build the APK, run `fastlane android build_apk version:<version_number> code:<version_code>`
 
-## Devleopment
+## Development
 ### Remote Debugging
 #### Remote Debugging on iOS Simulator
 1. Run `npm run ios` to start the app in Simulator.
@@ -145,7 +186,7 @@ TODO: How to debug android app with Mac OS is to be added
     1. Modify keystore setting in ./android/gradle.properties
     1. Run `npm run android` to build android apk. the apk file will be generated at the path: ./android/app/build/outputs/apk/release
 1. iOS
-    
+    1. Remove `Libraries/React.xcodeproj/React/Views/RCTWebView.h、RCTWebView.m、RCTWebViewManager.h、RCTWebViewManager.m` in Xcode to remove UIWebView.
     1. Change signing team in the project settings
     ![signingTeam](https://user-images.githubusercontent.com/16951509/71573427-c7d72380-2b1e-11ea-9164-8d051b458570.png)
     1. Build ios app via Product -> Archive in Xcode
@@ -158,6 +199,13 @@ TODO: How to debug android app with Mac OS is to be added
 
 ### Unit Testing
 Unit Testing module is to be added.
+1. Run all test suites
+    - npm test
+2. Run a specific test suite file
+    - npm test -t "__test__/transaction.test.js"
+3. Run a specific describe test or it test
+    - node node_modules/jest/bin/jest.js -i <test_file_name> -t "<describe_string> (or <it_string>)"
+    - Example: 'node node_modules/jest/bin/jest.js -i __test__/common.test.js -t "ConvertCoinAmountToUnitHex"'
 
 ### Manual Testing
 Manual Testing has to be done on a real iOS/android device. This is to make sure we mimic real user's experience.
@@ -169,7 +217,7 @@ Manual Testing has to be done on a real iOS/android device. This is to make sure
 1. Import a wallet
     - Check Go Back Button
     - Enable all three testnet tokens
-1. Delete a walelt
+1. Delete a wallet
     - Goes to Me bottom tab and delete a Key
     - Go back to dashboard and make sure wallet is deleted
 1. Receive Test BTC

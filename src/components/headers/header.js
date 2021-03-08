@@ -8,11 +8,14 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import screenHelper from '../../common/screenHelper';
 import ResponsiveText from '../common/misc/responsive.text';
 import { strings } from '../../common/i18n';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 
 const header = require('../../assets/images/misc/header.png');
 
 const headerHeight = 350;
 const headerMarginTop = -150 + screenHelper.topHeight;
+export const headerVisibleHeight = headerHeight + headerMarginTop;
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -27,8 +30,8 @@ const styles = StyleSheet.create({
     right: 24,
   },
   headerTitleText: {
-    color: '#FFFFFF',
-    fontFamily: 'Avenir-Black',
+    color: color.white,
+    fontFamily: fontFamily.AvenirBlack,
   },
   backButton: {
     position: 'absolute',
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     bottom: 97,
   },
   chevron: {
-    color: '#FFF',
+    color: color.white,
   },
   noGobackTitleStyle: {
     fontSize: 20,

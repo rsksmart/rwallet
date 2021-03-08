@@ -6,10 +6,11 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import flex from '../../assets/styles/layout.flex';
 import presetStyles from '../../assets/styles/style';
-import color from '../../assets/styles/color.ts';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
 import screenHelper from '../../common/screenHelper';
 
-const rsk = require('../../assets/images/mine/rsk.png');
+const rsk = require('../../assets/images/mine/page.footing.logo.png');
 
 const styles = StyleSheet.create({
   logoView: {
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   },
   powerby: {
     color: color.midGrey,
-    fontFamily: 'Avenir-Black',
+    fontFamily: fontFamily.AvenirBlack,
     fontSize: 17,
     fontWeight: '500',
     marginTop: 5,
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
 
 const RSKAd = () => (
   <LinearGradient
-    colors={['rgba(255, 255, 255, 0)', 'rgb(255, 255, 255)']}
+    colors={[color.whiteA0, color.white]}
     start={{ x: 0, y: 0 }}
     // end.y param is gradient proportion in y axis. It is seted to 0.85 more comfortable.
     end={{ x: 0, y: 0.85 }}

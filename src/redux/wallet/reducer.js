@@ -7,7 +7,7 @@ const initState = new Map({
   latestBlockHeights: [],
   walletManager: undefined, // WalletManager instance
   updateTimestamp: 0,
-  isBalanceUpdated: false,
+  isTokensUpdated: false,
   isWalletsUpdated: false,
   isWalletNameUpdated: false,
   swapFromCoin: null,
@@ -15,8 +15,12 @@ const initState = new Map({
   addTokenResult: null,
   swapRates: {},
   swapRatesError: null,
-  balancesChannel: undefined,
+  tokensChannel: undefined,
   transactionsChannel: undefined,
+  blockHeightsChannel: undefined,
+  txTimestamp: undefined,
+
+  subdomains: [],
 });
 
 /**
@@ -32,51 +36,37 @@ export default function walletReducer(state = initState, action) {
     {
       return state.set('walletManager', action.value);
     }
-    case actions.FETCH_BALANCE_RESULT:
+    case actions.FETCH_TOKENS_RESULT:
     {
       const balances = action.value;
 
-      // Update balances in walletManager
+      // Update tokens data in walletManager
       const walletManager = state.get('walletManager');
       if (walletManager) {
-        const isDirty = walletManager.updateBalance(balances);
+        const isDirty = walletManager.updateTokens(balances);
 
         if (isDirty) {
-          return state.set('isBalanceUpdated', true);
+          return state.set('isTokensUpdated', true);
         }
       }
 
       return state;
     }
-    case actions.RESET_BALANCE_UPDATED: {
-      return state.set('isBalanceUpdated', false);
+    case actions.RESET_TOKENS_UPDATED: {
+      return state.set('isTokensUpdated', false);
     }
-    case actions.FETCH_TRANSACTION_RESULT: {
-      const transactions = action.value;
-      const walletManager = state.get('walletManager');
-      const tokens = walletManager.getTokens();
-
-      _.each(transactions, (transaction) => {
-        const foundTokens = _.filter(tokens, (item) => item.address === transaction.from || item.address === transaction.to);
-        _.each(foundTokens, (token) => {
-          const newToken = token;
-          if (!token.transactions) {
-            newToken.transactions = [];
-          }
-          const txIndex = _.findIndex(newToken.transactions, { hash: transaction.hash });
-          if (txIndex === -1) {
-            newToken.transactions.unshift(transaction);
-          } else {
-            newToken.transactions[txIndex] = transaction;
-          }
-        });
-      });
-
-      console.log('ParseHelper.fetchTransactions, tokens: ', tokens);
-      return state.set('updateTimestamp', getUpdateTimestamp());
+    case actions.FETCH_TRANSACTIONS_RESULT: {
+      return state.set('txTimestamp', action.timestamp);
     }
     case actions.FETCH_LATEST_BLOCK_HEIGHT_RESULT: {
       return state.set('latestBlockHeights', action.value);
+    }
+    case actions.UPDATE_LATEST_BLOCK_HEIGHT: {
+      const blockHeightObj = action.value;
+      const latestBlockHeights = state.get('latestBlockHeights');
+      const txIndex = _.findIndex(latestBlockHeights, { chain: blockHeightObj.chain, type: blockHeightObj.type });
+      latestBlockHeights[txIndex] = blockHeightObj;
+      return state.set('latestBlockHeights', latestBlockHeights);
     }
     case actions.UPDATE_ASSET_VALUE: {
       const walletManager = state.get('walletManager');
@@ -95,7 +85,7 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_WALLETS_UPDATED: {
       return state.set('isWalletsUpdated', false);
     }
-    case actions.WALLTE_NAME_UPDATED: {
+    case actions.WALLET_NAME_UPDATED: {
       return state.set('isWalletNameUpdated', true)
         .set('updateTimestamp', getUpdateTimestamp());
     }
@@ -146,11 +136,17 @@ export default function walletReducer(state = initState, action) {
     case actions.RESET_SWAP_RATE_RESULT_ERROR: {
       return state.set('swapRatesError', null);
     }
-    case actions.SET_BALANCES_CHANNEL: {
-      return state.set('balancesChannel', action.value);
+    case actions.SET_TOKENS_CHANNEL: {
+      return state.set('tokensChannel', action.value);
     }
     case actions.SET_TRANSACTIONS_CHANNEL: {
       return state.set('transactionsChannel', action.value);
+    }
+    case actions.SET_BLOCK_HEIGHTS_CHANNEL: {
+      return state.set('blockHeightsChannel', action.value);
+    }
+    case actions.SET_SUBDOMAINS: {
+      return state.set('subdomains', action.subdomains);
     }
     default:
       return state;

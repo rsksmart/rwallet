@@ -10,12 +10,18 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Loc from '../../components/common/misc/loc';
 import { strings } from '../../common/i18n';
 import RSKad from '../../components/common/rsk.ad';
 import BasePageGereral from '../base/base.page.general';
 import HeaderMineIndex from '../../components/headers/header.mineindex';
 import presetStyles from '../../assets/styles/style';
+import WebViewModal from '../../components/common/webview.modal';
+import config from '../../../config';
+import color from '../../assets/styles/color';
+import space from '../../assets/styles/space';
+import { WalletType } from '../../common/constants';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -26,7 +32,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: color.black,
     marginBottom: 20,
   },
   sectionContainer: {
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   title: {
-    color: '#0B0B0B',
+    color: this.codGray,
     fontSize: 16,
   },
   right: {
@@ -49,8 +55,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#EDEDED',
-    paddingVertical: 20,
+    borderBottomColor: color.grayED,
+    height: 60,
     flex: 1,
   },
   communityIcon: {
@@ -67,29 +73,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   keyIcon: {
-    color: '#4A4A4A', transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
+    color: color.tundora, transform: [{ rotate: '90deg' }, { rotateX: '180deg' }],
   },
-  keyWallets: {
-    backgroundColor: '#F3F3F3',
+  tagView: {
+    backgroundColor: color.concrete,
     borderRadius: 5,
-    padding: 5,
-    color: '#000',
-    position: 'absolute',
-    right: 0,
+    paddingHorizontal: 5,
+    color: color.black,
+    justifyContent: 'center',
+    height: 25,
   },
-  createWalletButtonView: {
+  linkView: {
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
   },
-  createWalletButtonText: {
-    color: '#00B520',
+  linkText: {
+    color: color.app.theme,
     fontSize: 16,
   },
   lastBlockMarginBottom: {
     marginBottom: 135,
+  },
+  grayIcon: {
+    color: color.word,
+  },
+  tokenName: {
+    flex: 1,
   },
 });
 
@@ -151,11 +163,15 @@ class MineIndex extends Component {
           >
             <FontAwesome5 name="key" size={20} style={styles.keyIcon} />
             <View style={styles.right}>
-              <Text>{item.name}</Text>
-              <Text style={styles.keyWallets}>
-                {`${item.walletCount} `}
-                <Loc text="page.mine.index.wallets" />
-              </Text>
+              <Text style={styles.tokenName}>{item.name}</Text>
+              { item.wallet.walletType === WalletType.Readonly && (
+                <View style={styles.tagView}>
+                  <Loc text="page.wallet.list.readOnly" />
+                </View>
+              )}
+              <View style={[styles.tagView, space.marginLeft_5]}>
+                <Loc text="page.mine.index.assets" interpolates={{ count: item.walletCount }} />
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -167,7 +183,7 @@ class MineIndex extends Component {
   settings = [
     {
       title: 'page.mine.language.title',
-      icon: <MaterialIcons name="language" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />,
+      icon: <MaterialIcons name="language" size={ICON_SIZE} style={styles.grayIcon} />,
       onPress: () => {
         const { navigation } = this.props;
         navigation.navigate('Language');
@@ -176,7 +192,7 @@ class MineIndex extends Component {
     {
       title: 'page.mine.currency.title',
       icon: (
-        <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={{ color: '#4A4A4A' }} />
+        <MaterialCommunityIcons name="currency-usd" size={ICON_SIZE} style={styles.grayIcon} />
       ),
       onPress: () => {
         const { navigation } = this.props;
@@ -186,11 +202,7 @@ class MineIndex extends Component {
     {
       title: 'page.mine.2fa.title',
       icon: (
-        <MaterialCommunityIcons
-          name="two-factor-authentication"
-          size={ICON_SIZE}
-          style={{ color: '#4A4A4A' }}
-        />
+        <MaterialCommunityIcons name="two-factor-authentication" size={ICON_SIZE} style={styles.grayIcon} />
       ),
       onPress: () => {
         const { navigation } = this.props;
@@ -202,21 +214,21 @@ class MineIndex extends Component {
   joins = [
     {
       title: 'Twitter',
-      icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: '#039BE5' }]} />,
+      icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: color.cerulean }]} />,
       onPress: () => {
         Linking.openURL('https://twitter.com/rsksmart');
       },
     },
     {
       title: 'Telegram',
-      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: '#3B9DD8' }]} />,
+      icon: <FontAwesome name="telegram" size={30} style={[styles.communityIcon, { color: color.curiousBlue }]} />,
       onPress: () => {
         Linking.openURL('https://t.me/rskofficialcommunity');
       },
     },
     {
       title: 'Facebook',
-      icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: '#3F51B5' }]} />,
+      icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: color.sanMarino }]} />,
       onPress: () => {
         Linking.openURL('https://www.facebook.com/RSKsmart/');
       },
@@ -230,16 +242,40 @@ class MineIndex extends Component {
     },
     {
       title: 'Reddit',
-      icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: '#FF4500' }]} />,
+      icon: <FontAwesome name="reddit" size={30} style={[styles.communityIcon, { color: color.vermilion }]} />,
       onPress: () => {
         Linking.openURL('https://www.reddit.com/r/rootstock/');
       },
     },
     {
       title: 'YouTube',
-      icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: '#D2142B' }]} />,
+      icon: <Entypo name="youtube-with-circle" size={30} style={[styles.communityIcon, { color: color.crimson }]} />,
       onPress: () => {
         Linking.openURL('https://www.youtube.com/rsksmart');
+      },
+    },
+  ];
+
+  supports = [
+    {
+      title: 'page.mine.index.contactUs',
+      icon: <MaterialCommunityIcons name="email-outline" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
+      onPress: () => {
+        Linking.openURL('mailto:app@iovlabs.org');
+      },
+    },
+    {
+      title: 'page.mine.index.developerPortal',
+      icon: <AntDesign name="home" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
+      onPress: () => {
+        Linking.openURL('https://developers.rsk.co');
+      },
+    },
+    {
+      title: 'page.start.terms.termsOfUse',
+      icon: <AntDesign name="filetext1" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
+      onPress: () => {
+        this.setState({ isTermsWebViewVisible: true });
       },
     },
   ];
@@ -250,6 +286,7 @@ class MineIndex extends Component {
       keyListData: [],
       settings: [],
       joins: [],
+      isTermsWebViewVisible: false,
     };
     this.onEditNamePress = this.onEditNamePress.bind(this);
   }
@@ -277,9 +314,15 @@ class MineIndex extends Component {
     navigation.navigate('Rename');
   }
 
+  onViewTermsPressed = () => {
+    this.setState({ isTermsWebViewVisible: true });
+  }
+
   render() {
     const { language, navigation, username } = this.props;
-    const { keyListData, settings, joins } = this.state;
+    const {
+      keyListData, settings, joins, isTermsWebViewVisible,
+    } = this.state;
     // Translate If username is default user name
     const usernameText = _.isEmpty(username) ? strings('page.mine.index.anonymousUser') : username;
 
@@ -304,13 +347,13 @@ class MineIndex extends Component {
           <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.keys" />
             {MineIndex.renderKeyListView(keyListData, navigation)}
-            <View style={styles.createWalletButtonView}>
+            <View style={styles.linkView}>
               <TouchableOpacity onPress={() => navigation.navigate('WalletAddIndex')}>
-                <Loc style={[styles.createWalletButtonText]} text="page.mine.index.createKey" />
+                <Loc style={[styles.linkText]} text="page.mine.index.createKey" />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+          <View style={[styles.sectionContainer, { marginTop: 10 }]}>
             <Loc style={[styles.sectionTitle]} text="page.mine.index.joinRSKCommunity" />
             <FlatList
               data={joins}
@@ -318,7 +361,21 @@ class MineIndex extends Component {
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
+          <View style={[styles.sectionContainer, styles.lastBlockMarginBottom, { marginTop: 10 }]}>
+            <Loc style={[styles.sectionTitle]} text="page.mine.index.support" />
+            <FlatList
+              data={this.supports}
+              extraData={language}
+              renderItem={({ item, index }) => <Item data={item} title={strings(item.title)} isHasBottomBorder={index !== this.supports.length - 1} />}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
         </View>
+        <WebViewModal
+          url={config.termsUrl[language]}
+          visible={isTermsWebViewVisible}
+          onCloseButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
+        />
       </BasePageGereral>
     );
   }

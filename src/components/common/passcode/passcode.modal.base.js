@@ -1,29 +1,25 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Modal,
+  View, Text, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
-import color from '../../../assets/styles/color.ts';
+import color from '../../../assets/styles/color';
+import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
+import references from '../../../assets/references';
 
 const buttonSize = 75;
 const dotSize = 13;
 
 const styles = StyleSheet.create({
   background: {
-    backgroundColor: color.component.passcodeModal.backgroundColor,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,
     elevation: 999,
-    opacity: 0.9,
   },
   container: {
     flex: 1,
@@ -83,7 +79,7 @@ const styles = StyleSheet.create({
     right: 16,
   },
   buttonText: {
-    fontFamily: 'Avenir-Medium',
+    fontFamily: fontFamily.AvenirMedium,
     fontSize: 19,
     color: color.component.passcodeModal.number.color,
   },
@@ -107,7 +103,6 @@ class PasscodeModalBase extends PureComponent {
 
   onPressButton(i) {
     const { passcodeOnFill } = this.props;
-    // eslint-disable-next-line react/destructuring-assignment
     this.setState((prevState) => ({ input: prevState.input + i }), () => {
       const { input } = this.state;
       if (input.length >= 4) {
@@ -172,32 +167,30 @@ class PasscodeModalBase extends PureComponent {
     } = this.props;
 
     return (
-      <Modal animationType="fade" transparent>
-        <View style={[styles.background, styles.container]}>
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Loc style={[styles.title]} text={title} />
-            <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
-              {this.renderDots()}
-            </Animatable.View>
-            <View style={styles.buttonView}>
-              {isShowReset && (
-                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
-                  <Loc style={[styles.buttonText]} text="button.Reset" />
-                </TouchableOpacity>
-              )}
-              {showCancel && (
-                <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                  <Loc style={[styles.buttonText]} text="button.cancel" />
-                </TouchableOpacity>
-              )}
-              {this.renderButtons()}
-              <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
-                <Loc style={[styles.buttonText]} text="button.Delete" />
+      <View style={[styles.background, styles.container]}>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Loc style={[styles.title]} text={title} />
+          <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+            {this.renderDots()}
+          </Animatable.View>
+          <View style={styles.buttonView}>
+            {isShowReset && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
+                <Image source={references.images.passcodeReset} />
               </TouchableOpacity>
-            </View>
+            )}
+            {showCancel && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
+                <Image source={references.images.passcodeCancel} />
+              </TouchableOpacity>
+            )}
+            {this.renderButtons()}
+            <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
+              <Image source={references.images.passcodeDelete} />
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </View>
     );
   }
 }

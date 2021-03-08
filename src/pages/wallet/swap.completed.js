@@ -1,110 +1,73 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Image, TouchableOpacity, Linking,
+  View, StyleSheet, TouchableOpacity, Linking, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions } from 'react-navigation';
 import Loc from '../../components/common/misc/loc';
-import SwapHeader from '../../components/headers/header.swap';
+import SwapHeader, { headerVisibleHeight } from '../../components/headers/header.swap';
 import common from '../../common/common';
-import BasePageGereral from '../base/base.page.general';
+import BasePageSimple from '../base/base.page.simple';
+import color from '../../assets/styles/color';
+import fontFamily from '../../assets/styles/font.family';
+import CompletedIcon from '../../components/common/image/completed.icon';
+import Button from '../../components/common/button/button';
+import operationSuccessStyles from '../../assets/styles/operation.success.style';
 
-const completed = require('../../assets/images/icon/completed.png');
+const bodyOffsetHeight = -330;
+const bottomHeight = 70;
+export const contentHeight = Dimensions.get('window').height - (headerVisibleHeight + bodyOffsetHeight) - bottomHeight;
 
 const styles = StyleSheet.create({
-  headerView: {
-    position: 'absolute',
-    width: '100%',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    position: 'absolute',
-    top: 48,
-    left: 55,
-    color: '#FFF',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    top: 37,
-  },
-  chevron: {
-    color: '#FFF',
-  },
-  headImage: {
-    position: 'absolute',
-    width: '100%',
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 10,
-    marginLeft: 10,
-  },
-  sectionContainer: {
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  buttonView: {
-    position: 'absolute',
-    bottom: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
   content: {
     alignItems: 'center',
-    marginTop: -330,
-    backgroundColor: '#fff',
+    marginTop: bodyOffsetHeight,
+    backgroundColor: color.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: color.alto,
     borderBottomWidth: 0,
-    shadowColor: '#000',
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
+    flex: 1,
   },
   check: {
-    marginTop: 125,
-    marginBottom: 45,
+    marginTop: contentHeight * 0.15,
+    marginBottom: contentHeight * 0.07,
   },
   title: {
-    color: '#000000',
-    fontFamily: 'Avenir-Heavy',
+    color: color.black,
+    fontFamily: fontFamily.AvenirHeavy,
     fontSize: 17,
   },
   text: {
-    color: '#4A4A4A',
-    fontFamily: 'Avenir-Book',
+    color: color.tundora,
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     marginTop: 15,
   },
   link: {
-    color: '#00B520',
-    fontFamily: 'Avenir-Book',
+    color: color.app.theme,
+    fontFamily: fontFamily.AvenirBook,
     fontSize: 15,
     marginTop: 15,
   },
-  body: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  rightButton: {
-    color: '#FFF',
+  viewExplorer: {
+    marginBottom: 30,
   },
   bottomView: {
-    height: 30,
-    backgroundColor: '#FFF',
+    height: 10,
+    backgroundColor: color.white,
     width: '100%',
     position: 'absolute',
     bottom: -10,
   },
-  viewExplorer: {
-    marginBottom: 30,
+  centerView: {
+    flex: 1,
+    alignItems: 'center',
   },
 });
 
@@ -113,48 +76,41 @@ export default class SwapCompleted extends Component {
     header: null,
   });
 
-  constructor(props) {
-    super(props);
-    this.onExplorePress = this.onExplorePress.bind(this);
-    const { navigation } = props;
-    const { coin } = navigation.state.params;
-    this.coin = coin;
-  }
-
-  onExplorePress() {
+  onExplorePressed = () => {
     const { navigation } = this.props;
     const { symbol, type, hash } = navigation.state.params;
     const url = common.getTransactionUrl(symbol, type, hash);
     Linking.openURL(url);
   }
 
-  onBackPress = () => {
+  onBackButtonPressed = () => {
     const { navigation } = this.props;
-    const statckActions = StackActions.popToTop();
-    navigation.dispatch(statckActions);
+    const stackActions = StackActions.popToTop();
+    navigation.dispatch(stackActions);
     navigation.navigate('Home');
   }
 
   render() {
     return (
-      <BasePageGereral
+      <BasePageSimple
         isSafeView
         hasBottomBtn
-        bottomBtnText="button.goToWallet"
-        bottomBtnOnPress={this.onBackPress}
         hasLoader={false}
-        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={this.onBackPress} />}
+        headerComponent={<SwapHeader title="page.wallet.swapCompleted.title" onBackButtonPress={this.onBackButtonPressed} />}
       >
         <View style={styles.content}>
-          <Image style={styles.check} source={completed} />
-          <Loc style={[styles.title]} text="page.wallet.swapCompleted.body" />
-          <Loc style={[styles.text]} text="page.wallet.swapCompleted.note" />
-          <TouchableOpacity style={styles.viewExplorer} onPress={this.onExplorePress}>
-            <Loc style={[styles.link]} text="page.wallet.swapCompleted.viewExplorer" />
-          </TouchableOpacity>
+          <View style={styles.centerView}>
+            <CompletedIcon style={styles.check} />
+            <Loc style={[styles.title]} text="page.wallet.swapCompleted.body" />
+            <Loc style={[styles.text]} text="page.wallet.swapCompleted.note" />
+            <TouchableOpacity style={styles.viewExplorer} onPress={this.onExplorePressed}>
+              <Loc style={[styles.link]} text="page.wallet.swapCompleted.viewExplorer" />
+            </TouchableOpacity>
+          </View>
+          <Button style={operationSuccessStyles.button} text="button.goToWallet" onPress={this.onBackButtonPressed} />
           <View style={[styles.bottomView]} />
         </View>
-      </BasePageGereral>
+      </BasePageSimple>
     );
   }
 }
