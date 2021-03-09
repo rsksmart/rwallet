@@ -30,7 +30,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 The first three steps are needed for both Android and iOS devices.
 
-1. `npm install` to install dependencies
+1. `npm install` to install dependencies. If you are using Windows, use `npm run install:windows` to install and fix the broken metro-config blacklist.js file.
 1. Create an environment variable file named `.env` in the root directory
     ```
     # Parse server configuration
