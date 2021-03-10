@@ -32,13 +32,6 @@ const PrimaryTabNavigator = createBottomTabNavigator(
         title: 'root.Wallet',
       },
     },
-    Exchange: {
-      screen: ExchangeStackNavigator,
-      path: 'exchange',
-      navigationOptions: {
-        title: 'root.Exchange',
-      },
-    },
     DApp: {
       screen: DAppStackNavigator,
       path: 'dapp',
