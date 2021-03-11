@@ -9,7 +9,7 @@ import { strings } from '../../common/i18n';
 import screenHelper from '../../common/screenHelper';
 import color from '../../assets/styles/color';
 
-const TABCOUNT = 4; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
+const TABCOUNT = 3; // using let since it should be dynamic based on the config of navigation. Currently it is fixed as 2
 
 const windowWidth = Dimensions.get('window').width;
 const tabWidth = windowWidth / TABCOUNT;
