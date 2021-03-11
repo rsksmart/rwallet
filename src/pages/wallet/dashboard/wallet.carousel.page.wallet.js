@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   myAssetsButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     marginHorizontal: 17,
   },
@@ -277,11 +277,6 @@ class WalletPage extends Component {
                 <TouchableOpacity style={styles.ButtonView} onPress={onReceivePressed}>
                   <Image source={references.images.receive} />
                   <Loc style={[styles.receiveText]} text="button.Receive" />
-                </TouchableOpacity>
-                <View style={styles.splitLine} />
-                <TouchableOpacity style={[styles.ButtonView, styles.noBorderRight, { opacity: hasSwappableCoin && !isReadOnlyWallet ? 1 : 0.5 }]} disabled={!hasSwappableCoin} onPress={onSwapPressed}>
-                  <Image source={references.images.swap} />
-                  <Loc style={[styles.swapText]} text="button.Swap" />
                 </TouchableOpacity>
               </View>
             </View>
