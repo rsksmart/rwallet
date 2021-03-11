@@ -224,8 +224,8 @@ class WalletPage extends Component {
 
   render() {
     const {
-      walletData, onSendPressed, onReceivePressed, onSwapPressed, onAddAssetPressed, onScanQrcodePressed,
-      currencySymbol, hasSwappableCoin,
+      walletData, onSendPressed, onReceivePressed, onAddAssetPressed, onScanQrcodePressed,
+      currencySymbol,
     } = this.props;
     const { isRefreshing } = this.state;
     const {
