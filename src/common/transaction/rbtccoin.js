@@ -28,13 +28,12 @@ export const encodeContractTransfer = async (contractAddress, type, to, value) =
 export const getTransactionFees = async (type, coin, address, toAddress, value, memo) => {
   const { symbol, contractAddress } = coin;
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const networkId = type === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
   const rsk3 = new Rsk3(rskEndpoint);
   const latestBlock = await rsk3.getBlock('latest');
   const { minimumGasPrice } = latestBlock;
   const miniGasPrice = new BigNumber(minimumGasPrice, 16);
-  const from = Rsk3.utils.toChecksumAddress(address, networkId);
-  const to = Rsk3.utils.toChecksumAddress(toAddress, networkId);
+  const from = address.toLowerCase();
+  const to = toAddress.toLowerCase();
 
   // Set default gas to 40000
   let gas = 40000;
@@ -60,13 +59,11 @@ export const getTransactionFees = async (type, coin, address, toAddress, value, 
 };
 
 export const createRawTransaction = async ({
-  symbol, type, sender, receiver, value, memo, gasPrice, gas, contractAddress,
+  symbol, type, sender: from, receiver: to, value, memo, gasPrice, gas, contractAddress,
 }) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
   const networkId = type === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
   const rsk3 = new Rsk3(rskEndpoint);
-  const from = Rsk3.utils.toChecksumAddress(sender, networkId);
-  const to = Rsk3.utils.toChecksumAddress(receiver, networkId);
   const nonce = await rsk3.getTransactionCount(from, 'pending');
   const rawTransaction = {
     from,
@@ -97,8 +94,8 @@ export const getRawTransactionParam = ({
   const param = {
     symbol,
     type: netType,
-    sender,
-    receiver,
+    sender: sender.toLowerCase(),
+    receiver: receiver.toLowerCase(),
     value,
     data,
     gasPrice,
