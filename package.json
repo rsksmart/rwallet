@@ -125,10 +125,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "husky": "^3.0.9",
     "jest": "24.9.0",
     "jetifier": "^1.6.4",
-    "lint-staged": "^10.0.0-0",
     "metro-react-native-babel-preset": "0.56.0",
     "react-test-renderer": "16.8.3",
     "rn-nodeify": "^10.2.0",
@@ -138,17 +136,6 @@
     "preset": "react-native",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
     }
   },
   "react-native": {
