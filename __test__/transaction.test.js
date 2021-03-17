@@ -33,11 +33,11 @@ describe('Transaction Suite', () => {
   it('ProcessRawTransaction', async () => {
     const expected = {
       data: undefined,
-      from: '0x1c067E968bFF32a2f231BED86cc6f56f3fF49Ad0',
+      from: '0x1c067e968bff32a2f231bed86cc6f56f3ff49ad0',
       gas: 21000,
       gasPrice: { high: '1000', low: '500', medium: '800' },
       nonce: 0,
-      to: '0x1c067E968bFF32a2f231BED86cc6f56f3fF49Ad0',
+      to: '0x1c067e968bff32a2f231bed86cc6f56f3ff49ad0',
       value: 1,
     };
     const docExpected = {
