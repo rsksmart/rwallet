@@ -932,7 +932,7 @@ class Transfer extends Component {
           value = balance;
         }
       }
-      let transaction = new Transaction(coin, toAddress, value, extraParams);
+      let transaction = new Transaction(coin, toAddress.toLowerCase(), value, extraParams);
       await transaction.broadcast();
       this.setState({ loading: false });
       const completedParams = {
