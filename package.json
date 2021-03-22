@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "private": true,
   "scripts": {
-    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install && jetifier",
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install && ./rm_webview.sh && jetifier",
     "install:windows": "npm i && copy .\\postinstall\\blacklist.js .\\node_modules\\metro-config\\src\\defaults\\blacklist.js",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
