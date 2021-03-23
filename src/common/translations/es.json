@@ -94,8 +94,8 @@
       "recoveryPhrase": {
         "title": "Recovery Phrase",
         "note1": "Escriba o copie estas palabras",
-        "note2": "en el orden correcto y guárdalos",
-        "note3": "un lugar seguro"
+        "note2": "en el orden correcto y guárdelas",
+        "note3": "en un lugar seguro"
       },
       "verifyPhrase": {
         "title": "Verifica tu frase",
@@ -477,7 +477,7 @@
     },
     "guardPhrase": {
       "title": "Resguarde su frase de recuperación",
-      "body": "Su frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparecen."
+      "body": "Su frase de recuperación se compone de 12 palabras seleccionadas al azar. Escriba cuidadosamente cada palabra en el orden en que aparece."
     },
     "incorrectBackupPhrase": {
       "title": "Frase de respaldo incorrecta",
