@@ -50,7 +50,7 @@ export default class Transaction {
     console.log('Transaction.processTransaction start');
     let result = null;
     const {
-      symbol, privateKey, netType, sender, receiver, value, data, memo, gasFee, contractAddress, addressType, publicKey,
+      symbol, privateKey, netType, sender, receiver, value, data, memo, gasFee, contractAddress, addressType,
     } = this;
     try {
       if (symbol === 'BTC') {
@@ -67,7 +67,7 @@ export default class Transaction {
           netType,
           amount,
           fees,
-          publicKey,
+          privateKey,
         });
         result = btc.signTransaction({
           transactionBuilder, inputs, privateKey, netType, addressType,

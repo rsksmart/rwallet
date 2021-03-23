@@ -27,7 +27,7 @@ export default class Coin {
     this.path = `m/44'/${this.coinType}'/${this.account}'/0/0`;
   }
 
-  deriveSegwit= (root, network) => {
+  deriveSegwit = (root, network) => {
     const path = `m/84'/${this.coinType}'/${this.account}'/0/0`;
     const keyPair = root.derivePath(path);
     const { address } = payments.p2wpkh({ pubkey: keyPair.publicKey, network });
@@ -119,9 +119,9 @@ export default class Coin {
       address, chain, type, symbol,
     } = this;
     return address === json.address
-    && chain === json.chain
-    && type === json.type
-    && symbol === json.symbol;
+      && chain === json.chain
+      && type === json.type
+      && symbol === json.symbol;
   }
 
   /**

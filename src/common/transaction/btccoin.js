@@ -54,7 +54,7 @@ export const getTransactionInputs = async ({
  * @returns {object} Transaction builder
  */
 export const buildTransaction = ({
-  inputs, fromAddress, addressType, toAddress, netType, amount, fees, publicKey,
+  inputs, fromAddress, addressType, toAddress, netType, amount, fees, privateKey,
 }) => {
   const network = netType === 'Mainnet' ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
   const cost = amount + fees;
@@ -63,6 +63,8 @@ export const buildTransaction = ({
   // Calculate redeem script
   let redeemScript = null;
   if (addressType === BtcAddressType.segwit) {
+    const buf = Buffer.from(privateKey, 'hex');
+    const { publicKey } = bitcoin.ECPair.fromPrivateKey(buf, { network });
     const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: publicKey, network });
     const p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network });
     redeemScript = p2sh.redeem.output;
