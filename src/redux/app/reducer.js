@@ -67,12 +67,6 @@ export default function appReducer(state = initState, action) {
       return state.set('serverVersion', serverVersion)
         .set('updateVersionInfo', updateVersionInfo);
     }
-    case actions.CREATE_RAW_TRANSATION_RESULT:
-    {
-      const result = action.value;
-      const newstate = state.set('rawTransaction', result);
-      return newstate;
-    }
     case actions.SET_ERROR:
       return state.set('error', action.value);
     case actions.ADD_NOTIFICATION:
