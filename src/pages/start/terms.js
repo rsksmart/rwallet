@@ -98,7 +98,7 @@ class TermsPage extends Component {
           title={strings('page.start.terms.termsOfUse')}
           url={config.termsUrl[language]}
           visible={isTermsWebViewVisible}
-          onBackButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
+          onCloseButtonPress={() => { this.setState({ isTermsWebViewVisible: false }); }}
         />
       </SafeAreaView>
     );
