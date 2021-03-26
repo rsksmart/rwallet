@@ -34,6 +34,7 @@ import {
   ERROR_CODE, FeeCalculationError, InvalidAddressError, InvalidAmountError,
 } from '../../common/error';
 import InvalidRskAddressConfirmation from '../../components/wallet/invalid.rskaddress.confirmation';
+import { domainToAddress } from './rns/domainToAddress';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -475,7 +476,6 @@ class Transfer extends Component {
   }
 
   onToInputBlur = async () => {
-    const { navigation, addConfirmation } = this.props;
     const { to } = this.state;
     const { symbol, type } = this.coin;
     this.setState({ enableConfirm: false });
@@ -483,32 +483,20 @@ class Transfer extends Component {
     let address = null;
     this.setState({ addressText: null, addressError: null });
     if (common.isValidRnsSubdomain(to)) {
-      console.log(`toAddress[${to}] a rns subdomain.`);
       this.setState({ loading: true });
       try {
-        const subdomainAddress = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(to, type), this);
-        if (subdomainAddress) {
-          this.setState({ addressText: subdomainAddress });
-          address = subdomainAddress;
-        } else {
-          this.setState({ addressError: strings('page.wallet.transfer.unavailableAddress') });
-          return;
-        }
+        const rnsResponse = await domainToAddress(to, symbol, type);
+        address = rnsResponse;
+        this.setState({ addressText: rnsResponse });
       } catch (error) {
-        const confirmation = createErrorConfirmation(
-          defaultErrorNotification.title,
-          defaultErrorNotification.message,
-          'button.retry',
-          () => this.onToInputBlur(),
-          () => navigation.goBack(),
-        );
-        addConfirmation(confirmation);
+        this.showInvalidAddressNotification();
       } finally {
         this.setState({ loading: false });
       }
     } else {
       address = to;
     }
+
     this.isAddressValid = common.isWalletAddress(address, symbol, type);
     if (!this.isAddressValid) {
       this.showInvalidAddressNotification();
