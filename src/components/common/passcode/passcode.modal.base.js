@@ -92,9 +92,10 @@ const styles = StyleSheet.create({
 class PasscodeModalBase extends PureComponent {
   constructor(props) {
     super(props);
-    const { title } = props;
+    const { title, subtitle } = props;
     this.state = {
       title,
+      subtitle,
       input: '',
     };
     this.onPressButton = this.onPressButton.bind(this);
@@ -160,7 +161,7 @@ class PasscodeModalBase extends PureComponent {
 
   render() {
     const {
-      title,
+      title, subtitle,
     } = this.state;
     const {
       cancelBtnOnPress, showCancel, onResetPressed, isShowReset,
@@ -170,6 +171,7 @@ class PasscodeModalBase extends PureComponent {
       <View style={[styles.background, styles.container]}>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <Loc style={[styles.title]} text={title} />
+          {subtitle.length && <Loc style={[styles.title]} text={subtitle} />}
           <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
             {this.renderDots()}
           </Animatable.View>
@@ -202,6 +204,7 @@ PasscodeModalBase.propTypes = {
   onResetPressed: PropTypes.func,
   showCancel: PropTypes.bool,
   isShowReset: PropTypes.bool,
+  subtitle: PropTypes.string,
 };
 
 PasscodeModalBase.defaultProps = {
@@ -209,6 +212,7 @@ PasscodeModalBase.defaultProps = {
   isShowReset: false,
   cancelBtnOnPress: null,
   onResetPressed: null,
+  subtitle: '',
 };
 
 export default PasscodeModalBase;
