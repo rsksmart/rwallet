@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: fontFamily.AvenirBook,
     marginLeft: 11,
+    width: '100%',
   },
   tokenText: {
     fontFamily: fontFamily.AvenirRoman,
@@ -243,7 +244,7 @@ class WalletSelection extends PureComponent {
   getWalletItem = ({ item }) => {
     const { selectedWallet } = this.state;
     const { address: selectedAddress } = selectedWallet;
-    const { address, network } = item;
+    const { address, network, name } = item;
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => { this.setState({ selectedWallet: item }); }}>
         <View style={styles.selection}>
@@ -251,7 +252,10 @@ class WalletSelection extends PureComponent {
             <View style={[network === 'Mainnet' ? styles.mainnet : styles.testnet]}>
               {network && <Text style={styles.network}>{strings(`networkType.${_.toLower(network)}`)}</Text>}
             </View>
-            <Text style={styles.address}>{common.ellipsisAddress(address, 6)}</Text>
+            <View>
+              <Text style={styles.address}>{name}</Text>
+              <Text style={styles.address}>{common.ellipsisAddress(address, 6)}</Text>
+            </View>
           </View>
           <View style={styles.circle}>
             <View style={selectedAddress === address ? styles.isSelected : {}} />
