@@ -419,10 +419,6 @@ class ParseHelper {
     return Parse.Cloud.run('isSubdomainAvailable', params);
   }
 
-  static async querySubdomain(domain, type) {
-    return Parse.Cloud.run('querySubdomain', { domain, type });
-  }
-
   static async fetchRegisteringRnsSubdomains(records) {
     const addresses = _.map(records, (record) => record.address);
     const subdomains = _.map(records, 'subdomain');
