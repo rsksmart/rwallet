@@ -222,6 +222,7 @@ class DAppBrowser extends Component {
             window.ethereum.selectedAddress = '${address}';
             window.address = '${address}';
             window.ethereum.networkVersion = '${this.networkVersion}';
+            window.ethereum.isRWallet = true;
             window.web3 = web3;
 
             // Adapt web3 old version (new web3 version move toDecimal and toBigNumber to utils class).
