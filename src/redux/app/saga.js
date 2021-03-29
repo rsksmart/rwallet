@@ -209,22 +209,6 @@ function* reloginRequest() {
   yield put(actions.login(true));
 }
 
-function* createRawTransaction(action) {
-  const { payload } = action;
-  console.log('saga::createRawTransaction is triggered, payload: ', payload); // This is undefined
-  try {
-    const response = yield call(ParseHelper.createRawTransaction, payload);
-    console.log('saga::createRawTransaction got response, response: ', response);
-    yield put({
-      type: actions.CREATE_RAW_TRANSATION_RESULT,
-      value: response,
-    });
-  } catch (err) {
-    console.log(err);
-    // TODO: need to add notification here if failed
-  }
-}
-
 function* setSingleSettingsRequest(action) {
   const { key, value } = action;
   console.log('saga::setSingleSettingsRequest is triggered, key: ', key, ', value:', value);
@@ -380,7 +364,7 @@ function createFcmChannel() {
   return eventChannel((emitter) => {
     // the subscriber must return an unsubscribe function
     // this will be invoked when the saga calls `channel.close` method
-    const unsubscribeHandler = () => {};
+    const unsubscribeHandler = () => { };
 
     fcmHelper.startListen((notification, fcmType) => {
       emitter(actions.receiveNotification(notification, fcmType));
@@ -516,7 +500,6 @@ export default function* () {
     takeEvery(actions.INIT_FROM_STORAGE, initFromStorageRequest),
     takeEvery(actions.LOGIN, loginRequest),
     takeEvery(actions.RELOGIN, reloginRequest),
-    takeEvery(actions.CREATE_RAW_TRANSATION, createRawTransaction),
     takeEvery(actions.SET_SINGLE_SETTINGS, setSingleSettingsRequest),
     takeEvery(actions.UPDATE_USER, updateUserRequest),
     takeEvery(actions.CHANGE_LANGUAGE, changeLanguageRequest),

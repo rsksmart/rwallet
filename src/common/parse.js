@@ -186,31 +186,6 @@ class ParseHelper {
   }
 
   /**
-   *
-   * @param {object} param
-   * @param {string} param.symbol Symbol of token
-   * @param {string} param.type type of blockchain, Mainnet or Testnet
-   * @param {string} param.sender from address
-   * @param {string} param.receiver to address
-   * @param {string} param.value amount of token to send
-   * @param {string} param.data data field
-   */
-  static createRawTransaction({
-    symbol, type, sender, receiver, value, data, preference,
-  }) {
-    console.log(`ParseHelper::createRawTransaction is called, symbol: ${symbol}, type: ${type}, sender: ${sender}, receiver: ${receiver}, value: ${value}, data: ${data}, preference: ${preference}`);
-    return Parse.Cloud.run('createRawTransaction', {
-      symbol, type, sender, receiver, value, data, preference,
-    }).then((res) => {
-      console.log(`ParseHelper::createRawTransaction received, res: ${JSON.stringify(res)}`);
-      return Promise.resolve(res);
-    }, (err) => {
-      console.log(err);
-      return Promise.reject(err);
-    });
-  }
-
-  /**
    * Send a raw transaction to server
    * @param {*} name Blockchain name, e.g. Bitcoin or Rootstock
    * @param {*} hash 0xf8692...dead0a,

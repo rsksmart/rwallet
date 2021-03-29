@@ -14,8 +14,6 @@ const actions = {
   GET_SERVER_INFO_RESULT: 'GET_SERVER_INFO_RESULT',
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   GET_TRANSACTIONS_RESULT: 'GET_TRANSACTIONS_RESULT',
-  CREATE_RAW_TRANSATION: 'CREATE_RAW_TRANSATION',
-  CREATE_RAW_TRANSATION_RESULT: 'CREATE_RAW_TRANSATION_RESULT',
   SET_ERROR: 'SET_ERROR',
   SET_APPLICATION: 'SET_APPLICATION',
   SET_SETTINGS: 'SET_SETTINGS',
@@ -107,15 +105,6 @@ const actions = {
       symbol, type, address, page,
     },
   }),
-  createRawTransaction: (symbol, type, sender, receiver, value, data) => {
-    console.log('actions::createRawTransaction is called.');
-    return {
-      type: actions.CREATE_RAW_TRANSATION,
-      payload: {
-        symbol, type, sender, receiver, value, data,
-      },
-    };
-  },
   setSingleSettings: (key, value) => ({
     type: actions.SET_SINGLE_SETTINGS,
     key,
