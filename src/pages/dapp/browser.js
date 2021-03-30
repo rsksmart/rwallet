@@ -479,7 +479,8 @@ class DAppBrowser extends Component {
   popupMessageModal = async (payload) => {
     const dappUrl = this.getDappUrl();
     const { id, params } = payload;
-    const message = this.rsk3.utils.hexToAscii(params[0]);
+    const message = params[0].startsWith('0x') ? this.rsk3.utils.hexToAscii(params[0]) : params[0];
+
     this.setState({
       modalView: (
         <MessageModal
@@ -597,7 +598,7 @@ class DAppBrowser extends Component {
       value,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
+    const toAddress = to.toLowerCase();
 
     const isContractAddress = await common.isContractAddress(toAddress, networkId);
 
