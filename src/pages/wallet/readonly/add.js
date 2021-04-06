@@ -17,13 +17,12 @@ import Switch from '../../../components/common/switch/switch';
 import readOnlyStyles from '../../../assets/styles/readonly';
 import common from '../../../common/common';
 import CancelablePromiseUtil from '../../../common/cancelable.promise.util';
-import parseHelper from '../../../common/parse';
-import { defaultErrorNotification, Chain } from '../../../common/constants';
-import { createErrorConfirmation } from '../../../common/confirmation.controller';
+import { Chain } from '../../../common/constants';
 import { strings } from '../../../common/i18n';
 import appActions from '../../../redux/app/actions';
 import { createInfoNotification } from '../../../common/notification.controller';
 import ConvertAddressConfirmation from '../../../components/wallet/convert.address.confirmation';
+import { domainToAddress } from '../rns/domainToAddress';
 
 class AddReadOnlyWallet extends Component {
     static navigationOptions = () => ({
@@ -119,7 +118,6 @@ class AddReadOnlyWallet extends Component {
     }
 
     onCheck = async () => {
-      const { addConfirmation } = this.props;
       const { address } = this.state;
       const { type } = this;
       let newAddress = address;
@@ -127,24 +125,17 @@ class AddReadOnlyWallet extends Component {
       if (common.isValidRnsSubdomain(address)) {
         console.log(`toAddress[${address}] a rns subdomain.`);
         this.setState({ isLoading: true });
+
         try {
-          const subdomainAddress = await CancelablePromiseUtil.makeCancelable(parseHelper.querySubdomain(address, type), this);
-          if (subdomainAddress) {
-            newAddress = subdomainAddress;
-            subdomain = address;
-          } else {
-            this.setState({ errorText: strings('page.wallet.addReadOnlyWallet.rnsInvalid'), canSubmit: false });
-            return;
-          }
+          const rnsResponse = await domainToAddress(address, 'RSK', type);
+          newAddress = rnsResponse;
+          subdomain = address;
         } catch (error) {
-          const confirmation = createErrorConfirmation(
-            defaultErrorNotification.title,
-            defaultErrorNotification.message,
-            'button.retry',
-            () => this.onCheck(),
-            () => null,
-          );
-          addConfirmation(confirmation);
+          this.setState({
+            errorText: strings('page.wallet.addReadOnlyWallet.rnsInvalid'),
+            canSubmit: false,
+            isLoading: false,
+          });
           return;
         } finally {
           this.setState({ isLoading: false });
