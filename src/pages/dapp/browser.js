@@ -336,7 +336,7 @@ class DAppBrowser extends Component {
                 window.ethereum.sendAsync = sendAsync;
               }
               if (!window.ethereum.request) {
-                window.ethereum.request = sendAsync;
+                window.ethereum.request = (payload) => sendAsync(payload).then(response => response.result)
               }
             }, 1000)
           }
