@@ -328,7 +328,7 @@ class DAppBrowser extends Component {
             }
 
             // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
-            setInterval(() => {
+            setTimeout(() => {
               if (!window.ethereum.send) {
                 window.ethereum.send = sendAsync;
               }
@@ -336,7 +336,12 @@ class DAppBrowser extends Component {
                 window.ethereum.sendAsync = sendAsync;
               }
               if (!window.ethereum.request) {
-                window.ethereum.request = (payload) => sendAsync(payload).then(response => response.result)
+                window.ethereum.request = (payload) =>
+                  new Promise((resolve, reject) =>
+                    sendAsync(payload).then(response =>
+                      response.result
+                        ? resolve(response.result)
+                        : reject(new Error(response.message || 'provider error'))));
               }
             }, 1000)
           }
