@@ -45,6 +45,7 @@ The first three steps are needed for both Android and iOS devices.
     ```
     * If .env file is changed, manually edit the file importing react-native-dotenv (`rwallet/config.js`) by either adding an empty line or whitespace will work.
     * For security, we force the use of https to transfer data. If you use http during development, you need to set NSAllowsArbitraryLoads to true in the iOS environment and useCleartextTraffic to true in the Android environment.
+    * **Note**: There are 2 examples for **Dogfood** (`.env_dogfood`) and **Local** (`.env_local`) environments for easy configuration. Copy the files to `.env` for a quick change of environments.
 1.  In order to use firebase messaging on Android, put google-services.json in the android/app.
 1. `npm run android` or `npm run ios`. The script will first start server daemon in a separate terminal window, the same effect as `npm run start`. You should see console output like below.
     ```
