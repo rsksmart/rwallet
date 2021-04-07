@@ -135,6 +135,6 @@ end
 
 error do |lane, exception|
     if !ENV['SLACK_URL'].empty?
-        #slack(message: "Error in #{lane}(#{exception})")
+        slack(message: "Error in #{lane}(#{exception})")
     end
 end
