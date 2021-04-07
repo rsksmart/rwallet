@@ -116,23 +116,6 @@ class RootComponent extends Component {
     initLiveQueryBlockHeights();
   }
 
-  onRequestClose = () => {
-    const {
-      passcodeFallback, closePasscodeModal, showPasscode, hideFingerprintModal, isShowFingerprintModal, fingerprintFallback,
-    } = this.props;
-    if (showPasscode) {
-      if (passcodeFallback) {
-        passcodeFallback();
-      }
-      closePasscodeModal();
-    } else if (isShowFingerprintModal) {
-      if (fingerprintFallback) {
-        fingerprintFallback();
-      }
-      hideFingerprintModal();
-    }
-  }
-
   render() {
     const {
       showNotification, notification, removeNotification, notificationCloseCallback,
@@ -158,7 +141,7 @@ class RootComponent extends Component {
             <Modal
               animationType="fade"
               transparent
-              onRequestClose={this.onRequestClose}
+              onRequestClose={() => false}
             >
               <BlurView
                 blurType="dark"
