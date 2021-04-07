@@ -36,7 +36,7 @@ platform :ios do
     end
 
     desc 'Build the iOS application.'
-    private_lane :build do
+    lane :build do
         update_project_team(path: XCODEPROJ)
         match
         gym(scheme: 'rwallet', project: XCODEPROJ)
@@ -44,15 +44,18 @@ platform :ios do
 
     desc 'Ship to Testflight.'
     lane :beta do |options|
-        version = set_version(version: options[:version]),
-        set_build(build: options[:build]),
-        build
-        pilot
-        if !ENV['SLACK_URL'].empty?
-            slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
+        begin
+            version = set_version(version: options[:version]),
+            set_build(build: options[:build]),
+            build
+            pilot
+            if !ENV['SLACK_URL'].empty?
+                slack(message: "App #{get_version}(#{get_build}) was built and successfully uploaded to Beta :rocket:")
+            end
+        rescue => ex
+            UI.error(ex)
         end
     end
-
 end
 
 platform :android do
@@ -126,5 +129,12 @@ platform :android do
 #        supply(track: 'internal', track_promote_to: 'internal')
         git_commit(path: GRADLE_FILE, message: 'Release ' + options[:version_name], allow_nothing_to_commit: true)
         push_to_git_remote
+    end
+end
+
+
+error do |lane, exception|
+    if !ENV['SLACK_URL'].empty?
+        slack(message: "Error in #{lane}(#{exception})")
     end
 end
