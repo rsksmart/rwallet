@@ -403,6 +403,9 @@ class ParseHelper {
       .ascending('createdAt')
       .find();
     const status = parseDataUtil.getSubdomainStatus(result, records);
+    console.log('fetchRegisteringRnsSubdomains - subdomain registration status');
+    console.log({ status });
+    console.log({ result });
     return status;
   }
 
