@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
 import appActions from '../../../redux/app/actions';
+import { WEAK_PASSCODES } from '../../../common/constants';
 
 const STATE_OLD_PASSCODE = 0;
 const STATE_NEW_PASSCODE = 1;
 const STATE_CONFIRM_PASSCODE = 2;
 const STATE_OLD_PASSCODE_INCORRECT = 3;
 const STATE_NOT_MATCHED = 4;
+const STATE_TOO_WEAK = 5;
 
 class ResetPasscodeModal extends PureComponent {
   constructor(props) {
@@ -20,6 +22,7 @@ class ResetPasscodeModal extends PureComponent {
       { index: STATE_CONFIRM_PASSCODE, title: 'modal.passcode.confirmNewPasscode' },
       { index: STATE_OLD_PASSCODE_INCORRECT, title: 'modal.passcode.oldIncorrect' },
       { index: STATE_NOT_MATCHED, title: 'modal.passcode.notMatched' },
+      { index: STATE_TOO_WEAK, title: 'modal.passcode.tooWeak' },
     ];
     this.state = { flowIndex: STATE_OLD_PASSCODE };
     this.tempPasscode = '';
@@ -34,6 +37,19 @@ class ResetPasscodeModal extends PureComponent {
   cancelBtnOnPress = () => {
     this.closePasscodeModal();
   };
+
+  handleNewPasscode = (newPasscode) => {
+    let flowIndex;
+    if (WEAK_PASSCODES.includes(newPasscode)) {
+      flowIndex = STATE_TOO_WEAK;
+    } else {
+      flowIndex = STATE_CONFIRM_PASSCODE;
+      this.tempPasscode = newPasscode;
+    }
+    this.setState({ flowIndex });
+    const { title } = _.find(this.flows, { index: flowIndex });
+    this.baseModal.resetModal(title);
+  }
 
   passcodeOnFill = async (input) => {
     const { passcode, setPasscode } = this.props;
@@ -53,10 +69,8 @@ class ResetPasscodeModal extends PureComponent {
         }
         break;
       case STATE_NEW_PASSCODE:
-        this.tempPasscode = input;
-        this.setState({ flowIndex: STATE_CONFIRM_PASSCODE });
-        flow = _.find(this.flows, { index: STATE_CONFIRM_PASSCODE });
-        this.baseModal.resetModal(flow.title);
+      case STATE_TOO_WEAK:
+        this.handleNewPasscode(input);
         break;
       case STATE_CONFIRM_PASSCODE:
       case STATE_NOT_MATCHED:
