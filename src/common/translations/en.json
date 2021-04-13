@@ -502,7 +502,7 @@
       "confirmNewPasscode": "Confirm your new passcode",
       "oldIncorrect": "Old Passcode is incorrect, try again",
       "notMatched": "Passcode does not match. Please try again.",
-      "tooWeak": "Please, choose a stronger passcode"
+      "tooWeak": "Please, choose a stronger passcode."
     },
     "verifyPasscode": {
       "type": "Type your passcode",
