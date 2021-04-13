@@ -346,7 +346,7 @@
         "title": "Configurar billetera",
         "walletContains": {
           "one": "Esta billetera contiene 1 activos",
-          "other": "Esta billetera contiene {count} activos"
+          "other": "Esta billetera contiene {{count}} activos"
         },
         "wallets": "billeteras",
         "security": "Seguridad",
