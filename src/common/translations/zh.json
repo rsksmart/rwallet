@@ -508,7 +508,8 @@
       "typeNewPasscode": "输入新密码",
       "confirmNewPasscode": "确认新密码",
       "oldIncorrect": "旧密码不正确，请重试",
-      "notMatched": "密码不匹配，请重试。"
+      "notMatched": "密码不匹配，请重试。",
+      "tooWeak": "请选择一个更强的密码。"
     },
     "verifyPasscode": {
       "type": "输入密码",
