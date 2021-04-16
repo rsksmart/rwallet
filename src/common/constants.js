@@ -124,6 +124,7 @@ export const TIMEOUT_VALUE = {
   WALLET_CONNECT: 20000, // 20 sec
 };
 
+// sorted by popularity according to https://www.datagenetics.com/blog/september32012/
 export const WEAK_PASSCODES = [
   '1234',
   '1111',
