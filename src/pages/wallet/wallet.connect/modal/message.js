@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, ScrollView, StyleSheet,
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 import { strings } from '../../../../common/i18n';
@@ -25,8 +27,12 @@ const styles = StyleSheet.create({
     color: color.dustyGray,
     fontSize: 15,
     fontFamily: fontFamily.AvenirBook,
-    width: '60%',
     textAlign: 'right',
+  },
+  scroll: {
+    width: '60%',
+    padding: 5,
+    maxHeight: 200,
   },
 });
 
@@ -41,7 +47,9 @@ export default function MessageModal({
         <>
           <View style={styles.line}>
             <Text style={styles.lineTitle}>{strings('page.wallet.walletconnect.message')}</Text>
-            <Text style={styles.lineValue}>{message}</Text>
+            <ScrollView style={styles.scroll}>
+              <Text style={styles.lineValue}>{message}</Text>
+            </ScrollView>
           </View>
         </>
         )}

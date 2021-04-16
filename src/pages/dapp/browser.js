@@ -222,6 +222,7 @@ class DAppBrowser extends Component {
             window.ethereum.selectedAddress = '${address}';
             window.address = '${address}';
             window.ethereum.networkVersion = '${this.networkVersion}';
+            window.ethereum.isRWallet = true;
             window.web3 = web3;
 
             // Adapt web3 old version (new web3 version move toDecimal and toBigNumber to utils class).
@@ -327,7 +328,7 @@ class DAppBrowser extends Component {
             }
 
             // ensure window.ethereum.send and window.ethereum.sendAsync are not undefined
-            setInterval(() => {
+            setTimeout(() => {
               if (!window.ethereum.send) {
                 window.ethereum.send = sendAsync;
               }
@@ -335,7 +336,12 @@ class DAppBrowser extends Component {
                 window.ethereum.sendAsync = sendAsync;
               }
               if (!window.ethereum.request) {
-                window.ethereum.request = sendAsync;
+                window.ethereum.request = (payload) =>
+                  new Promise((resolve, reject) =>
+                    sendAsync(payload).then(response =>
+                      response.result
+                        ? resolve(response.result)
+                        : reject(new Error(response.message || 'provider error'))));
               }
             }, 1000)
           }
@@ -478,7 +484,8 @@ class DAppBrowser extends Component {
   popupMessageModal = async (payload) => {
     const dappUrl = this.getDappUrl();
     const { id, params } = payload;
-    const message = this.rsk3.utils.hexToAscii(params[0]);
+    const message = params[0].startsWith('0x') ? this.rsk3.utils.hexToAscii(params[0]) : params[0];
+
     this.setState({
       modalView: (
         <MessageModal
@@ -596,7 +603,7 @@ class DAppBrowser extends Component {
       value,
     };
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const toAddress = Rsk3.utils.toChecksumAddress(to, networkId);
+    const toAddress = to.toLowerCase();
 
     const isContractAddress = await common.isContractAddress(toAddress, networkId);
 
