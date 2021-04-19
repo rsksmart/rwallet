@@ -12,6 +12,7 @@ import references from '../../../assets/references';
 
 const buttonSize = 75;
 const dotSize = 13;
+const WAITING_TIME_MS = 5 * 1000 * 60;
 
 const styles = StyleSheet.create({
   background: {
@@ -96,12 +97,21 @@ class PasscodeModalBase extends PureComponent {
     this.state = {
       title,
       input: '',
+      locked: false,
+      timer: 0,
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
+  componentWillUnmount() {
+    // fixes Warning: Can't perform a React state update on an unmounted component
+    this.setState = () => { };
+  }
+
   onPressButton(i) {
+    const { locked } = this.state;
+    if (locked) return;
     const { passcodeOnFill } = this.props;
     this.setState((prevState) => ({ input: prevState.input + i }), () => {
       const { input } = this.state;
@@ -127,6 +137,25 @@ class PasscodeModalBase extends PureComponent {
   rejectPasscord = (title) => {
     this.setState({ input: '', title }, () => this.dotsView.shake(800));
   };
+
+  lock = () => {
+    // TODO: load timer on start
+    // TODO: persist timer to avoid close, open and retry
+    // TODO: create new entry in translations for this text
+    this.setState({
+      input: '', title: 'You can try again in', locked: true, timer: WAITING_TIME_MS,
+    });
+
+    setInterval(() => this.setState((prevState) => ({ timer: prevState.timer - 1000 })), 1000);
+
+    setTimeout(() => {
+      this.setState({
+        title: 'modal.verifyPasscode.type',
+        locked: false,
+        timer: 0,
+      });
+    }, WAITING_TIME_MS);
+  }
 
   renderButtons() {
     const buttons = [];
@@ -158,10 +187,18 @@ class PasscodeModalBase extends PureComponent {
     return dots;
   }
 
+  renderTitle() {
+    const { locked, timer, title } = this.state;
+
+    if (!locked) return <Loc style={[styles.title]} text={title} />;
+
+    const minutes = Math.floor(timer / 60 / 1000).toString().padStart(2, '0');
+    const seconds = Math.floor((timer % 60000) / 1000).toString().padStart(2, '0');
+
+    return <Loc style={[styles.title]} text={`${title} ${minutes}:${seconds}`} />;
+  }
+
   render() {
-    const {
-      title,
-    } = this.state;
     const {
       cancelBtnOnPress, showCancel, onResetPressed, isShowReset,
     } = this.props;
@@ -169,7 +206,7 @@ class PasscodeModalBase extends PureComponent {
     return (
       <View style={[styles.background, styles.container]}>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Loc style={[styles.title]} text={title} />
+          {this.renderTitle()}
           <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
             {this.renderDots()}
           </Animatable.View>
