@@ -504,7 +504,8 @@
       "typeNewPasscode": "Escriba su nueva contraseña",
       "confirmNewPasscode": "Confirme su nueva contraseña",
       "oldIncorrect": "El código de acceso anterior es incorrecto, intente nuevamente",
-      "notMatched": "El código de acceso no coincide. Inténtalo de nuevo."
+      "notMatched": "El código de acceso no coincide. Inténtalo de nuevo.",
+      "tooWeak": "Por favor, elija un código más seguro."
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",

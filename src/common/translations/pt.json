@@ -517,7 +517,8 @@
       "typeNewPasscode": "Digite seu novo PIN",
       "confirmNewPasscode": "Confirme seu novo PIN",
       "oldIncorrect": "O PIN antigo está incorreto. Tente novamente",
-      "notMatched": "O PIN não corresponde. Por favor, tente novamente."
+      "notMatched": "O PIN não corresponde. Por favor, tente novamente.",
+      "tooWeak": "Por favor, escolha um PIN mais seguro"
     },
     "verifyPasscode": {
       "type": "Digite seu PIN",

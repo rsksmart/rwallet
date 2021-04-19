@@ -507,7 +507,8 @@
       "typeNewPasscode": "신규 패스코드 입력",
       "confirmNewPasscode": "신규 패스코드 확인",
       "oldIncorrect": "기존 패스코드가 잘못되었습니다. 다시 시도하십시오",
-      "notMatched": "패스코드가 일치하지 않습니다. 다시 시도하십시오."
+      "notMatched": "패스코드가 일치하지 않습니다. 다시 시도하십시오.",
+      "tooWeak": "더 강력한 암호를 선택하십시오."
     },
     "verifyPasscode": {
       "type": "패스코드 입력",
