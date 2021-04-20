@@ -159,7 +159,7 @@ class PasscodeModalBase extends PureComponent {
       input: '', title: 'You can try again in', locked: true, timer: WAITING_TIME_MS,
     });
 
-    setInterval(() => this.setState((prevState) => ({ timer: prevState.timer - 1000 })), 1000);
+    const interval = setInterval(() => this.setState((prevState) => ({ timer: prevState.timer - 1000 })), 1000);
 
     setTimeout(() => {
       this.setState({
@@ -167,6 +167,7 @@ class PasscodeModalBase extends PureComponent {
         locked: false,
         timer: 0,
       });
+      clearInterval(interval);
     }, WAITING_TIME_MS);
   }
 
