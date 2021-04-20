@@ -13,8 +13,25 @@ import references from '../../../assets/references';
 const buttonSize = 75;
 const dotSize = 13;
 
-const MAX_WRONG_ATTEMPTS = 5;
-const WAITING_TIME_MS = 5 * 1000 * 60;
+// TODO: move to utils file
+const WRONG_ATTEMPTS = {
+  step1: {
+    maxAttempts: 6,
+    waitingMinutes: 1,
+  },
+  step2: {
+    maxAttempts: 7,
+    waitingMinutes: 5,
+  },
+  step3: {
+    maxAttempts: 8,
+    waitingMinutes: 15,
+  },
+  step4: {
+    maxAttempts: 10,
+    waitingMinutes: 60,
+  },
+};
 
 const styles = StyleSheet.create({
   background: {
@@ -142,24 +159,32 @@ class PasscodeModalBase extends PureComponent {
     this.setState({ input: '', title }, () => this.dotsView.shake(800));
   };
 
-  handleWrongPasscode = () => {
-    this.wrongAttemptsCounter += 1;
-    if (this.wrongAttemptsCounter < MAX_WRONG_ATTEMPTS) {
-      this.rejectPasscord('modal.verifyPasscode.incorrect');
-      return;
-    }
-    this.lock();
+  // TODO: move to utils file
+  getClosestStep = ({ numberOfAttempts }) => {
+    // returns most accurate WRONG_ATTEMPTS step value according to the current number of consecutive wrong attempts
+    let lastStep = WRONG_ATTEMPTS.step1;
+    let lastStepDiff = numberOfAttempts - lastStep.maxAttempts;
+    Object.values(WRONG_ATTEMPTS).forEach((step) => {
+      const currentDiff = numberOfAttempts - step.maxAttempts;
+      if (currentDiff >= 0 && lastStepDiff > currentDiff) {
+        lastStepDiff = currentDiff;
+        lastStep = step;
+      }
+    });
+    return lastStep;
   }
 
-  lock = () => {
-    // TODO: load timer on start
-    // TODO: persist timer to avoid close, open and retry
-    // TODO: create new entry in translations for this text
+  lock = ({ milliseconds }) => {
+    // TODO: register string on translations file
     this.setState({
-      input: '', title: 'You can try again in', locked: true, timer: WAITING_TIME_MS,
+      input: '', title: 'You can try again in', locked: true, timer: milliseconds,
     });
 
-    const interval = setInterval(() => this.setState((prevState) => ({ timer: prevState.timer - 1000 })), 1000);
+    // updates timer every 1 second
+    const interval = setInterval(
+      () => this.setState((prevState) => ({ timer: prevState.timer - 1000 })),
+      1000,
+    );
 
     setTimeout(() => {
       this.setState({
@@ -168,7 +193,17 @@ class PasscodeModalBase extends PureComponent {
         timer: 0,
       });
       clearInterval(interval);
-    }, WAITING_TIME_MS);
+    }, milliseconds);
+  }
+
+  handleWrongPasscode = () => {
+    this.wrongAttemptsCounter += 1;
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
+      this.rejectPasscord('modal.verifyPasscode.incorrect');
+      return;
+    }
+    const { waitingMinutes } = this.getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
   }
 
   renderButtons() {
