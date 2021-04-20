@@ -108,10 +108,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.rsk.rwallet.reactnative"
+        applicationId "com.rsk.rwallet.v2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 28
+        versionCode 36
         versionName "1.4.1"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true

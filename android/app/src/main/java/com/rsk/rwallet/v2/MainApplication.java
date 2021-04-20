@@ -1,4 +1,4 @@
-package com.rsk.rwallet.reactnative;
+package com.rsk.rwallet.v2;
 
 import android.app.Application;
 import android.content.Context;
