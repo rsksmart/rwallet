@@ -12,6 +12,8 @@ import references from '../../../assets/references';
 
 const buttonSize = 75;
 const dotSize = 13;
+
+const MAX_WRONG_ATTEMPTS = 5;
 const WAITING_TIME_MS = 5 * 1000 * 60;
 
 const styles = StyleSheet.create({
@@ -102,6 +104,7 @@ class PasscodeModalBase extends PureComponent {
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
+    this.wrongAttemptsCounter = 0;
   }
 
   componentWillUnmount() {
@@ -110,6 +113,7 @@ class PasscodeModalBase extends PureComponent {
   }
 
   onPressButton(i) {
+    // ignore everything when locked
     const { locked } = this.state;
     if (locked) return;
     const { passcodeOnFill } = this.props;
@@ -137,6 +141,15 @@ class PasscodeModalBase extends PureComponent {
   rejectPasscord = (title) => {
     this.setState({ input: '', title }, () => this.dotsView.shake(800));
   };
+
+  handleWrongPasscode = () => {
+    this.wrongAttemptsCounter += 1;
+    if (this.wrongAttemptsCounter < MAX_WRONG_ATTEMPTS) {
+      this.rejectPasscord('modal.verifyPasscode.incorrect');
+      return;
+    }
+    this.lock();
+  }
 
   lock = () => {
     // TODO: load timer on start
