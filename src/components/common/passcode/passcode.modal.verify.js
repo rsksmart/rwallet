@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
+import storage from '../../../common/storage';
 
 class VerifyPasscodeModal extends PureComponent {
   constructor(props) {
@@ -13,15 +14,16 @@ class VerifyPasscodeModal extends PureComponent {
     this.passcodeFallback = passcodeFallback;
     this.passcodeOnFill = this.passcodeOnFill.bind(this);
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
-    this.wrongAttemptsCounter = 0; // TODO: persist
   }
 
   passcodeOnFill = async (input) => {
     const { passcode } = this.props;
     if (input === passcode) {
-      this.wrongAttemptsCounter = 0;
       this.baseModal.resetModal();
       this.closePasscodeModal();
+      // clears data from wrong attempts
+      storage.setLastPasscodeAttempt();
+      storage.setWrongPasscodeCounter(0);
       if (this.passcodeCallback) {
         this.passcodeCallback();
       }

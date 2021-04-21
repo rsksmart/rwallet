@@ -9,6 +9,7 @@ import color from '../../../assets/styles/color';
 import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
 import references from '../../../assets/references';
+import storage from '../../../common/storage';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -121,7 +122,22 @@ class PasscodeModalBase extends PureComponent {
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
-    this.wrongAttemptsCounter = 0;
+  }
+
+  async componentDidMount() {
+    this.wrongAttemptsCounter = parseInt(await storage.getWrongPasscodeCounter(), 10) || 0;
+
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
+      return;
+    }
+    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
+    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
+    const { waitingMinutes } = this.getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
+
+    if (milliseconds > 0) {
+      this.lock({ milliseconds });
+    }
   }
 
   componentWillUnmount() {
@@ -196,13 +212,15 @@ class PasscodeModalBase extends PureComponent {
     }, milliseconds);
   }
 
-  handleWrongPasscode = () => {
+  handleWrongPasscode = async () => {
     this.wrongAttemptsCounter += 1;
+    storage.setWrongPasscodeCounter(this.wrongAttemptsCounter);
     if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
       this.rejectPasscord('modal.verifyPasscode.incorrect');
       return;
     }
     const { waitingMinutes } = this.getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    storage.setLastPasscodeAttempt(Date.now());
     this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
   }
 
