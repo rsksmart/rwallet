@@ -11,29 +11,13 @@ import Loc from '../misc/loc';
 import references from '../../../assets/references';
 import storage from '../../../common/storage';
 import Loader from '../misc/loader';
+import {
+  getClosestStep,
+  WRONG_ATTEMPTS_STEPS,
+} from './wrongPasscodeUtils';
 
 const buttonSize = 75;
 const dotSize = 13;
-
-// TODO: move to utils file
-const WRONG_ATTEMPTS = {
-  step1: {
-    maxAttempts: 6,
-    waitingMinutes: 1,
-  },
-  step2: {
-    maxAttempts: 7,
-    waitingMinutes: 5,
-  },
-  step3: {
-    maxAttempts: 8,
-    waitingMinutes: 15,
-  },
-  step4: {
-    maxAttempts: 10,
-    waitingMinutes: 60,
-  },
-};
 
 const styles = StyleSheet.create({
   background: {
@@ -126,22 +110,9 @@ class PasscodeModalBase extends PureComponent {
     this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
-  async componentDidMount() {
-    this.wrongAttemptsCounter = parseInt(await storage.getWrongPasscodeCounter(), 10) || 0;
-
-    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
-      this.setState({ isLoading: false });
-      return;
-    }
-    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
-    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
-    const { waitingMinutes } = this.getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
-    const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
-
-    if (milliseconds > 0) {
-      this.lock({ milliseconds });
-    }
-    this.setState({ isLoading: false });
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    this.initialize().then(() => this.setState({ isLoading: false }));
   }
 
   componentWillUnmount() {
@@ -179,25 +150,13 @@ class PasscodeModalBase extends PureComponent {
     this.setState({ input: '', title }, () => this.dotsView.shake(800));
   };
 
-  // TODO: move to utils file
-  getClosestStep = ({ numberOfAttempts }) => {
-    // returns most accurate WRONG_ATTEMPTS step value according to the current number of consecutive wrong attempts
-    let lastStep = WRONG_ATTEMPTS.step1;
-    let lastStepDiff = numberOfAttempts - lastStep.maxAttempts;
-    Object.values(WRONG_ATTEMPTS).forEach((step) => {
-      const currentDiff = numberOfAttempts - step.maxAttempts;
-      if (currentDiff >= 0 && lastStepDiff > currentDiff) {
-        lastStepDiff = currentDiff;
-        lastStep = step;
-      }
-    });
-    return lastStep;
-  }
-
   lock = ({ milliseconds }) => {
     // TODO: register string on translations file
     this.setState({
-      input: '', title: 'You can try again in', locked: true, timer: milliseconds,
+      input: '',
+      title: 'You can try again in',
+      locked: true,
+      timer: milliseconds,
     });
 
     // updates timer every 1 second
@@ -219,13 +178,31 @@ class PasscodeModalBase extends PureComponent {
   handleWrongPasscode = async () => {
     this.wrongAttemptsCounter += 1;
     storage.setWrongPasscodeCounter(this.wrongAttemptsCounter);
-    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
+
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
+      // still doesn't reach the first step
       this.rejectPasscord('modal.verifyPasscode.incorrect');
       return;
     }
-    const { waitingMinutes } = this.getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
     storage.setLastPasscodeAttempt(Date.now());
     this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
+  }
+
+  async initialize() {
+    this.wrongAttemptsCounter = parseInt(await storage.getWrongPasscodeCounter(), 10) || 0;
+
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
+      return;
+    }
+    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
+    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
+    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
+
+    if (milliseconds > 0) {
+      this.lock({ milliseconds });
+    }
   }
 
   renderButtons() {
@@ -275,37 +252,34 @@ class PasscodeModalBase extends PureComponent {
     } = this.props;
     const { isLoading } = this.state;
 
+    if (isLoading) {
+      return <Loader loading={isLoading} />;
+    }
+
     return (
       <View style={[styles.background, styles.container]}>
-        {
-          isLoading && <Loader loading={isLoading} />
-        }
-        {
-          !isLoading && (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              {this.renderTitle()}
-              <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
-                {this.renderDots()}
-              </Animatable.View>
-              <View style={styles.buttonView}>
-                {isShowReset && (
-                  <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
-                    <Image source={references.images.passcodeReset} />
-                  </TouchableOpacity>
-                )}
-                {showCancel && (
-                  <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                    <Image source={references.images.passcodeCancel} />
-                  </TouchableOpacity>
-                )}
-                {this.renderButtons()}
-                <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
-                  <Image source={references.images.passcodeDelete} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )
-        }
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          {this.renderTitle()}
+          <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+            {this.renderDots()}
+          </Animatable.View>
+          <View style={styles.buttonView}>
+            {isShowReset && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
+                <Image source={references.images.passcodeReset} />
+              </TouchableOpacity>
+            )}
+            {showCancel && (
+              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
+                <Image source={references.images.passcodeCancel} />
+              </TouchableOpacity>
+            )}
+            {this.renderButtons()}
+            <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
+              <Image source={references.images.passcodeDelete} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
