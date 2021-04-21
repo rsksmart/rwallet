@@ -10,6 +10,7 @@ import fontFamily from '../../../assets/styles/font.family';
 import Loc from '../misc/loc';
 import references from '../../../assets/references';
 import storage from '../../../common/storage';
+import Loader from '../misc/loader';
 
 const buttonSize = 75;
 const dotSize = 13;
@@ -119,6 +120,7 @@ class PasscodeModalBase extends PureComponent {
       input: '',
       locked: false,
       timer: 0,
+      isLoading: true,
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
@@ -128,6 +130,7 @@ class PasscodeModalBase extends PureComponent {
     this.wrongAttemptsCounter = parseInt(await storage.getWrongPasscodeCounter(), 10) || 0;
 
     if (this.wrongAttemptsCounter < WRONG_ATTEMPTS.step1.maxAttempts) {
+      this.setState({ isLoading: false });
       return;
     }
     const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
@@ -138,6 +141,7 @@ class PasscodeModalBase extends PureComponent {
     if (milliseconds > 0) {
       this.lock({ milliseconds });
     }
+    this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
@@ -269,31 +273,39 @@ class PasscodeModalBase extends PureComponent {
     const {
       cancelBtnOnPress, showCancel, onResetPressed, isShowReset,
     } = this.props;
+    const { isLoading } = this.state;
 
     return (
       <View style={[styles.background, styles.container]}>
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          {this.renderTitle()}
-          <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
-            {this.renderDots()}
-          </Animatable.View>
-          <View style={styles.buttonView}>
-            {isShowReset && (
-              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
-                <Image source={references.images.passcodeReset} />
-              </TouchableOpacity>
-            )}
-            {showCancel && (
-              <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
-                <Image source={references.images.passcodeCancel} />
-              </TouchableOpacity>
-            )}
-            {this.renderButtons()}
-            <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
-              <Image source={references.images.passcodeDelete} />
-            </TouchableOpacity>
-          </View>
-        </View>
+        {
+          isLoading && <Loader loading={isLoading} />
+        }
+        {
+          !isLoading && (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              {this.renderTitle()}
+              <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
+                {this.renderDots()}
+              </Animatable.View>
+              <View style={styles.buttonView}>
+                {isShowReset && (
+                  <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={onResetPressed}>
+                    <Image source={references.images.passcodeReset} />
+                  </TouchableOpacity>
+                )}
+                {showCancel && (
+                  <TouchableOpacity style={[styles.operationButton, styles.leftBottomButton]} onPress={cancelBtnOnPress}>
+                    <Image source={references.images.passcodeCancel} />
+                  </TouchableOpacity>
+                )}
+                {this.renderButtons()}
+                <TouchableOpacity style={[styles.operationButton, styles.deleteButton]} onPress={this.onDeletePressed}>
+                  <Image source={references.images.passcodeDelete} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        }
       </View>
     );
   }
