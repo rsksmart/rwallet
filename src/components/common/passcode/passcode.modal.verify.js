@@ -28,7 +28,7 @@ class VerifyPasscodeModal extends PureComponent {
   }
 
   componentDidMount() {
-    this.initialize();
+    this.initialize().then(this.setState({ isLoading: false }));
   }
 
   initialize = async () => {
@@ -49,18 +49,15 @@ class VerifyPasscodeModal extends PureComponent {
       }
     } catch (error) {
       console.error('Unexpected error: ', error);
-    } finally {
-      this.setState({ isLoading: false });
     }
   }
 
   lock = ({ milliseconds }) => {
-    // TODO: register string on translations file
-    this.baseModal.resetModal('You can try again in: ');
     this.setState({
       locked: true,
       timer: milliseconds,
     });
+    this.baseModal.resetModal('modal.verifyPasscode.tryAgainIn');
 
     // updates timer every 1 second
     const interval = setInterval(
@@ -72,6 +69,7 @@ class VerifyPasscodeModal extends PureComponent {
       this.setState({
         locked: false,
         timer: undefined,
+        title: 'modal.verifyPasscode.type',
       });
       this.baseModal.resetModal('modal.verifyPasscode.type');
       clearInterval(interval);

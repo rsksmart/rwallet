@@ -20,8 +20,12 @@ export const WRONG_ATTEMPTS_STEPS = {
 };
 
 export const clearWrongAttempts = () => {
-  storage.setLastPasscodeAttempt();
-  storage.setWrongPasscodeCounter(0);
+  try {
+    storage.setLastPasscodeAttempt();
+    storage.setWrongPasscodeCounter(0);
+  } catch (error) {
+    console.error('Error cleaning wrong attempts', error);
+  }
 };
 
 // returns most accurate WRONG_ATTEMPTS step value according to the current number of consecutive wrong attempts

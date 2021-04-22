@@ -92,18 +92,26 @@ const styles = StyleSheet.create({
 class PasscodeModalBase extends PureComponent {
   constructor(props) {
     super(props);
-    const { title } = props;
+    const { title, locked } = props;
     this.state = {
       title,
       input: '',
+      locked,
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { locked } = nextProps;
+    this.setState({
+      locked,
+    });
+  }
+
   onPressButton(i) {
     // ignore everything when locked
-    const { locked } = this.props;
+    const { locked } = this.state;
     if (locked) return;
     const { passcodeOnFill } = this.props;
     this.setState((prevState) => ({ input: prevState.input + i }), () => {
