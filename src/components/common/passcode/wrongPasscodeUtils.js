@@ -39,3 +39,10 @@ export const getClosestStep = ({ numberOfAttempts }) => {
   });
   return lastStep;
 };
+
+export const getTimerString = ({ milliseconds }) => {
+  if (!milliseconds) return '';
+  const minutes = Math.floor(milliseconds / 60 / 1000).toString().padStart(2, '0');
+  const seconds = Math.floor((milliseconds % 60000) / 1000).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
