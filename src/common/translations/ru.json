@@ -506,7 +506,8 @@
     },
     "verifyPasscode": {
       "type": "Введите свой пароль",
-      "incorrect": "Неверный пароль"
+      "incorrect": "Неверный пароль",
+      "tryAgainIn": "Вы можете попробовать еще раз через"
     },
     "touchSensor": {
       "usePasscode": "Используйте пароль",

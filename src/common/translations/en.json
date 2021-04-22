@@ -506,7 +506,8 @@
     },
     "verifyPasscode": {
       "type": "Type your passcode",
-      "incorrect": "Passcode is incorrect"
+      "incorrect": "Passcode is incorrect",
+      "tryAgainIn": "You can try again in"
     },
     "touchSensor": {
       "usePasscode": "Use passcode",

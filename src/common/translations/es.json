@@ -509,7 +509,8 @@
     },
     "verifyPasscode": {
       "type": "Escribe tu contraseña",
-      "incorrect": "La contraseña es incorrecta"
+      "incorrect": "La contraseña es incorrecta",
+      "tryAgainIn": "Puede intentar de nuevo en"
     },
     "touchSensor": {
       "usePasscode": "Usar contraseña",

@@ -512,7 +512,8 @@
     },
     "verifyPasscode": {
       "type": "패스코드 입력",
-      "incorrect": "패스코드가 잘못되었습니다"
+      "incorrect": "패스코드가 잘못되었습니다",
+      "tryAgainIn": "다음에서 다시 시도 할 수 있습니다."
     },
     "touchSensor": {
       "usePasscode": "패스코드 사용",

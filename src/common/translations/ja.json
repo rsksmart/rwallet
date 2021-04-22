@@ -506,7 +506,8 @@
     },
     "verifyPasscode": {
       "type": "パスコードを入力してください",
-      "incorrect": "パスコードが正しくありません"
+      "incorrect": "パスコードが正しくありません",
+      "tryAgainIn": "で再試行できます"
     },
     "touchSensor": {
       "usePasscode": "パスコードを使用",
