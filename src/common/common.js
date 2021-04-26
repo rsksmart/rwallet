@@ -630,7 +630,7 @@ const common = {
       const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
       const rsk3 = new Rsk3(rskEndpoint);
       rsk3.getCode(address).then((code) => {
-        if (code !== '0x00' || '0x0') {
+        if (code !== '0x00' || code !== '0x0') {
           resolve(true);
         } else {
           resolve(false);
