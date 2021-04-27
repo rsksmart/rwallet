@@ -96,6 +96,7 @@ const baseColor = {
   vermilion: '#FF4500',
   ceriseRed: '#df394d',
   scarlet: '#FF3300',
+  shade: '#601300',
 
   // green
   mantis: '#6FC062',
