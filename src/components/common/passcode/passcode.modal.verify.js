@@ -28,27 +28,28 @@ class VerifyPasscodeModal extends PureComponent {
   }
 
   componentDidMount() {
-    this.initialize().then(this.setState({ isLoading: false }));
+    this.initialize()
+      .then(this.setState({ isLoading: false }))
+      .catch((error) => {
+        console.error('This error should be reported', { error });
+      });
   }
 
   initialize = async () => {
-    try {
-      this.setState({ isLoading: true });
-      this.wrongAttemptsCounter = parseInt(await storage.getWrongPasscodeCounter(), 10) || 0;
+    this.setState({ isLoading: true });
+    const wrongAttemptsStorage = await storage.getWrongPasscodeCounter();
+    this.wrongAttemptsCounter = parseInt(wrongAttemptsStorage, 10) || 0;
 
-      if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
-        return;
-      }
-      const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
-      const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
-      const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
-      const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
+      return;
+    }
+    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
+    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
+    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
 
-      if (milliseconds > 0) {
-        this.lock({ milliseconds });
-      }
-    } catch (error) {
-      console.error('Unexpected error: ', error);
+    if (milliseconds > 0) {
+      this.lock({ milliseconds });
     }
   }
 
