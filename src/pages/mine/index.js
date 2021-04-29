@@ -213,6 +213,13 @@ class MineIndex extends Component {
 
   joins = [
     {
+      title: 'Slack',
+      icon: <FontAwesome name="slack" size={30} style={[styles.communityIcon, { color: color.shade }]} />,
+      onPress: () => {
+        Linking.openURL('http://developers.rsk.co/slack');
+      },
+    },
+    {
       title: 'Twitter',
       icon: <FontAwesome name="twitter" size={30} style={[styles.communityIcon, { color: color.cerulean }]} />,
       onPress: () => {
@@ -231,13 +238,6 @@ class MineIndex extends Component {
       icon: <Entypo name="facebook-with-circle" size={30} style={[styles.communityIcon, { color: color.sanMarino }]} />,
       onPress: () => {
         Linking.openURL('https://www.facebook.com/RSKsmart/');
-      },
-    },
-    {
-      title: 'Gitter',
-      icon: <FontAwesome5 name="gitter" size={26} style={[styles.communityIcon]} />,
-      onPress: () => {
-        Linking.openURL('https://gitter.im/rsksmart');
       },
     },
     {
@@ -261,7 +261,7 @@ class MineIndex extends Component {
       title: 'page.mine.index.contactUs',
       icon: <MaterialCommunityIcons name="email-outline" size={22} style={[styles.communityIcon, styles.grayIcon]} />,
       onPress: () => {
-        Linking.openURL('mailto:app@iovlabs.org');
+        Linking.openURL('mailto:rwallet-dev@iovlabs.org');
       },
     },
     {
@@ -386,7 +386,7 @@ MineIndex.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.oneOfType([PropTypes.object]).isRequired,
   }).isRequired,
   isWalletsUpdated: PropTypes.bool.isRequired,
   isWalletNameUpdated: PropTypes.bool.isRequired,
