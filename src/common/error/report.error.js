@@ -3,19 +3,8 @@ import VersionNumber from 'react-native-version-number';
 import ParseHelper from '../parse';
 
 /**
- * Send the data object to the server. Mocked right now and will be replaced in the future
- * @param {Object} data object that is sent
- */
-const sendToServer = (data) => {
-  console.log('@jesse, data  :', data);
-  console.log('@jesse, string:', JSON.stringify(data));
-  return Promise.resolve(true);
-};
-
-/**
  * Handles error getting the user and the error if it can't send to the server. Both of these
  * errors need to be caught so they don't crash the app.
- * @param {Error} error
  */
 const handleError = (error) => console.log(error);
 
@@ -43,8 +32,11 @@ const ReportErrorToServer = ({ developerComment, errorObject, additionalInfo }) 
       appVersion: VersionNumber.appVersion,
     };
 
+    // console.log will be removed in the future
+    console.log('[ReportErrorToServer]', toServerObject);
+
     // send object to server
-    sendToServer(toServerObject).catch(handleError);
+    ParseHelper.sendErrorReport(toServerObject).catch(handleError);
   })
   .catch(handleError);
 

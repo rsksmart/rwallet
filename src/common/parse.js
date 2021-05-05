@@ -353,6 +353,10 @@ class ParseHelper {
     });
   }
 
+  static sendErrorReport(error) {
+    return Parse.Cloud.run('logError', { error });
+  }
+
   /**
    * Subscribe to a Live Query channel also-known-as Parse Class
    * @param {*} collection
