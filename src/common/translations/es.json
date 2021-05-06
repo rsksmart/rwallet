@@ -64,7 +64,7 @@
         "CONFIRMED": "CONFIRMADO",
         "enterMemo": "Ingrese una nota de transacción",
         "slideConfirm": "Deslice para confirmar",
-        "balance": "Equilibrar",
+        "balance": "Saldo",
         "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
       },
       "add": {
@@ -155,13 +155,13 @@
         "minerFee": "Tarifa de minero",
         "confirm": "Confirmar",
         "cancel": "Cancelar",
-        "gotIt": "OBTENGO",
+        "gotIt": "ENTENDIDO",
         "leaveToDisconnect": "¿Dejar para desconectar?",
         "leaveToDisconnectDesc": "Salir de la página de Wallet Connect desconectará RWallet de la Dapp conectada actualmente.",
         "leaveToDisconnectConfirm": "¿Está seguro de desconectarse?",
         "disconnectAlertTitle": "Wallet Connect está desconectado",
         "disconnectAlertContent": "La conexión de Wallet Connect a Dapp \"%{dappName}\" está cerrada. Esto puede deberse a un acceso débil a la red o que Dapp rechazó la billetera directamente por algún motivo.\n\nHaciendo clic en el botón de abajo, volverá al panel de la billetera.",
-        "okGotIt": "Está bien, lo tengo",
+        "okGotIt": "Está bien, lo entiendo",
         "error": "Error",
         "errorDesc": "¡Error! Se produjo un error, inténtelo de nuevo más tarde (puede haber muchas razones, como problemas de red, rechazo del usuario, contraseña incorrecta, tarifa de manejo insuficiente, etc.)",
         "tryAgain": "Inténtalo de nuevo",
@@ -238,7 +238,7 @@
         "token": "Activo",
         "symbol": "Símbolo de activo",
         "decimals": "Decimales de precisión",
-        "balance": "Equilibrar"
+        "balance": "Saldo"
       },
       "addToken": {
         "title": "Agregar activo",
@@ -443,7 +443,7 @@
       "body": "La frase de recuperación tiene que ser exactamente de 12 palabras."
     },
     "amountExceeds": {
-      "title": "No hay suficiente equilibrio",
+      "title": "No hay suficiente saldo",
       "body": "La cantidad ingresada excede el saldo de la billetera"
     },
     "txFailed": {
@@ -633,7 +633,7 @@
       "cancel": "Regresa y vuelve a entrar",
       "asset": "Activo",
       "address": "Habla a",
-      "balance": "Equilibrar",
+      "balance": "Saldo",
       "risk": "Bien, entiendo el riesgo."
     },
     "emptyRecordAddress": {
