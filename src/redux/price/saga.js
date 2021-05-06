@@ -5,6 +5,7 @@ import { eventChannel } from 'redux-saga';
 import actions from './actions';
 import ParseHelper from '../../common/parse';
 import parseDataUtil from '../../common/parseDataUtil';
+import ReportErrorToServer from '../../common/error/report.error';
 
 
 function createSocketChannel(socket) {
@@ -55,6 +56,10 @@ function* fetchPricesRequest() {
     yield put({ type: actions.PRICE_OBJECT_UPDATED, data: prices });
   } catch (error) {
     console.log('initPriceSocketRequest.fetchPrices, error:', error);
+    ReportErrorToServer({
+      developerComment: 'redux saga price: fetchPricesRequest',
+      errorObject: error,
+    });
   }
 }
 
@@ -82,6 +87,10 @@ function* subscribePrices() {
     }
   } catch (err) {
     console.log('socket error:', err);
+    ReportErrorToServer({
+      developerComment: 'redux saga price: subscribePrices',
+      errorObject: err,
+    });
   } finally {
     if (yield cancelled()) {
       socketChannel.close();

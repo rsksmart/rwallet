@@ -170,6 +170,11 @@ class AddCustomToken extends Component {
         this.setState({ balance: common.weiToCoin(result.balance, this.precision) });
       } catch (error) {
         console.log('getUserTokenBalance, error: ', error);
+        ReportErrorToServer({
+          developerComment: 'add custom token confirm, requestBalance()',
+          additionalInfo: { wallet, contractAddress },
+          errorObject: error,
+        });
       } finally {
         this.setState({ isLoadingBalance: false });
       }
