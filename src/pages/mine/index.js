@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, FlatList, Linking,
+  View, Text, StyleSheet, TouchableOpacity, FlatList, Linking, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -22,6 +22,7 @@ import config from '../../../config';
 import color from '../../assets/styles/color';
 import space from '../../assets/styles/space';
 import { WalletType } from '../../common/constants';
+import ReportErrorToServer from '../../common/error/report.error';
 
 const avatar = require('../../assets/images/mine/avatar.png');
 
@@ -105,6 +106,22 @@ const styles = StyleSheet.create({
   },
 });
 
+const reportError = () => {
+  ReportErrorToServer({
+    developerComment: 'Triggered manually',
+    errorObject: new Error('this was the error ;-)'),
+    additionalInfo: {
+      address: '0x123456789',
+    },
+  }).then(() => {
+    Alert.alert(
+      'Report sent!',
+      'Thanks for reporting an error!',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+    );
+  });
+};
+
 function Item({ data, title, isHasBottomBorder }) {
   return (
     <TouchableOpacity style={[styles.row]} onPress={data.onPress}>
@@ -181,6 +198,11 @@ class MineIndex extends Component {
   }
 
   settings = [
+    {
+      title: 'modal.defaultError.title',
+      icon: <MaterialIcons name="error" size={ICON_SIZE} style={{ color: '#D2142B' }} />,
+      onPress: reportError,
+    },
     {
       title: 'page.mine.language.title',
       icon: <MaterialIcons name="language" size={ICON_SIZE} style={styles.grayIcon} />,
