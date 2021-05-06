@@ -9,6 +9,8 @@ const SECURE_KEY_PASSCODE = 'PASSCODE';
 const SECURE_KEY_PHRASE_PREFIX = 'PHRASE_';
 const SECURE_KEY_PRIVATE_KEY_PREFIX = 'PRIVATE_KEY_';
 const SECURE_USER_PASSWORD = 'USER_PASSWORD';
+const SECURE_LAST_WRONG_PASSCODE_TIMESTAMP = 'LAST_WRONG_PASSCODE_TIMESTAMP';
+const SECURE_WRONG_PASSCODE_COUNTER = 'WRONG_PASSCODE_COUNTER';
 
 const KEY_DAPPS = 'DAPPS';
 const KEY_DAPP_TYPES = 'DAPPTYPES';
@@ -62,12 +64,12 @@ class RNStorage {
   async load(params) {
     return this.instance.load(params)
       .catch((err) => {
-      // any exception including data not found goes to catch()
+        // any exception including data not found goes to catch()
         switch (err.name) {
           case 'NotFoundError':
             return null;
           case 'ExpiredError':
-          // TODO: figure out what we actually want to do to this case
+            // TODO: figure out what we actually want to do to this case
             return null;
           default:
             return null;
@@ -86,7 +88,6 @@ class RNStorage {
       key, id: id || undefined, autoSync: false, syncInBackground: false,
     });
   }
-
 
   /**
    *
@@ -391,6 +392,14 @@ class RNStorage {
   setUserPassword = (password) => RNStorage.secureSet(SECURE_USER_PASSWORD, password)
 
   getUserPassword = () => RNStorage.secureGet(SECURE_USER_PASSWORD)
+
+  setLastPasscodeAttempt = (timestamp) => RNStorage.secureSet(SECURE_LAST_WRONG_PASSCODE_TIMESTAMP, timestamp);
+
+  getLastPasscodeAttempt = () => RNStorage.secureGet(SECURE_LAST_WRONG_PASSCODE_TIMESTAMP);
+
+  setWrongPasscodeCounter = (count) => RNStorage.secureSet(SECURE_WRONG_PASSCODE_COUNTER, count);
+
+  getWrongPasscodeCounter = () => RNStorage.secureGet(SECURE_WRONG_PASSCODE_COUNTER);
 }
 
 export default new RNStorage();

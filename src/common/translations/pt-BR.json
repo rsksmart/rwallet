@@ -522,7 +522,8 @@
     },
     "verifyPasscode": {
       "type": "Digite seu PIN",
-      "incorrect": "O PIN está incorreto"
+      "incorrect": "O PIN está incorreto",
+      "tryAgainIn": "Você pode tentar novamente em"
     },
     "touchSensor": {
       "usePasscode": "Usar PIN",

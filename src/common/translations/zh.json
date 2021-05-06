@@ -513,7 +513,8 @@
     },
     "verifyPasscode": {
       "type": "输入密码",
-      "incorrect": "密码不正确"
+      "incorrect": "密码不正确",
+      "tryAgainIn": "您可以在以下位置重试"
     },
     "touchSensor": {
       "usePasscode": "使用密码验证",

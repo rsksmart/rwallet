@@ -92,16 +92,27 @@ const styles = StyleSheet.create({
 class PasscodeModalBase extends PureComponent {
   constructor(props) {
     super(props);
-    const { title } = props;
+    const { title, locked } = props;
     this.state = {
       title,
       input: '',
+      locked,
     };
     this.onPressButton = this.onPressButton.bind(this);
     this.onDeletePressed = this.onDeletePressed.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { locked } = nextProps;
+    this.setState({
+      locked,
+    });
+  }
+
   onPressButton(i) {
+    // ignore everything when locked
+    const { locked } = this.state;
+    if (locked) return;
     const { passcodeOnFill } = this.props;
     this.setState((prevState) => ({ input: prevState.input + i }), () => {
       const { input } = this.state;
@@ -160,16 +171,16 @@ class PasscodeModalBase extends PureComponent {
 
   render() {
     const {
-      title,
-    } = this.state;
-    const {
-      cancelBtnOnPress, showCancel, onResetPressed, isShowReset,
+      cancelBtnOnPress, showCancel, onResetPressed, isShowReset, timer,
     } = this.props;
+
+    const { title } = this.state;
 
     return (
       <View style={[styles.background, styles.container]}>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <Loc style={[styles.title]} text={title} />
+          {!!timer && timer.length && <Text style={[styles.title]}>{timer}</Text>}
           <Animatable.View ref={(ref) => { this.dotsView = ref; }} useNativeDriver style={styles.dotRow}>
             {this.renderDots()}
           </Animatable.View>
@@ -202,6 +213,8 @@ PasscodeModalBase.propTypes = {
   onResetPressed: PropTypes.func,
   showCancel: PropTypes.bool,
   isShowReset: PropTypes.bool,
+  locked: PropTypes.bool,
+  timer: PropTypes.string,
 };
 
 PasscodeModalBase.defaultProps = {
@@ -209,6 +222,8 @@ PasscodeModalBase.defaultProps = {
   isShowReset: false,
   cancelBtnOnPress: null,
   onResetPressed: null,
+  locked: false,
+  timer: '',
 };
 
 export default PasscodeModalBase;

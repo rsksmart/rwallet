@@ -1,18 +1,24 @@
-import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PasscodeModalBase from './passcode.modal.base';
+import {
+  getClosestStep,
+  WRONG_ATTEMPTS_STEPS,
+  clearWrongAttempts,
+  getTimerString,
+} from './wrongPasscodeUtils';
+import storage from '../../../common/storage';
+import Loader from '../misc/loader';
 
 class VerifyPasscodeModal extends PureComponent {
   constructor(props) {
     super(props);
-    this.flows = [
-      { index: 0, title: 'modal.verifyPasscode.type' },
-      { index: 1, title: 'modal.verifyPasscode.incorrect' },
-    ];
-    this.flowIndex = 0;
-    this.title = this.flows[0].title;
+    this.state = {
+      title: 'modal.verifyPasscode.type',
+      isLoading: false,
+      locked: false,
+    };
     const { closePasscodeModal, passcodeCallback, passcodeFallback } = this.props;
     this.closePasscodeModal = closePasscodeModal;
     this.passcodeCallback = passcodeCallback;
@@ -21,25 +27,83 @@ class VerifyPasscodeModal extends PureComponent {
     this.cancelBtnOnPress = this.cancelBtnOnPress.bind(this);
   }
 
+  componentDidMount() {
+    this.initialize()
+      .then(this.setState({ isLoading: false }))
+      .catch((error) => {
+        console.error('This error should be reported', { error });
+      });
+  }
+
+  initialize = async () => {
+    this.setState({ isLoading: true });
+    const wrongAttemptsStorage = await storage.getWrongPasscodeCounter();
+    this.wrongAttemptsCounter = parseInt(wrongAttemptsStorage, 10) || 0;
+
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
+      return;
+    }
+    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
+    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
+    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
+
+    if (milliseconds > 0) {
+      this.lock({ milliseconds });
+    }
+  }
+
+  lock = ({ milliseconds }) => {
+    this.setState({
+      locked: true,
+      timer: milliseconds,
+    });
+    this.baseModal.resetModal('modal.verifyPasscode.tryAgainIn');
+
+    // updates timer every 1 second
+    const interval = setInterval(
+      () => this.setState((prevState) => ({ timer: prevState.timer - 1000 })),
+      1000,
+    );
+
+    setTimeout(() => {
+      this.setState({
+        locked: false,
+        timer: undefined,
+        title: 'modal.verifyPasscode.type',
+      });
+      this.baseModal.resetModal('modal.verifyPasscode.type');
+      clearInterval(interval);
+    }, milliseconds);
+  }
+
+  handleWrongPasscode = () => {
+    this.wrongAttemptsCounter += 1;
+    storage.setWrongPasscodeCounter(this.wrongAttemptsCounter);
+
+    if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
+      // still doesn't reach the first step
+      this.baseModal.rejectPasscord('modal.verifyPasscode.incorrect');
+      return;
+    }
+    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+    storage.setLastPasscodeAttempt(Date.now());
+    this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
+  }
+
   passcodeOnFill = async (input) => {
     const { passcode } = this.props;
-    let flow = null;
-    switch (this.flowIndex) {
-      case 0:
-      case 1:
-        if (input === passcode) {
-          this.baseModal.resetModal();
-          this.closePasscodeModal();
-          if (this.passcodeCallback) {
-            this.passcodeCallback();
-          }
-        } else {
-          this.flowIndex = 1;
-          flow = _.find(this.flows, { index: this.flowIndex });
-          this.baseModal.rejectPasscord(flow.title);
-        }
-        break;
-      default:
+
+    if (input === passcode) {
+      this.baseModal.resetModal();
+      this.closePasscodeModal();
+      clearWrongAttempts();
+
+      if (this.passcodeCallback) {
+        this.passcodeCallback();
+      }
+    } else {
+      this.handleWrongPasscode();
     }
   };
 
@@ -51,13 +115,24 @@ class VerifyPasscodeModal extends PureComponent {
   };
 
   render() {
+    const {
+      title, isLoading, locked, timer,
+    } = this.state;
+    const timerString = timer ? getTimerString({ milliseconds: timer }) : '';
+
+    if (isLoading) {
+      return <Loader loading={isLoading} />;
+    }
+
     return (
       <PasscodeModalBase
         ref={(ref) => {
           this.baseModal = ref;
         }}
+        locked={locked}
         passcodeOnFill={this.passcodeOnFill}
-        title={this.title}
+        title={title}
+        timer={timerString}
         cancelBtnOnPress={this.cancelBtnOnPress}
         showCancel={!!this.passcodeFallback}
       />
