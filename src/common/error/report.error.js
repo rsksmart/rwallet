@@ -36,7 +36,9 @@ const ReportErrorToServer = ({ developerComment, errorObject, additionalInfo }) 
     console.log('[ReportErrorToServer]', toServerObject);
 
     // send object to server
-    ParseHelper.sendErrorReport(toServerObject).catch(handleError);
+    ParseHelper.sendErrorReport(toServerObject)
+      .then(() => console.log('[ReportErrorToServer] Report sent'))
+      .catch(handleError);
   })
   .catch(handleError);
 
