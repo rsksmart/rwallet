@@ -31,6 +31,7 @@ import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmati
 import SubdomainUnavailableNotification from '../../../components/rns/subdomain.unavailable.notification';
 import common from '../../../common/common';
 import TypeTag from '../../../components/common/misc/type.tag';
+import ReportErrorToServer from '../../../common/error/report.error';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -237,6 +238,15 @@ class RnsAddress extends Component {
     } catch (error) {
       console.log(error);
       const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+
+      if (!getErrorNotification(error.code)) {
+        ReportErrorToServer({
+          developerComment: 'Create subdomain',
+          additionalInfo: { queryParams },
+          errorObject: error,
+        });
+      }
+
       addNotification(notification);
       return;
     } finally {

@@ -35,6 +35,7 @@ import {
 } from '../../common/error';
 import InvalidRskAddressConfirmation from '../../components/wallet/invalid.rskaddress.confirmation';
 import { domainToAddress } from './rns/domainToAddress';
+import ReportErrorToServer from '../../common/error/report.error';
 
 const MEMO_NUM_OF_LINES = 8;
 const MEMO_LINE_HEIGHT = 15;
@@ -632,6 +633,11 @@ class Transfer extends Component {
   addErrorNotification = (error) => {
     const { addNotification } = this.props;
     const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
+
+    if (!getErrorNotification(error.code)) {
+      ReportErrorToServer({ developerComment: 'transfer', errorObject: error });
+    }
+
     addNotification(notification);
   }
 

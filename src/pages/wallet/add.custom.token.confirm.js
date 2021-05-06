@@ -20,6 +20,7 @@ import { createErrorNotification, getErrorNotification, getDefaultErrorNotificat
 import common from '../../common/common';
 import CancelablePromiseUtil from '../../common/cancelable.promise.util';
 import { WalletType } from '../../common/constants';
+import ReportErrorToServer from '../../common/error/report.error';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -137,6 +138,14 @@ class AddCustomToken extends Component {
         });
       } catch (error) {
         const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
+
+        if (!getErrorNotification(error.code)) {
+          ReportErrorToServer({
+            developerComment: 'Add custom token confirm, onComfirmPressed',
+            additionalInfo: { symbol, address, chain },
+            errorObject: error,
+          });
+        }
         addNotification(notification);
       } finally {
         this.setState({ isLoading: false });
