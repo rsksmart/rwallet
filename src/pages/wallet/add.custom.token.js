@@ -122,9 +122,10 @@ class AddCustomToken extends Component {
         this.addToken();
       } catch (error) {
         const { addNotification } = this.props;
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        const decodedNotification = getErrorNotification(error.code, 'button.retry');
+        const notification = decodedNotification || getDefaultErrorNotification();
 
-        if (!getErrorNotification(error.code)) {
+        if (!decodedNotification) {
           reportErrorToServer({
             developerComment: 'Add custom token, onPressed',
             additionalInfo: { address, type },
@@ -157,9 +158,10 @@ class AddCustomToken extends Component {
         });
       } catch (error) {
         console.log('getTokenBasicInfo, error: ', error);
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        const decodedNotification = getErrorNotification(error.code, 'button.retry');
+        const notification = decodedNotification || getDefaultErrorNotification();
 
-        if (!getErrorNotification(error.code)) {
+        if (!decodedNotification) {
           reportErrorToServer({
             developerComment: 'Add custom token, addToken',
             additionalInfo: { contractAddress, chain, type },

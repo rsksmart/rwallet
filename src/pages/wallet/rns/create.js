@@ -237,9 +237,10 @@ class RnsAddress extends Component {
       result = await parse.isSubdomainAvailable(queryParams);
     } catch (error) {
       console.log(error);
-      const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification('button.retry');
+      const decodedNotification = getErrorNotification(error.code, 'button.retry');
+      const notification = decodedNotification || getDefaultErrorNotification();
 
-      if (!getErrorNotification(error.code)) {
+      if (!decodedNotification) {
         reportErrorToServer({
           developerComment: 'Create subdomain',
           additionalInfo: { queryParams },

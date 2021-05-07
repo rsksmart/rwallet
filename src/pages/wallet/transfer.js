@@ -632,9 +632,10 @@ class Transfer extends Component {
 
   addErrorNotification = (error) => {
     const { addNotification } = this.props;
-    const notification = getErrorNotification(error.code) || getDefaultErrorNotification();
+    const decodedNotification = getErrorNotification(error.code);
+    const notification = decodedNotification || getDefaultErrorNotification();
 
-    if (!getErrorNotification(error.code)) {
+    if (!decodedNotification) {
       reportErrorToServer({ developerComment: 'transfer', errorObject: error });
     }
 
