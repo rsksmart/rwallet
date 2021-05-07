@@ -10,7 +10,7 @@ import CoinSwitchHelper from '../../common/coinswitch.helper';
 import parseDataUtil from '../../common/parseDataUtil';
 
 import { createErrorNotification } from '../../common/notification.controller';
-import ReportErrorToServer from '../../common/error/report.error';
+import reportErrorToServer from '../../common/error/report.error';
 
 function* createKeyRequest(action) {
   const {
@@ -77,7 +77,7 @@ function* addTokenRequest(action) {
     if (error.message === 'err.exsistedtoken') {
       yield put({ type: actions.SET_ADD_TOKEN_RESULT, value: { state: 'error', error } });
     } else {
-      ReportErrorToServer({
+      reportErrorToServer({
         developerComment: 'redux saga wallet: addTokenRequest',
         additionalInfo: { token },
         errorObject: error,
@@ -162,7 +162,7 @@ function* fetchTokensRequest() {
     });
   } catch (error) {
     console.log('fetchTokensRequest, error:', error);
-    ReportErrorToServer({
+    reportErrorToServer({
       developerComment: 'redux saga wallet: fetchTokensRequest',
       errorObject: error,
     });
@@ -289,7 +289,7 @@ function* fetchTransactions(action) {
     addTokenTransactions(token, transactions);
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchTransactions, error:', error);
-    ReportErrorToServer({
+    reportErrorToServer({
       developerComment: 'redux saga wallet: fetchTransactions',
       errorObject: error,
     });
@@ -379,7 +379,7 @@ function* fetchBlockHeightsRequest() {
     });
   } catch (error) {
     console.log('initLiveQueryTransactionsRequest.fetchBlockHeights, error:', error);
-    ReportErrorToServer({
+    reportErrorToServer({
       developerComment: 'redux saga wallet: fetchBlockHeightsRequest',
       errorObject: error,
     });
@@ -438,7 +438,7 @@ function* getBalanceRequest(action) {
     yield put({ type: actions.FETCH_TOKENS_RESULT, value: [item] });
   } catch (error) {
     console.log('getBalanceRequest, error:', error);
-    ReportErrorToServer({
+    reportErrorToServer({
       developerComment: 'redux saga wallet: getBalanceRequest',
       errorObject: error,
     });

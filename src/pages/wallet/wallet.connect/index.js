@@ -33,7 +33,7 @@ import fontFamily from '../../../assets/styles/font.family';
 import appActions from '../../../redux/app/actions';
 import coinType from '../../../common/wallet/cointype';
 import { InsufficientRbtcError } from '../../../common/error';
-import ReportErrorToServer from '../../../common/error/report.error';
+import reportErrorToServer from '../../../common/error/report.error';
 
 const { MAINNET, TESTNET } = NETWORK;
 
@@ -300,7 +300,7 @@ class WalletConnectPage extends Component {
       });
     } catch (error) {
       console.log('init wallet error: ', error);
-      ReportErrorToServer({
+      reportErrorToServer({
         developerComment: 'walletConnect: initWalletConnect',
         additionalInfo: { uri },
         errorObject: error,
@@ -593,7 +593,7 @@ class WalletConnectPage extends Component {
       }
     } catch (error) {
       console.log('popupOperationModal error: ', error);
-      ReportErrorToServer({
+      reportErrorToServer({
         developerComment: 'walletConnect: popupOperationModal',
         errorObject: error,
       });
@@ -669,7 +669,7 @@ class WalletConnectPage extends Component {
       }
     } catch (error) {
       console.log('handleCallRequest error: ', error);
-      ReportErrorToServer({
+      reportErrorToServer({
         developerComment: 'walletConnect: handleCallRequest',
         errorObject: error,
       });

@@ -15,7 +15,7 @@ const handleError = (error) => console.log(error);
  * @param {Object} data.errorObject {Error} the error that was thrown
  * @param {Object} data.additionalInfo {Object} an optional JSON object that can provide extra information
  */
-const ReportErrorToServer = ({ developerComment, errorObject, additionalInfo }) => ParseHelper.getUser()
+const reportErrorToServer = ({ developerComment, errorObject, additionalInfo }) => ParseHelper.getUser()
   .then((parseUser) => {
     // create the object to be sent
     const toServerObject = {
@@ -33,13 +33,13 @@ const ReportErrorToServer = ({ developerComment, errorObject, additionalInfo }) 
     };
 
     // console.log will be removed in the future
-    console.log('[ReportErrorToServer]', toServerObject);
+    console.log('[reportErrorToServer]', toServerObject);
 
     // send object to server
     ParseHelper.sendErrorReport(toServerObject)
-      .then(() => console.log('[ReportErrorToServer] Report sent'))
+      .then(() => console.log('[reportErrorToServer] Report sent'))
       .catch(handleError);
   })
   .catch(handleError);
 
-export default ReportErrorToServer;
+export default reportErrorToServer;
