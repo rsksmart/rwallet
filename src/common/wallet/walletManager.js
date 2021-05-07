@@ -165,7 +165,7 @@ class WalletManager {
 
     _.each(tokenInstances, (token) => {
       const newToken = token;
-      const matchedToken = _.find(updatedItems, (item) => item.address === token.address && item.symbol === token.symbol && item.type === token.type);
+      const matchedToken = _.find(updatedItems, (item) => item.address.toLowerCase() === token.address.toLowerCase() && item.symbol === token.symbol && item.type === token.type);
 
       if (matchedToken) {
         // update balance
