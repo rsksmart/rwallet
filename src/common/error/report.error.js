@@ -1,6 +1,20 @@
 import { getSystemName } from 'react-native-device-info';
 import VersionNumber from 'react-native-version-number';
 import ParseHelper from '../parse';
+import ERROR_CODE from './error.code';
+
+/**
+ * A list of codes that should be reported
+ * @param {number} errorCode number
+ */
+export const shouldReportError = (errorCode) => {
+  switch (errorCode) {
+    case ERROR_CODE.ERR_REQUEST_TIMEOUT:
+    case ERROR_CODE.TIME_OUT:
+      return true;
+    default: return false;
+  }
+}
 
 /**
  * Handles error getting the user and the error if it can't send to the server. Both of these

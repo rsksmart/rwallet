@@ -31,7 +31,7 @@ import CreateRnsConfirmation from '../../../components/rns/create.rns.confirmati
 import SubdomainUnavailableNotification from '../../../components/rns/subdomain.unavailable.notification';
 import common from '../../../common/common';
 import TypeTag from '../../../components/common/misc/type.tag';
-import reportErrorToServer from '../../../common/error/report.error';
+import reportErrorToServer, { shouldReportError } from '../../../common/error/report.error';
 
 const SUBDOMAIN_LENGTH_MIN = 3;
 const SUBDOMAIN_LENGTH_MAX = 12;
@@ -240,7 +240,7 @@ class RnsAddress extends Component {
       const decodedNotification = getErrorNotification(error.code, 'button.retry');
       const notification = decodedNotification || getDefaultErrorNotification();
 
-      if (!decodedNotification) {
+      if (!decodedNotification || shouldReportError(error.code)) {
         reportErrorToServer({
           developerComment: 'Create subdomain',
           additionalInfo: { queryParams },

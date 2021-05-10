@@ -23,7 +23,7 @@ import { WalletType } from '../../common/constants';
 import { InvalidAddressError } from '../../common/error';
 import ConvertAddressConfirmation from '../../components/wallet/convert.address.confirmation';
 import { strings } from '../../common/i18n';
-import reportErrorToServer from '../../common/error/report.error';
+import reportErrorToServer, { shouldReportError } from '../../common/error/report.error';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -125,7 +125,7 @@ class AddCustomToken extends Component {
         const decodedNotification = getErrorNotification(error.code, 'button.retry');
         const notification = decodedNotification || getDefaultErrorNotification();
 
-        if (!decodedNotification) {
+        if (!decodedNotification || shouldReportError(error.code)) {
           reportErrorToServer({
             developerComment: 'Add custom token, onPressed',
             additionalInfo: { address, type },
@@ -161,7 +161,7 @@ class AddCustomToken extends Component {
         const decodedNotification = getErrorNotification(error.code, 'button.retry');
         const notification = decodedNotification || getDefaultErrorNotification();
 
-        if (!decodedNotification) {
+        if (!decodedNotification || shouldReportError(error.code)) {
           reportErrorToServer({
             developerComment: 'Add custom token, addToken',
             additionalInfo: { contractAddress, chain, type },
