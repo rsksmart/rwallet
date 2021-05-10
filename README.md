@@ -21,8 +21,19 @@ This is a multi-cryptocurrency wallet application. Supports both english and spa
         List of devices attached
         emulator-5554	device
         ```
+       
+**Note:** When  `syncing project with gradle files` using Android SKD 11, it throws the following error:
+```
+No variants found for ':@imstar15_react-native-firebase'. Check build files to ensure at least one variant exists. at:
+```
+
 ### To run on iOS Devices
 1. XCode needs to be installed (v11.x). iOS simulator will be install along with XCode.
+
+**Note:** When running  `npm install ` with xCode 12.x it throws the following error:
+```
+ReferenceError: globalThis is not defined #2795
+```
 
 ## Getting Started
 
