@@ -28,7 +28,7 @@ No variants found for ':@imstar15_react-native-firebase'. Check build files to e
 ```
 
 ### To run on iOS Devices
-1. XCode needs to be installed (v11.x). iOS simulator will be install along with XCode.
+1. XCode needs to be installed (v11.x). iOS simulator will be installed along with XCode.
 
 **Note:** When running  `npm install ` with xCode 12.x it throws the following error:
 ```
