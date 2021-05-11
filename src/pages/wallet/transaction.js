@@ -130,6 +130,7 @@ class Transaction extends Component {
       isRefreshing: false,
       from,
       to,
+      chain,
     };
   }
 
@@ -199,8 +200,11 @@ class Transaction extends Component {
   render() {
     const { navigation } = this.props;
     const {
-      transactionState, transactionId, amount, dateTime, memo, confirmations, title, stateIcon, isRefreshing, from, to,
+      transactionState, transactionId, amount, dateTime, memo, confirmations, title, stateIcon, isRefreshing, from, to, chain,
     } = this.state;
+
+    const fromChecksum = common.toChecksumAddressIfNeeded(from, chain);
+    const toChecksum = common.toChecksumAddressIfNeeded(to, chain);
 
     const txStateText = strings(`txState.${transactionState}`);
 
@@ -237,14 +241,14 @@ class Transaction extends Component {
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.from" />
             <TouchableOpacity style={[styles.copyView]} onPress={this.onFromPress}>
-              <Text style={[styles.copyText]}>{from}</Text>
+              <Text style={[styles.copyText]}>{fromChecksum}</Text>
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
           <View style={styles.sectionContainer}>
             <Loc style={[styles.sectionTitle]} text="page.wallet.transaction.to" />
             <TouchableOpacity style={[styles.copyView]} onPress={this.onToPress}>
-              <Text style={[styles.copyText]}>{to}</Text>
+              <Text style={[styles.copyText]}>{toChecksum}</Text>
               <Image style={styles.copyIcon} source={references.images.copyIcon} />
             </TouchableOpacity>
           </View>
@@ -279,6 +283,7 @@ Transaction.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
