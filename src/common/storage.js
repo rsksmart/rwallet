@@ -393,11 +393,11 @@ class RNStorage {
 
   getUserPassword = () => RNStorage.secureGet(SECURE_USER_PASSWORD)
 
-  setLastPasscodeAttempt = (timestamp) => RNStorage.secureSet(SECURE_LAST_WRONG_PASSCODE_TIMESTAMP, timestamp);
+  setLastPasscodeAttempt = (timestamp) => RNStorage.secureSet(SECURE_LAST_WRONG_PASSCODE_TIMESTAMP, timestamp.toString());
 
   getLastPasscodeAttempt = () => RNStorage.secureGet(SECURE_LAST_WRONG_PASSCODE_TIMESTAMP);
 
-  setWrongPasscodeCounter = (count) => RNStorage.secureSet(SECURE_WRONG_PASSCODE_COUNTER, count);
+  setWrongPasscodeCounter = (count) => RNStorage.secureSet(SECURE_WRONG_PASSCODE_COUNTER, count.toString());
 
   getWrongPasscodeCounter = () => RNStorage.secureGet(SECURE_WRONG_PASSCODE_COUNTER);
 }
