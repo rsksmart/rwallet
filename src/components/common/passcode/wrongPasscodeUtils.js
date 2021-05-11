@@ -21,7 +21,7 @@ export const WRONG_ATTEMPTS_STEPS = {
 
 export const clearWrongAttempts = () => {
   try {
-    storage.setLastPasscodeAttempt();
+    storage.setLastPasscodeAttempt(0);
     storage.setWrongPasscodeCounter(0);
   } catch (error) {
     console.error('Error cleaning wrong attempts', error);
