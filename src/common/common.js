@@ -855,6 +855,18 @@ const common = {
     return false;
   },
 
+  /**
+   * Returns the address ready to show to the user. Applies checksum if needed by the nerworkId.
+   * Only considers Rootstock network
+   * @param {string} address
+   * @param {string} network
+   */
+  toChecksumAddressIfNeeded(address, network) {
+    if (network.toLowerCase() === 'rootstock') {
+      return Rsk3.utils.toChecksumAddress(address, MAINNET.NETWORK_VERSION);
+    }
+    return address;
+  },
 };
 
 export default common;
