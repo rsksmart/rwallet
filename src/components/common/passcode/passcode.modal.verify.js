@@ -43,7 +43,12 @@ class VerifyPasscodeModal extends PureComponent {
     if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
       return;
     }
-    const lastAttemptTimestamp = parseInt(await storage.getLastPasscodeAttempt(), 10);
+    const lastPasscodeStorage = await storage.getLastPasscodeAttempt();
+    if (!lastPasscodeStorage || lastPasscodeStorage === '0') {
+      return;
+    }
+
+    const lastAttemptTimestamp = parseInt(lastPasscodeStorage, 10);
     const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
     const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
     const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
