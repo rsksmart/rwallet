@@ -23,6 +23,7 @@ import { WalletType } from '../../common/constants';
 import { InvalidAddressError } from '../../common/error';
 import ConvertAddressConfirmation from '../../components/wallet/convert.address.confirmation';
 import { strings } from '../../common/i18n';
+import reportErrorToServer, { shouldReportError } from '../../common/error/report.error';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -121,7 +122,17 @@ class AddCustomToken extends Component {
         this.addToken();
       } catch (error) {
         const { addNotification } = this.props;
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        const decodedNotification = getErrorNotification(error.code, 'button.retry');
+        const notification = decodedNotification || getDefaultErrorNotification();
+
+        if (!decodedNotification || shouldReportError(error.code)) {
+          reportErrorToServer({
+            developerComment: 'Add custom token, onPressed',
+            additionalInfo: { address, type },
+            errorObject: error,
+          });
+        }
+
         addNotification(notification);
       }
     }
@@ -147,7 +158,17 @@ class AddCustomToken extends Component {
         });
       } catch (error) {
         console.log('getTokenBasicInfo, error: ', error);
-        const notification = getErrorNotification(error.code, 'button.retry') || getDefaultErrorNotification();
+        const decodedNotification = getErrorNotification(error.code, 'button.retry');
+        const notification = decodedNotification || getDefaultErrorNotification();
+
+        if (!decodedNotification || shouldReportError(error.code)) {
+          reportErrorToServer({
+            developerComment: 'Add custom token, addToken',
+            additionalInfo: { contractAddress, chain, type },
+            errorObject: error,
+          });
+        }
+
         addNotification(notification);
       } finally {
         this.setState({ isLoading: false });
