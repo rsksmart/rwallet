@@ -281,7 +281,7 @@
     },
     "dapp": {
       "title": "DApp",
-      "search": "웹사이트 url을 검색하거나 입력하십시오",
+      "search": "DApp 웹 사이트 URL 입력",
       "recent": "최근",
       "recommended": "추천",
       "all": "모두",
