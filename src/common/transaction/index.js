@@ -79,7 +79,7 @@ export default class Transaction {
         result = await rbtc.signTransaction(this.rawTransaction, privateKey);
       }
     } catch (e) {
-      console.log('Transaction.processTransaction err: ', e.message);
+      console.log('Transaction.processTransaction err: ', e);
       throw e;
     }
     console.log('Transaction.processTransaction finished, result: ', result);

@@ -667,6 +667,7 @@ class Transfer extends Component {
       }
       this.processFees(transactionFees);
     } catch (error) {
+      reportErrorToServer({ developerComment: 'request fees', errorObject: error });
       const confirmation = createErrorConfirmation(
         defaultErrorNotification.title,
         defaultErrorNotification.message,
@@ -722,45 +723,50 @@ class Transfer extends Component {
   }
 
   async loadTransactionFees() {
-    const { amount, memo } = this.state;
-    const {
-      coin, txFeesCache, toAddress, txSize,
-    } = this;
-    const {
-      symbol, type, address, precision,
-    } = coin;
+    try {
+      const { amount, memo } = this.state;
+      const {
+        coin, txFeesCache, toAddress, txSize,
+      } = this;
+      const {
+        symbol, type, address, precision,
+      } = coin;
 
-    if (symbol === 'BTC' && !txSize) {
-      throw new FeeCalculationError();
-    }
-
-    const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
-    const value = common.convertCoinAmountToUnitHex(symbol, amount, precision);
-    console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
-    console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
-
-    let isMatched = false;
-    if (amount === lastAmount && toAddress === lastTo) {
-      if (symbol !== 'BTC') {
-        isMatched = memo === lastMemo;
-      } else {
-        isMatched = true;
+      if (symbol === 'BTC' && !txSize) {
+        throw new FeeCalculationError();
       }
-    }
-    if (isMatched) {
-      this.setState({ enableConfirm: true });
-      return null;
-    }
 
-    const transactionFees = symbol === 'BTC'
-      ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
-      : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
-    console.log('transactionFees: ', transactionFees);
-    this.txFeesCache = {
-      amount, toAddress, memo, transactionFees,
-    };
-    this.setState({ enableConfirm: true });
-    return transactionFees;
+      const { amount: lastAmount, to: lastTo, memo: lastMemo } = txFeesCache;
+      const value = common.convertCoinAmountToUnitHex(symbol, amount, precision);
+      console.log(`amount: ${amount}, to: ${toAddress}, memo: ${memo}`);
+      console.log(`lastAmount: ${lastAmount}, lastTo: ${lastTo}, lastMemo: ${lastMemo}`);
+
+      let isMatched = false;
+      if (amount === lastAmount && toAddress === lastTo) {
+        if (symbol !== 'BTC') {
+          isMatched = memo === lastMemo;
+        } else {
+          isMatched = true;
+        }
+      }
+      if (isMatched) {
+        this.setState({ enableConfirm: true });
+        return null;
+      }
+
+      const transactionFees = symbol === 'BTC'
+        ? await parseHelper.getBtcTransactionFees(symbol, type, txSize)
+        : await rbtcTransaction.getTransactionFees(type, coin, address, toAddress, value, memo);
+      console.log('transactionFees: ', transactionFees);
+      this.txFeesCache = {
+        amount, toAddress, memo, transactionFees,
+      };
+      this.setState({ enableConfirm: true });
+      return transactionFees;
+    } catch (e) {
+      console.log('error in loadTransactionFees', e);
+      throw e;
+    }
   }
 
   calcCustomFee(value) {
@@ -1209,7 +1215,12 @@ Transfer.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        coin: PropTypes.string.isRequired,
+        toAddress: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
   addConfirmation: PropTypes.func.isRequired,
