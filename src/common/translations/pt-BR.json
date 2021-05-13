@@ -278,7 +278,7 @@
     },
     "dapp": {
       "title": "DApp",
-      "search": "Insira o URL do DApp site",
+      "search": "Insira a página URL do DApp",
       "recent": "Recente",
       "recommended": "Recomendado",
       "all": "Todos",
