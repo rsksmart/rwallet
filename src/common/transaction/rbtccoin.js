@@ -18,9 +18,9 @@ export const getContractAddress = async (symbol, type) => {
 
 export const encodeContractTransfer = async (contractAddress, type, to, value) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const networkId = type === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
   const rsk3 = new Rsk3(rskEndpoint);
-  const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress, networkId));
+  const contractLower = contractAddress.toLowerCase();
+  const contract = rsk3.Contract(assetAbi, contractLower);
   const data = await contract.methods.transfer(to, value).encodeABI();
   return data;
 };
@@ -45,7 +45,7 @@ export const getTransactionFees = async (type, coin, address, toAddress, value, 
     const contractAddr = contractAddress || await getContractAddress(symbol, type);
     const data = await encodeContractTransfer(contractAddr, type, to, value);
     gas = await rsk3.estimateGas({
-      from, to: contractAddr, value: 0, data,
+      from, to: contractAddr.toLowerCase(), value: 0, data,
     });
   }
   return {
@@ -62,7 +62,6 @@ export const createRawTransaction = async ({
   symbol, type, sender: from, receiver: to, value, memo, gasPrice, gas, contractAddress,
 }) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const networkId = type === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
   const rsk3 = new Rsk3(rskEndpoint);
   const nonce = await rsk3.getTransactionCount(from, 'pending');
   const rawTransaction = {
@@ -77,8 +76,8 @@ export const createRawTransaction = async ({
     rawTransaction.to = to;
     rawTransaction.data = memo;
   } else if (contractAddress) {
-    const contract = rsk3.Contract(assetAbi, Rsk3.utils.toChecksumAddress(contractAddress, networkId));
-    rawTransaction.to = contractAddress;
+    const contract = rsk3.Contract(assetAbi, contractAddress.toLowerCase());
+    rawTransaction.to = contractAddress.toLowerCase();
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
   } else {
@@ -148,9 +147,9 @@ export const processRawTransaction = async ({
       symbol, netType, sender, receiver, value, data, memo, gasFee, fallback: isUseTransactionFallback, contractAddress,
     });
     console.log(`rbtc.processRawTransaction, rawTransactionParam: ${JSON.stringify(param)}`);
-    result = await createRawTransaction({ ...param, contractAddress });
+    result = await createRawTransaction({ ...param, contractAddress: contractAddress.toLowerCase() });
   } catch (e) {
-    console.log('rbtc.processRawTransaction err: ', e.message);
+    console.log('rbtc.processRawTransaction err: ', e);
     throw e;
   }
   console.log(`rbtc.processRawTransaction finished, result: ${JSON.stringify(result)}`);
