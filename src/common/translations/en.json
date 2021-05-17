@@ -275,7 +275,7 @@
     },
     "dapp": {
       "title": "DApp",
-      "search": "Search or enter website url",
+      "search": "Enter the DApp website URL",
       "recent": "Recent",
       "recommended": "Recommended",
       "all": "All",

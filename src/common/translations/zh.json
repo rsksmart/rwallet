@@ -282,7 +282,7 @@
     },
     "dapp": {
       "title": "应用",
-      "search": "搜索或输入网站链接",
+      "search": "输入DApp网站网址",
       "recent": "最近",
       "recommended": "推荐",
       "all": "全部",
