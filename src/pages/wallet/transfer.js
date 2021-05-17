@@ -929,10 +929,10 @@ class Transfer extends Component {
         if (symbol === 'BTC') {
           value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.fees, precision));
         } else if (symbol === 'RBTC') {
-          finalToAddress = finalToAddress.toLowercase();
+          finalToAddress = finalToAddress.toLowerCase();
           value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.gas.times(feeParams.gasPrice), precision));
         } else {
-          finalToAddress = finalToAddress.toLowercase();
+          finalToAddress = finalToAddress.toLowerCase();
           value = balance;
         }
       }
@@ -950,8 +950,12 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
+      const decodedNotification = getErrorNotification(error.code, buttonText);
+      const notification = decodedNotification || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
+      if (!decodedNotification) {
+        reportErrorToServer({ developerComment: 'transfer.js->confirm()', errorObject: error });
+      }
       if (error.code === ERROR_CODE.NOT_ENOUGH_BALANCE || ERROR_CODE.NOT_ENOUGH_BTC || ERROR_CODE.NOT_ENOUGH_RBTC) {
         getBalance({
           symbol, type, address, needFetch: true,
