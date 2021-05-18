@@ -921,6 +921,7 @@ class Transfer extends Component {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
       const extraParams = { data: '', memo, gasFee: feeParams };
+      let finalToAddress = toAddress;
       // In order to send all all balances, we cannot use the amount in the text box to calculate the amount sent, but use the coin balance.
       // The amount of the text box is fixed decimal places
       let value = new BigNumber(amount);
@@ -928,12 +929,15 @@ class Transfer extends Component {
         if (symbol === 'BTC') {
           value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.fees, precision));
         } else if (symbol === 'RBTC') {
+          finalToAddress = finalToAddress.toLowerCase();
           value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.gas.times(feeParams.gasPrice), precision));
         } else {
+          finalToAddress = finalToAddress.toLowerCase();
           value = balance;
         }
       }
-      let transaction = new Transaction(coin, toAddress.toLowerCase(), value, extraParams);
+
+      let transaction = new Transaction(coin, finalToAddress, value, extraParams);
       await transaction.broadcast();
       this.setState({ loading: false });
       const completedParams = {
@@ -946,8 +950,12 @@ class Transfer extends Component {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
       const buttonText = 'button.retry';
-      const notification = getErrorNotification(error.code, buttonText) || getDefaultTxFailedErrorNotification(buttonText);
+      const decodedNotification = getErrorNotification(error.code, buttonText);
+      const notification = decodedNotification || getDefaultTxFailedErrorNotification(buttonText);
       addNotification(notification);
+      if (!decodedNotification) {
+        reportErrorToServer({ developerComment: 'transfer.js->confirm()', errorObject: error });
+      }
       if (error.code === ERROR_CODE.NOT_ENOUGH_BALANCE || ERROR_CODE.NOT_ENOUGH_BTC || ERROR_CODE.NOT_ENOUGH_RBTC) {
         getBalance({
           symbol, type, address, needFetch: true,
@@ -1217,7 +1225,7 @@ Transfer.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
-        coin: PropTypes.string.isRequired,
+        coin: PropTypes.shape({}).isRequired,
         toAddress: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
