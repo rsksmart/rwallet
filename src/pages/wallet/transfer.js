@@ -18,7 +18,8 @@ import {
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import Transaction, { btcTransaction, rbtcTransaction } from '../../common/transaction';
+import  { btcTransaction, rbtcTransaction } from '../../common/transaction';
+import  { broadcastTransaction } from '../../services/transactionServices';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -914,38 +915,22 @@ class Transfer extends Component {
     const { navigation, addNotification, getBalance } = this.props;
     const { coin, isRequestSendAll } = this;
     const {
-      symbol, type, address, balance, precision,
+      symbol, type, address
     } = coin;
     const { memo, amount } = this.state;
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
-      const extraParams = { data: '', memo, gasFee: feeParams };
-      let finalToAddress = toAddress;
-      // In order to send all all balances, we cannot use the amount in the text box to calculate the amount sent, but use the coin balance.
-      // The amount of the text box is fixed decimal places
-      let value = new BigNumber(amount);
-      if (isRequestSendAll) {
-        if (symbol === 'BTC') {
-          value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.fees, precision));
-        } else if (symbol === 'RBTC') {
-          finalToAddress = finalToAddress.toLowerCase();
-          value = balance.minus(common.convertUnitToCoinAmount(symbol, feeParams.gas.times(feeParams.gasPrice), precision));
-        } else {
-          finalToAddress = finalToAddress.toLowerCase();
-          value = balance;
-        }
-      }
 
-      let transaction = new Transaction(coin, finalToAddress, value, extraParams);
-      await transaction.broadcast();
+      await broadcastTransaction({ memo, amount, coin, feeParams, toAddress, isRequestSendAll});
+
       this.setState({ loading: false });
       const completedParams = {
         coin,
         hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
-      transaction = null;
+      // transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
