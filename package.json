@@ -21,6 +21,7 @@
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/slider": "^1.1.4",
     "@react-native-community/toolbar-android": "^0.1.0-rc.2",
+    "@react-native-firebase/app": "^11.5.0",
     "@rsksmart/rns-resolver.js": "^1.0.0",
     "@rsksmart/rsk3": "^0.3.2",
     "@tradle/react-native-http": "^2.0.1",
