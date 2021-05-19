@@ -1,4 +1,5 @@
 import { buildTransaction } from '../src/services/transactionServices';
+import BigNumber from "bignumber.js";
 const legacyBtcInput={
     amount: "0.001",
     feeParams: {fees: "0x25b7"},
@@ -20,25 +21,34 @@ const legacyBtcInput={
         type: "Testnet"
     }
 }
-
-const legacyBtcTransaction ={
-    addressType: "legacy",
-    coinSwitch: undefined,
-    contractAddress: "",
-    data: "",
-    gasFee: {fees: "0x25b7"},
+const balance = new BigNumber(100);
+const gas = new BigNumber(23);
+const segwitRbtcSendAllInput={
+    amount: "0.046984",
+    feeParams: { gasPrice: "118480000", gas},
+    isRequestSendAll: true,
     memo: null,
-    netType: "Testnet",
-    privateKey: "707dd7a0645d37725f28a63d764bc91a34ca263a077230ba56209dddd3bc881f",
-    publicKey: undefined,
-    rawTransaction: null,
-    receiver: "mtSwjbJh1S6tih3L4PhC5JRzQ1mGd2mqx8",
-    sender: "myD8QmHBNa4zugWqEvY118XSciNvsdpkrU",
-    signedTransaction: "0200000001aaa6f4351c5e71ed9b5ec3e67bc1df542bcad254683e12b59e3be20284513eb2010000006a473044022044a6048266ee54db238a3e2ead31408000767d0be9eaa27736d17a14cebfe9ed022020dba17ee90f013bbea9b582b125855cf4a35401e686e06f12aa4ab430e4fc2c012103686be862655bc3e3286ecb3b74d61e3eea1caf59a101a14703eaff1ea4f25c3bffffffff02a0860100000000001976a9148dd7810f56f02bde737298f67c741b021a36d0c788ace47c1000000000001976a914c2133890475a49c5279ab4f483b09aba3f534c4a88ac00000000",
-    symbol: "BTC",
-    txHash: "6e6cbe62dda629372f60fcf352693f0a7615fd6d7af5e31058394145695eb7fb",
-    value: "0x186a0",
+    toAddress: "0xe4CAE969f26E093874728272dcFED1074f4778F5",
+    coin:{
+        account: "0",
+        address: "0x2FA4a8A4cFF02Efa4368a1e8c3301C5342D3b879",
+        balance:balance,
+        chain: "Rootstock",
+        coinType: 37310,
+        contractAddress: undefined,
+        id: "RBTCTestnet",
+        metadata: {networkId: 31, coinType: 37310, icon: 10, defaultName: "Smart Bitcoin", chain: "Rootstock"},
+        name: "Smart Bitcoin",
+        networkId: 31,
+        objectId: "gOrOxEcFeQ",
+        path: "m/44'/37310'/0'/0/0",
+        precision: 18,
+        privateKey: "b265c01217804948d490d17b7383d61daf1991f87f1f5ae87b3ad0f84bf967e0",
+        symbol: "RBTC",
+        type: "Testnet"
+    }
 }
+
 
 describe('Transaction Services', () => {
     it('should build a transaction with a legacy BTC address', async () => {
@@ -51,9 +61,15 @@ describe('Transaction Services', () => {
     });
 
 
-    it('should build a transaction with a RBTC address', async () => {
-
+    it('should build a transaction with a RBTC address when sending all', async () => {
+        const builtTransaction = await buildTransaction(segwitRbtcSendAllInput);
+        expect(builtTransaction).toHaveProperty('receiver');
+        expect(builtTransaction.receiver).toBe(segwitRbtcSendAllInput.toAddress.toLowerCase());
+        expect(builtTransaction).toHaveProperty('sender');
+        expect(builtTransaction.sender).toBe(segwitRbtcSendAllInput.coin.address);
+        expect(builtTransaction.symbol).toBe(segwitRbtcSendAllInput.coin.symbol);
     });
 
 });
+
 
