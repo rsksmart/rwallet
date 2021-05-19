@@ -31,7 +31,7 @@ const buildTransaction = async ({
 const broadcastTransaction = async ({
   memo, amount, coin, feeParams, toAddress, isRequestSendAll,
 }) => {
-  const transaction = buildTransaction({
+  const transaction = await buildTransaction({
     memo, amount, coin, feeParams, toAddress, isRequestSendAll,
   });
   await transaction.broadcast();
