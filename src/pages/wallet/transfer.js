@@ -18,8 +18,8 @@ import {
 import { createErrorConfirmation } from '../../common/confirmation.controller';
 import appActions from '../../redux/app/actions';
 import walletActions from '../../redux/wallet/actions';
-import  { btcTransaction, rbtcTransaction } from '../../common/transaction';
-import  { broadcastTransaction } from '../../services/transactionServices';
+import { btcTransaction, rbtcTransaction } from '../../common/transaction';
+import { broadcastTransaction } from '../../services/transactionServices';
 import common from '../../common/common';
 import { strings } from '../../common/i18n';
 import Button from '../../components/common/button/button';
@@ -915,14 +915,16 @@ class Transfer extends Component {
     const { navigation, addNotification, getBalance } = this.props;
     const { coin, isRequestSendAll } = this;
     const {
-      symbol, type, address
+      symbol, type, address,
     } = coin;
     const { memo, amount } = this.state;
     try {
       this.setState({ loading: true });
       const feeParams = this.getFeeParams();
 
-      await broadcastTransaction({ memo, amount, coin, feeParams, toAddress, isRequestSendAll});
+      const transaction = await broadcastTransaction({
+        memo, amount, coin, feeParams, toAddress, isRequestSendAll,
+      });
 
       this.setState({ loading: false });
       const completedParams = {
