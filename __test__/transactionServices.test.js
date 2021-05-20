@@ -1,5 +1,7 @@
 import { buildTransaction } from '../src/services/transactionServices';
 import BigNumber from "bignumber.js";
+import common from './../src/common/common';
+
 const legacyBtcInput={
     amount: "0.001",
     feeParams: {fees: "0x25b7"},
@@ -16,13 +18,17 @@ const legacyBtcInput={
         networkId: 1,
         objectId: "Q4dJZA9EVX",
         path: "m/44'/1'/0'/0/0",
+        precision: 18,
         privateKey: "707dd7a0645d37725f28a63d764bc91a34ca263a077230ba56209dddd3bc881f",
         symbol: "BTC",
         type: "Testnet"
     }
 }
-const balance = new BigNumber(100);
-const gas = new BigNumber(23);
+
+
+
+const balance = new BigNumber(2300);
+const gas = new BigNumber(2300);
 const segwitRbtcSendAllInput={
     amount: "0.046984",
     feeParams: { gasPrice: "118480000", gas},
@@ -57,19 +63,32 @@ describe('Transaction Services', () => {
         expect(builtTransaction.receiver).toBe(legacyBtcInput.toAddress);
         expect(builtTransaction).toHaveProperty('sender');
         expect(builtTransaction.sender).toBe(legacyBtcInput.coin.address);
+        expect(builtTransaction).toHaveProperty('symbol');
         expect(builtTransaction.symbol).toBe(legacyBtcInput.coin.symbol);
+        expect(builtTransaction).toHaveProperty('value');
+        expect(builtTransaction.value).toBe(common.convertCoinAmountToUnitHex(legacyBtcInput.coin.symbol,legacyBtcInput.amount,legacyBtcInput.coin.precision));
+
+
     });
 
 
-    it('should build a transaction with a RBTC address when sending all', async () => {
+
+    it('should build a transaction with a segwit RBTC address when sending all', async () => {
         const builtTransaction = await buildTransaction(segwitRbtcSendAllInput);
         expect(builtTransaction).toHaveProperty('receiver');
         expect(builtTransaction.receiver).toBe(segwitRbtcSendAllInput.toAddress.toLowerCase());
         expect(builtTransaction).toHaveProperty('sender');
         expect(builtTransaction.sender).toBe(segwitRbtcSendAllInput.coin.address);
+        expect(builtTransaction).toHaveProperty('symbol');
         expect(builtTransaction.symbol).toBe(segwitRbtcSendAllInput.coin.symbol);
+        expect(builtTransaction).toHaveProperty('value');
+        const value = segwitRbtcSendAllInput.coin.balance.minus(common.convertUnitToCoinAmount(segwitRbtcSendAllInput.coin.symbol, segwitRbtcSendAllInput.feeParams.gas.times(segwitRbtcSendAllInput.feeParams.gasPrice), segwitRbtcSendAllInput.coin.precision));
+        console.log({value});
+        expect(builtTransaction.value).toBe(common.convertCoinAmountToUnitHex(segwitRbtcSendAllInput.coin.symbol,value,segwitRbtcSendAllInput.coin.precision));
+
+
     });
 
+
+
 });
-
-

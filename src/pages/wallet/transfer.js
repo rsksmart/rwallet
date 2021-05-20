@@ -932,7 +932,6 @@ class Transfer extends Component {
         hash: transaction.txHash,
       };
       navigation.navigate('TransferCompleted', completedParams);
-      // transaction = null;
     } catch (error) {
       this.setState({ loading: false });
       console.log(`confirm, error: ${error.message}`);
