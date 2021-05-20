@@ -67,11 +67,7 @@ describe('Transaction Services', () => {
         expect(builtTransaction.symbol).toBe(legacyBtcInput.coin.symbol);
         expect(builtTransaction).toHaveProperty('value');
         expect(builtTransaction.value).toBe(common.convertCoinAmountToUnitHex(legacyBtcInput.coin.symbol,legacyBtcInput.amount,legacyBtcInput.coin.precision));
-
-
     });
-
-
 
     it('should build a transaction with a segwit RBTC address when sending all', async () => {
         const builtTransaction = await buildTransaction(segwitRbtcSendAllInput);
@@ -83,12 +79,7 @@ describe('Transaction Services', () => {
         expect(builtTransaction.symbol).toBe(segwitRbtcSendAllInput.coin.symbol);
         expect(builtTransaction).toHaveProperty('value');
         const value = segwitRbtcSendAllInput.coin.balance.minus(common.convertUnitToCoinAmount(segwitRbtcSendAllInput.coin.symbol, segwitRbtcSendAllInput.feeParams.gas.times(segwitRbtcSendAllInput.feeParams.gasPrice), segwitRbtcSendAllInput.coin.precision));
-        console.log({value});
         expect(builtTransaction.value).toBe(common.convertCoinAmountToUnitHex(segwitRbtcSendAllInput.coin.symbol,value,segwitRbtcSendAllInput.coin.precision));
-
-
     });
-
-
 
 });
