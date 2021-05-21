@@ -1,44 +1,16 @@
 package com.rsk.rwallet.v2;
 
-import android.app.Application;
 import android.content.Context;
+
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import fr.greweb.reactnativeviewshot.RNViewShotPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import io.invertase.firebase.RNFirebasePackage;
-import com.rnfs.RNFSPackage;
-import cl.json.RNSharePackage;
-import com.bolan9999.SpringScrollViewPackage;
-import com.cmcewen.blurview.BlurViewPackage;
-import com.apsl.versionnumber.RNVersionNumberPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.tradle.react.UdpSocketsModule;
-import com.peel.react.TcpSocketsModule;
-import org.reactnative.camera.RNCameraPackage;
-import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-
-import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
-import com.taluttasgiran.rnsecurestorage.RNSecureStoragePackage;
-import com.horcrux.svg.SvgPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.swmansion.rnscreens.RNScreensPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.reactnativecommunity.slider.ReactSliderPackage;
-import com.reactnativecommunity.webview.RNCWebViewPackage;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
@@ -51,7 +23,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+// Manually add any missing packages like this
+// packages.add(new PostsnapPackage());
+      return packages;
+      /*return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNViewShotPackage(),
             new RNDeviceInfo(),
@@ -79,7 +55,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
             new RNFirebaseMessagingPackage(),
             new RNFirebaseNotificationsPackage(),
             new RNCWebViewPackage()
-      );
+      );*/
     }
 
     @Override
