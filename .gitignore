@@ -35,6 +35,10 @@ android/keystores/
 android/app/release/
 android/app/google-services.json
 
+#ios
+ios/rwallet/GoogleService-Info.plist
+/ios/rwallet/GoogleService-Info.plist
+
 # node.js
 #
 node_modules/

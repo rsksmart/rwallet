@@ -6,7 +6,7 @@ This is a multi-cryptocurrency wallet application. Supports both english and spa
 ## Prerequisite
 
 ### To run on Android
-1. In order to run this App in Android Simulator, **Android Studio** needs to be installed with Android SKD 10 (Api level 29). Please refer to [https://developer.android.com/studio](https://developer.android.com/studio)
+1. In order to run this App in Android Simulator, **Android Studio** needs to be installed with Android SKD 11 (Api level 30). Please refer to [https://developer.android.com/studio](https://developer.android.com/studio)
 1. Open Android Studio, create a device via `Tools > AVD Manager > Create Virtual Device`. After downloading required dependencies, start the device by clicking on Play icon.
 1. Now we are testing if you can invoke `adb` in terminial. This is for running rWallet Android App on Android virtual device.
     1. Since we already have Android Studio installed we can add `platform-tools` to path
@@ -21,11 +21,6 @@ This is a multi-cryptocurrency wallet application. Supports both english and spa
         List of devices attached
         emulator-5554	device
         ```
-       
-**Note:** When  `syncing project with gradle files` using Android SKD 11, it throws the following error:
-```
-No variants found for ':@imstar15_react-native-firebase'. Check build files to ensure at least one variant exists. at:
-```
 
 ### To run on iOS Devices
 1. XCode needs to be installed (v11.x). iOS simulator will be installed along with XCode.
