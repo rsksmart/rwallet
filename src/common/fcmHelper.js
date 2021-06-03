@@ -1,4 +1,6 @@
-import firebase from '@imstar15/react-native-firebase';
+import firebase from '@react-native-firebase/app';
+import { Notifications } from 'react-native-notifications';
+import '@react-native-firebase/messaging';
 
 export const FcmType = {
   LAUNCH: 'LAUNCH',
@@ -35,9 +37,11 @@ class FcmHelper {
      // When a notification from FCM has triggered the application to open from a quit state,
      // this method will return a RemoteMessage containing the notification data,
      // or null if the app was opened via another method.
-     const notificationOpen = await firebase.notifications().getInitialNotification();
+     // const notificationOpen = await firebase.notifications().getInitialNotification();
+     const notificationOpen = await Notifications.getInitialNotification();
      if (notificationOpen) {
-       return notificationOpen.notification;
+       // return notificationOpen.notification;
+       return notificationOpen;
      }
      return null;
    }
@@ -59,6 +63,21 @@ class FcmHelper {
   }
 
   setMessagingListener = () => {
+    Notifications.registerRemoteNotifications();
+
+    Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
+      console.log(`Notification received in foreground: ${notification.title} : ${notification.body}`);
+      this.onFireMessagingNotification(notification, FcmType.INAPP);
+      completion();
+    });
+
+    Notifications.events().registerNotificationOpened((notification, completion) => {
+      console.log(`Notification opened: ${notification.payload}`);
+      this.onFireMessagingNotification(notification, FcmType.BACKGROUND);
+      completion();
+    });
+
+    /*
     // App in foreground, onNotification triggered
     firebase.notifications().onNotification((notification) => {
       this.onFireMessagingNotification(notification, FcmType.INAPP);
@@ -68,6 +87,7 @@ class FcmHelper {
     firebase.notifications().onNotificationOpened((notificationOpen) => {
       this.onFireMessagingNotification(notificationOpen.notification, FcmType.BACKGROUND);
     });
+    */
 
     firebase.messaging().onMessage((message) => {
       console.log('firebaseMessaging, onMessage, message: ', message);
