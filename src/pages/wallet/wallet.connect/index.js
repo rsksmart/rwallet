@@ -287,7 +287,6 @@ class WalletConnectPage extends Component {
   initWalletConnect = async () => {
     const { navigation } = this.props;
     const { uri } = navigation.state.params;
-
     try {
       const connector = new WalletConnect({ uri });
 
@@ -341,7 +340,6 @@ class WalletConnectPage extends Component {
         // Clear timeout if wallet connect establish session connect
         clearTimeout(this.timeout);
       });
-
       connector.on('session_update', (error) => {
         console.log('EVENT', 'session_update');
 
@@ -360,7 +358,7 @@ class WalletConnectPage extends Component {
 
         await this.setState({ payload });
 
-        this.popupOperationModal();
+        this.popupOperationModal(payload);
       });
 
       connector.on('connect', (error) => {
@@ -473,7 +471,7 @@ class WalletConnectPage extends Component {
 
   popupTransactionModal = async () => {
     const { payload: { params }, chainId } = this.state;
-    const toAddress = Rsk3.utils.toChecksumAddress(params[0].to, chainId);
+    const toAddress = params[0].to;
     const txData = await this.generateTxData();
     await this.setState({ txData });
 
@@ -561,9 +559,9 @@ class WalletConnectPage extends Component {
     });
   }
 
-  popupOperationModal = async () => {
+  popupOperationModal = async (payload) => {
     try {
-      const { payload: { method, params } } = this.state;
+      const { method, params } = payload;
 
       switch (method) {
         case 'personal_sign': {
@@ -609,7 +607,7 @@ class WalletConnectPage extends Component {
     const gasPriceNumber = new BigNumber(gasPrice);
     const valueNumber = new BigNumber(value);
     const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
-    const balance = await rsk3.getBalance(address);
+    const balance = await rsk3.getBalance(address.toLowerCase());
     return Number(balance) < Number(total);
   }
 
@@ -720,7 +718,7 @@ class WalletConnectPage extends Component {
 
     if (!gas) {
       await rsk3.estimateGas({
-        from: address,
+        from: address.toLowerCase(),
         to,
         data,
         value,
@@ -893,7 +891,9 @@ WalletConnectPage.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.string.isRequired,
+    }).isRequired,
     isFocused: PropTypes.func.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
