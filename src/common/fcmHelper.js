@@ -77,18 +77,6 @@ class FcmHelper {
       completion();
     });
 
-    /*
-    // App in foreground, onNotification triggered
-    firebase.notifications().onNotification((notification) => {
-      this.onFireMessagingNotification(notification, FcmType.INAPP);
-    });
-
-    // App in background, onNotificationOpened Triggered if the notification is tapped
-    firebase.notifications().onNotificationOpened((notificationOpen) => {
-      this.onFireMessagingNotification(notificationOpen.notification, FcmType.BACKGROUND);
-    });
-    */
-
     firebase.messaging().onMessage((message) => {
       console.log('firebaseMessaging, onMessage, message: ', message);
     });

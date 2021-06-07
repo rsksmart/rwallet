@@ -25,38 +25,9 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     @Override
     protected List<ReactPackage> getPackages() {
       List<ReactPackage> packages = new PackageList(this).getPackages();
-// Manually add any missing packages like this
-// packages.add(new PostsnapPackage());
+      // Manually add any missing packages like this
+      // packages.add(new PostsnapPackage());
       return packages;
-      /*return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNViewShotPackage(),
-            new RNDeviceInfo(),
-            new RNFirebasePackage(),
-            new RNFSPackage(),
-            new RNSharePackage(),
-            new SpringScrollViewPackage(),
-            new BlurViewPackage(),
-            new RNVersionNumberPackage(),
-            new LinearGradientPackage(),
-            new VectorIconsPackage(),
-            new UdpSocketsModule(),
-            new TcpSocketsModule(),
-            new RNCameraPackage(),
-            new RNUUIDGeneratorPackage(),
-            new ReactNativeFingerprintScannerPackage(),
-            new RNSecureStoragePackage(),
-            new SvgPackage(),
-            new RandomBytesPackage(),
-            new RNI18nPackage(),
-            new AsyncStoragePackage(),
-            new RNGestureHandlerPackage(),
-            new RNScreensPackage(),
-            new ReactSliderPackage(),
-            new RNFirebaseMessagingPackage(),
-            new RNFirebaseNotificationsPackage(),
-            new RNCWebViewPackage()
-      );*/
     }
 
     @Override
