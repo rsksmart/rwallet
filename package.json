@@ -15,7 +15,6 @@
     "ip10": "react-native run-ios --simulator=\"iPhone X\""
   },
   "dependencies": {
-    "@amazingbeerbelly/react-native-snap-carousel": "^1.0.0",
     "@ant-design/react-native": "^3.1.10",
     "@react-native-community/async-storage": "^1.5.0",
     "@react-native-community/blur": "^3.6.0",
