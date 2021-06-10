@@ -172,15 +172,7 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
 
     if (enableHermes) {
-        // For RN 0.60.x
-        def hermesPath = "../../node_modules/hermesvm/android/"
-
-        // --- OR ----
-
-        // for RN 0.61+
-        //def hermesPath = "../../node_modules/hermes-engine/android/";
-
-
+        def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {

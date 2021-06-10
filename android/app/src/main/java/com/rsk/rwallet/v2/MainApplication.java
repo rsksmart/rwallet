@@ -2,6 +2,7 @@ package com.rsk.rwallet.v2;
 
 import android.content.Context;
 
+import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
@@ -11,16 +12,14 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+
 
     @Override
     protected List<ReactPackage> getPackages() {
@@ -33,6 +32,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     @Override
     protected String getJSMainModuleName() {
       return "index";
+    }
+
+    @Override
+    public boolean getUseDeveloperSupport() {
+      return true;
     }
   };
 
@@ -49,7 +53,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
   @Override
   protected void attachBaseContext(Context newBase) {
-      super.attachBaseContext(newBase);
-      MultiDex.install(this);
+    super.attachBaseContext(newBase);
+    MultiDex.install(this);
   }
+
 }

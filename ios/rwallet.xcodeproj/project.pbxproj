@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00AD644EF595416DA8E09C2E /* libRNSpringScrollView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7002C49DAAA4AB4BE86FEB4 /* libRNSpringScrollView.a */; };
 		00E356F31AD99517003FC87E /* rwalletTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* rwalletTests.m */; };
 		0328406361D842E8B718F86B /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C576CCDCA8FD4275B576D808 /* libRNGestureHandler.a */; };
 		05FE9573DC0E44529A5F2BF0 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7659CCC565444D4BF484D52 /* libRNDeviceInfo-tvOS.a */; };
@@ -33,6 +32,7 @@
 		3D5B08C1266ABD1B002DC918 /* libFirebaseInstanceID.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D5B08C0266ABD1B002DC918 /* libFirebaseInstanceID.a */; };
 		3D5B08C3266ABD1B002DC918 /* libFirebaseMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D5B08C2266ABD1B002DC918 /* libFirebaseMessaging.a */; };
 		3D5B08C5266ABD40002DC918 /* libreact-native-view-shot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D5B08C4266ABD40002DC918 /* libreact-native-view-shot.a */; };
+		3D67F3212672A4C0009BE7BC /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D67F3202672A4C0009BE7BC /* libBVLinearGradient.a */; };
 		3E69677E01BB40208757CAD0 /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 695867629428482FA3A90241 /* libRNI18n-tvOS.a */; };
 		548211A1EFD64C07A2FCBCE8 /* libRNSecureStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E5E65B599004351BB86186D /* libRNSecureStorage.a */; };
 		5B7D7087971B42D19FE36BA7 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3300BD278F0944B69A5D0177 /* libRNVectorIcons-tvOS.a */; };
@@ -47,7 +47,6 @@
 		CC0291990CC94EE7A06FE93F /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF5D59698B44D9CBD2F88A3 /* libRNShare.a */; };
 		D5D2EFF9A4CA44DF87093E3D /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AD836E22DB24EBB8A932336 /* libRNCAsyncStorage.a */; };
 		D9457D06FAD947DBA7A28BF2 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AFC2866D1F743AE8BB185D9 /* libRNSVG.a */; };
-		DC1D741FAC174F5DABC3E805 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 940089BCA8744C6CBBE9D6A3 /* libBVLinearGradient.a */; };
 		DD4B1B8AC6F348749742C2A0 /* libPods-rwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7661AF1A992B063D8A878872 /* libPods-rwallet.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
@@ -116,6 +115,7 @@
 		3D5B08C0266ABD1B002DC918 /* libFirebaseInstanceID.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseInstanceID.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D5B08C2266ABD1B002DC918 /* libFirebaseMessaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseMessaging.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D5B08C4266ABD40002DC918 /* libreact-native-view-shot.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-view-shot.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D67F3202672A4C0009BE7BC /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		404EF3560C874183A74293CF /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		41DA298E0A1F4AD395F9B2E4 /* libRNScreens-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNScreens-tvOS.a"; sourceTree = "<group>"; };
 		4D191498153C4033BE279003 /* libRNI18n.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNI18n.a; sourceTree = "<group>"; };
@@ -197,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D67F3212672A4C0009BE7BC /* libBVLinearGradient.a in Frameworks */,
 				3D5B08C5266ABD40002DC918 /* libreact-native-view-shot.a in Frameworks */,
 				3D5B08BB266ABD1B002DC918 /* libFirebaseCore.a in Frameworks */,
 				3D5B08BD266ABD1B002DC918 /* libFirebaseCoreDiagnostics.a in Frameworks */,
@@ -219,8 +220,6 @@
 				548211A1EFD64C07A2FCBCE8 /* libRNSecureStorage.a in Frameworks */,
 				F1D5B5047A7E4109807D72EC /* libTcpSockets.a in Frameworks */,
 				B1FD1A3B31814F38ABC0FBCC /* libRNVectorIcons.a in Frameworks */,
-				DC1D741FAC174F5DABC3E805 /* libBVLinearGradient.a in Frameworks */,
-				00AD644EF595416DA8E09C2E /* libRNSpringScrollView.a in Frameworks */,
 				CC0291990CC94EE7A06FE93F /* libRNShare.a in Frameworks */,
 				66A3DC1EEAA446F3A21298E2 /* libRNFS.a in Frameworks */,
 				A8DC8504C6124B108C3B1B10 /* libRNDeviceInfo.a in Frameworks */,
@@ -294,6 +293,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D67F3202672A4C0009BE7BC /* libBVLinearGradient.a */,
 				3D5B08C4266ABD40002DC918 /* libreact-native-view-shot.a */,
 				3D5B08BA266ABD1B002DC918 /* libFirebaseCore.a */,
 				3D5B08BC266ABD1B002DC918 /* libFirebaseCoreDiagnostics.a */,
