@@ -2,7 +2,6 @@ package com.rsk.rwallet.v2;
 
 import android.content.Context;
 
-import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
@@ -12,7 +11,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
@@ -36,7 +34,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
     @Override
     public boolean getUseDeveloperSupport() {
-      return true;
+      return BuildConfig.DEBUG;
     }
   };
 
