@@ -118,7 +118,7 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "timeoutTitle": "Wallet Connect timed out",
-        "timeoutBody": "RWallet couldn't establish a Wallet Connect connection to the Dapp within a short timeframe. Please try again.",
+        "timeoutBody": "RWallet couldn't establish a Wallet Connect connection to the Dapp within a short timeframe. Please try again. If the problem persist, please delete all browsing data (cookies, cache, etc) on the browser you are using to access the Dapp.",
         "timeoutButton": "Okay",
         "emptyWalletError": "Empty wallet",
         "selectMainnetAsset": "Please select a wallet that has at least one mainnet rsk asset",
@@ -249,7 +249,7 @@
         "address": "Address",
         "rnsName": "RNS Nickname",
         "anotherAddress": "Another address",
-        "nameTooShort": "Nickname contains at least {{count}} characters",                                               
+        "nameTooShort": "Nickname contains at least {{count}} characters",
         "nameUnavailable": "Sorry, The nickname entered is not available",
         "nameAvailable": "The nickname entered is available",
         "selectAddress": "Select a Address",
