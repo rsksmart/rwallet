@@ -91,15 +91,19 @@ class VerifyPasscodeModal extends PureComponent {
     if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
       // still doesn't reach the first step
       this.baseModal.rejectPasscord('modal.verifyPasscode.incorrect');
-      return;
+      this.setState({ isLoading: false });
+    } else {
+      const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+      const serverInfo = await getServerInfo();
+      storage.setLastPasscodeAttempt(serverInfo.timestamp);
+      this.setState({ isLoading: false });
+      this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
     }
-    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
-    const serverInfo = await getServerInfo();
-    storage.setLastPasscodeAttempt(serverInfo.timestamp);
-    this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
   }
 
   passcodeOnFill = async (input) => {
+    this.setState({ isLoading: true });
+
     const { passcode } = this.props;
 
     if (input === passcode) {
@@ -110,8 +114,9 @@ class VerifyPasscodeModal extends PureComponent {
       if (this.passcodeCallback) {
         this.passcodeCallback();
       }
+      this.setState({ isLoading: false });
     } else {
-      this.handleWrongPasscode();
+      await this.handleWrongPasscode();
     }
   };
 
