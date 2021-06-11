@@ -121,7 +121,7 @@
       "walletconnect": {
         "title": "Wallet Connect",
         "timeoutTitle": "Wallet Connect agotó el tiempo de espera",
-        "timeoutBody": "RWallet no pudo establecer una conexión de Wallet Connect con el Dapp en un breve período de tiempo. Vuelva a intentarlo.",
+        "timeoutBody": "RWallet no pudo establecer una conexión de Wallet Connect con el Dapp en un breve período de tiempo. Vuelva a intentarlo. Si el problema persiste, borre los datos del navegador (cookies, cache, etc) que está usando para acceder el Dapp",
         "timeoutButton": "Bien",
         "emptyWalletError": "Cartera vacía",
         "selectMainnetAsset": "Seleccione una billetera que tenga al menos un activo rsk de mainnet",
@@ -252,7 +252,7 @@
         "address": "Habla a",
         "rnsName": "Apodo RNS",
         "anotherAddress": "Otra dirección",
-        "nameTooShort": "El apodo contiene al menos {{count}} caracteres",                                        
+        "nameTooShort": "El apodo contiene al menos {{count}} caracteres",
         "nameUnavailable": "Lo sentimos, el sobrenombre ingresado no está disponible",
         "nameAvailable": "El apodo ingresado está disponible",
         "selectAddress": "Seleccione una direccion",
