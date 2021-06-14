@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { getServerInfo } from '../../../services/serverServices';
 import PasscodeModalBase from './passcode.modal.base';
 import {
   getClosestStep,
@@ -28,6 +29,7 @@ class VerifyPasscodeModal extends PureComponent {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.initialize()
       .then(this.setState({ isLoading: false }))
       .catch((error) => {
@@ -36,7 +38,6 @@ class VerifyPasscodeModal extends PureComponent {
   }
 
   initialize = async () => {
-    this.setState({ isLoading: true });
     const wrongAttemptsStorage = await storage.getWrongPasscodeCounter();
     this.wrongAttemptsCounter = parseInt(wrongAttemptsStorage, 10) || 0;
 
@@ -49,7 +50,8 @@ class VerifyPasscodeModal extends PureComponent {
     }
 
     const lastAttemptTimestamp = parseInt(lastPasscodeStorage, 10);
-    const msSinceLastAttempt = Date.now() - lastAttemptTimestamp;
+    const serverInfo = await getServerInfo();
+    const msSinceLastAttempt = serverInfo.timestamp - lastAttemptTimestamp;
     const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
     const milliseconds = waitingMinutes * 1000 * 60 - msSinceLastAttempt;
 
@@ -82,21 +84,26 @@ class VerifyPasscodeModal extends PureComponent {
     }, milliseconds);
   }
 
-  handleWrongPasscode = () => {
+  handleWrongPasscode = async () => {
     this.wrongAttemptsCounter += 1;
     storage.setWrongPasscodeCounter(this.wrongAttemptsCounter);
 
     if (this.wrongAttemptsCounter < WRONG_ATTEMPTS_STEPS.step1.maxAttempts) {
       // still doesn't reach the first step
       this.baseModal.rejectPasscord('modal.verifyPasscode.incorrect');
-      return;
+      this.setState({ isLoading: false });
+    } else {
+      const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
+      const serverInfo = await getServerInfo();
+      storage.setLastPasscodeAttempt(serverInfo.timestamp);
+      this.setState({ isLoading: false });
+      this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
     }
-    const { waitingMinutes } = getClosestStep({ numberOfAttempts: this.wrongAttemptsCounter });
-    storage.setLastPasscodeAttempt(Date.now());
-    this.lock({ milliseconds: waitingMinutes * 1000 * 60 });
   }
 
   passcodeOnFill = async (input) => {
+    this.setState({ isLoading: true });
+
     const { passcode } = this.props;
 
     if (input === passcode) {
@@ -107,8 +114,9 @@ class VerifyPasscodeModal extends PureComponent {
       if (this.passcodeCallback) {
         this.passcodeCallback();
       }
+      this.setState({ isLoading: false });
     } else {
-      this.handleWrongPasscode();
+      await this.handleWrongPasscode();
     }
   };
 
