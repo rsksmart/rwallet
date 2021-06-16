@@ -535,7 +535,6 @@ class History extends Component {
     if (_.isEmpty(listData) && isRefreshing) {
       return <ActivityIndicator />;
     }
-    console.log('RenderHistory', listData);
     return this.listView(listData, isRefreshing);
   }
 
