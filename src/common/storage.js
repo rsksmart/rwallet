@@ -1,6 +1,6 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-community/async-storage';
-import RNSecureStorage from 'rn-secure-storage';
+import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage';
 import _ from 'lodash';
 
 const KEY_WALLETS = 'WALLETS';
@@ -162,7 +162,9 @@ class RNStorage {
    * @param {string} value
    */
   static secureSet(key, value) {
-    return RNSecureStorage.set(key, value, {});
+    return RNSecureStorage.set(key, value, {
+      accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+    });
   }
 
   /**
