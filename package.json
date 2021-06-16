@@ -3,7 +3,7 @@
   "version": "1.4.5",
   "private": true,
   "scripts": {
-    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install && ./rm_webview.sh && jetifier && patch-package",
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install && ./rm_webview.sh && jetifier && ./node_modules/.bin/patch-package",
     "install:windows": "npm i && copy .\\postinstall\\blacklist.js .\\node_modules\\metro-config\\src\\defaults\\blacklist.js",
     "start": "react-native start",
     "test": "jest",
@@ -54,6 +54,7 @@
     "native-base": "^2.13.0",
     "ordinal": "^1.0.3",
     "parse": "^2.13.0",
+    "patch-package": "^6.4.7",
     "path-browserify": "0.0.0",
     "prop-types": "^15.7.2",
     "punycode": "^1.4.1",
