@@ -670,7 +670,7 @@ History.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
-        coin: PropTypes.string.isRequired,
+        coin: PropTypes.shape({}).isRequired,
         walletType: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
