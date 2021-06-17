@@ -265,9 +265,9 @@ PODS:
   - react-native-tcp-socket (5.2.1):
     - CocoaAsyncSocket
     - React-Core
-  - react-native-udp (3.3.0):
+  - react-native-udp (4.1.2):
     - CocoaAsyncSocket
-    - React
+    - React-Core
   - react-native-uuid-generator (6.1.1):
     - React
   - react-native-version-number (0.3.6):
@@ -576,17 +576,17 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d664a436303eb2cf9919df250f40ce5cf5e99fbe
   React-jsinspector: 74f6ea8f9d38ff44cc8f9867b2ecc9130d6cc2e5
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-camera: 14f79f085a97ee82f99344e10888cbc774403926
-  react-native-fingerprint-scanner: 3e5e508bde8edd284a3f1b47b77a4355a5aa1493
-  react-native-notifications: e914ff49de3b2268cfa1b5e2ad21fd27c36d5b7b
-  react-native-randombytes: 5fc412efe7b5c55b9002c0004d75fe5fabcaa507
-  react-native-slider: b733e17fdd31186707146debf1f04b5d94aa1a93
+  react-native-camera: e46c64f0d1212124c915bf83ee9b855ac6d35164
+  react-native-fingerprint-scanner: 388acb4969b681a3f63fbec0c4b740d2b775a1dc
+  react-native-notifications: 51ed8167f70f01c5000ba81a4465ea98b4612e23
+  react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
+  react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   react-native-tcp-socket: d05b8acbf1c045ff5b6a92ec6ca91960c94387d1
-  react-native-udp: 6383fce33c60274458e3b5ea38349735632c6aa3
-  react-native-uuid-generator: 997d9848f07081ce7200a05b76e3f8c7b309963c
-  react-native-version-number: 15563dc4145a94aabfc1faab2a9af10174a4204e
-  react-native-view-shot: 08c46c9e8e92f6681e8f2ffa55ac3d06e7e99070
-  react-native-webview: 1f56115845c98f0a59dfbbac685797c014a821be
+  react-native-udp: f074c83f072beaf52a97369315372c7dba48fda2
+  react-native-uuid-generator: 82ffa2a1cac94242ebed52c4dedc5044d3412717
+  react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
+  react-native-view-shot: 4475fde003fe8a210053d1f98fb9e06c1d834e1c
+  react-native-webview: 193d233c29eacce1f42ca2637dab7ba79c25a6de
   React-RCTActionSheet: abb6e20cdc3710d3442d735cdb2c641a5597f35d
   React-RCTAnimation: cacf34437277ae266c95896f40eb4e7604017132
   React-RCTBlob: ab3a193130b61816f8f3807941087873bfd5e8a4
@@ -597,8 +597,8 @@ SPEC CHECKSUMS:
   React-RCTText: fc8aaead300090f23dd0974545d75e3c43883922
   React-RCTVibration: 36a70f1015574284fa6770993c1e83a1f85dbabc
   ReactCommon: 3ea86417fa6e432b500579df40b057df54cfb4d4
-  RNCAsyncStorage: cb9a623793918c6699586281f0b51cbc38f046f9
-  RNDeviceInfo: 49f6d50f861c7810fac2dd9b71cfb56cc1940e14
+  RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
+  RNDeviceInfo: 8d3a29207835f972bce883723882980143270d55
   RNFBApp: 9c90f9d576861947ba75fe0830567c570bcbcf6d
   RNFBMessaging: c873e6c37f69d22de22cab134413030a9c6330a9
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
@@ -610,7 +610,7 @@ SPEC CHECKSUMS:
   RNShare: 5ac8f6532ca4cd80fc71caef1cfbba1854a6a045
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
-  toolbar-android: 404f4450b203597e7b417f714ff417bed562a1be
+  toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: b5db822228963b87948afa7a5a531088607151dc
 
 PODFILE CHECKSUM: 3e6ab2b627dff09d7d1ad282c4122cbb3b4c16a3
