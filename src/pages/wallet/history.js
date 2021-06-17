@@ -431,11 +431,6 @@ class History extends Component {
       if (txTimestamp === fetchTxTimestamp) {
         this.setState({ isLoadMore: false });
         this.setState({ isRefreshing: false });
-
-        if (this.largelist) {
-          this.largelist.endRefresh();
-          this.largelist.endLoading();
-        }
       }
 
       this.setState({
@@ -558,26 +553,25 @@ class History extends Component {
         <FlatList
           showsVerticalScrollIndicator={false}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
-          data={[{ items: listData || [] }]}
           ref={(largelist) => { this.largelist = largelist; }}
           renderHeader={() => this.renderHeader(listData, isRefreshing)}
           refreshHeader={RefreshHeader}
           allLoaded={_.isEmpty(listData)}
+          refreshing={isRefreshing}
           onRefresh={this.onRefresh}
           onLoading={this.loadMoreData}
           heightForIndexPath={() => 70}
-          renderIndexPath={({ row }) => {
-            const item = (listData && listData[row]) || {};
-            return (
-              <Item
-                title={item.state}
-                amount={item.amountText}
-                datetime={item.datetimeText}
-                onPress={() => onPress(row)}
-                itemKey={row.toString()}
-              />
-            );
-          }}
+          keyExtractor={(item, index) => index.toString()}
+          data={listData || []}
+          renderItem={({ item, index }) => (
+            <Item
+              title={item.state}
+              amount={item.amountText}
+              datetime={item.datetimeText}
+              onPress={() => onPress(index)}
+              itemKey={index.toString()}
+            />
+          )}
         />
       </View>
     );
