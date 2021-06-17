@@ -44,66 +44,6 @@ PODS:
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Reachability (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
-  - Flipper (0.94.1):
-    - Flipper-Folly (~> 2.6)
-    - Flipper-RSocket (~> 1.4)
-  - Flipper-Boost-iOSX (1.76.0.1.11)
-  - Flipper-DoubleConversion (3.1.7)
-  - Flipper-Fmt (7.1.7)
-  - Flipper-Folly (2.6.7):
-    - Flipper-Boost-iOSX
-    - Flipper-DoubleConversion
-    - Flipper-Fmt (= 7.1.7)
-    - Flipper-Glog
-    - libevent (~> 2.1.12)
-    - OpenSSL-Universal (= 1.1.180)
-  - Flipper-Glog (0.3.9)
-  - Flipper-PeerTalk (0.0.4)
-  - Flipper-RSocket (1.4.3):
-    - Flipper-Folly (~> 2.6)
-  - FlipperKit (0.94.1):
-    - FlipperKit/Core (= 0.94.1)
-  - FlipperKit/Core (0.94.1):
-    - Flipper (~> 0.94.1)
-    - FlipperKit/CppBridge
-    - FlipperKit/FBCxxFollyDynamicConvert
-    - FlipperKit/FBDefines
-    - FlipperKit/FKPortForwarding
-  - FlipperKit/CppBridge (0.94.1):
-    - Flipper (~> 0.94.1)
-  - FlipperKit/FBCxxFollyDynamicConvert (0.94.1):
-    - Flipper-Folly (~> 2.6)
-  - FlipperKit/FBDefines (0.94.1)
-  - FlipperKit/FKPortForwarding (0.94.1):
-    - CocoaAsyncSocket (~> 7.6)
-    - Flipper-PeerTalk (~> 0.0.4)
-  - FlipperKit/FlipperKitHighlightOverlay (0.94.1)
-  - FlipperKit/FlipperKitLayoutHelpers (0.94.1):
-    - FlipperKit/Core
-    - FlipperKit/FlipperKitHighlightOverlay
-    - FlipperKit/FlipperKitLayoutTextSearchable
-  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.94.1):
-    - FlipperKit/Core
-    - FlipperKit/FlipperKitHighlightOverlay
-    - FlipperKit/FlipperKitLayoutHelpers
-    - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutPlugin (0.94.1):
-    - FlipperKit/Core
-    - FlipperKit/FlipperKitHighlightOverlay
-    - FlipperKit/FlipperKitLayoutHelpers
-    - FlipperKit/FlipperKitLayoutIOSDescriptors
-    - FlipperKit/FlipperKitLayoutTextSearchable
-    - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutTextSearchable (0.94.1)
-  - FlipperKit/FlipperKitNetworkPlugin (0.94.1):
-    - FlipperKit/Core
-  - FlipperKit/FlipperKitReactPlugin (0.94.1):
-    - FlipperKit/Core
-  - FlipperKit/FlipperKitUserDefaultsPlugin (0.94.1):
-    - FlipperKit/Core
-  - FlipperKit/SKIOSNetworkPlugin (0.94.1):
-    - FlipperKit/Core
-    - FlipperKit/FlipperKitNetworkPlugin
   - Folly (2018.10.22.00):
     - boost-for-react-native
     - DoubleConversion
@@ -135,13 +75,11 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.4.1):
     - GoogleUtilities/Logger
-  - libevent (2.1.12)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - OpenSSL-Universal (1.1.180)
   - PromisesObjC (1.2.12)
   - RCTRequired (0.62.3)
   - RCTTypeSafety (0.62.3):
@@ -429,8 +367,6 @@ PODS:
   - toolbar-android (0.1.0-rc.2):
     - React
   - Yoga (1.14.0)
-  - YogaKit (1.18.1):
-    - Yoga (~> 1.14)
 
 DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -438,25 +374,6 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - FirebaseInstanceID (~> 7.11)
-  - Flipper (~> 0.94.1)
-  - Flipper-DoubleConversion
-  - Flipper-Folly (~> 2.6.7)
-  - Flipper-Glog (= 0.3.9)
-  - Flipper-PeerTalk (~> 0.0.4)
-  - Flipper-RSocket (~> 1.4)
-  - FlipperKit (~> 0.94.1)
-  - FlipperKit/Core (~> 0.94.1)
-  - FlipperKit/CppBridge (~> 0.94.1)
-  - FlipperKit/FBCxxFollyDynamicConvert (~> 0.94.1)
-  - FlipperKit/FBDefines (~> 0.94.1)
-  - FlipperKit/FKPortForwarding (~> 0.94.1)
-  - FlipperKit/FlipperKitHighlightOverlay (~> 0.94.1)
-  - FlipperKit/FlipperKitLayoutPlugin (~> 0.94.1)
-  - FlipperKit/FlipperKitLayoutTextSearchable (~> 0.94.1)
-  - FlipperKit/FlipperKitNetworkPlugin (~> 0.94.1)
-  - FlipperKit/FlipperKitReactPlugin (~> 0.94.1)
-  - FlipperKit/FlipperKitUserDefaultsPlugin (~> 0.94.1)
-  - FlipperKit/SKIOSNetworkPlugin (~> 0.94.1)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -519,22 +436,10 @@ SPEC REPOS:
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
-    - Flipper
-    - Flipper-Boost-iOSX
-    - Flipper-DoubleConversion
-    - Flipper-Fmt
-    - Flipper-Folly
-    - Flipper-Glog
-    - Flipper-PeerTalk
-    - Flipper-RSocket
-    - FlipperKit
     - GoogleDataTransport
     - GoogleUtilities
-    - libevent
     - nanopb
-    - OpenSSL-Universal
     - PromisesObjC
-    - YogaKit
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -655,22 +560,11 @@ SPEC CHECKSUMS:
   FirebaseInstallations: a58d4f72ec5861840b84df489f2668d970df558a
   FirebaseInstanceID: ad5135045a498d7775903efd39762d2cdfa1be27
   FirebaseMessaging: 163435fb6db065e3b6228f1e577b10ed2cc506d2
-  Flipper: aac900e73c4b9a55421b428f62684f993b5e43a8
-  Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
-  Flipper-DoubleConversion: 57ffbe81ef95306cc9e69c4aa3aeeeeb58a6a28c
-  Flipper-Fmt: 60cbdd92fc254826e61d669a5d87ef7015396a9b
-  Flipper-Folly: 83af37379faa69497529e414bd43fbfc7cae259a
-  Flipper-Glog: 05579840e2750ec907ee2f81544f41ad76a7cae4
-  Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
-  Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
-  FlipperKit: 74fafa5bf9562fe87029285d810d5f7867978683
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
   GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
-  libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: c689bd96375408b455d1cda431d76e8226f6c726
   RCTTypeSafety: 9c1123190d064e9077e4dba96d51b93d10e0a8a5
@@ -718,8 +612,7 @@ SPEC CHECKSUMS:
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
   toolbar-android: 404f4450b203597e7b417f714ff417bed562a1be
   Yoga: b5db822228963b87948afa7a5a531088607151dc
-  YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: bdfc5c6de336680927e5b44aff5b1ecf49578563
+PODFILE CHECKSUM: 3e6ab2b627dff09d7d1ad282c4122cbb3b4c16a3
 
 COCOAPODS: 1.10.1

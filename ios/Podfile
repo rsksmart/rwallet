@@ -33,7 +33,7 @@ def add_flipper_pods!(versions = {})
   # to avoid them being linked in Release builds
   pod 'Flipper', versions['Flipper'], :configuration => 'Debug'
   pod 'Flipper-DoubleConversion', versions['DoubleConversion'], :configuration => 'Debug'
-  pod 'Flipper-Folly', versions['Flipper-Folly'], :configuration => 'Debug'
+  # pod 'Flipper-Folly', versions['Flipper-Folly'], :configuration => 'Debug'
   pod 'Flipper-Glog', versions['Flipper-Glog'], :configuration => 'Debug'
   pod 'Flipper-PeerTalk', versions['Flipper-PeerTalk'], :configuration => 'Debug'
   pod 'Flipper-RSocket', versions['Flipper-RSocket'], :configuration => 'Debug'
@@ -104,9 +104,9 @@ target 'rwallet' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable these next few lines.
-    add_flipper_pods!
-    post_install do |installer|
-        flipper_post_install(installer)
-    end
+    #add_flipper_pods!
+    #post_install do |installer|
+    #    flipper_post_install(installer)
+    #end
 end
 
