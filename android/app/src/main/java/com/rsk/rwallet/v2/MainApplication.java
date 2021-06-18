@@ -17,10 +17,7 @@ import java.util.List;
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+
 
     @Override
     protected List<ReactPackage> getPackages() {
@@ -33,6 +30,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     @Override
     protected String getJSMainModuleName() {
       return "index";
+    }
+
+    @Override
+    public boolean getUseDeveloperSupport() {
+      return BuildConfig.DEBUG;
     }
   };
 
@@ -49,7 +51,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
   @Override
   protected void attachBaseContext(Context newBase) {
-      super.attachBaseContext(newBase);
-      MultiDex.install(this);
+    super.attachBaseContext(newBase);
+    MultiDex.install(this);
   }
+
 }

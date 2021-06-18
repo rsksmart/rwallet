@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ActivityIndicator, Image,
+  ActivityIndicator, Image, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { LargeList } from 'react-native-largelist-v3';
-import { ChineseWithLastDateFooter, WithLastDateFooter } from 'react-native-spring-scrollview/Customize';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -413,7 +411,8 @@ class History extends Component {
     this.fetchTokenTransactions(0);
   }
 
-  componentWillReceiveProps(nextProps) {
+  /* eslint camelcase: ["error", {allow: ["^UNSAFE_"]}] */
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {
       updateTimestamp, currency, prices, txTimestamp,
     } = nextProps;
@@ -432,11 +431,6 @@ class History extends Component {
       if (txTimestamp === fetchTxTimestamp) {
         this.setState({ isLoadMore: false });
         this.setState({ isRefreshing: false });
-
-        if (this.largelist) {
-          this.largelist.endRefresh();
-          this.largelist.endLoading();
-        }
       }
 
       this.setState({
@@ -553,35 +547,31 @@ class History extends Component {
   }
 
   listView = (listData, isRefreshing) => {
-    const { language } = this.props;
-    const Footer = language === 'zh' ? ChineseWithLastDateFooter : WithLastDateFooter;
     const { onListItemPress: onPress } = this;
     return (
       <View style={styles.largelistView}>
-        <LargeList
+        <FlatList
           showsVerticalScrollIndicator={false}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
-          data={[{ items: listData || [] }]}
           ref={(largelist) => { this.largelist = largelist; }}
           renderHeader={() => this.renderHeader(listData, isRefreshing)}
           refreshHeader={RefreshHeader}
-          loadingFooter={Footer}
           allLoaded={_.isEmpty(listData)}
+          refreshing={isRefreshing}
           onRefresh={this.onRefresh}
           onLoading={this.loadMoreData}
           heightForIndexPath={() => 70}
-          renderIndexPath={({ row }) => {
-            const item = (listData && listData[row]) || {};
-            return (
-              <Item
-                title={item.state}
-                amount={item.amountText}
-                datetime={item.datetimeText}
-                onPress={() => onPress(row)}
-                itemKey={row.toString()}
-              />
-            );
-          }}
+          keyExtractor={(item, index) => index.toString()}
+          data={listData || []}
+          renderItem={({ item, index }) => (
+            <Item
+              title={item.state}
+              amount={item.amountText}
+              datetime={item.datetimeText}
+              onPress={() => onPress(index)}
+              itemKey={index.toString()}
+            />
+          )}
         />
       </View>
     );
@@ -672,10 +662,14 @@ History.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        coin: PropTypes.shape({}).isRequired,
+        walletType: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   currency: PropTypes.string.isRequired,
-  language: PropTypes.string.isRequired,
   walletManager: PropTypes.shape({}),
   updateTimestamp: PropTypes.number.isRequired,
   prices: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
