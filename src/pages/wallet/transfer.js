@@ -310,7 +310,8 @@ class Transfer extends Component {
       enableConfirm: false,
       isCustomFee: false,
       customFee: null,
-      customFeeValue: new BigNumber(0),
+      customGasPrice: new BigNumber(0),
+      customGasLimit: new BigNumber(0),
       feeSymbol: null,
       feeSliderValue: 0,
       amountPlaceholderText: '',
@@ -338,10 +339,11 @@ class Transfer extends Component {
     const { symbol, type } = this.coin;
 
     if (prices && prices !== curPrices) {
-      const { customFee, feeSymbol } = this.state;
-      const customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
+      // const { customFee, feeSymbol } = this.state;
+      // const customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
       const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, currency, prices);
-      this.setState({ customFeeValue, amountPlaceholderText });
+      // this.setState({ customFeeValue amountPlaceholderText });
+      this.setState({ amountPlaceholderText });
     }
   }
 
@@ -391,7 +393,8 @@ class Transfer extends Component {
     if (value) {
       const feeSliderValue = 0.5;
       this.setState({ feeSliderValue });
-      this.onCustomFeeSlideValueChange(feeSliderValue);
+      this.onCustomGasPriceSlideValueChange(feeSliderValue);
+      this.onCustomGasLimitSlideValueChange(feeSliderValue);
     }
   }
 
@@ -399,20 +402,20 @@ class Transfer extends Component {
    * onCustomFeeSlideValueChange
    * @param {number} value slider value, 0-1
    */
-  onCustomFeeSlideValueChange = (value) => {
-    const {
-      levelFees, isCustomFee, feeLevel,
-    } = this.state;
-
-    const { customFee: newCustomFee, customFeeValue } = this.calcCustomFee(value);
-    this.setState({ customFee: newCustomFee, customFeeValue }, () => {
-      // When the fee is changed by the user, modify the amount in the text box.
-      this.adjustSendAllAmount(levelFees, feeLevel, isCustomFee, newCustomFee);
-    });
+  onCustomGasPriceSlideValueChange = (value) => {
+    this.setState({ customGasPrice: value });
   }
 
-  onCustomFeeSlidingComplete = (value) => {
-    this.setState({ feeSliderValue: value });
+  onGasPriceSlidingComplete = (value) => {
+    this.setState({ customGasPrice: value });
+  }
+
+  onCustomGasLimitSlideValueChange = (value) => {
+    this.setState({ customGasLimit: value });
+  }
+
+  onGasLimitSlidingComplete = (value) => {
+    this.setState({ customGasLimit: value });
   }
 
   onSendAllPress() {
@@ -840,9 +843,12 @@ class Transfer extends Component {
 
     // Update custom fee
     if (isCustomFee) {
-      const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
+      const { customFee: newFee } = this.calcCustomFee(feeSliderValue);
       newCustomFee = newFee;
-      this.setState({ customFee: newCustomFee, customFeeValue });
+      // this.setState({ customFee: newCustomFee, customFeeValue });
+      this.setState({ customFee: newCustomFee });
     }
 
     // If user request send all, we need to adjust amount text.
@@ -964,34 +970,58 @@ class Transfer extends Component {
     }
   }
 
-  renderCustomFee(isCustomFee) {
+  renderCustomFee() {
     const {
-      customFee, feeSymbol, customFeeValue, feeSliderValue,
+      customGasPrice, customGasLimit, feeSymbol, feeSliderValue,
     } = this.state;
-    const { type } = this.coin;
-    const { currency } = this.props;
-    const currencySymbol = common.getCurrencySymbol(currency);
+
     return (
-      <View style={[styles.customFeeSliderWrapper]}>
-        { isCustomFee && (
-          <View>
-            <Slider
-              value={feeSliderValue}
-              style={styles.customFeeSlider}
-              minimumValue={0}
-              maximumValue={1}
-              minimumTrackTintColor={color.app.theme}
-              maximumTrackTintColor={color.grayD8}
-              thumbTintColor={color.app.theme}
-              onValueChange={(value) => this.onCustomFeeSlideValueChange(value)}
-              onSlidingComplete={(value) => this.onCustomFeeSlidingComplete(value)}
-            />
-            <Text style={styles.customFeeText}>
-              {`${common.getBalanceString(customFee, feeSymbol)} ${common.getSymbolName(feeSymbol, type)}`}
-              {customFeeValue && ` = ${currencySymbol}${common.getAssetValueString(customFeeValue)}`}
-            </Text>
-          </View>
-        )}
+      <View>
+
+        <View style={[styles.customFeeSliderWrapper]}>
+          <Slider
+            value={feeSliderValue}
+            style={styles.customFeeSlider}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor={color.app.theme}
+            maximumTrackTintColor={color.grayD8}
+            thumbTintColor={color.app.theme}
+            onValueChange={(value) => this.onCustomGasPriceSlideValueChange(value)}
+            onSlidingComplete={(value) => this.onGasPriceSlidingComplete(value)}
+          />
+          <Text style={styles.customFeeText}>
+            Gas Price:
+            {' '}
+            {customGasPrice}
+          </Text>
+        </View>
+        <View style={[styles.customFeeSliderWrapper]}>
+          <Slider
+            value={feeSliderValue}
+            style={styles.customFeeSlider}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor={color.app.theme}
+            maximumTrackTintColor={color.grayD8}
+            thumbTintColor={color.app.theme}
+            onValueChange={(value) => this.onCustomGasLimitSlideValueChange(value)}
+            onSlidingComplete={(value) => this.onGasLimitSlidingComplete(value)}
+          />
+
+          <Text style={styles.customFeeText}>
+            Gas Limit:
+            {' '}
+            {customGasLimit}
+          </Text>
+        </View>
+        <View style={[styles.customFeeSliderWrapper]}>
+
+          <Text style={styles.customFeeText}>
+            {`Fee: ${customGasPrice * customGasLimit} ${feeSymbol}`}
+          </Text>
+        </View>
+
       </View>
 
     );
@@ -1139,15 +1169,16 @@ class Transfer extends Component {
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.custom" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="Advanced" />
               <Switch
                 disabled={!levelFees}
                 value={isCustomFee}
                 onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
               />
             </View>
-            {this.renderCustomFee(isCustomFee)}
+            {isCustomFee && this.renderCustomFee(isCustomFee)}
           </View>
+
         </View>
         <View
           style={[styles.sectionContainer, {
