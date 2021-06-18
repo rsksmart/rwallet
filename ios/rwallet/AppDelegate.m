@@ -12,17 +12,12 @@
 #import <React/RCTRootView.h>
 
 #import <Firebase.h>
-#import "RNFirebaseNotifications.h"
-#import "RNFirebaseMessaging.h"
+#import "RNNotifications.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  if ([FIRApp defaultApp] == nil) {
-    [FIRApp configure];
-  }
-  [RNFirebaseNotifications configure];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"rwallet"
@@ -37,6 +32,10 @@
   [self.window makeKeyAndVisible];
   
   
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
+  [RNNotifications startMonitorNotifications];
   
   return YES;
 }
@@ -50,17 +49,12 @@
 #endif
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-  [[RNFirebaseNotifications instance] didReceiveLocalNotification:notification];
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [RNNotifications didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo
-    fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
-  [[RNFirebaseNotifications instance] didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-}
-
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-  [[RNFirebaseMessaging instance] didRegisterUserNotificationSettings:notificationSettings];
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  [RNNotifications didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
 @end

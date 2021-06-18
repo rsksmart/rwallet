@@ -38,6 +38,8 @@ android/app/google-services.json
 #ios
 ios/rwallet/GoogleService-Info.plist
 /ios/rwallet/GoogleService-Info.plist
+# CocoaPods
+/ios/Pods/
 
 # node.js
 #
