@@ -275,11 +275,17 @@ PODS:
     - React-Core
   - react-native-camera/RN (3.44.0):
     - React-Core
+  - react-native-cameraroll (4.0.4):
+    - React-Core
   - react-native-fingerprint-scanner (3.0.2):
     - React
   - react-native-notifications (3.4.2):
     - React-Core
+  - react-native-pager-view (5.2.1):
+    - React-Core
   - react-native-randombytes (3.6.1):
+    - React-Core
+  - react-native-segmented-control (2.2.2):
     - React-Core
   - react-native-slider (3.0.3):
     - React
@@ -415,9 +421,12 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
+  - "react-native-segmented-control (from `../node_modules/@react-native-community/segmented-control`)"
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-tcp-socket (from `../node_modules/react-native-tcp-socket`)
   - react-native-udp (from `../node_modules/react-native-udp`)
@@ -505,12 +514,18 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-cameraroll:
+    :path: "../node_modules/@react-native-community/cameraroll"
   react-native-fingerprint-scanner:
     :path: "../node_modules/react-native-fingerprint-scanner"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
   react-native-randombytes:
     :path: "../node_modules/react-native-randombytes"
+  react-native-segmented-control:
+    :path: "../node_modules/@react-native-community/segmented-control"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
   react-native-tcp-socket:
@@ -611,9 +626,12 @@ SPEC CHECKSUMS:
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: e46c64f0d1212124c915bf83ee9b855ac6d35164
+  react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
   react-native-fingerprint-scanner: 388acb4969b681a3f63fbec0c4b740d2b775a1dc
   react-native-notifications: 51ed8167f70f01c5000ba81a4465ea98b4612e23
+  react-native-pager-view: 2864530d861ab2970beb2cd0b4cf2292cd30cd84
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
+  react-native-segmented-control: 65df6cd0619b780b3843d574a72d4c7cec396097
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   react-native-tcp-socket: d05b8acbf1c045ff5b6a92ec6ca91960c94387d1
   react-native-udp: f074c83f072beaf52a97369315372c7dba48fda2
@@ -649,6 +667,6 @@ SPEC CHECKSUMS:
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: 813e6f87af82ead0ac8052a5420d096b3daba1d0
+PODFILE CHECKSUM: 878d082ef86a1c6cd9f6bf6f19aa97ee4faaecfe
 
 COCOAPODS: 1.10.1
