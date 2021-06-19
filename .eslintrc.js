@@ -26,5 +26,5 @@ module.exports = {
     "max-len": ["error", { "code": 250, "ignoreComments": true }],
     "complexity": "warn",
   },
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
 };

@@ -7,8 +7,8 @@
 
 #import <Firebase.h>
 #import "RNNotifications.h"
-/* Uncomment to enable flipper
-#if DEBUG
+/* Uncomment to enable flipper *
+#ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
 #import <FlipperKitUserDefaultsPlugin/FKUserDefaultsPlugin.h>
@@ -25,17 +25,17 @@ static void InitializeFlipper(UIApplication *application) {
   [client start];
 }
 #endif
- */
+ **/
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  /* Uncomment to enable flipper
-  #if DEBUG
+  /* Uncomment to enable flipper *
+  #ifdef FB_SONARKIT_ENABLED
     InitializeFlipper(application);
   #endif
-  */
+  **/
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"rwallet"
