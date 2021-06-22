@@ -3,7 +3,7 @@
   "version": "1.4.5",
   "private": true,
   "scripts": {
-    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install stream,http,https,crypto,os,url && ./node_modules/.bin/patch-package && npm run podinstall",
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install stream,http,https,crypto,os,url && ./node_modules/.bin/patch-package",
     "install:windows": "npm i && copy .\\postinstall\\blacklist.js .\\node_modules\\metro-config\\src\\defaults\\blacklist.js",
     "start": "react-native start",
     "test": "jest",
