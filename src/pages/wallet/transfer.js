@@ -314,6 +314,8 @@ class Transfer extends Component {
       customGasLimit: new BigNumber(0),
       feeSymbol: null,
       feeSliderValue: 0,
+      customGasPriceSliderValue: 0,
+      customGasLimitSliderValue: 0,
       amountPlaceholderText: '',
       levelFees: null, // [ { fee, value }... ]
       addressError: null,
@@ -333,7 +335,7 @@ class Transfer extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { prices, currency } = nextProps;
     const { prices: curPrices } = this.props;
     const { symbol, type } = this.coin;
@@ -385,16 +387,27 @@ class Transfer extends Component {
   // }
 
   onCustomFeeSwitchValueChange(value) {
+    console.log('testsss');
+    console.log(this.state);
+    console.log(this);
+
+    const latestBlockMinimumGasPrice = this.latestBlockMinimumGasPrice.toNumber();
+    const estimatedGasLimit = this.estimatedGasLimit.toNumber();
+    console.log({ latestBlockMinimumGasPrice });
+    console.log({ estimatedGasLimit });
+
     const { customFee } = this.state;
     this.setState({ isCustomFee: value });
     if (customFee) {
       return;
     }
     if (value) {
-      const feeSliderValue = 0.5;
-      this.setState({ feeSliderValue });
-      this.onCustomGasPriceSlideValueChange(feeSliderValue);
-      this.onCustomGasLimitSlideValueChange(feeSliderValue);
+      const feeSliderValue = latestBlockMinimumGasPrice;
+      const customGasPriceSliderValue = latestBlockMinimumGasPrice;
+      const customGasLimitSliderValue = estimatedGasLimit;
+      this.setState({ feeSliderValue, customGasPriceSliderValue, customGasLimitSliderValue });
+      this.onCustomGasPriceSlideValueChange(customGasPriceSliderValue);
+      this.onCustomGasLimitSlideValueChange(customGasLimitSliderValue);
     }
   }
 
@@ -792,6 +805,17 @@ class Transfer extends Component {
     return { customFee, customFeeValue };
   }
 
+  calculateCoinValue(txFees) {
+    const { coin } = this;
+    const { type } = coin;
+    const { prices, currency } = this.props;
+    const {
+      feeSymbol,
+    } = this.state;
+    const fee = common.convertUnitToCoinAmount(feeSymbol, txFees);
+    return common.getCoinValue(fee, feeSymbol, type, currency, prices);
+  }
+
   processFees(transactionFees) {
     console.log('processFees, transactionFees: ', transactionFees);
     const { prices, currency } = this.props;
@@ -824,6 +848,8 @@ class Transfer extends Component {
       // Calculates Rootstock tokens(RBTC, RIF, DOC...) levelFees
       const { gas, gasPrice: { low, medium, high } } = transactionFees;
       this.gas = new BigNumber(gas);
+      this.latestBlockMinimumGasPrice = new BigNumber(low);
+      this.estimatedGasLimit = new BigNumber(gas);
       const txPrices = [low, medium, high];
       for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
         const gasPrice = new BigNumber(txPrices[i]);
@@ -972,18 +998,19 @@ class Transfer extends Component {
 
   renderCustomFee() {
     const {
-      customGasPrice, customGasLimit, feeSymbol, feeSliderValue,
+      customGasPrice, customGasLimit, feeSliderValue, customGasPriceSliderValue, customGasLimitSliderValue,
     } = this.state;
-
+    const valueCoin = this.calculateCoinValue(customGasPrice * customGasLimit);
+    console.log(feeSliderValue);
     return (
       <View>
 
         <View style={[styles.customFeeSliderWrapper]}>
           <Slider
-            value={feeSliderValue}
+            value={customGasPriceSliderValue}
             style={styles.customFeeSlider}
-            minimumValue={0}
-            maximumValue={1}
+            minimumValue={1}
+            maximumValue={(customGasPriceSliderValue * 4)}
             minimumTrackTintColor={color.app.theme}
             maximumTrackTintColor={color.grayD8}
             thumbTintColor={color.app.theme}
@@ -998,10 +1025,10 @@ class Transfer extends Component {
         </View>
         <View style={[styles.customFeeSliderWrapper]}>
           <Slider
-            value={feeSliderValue}
+            value={customGasLimitSliderValue}
             style={styles.customFeeSlider}
-            minimumValue={0}
-            maximumValue={1}
+            minimumValue={(1)}
+            maximumValue={(customGasLimitSliderValue * 4)}
             minimumTrackTintColor={color.app.theme}
             maximumTrackTintColor={color.grayD8}
             thumbTintColor={color.app.theme}
@@ -1018,7 +1045,7 @@ class Transfer extends Component {
         <View style={[styles.customFeeSliderWrapper]}>
 
           <Text style={styles.customFeeText}>
-            {`Fee: ${customGasPrice * customGasLimit} ${feeSymbol}`}
+            {`Fee: ${valueCoin} USD`}
           </Text>
         </View>
 
