@@ -1,0 +1,11 @@
+diff --git a/node_modules/parse/lib/react-native/EventEmitter.js b/node_modules/parse/lib/react-native/EventEmitter.js
+index 4d21e81..66fda86 100644
+--- a/node_modules/parse/lib/react-native/EventEmitter.js
++++ b/node_modules/parse/lib/react-native/EventEmitter.js
+@@ -1,4 +1,4 @@
+-var EventEmitter = require('../../../react-native/Libraries/vendor/emitter/EventEmitter');
++import EventEmitter from '../../../react-native/Libraries/vendor/emitter/EventEmitter';
+ 
+ EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+ module.exports = EventEmitter;
+\ No newline at end of file

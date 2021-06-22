@@ -3,7 +3,7 @@
  * @flow strict-local
  */
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import { Provider } from 'react-redux';
 import RootSwitchNavigator from './src/navigation/container';
 import store from './src/redux/store';
@@ -14,9 +14,10 @@ import color from './src/assets/styles/color';
 common.setDefaultFontFamily();
 
 export default function App() {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Provider store={store}>
-      <StatusBar barStyle="light-content" backgroundColor={color.app.theme} />
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={color.app.theme} />
       <RootSwitchNavigator />
     </Provider>
   );

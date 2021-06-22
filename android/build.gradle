@@ -9,6 +9,7 @@ buildscript {
         supportLibVersion = "30.0.0"
         kotlinVersion = "1.3.72"
         multiDexEnabled = true
+        ndkVersion = "20.1.5948944"
     }
     repositories {
         mavenLocal()
