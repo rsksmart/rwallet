@@ -313,7 +313,6 @@ class Transfer extends Component {
       customGasPrice: new BigNumber(0),
       customGasLimit: new BigNumber(0),
       feeSymbol: null,
-      feeSliderValue: 0,
       customGasPriceSliderValue: 0,
       customGasLimitSliderValue: 0,
       customBtcFeeSliderValue: 0,
@@ -382,27 +381,13 @@ class Transfer extends Component {
     });
   }
 
-  // async onConfirmSliderVerified() {
-  //   this.setState({ isConfirm: true });
-  //   await this.confirm();
-  // }
-
   onCustomFeeSwitchValueChange(value, symbol) {
-    console.log('Test test');
-    console.log(this.state);
-    console.log(this);
-
-    /* console.log({ latestBlockMinimumGasPrice });
-    console.log({ estimatedGasLimit }); */
-
     const { customFee } = this.state;
     this.setState({ isCustomFee: value });
     if (customFee) {
       return;
     }
     if (value) {
-      // const feeSliderValue = latestBlockMinimumGasPrice;
-
       if (symbol !== 'BTC') {
         const latestBlockMinimumGasPrice = this.latestBlockMinimumGasPrice.toNumber();
         const estimatedGasLimit = this.estimatedGasLimit.toNumber();
@@ -415,7 +400,6 @@ class Transfer extends Component {
       } else {
         const customBtcFeeSliderValue = this.btcLowEstimatedFee.toNumber();
         this.setState({ customBtcFeeSliderValue });
-        // this.onCustomGasPriceSlideValueChange(customGasPriceSliderValue);
         this.onCustomBtcFeeSlideValueChange(customBtcFeeSliderValue);
       }
     }
@@ -825,9 +809,6 @@ class Transfer extends Component {
       customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
       customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
     } else {
-      // const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
-      // this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
-      // customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
       customFeeValue = common.getCoinValue(value, feeSymbol, type, currency, prices);
     }
     return { customFee, customFeeValue };
@@ -899,12 +880,9 @@ class Transfer extends Component {
 
     // Update custom fee
     if (isCustomFee) {
-      // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
-      // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
       const { customFee: newFee } = this.calcCustomFee(customGasPriceSliderValue * customGasLimitSliderValue);
 
       newCustomFee = newFee;
-      // this.setState({ customFee: newCustomFee, customFeeValue });
       this.setState({ customFee: newCustomFee });
     }
 
@@ -1090,7 +1068,6 @@ class Transfer extends Component {
     const {
       customBtcFee, customBtcFeeSliderValue,
     } = this.state;
-    // const valueCoin = new BigNumber(this.calculateCoinValue(customGasPrice * customGasLimit));
     console.log(customBtcFeeSliderValue);
     return (
 
