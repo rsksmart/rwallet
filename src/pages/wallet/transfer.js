@@ -316,6 +316,7 @@ class Transfer extends Component {
       feeSliderValue: 0,
       customGasPriceSliderValue: 0,
       customGasLimitSliderValue: 0,
+      customBtcFeeSliderValue: 0,
       amountPlaceholderText: '',
       levelFees: null, // [ { fee, value }... ]
       addressError: null,
@@ -386,15 +387,13 @@ class Transfer extends Component {
   //   await this.confirm();
   // }
 
-  onCustomFeeSwitchValueChange(value) {
-    console.log('testsss');
+  onCustomFeeSwitchValueChange(value, symbol) {
+    console.log('Test test');
     console.log(this.state);
     console.log(this);
 
-    const latestBlockMinimumGasPrice = this.latestBlockMinimumGasPrice.toNumber();
-    const estimatedGasLimit = this.estimatedGasLimit.toNumber();
-    console.log({ latestBlockMinimumGasPrice });
-    console.log({ estimatedGasLimit });
+    /* console.log({ latestBlockMinimumGasPrice });
+    console.log({ estimatedGasLimit }); */
 
     const { customFee } = this.state;
     this.setState({ isCustomFee: value });
@@ -402,12 +401,23 @@ class Transfer extends Component {
       return;
     }
     if (value) {
-      const feeSliderValue = latestBlockMinimumGasPrice;
-      const customGasPriceSliderValue = latestBlockMinimumGasPrice;
-      const customGasLimitSliderValue = estimatedGasLimit;
-      this.setState({ feeSliderValue, customGasPriceSliderValue, customGasLimitSliderValue });
-      this.onCustomGasPriceSlideValueChange(customGasPriceSliderValue);
-      this.onCustomGasLimitSlideValueChange(customGasLimitSliderValue);
+      // const feeSliderValue = latestBlockMinimumGasPrice;
+
+      if (symbol !== 'BTC') {
+        const latestBlockMinimumGasPrice = this.latestBlockMinimumGasPrice.toNumber();
+        const estimatedGasLimit = this.estimatedGasLimit.toNumber();
+
+        const customGasPriceSliderValue = latestBlockMinimumGasPrice;
+        const customGasLimitSliderValue = estimatedGasLimit;
+        this.setState({ customGasPriceSliderValue, customGasLimitSliderValue });
+        this.onCustomGasPriceSlideValueChange(customGasPriceSliderValue);
+        this.onCustomGasLimitSlideValueChange(customGasLimitSliderValue);
+      } else {
+        const customBtcFeeSliderValue = this.btcLowEstimatedFee.toNumber();
+        this.setState({ customBtcFeeSliderValue });
+        // this.onCustomGasPriceSlideValueChange(customGasPriceSliderValue);
+        this.onCustomBtcFeeSlideValueChange(customBtcFeeSliderValue);
+      }
     }
   }
 
@@ -416,19 +426,33 @@ class Transfer extends Component {
    * @param {number} value slider value, 0-1
    */
   onCustomGasPriceSlideValueChange = (value) => {
-    this.setState({ customGasPrice: value });
+    const customGasPrice = new BigNumber(value);
+    this.setState({ customGasPrice });
   }
 
   onGasPriceSlidingComplete = (value) => {
-    this.setState({ customGasPrice: value });
+    const customGasPrice = new BigNumber(value);
+    this.setState({ customGasPrice });
   }
 
   onCustomGasLimitSlideValueChange = (value) => {
-    this.setState({ customGasLimit: value });
+    const customGasLimit = new BigNumber(value);
+    this.setState({ customGasLimit });
   }
 
   onGasLimitSlidingComplete = (value) => {
-    this.setState({ customGasLimit: value });
+    const customGasLimit = new BigNumber(value);
+    this.setState({ customGasLimit });
+  }
+
+  onCustomBtcFeeSlideValueChange = (value) => {
+    const customBtcFee = new BigNumber(value);
+    this.setState({ customBtcFee });
+  }
+
+  onCustomBtcFeeSlidingComplete = (value) => {
+    const customBtcFee = new BigNumber(value);
+    this.setState({ customBtcFee });
   }
 
   onSendAllPress() {
@@ -542,16 +566,20 @@ class Transfer extends Component {
 
   getFeeParams() {
     const {
-      levelFees, feeSymbol, isCustomFee, feeLevel, customFee,
+      levelFees, feeSymbol, isCustomFee, feeLevel, customBtcFee, customGasPrice, customGasLimit,
     } = this.state;
     let feeParams = null;
     if (feeSymbol === 'BTC') {
-      const fee = isCustomFee ? customFee : levelFees[feeLevel].fee;
+      const fee = isCustomFee ? customBtcFee : levelFees[feeLevel].fee;
       feeParams = { fees: common.btcToSatoshiHex(fee) };
+    } else if (isCustomFee) {
+      const gas = customGasLimit;
+      const gasPrice = customGasPrice.decimalPlaces(0).toString();
+      return { gas, gasPrice };
     } else {
-      const { gas, customGasPrice } = this;
-      const gasPrice = isCustomFee ? customGasPrice : levelFees[feeLevel].gasPrice;
-      feeParams = { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
+      const { gas } = this;
+      const { gasPrice } = levelFees[feeLevel];
+      return { gas, gasPrice: gasPrice.decimalPlaces(0).toString() };
     }
     return feeParams;
   }
@@ -797,10 +825,10 @@ class Transfer extends Component {
       customFee = minCustomFee.plus((maxCustomFee.minus(minCustomFee)).times(value));
       customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
     } else {
-      const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
-      this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
-      customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
-      customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
+      // const { minCustomGasPrice, maxCustomGasPrice, gas } = this;
+      // this.customGasPrice = minCustomGasPrice.plus((maxCustomGasPrice.minus(minCustomGasPrice)).times(value));
+      // customFee = common.convertUnitToCoinAmount(feeSymbol, this.customGasPrice.times(gas));
+      customFeeValue = common.getCoinValue(value, feeSymbol, type, currency, prices);
     }
     return { customFee, customFeeValue };
   }
@@ -820,7 +848,7 @@ class Transfer extends Component {
     console.log('processFees, transactionFees: ', transactionFees);
     const { prices, currency } = this.props;
     const {
-      feeSymbol, feeSliderValue, isCustomFee, feeLevel, customFee,
+      feeSymbol, customGasPriceSliderValue, customGasLimitSliderValue, isCustomFee, feeLevel, customFee,
     } = this.state;
     const { coin, txSize } = this;
     const { symbol, type } = coin;
@@ -836,6 +864,7 @@ class Transfer extends Component {
       const { fees: { low, medium, high } } = transactionFees;
       for (let i = 0; i < NUM_OF_FEE_LEVELS; i += 1) {
         const txFees = [low, medium, high];
+        this.btcLowEstimatedFee = new BigNumber(common.satoshiToBtc(low));
         const fee = common.convertUnitToCoinAmount(feeSymbol, txFees[i]);
         const value = common.getCoinValue(fee, feeSymbol, type, currency, prices);
         levelFees.push({ fee, value });
@@ -848,6 +877,7 @@ class Transfer extends Component {
       // Calculates Rootstock tokens(RBTC, RIF, DOC...) levelFees
       const { gas, gasPrice: { low, medium, high } } = transactionFees;
       this.gas = new BigNumber(gas);
+
       this.latestBlockMinimumGasPrice = new BigNumber(low);
       this.estimatedGasLimit = new BigNumber(gas);
       const txPrices = [low, medium, high];
@@ -871,7 +901,8 @@ class Transfer extends Component {
     if (isCustomFee) {
       // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
       // const { customFee: newFee, customFeeValue } = this.calcCustomFee(feeSliderValue);
-      const { customFee: newFee } = this.calcCustomFee(feeSliderValue);
+      const { customFee: newFee } = this.calcCustomFee(customGasPriceSliderValue * customGasLimitSliderValue);
+
       newCustomFee = newFee;
       // this.setState({ customFee: newCustomFee, customFeeValue });
       this.setState({ customFee: newCustomFee });
@@ -996,12 +1027,11 @@ class Transfer extends Component {
     }
   }
 
-  renderCustomFee() {
+  renderAdvancedGasOptions() {
     const {
-      customGasPrice, customGasLimit, feeSliderValue, customGasPriceSliderValue, customGasLimitSliderValue,
+      customGasPrice, customGasLimit, customGasPriceSliderValue, customGasLimitSliderValue,
     } = this.state;
-    const valueCoin = this.calculateCoinValue(customGasPrice * customGasLimit);
-    console.log(feeSliderValue);
+    const valueCoin = new BigNumber(this.calculateCoinValue(customGasPrice * customGasLimit));
     return (
       <View>
 
@@ -1009,7 +1039,7 @@ class Transfer extends Component {
           <Slider
             value={customGasPriceSliderValue}
             style={styles.customFeeSlider}
-            minimumValue={1}
+            minimumValue={customGasPriceSliderValue}
             maximumValue={(customGasPriceSliderValue * 4)}
             minimumTrackTintColor={color.app.theme}
             maximumTrackTintColor={color.grayD8}
@@ -1020,14 +1050,16 @@ class Transfer extends Component {
           <Text style={styles.customFeeText}>
             Gas Price:
             {' '}
-            {customGasPrice}
+            {customGasPrice.div(1000000000).decimalPlaces(2).toString()}
+            {' '}
+            GWEI
           </Text>
         </View>
         <View style={[styles.customFeeSliderWrapper]}>
           <Slider
             value={customGasLimitSliderValue}
             style={styles.customFeeSlider}
-            minimumValue={(1)}
+            minimumValue={customGasLimitSliderValue}
             maximumValue={(customGasLimitSliderValue * 4)}
             minimumTrackTintColor={color.app.theme}
             maximumTrackTintColor={color.grayD8}
@@ -1039,18 +1071,52 @@ class Transfer extends Component {
           <Text style={styles.customFeeText}>
             Gas Limit:
             {' '}
-            {customGasLimit}
+            {customGasLimit.decimalPlaces(2).toString()}
+            {' '}
+            Units
           </Text>
         </View>
         <View style={[styles.customFeeSliderWrapper]}>
 
           <Text style={styles.customFeeText}>
-            {`Fee: ${valueCoin} USD`}
+            {`Fee: ${valueCoin.decimalPlaces(2).toString()} USD`}
           </Text>
         </View>
 
       </View>
 
+    );
+  }
+
+  renderAdvancedBtcFeeOptions() {
+    const {
+      customBtcFee, customBtcFeeSliderValue,
+    } = this.state;
+    // const valueCoin = new BigNumber(this.calculateCoinValue(customGasPrice * customGasLimit));
+    console.log(customBtcFeeSliderValue);
+    return (
+
+      <View style={[styles.customFeeSliderWrapper]}>
+        <Slider
+          value={customBtcFeeSliderValue}
+          style={styles.customFeeSlider}
+          minimumValue={customBtcFeeSliderValue}
+          maximumValue={(customBtcFeeSliderValue * 4)}
+          minimumTrackTintColor={color.app.theme}
+          maximumTrackTintColor={color.grayD8}
+          thumbTintColor={color.app.theme}
+          onValueChange={(value) => this.onCustomBtcFeeSlideValueChange(value)}
+          onSlidingComplete={(value) => this.onCustomBtcFeeSlidingComplete(value)}
+        />
+
+        <Text style={styles.customFeeText}>
+          Fee:
+          {' '}
+          {customBtcFee.toString()}
+          {' '}
+          BTC
+        </Text>
+      </View>
     );
   }
 
@@ -1200,10 +1266,12 @@ class Transfer extends Component {
               <Switch
                 disabled={!levelFees}
                 value={isCustomFee}
-                onValueChange={(v) => this.onCustomFeeSwitchValueChange(v)}
+                onValueChange={(v) => this.onCustomFeeSwitchValueChange(v, symbol)}
               />
             </View>
-            {isCustomFee && this.renderCustomFee(isCustomFee)}
+            {isCustomFee && symbol !== 'BTC' && this.renderAdvancedGasOptions()}
+            {isCustomFee && symbol === 'BTC' && this.renderAdvancedBtcFeeOptions()}
+
           </View>
 
         </View>
