@@ -1048,11 +1048,9 @@ class Transfer extends Component {
             onSlidingComplete={(value) => this.onGasPriceSlidingComplete(value)}
           />
           <Text style={styles.customFeeText}>
-            Gas Price:
-            {' '}
-            {customGasPrice.div(1000000000).decimalPlaces(2).toString()}
-            {' '}
-            GWEI
+            <Loc text="page.wallet.transfer.gasPrice" />
+            {` ${customGasPrice.div(1000000000).decimalPlaces(2).toString()} GWEI`}
+
           </Text>
         </View>
         <View style={[styles.customFeeSliderWrapper]}>
@@ -1069,17 +1067,17 @@ class Transfer extends Component {
           />
 
           <Text style={styles.customFeeText}>
-            Gas Limit:
-            {' '}
-            {customGasLimit.decimalPlaces(2).toString()}
-            {' '}
-            Units
+
+            <Loc text="page.wallet.transfer.gasLimit" />
+            {` ${customGasLimit.decimalPlaces(2).toString()} `}
+            <Loc text="page.wallet.transfer.units" />
           </Text>
         </View>
         <View style={[styles.customFeeSliderWrapper]}>
 
           <Text style={styles.customFeeText}>
-            {`Fee: ${valueCoin.decimalPlaces(2).toString()} USD`}
+            <Loc text="page.wallet.transfer.fee" />
+            {` ${valueCoin.decimalPlaces(2).toString()} USD`}
           </Text>
         </View>
 
@@ -1110,11 +1108,8 @@ class Transfer extends Component {
         />
 
         <Text style={styles.customFeeText}>
-          Fee:
-          {' '}
-          {customBtcFee.toString()}
-          {' '}
-          BTC
+          <Loc text="page.wallet.transfer.fee" />
+          {` ${customBtcFee.decimalPlaces(8).toString()} BTC`}
         </Text>
       </View>
     );
@@ -1262,7 +1257,7 @@ class Transfer extends Component {
           </View>
           <View style={[styles.sectionContainer]}>
             <View style={[styles.customRow]}>
-              <Loc style={[styles.customTitle, { flex: 1 }]} text="Advanced" />
+              <Loc style={[styles.customTitle, { flex: 1 }]} text="page.wallet.transfer.advanced" />
               <Switch
                 disabled={!levelFees}
                 value={isCustomFee}
