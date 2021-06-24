@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import HomeStackNavigator from './stack.home';
 import MineStackNavigator from './stack.mine';
 import DAppStackNavigator from './stack.dapp';
@@ -11,7 +11,6 @@ import homeLight from '../assets/images/root/tab/wallet.l.png';
 import MineLight from '../assets/images/root/tab/mine.l.png';
 import spendLight from '../assets/images/root/tab/spend.l.png';
 import dappLight from '../assets/images/root/tab/dapp.l.png';
-
 
 const styles = StyleSheet.create({
   tabBarView: {

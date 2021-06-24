@@ -1,5 +1,5 @@
 import Storage from 'react-native-storage';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage';
 import _ from 'lodash';
 

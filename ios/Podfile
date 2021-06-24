@@ -20,4 +20,6 @@ target 'rwallet' do
   #post_install do |installer|
   #  react_native_post_install(installer)
   #end
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
 end
