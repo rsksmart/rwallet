@@ -66,7 +66,11 @@
         "enterMemo": "Inserir uma nota de transação",
         "slideConfirm": "Deslize para confirmar",
         "balance": "Saldo",
-        "unavailableAddress": "O endereço da carteira digitado não é válido"
+        "unavailableAddress": "O endereço da carteira digitado não é válido",
+        "advanced": "Opciones Avanzadas",
+        "gasPrice": "Preço da Gás",
+        "gasLimit": "Limite de Gás",
+        "units": "Unidades"
       },
       "add": {
         "title": "Adicionar carteira",

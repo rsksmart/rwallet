@@ -65,7 +65,11 @@
         "enterMemo": "取引メモを入力",
         "slideConfirm": "スライドして確定",
         "balance": "残高",
-        "unavailableAddress": "入力したウォレットアドレスが無効です"
+        "unavailableAddress": "入力したウォレットアドレスが無効です",
+        "advanced": "高度な",
+        "gasPrice": "ガス価格",
+        "gasLimit": "ガス制限",
+        "units": "単位"
       },
       "add": {
         "title": "ウォレットを追加",
@@ -249,7 +253,7 @@
         "address": "アドレス",
         "rnsName": "RNSニックネーム",
         "anotherAddress": "別のアドレス",
-        "nameTooShort": "ニックネームは、{{count}}文字以上で構成されています",                                               
+        "nameTooShort": "ニックネームは、{{count}}文字以上で構成されています",
         "nameUnavailable": "入力したニックネームは使用できません",
         "nameAvailable": "入力したニックネームは利用可能です",
         "selectAddress": "アドレスを選択",
