@@ -271,7 +271,7 @@
         "address": "Endereço da carteira",
         "note": "Insira um endereço de carteira BTC, RBTC ou nome RNS a ser monitorado.",
         "question": "Encontramos abaixo os seguintes ativos nesta carteira. Você deseja monitorar este endereço?",
-        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes criptoativos. Você deseja monitorar este endereço?",
+        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes ativos. Você deseja monitorar este endereço?",
         "rnsInvalid": "Desculpe, o apelido RNS não está associado a um endereço de carteira na blockchain da Rootstock. Por favor, tente novamente.",
         "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
       }
