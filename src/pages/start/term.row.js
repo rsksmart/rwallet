@@ -47,6 +47,7 @@ export default class TermRow extends Component {
       toValue: 1,
       duration: 1000,
       delay: delay * 1000,
+      useNativeDriver: true,
     }).start();
   }
 

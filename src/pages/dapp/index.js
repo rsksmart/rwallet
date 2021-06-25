@@ -11,7 +11,8 @@ import {
   PlaceholderMedia,
 } from 'rn-placeholder';
 import { connect } from 'react-redux';
-import { NavigationEvents, Header as NavHeader } from 'react-navigation';
+import { NavigationEvents } from 'react-navigation';
+import { Header as NavHeader } from 'react-navigation-stack';
 import BasePageGereral from '../base/base.page.general';
 import { strings } from '../../common/i18n';
 import SearchInput from '../../components/common/input/searchInput';
@@ -143,7 +144,7 @@ class DAppIndex extends Component {
     fetchAdvertisements();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { language, fetchDapps } = this.props;
 
     // reload dapp page when language changed
@@ -394,7 +395,7 @@ DAppIndex.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({}).isRequired,
   }).isRequired,
   fetchDapps: PropTypes.func.isRequired,
   fetchAdvertisements: PropTypes.func.isRequired,
