@@ -23,14 +23,14 @@
     "wallet": {
       "list": {
         "title": "Sua carteira",
-        "myAssets": "Meus ativos",
-        "allAssets": "Todos os ativos",
-        "addAsset": "Adicionar ativo",
+        "myAssets": "Saldo total",
+        "allAssets": "Todos os criptoativos",
+        "addAsset": "Adicionar criptoativo",
         "addWallet": "Adicionar carteira",
         "readOnly": "Somente leitura"
       },
       "history": {
-        "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
+        "noTransNote": "Não foram encontradas transações realizadas com este criptoativo.",
         "recent": "Recente",
         "loading": "Carregando..."
       },
@@ -78,10 +78,10 @@
         "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
-        "title": "Selecionar ativos da carteira"
+        "title": "Selecionar criptoativos da carteira"
       },
       "selectWallet": {
-        "title": "Selecionar ativo"
+        "title": "Selecionar criptoativo"
       },
       "recovery": {
         "title": "Importar carteira",
@@ -121,11 +121,11 @@
       "walletconnect": {
         "title": "WalletConnect",
         "timeoutTitle": "Tempo expirado",
-        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão WalletConnect com o dapp dentro do prazo estabelecido. Por favor, tente novamente.",
+        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão WalletConnect com o dapp dentro do prazo estabelecido. Por favor, tente novamente. Se o problema persistir, exclua todos os dados de navegação (cookies, cache, etc) no navegador que você está usando para acessar o Dapp",
         "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
-        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da RSK",
-        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da RSK",
+        "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um criptoativo na rede principal da RSK",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um criptoativo na rede de testes da RSK",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
@@ -138,7 +138,7 @@
         "agreeTo": "Ao clicar em permitir, você concorda em",
         "agreeOne": "- Permitir fornecer o endereço desta carteira",
         "agreeTwo": "- Permitir que seja solicitada a assinatura desta carteira",
-        "assets": "Ativos",
+        "assets": "Criptoativos",
         "advancedOptions": "Opções avançadas",
         "reject": "Rejeitar",
         "allow": "Permitir",
@@ -149,7 +149,7 @@
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
         "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
-        "asset": "Ativo",
+        "asset": "Criptoativo",
         "permission": "Permissão",
         "allowance": "Autorizar",
         "minerFee": "Taxa de transação",
@@ -213,8 +213,8 @@
         "receiving": "Recebendo"
       },
       "swapSelection": {
-        "title": "Selecionar ativo",
-        "noSwappableCoin": "Desculpe, você não tem nenhum ativo para trocar",
+        "title": "Selecionar criptoativo",
+        "noSwappableCoin": "Desculpe, você não tem nenhum criptoativo para trocar",
         "please": "por favor",
         "create": "criar",
         "or": "ou",
@@ -229,22 +229,22 @@
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
-        "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do ativo"
+        "title": "Adicionar criptoativos personalizados",
+        "address": "Endereço do contrato do criptoativo"
       },
       "addCustomTokenConfirm": {
-        "title": "Adicionar ativos personalizados",
-        "question": "Você deseja adicionar este ativo?",
-        "token": "Ativo",
-        "symbol": "Símbolo do ativo",
+        "title": "Adicionar criptoativos personalizados",
+        "question": "Você deseja adicionar este criptoativo?",
+        "token": "Ciptoativo",
+        "symbol": "Símbolo do criptoativo",
         "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
       "addToken": {
-        "title": "Adicionar ativo",
-        "enabledAssets": "Ativos habilitados",
+        "title": "Adicionar criptoativo",
+        "enabledAssets": "Criptoativos habilitados",
         "note": "Desative para ocultá-los do seu portfólio.",
-        "addCustomToken": "Adicionar ativo personalizado",
+        "addCustomToken": "Adicionar criptoativo personalizado",
         "custom": "Personalizados"
       },
       "rnsCreateName": {
@@ -270,8 +270,8 @@
         "title": "Adicionar carteira somente leitura",
         "address": "Endereço da carteira",
         "note": "Insira um endereço de carteira BTC, RBTC ou nome RNS a ser monitorado.",
-        "question": "Encontramos abaixo os seguintes ativos nesta carteira. Você deseja monitorar este endereço?",
-        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes ativos. Você deseja monitorar este endereço?",
+        "question": "Encontramos abaixo os seguintes criptoativos nesta carteira. Você deseja monitorar este endereço?",
+        "rnsQuestion": "Encontramos abaixo o endereço da carteira e os seguintes criptoativos. Você deseja monitorar este endereço?",
         "rnsInvalid": "Desculpe, o apelido RNS não está associado a um endereço de carteira na blockchain da Rootstock. Por favor, tente novamente.",
         "duplicateAddress": "Este endereço já foi importado no aplicativo. Por favor, tente com um endereço diferente."
       }
@@ -306,8 +306,8 @@
         "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
         "assets": {
-          "one": "1 Ativo",
-          "other": "{{count}} Ativos"
+          "one": "1 Criptoativo",
+          "other": "{{count}} Criptoativos"
         },
         "support": "Suporte",
         "contactUs": "Entre em contato",
@@ -340,12 +340,12 @@
       "keySettings": {
         "title": "Configurações da carteira",
         "walletContains": {
-          "one": "Esta carteira contém 1 ativo",
-          "other": "Esta carteira contém {{count}} ativos"
+          "one": "Esta carteira contém 1 criptoativo",
+          "other": "Esta carteira contém {{count}} criptoativos"
         },
         "security": "Segurança",
         "advanced": "Avançado",
-        "Assets": "Ativos",
+        "Assets": "Criptoativos",
         "keyName": "Nome da carteira",
         "delete": "Excluir",
         "backup": "Backup"
@@ -378,7 +378,7 @@
     },
     "spend": {
       "index": {
-        "title": "Gerenciamento de ativos ao seu alcance",
+        "title": "Gerenciamento de criptoativos ao seu alcance",
         "featuresTitle": "Os recursos abaixo estão chegando em breve para gastar…",
         "feature1": "- Complete tarefas e ganhe criptomoedas",
         "feature2": "- Faça trocas entre quaisquer tokens em sua carteira",
@@ -421,7 +421,7 @@
     "Reset": "Alterar",
     "Finish": "Concluir",
     "Exchange": "Realizar troca",
-    "addAsset": "Adicionar ativo",
+    "addAsset": "Adicionar criptoativo",
     "ok": "Ok",
     "nickname": "Apelido",
     "pending": "Pendente",
@@ -621,7 +621,7 @@
     },
     "readOnlyWallet": {
       "title": "Carteira somente leitura",
-      "body": "Carteiras somente leitura permitem que você monitore ativos na blockchain sem a necessidade de importar as chaves de gasto.\n\nAtualmente são permitidos endereços Bitcoin (SegWit e Legacy), endereços Rootstock ou apelidos RNS."
+      "body": "Carteiras somente leitura permitem que você monitore criptoativos na blockchain sem a necessidade de importar as chaves de gasto.\n\nAtualmente são permitidos endereços Bitcoin (SegWit e Legacy), endereços Rootstock ou apelidos RNS."
     },
     "readOnlyLimit": {
       "title": "Operação não disponível",
@@ -644,7 +644,7 @@
       "question": "Por que estou vendo esta mensagem?",
       "confirm": "Enviar assim mesmo",
       "cancel": "Voltar e reinserir",
-      "asset": "Ativo",
+      "asset": "Criptoativo",
       "address": "Endereço",
       "balance": "Saldo",
       "risk": "Ok, eu entendo o risco."
