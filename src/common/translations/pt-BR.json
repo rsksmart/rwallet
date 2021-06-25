@@ -242,7 +242,7 @@
       },
       "addToken": {
         "title": "Adicionar ativo",
-        "enabledAssets": "Criptoativos habilitados",
+        "enabledAssets": "Ativos habilitados",
         "note": "Desative para ocultá-los do seu portfólio.",
         "addCustomToken": "Adicionar ativo personalizado",
         "custom": "Personalizados"
