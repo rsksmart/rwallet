@@ -233,7 +233,7 @@
         "address": "Endereço do contrato do criptoativo"
       },
       "addCustomTokenConfirm": {
-        "title": "Adicionar criptoativos personalizados",
+        "title": "Adicionar ativos personalizados",
         "question": "Você deseja adicionar este criptoativo?",
         "token": "Ciptoativo",
         "symbol": "Símbolo do criptoativo",
