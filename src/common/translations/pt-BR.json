@@ -340,7 +340,7 @@
       "keySettings": {
         "title": "Configurações da carteira",
         "walletContains": {
-          "one": "Esta carteira contém 1 criptoativo",
+          "one": "Esta carteira contém 1 ativo",
           "other": "Esta carteira contém {{count}} criptoativos"
         },
         "security": "Segurança",
