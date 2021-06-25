@@ -307,7 +307,7 @@
         "anonymousUser": "Usuário anônimo",
         "assets": {
           "one": "1 Criptoativo",
-          "other": "{{count}} Criptoativos"
+          "other": "{{count}} Ativos"
         },
         "support": "Suporte",
         "contactUs": "Entre em contato",
