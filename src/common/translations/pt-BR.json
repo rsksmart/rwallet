@@ -125,7 +125,7 @@
         "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
         "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da RSK",
-        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um criptoativo na rede de testes da RSK",
+        "selectTestnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede de testes da RSK",
         "isConnecting": "Conectando carteira...",
         "isSigning": "Assinando transação..",
         "signApproved": "Assinatura de mensagem aprovada",
