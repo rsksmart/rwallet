@@ -149,7 +149,7 @@
         "disconnect": "Desconectar",
         "approveAllowance": "Autorizar",
         "approveAllowanceDesc": "Ao clicar em confirmar, você concorda em permitir %{dappUrl} executar contratos inteligentes em seu nome.",
-        "asset": "Criptoativo",
+        "asset": "Ativo",
         "permission": "Permissão",
         "allowance": "Autorizar",
         "minerFee": "Taxa de transação",
