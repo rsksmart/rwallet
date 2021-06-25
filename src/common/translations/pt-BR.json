@@ -244,7 +244,7 @@
         "title": "Adicionar ativo",
         "enabledAssets": "Criptoativos habilitados",
         "note": "Desative para ocultá-los do seu portfólio.",
-        "addCustomToken": "Adicionar criptoativo personalizado",
+        "addCustomToken": "Adicionar ativo personalizado",
         "custom": "Personalizados"
       },
       "rnsCreateName": {
