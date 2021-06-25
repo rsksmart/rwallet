@@ -24,7 +24,7 @@
       "list": {
         "title": "Sua carteira",
         "myAssets": "Saldo total",
-        "allAssets": "Todos os criptoativos",
+        "allAssets": "Todos os ativos",
         "addAsset": "Adicionar criptoativo",
         "addWallet": "Adicionar carteira",
         "readOnly": "Somente leitura"
