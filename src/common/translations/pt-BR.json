@@ -229,7 +229,7 @@
         "viewExplorer": "Clique para ver no explorer"
       },
       "addCustomToken": {
-        "title": "Adicionar criptoativos personalizados",
+        "title": "Adicionar ativos personalizados",
         "address": "Endereço do contrato do criptoativo"
       },
       "addCustomTokenConfirm": {
