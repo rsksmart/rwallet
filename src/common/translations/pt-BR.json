@@ -306,7 +306,7 @@
         "keys": "Carteiras",
         "anonymousUser": "Usuário anônimo",
         "assets": {
-          "one": "1 Criptoativo",
+          "one": "1 Ativo",
           "other": "{{count}} Ativos"
         },
         "support": "Suporte",
