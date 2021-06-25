@@ -30,7 +30,7 @@
         "readOnly": "Somente leitura"
       },
       "history": {
-        "noTransNote": "Não foram encontradas transações realizadas com este criptoativo.",
+        "noTransNote": "Não foram encontradas transações realizadas com este ativo.",
         "recent": "Recente",
         "loading": "Carregando..."
       },
