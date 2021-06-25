@@ -236,7 +236,7 @@
         "title": "Adicionar ativos personalizados",
         "question": "Você deseja adicionar este criptoativo?",
         "token": "Ativo",
-        "symbol": "Símbolo do criptoativo",
+        "symbol": "Símbolo do ativo",
         "decimals": "Decimais de precisão",
         "balance": "Saldo"
       },
