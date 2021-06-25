@@ -78,7 +78,7 @@
         "addReadOnlyWalletNote": "Monitore endereços sem precisar usar as chaves de gasto"
       },
       "selectCurrency": {
-        "title": "Selecionar criptoativos da carteira"
+        "title": "Selecionar ativos da carteira"
       },
       "selectWallet": {
         "title": "Selecionar criptoativo"
