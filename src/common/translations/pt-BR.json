@@ -230,7 +230,7 @@
       },
       "addCustomToken": {
         "title": "Adicionar ativos personalizados",
-        "address": "Endereço do contrato do criptoativo"
+        "address": "Endereço do contrato do ativo"
       },
       "addCustomTokenConfirm": {
         "title": "Adicionar ativos personalizados",
