@@ -65,7 +65,11 @@
         "enterMemo": "거래 메모 입력",
         "slideConfirm": "화면을 밀어서 확인하십시오",
         "balance": "잔액",
-        "unavailableAddress": "유효하지 않은 월렛 주소를 입력하셨습니다"
+        "unavailableAddress": "유효하지 않은 월렛 주소를 입력하셨습니다",
+        "advanced": "많은",
+        "gasPrice": "가스 가격",
+        "gasLimit": "가스 한도",
+        "units": "단위"
       },
       "add": {
         "title": "월렛 추가하기",
@@ -249,7 +253,7 @@
         "address": "주소",
         "rnsName": "RNS 별명",
         "anotherAddress": "다른 주소",
-        "nameTooShort": "별명은 최소 {{count}}자여야 합니다",                                               
+        "nameTooShort": "별명은 최소 {{count}}자여야 합니다",
         "nameUnavailable": "입력하신 닉네임을 사용할 수 없습니다",
         "nameAvailable": "입력 한 별명을 사용할 수 있습니다.",
         "selectAddress": "주소 선택",

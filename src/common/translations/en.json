@@ -55,7 +55,7 @@
       "transfer": {
         "to": "To",
         "memo": "Memo (optional)",
-        "fee": "Transaction fee",
+        "fee": "Transaction Fee",
         "custom": "Custom",
         "feeQuestion": "How fast do you want this done?",
         "Slow": "Slow",
@@ -65,7 +65,11 @@
         "enterMemo": "Enter a transaction memo",
         "slideConfirm": "Slide to Confirm",
         "balance": "Balance",
-        "unavailableAddress": "The wallet address you’ve entered is not valid"
+        "unavailableAddress": "The wallet address you’ve entered is not valid",
+        "advanced": "Advanced",
+        "gasPrice": "Gas Price",
+        "gasLimit": "Gas Limit",
+        "units": "Units"
       },
       "add": {
         "title": "Add Wallet",

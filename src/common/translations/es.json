@@ -65,7 +65,11 @@
         "enterMemo": "Ingrese una nota de transacción",
         "slideConfirm": "Deslice para confirmar",
         "balance": "Equilibrar",
-        "unavailableAddress": "La dirección de la billetera que ingresó no es válida"
+        "unavailableAddress": "La dirección de la billetera que ingresó no es válida",
+        "advanced": "Avanzado",
+        "gasPrice": "Precio de Gas",
+        "gasLimit": "Límite de Gas",
+        "units": "Units"
       },
       "add": {
         "title": "Agregar Wallet",
