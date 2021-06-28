@@ -341,10 +341,7 @@ class Transfer extends Component {
     const { symbol, type } = this.coin;
 
     if (prices && prices !== curPrices) {
-      // const { customFee, feeSymbol } = this.state;
-      // const customFeeValue = common.getCoinValue(customFee, feeSymbol, type, currency, prices);
       const amountPlaceholderText = Transfer.generateAmountPlaceholderText(symbol, type, currency, prices);
-      // this.setState({ customFeeValue amountPlaceholderText });
       this.setState({ amountPlaceholderText });
     }
   }
@@ -920,11 +917,6 @@ class Transfer extends Component {
     this.setState({ feeSymbol, amountPlaceholderText });
   }
 
-  // resetConfirm() {
-  //   this.setState({ isConfirm: false });
-  //   this.confirmSlider.reset();
-  // }
-
   showInvalidAddressNotification() {
     const { addNotification } = this.props;
     const notification = createErrorNotification(
@@ -988,7 +980,6 @@ class Transfer extends Component {
           symbol, type, address, needFetch: true,
         });
       }
-      // this.resetConfirm();
     }
   }
 

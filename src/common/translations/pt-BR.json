@@ -67,9 +67,9 @@
         "slideConfirm": "Deslize para confirmar",
         "balance": "Saldo",
         "unavailableAddress": "O endereço da carteira digitado não é válido",
-        "advanced": "Opciones Avanzadas",
-        "gasPrice": "Preço da Gás",
-        "gasLimit": "Limite de Gás",
+        "advanced": "Opções avançadas",
+        "gasPrice": "Preço Gás",
+        "gasLimit": "Limite Gás",
         "units": "Unidades"
       },
       "add": {
