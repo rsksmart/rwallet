@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import PropTypes from 'prop-types';
 import screenHelper from '../../../common/screenHelper';
 import flex from '../../../assets/styles/layout.flex';
@@ -11,11 +11,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const SafeAreaView = ({ children, style }) => (
-  <View style={[flex.flex1, styles.view]}>
-    <View style={[flex.flex1, style]}>{children}</View>
-  </View>
-);
+const SafeAreaView = ({ children, style }) => {
+  const backgroundColor = useColorScheme() === 'dark' ? 'white' : 'black';
+  styles.view.backgroundColor = backgroundColor;
+  return (
+    <View style={[flex.flex1, styles.view]}>
+      <View style={[flex.flex1, style]}>{children}</View>
+    </View>
+  );
+};
 
 SafeAreaView.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),

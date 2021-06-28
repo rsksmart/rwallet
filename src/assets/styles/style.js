@@ -49,6 +49,7 @@ const style = StyleSheet.create({
   textInput: {
     borderColor: color.component.input.borderColor,
     backgroundColor: color.component.input.backgroundColor,
+    color: 'black',
     borderRadius: 4,
     borderWidth: 1,
     borderStyle: 'solid',
