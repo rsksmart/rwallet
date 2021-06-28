@@ -23,7 +23,7 @@
     "wallet": {
       "list": {
         "title": "Sua carteira",
-        "myAssets": "Meus ativos",
+        "myAssets": "Saldo total",
         "allAssets": "Todos os ativos",
         "addAsset": "Adicionar ativo",
         "addWallet": "Adicionar carteira",
@@ -121,7 +121,7 @@
       "walletconnect": {
         "title": "WalletConnect",
         "timeoutTitle": "Tempo expirado",
-        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão WalletConnect com o dapp dentro do prazo estabelecido. Por favor, tente novamente.",
+        "timeoutBody": "A RWallet não conseguiu estabelecer uma conexão WalletConnect com o dapp dentro do prazo estabelecido. Por favor, tente novamente. Se o problema persistir, exclua todos os dados de navegação (cookies, cache, etc) no navegador que você está usando para acessar o dapp",
         "timeoutButton": "Ok",
         "emptyWalletError": "Carteira vazia",
         "selectMainnetAsset": "Selecione uma carteira que tenha pelo menos um ativo na rede principal da RSK",
