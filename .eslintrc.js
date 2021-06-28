@@ -25,6 +25,12 @@ module.exports = {
     'no-console': 'off',
     "max-len": ["error", { "code": 250, "ignoreComments": true }],
     "complexity": "warn",
+    "camelcase": [
+      "error", {
+        "ignoreDestructuring": true,
+        "allow": [ "^UNSAFE_" ]
+      }
+    ],
   },
   "parser": "@babel/eslint-parser",
 };

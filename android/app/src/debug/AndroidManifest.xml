@@ -6,7 +6,8 @@
 
     <application 
         tools:targetApi="30" 
-        tools:ignore="GoogleAppIndexingWarning" >
+        tools:ignore="GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true" >
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 </manifest>

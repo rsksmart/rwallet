@@ -55,6 +55,7 @@ class Toast extends Component {
           {
             toValue: 10,
             duration: 350,
+            useNativeDriver: true,
           },
         ),
 
@@ -63,6 +64,7 @@ class Toast extends Component {
           {
             toValue: 0,
             duration: 350,
+            useNativeDriver: true,
           },
         ),
       ]).start(() => {
@@ -87,6 +89,7 @@ class Toast extends Component {
             {
               toValue: 0,
               duration: 350,
+              useNativeDriver: true,
             },
           ),
 
@@ -95,6 +98,7 @@ class Toast extends Component {
             {
               toValue: 1,
               duration: 350,
+              useNativeDriver: true,
             },
           ),
         ]).start(this.hideToast(duration));

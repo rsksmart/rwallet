@@ -29,7 +29,7 @@ class Notification extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { isVisiable, notification, resetInAppNotification } = nextProps;
     const { isVisiable: lastIsVisiable } = this.props;
     if (isVisiable !== lastIsVisiable && isVisiable) {
@@ -104,6 +104,7 @@ class Notification extends Component {
     Animated.timing(animatedValue, {
       toValue: 1,
       duration: openCloseDuration,
+      useNativeDriver: true,
     }).start(done);
   }
 
@@ -113,9 +114,9 @@ class Notification extends Component {
     Animated.timing(animatedValue, {
       toValue: 0,
       duration: openCloseDuration,
+      useNativeDriver: true,
     }).start(done);
   }
-
 
   onPressed = () => {
     const { processNotification } = this.props;

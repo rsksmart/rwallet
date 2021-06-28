@@ -148,7 +148,7 @@ class VerifyPhrase extends Component {
     this.renderConfirmation = this.renderConfirmation.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { navigation, isWalletsUpdated } = nextProps;
     const { isLoading } = this.state;
     // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
@@ -234,6 +234,7 @@ class VerifyPhrase extends Component {
       {
         toValue: offset,
         duration: 300,
+        useNativeDriver: true,
       },
     ).start(() => {
       this.setState({ isAnimating: true });
@@ -373,7 +374,14 @@ VerifyPhrase.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        phrase: PropTypes.shape({
+          split: PropTypes.string,
+        }),
+        coins: PropTypes.arrayOf(PropTypes.shape({})),
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({}),
   addNotification: PropTypes.func.isRequired,
