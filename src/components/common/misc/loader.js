@@ -42,6 +42,8 @@ const Loader = (props) => {
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator
+            color={color.black}
+            size="large"
             animating={loading}
           />
         </View>
@@ -49,7 +51,6 @@ const Loader = (props) => {
     </Modal>
   );
 };
-
 
 Loader.propTypes = {
   loading: PropTypes.bool.isRequired,
