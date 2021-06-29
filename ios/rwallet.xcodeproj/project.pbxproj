@@ -871,7 +871,7 @@
 				CODE_SIGN_ENTITLEMENTS = rwallet/rwallet.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 3YDAH8ZR7C;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -933,7 +933,7 @@
 				CODE_SIGN_ENTITLEMENTS = rwallet/rwallet.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_TEAM = 3YDAH8ZR7C;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

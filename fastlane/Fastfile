@@ -89,7 +89,7 @@ platform :android do
     desc 'Build the Android application.'
     private_lane :build do
         gradle(task: 'clean', project_dir: 'android/')
-        gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/', properties: {
+        gradle(task: 'bundle', build_type: 'Release', project_dir: 'android/', properties: {
             "android.injected.signing.store.file" => Dir.pwd + "/../" + ENV['ANDROID_SIGN_FILE'],
             "android.injected.signing.store.password" => ENV['ANDROID_SIGN_PASSWORD'],
             "android.injected.signing.key.alias" => ENV['ANDROID_SIGN_KEY_ALIAS'],

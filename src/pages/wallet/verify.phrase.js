@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 class VerifyPhrase extends Component {
   static navigationOptions = () => ({
     header: null,
-    gesturesEnabled: false,
+    gestureEnabled: false,
   });
 
   constructor(props) {
@@ -307,7 +307,7 @@ class VerifyPhrase extends Component {
     }
     const wordsView = (
       <View style={styles.wordsWrapper}>
-        <Animated.View style={[styles.wordsView, { marginLeft: wordsOffset }]}>
+        <Animated.View style={[styles.wordsView, { transform: [{ translateX: wordsOffset }] }]}>
           {words}
         </Animated.View>
       </View>
@@ -376,9 +376,7 @@ VerifyPhrase.propTypes = {
     goBack: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
-        phrase: PropTypes.shape({
-          split: PropTypes.string,
-        }),
+        phrase: PropTypes.string,
         coins: PropTypes.arrayOf(PropTypes.shape({})),
       }).isRequired,
     }).isRequired,

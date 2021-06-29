@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 class RnsStatus extends Component {
   static navigationOptions = () => ({
     header: null,
-    gesturesEnabled: false,
+    gestureEnabled: false,
   });
 
   constructor(props) {
@@ -135,7 +135,7 @@ class RnsStatus extends Component {
     this.createListData();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { subdomains } = nextProps;
     const { rnsRows } = this.state;
     const newRnsRows = this.getUpdatedSubdomainsStatus(subdomains, rnsRows);
@@ -344,10 +344,14 @@ RnsStatus.propTypes = {
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     pop: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        isSkipCreatePage: PropTypes.bool.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({
-    wallets: PropTypes.array,
+    wallets: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
