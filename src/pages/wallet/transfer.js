@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
 class Transfer extends Component {
   static navigationOptions = () => ({
     header: null,
-    gesturesEnabled: false,
+    gestureEnabled: false,
   });
 
   static generateAmountPlaceholderText(symbol, type, currency, prices) {

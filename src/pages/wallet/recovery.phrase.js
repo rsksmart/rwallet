@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
-  View, TouchableOpacity, StyleSheet, Clipboard,
+  View, TouchableOpacity, StyleSheet,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Tags from '../../components/common/misc/tags';
@@ -143,7 +144,13 @@ RecoveryPhrase.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        shouldVerifyPhrase: PropTypes.bool.isRequired,
+        shouldCreatePhrase: PropTypes.bool.isRequired,
+        phrase: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,
 };
