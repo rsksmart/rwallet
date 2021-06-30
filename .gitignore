@@ -34,6 +34,10 @@ android/keystores/
 android/app/release/
 android/app/google-services.json
 
+.vscode/
+.env_prod
+keys
+
 #ios
 ios/rwallet/GoogleService-Info.plist
 /ios/rwallet/GoogleService-Info.plist
