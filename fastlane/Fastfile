@@ -1,5 +1,6 @@
 APP_ID="com.rsk.rwallet.reactnative"
 XCODEPROJ="./ios/rwallet.xcodeproj"
+XCODEWORK="./ios/rwallet.xcworkspace"
 GRADLE_FILE="android/app/build.gradle"
 
 platform :ios do
@@ -39,7 +40,7 @@ platform :ios do
     lane :build do
         update_project_team(path: XCODEPROJ)
         match
-        gym(scheme: 'rwallet', project: XCODEPROJ)
+        gym(scheme: 'rwallet', workspace: XCODEWORK)
     end
 
     desc 'Ship to Testflight.'
@@ -89,7 +90,7 @@ platform :android do
     desc 'Build the Android application.'
     private_lane :build do
         gradle(task: 'clean', project_dir: 'android/')
-        gradle(task: 'bundle', build_type: 'Release', project_dir: 'android/', properties: {
+        gradle(task: 'assemble', build_type: 'Release', project_dir: 'android/', properties: {
             "android.injected.signing.store.file" => Dir.pwd + "/../" + ENV['ANDROID_SIGN_FILE'],
             "android.injected.signing.store.password" => ENV['ANDROID_SIGN_PASSWORD'],
             "android.injected.signing.key.alias" => ENV['ANDROID_SIGN_KEY_ALIAS'],
