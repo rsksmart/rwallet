@@ -630,7 +630,7 @@ const common = {
       const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
       const rsk3 = new Rsk3(rskEndpoint);
       rsk3.getCode(address).then((code) => {
-        if (code !== '0x00' || code !== '0x0' || code != '0x') {
+        if (code !== '0x00' || code !== '0x0' || code !== '0x') {
           resolve(true);
         } else {
           resolve(false);
@@ -710,7 +710,7 @@ const common = {
     const {
       inputs, names, types, method,
     } = inputData;
-    const params = { };
+    const params = {};
     _.forEach(inputs, (inputValue, index) => {
       const key = this.uppercaseFirstLetter(names[index]);
       const type = types[index];
@@ -853,6 +853,19 @@ const common = {
       return true;
     }
     return false;
+  },
+
+  /**
+   * Returns the address ready to show to the user. Applies checksum if needed by the nerworkId.
+   * Only considers Rootstock network
+   * @param {string} address
+   * @param {string} network
+   */
+  toChecksumAddressIfNeeded(address, network) {
+    if (network.toLowerCase() === 'rootstock') {
+      return Rsk3.utils.toChecksumAddress(address, MAINNET.NETWORK_VERSION);
+    }
+    return address;
   },
 };
 
