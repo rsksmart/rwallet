@@ -104,6 +104,10 @@ export const ASSETS_CONTRACT = {
     Testnet: '0x42ced11891E641F15Acae3F540378052C37F5B00',
     Mainnet: '0xaf8C226013BDc4b3AACe1F8060Db645b3F5E53FC',
   },
+  BRZ: {
+    Testnet: '0x06d164E8d6829E1dA028A4F745d330Eb764Dd3aC',
+    Mainnet: '0xe355c280131DfaF18bf1C3648aee3c396db6b5FD',
+  },
 };
 
 export const WALLET_CONNECT = {
@@ -111,7 +115,7 @@ export const WALLET_CONNECT = {
     CONFIRMATION: 'Confirmation',
     NOTIFICATION: 'Notification',
   },
-  ASSETS: ['RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP'],
+  ASSETS: ['RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP', 'BRZ'],
 };
 
 export const TRANSACTION = {

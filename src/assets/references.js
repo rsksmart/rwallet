@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const images = {};
 images.BTC = require('./images/icon/BTC.png');
 images.RBTC = require('./images/icon/RBTC.png');
@@ -6,6 +7,7 @@ images.DOC = require('./images/icon/DOC.png');
 images.BITP = require('./images/icon/BITP.png');
 images.RIFP = require('./images/icon/RIFP.png');
 images.RDOC = require('./images/icon/RDOC.png');
+images.BRZ = require('./images/icon/BRZ.png');
 images.BTC_GREY = require('./images/icon/BTC.grey.png');
 images.RBTC_GREY = require('./images/icon/RBTC.grey.png');
 images.RIF_GREY = require('./images/icon/RIF.grey.png');
@@ -13,6 +15,7 @@ images.DOC_GREY = require('./images/icon/DOC.grey.png');
 images.RIFP_GREY = require('./images/icon/RIFP.grey.png');
 images.RDOC_GREY = require('./images/icon/RDOC.grey.png');
 images.BITP_GREY = require('./images/icon/BITP.grey.png');
+images.BRZ_GREY = require('./images/icon/BRZ.grey.png');
 images.customToken = require('./images/icon/customToken.png');
 images.customToken_grey = require('./images/icon/customToken.grey.png');
 images.cornerButton = require('./images/misc/cornerButton.png');
