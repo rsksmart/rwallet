@@ -57,26 +57,26 @@ const config = {
   assetValueDecimalPlaces: 2,
   transactionUrls: {
     BTC: {
-      Mainnet: 'https://live.blockcypher.com/btc/txs',
-      Testnet: 'https://live.blockcypher.com/btc-testnet/txs',
+      Mainnet: 'https://live.blockcypher.com/btc/tx',
+      Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
     },
     RBTC: {
-      Mainnet: 'https://explorer.rsk.co/txs',
-      Testnet: 'https://explorer.testnet.rsk.co/txs',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
     RIF: {
-      Mainnet: 'https://explorer.rsk.co/txs',
-      Testnet: 'https://explorer.testnet.rsk.co/txs',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
     DOC: {
-      Mainnet: 'https://explorer.rsk.co/txs',
-      Testnet: 'https://explorer.testnet.rsk.co/txs',
+      Mainnet: 'https://explorer.rsk.co/tx',
+      Testnet: 'https://explorer.testnet.rsk.co/tx',
     },
   },
   addressUrls: {
     RBTC: {
-      Mainnet: 'https://explorer.rsk.co/addresses',
-      Testnet: 'https://explorer.testnet.rsk.co/addresses',
+      Mainnet: 'https://explorer.rsk.co/address',
+      Testnet: 'https://explorer.testnet.rsk.co/address',
     },
   },
   defaultFontFamily: fontFamily.Roboto, // defaultFontFamily, for android
