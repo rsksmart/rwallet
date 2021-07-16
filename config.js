@@ -23,7 +23,8 @@ const config = {
     fingerprint: false,
   },
   consts: {
-    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP'],
+    supportedTokens: ['BTC', 'RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP', 'BRZ'],
+
     locales: [
       { name: 'English', id: 'en' },
       { name: 'Spanish', id: 'es' },
@@ -56,26 +57,26 @@ const config = {
   assetValueDecimalPlaces: 2,
   transactionUrls: {
     BTC: {
-      Mainnet: 'https://live.blockcypher.com/btc/tx',
-      Testnet: 'https://live.blockcypher.com/btc-testnet/tx',
+      Mainnet: 'https://live.blockcypher.com/btc/txs',
+      Testnet: 'https://live.blockcypher.com/btc-testnet/txs',
     },
     RBTC: {
-      Mainnet: 'https://explorer.rsk.co/tx',
-      Testnet: 'https://explorer.testnet.rsk.co/tx',
+      Mainnet: 'https://explorer.rsk.co/txs',
+      Testnet: 'https://explorer.testnet.rsk.co/txs',
     },
     RIF: {
-      Mainnet: 'https://explorer.rsk.co/tx',
-      Testnet: 'https://explorer.testnet.rsk.co/tx',
+      Mainnet: 'https://explorer.rsk.co/txs',
+      Testnet: 'https://explorer.testnet.rsk.co/txs',
     },
     DOC: {
-      Mainnet: 'https://explorer.rsk.co/tx',
-      Testnet: 'https://explorer.testnet.rsk.co/tx',
+      Mainnet: 'https://explorer.rsk.co/txs',
+      Testnet: 'https://explorer.testnet.rsk.co/txs',
     },
   },
   addressUrls: {
     RBTC: {
-      Mainnet: 'https://explorer.rsk.co/address',
-      Testnet: 'https://explorer.testnet.rsk.co/address',
+      Mainnet: 'https://explorer.rsk.co/addresses',
+      Testnet: 'https://explorer.testnet.rsk.co/addresses',
     },
   },
   defaultFontFamily: fontFamily.Roboto, // defaultFontFamily, for android
