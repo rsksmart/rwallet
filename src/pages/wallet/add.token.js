@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, FlatList, ImageBackground,
@@ -204,7 +205,10 @@ class AddToken extends Component {
           listData.push(createItem(token, this.wallet.type));
         }
       } else {
-        listData.push(createItem(token, 'Mainnet'));
+        // TODO: Extract this filter to an array of unsupportedMainnetTokens in config
+        if (token !== 'TTE') {
+          listData.push(createItem(token, 'Mainnet'));
+        }
         listData.push(createItem(token, 'Testnet'));
       }
     });
