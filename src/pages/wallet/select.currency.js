@@ -54,16 +54,26 @@ class WalletSelectCurrency extends Component {
       const { consts: { supportedTokens } } = config;
       // Generate mainnet and testnet list data
       _.each(supportedTokens, (token) => {
-        const item = { title: token, symbol: token, icon: coinType[token].icon };
-        item.selected = true;
-        this.mainnet.push(item);
-        const testnetItem = { title: common.getSymbolName(token, 'Testnet'), symbol: token, icon: coinType[`${token}Testnet`].icon };
-        testnetItem.selected = false;
-        this.testnet.push(testnetItem);
+        // if a token has not a mainnet config file, dont include it.
+        if (coinType[token]) {
+          const item = { title: token, symbol: token, icon: coinType[token].icon };
+          item.selected = true;
+          this.mainnet.push(item);
+        }
+        // if a token has not a testnet config file, dont include it.
+        if (coinType[`${token}Testnet`]) {
+          const testnetItem = {
+            title: common.getSymbolName(token, 'Testnet'),
+            symbol: token,
+            icon: coinType[`${token}Testnet`].icon,
+          };
+          testnetItem.selected = false;
+          this.testnet.push(testnetItem);
+        }
       });
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       const { navigation, isWalletsUpdated } = nextProps;
       const { isLoading } = this.state;
       // isWalletsUpdated is true indicates wallet is added, the app will navigate to other page.
@@ -212,7 +222,12 @@ WalletSelectCurrency.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        phrases: PropTypes.string,
+        derivationPaths: PropTypes.string,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({}),
   createKey: PropTypes.func.isRequired,
