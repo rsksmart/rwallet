@@ -1,4 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
+
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, FlatList, ImageBackground,
@@ -174,6 +175,9 @@ class AddToken extends Component {
 
     const createItem = (token, type) => {
       const coinId = type === 'Mainnet' ? token : token + type;
+      if (!coinType[coinId]) {
+        return null;
+      }
       const { icon } = coinType[coinId];
       const name = common.getSymbolName(token, type);
       const item = {
@@ -205,11 +209,15 @@ class AddToken extends Component {
           listData.push(createItem(token, this.wallet.type));
         }
       } else {
-        // TODO: Extract this filter to an array of unsupportedMainnetTokens in config
-        if (token !== 'TTE') {
-          listData.push(createItem(token, 'Mainnet'));
+        const mainnetItem = createItem(token, 'Mainnet');
+        if (mainnetItem) {
+          listData.push(mainnetItem);
         }
-        listData.push(createItem(token, 'Testnet'));
+        const testnetItem = createItem(token, 'Testnet');
+
+        if (testnetItem) {
+          listData.push(testnetItem);
+        }
       }
     });
 
