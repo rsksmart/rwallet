@@ -1,5 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
-
 import React, { Component } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, FlatList, ImageBackground,
@@ -308,7 +306,11 @@ AddToken.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        wallet: PropTypes.string,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   addToken: PropTypes.func.isRequired,
   deleteToken: PropTypes.func.isRequired,
