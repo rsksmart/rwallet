@@ -173,6 +173,9 @@ class AddToken extends Component {
 
     const createItem = (token, type) => {
       const coinId = type === 'Mainnet' ? token : token + type;
+      if (!coinType[coinId]) {
+        return null;
+      }
       const { icon } = coinType[coinId];
       const name = common.getSymbolName(token, type);
       const item = {
@@ -204,8 +207,15 @@ class AddToken extends Component {
           listData.push(createItem(token, this.wallet.type));
         }
       } else {
-        listData.push(createItem(token, 'Mainnet'));
-        listData.push(createItem(token, 'Testnet'));
+        const mainnetItem = createItem(token, 'Mainnet');
+        if (mainnetItem) {
+          listData.push(mainnetItem);
+        }
+        const testnetItem = createItem(token, 'Testnet');
+
+        if (testnetItem) {
+          listData.push(testnetItem);
+        }
       }
     });
 
@@ -296,7 +306,11 @@ AddToken.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        wallet: PropTypes.string,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   addToken: PropTypes.func.isRequired,
   deleteToken: PropTypes.func.isRequired,
