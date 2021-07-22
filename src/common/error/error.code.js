@@ -6,7 +6,7 @@ const ERROR_CODE = {
   ERR_SAVE_TO_DB: 701, // save data to database fail due to error
   ERR_FCM: 702, // call firebase admin sdk error
   ERR_INPUT_PARAM: 703, // input params not valid
-  ERR_ADDRESS_INVALID: 705, // address is a invalid Rsk3 address
+  ERR_ADDRESS_INVALID: 705, // address is a invalid address
 
   ERR_API_KEY_NOT_EXIST: 710, // apiKey not exist
   ERR_API_KEY_INVALID: 711, // apiKey invalid

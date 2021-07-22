@@ -6,9 +6,8 @@ import WalletConnect from '@walletconnect/client';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-
 import BasePageSimple from '../../base/base.page.simple';
 import WalletConnecting from './connecting';
 import WalletConnected from './connected';
@@ -176,7 +175,7 @@ class WalletConnectPage extends Component {
       contentType: null,
       modalView: null,
       isTestnet: false,
-      rsk3: null,
+      web3: null,
     };
   }
 
@@ -273,7 +272,7 @@ class WalletConnectPage extends Component {
       };
     }
     return {
-      address: Rsk3.utils.toChecksumAddress(rskCoins[0].address, networkId),
+      address: Web3.utils.toChecksumAddress(rskCoins[0].address, networkId),
       privateKey: rskCoins[0].privateKey,
       coins: coinsListData,
     };
@@ -312,9 +311,9 @@ class WalletConnectPage extends Component {
   initNetwork = () => {
     const { isTestnet } = this.state;
     const rskEndpoint = isTestnet ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
-    const rsk3 = new Rsk3(rskEndpoint);
+    const web3 = new Web3(rskEndpoint);
     const chainId = isTestnet ? TESTNET.NETWORK_VERSION : MAINNET.NETWORK_VERSION;
-    this.setState({ chainId, rsk3 });
+    this.setState({ chainId, web3 });
   }
 
   subscribeToEvents = () => {
@@ -508,8 +507,8 @@ class WalletConnectPage extends Component {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
-    const from = Rsk3.utils.toChecksumAddress(address, chainId);
-    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
+    const from = Web3.utils.toChecksumAddress(address, chainId);
+    const to = Web3.utils.toChecksumAddress(txData.to, chainId);
 
     this.setState({
       modalView: (
@@ -544,8 +543,8 @@ class WalletConnectPage extends Component {
     const {
       peerMeta, txData, chainId, selectedWallet: { address }, isTestnet,
     } = this.state;
-    const from = Rsk3.utils.toChecksumAddress(address, chainId);
-    const to = Rsk3.utils.toChecksumAddress(txData.to, chainId);
+    const from = Web3.utils.toChecksumAddress(address, chainId);
+    const to = Web3.utils.toChecksumAddress(txData.to, chainId);
 
     this.setState({
       modalView: (
@@ -567,13 +566,13 @@ class WalletConnectPage extends Component {
 
       switch (method) {
         case 'personal_sign': {
-          const message = Rsk3.utils.hexToAscii(params[0]);
+          const message = Web3.utils.hexToAscii(params[0]);
           await this.popupMessaageModal(message);
           break;
         }
 
         case 'eth_sign': {
-          const message = Rsk3.utils.hexToAscii(params[1]);
+          const message = Web3.utils.hexToAscii(params[1]);
           await this.popupMessaageModal(message);
           break;
         }
@@ -603,13 +602,13 @@ class WalletConnectPage extends Component {
 
   insufficientRBTC = async () => {
     const {
-      txData: { gasLimit, gasPrice, value }, selectedWallet: { address }, rsk3,
+      txData: { gasLimit, gasPrice, value }, selectedWallet: { address }, web3,
     } = this.state;
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
     const valueNumber = new BigNumber(value);
     const total = gasLimitNumber.multipliedBy(gasPriceNumber).plus(valueNumber).toString();
-    const balance = await rsk3.getBalance(address.toLowerCase());
+    const balance = await web3.getBalance(address.toLowerCase());
     return Number(balance) < Number(total);
   }
 
@@ -623,7 +622,7 @@ class WalletConnectPage extends Component {
       let result = null;
       switch (method) {
         case 'personal_sign': {
-          const message = Rsk3.utils.hexToAscii(params[0]);
+          const message = Web3.utils.hexToAscii(params[0]);
           result = await this.signMessage(privateKey, message);
           await connector.approveRequest({ id, result });
           this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
@@ -631,7 +630,7 @@ class WalletConnectPage extends Component {
         }
 
         case 'eth_sign': {
-          const message = Rsk3.utils.hexToAscii(params[1]);
+          const message = Web3.utils.hexToAscii(params[1]);
           result = await this.signMessage(privateKey, message);
           await connector.approveRequest({ id, result });
           this.setState({ modalView: (<SuccessModal title={strings('page.wallet.walletconnect.signApproved')} description={strings('page.wallet.walletconnect.signApprovedDesc')} cancelPress={this.closeModalPress} />) });
@@ -692,7 +691,7 @@ class WalletConnectPage extends Component {
 
   generateTxData = async () => {
     const {
-      selectedWallet: { address }, payload: { params }, rsk3,
+      selectedWallet: { address }, payload: { params }, web3,
     } = this.state;
 
     let {
@@ -706,11 +705,11 @@ class WalletConnectPage extends Component {
     }
     if (!nonce) {
       // Get nonce if params[0].nonce is null
-      nonce = await rsk3.getTransactionCount(address.toLowerCase(), 'pending');
+      nonce = await web3.getTransactionCount(address.toLowerCase(), 'pending');
     }
     if (!gasPrice) {
       // Get gasPrice if params[0].gasPrice is null
-      await rsk3.getGasPrice().then((latestGasPrice) => {
+      await web3.getGasPrice().then((latestGasPrice) => {
         gasPrice = latestGasPrice;
       }).catch((err) => {
         console.log('getGasPrice error: ', err);
@@ -719,7 +718,7 @@ class WalletConnectPage extends Component {
     }
 
     if (!gas) {
-      await rsk3.estimateGas({
+      await web3.estimateGas({
         from: address.toLowerCase(),
         to,
         data,
@@ -746,8 +745,8 @@ class WalletConnectPage extends Component {
   }
 
   signMessage = async (privateKey, message) => {
-    const { rsk3 } = this.state;
-    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+    const { web3 } = this.state;
+    const accountInfo = await web3.accounts.privateKeyToAccount(privateKey);
     const signature = await accountInfo.sign(
       message, privateKey,
     );
@@ -756,16 +755,16 @@ class WalletConnectPage extends Component {
   }
 
   sendTransaction = async (privateKey) => {
-    const { txData, rsk3 } = this.state;
+    const { txData, web3 } = this.state;
     console.log('sendTransaction txData: ', txData);
-    const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+    const accountInfo = await web3.accounts.privateKeyToAccount(privateKey);
     const signedTransaction = await accountInfo.signTransaction(
       txData, privateKey,
     );
 
     const { rawTransaction } = signedTransaction;
     return new Promise((resolve, reject) => {
-      rsk3.sendSignedTransaction(rawTransaction)
+      web3.sendSignedTransaction(rawTransaction)
         .on('transactionHash', (hash) => {
           resolve(hash);
         })

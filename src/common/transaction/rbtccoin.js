@@ -1,4 +1,4 @@
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import storage from '../storage';
@@ -11,16 +11,16 @@ export const getContractAddress = async (symbol, type) => {
   if (ASSETS_CONTRACT[symbol] && ASSETS_CONTRACT[symbol][type]) {
     const contractAddress = ASSETS_CONTRACT[symbol][type];
     const networkId = type === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    return Rsk3.utils.toChecksumAddress(contractAddress, networkId);
+    return Web3.utils.toChecksumAddress(contractAddress, networkId);
   }
   return '';
 };
 
 export const encodeContractTransfer = async (contractAddress, type, to, value) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const rsk3 = new Rsk3(rskEndpoint);
+  const web3 = new Web3(rskEndpoint);
   const contractLower = contractAddress.toLowerCase();
-  const contract = rsk3.Contract(assetAbi, contractLower);
+  const contract = web3.Contract(assetAbi, contractLower);
   const data = await contract.methods.transfer(to, value).encodeABI();
   return data;
 };
@@ -28,8 +28,8 @@ export const encodeContractTransfer = async (contractAddress, type, to, value) =
 export const getTransactionFees = async (type, coin, address, toAddress, value, memo) => {
   const { symbol, contractAddress } = coin;
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const rsk3 = new Rsk3(rskEndpoint);
-  const latestBlock = await rsk3.getBlock('latest');
+  const web3 = new Web3(rskEndpoint);
+  const latestBlock = await web3.getBlock('latest');
   const { minimumGasPrice } = latestBlock;
   const miniGasPrice = new BigNumber(minimumGasPrice, 16);
   const from = address.toLowerCase();
@@ -38,13 +38,13 @@ export const getTransactionFees = async (type, coin, address, toAddress, value, 
   // Set default gas to 40000
   let gas = 40000;
   if (symbol === 'RBTC') {
-    gas = await rsk3.estimateGas({
+    gas = await web3.estimateGas({
       from, to, value, data: memo,
     });
   } else {
     const contractAddr = contractAddress || await getContractAddress(symbol, type);
     const data = await encodeContractTransfer(contractAddr, type, to, value);
-    gas = await rsk3.estimateGas({
+    gas = await web3.estimateGas({
       from, to: contractAddr.toLowerCase(), value: 0, data,
     });
   }
@@ -62,8 +62,8 @@ export const createRawTransaction = async ({
   symbol, type, sender: from, receiver: to, value, memo, gasPrice, gas, contractAddress,
 }) => {
   const rskEndpoint = type === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
-  const rsk3 = new Rsk3(rskEndpoint);
-  const nonce = await rsk3.getTransactionCount(from, 'pending');
+  const web3 = new Web3(rskEndpoint);
+  const nonce = await web3.getTransactionCount(from, 'pending');
   const rawTransaction = {
     from,
     nonce,
@@ -76,7 +76,7 @@ export const createRawTransaction = async ({
     rawTransaction.to = to;
     rawTransaction.data = memo;
   } else if (contractAddress) {
-    const contract = rsk3.Contract(assetAbi, contractAddress.toLowerCase());
+    const contract = web3.Contract(assetAbi, contractAddress.toLowerCase());
     rawTransaction.to = contractAddress.toLowerCase();
     rawTransaction.data = await contract.methods.transfer(to, value).encodeABI();
     rawTransaction.value = '0x00';
@@ -108,8 +108,8 @@ export const getRawTransactionParam = ({
 };
 
 export const signTransaction = async (rawTransaction, privateKey) => {
-  const rsk3 = new Rsk3('https://public-node.testnet.rsk.co');
-  const accountInfo = await rsk3.accounts.privateKeyToAccount(privateKey);
+  const web3 = new Web3('https://public-node.testnet.rsk.co');
+  const accountInfo = await web3.accounts.privateKeyToAccount(privateKey);
   const signedTransaction = await accountInfo.signTransaction(
     rawTransaction, privateKey,
   );

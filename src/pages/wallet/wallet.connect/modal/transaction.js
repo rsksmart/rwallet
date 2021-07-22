@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 
@@ -32,11 +32,11 @@ export default class TransactionModal extends Component {
       value, from, to, data, gasLimit, gasPrice,
     } = txData;
     const stringValue = new BigNumber(value).toString();
-    const amount = value ? Rsk3.utils.fromWei(stringValue, 'ether') : '0';
+    const amount = value ? Web3.utils.fromWei(stringValue, 'ether') : '0';
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
     const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
-    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
+    const fee = Web3.utils.fromWei(feeWei, 'ether');
     return (
       <BaseModal
         title={strings('page.wallet.walletconnect.approveTransaction')}

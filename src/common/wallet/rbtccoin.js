@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Buffer } from 'buffer';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import coinType from './cointype';
 import PathKeyPair from './pathkeypair';
 import common from '../common';
@@ -137,7 +137,7 @@ export default class RBTCCoin {
     const publicKey = JSON.parse(addressNode.public_key).puk;
     const addressBin = ethereumjsUtil.pubToAddress(Buffer.from(publicKey, 'hex'), true);
     const address = Buffer.from(addressBin).toString('hex');
-    const checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+    const checksumAddress = Web3.utils.toChecksumAddress(address, networkId);
     return checksumAddress;
   }
 
@@ -177,7 +177,7 @@ export default class RBTCCoin {
     } = json;
     const instance = new RBTCCoin(symbol, type, path);
     // Convert old address to checksum address
-    instance.address = Rsk3.utils.checkAddressChecksum(address, instance.networkId) ? address : Rsk3.utils.toChecksumAddress(address, instance.networkId);
+    instance.address = Web3.utils.checkAddressChecksum(address, instance.networkId) ? address : Web3.utils.toChecksumAddress(address, instance.networkId);
     instance.objectId = objectId;
     return instance;
   }

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Toast } from '@ant-design/react-native';
 import * as bitcoin from 'bitcoinjs-lib';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { randomBytes } from 'react-native-randombytes';
 import InputDataDecoder from 'rn-ethereum-input-data-decoder';
@@ -318,7 +318,7 @@ const common = {
     }
     try {
       const { networkId } = this.getCoinType(symbol, type);
-      Rsk3.utils.toChecksumAddress(address, networkId);
+      Web3.utils.toChecksumAddress(address, networkId);
       return true;
     } catch (error) {
       return false;
@@ -628,9 +628,9 @@ const common = {
   async isContractAddress(address, chainId) {
     return new Promise((resolve, reject) => {
       const rskEndpoint = chainId === TESTNET.NETWORK_VERSION ? TESTNET.RSK_END_POINT : MAINNET.RSK_END_POINT;
-      const rsk3 = new Rsk3(rskEndpoint);
-      rsk3.getCode(address).then((code) => {
-        if (code !== '0x00' || code !== '0x0' || code != '0x') {
+      const web3 = new Web3(rskEndpoint);
+      web3.getCode(address).then((code) => {
+        if (code !== '0x00' || code !== '0x0' || code !== '0x') {
           resolve(true);
         } else {
           resolve(false);
@@ -833,7 +833,7 @@ const common = {
   toChecksumAddress(address, networkId) {
     let checksumAddress = null;
     try {
-      checksumAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+      checksumAddress = Web3.utils.toChecksumAddress(address, networkId);
     } catch (error) {
       throw new InvalidAddressError();
     }

@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import Header from '../../../components/headers/header';
 import Loc from '../../../components/common/misc/loc';
 import presetStyle from '../../../assets/styles/style';
@@ -160,7 +160,7 @@ class AddReadOnlyWallet extends Component {
       // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
       if (chain === Chain.Rootstock) {
         const { networkId } = common.getCoinType(symbol, type);
-        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(newAddress, networkId);
+        const isChecksumAddress = Web3.utils.checkAddressChecksum(newAddress, networkId);
         if (!isChecksumAddress) {
           this.setState({ isShowConvertAddressModal: true });
           return;
@@ -241,12 +241,15 @@ AddReadOnlyWallet.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     state: PropTypes.object.isRequired,
   }).isRequired,
   walletManager: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     wallets: PropTypes.array,
     findToken: PropTypes.func,
   }).isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   addConfirmation: PropTypes.func.isRequired,
   addNotification: PropTypes.func.isRequired,
   isReadOnlyWalletIntroShowed: PropTypes.bool.isRequired,

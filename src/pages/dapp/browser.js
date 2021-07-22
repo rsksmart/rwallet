@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import PropTypes from 'prop-types';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appActions from '../../redux/app/actions';
@@ -147,7 +147,7 @@ class DAppBrowser extends Component {
   setNetwork = (network) => {
     this.rskEndpoint = network === 'Mainnet' ? MAINNET.RSK_END_POINT : TESTNET.RSK_END_POINT;
     this.networkVersion = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    this.rsk3 = new Rsk3(this.rskEndpoint);
+    this.web3 = new Web3(this.rskEndpoint);
   }
 
   getJsCode = (address) => {
@@ -373,7 +373,7 @@ class DAppBrowser extends Component {
 
   handleEthEstimateGas = async (payload) => {
     const { params, id } = payload;
-    const res = await this.rsk3.estimateGas(params[0]);
+    const res = await this.web3.estimateGas(params[0]);
     const estimateGas = Number(res);
     const result = { id, result: estimateGas };
     this.postMessageToWebView(result);
@@ -381,14 +381,14 @@ class DAppBrowser extends Component {
 
   handleEthGasPrice = async (payload) => {
     const { id } = payload;
-    const res = await this.rsk3.getGasPrice();
+    const res = await this.web3.getGasPrice();
     const result = { id, result: res };
     this.postMessageToWebView(result);
   }
 
   handleEthCall = async (payload) => {
     const { id, params } = payload;
-    const res = await this.rsk3.call(params[0], params[1]);
+    const res = await this.web3.call(params[0], params[1]);
     const result = { id, result: res };
     this.postMessageToWebView(result);
   }
@@ -398,14 +398,14 @@ class DAppBrowser extends Component {
     let res = 0;
     // Get latest block info when passed block number is 0.
     const blockNumber = (_.isEmpty(params) || (params[0] && params[0] === '0x0')) ? 'latest' : params[0];
-    res = await this.rsk3.getBlock(blockNumber);
+    res = await this.web3.getBlock(blockNumber);
     const result = { id, result: res };
     this.postMessageToWebView(result);
   }
 
   handleEthGetBlockNumber = async (payload) => {
     const { id } = payload;
-    const res = await this.rsk3.getBlockNumber();
+    const res = await this.web3.getBlockNumber();
     const result = { id, result: res };
     this.postMessageToWebView(result);
   }
@@ -416,7 +416,7 @@ class DAppBrowser extends Component {
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
-        const accountInfo = await this.rsk3.accounts.privateKeyToAccount(privateKey);
+        const accountInfo = await this.web3.accounts.privateKeyToAccount(privateKey);
         const signature = await accountInfo.sign(
           message, privateKey,
         );
@@ -435,12 +435,12 @@ class DAppBrowser extends Component {
     callAuthVerify(async () => {
       try {
         const { privateKey } = coins[0];
-        const accountInfo = await this.rsk3.accounts.privateKeyToAccount(privateKey);
+        const accountInfo = await this.web3.accounts.privateKeyToAccount(privateKey);
         const signedTransaction = await accountInfo.signTransaction(
           txData, privateKey,
         );
         const { rawTransaction } = signedTransaction;
-        this.rsk3.sendSignedTransaction(rawTransaction)
+        this.web3.sendSignedTransaction(rawTransaction)
           .on('transactionHash', (hash) => {
             const result = { id, result: hash };
             this.postMessageToWebView(result);
@@ -458,7 +458,7 @@ class DAppBrowser extends Component {
 
   handleEthGetTransactionReceipt = async (payload) => {
     const { id, params } = payload;
-    let res = await this.rsk3.getTransactionReceipt(params[0]);
+    let res = await this.web3.getTransactionReceipt(params[0]);
     if (!res) {
       res = '';
     } else {
@@ -471,7 +471,7 @@ class DAppBrowser extends Component {
 
   handleEthGetTransactionByHash = async (payload) => {
     const { id, params } = payload;
-    const res = await this.rsk3.getTransaction(params[0]);
+    const res = await this.web3.getTransaction(params[0]);
     const result = { id, result: res };
     this.postMessageToWebView(result);
   }
@@ -484,7 +484,7 @@ class DAppBrowser extends Component {
   popupMessageModal = async (payload) => {
     const dappUrl = this.getDappUrl();
     const { id, params } = payload;
-    const message = params[0].startsWith('0x') ? this.rsk3.utils.hexToAscii(params[0]) : params[0];
+    const message = params[0].startsWith('0x') ? this.web3.utils.hexToAscii(params[0]) : params[0];
 
     this.setState({
       modalView: (
@@ -505,8 +505,8 @@ class DAppBrowser extends Component {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const from = Rsk3.utils.toChecksumAddress(address, networkId);
-    const to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
+    const from = Web3.utils.toChecksumAddress(address, networkId);
+    const to = Web3.utils.toChecksumAddress(txData.to, networkId);
 
     this.setState({
       modalView: (
@@ -530,8 +530,8 @@ class DAppBrowser extends Component {
     const { wallet: { address, network } } = this.state;
     const dappUrl = this.getDappUrl();
     const networkId = network === 'Mainnet' ? MAINNET.NETWORK_VERSION : TESTNET.NETWORK_VERSION;
-    const from = Rsk3.utils.toChecksumAddress(address, networkId);
-    const to = Rsk3.utils.toChecksumAddress(txData.to, networkId);
+    const from = Web3.utils.toChecksumAddress(address, networkId);
+    const to = Web3.utils.toChecksumAddress(txData.to, networkId);
 
     this.setState({
       modalView: (
@@ -565,12 +565,12 @@ class DAppBrowser extends Component {
 
     // Calculate nonce from blockchain when nonce is null
     if (!nonce) {
-      nonce = await this.rsk3.getTransactionCount(address, 'pending');
+      nonce = await this.web3.getTransactionCount(address, 'pending');
     }
 
     // Get current gasPrice from blockchain when gasPrice is null
     if (!gasPrice) {
-      await this.rsk3.getGasPrice().then((latestGasPrice) => {
+      await this.web3.getGasPrice().then((latestGasPrice) => {
         gasPrice = latestGasPrice;
       }).catch((err) => {
         console.log('getGasPrice error: ', err);
@@ -580,7 +580,7 @@ class DAppBrowser extends Component {
 
     // Estimate gas with { to, data } when gas is null
     if (!gas) {
-      await this.rsk3.estimateGas({
+      await this.web3.estimateGas({
         from: address,
         to,
         data,
@@ -793,6 +793,7 @@ DAppBrowser.propTypes = {
     goBack: PropTypes.func.isRequired,
     isFocused: PropTypes.func.isRequired,
     pop: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     state: PropTypes.object.isRequired,
   }).isRequired,
   callAuthVerify: PropTypes.func.isRequired,
