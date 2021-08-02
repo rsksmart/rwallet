@@ -164,6 +164,17 @@ const coinType = {
     contractAddress: ASSETS_CONTRACT.BITP.Testnet,
     precision: 18,
   },
+  TTETestnet: {
+    networkId: 31,
+    coinType: 37310,
+    icon: references.images.TTE_GREY,
+    defaultName: 'TTE',
+    chain: 'Rootstock',
+    type: 'Testnet',
+    symbol: 'TTE',
+    contractAddress: ASSETS_CONTRACT.TTE.Testnet,
+    precision: 18,
+  },
   CustomTokenTestnet: {
     networkId: 31,
     coinType: 37310,
