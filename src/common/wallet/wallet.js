@@ -235,7 +235,7 @@ export default class Wallet extends BasicWallet {
     let coin = null;
 
     // If the token already exists, an exception is thrown.
-    const foundCoin = _.find(this.coins, { symbol, type });
+    const foundCoin = contractAddress && _.find(this.coins, { contractAddress });
     if (foundCoin) {
       throw new Error('err.exsistedtoken');
     }
