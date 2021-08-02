@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 
@@ -37,7 +37,7 @@ class SelectWallet extends Component {
     let toAddress = address;
     if (symbol !== 'BTC') {
       try {
-        toAddress = Rsk3.utils.toChecksumAddress(address, networkId);
+        toAddress = Web3.utils.toChecksumAddress(address, networkId);
       } catch (error) {
         return false;
       }
@@ -114,6 +114,7 @@ class SelectWallet extends Component {
     return listData;
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     const { navigation, addNotification } = this.props;
 
@@ -145,6 +146,7 @@ SelectWallet.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,

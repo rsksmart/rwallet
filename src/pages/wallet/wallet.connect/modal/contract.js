@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 
@@ -57,7 +57,7 @@ export default class Contract extends Component {
     const gasLimitNumber = new BigNumber(gasLimit);
     const gasPriceNumber = new BigNumber(gasPrice);
     const feeWei = gasLimitNumber.multipliedBy(gasPriceNumber).toString();
-    const fee = Rsk3.utils.fromWei(feeWei, 'ether');
+    const fee = Web3.utils.fromWei(feeWei, 'ether');
     return (
       <BaseModal
         title={strings('page.wallet.walletconnect.approveSmartContract')}

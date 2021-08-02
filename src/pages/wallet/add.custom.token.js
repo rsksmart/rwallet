@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Rsk3 from '@rsksmart/rsk3';
+import Web3 from 'web3';
 import Header from '../../components/headers/header';
 import Switch from '../../components/common/switch/switch';
 import Loc from '../../components/common/misc/loc';
@@ -112,7 +112,7 @@ class AddCustomToken extends Component {
         // If address is not a checksum address, pop up convert address modal to covert it to checksum address.
         // Issue #560, Readonly address: if user input wrong checksum address, rwallet should alert and auto-convert the address
         const { networkId } = common.getCoinType('RBTC', type);
-        const isChecksumAddress = Rsk3.utils.checkAddressChecksum(address, networkId);
+        const isChecksumAddress = Web3.utils.checkAddressChecksum(address, networkId);
         if (!isChecksumAddress) {
           this.setState({ isShowConvertAddressModal: true });
           return;
@@ -232,6 +232,7 @@ AddCustomToken.propTypes = {
     navigate: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     state: PropTypes.object.isRequired,
   }).isRequired,
   addNotification: PropTypes.func.isRequired,

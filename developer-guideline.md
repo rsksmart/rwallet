@@ -1,4 +1,4 @@
-## Dapp Browser Developer Guideline
+## Dapp Browser Developer Guideline!
 
 #### This guideline is to help developers develop Dapps that can be used in rWallet's Dapp Browser.
 
