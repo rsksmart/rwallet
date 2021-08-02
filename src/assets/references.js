@@ -15,6 +15,7 @@ images.DOC_GREY = require('./images/icon/DOC.grey.png');
 images.RIFP_GREY = require('./images/icon/RIFP.grey.png');
 images.RDOC_GREY = require('./images/icon/RDOC.grey.png');
 images.BITP_GREY = require('./images/icon/BITP.grey.png');
+images.TTE_GREY = require('./images/icon/customToken.grey.png');
 images.BRZ_GREY = require('./images/icon/BRZ.grey.png');
 images.customToken = require('./images/icon/customToken.png');
 images.customToken_grey = require('./images/icon/customToken.grey.png');

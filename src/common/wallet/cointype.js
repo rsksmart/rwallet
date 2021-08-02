@@ -175,7 +175,18 @@ const coinType = {
     contractAddress: ASSETS_CONTRACT.BITP.Testnet,
     precision: 18,
   },
-  BRZTestnet: {
+  TTETestnet: {
+    networkId: 31,
+    coinType: 37310,
+    icon: references.images.TTE_GREY,
+    defaultName: 'TTE',
+    chain: 'Rootstock',
+    type: 'Testnet',
+    symbol: 'TTE',
+    contractAddress: ASSETS_CONTRACT.TTE.Testnet,
+    precision: 18,
+  },
+   BRZTestnet: {
     networkId: 31,
     coinType: 37310,
     icon: references.images.BRZ_GREY,
@@ -184,7 +195,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'BRZ',
     contractAddress: ASSETS_CONTRACT.BRZ.Testnet,
-    precision: 18,
+    precision: 4,
   },
   CustomTokenTestnet: {
     networkId: 31,
