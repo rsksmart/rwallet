@@ -107,6 +107,10 @@ export const ASSETS_CONTRACT = {
   TTE: {
     Testnet: '0xe30f71ade0f4af9e134fb8f480bc82d15d582d99',
   },
+  BRZ: {
+    Testnet: '0x06d164E8d6829E1dA028A4F745d330Eb764Dd3aC',
+    Mainnet: '0xe355c280131DfaF18bf1C3648aee3c396db6b5FD',
+  },
 };
 
 export const WALLET_CONNECT = {
@@ -114,7 +118,7 @@ export const WALLET_CONNECT = {
     CONFIRMATION: 'Confirmation',
     NOTIFICATION: 'Notification',
   },
-  ASSETS: ['RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP', 'TTE'],
+  ASSETS: ['RBTC', 'RIF', 'DOC', 'RIFP', 'RDOC', 'BITP', 'TTE', 'BRZ'],
 };
 
 export const TRANSACTION = {
