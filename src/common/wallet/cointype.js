@@ -89,7 +89,7 @@ const coinType = {
     type: 'Mainnet',
     symbol: 'BRZ',
     contractAddress: ASSETS_CONTRACT.BRZ.Mainnet,
-    precision: 18,
+    precision: 4,
   },
   CustomToken: {
     networkId: 30,
@@ -184,7 +184,7 @@ const coinType = {
     type: 'Testnet',
     symbol: 'TTE',
     contractAddress: ASSETS_CONTRACT.TTE.Testnet,
-    precision: 18,
+    precision: 2,
   },
    BRZTestnet: {
     networkId: 31,

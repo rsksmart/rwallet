@@ -105,7 +105,7 @@ export const ASSETS_CONTRACT = {
     Mainnet: '0xaf8C226013BDc4b3AACe1F8060Db645b3F5E53FC',
   },
   TTE: {
-    Testnet: '0xe30f71ade0f4af9e134fb8f480bc82d15d582d99',
+    Testnet: '0xe30f71aDE0F4af9e134fb8F480BC82D15d582D99',
   },
   BRZ: {
     Testnet: '0x06d164E8d6829E1dA028A4F745d330Eb764Dd3aC',
